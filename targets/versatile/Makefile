@@ -26,6 +26,7 @@ SRCDIR:=${CWD}/src
 INSTALLDIR:=${TOPDIR}/install
 KERNELDIR=${SRCDIR}/linux
 CFGDIR=${TOPDIR}/config
+COMMON=${TOPDIR}/common
 
 .PHONY: kernel-fetch kernel-patch kernel-configure kernel-build test
 
@@ -42,7 +43,8 @@ state/kernel-fetch:
 
 kernel-patch: state/kernel-patch
 state/kernel-patch: state/kernel-fetch
-	(cd ${KERNELDIR} && patch -p1 < ${CWD}/vexpress-llvm.patch)
+	(cd ${KERNELDIR} && patch -p1 < ${COMMON}/common.patch)
+	(cd ${KERNELDIR} && patch -p1 < ${COMMON}/arm/common-arm.patch)
 	@mkdir -p state
 	@touch $@
 
