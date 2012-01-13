@@ -25,13 +25,10 @@ SRCDIR:=${CWD}/src
 INSTALLDIR:=${CWD}/install
 LLVMBUILDDIR:=${CWD}/build/llvm
 QEMUBUILDDIR:=${CWD}/build/qemu
-KERNELDIR=${SRCDIR}/linux
-MSMDIR=${SRCDIR}/msm
 CFGDIR=${CWD}/config
 
 .PHONY: clang-fetch clang-configure clang-build qemu-fetch qemu-configure \
-	qemu-build kernel-fetch kernel-configure kernel-build msm-fetch \
-	msm-patch msm-configure msm-build test
+	qemu-build \
 
 LLVM_GIT="http://llvm.org/git/llvm.git"
 CLANG_GIT="http://llvm.org/git/clang.git"
@@ -89,66 +86,9 @@ state/qemu-build: state/qemu-configure
 	@mkdir -p state
 	@touch $@
 	
-LINUS_KERNEL=git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git)
+versatile: qemu-build clang-build
+	(cd targets/versatile && make)
 
-kernel-fetch: state/kernel-fetch
-state/kernel-fetch:
-	@mkdir -p ${SRCDIR}
-	(cd ${SRCDIR} &&  git clone ${LINUS_KERNEL}
-	@mkdir -p state
-	@touch $@
-
-kernel-patch: state/kernel-patch
-state/kernel-patch: state/kernel-fetch
-	(cd ${KERNELDIR} && patch -p1 < ${CFGDIR}/vexpress-llvm.patch)
-	@mkdir -p state
-	@touch $@
-
-kernel-configure: state/kernel-configure
-state/kernel-configure: state/kernel-patch
-	@cp ${CFGDIR}/config_vexpress ${KERNELDIR}/.config
-	(cd ${KERNELDIR} && make ARCH=arm oldconfig)
-	@mkdir -p state
-	@touch $@
-
-kernel-build: state/kernel-build 
-state/kernel-build: state/kernel-configure state/clang-build
-	(cd ${KERNELDIR} && ${CFGDIR}/make-kernel.sh ${INSTALLDIR})
-	@mkdir -p state
-	@touch $@
-
-MSM_KERNEL="git://codeaurora.org/kernel/msm.git -b msm-3.0"
-MSM_BRANCH="msm-3.0"
-MSM_PATCH=${CFGDIR}/msm-3.0-llvm.patch
-
-msm-fetch: state/msm-fetch
-state/msm-fetch: 
-	@mkdir -p ${SRCDIR}
-	(cd ${SRCDIR} && git clone ${MSM_KERNEL} -b ${MSM_BRANCH})
-	@mkdir -p state
-	@touch $@
-
-msm-patch: state/msm-patch
-state/msm-patch: state/msm-fetch
-	(cd ${MSMDIR} && patch -p1 < ${MSM_PATCH})
-	@mkdir -p state
-	@touch $@
-
-msm-configure: state/msm-configure
-state/msm-configure: state/msm-patch
-	@cp ${CFGDIR}/config_msm ${MSMDIR}/.config
-	(cd ${MSMDIR} && make ARCH=arm oldconfig)
-	@mkdir -p state
-	@touch $@
-
-msm-build: state/msm-build
-state/msm-build: state/msm-configure
-	(cd ${MSMDIR} && ${CFGDIR}/make-kernel.sh ${INSTALLDIR})
-	@mkdir -p state
-	@touch $@
-
-test: state/kernel-build state/qemu-build
-	@qemu-system-arm -kernel ${KERNELDIR}/arch/arm/boot/zImage \
-		-initrd myinitrd -M vexpress-a9 -append 'console=earlycon \
-		console=ttyAMA0,38400n8 earlyprintk init=/init' -nographic
+msm: qemu-build clang-build
+	(cd targets/msm && make)
 
