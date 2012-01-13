@@ -1,0 +1,2391 @@
+commit 34b5fe96b67a3b5e80181fb27edb1157d99ab27e
+Author: Mark Charlebois <mcharleb@quicinc.com>
+Date:   Thu Dec 29 16:00:58 2011 -0800
+
+    Additional fixes for features unsupported by LLVM
+
+diff --git a/arch/arm/Makefile b/arch/arm/Makefile
+index 9698160..4b906ff 100644
+--- a/arch/arm/Makefile
++++ b/arch/arm/Makefile
+@@ -92,7 +92,9 @@ tune-$(CONFIG_CPU_V6)		:=$(call cc-option,-mtune=arm1136j-s,-mtune=strongarm)
+ tune-$(CONFIG_CPU_V6K)		:=$(call cc-option,-mtune=arm1136j-s,-mtune=strongarm)
+ 
+ ifeq ($(CONFIG_AEABI),y)
+-CFLAGS_ABI	:=-mabi=aapcs-linux -mno-thumb-interwork
++# FIXME -mabi not supported for ARM in LLVM 3.0
++#CFLAGS_ABI	:=-mabi=aapcs-linux -mno-thumb-interwork
++CFLAGS_ABI	:=-mno-thumb-interwork
+ else
+ CFLAGS_ABI	:=$(call cc-option,-mapcs-32,-mabi=apcs-gnu) $(call cc-option,-mno-thumb-interwork,)
+ endif
+diff --git a/arch/arm/include/asm/thread_info.h b/arch/arm/include/asm/thread_info.h
+index 7b5cc8d..f7490d5 100644
+--- a/arch/arm/include/asm/thread_info.h
++++ b/arch/arm/include/asm/thread_info.h
+@@ -93,8 +93,7 @@ static inline struct thread_info *current_thread_info(void) __attribute_const__;
+ 
+ static inline struct thread_info *current_thread_info(void)
+ {
+-	register unsigned long sp asm ("sp");
+-	return (struct thread_info *)(sp & ~(THREAD_SIZE - 1));
++	return (struct thread_info *)((unsigned long)(__builtin_frame_address(0)) & ~(THREAD_SIZE - 1));
+ }
+ 
+ #define thread_saved_pc(tsk)	\
+
+commit 0feeca143a6c8a524558fb3a3c3111fb847a0841
+Author: Mark Charlebois <mcharleb@quicinc.com>
+Date:   Thu Dec 29 16:00:24 2011 -0800
+
+    Removed extra leading space
+
+diff --git a/arch/arm/include/asm/atomic.h b/arch/arm/include/asm/atomic.h
+index 7e79503..0a4ea5f 100644
+--- a/arch/arm/include/asm/atomic.h
++++ b/arch/arm/include/asm/atomic.h
+@@ -235,6 +235,7 @@ static inline int atomic_add_unless(atomic_t *v, int a, int u)
+ #define smp_mb__before_atomic_inc()	smp_mb()
+ #define smp_mb__after_atomic_inc()	smp_mb()
+ 
++#if 0
+ #ifndef CONFIG_GENERIC_ATOMIC64
+ typedef struct {
+ 	u64 __aligned(8) counter;
+@@ -460,6 +461,8 @@ static inline int atomic64_add_unless(atomic64_t *v, u64 a, u64 u)
+ #define atomic64_dec_and_test(v)	(atomic64_dec_return((v)) == 0)
+ #define atomic64_inc_not_zero(v)	atomic64_add_unless((v), 1LL, 0LL)
+ 
++#endif
++
+ #else /* !CONFIG_GENERIC_ATOMIC64 */
+ #include <asm-generic/atomic64.h>
+ #endif
+diff --git a/arch/arm/include/asm/ftrace.h b/arch/arm/include/asm/ftrace.h
+index f89515a..b2bbf22 100644
+--- a/arch/arm/include/asm/ftrace.h
++++ b/arch/arm/include/asm/ftrace.h
+@@ -45,7 +45,7 @@ void *return_address(unsigned int);
+ 
+ #else
+ 
+-extern inline void *return_address(unsigned int level)
++extern inline __attribute__((gnu_inline)) void *return_address(unsigned int level)
+ {
+ 	return NULL;
+ }
+diff --git a/arch/arm/kernel/pmu.c b/arch/arm/kernel/pmu.c
+index a4688e8..119488c 100644
+--- a/arch/arm/kernel/pmu.c
++++ b/arch/arm/kernel/pmu.c
+@@ -45,7 +45,7 @@ static int __devinit pmu_device_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver cpu_pmu_driver = {
++static struct platform_driver cpu_pmu_driver __devinitdata= {
+ 	.driver		= {
+ 		.name	= "cpu-arm-pmu",
+ 	},
+diff --git a/arch/arm/mach-msm/cpufreq.c b/arch/arm/mach-msm/cpufreq.c
+index 2477221..8bcd2f8 100644
+--- a/arch/arm/mach-msm/cpufreq.c
++++ b/arch/arm/mach-msm/cpufreq.c
+@@ -285,7 +285,7 @@ static struct freq_attr *msm_freq_attr[] = {
+ 	NULL,
+ };
+ 
+-static struct cpufreq_driver msm_cpufreq_driver = {
++static struct cpufreq_driver msm_cpufreq_driver __initdata = {
+ 	/* lps calculations are handled here. */
+ 	.flags		= CPUFREQ_STICKY | CPUFREQ_CONST_LOOPS,
+ 	.init		= msm_cpufreq_init,
+diff --git a/arch/arm/mach-msm/footswitch-8x60.c b/arch/arm/mach-msm/footswitch-8x60.c
+index 98447fa..ff2710d 100644
+--- a/arch/arm/mach-msm/footswitch-8x60.c
++++ b/arch/arm/mach-msm/footswitch-8x60.c
+@@ -561,7 +561,7 @@ static int __devexit footswitch_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver footswitch_driver = {
++static struct platform_driver footswitch_driver __refdata = {
+ 	.probe		= footswitch_probe,
+ 	.remove		= __devexit_p(footswitch_remove),
+ 	.driver		= {
+diff --git a/arch/arm/mach-msm/footswitch-pcom.c b/arch/arm/mach-msm/footswitch-pcom.c
+index 8eec807..ed7f0c6 100644
+--- a/arch/arm/mach-msm/footswitch-pcom.c
++++ b/arch/arm/mach-msm/footswitch-pcom.c
+@@ -291,7 +291,7 @@ static int __devexit footswitch_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver footswitch_driver = {
++static struct platform_driver footswitch_driver __refdata = {
+ 	.probe		= footswitch_probe,
+ 	.remove		= __devexit_p(footswitch_remove),
+ 	.driver		= {
+diff --git a/arch/arm/mach-msm/msm_dsps.c b/arch/arm/mach-msm/msm_dsps.c
+index bcb777f..2d48629 100644
+--- a/arch/arm/mach-msm/msm_dsps.c
++++ b/arch/arm/mach-msm/msm_dsps.c
+@@ -865,7 +865,7 @@ static int __devexit dsps_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver dsps_driver = {
++static struct platform_driver dsps_driver __refdata = {
+ 	.probe          = dsps_probe,
+ 	.remove         = __exit_p(dsps_remove),
+ 	.driver         = {
+diff --git a/arch/arm/mach-msm/rpm-regulator.c b/arch/arm/mach-msm/rpm-regulator.c
+index 5c2bb8e..065ebfc 100644
+--- a/arch/arm/mach-msm/rpm-regulator.c
++++ b/arch/arm/mach-msm/rpm-regulator.c
+@@ -1393,7 +1393,7 @@ static int __devexit rpm_vreg_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver rpm_vreg_driver = {
++static struct platform_driver rpm_vreg_driver __refdata = {
+ 	.probe = rpm_vreg_probe,
+ 	.remove = __devexit_p(rpm_vreg_remove),
+ 	.driver = {
+diff --git a/arch/arm/mach-msm/rpm.c b/arch/arm/mach-msm/rpm.c
+index ef2956a..3fc36fb 100644
+--- a/arch/arm/mach-msm/rpm.c
++++ b/arch/arm/mach-msm/rpm.c
+@@ -819,7 +819,7 @@ static int __devexit msm_rpm_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver msm_rpm_platform_driver = {
++static struct platform_driver msm_rpm_platform_driver __refdata = {
+ 	.probe = msm_rpm_probe,
+ 	.remove = __devexit_p(msm_rpm_remove),
+ 	.driver = {
+diff --git a/arch/arm/mach-msm/rpm_log.c b/arch/arm/mach-msm/rpm_log.c
+index 3ed55da..df43a1a 100644
+--- a/arch/arm/mach-msm/rpm_log.c
++++ b/arch/arm/mach-msm/rpm_log.c
+@@ -335,7 +335,7 @@ static int __devexit msm_rpm_log_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver msm_rpm_log_driver = {
++static struct platform_driver msm_rpm_log_driver __refdata = {
+ 	.probe		= msm_rpm_log_probe,
+ 	.remove		= __devexit_p(msm_rpm_log_remove),
+ 	.driver		= {
+diff --git a/arch/arm/mach-msm/rpm_stats.c b/arch/arm/mach-msm/rpm_stats.c
+index a831bd5..f5d8888 100644
+--- a/arch/arm/mach-msm/rpm_stats.c
++++ b/arch/arm/mach-msm/rpm_stats.c
+@@ -222,7 +222,7 @@ static int __devexit msm_rpmstats_remove(struct platform_device *pdev)
+ 	platform_set_drvdata(pdev, NULL);
+ 	return 0;
+ }
+-static struct platform_driver msm_rpmstats_driver = {
++static struct platform_driver msm_rpmstats_driver __refdata = {
+ 	.probe	= msm_rpmstats_probe,
+ 	.remove = __devexit_p(msm_rpmstats_remove),
+ 	.driver = {
+diff --git a/arch/arm/mach-msm/saw-regulator.c b/arch/arm/mach-msm/saw-regulator.c
+index b11b1fa..edb7ca4 100644
+--- a/arch/arm/mach-msm/saw-regulator.c
++++ b/arch/arm/mach-msm/saw-regulator.c
+@@ -208,7 +208,7 @@ static int __devexit saw_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver saw_driver = {
++static struct platform_driver saw_driver __refdata = {
+ 	.probe = saw_probe,
+ 	.remove = __devexit_p(saw_remove),
+ 	.driver = {
+diff --git a/arch/arm/mach-msm/smd.c b/arch/arm/mach-msm/smd.c
+index e794801..d6c60bd 100644
+--- a/arch/arm/mach-msm/smd.c
++++ b/arch/arm/mach-msm/smd.c
+@@ -2580,7 +2580,7 @@ static __init int modem_restart_late_init(void)
+ }
+ late_initcall(modem_restart_late_init);
+ 
+-static struct platform_driver msm_smd_driver = {
++static struct platform_driver msm_smd_driver __initdata = {
+ 	.probe = msm_smd_probe,
+ 	.driver = {
+ 		.name = MODULE_NAME,
+diff --git a/crypto/hmac.c b/crypto/hmac.c
+index 8d9544c..281a65d 100644
+--- a/crypto/hmac.c
++++ b/crypto/hmac.c
+@@ -54,10 +54,12 @@ static int hmac_setkey(struct crypto_shash *parent,
+ 	struct crypto_shash *hash = ctx->hash;
+ 	struct {
+ 		struct shash_desc shash;
+-		char ctx[crypto_shash_descsize(hash)];
++		char *ctx;
+ 	} desc;
++	char desc_ctx[crypto_shash_descsize(hash)]; // LLVM workaround
+ 	unsigned int i;
+ 
++        desc.ctx = desc_ctx;
+ 	desc.shash.tfm = hash;
+ 	desc.shash.flags = crypto_shash_get_flags(parent) &
+ 			    CRYPTO_TFM_REQ_MAY_SLEEP;
+diff --git a/crypto/shash.c b/crypto/shash.c
+index 76f74b9..d9f0d07 100644
+--- a/crypto/shash.c
++++ b/crypto/shash.c
+@@ -65,7 +65,7 @@ EXPORT_SYMBOL_GPL(crypto_shash_setkey);
+ static inline unsigned int shash_align_buffer_size(unsigned len,
+ 						   unsigned long mask)
+ {
+-	return len + (mask & ~(__alignof__(u8 __attribute__ ((aligned))) - 1));
++	return len + (mask & ~(__alignof__(u8) - 1));
+ }
+ 
+ static int shash_update_unaligned(struct shash_desc *desc, const u8 *data,
+diff --git a/drivers/bluetooth/bluetooth-power.c b/drivers/bluetooth/bluetooth-power.c
+index 3bf49d1..b3a2a1f 100644
+--- a/drivers/bluetooth/bluetooth-power.c
++++ b/drivers/bluetooth/bluetooth-power.c
+@@ -108,7 +108,7 @@ static int __devexit bt_power_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver bt_power_driver = {
++static struct platform_driver bt_power_driver __refdata = {
+ 	.probe = bt_power_probe,
+ 	.remove = __devexit_p(bt_power_remove),
+ 	.driver = {
+diff --git a/drivers/char/dcc_tty.c b/drivers/char/dcc_tty.c
+index 7643f50..e531640 100644
+--- a/drivers/char/dcc_tty.c
++++ b/drivers/char/dcc_tty.c
+@@ -33,7 +33,7 @@ static char g_dcc_buffer[16];
+ static int g_dcc_buffer_head;
+ static int g_dcc_buffer_count;
+ static unsigned g_dcc_write_delay_usecs = 1;
+-static struct tty_driver *g_dcc_tty_driver;
++static struct tty_driver *g_dcc_tty_driver __initdata;
+ static struct tty_struct *g_dcc_tty;
+ static int g_dcc_tty_open_count;
+ 
+@@ -246,7 +246,7 @@ static int __init dcc_console_setup(struct console *co, char *options)
+ }
+ 
+ 
+-static struct console dcc_console =
++static struct console dcc_console __initdata =
+ {
+ 	.name		= "ttyDCC",
+ 	.write		= dcc_console_write,
+diff --git a/drivers/char/hw_random/msm_rng.c b/drivers/char/hw_random/msm_rng.c
+index b03a4ec..eff509d 100644
+--- a/drivers/char/hw_random/msm_rng.c
++++ b/drivers/char/hw_random/msm_rng.c
+@@ -231,7 +231,7 @@ static int __devexit msm_rng_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver rng_driver = {
++static struct platform_driver rng_driver __refdata = {
+ 	.probe      = msm_rng_probe,
+ 	.remove     = __devexit_p(msm_rng_remove),
+ 	.driver     = {
+diff --git a/drivers/char/msm_rotator.c b/drivers/char/msm_rotator.c
+index edf5c27..18a0977 100644
+--- a/drivers/char/msm_rotator.c
++++ b/drivers/char/msm_rotator.c
+@@ -1566,7 +1566,7 @@ static int msm_rotator_resume(struct platform_device *dev)
+ }
+ #endif
+ 
+-static struct platform_driver msm_rotator_platform_driver = {
++static struct platform_driver msm_rotator_platform_driver __refdata = {
+ 	.probe = msm_rotator_probe,
+ 	.remove = __devexit_p(msm_rotator_remove),
+ #ifdef CONFIG_PM
+diff --git a/drivers/gpio/pm8xxx-gpio.c b/drivers/gpio/pm8xxx-gpio.c
+index 53305e3..4137bc5 100644
+--- a/drivers/gpio/pm8xxx-gpio.c
++++ b/drivers/gpio/pm8xxx-gpio.c
+@@ -434,7 +434,7 @@ int pm8xxx_gpio_config(int gpio, struct pm_gpio *param)
+ }
+ EXPORT_SYMBOL(pm8xxx_gpio_config);
+ 
+-static struct platform_driver pm_gpio_driver = {
++static struct platform_driver pm_gpio_driver __refdata = {
+ 	.probe		= pm_gpio_probe,
+ 	.remove		= __devexit_p(pm_gpio_remove),
+ 	.driver		= {
+diff --git a/drivers/gpio/pm8xxx-mpp.c b/drivers/gpio/pm8xxx-mpp.c
+index 82a11a2..be88b45 100644
+--- a/drivers/gpio/pm8xxx-mpp.c
++++ b/drivers/gpio/pm8xxx-mpp.c
+@@ -307,7 +307,7 @@ static int __devexit pm8xxx_mpp_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver pm8xxx_mpp_driver = {
++static struct platform_driver pm8xxx_mpp_driver __refdata = {
+ 	.probe		= pm8xxx_mpp_probe,
+ 	.remove		= __devexit_p(pm8xxx_mpp_remove),
+ 	.driver		= {
+diff --git a/drivers/gpu/msm/adreno.c b/drivers/gpu/msm/adreno.c
+index 12e093b..8f1e00f 100644
+--- a/drivers/gpu/msm/adreno.c
++++ b/drivers/gpu/msm/adreno.c
+@@ -1296,7 +1296,7 @@ static struct platform_device_id adreno_id_table[] = {
+ };
+ MODULE_DEVICE_TABLE(platform, adreno_id_table);
+ 
+-static struct platform_driver adreno_platform_driver = {
++static struct platform_driver adreno_platform_driver __refdata = {
+ 	.probe = adreno_probe,
+ 	.remove = __devexit_p(adreno_remove),
+ 	.suspend = kgsl_suspend_driver,
+diff --git a/drivers/gpu/msm/z180.c b/drivers/gpu/msm/z180.c
+index cdb9c23..c9f8dd3 100644
+--- a/drivers/gpu/msm/z180.c
++++ b/drivers/gpu/msm/z180.c
+@@ -915,7 +915,7 @@ static struct platform_device_id z180_id_table[] = {
+ };
+ MODULE_DEVICE_TABLE(platform, z180_id_table);
+ 
+-static struct platform_driver z180_platform_driver = {
++static struct platform_driver z180_platform_driver __refdata = {
+ 	.probe = z180_probe,
+ 	.remove = __devexit_p(z180_remove),
+ 	.suspend = kgsl_suspend_driver,
+diff --git a/drivers/hwmon/msm_adc.c b/drivers/hwmon/msm_adc.c
+index b8d581e..d631bdd 100644
+--- a/drivers/hwmon/msm_adc.c
++++ b/drivers/hwmon/msm_adc.c
+@@ -1372,7 +1372,7 @@ hwmon_err_sens:
+ 	return rc;
+ }
+ 
+-static struct platform_driver msm_adc_rpcrouter_remote_driver = {
++static struct platform_driver msm_adc_rpcrouter_remote_driver __devinitdata = {
+ 	.probe          = msm_rpc_adc_init,
+ 	.driver         = {
+ 		.name   = MSM_ADC_DALRPC_PORT_NAME,
+@@ -1494,7 +1494,7 @@ static int __devexit msm_adc_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver msm_adc_driver = {
++static struct platform_driver msm_adc_driver __refdata = {
+ 	.probe = msm_adc_probe,
+ 	.remove = __devexit_p(msm_adc_remove),
+ 	.driver = {
+diff --git a/drivers/i2c/busses/i2c-qup.c b/drivers/i2c/busses/i2c-qup.c
+index 3dbbf15..ec7d586 100644
+--- a/drivers/i2c/busses/i2c-qup.c
++++ b/drivers/i2c/busses/i2c-qup.c
+@@ -1294,7 +1294,7 @@ static const struct dev_pm_ops i2c_qup_dev_pm_ops = {
+ 	)
+ };
+ 
+-static struct platform_driver qup_i2c_driver = {
++static struct platform_driver qup_i2c_driver __refdata = {
+ 	.probe		= qup_i2c_probe,
+ 	.remove		= __devexit_p(qup_i2c_remove),
+ 	.driver		= {
+diff --git a/drivers/input/keyboard/gpio_keys.c b/drivers/input/keyboard/gpio_keys.c
+index 6e6145b..bf2203e 100644
+--- a/drivers/input/keyboard/gpio_keys.c
++++ b/drivers/input/keyboard/gpio_keys.c
+@@ -622,7 +622,7 @@ static const struct dev_pm_ops gpio_keys_pm_ops = {
+ };
+ #endif
+ 
+-static struct platform_driver gpio_keys_device_driver = {
++static struct platform_driver gpio_keys_device_driver __refdata = {
+ 	.probe		= gpio_keys_probe,
+ 	.remove		= __devexit_p(gpio_keys_remove),
+ 	.driver		= {
+diff --git a/drivers/input/keyboard/pmic8xxx-keypad.c b/drivers/input/keyboard/pmic8xxx-keypad.c
+index 0866332..8c235fa 100644
+--- a/drivers/input/keyboard/pmic8xxx-keypad.c
++++ b/drivers/input/keyboard/pmic8xxx-keypad.c
+@@ -781,7 +781,7 @@ static int pmic8xxx_kp_resume(struct device *dev)
+ static SIMPLE_DEV_PM_OPS(pm8xxx_kp_pm_ops,
+ 			 pmic8xxx_kp_suspend, pmic8xxx_kp_resume);
+ 
+-static struct platform_driver pmic8xxx_kp_driver = {
++static struct platform_driver pmic8xxx_kp_driver __refdata = {
+ 	.probe		= pmic8xxx_kp_probe,
+ 	.remove		= __devexit_p(pmic8xxx_kp_remove),
+ 	.driver		= {
+diff --git a/drivers/input/misc/pmic8058-othc.c b/drivers/input/misc/pmic8058-othc.c
+index a28e8e1..b82b2ac 100644
+--- a/drivers/input/misc/pmic8058-othc.c
++++ b/drivers/input/misc/pmic8058-othc.c
+@@ -1153,7 +1153,7 @@ fail_get_res:
+ 	return rc;
+ }
+ 
+-static struct platform_driver pm8058_othc_driver = {
++static struct platform_driver pm8058_othc_driver __refdata = {
+ 	.driver = {
+ 		.name = "pm8058-othc",
+ 		.owner = THIS_MODULE,
+diff --git a/drivers/input/touchscreen/atmel_maxtouch.c b/drivers/input/touchscreen/atmel_maxtouch.c
+index e397774..9e6122b 100644
+--- a/drivers/input/touchscreen/atmel_maxtouch.c
++++ b/drivers/input/touchscreen/atmel_maxtouch.c
+@@ -2299,7 +2299,7 @@ static const struct i2c_device_id mxt_idtable[] = {
+ 
+ MODULE_DEVICE_TABLE(i2c, mxt_idtable);
+ 
+-static struct i2c_driver mxt_driver = {
++static struct i2c_driver mxt_driver __refdata = {
+ 	.driver = {
+ 		.name	= "maXTouch",
+ 		.owner  = THIS_MODULE,
+diff --git a/drivers/input/touchscreen/atmel_mxt_ts.c b/drivers/input/touchscreen/atmel_mxt_ts.c
+index 790a9e1..28f6714 100644
+--- a/drivers/input/touchscreen/atmel_mxt_ts.c
++++ b/drivers/input/touchscreen/atmel_mxt_ts.c
+@@ -1593,7 +1593,7 @@ static const struct i2c_device_id mxt_id[] = {
+ };
+ MODULE_DEVICE_TABLE(i2c, mxt_id);
+ 
+-static struct i2c_driver mxt_driver = {
++static struct i2c_driver mxt_driver __refdata = {
+ 	.driver = {
+ 		.name	= "atmel_mxt_ts",
+ 		.owner	= THIS_MODULE,
+diff --git a/drivers/input/touchscreen/cy8c_tmg_ts.c b/drivers/input/touchscreen/cy8c_tmg_ts.c
+index f48374e..f03c38a 100644
+--- a/drivers/input/touchscreen/cy8c_tmg_ts.c
++++ b/drivers/input/touchscreen/cy8c_tmg_ts.c
+@@ -428,7 +428,7 @@ static const struct i2c_device_id cy8c_ts_i2c_id[] = {
+ 	{}
+ };
+ 
+-static struct i2c_driver cy8c_ts_driver = {
++static struct i2c_driver cy8c_ts_driver __refdata = {
+ 	.id_table = cy8c_ts_i2c_id,
+ 	.probe = cy8c_ts_probe,
+ 	.remove = cy8c_ts_remove,
+diff --git a/drivers/input/touchscreen/cy8c_ts.c b/drivers/input/touchscreen/cy8c_ts.c
+index f708582..da90852 100644
+--- a/drivers/input/touchscreen/cy8c_ts.c
++++ b/drivers/input/touchscreen/cy8c_ts.c
+@@ -790,7 +790,7 @@ static const struct i2c_device_id cy8c_ts_id[] = {
+ MODULE_DEVICE_TABLE(i2c, cy8c_ts_id);
+ 
+ 
+-static struct i2c_driver cy8c_ts_driver = {
++static struct i2c_driver cy8c_ts_driver __refdata = {
+ 	.driver = {
+ 		.name = "cy8c_ts",
+ 		.owner = THIS_MODULE,
+diff --git a/drivers/input/touchscreen/cyttsp-i2c.c b/drivers/input/touchscreen/cyttsp-i2c.c
+index 9df1189..d8853ff 100644
+--- a/drivers/input/touchscreen/cyttsp-i2c.c
++++ b/drivers/input/touchscreen/cyttsp-i2c.c
+@@ -132,7 +132,7 @@ static const struct dev_pm_ops cyttsp_pm_ops = {
+ };
+ #endif
+ 
+-static struct i2c_driver cyttsp_driver = {
++static struct i2c_driver cyttsp_driver __refdata = {
+ 	.driver = {
+ 		.name = CY_I2C_NAME,
+ 		.owner = THIS_MODULE,
+diff --git a/drivers/leds/leds-pmic8058.c b/drivers/leds/leds-pmic8058.c
+index 3b3a24a..35f4ea5 100644
+--- a/drivers/leds/leds-pmic8058.c
++++ b/drivers/leds/leds-pmic8058.c
+@@ -399,7 +399,7 @@ static int __devexit pmic8058_led_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver pmic8058_led_driver = {
++static struct platform_driver pmic8058_led_driver __refdata = {
+ 	.probe		= pmic8058_led_probe,
+ 	.remove		= __devexit_p(pmic8058_led_remove),
+ 	.driver		= {
+diff --git a/drivers/md/dm-crypt.c b/drivers/md/dm-crypt.c
+index c8827ff..028bf4c 100644
+--- a/drivers/md/dm-crypt.c
++++ b/drivers/md/dm-crypt.c
+@@ -539,12 +539,14 @@ static int crypt_iv_lmk_one(struct crypt_config *cc, u8 *iv,
+ 	struct iv_lmk_private *lmk = &cc->iv_gen_private.lmk;
+ 	struct {
+ 		struct shash_desc desc;
+-		char ctx[crypto_shash_descsize(lmk->hash_tfm)];
++		char *ctx;
+ 	} sdesc;
++        char sdesc_ctx[crypto_shash_descsize(lmk->hash_tfm)];
+ 	struct md5_state md5state;
+ 	u32 buf[4];
+ 	int i, r;
+ 
++	sdesc.ctx = sdesc_ctx;
+ 	sdesc.desc.tfm = lmk->hash_tfm;
+ 	sdesc.desc.flags = CRYPTO_TFM_REQ_MAY_SLEEP;
+ 
+diff --git a/drivers/media/radio/radio-tavarua.c b/drivers/media/radio/radio-tavarua.c
+index 5976424..b14cfa1 100644
+--- a/drivers/media/radio/radio-tavarua.c
++++ b/drivers/media/radio/radio-tavarua.c
+@@ -3932,7 +3932,7 @@ static int __devexit tavarua_remove(struct platform_device *pdev)
+  provide probe() and remove() methods.  They support power management
+  and shutdown notifications using the standard conventions.
+ */
+-static struct platform_driver tavarua_driver = {
++static struct platform_driver tavarua_driver __refdata = {
+ 	.driver = {
+ 		.owner  = THIS_MODULE,
+ 		.name   = "marimba_fm",
+diff --git a/drivers/mfd/marimba-core.c b/drivers/mfd/marimba-core.c
+index e168c49..fd76d39 100644
+--- a/drivers/mfd/marimba-core.c
++++ b/drivers/mfd/marimba-core.c
+@@ -897,7 +897,7 @@ static struct i2c_device_id marimba_id_table[] = {
+ };
+ MODULE_DEVICE_TABLE(i2c, marimba_id_table);
+ 
+-static struct i2c_driver marimba_driver = {
++static struct i2c_driver marimba_driver __refdata = {
+ 		.driver			= {
+ 			.owner		=	THIS_MODULE,
+ 			.name		=	"marimba-core",
+diff --git a/drivers/mfd/pm8xxx-batt-alarm.c b/drivers/mfd/pm8xxx-batt-alarm.c
+index 1d30db9..1ee0ef8 100644
+--- a/drivers/mfd/pm8xxx-batt-alarm.c
++++ b/drivers/mfd/pm8xxx-batt-alarm.c
+@@ -778,7 +778,7 @@ static int __devexit pm8xxx_batt_alarm_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver pm8xxx_batt_alarm_driver = {
++static struct platform_driver pm8xxx_batt_alarm_driver __refdata = {
+ 	.probe	= pm8xxx_batt_alarm_probe,
+ 	.remove	= __devexit_p(pm8xxx_batt_alarm_remove),
+ 	.driver	= {
+diff --git a/drivers/mfd/pm8xxx-debug.c b/drivers/mfd/pm8xxx-debug.c
+index 7115726..6c1019f 100644
+--- a/drivers/mfd/pm8xxx-debug.c
++++ b/drivers/mfd/pm8xxx-debug.c
+@@ -188,7 +188,7 @@ static int __devexit pm8xxx_debug_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver pm8xxx_debug_driver = {
++static struct platform_driver pm8xxx_debug_driver __refdata = {
+ 	.probe		= pm8xxx_debug_probe,
+ 	.remove		= __devexit_p(pm8xxx_debug_remove),
+ 	.driver		= {
+diff --git a/drivers/mfd/pm8xxx-misc.c b/drivers/mfd/pm8xxx-misc.c
+index a73a695..88f6ded 100644
+--- a/drivers/mfd/pm8xxx-misc.c
++++ b/drivers/mfd/pm8xxx-misc.c
+@@ -1014,7 +1014,7 @@ static int __devexit pm8xxx_misc_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver pm8xxx_misc_driver = {
++static struct platform_driver pm8xxx_misc_driver __refdata = {
+ 	.probe	= pm8xxx_misc_probe,
+ 	.remove	= __devexit_p(pm8xxx_misc_remove),
+ 	.driver	= {
+diff --git a/drivers/mfd/pmic8058.c b/drivers/mfd/pmic8058.c
+index ae721e4..7d9c730 100644
+--- a/drivers/mfd/pmic8058.c
++++ b/drivers/mfd/pmic8058.c
+@@ -1258,7 +1258,7 @@ static int __devexit pm8058_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver pm8058_driver = {
++static struct platform_driver pm8058_driver __refdata = {
+ 	.probe		= pm8058_probe,
+ 	.remove		= __devexit_p(pm8058_remove),
+ 	.driver		= {
+diff --git a/drivers/misc/pm8xxx-upl.c b/drivers/misc/pm8xxx-upl.c
+index d3d9746..85a809e 100644
+--- a/drivers/misc/pm8xxx-upl.c
++++ b/drivers/misc/pm8xxx-upl.c
+@@ -322,7 +322,7 @@ static int __devexit pm8xxx_upl_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver pm8xxx_upl_driver = {
++static struct platform_driver pm8xxx_upl_driver __refdata = {
+ 	.probe		= pm8xxx_upl_probe,
+ 	.remove		= __devexit_p(pm8xxx_upl_remove),
+ 	.driver		= {
+diff --git a/drivers/misc/pmic8058-pwm.c b/drivers/misc/pmic8058-pwm.c
+index 33407b7..90f4f03 100644
+--- a/drivers/misc/pmic8058-pwm.c
++++ b/drivers/misc/pmic8058-pwm.c
+@@ -1057,7 +1057,7 @@ static int __devexit pmic8058_pwm_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver pmic8058_pwm_driver = {
++static struct platform_driver pmic8058_pwm_driver __refdata = {
+ 	.probe		= pmic8058_pwm_probe,
+ 	.remove		= __devexit_p(pmic8058_pwm_remove),
+ 	.driver		= {
+diff --git a/drivers/misc/tsif.c b/drivers/misc/tsif.c
+index 42faa07..7fa7914 100644
+--- a/drivers/misc/tsif.c
++++ b/drivers/misc/tsif.c
+@@ -1405,7 +1405,7 @@ static const struct dev_pm_ops tsif_dev_pm_ops = {
+ };
+ 
+ 
+-static struct platform_driver msm_tsif_driver = {
++static struct platform_driver msm_tsif_driver __refdata = {
+ 	.probe          = msm_tsif_probe,
+ 	.remove         = __exit_p(msm_tsif_remove),
+ 	.driver         = {
+diff --git a/drivers/net/ppp_generic.c b/drivers/net/ppp_generic.c
+index 4609bc0..e5c7f93 100644
+--- a/drivers/net/ppp_generic.c
++++ b/drivers/net/ppp_generic.c
+@@ -884,7 +884,7 @@ static __net_exit void ppp_exit_net(struct net *net)
+ 	idr_destroy(&pn->units_idr);
+ }
+ 
+-static struct pernet_operations ppp_net_ops = {
++static struct pernet_operations ppp_net_ops __refdata = {
+ 	.init = ppp_init_net,
+ 	.exit = ppp_exit_net,
+ 	.id   = &ppp_net_id,
+diff --git a/drivers/net/smc911x.c b/drivers/net/smc911x.c
+index 053863a..3ee4490 100644
+--- a/drivers/net/smc911x.c
++++ b/drivers/net/smc911x.c
+@@ -2190,7 +2190,7 @@ static int smc911x_drv_resume(struct platform_device *dev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver smc911x_driver = {
++static struct platform_driver smc911x_driver __refdata = {
+ 	.probe		 = smc911x_drv_probe,
+ 	.remove	 = __devexit_p(smc911x_drv_remove),
+ 	.suspend	 = smc911x_drv_suspend,
+diff --git a/drivers/net/smc91x.c b/drivers/net/smc91x.c
+index f628574..33f1e36 100644
+--- a/drivers/net/smc91x.c
++++ b/drivers/net/smc91x.c
+@@ -2411,7 +2411,7 @@ static struct dev_pm_ops smc_drv_pm_ops = {
+ 	.resume		= smc_drv_resume,
+ };
+ 
+-static struct platform_driver smc_driver = {
++static struct platform_driver smc_driver __refdata = {
+ 	.probe		= smc_drv_probe,
+ 	.remove		= __devexit_p(smc_drv_remove),
+ 	.driver		= {
+diff --git a/drivers/net/smsc911x.c b/drivers/net/smsc911x.c
+index a3c32b9..07ed9b4 100644
+--- a/drivers/net/smsc911x.c
++++ b/drivers/net/smsc911x.c
+@@ -2324,7 +2324,7 @@ static const struct dev_pm_ops smsc911x_pm_ops = {
+ #define SMSC911X_PM_OPS NULL
+ #endif
+ 
+-static struct platform_driver smsc911x_driver = {
++static struct platform_driver smsc911x_driver __refdata = {
+ 	.probe = smsc911x_drv_probe,
+ 	.remove = __devexit_p(smsc911x_drv_remove),
+ 	.driver = {
+diff --git a/drivers/platform/msm/ssbi.c b/drivers/platform/msm/ssbi.c
+index 8a6dbf7..d6bfd21 100644
+--- a/drivers/platform/msm/ssbi.c
++++ b/drivers/platform/msm/ssbi.c
+@@ -389,7 +389,7 @@ static int __devexit msm_ssbi_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver msm_ssbi_driver = {
++static struct platform_driver msm_ssbi_driver __refdata = {
+ 	.probe		= msm_ssbi_probe,
+ 	.remove		= __exit_p(msm_ssbi_remove),
+ 	.driver		= {
+diff --git a/drivers/power/msm_charger.c b/drivers/power/msm_charger.c
+index 0cd7967..a9b96d4 100644
+--- a/drivers/power/msm_charger.c
++++ b/drivers/power/msm_charger.c
+@@ -1217,7 +1217,7 @@ static int msm_charger_resume(struct device *dev)
+ static SIMPLE_DEV_PM_OPS(msm_charger_pm_ops,
+ 		msm_charger_suspend, msm_charger_resume);
+ 
+-static struct platform_driver msm_charger_driver = {
++static struct platform_driver msm_charger_driver __refdata = {
+ 	.probe = msm_charger_probe,
+ 	.remove = __devexit_p(msm_charger_remove),
+ 	.driver = {
+diff --git a/drivers/power/pm8058_usb_fix.c b/drivers/power/pm8058_usb_fix.c
+index 80b1f87..86f750b 100644
+--- a/drivers/power/pm8058_usb_fix.c
++++ b/drivers/power/pm8058_usb_fix.c
+@@ -329,7 +329,7 @@ static int __devexit pm8058_charger_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver pm8058_charger_driver = {
++static struct platform_driver pm8058_charger_driver __refdata = {
+ 	.probe = pm8058_charger_probe,
+ 	.remove = __devexit_p(pm8058_charger_remove),
+ 	.driver = {
+diff --git a/drivers/power/pmic8058-charger.c b/drivers/power/pmic8058-charger.c
+index 70b5d59..248116f 100644
+--- a/drivers/power/pmic8058-charger.c
++++ b/drivers/power/pmic8058-charger.c
+@@ -2019,7 +2019,7 @@ static int __devexit pm8058_charger_remove(struct platform_device *pdev)
+ 	return rc;
+ }
+ 
+-static struct platform_driver pm8058_charger_driver = {
++static struct platform_driver pm8058_charger_driver __refdata = {
+ 	.probe = pm8058_charger_probe,
+ 	.remove = __devexit_p(pm8058_charger_remove),
+ 	.driver = {
+diff --git a/drivers/power/smb137b.c b/drivers/power/smb137b.c
+index 7ff8e28..0770e05 100644
+--- a/drivers/power/smb137b.c
++++ b/drivers/power/smb137b.c
+@@ -826,7 +826,7 @@ static const struct i2c_device_id smb137b_id[] = {
+ };
+ MODULE_DEVICE_TABLE(i2c, smb137b_id);
+ 
+-static struct i2c_driver smb137b_driver = {
++static struct i2c_driver smb137b_driver __refdata = {
+ 	.driver = {
+ 		   .name = "smb137b",
+ 		   .owner = THIS_MODULE,
+diff --git a/drivers/regulator/pmic8058-regulator.c b/drivers/regulator/pmic8058-regulator.c
+index e137b0f..6d6286d 100644
+--- a/drivers/regulator/pmic8058-regulator.c
++++ b/drivers/regulator/pmic8058-regulator.c
+@@ -1715,7 +1715,7 @@ static int __devexit pm8058_vreg_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver pm8058_vreg_driver = {
++static struct platform_driver pm8058_vreg_driver __refdata = {
+ 	.probe = pm8058_vreg_probe,
+ 	.remove = __devexit_p(pm8058_vreg_remove),
+ 	.driver = {
+diff --git a/drivers/rtc/rtc-pm8xxx.c b/drivers/rtc/rtc-pm8xxx.c
+index e53374e..321d92a 100644
+--- a/drivers/rtc/rtc-pm8xxx.c
++++ b/drivers/rtc/rtc-pm8xxx.c
+@@ -587,7 +587,7 @@ fail_alarm_disable:
+ 	}
+ }
+ 
+-static struct platform_driver pm8xxx_rtc_driver = {
++static struct platform_driver pm8xxx_rtc_driver __refdata = {
+ 	.probe		= pm8xxx_rtc_probe,
+ 	.remove		= __devexit_p(pm8xxx_rtc_remove),
+ 	.shutdown	= pm8xxx_rtc_shutdown,
+diff --git a/drivers/spi/spidev.c b/drivers/spi/spidev.c
+index c174306..ee6c97c 100644
+--- a/drivers/spi/spidev.c
++++ b/drivers/spi/spidev.c
+@@ -680,7 +680,7 @@ static int __devexit spidev_remove(struct spi_device *spi)
+ 	return 0;
+ }
+ 
+-static struct spi_driver spidev_spi_driver = {
++static struct spi_driver spidev_spi_driver __refdata = {
+ 	.driver = {
+ 		.name =		"spidev",
+ 		.owner =	THIS_MODULE,
+diff --git a/drivers/thermal/msm8960_tsens.c b/drivers/thermal/msm8960_tsens.c
+index 0accb32..4fb3138 100644
+--- a/drivers/thermal/msm8960_tsens.c
++++ b/drivers/thermal/msm8960_tsens.c
+@@ -829,7 +829,7 @@ static int __devexit tsens_tm_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver tsens_tm_driver = {
++static struct platform_driver tsens_tm_driver __refdata = {
+ 	.probe	= tsens_tm_probe,
+ 	.remove	= __devexit_p(tsens_tm_remove),
+ 	.driver	= {
+diff --git a/drivers/thermal/msm_tsens.c b/drivers/thermal/msm_tsens.c
+index d9a6efc..51f1d07 100644
+--- a/drivers/thermal/msm_tsens.c
++++ b/drivers/thermal/msm_tsens.c
+@@ -635,7 +635,7 @@ static int __devexit tsens_tm_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver tsens_tm_driver = {
++static struct platform_driver tsens_tm_driver __refdata = {
+ 	.probe	= tsens_tm_probe,
+ 	.remove	= __devexit_p(tsens_tm_remove),
+ 	.driver	= {
+diff --git a/drivers/thermal/pm8xxx-tm.c b/drivers/thermal/pm8xxx-tm.c
+index 1d518e3..47553b4 100644
+--- a/drivers/thermal/pm8xxx-tm.c
++++ b/drivers/thermal/pm8xxx-tm.c
+@@ -696,7 +696,7 @@ static const struct dev_pm_ops pm8xxx_tm_pm_ops = {
+ #define PM8XXX_TM_PM_OPS	NULL
+ #endif
+ 
+-static struct platform_driver pm8xxx_tm_driver = {
++static struct platform_driver pm8xxx_tm_driver __refdata = {
+ 	.probe	= pm8xxx_tm_probe,
+ 	.remove	= __devexit_p(pm8xxx_tm_remove),
+ 	.driver	= {
+diff --git a/drivers/tty/serial/msm_serial_hs.c b/drivers/tty/serial/msm_serial_hs.c
+index 84cb3f5..6011423 100644
+--- a/drivers/tty/serial/msm_serial_hs.c
++++ b/drivers/tty/serial/msm_serial_hs.c
+@@ -2081,7 +2081,7 @@ static const struct dev_pm_ops msm_hs_dev_pm_ops = {
+ 	.runtime_idle    = msm_hs_runtime_idle,
+ };
+ 
+-static struct platform_driver msm_serial_hs_platform_driver = {
++static struct platform_driver msm_serial_hs_platform_driver __devexitdata = {
+ 	.remove = msm_hs_remove,
+ 	.driver = {
+ 		.name = "msm_serial_hs",
+diff --git a/drivers/tty/serial/msm_serial_hs_lite.c b/drivers/tty/serial/msm_serial_hs_lite.c
+index 9ba7d2f..bdad486 100644
+--- a/drivers/tty/serial/msm_serial_hs_lite.c
++++ b/drivers/tty/serial/msm_serial_hs_lite.c
+@@ -1190,7 +1190,7 @@ static int __init msm_hsl_console_setup(struct console *co, char *options)
+ 
+ static struct uart_driver msm_hsl_uart_driver;
+ 
+-static struct console msm_hsl_console = {
++static struct console msm_hsl_console __refdata = {
+ 	.name = "ttyHSL",
+ 	.write = msm_hsl_console_write,
+ 	.device = uart_console_device,
+@@ -1391,7 +1391,7 @@ static struct dev_pm_ops msm_hsl_dev_pm_ops = {
+ 	.runtime_resume = msm_hsl_runtime_resume,
+ };
+ 
+-static struct platform_driver msm_hsl_platform_driver = {
++static struct platform_driver msm_hsl_platform_driver __refdata = {
+ 	.probe = msm_serial_hsl_probe,
+ 	.remove = __devexit_p(msm_serial_hsl_remove),
+ 	.driver = {
+diff --git a/drivers/usb/host/ehci-msm.c b/drivers/usb/host/ehci-msm.c
+index f45f257..20a9d18 100644
+--- a/drivers/usb/host/ehci-msm.c
++++ b/drivers/usb/host/ehci-msm.c
+@@ -279,7 +279,7 @@ static const struct dev_pm_ops ehci_msm_dev_pm_ops = {
+ 				ehci_msm_runtime_idle)
+ };
+ 
+-static struct platform_driver ehci_msm_driver = {
++static struct platform_driver ehci_msm_driver __refdata = {
+ 	.probe	= ehci_msm_probe,
+ 	.remove	= __devexit_p(ehci_msm_remove),
+ 	.driver = {
+diff --git a/drivers/usb/host/ehci-msm72k.c b/drivers/usb/host/ehci-msm72k.c
+index e550e2b..da79b87 100644
+--- a/drivers/usb/host/ehci-msm72k.c
++++ b/drivers/usb/host/ehci-msm72k.c
+@@ -815,7 +815,7 @@ static const struct dev_pm_ops ehci_msm_dev_pm_ops = {
+ 	.runtime_idle = ehci_msm_runtime_idle
+ };
+ 
+-static struct platform_driver ehci_msm_driver = {
++static struct platform_driver ehci_msm_driver __refdata = {
+ 	.probe	= ehci_msm_probe,
+ 	.remove	= __exit_p(ehci_msm_remove),
+ 	.driver	= {.name = "msm_hsusb_host",
+diff --git a/drivers/usb/otg/msm72k_otg.c b/drivers/usb/otg/msm72k_otg.c
+index be3a279d..83cff73 100644
+--- a/drivers/usb/otg/msm72k_otg.c
++++ b/drivers/usb/otg/msm72k_otg.c
+@@ -3040,7 +3040,7 @@ static struct dev_pm_ops msm_otg_dev_pm_ops = {
+ 	.runtime_idle = msm_otg_runtime_idle,
+ };
+ 
+-static struct platform_driver msm_otg_driver = {
++static struct platform_driver msm_otg_driver __devexitdata = {
+ 	.remove = __exit_p(msm_otg_remove),
+ 	.driver = {
+ 		.name = DRIVER_NAME,
+diff --git a/drivers/usb/otg/msm_otg.c b/drivers/usb/otg/msm_otg.c
+index f8b320f..62aa507 100644
+--- a/drivers/usb/otg/msm_otg.c
++++ b/drivers/usb/otg/msm_otg.c
+@@ -2584,7 +2584,7 @@ static struct of_device_id msm_otg_dt_match[] = {
+ 	{}
+ };
+ 
+-static struct platform_driver msm_otg_driver = {
++static struct platform_driver msm_otg_driver __devexitdata = {
+ 	.remove = __devexit_p(msm_otg_remove),
+ 	.driver = {
+ 		.name = DRIVER_NAME,
+diff --git a/drivers/video/msm/ebi2_l2f.c b/drivers/video/msm/ebi2_l2f.c
+index 767b802..68607d9 100644
+--- a/drivers/video/msm/ebi2_l2f.c
++++ b/drivers/video/msm/ebi2_l2f.c
+@@ -516,7 +516,7 @@ static int __init epsonQcif_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver this_driver = {
++static struct platform_driver this_driver __devinitdata = {
+ 	.probe  = epsonQcif_probe,
+ 	.driver = {
+ 		.name   = "ebi2_epson_qcif",
+diff --git a/drivers/video/msm/ebi2_lcd.c b/drivers/video/msm/ebi2_lcd.c
+index 68590af..ec8b2ac 100644
+--- a/drivers/video/msm/ebi2_lcd.c
++++ b/drivers/video/msm/ebi2_lcd.c
+@@ -52,7 +52,7 @@ static struct dev_pm_ops ebi2_lcd_dev_pm_ops = {
+ 	.runtime_resume = ebi2_lcd_runtime_resume,
+ };
+ 
+-static struct platform_driver ebi2_lcd_driver = {
++static struct platform_driver ebi2_lcd_driver __refdata = {
+ 	.probe = ebi2_lcd_probe,
+ 	.remove = ebi2_lcd_remove,
+ 	.suspend = NULL,
+diff --git a/drivers/video/msm/ebi2_tmd20.c b/drivers/video/msm/ebi2_tmd20.c
+index 280373f..c2989d2 100644
+--- a/drivers/video/msm/ebi2_tmd20.c
++++ b/drivers/video/msm/ebi2_tmd20.c
+@@ -1059,7 +1059,7 @@ static int __init tmd20qvga_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver this_driver = {
++static struct platform_driver this_driver __devinitdata = {
+ 	.probe  = tmd20qvga_probe,
+ 	.driver = {
+ 		.name   = "ebi2_tmd_qvga",
+diff --git a/drivers/video/msm/hdmi_msm.c b/drivers/video/msm/hdmi_msm.c
+index 4a4bd15..3a6953c 100644
+--- a/drivers/video/msm/hdmi_msm.c
++++ b/drivers/video/msm/hdmi_msm.c
+@@ -4315,7 +4315,7 @@ static const struct dev_pm_ops hdmi_msm_device_pm_ops = {
+ 	.resume = hdmi_msm_device_pm_resume,
+ };
+ 
+-static struct platform_driver this_driver = {
++static struct platform_driver this_driver __refdata = {
+ 	.probe = hdmi_msm_probe,
+ 	.remove = hdmi_msm_remove,
+ 	.driver.name = "hdmi_msm",
+diff --git a/drivers/video/msm/lcdc.c b/drivers/video/msm/lcdc.c
+index 135bf68..0e00293 100644
+--- a/drivers/video/msm/lcdc.c
++++ b/drivers/video/msm/lcdc.c
+@@ -44,7 +44,7 @@ static int pdev_list_cnt;
+ static struct clk *pixel_mdp_clk; /* drives the lcdc block in mdp */
+ static struct clk *pixel_lcdc_clk; /* drives the lcdc interface */
+ 
+-static struct platform_driver lcdc_driver = {
++static struct platform_driver lcdc_driver __refdata = {
+ 	.probe = lcdc_probe,
+ 	.remove = lcdc_remove,
+ 	.suspend = NULL,
+diff --git a/drivers/video/msm/lcdc_auo_wvga.c b/drivers/video/msm/lcdc_auo_wvga.c
+index 6b0733f..c7a68c0 100644
+--- a/drivers/video/msm/lcdc_auo_wvga.c
++++ b/drivers/video/msm/lcdc_auo_wvga.c
+@@ -305,7 +305,7 @@ static int __devexit lcdc_auo_spi_remove(struct spi_device *spi)
+ 	lcdc_spi_client = NULL;
+ 	return 0;
+ }
+-static struct spi_driver lcdc_auo_spi_driver = {
++static struct spi_driver lcdc_auo_spi_driver __refdata = {
+ 	.driver.name   = LCDC_AUO_SPI_DEVICE_NAME,
+ 	.driver.owner  = THIS_MODULE,
+ 	.probe         = lcdc_auo_spi_probe,
+diff --git a/drivers/video/msm/lcdc_chimei_wxga.c b/drivers/video/msm/lcdc_chimei_wxga.c
+index 7453ecb..0215e81 100644
+--- a/drivers/video/msm/lcdc_chimei_wxga.c
++++ b/drivers/video/msm/lcdc_chimei_wxga.c
+@@ -161,7 +161,7 @@ probe_exit:
+ 	return rc;
+ }
+ 
+-static struct platform_driver this_driver = {
++static struct platform_driver this_driver __devinitdata = {
+ 	.probe  = chimei_probe,
+ 	.driver = {
+ 		.name   = "lcdc_chimei_lvds_wxga",
+diff --git a/drivers/video/msm/lcdc_gordon.c b/drivers/video/msm/lcdc_gordon.c
+index f9532b4..9180a82 100644
+--- a/drivers/video/msm/lcdc_gordon.c
++++ b/drivers/video/msm/lcdc_gordon.c
+@@ -376,7 +376,7 @@ static int __devinit gordon_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver this_driver = {
++static struct platform_driver this_driver __devinitdata = {
+ 	.probe  = gordon_probe,
+ 	.driver = {
+ 		.name   = "lcdc_gordon_vga",
+diff --git a/drivers/video/msm/lcdc_nt35582_wvga.c b/drivers/video/msm/lcdc_nt35582_wvga.c
+index 9ecf4b9..a2e778a 100644
+--- a/drivers/video/msm/lcdc_nt35582_wvga.c
++++ b/drivers/video/msm/lcdc_nt35582_wvga.c
+@@ -375,7 +375,7 @@ static int __devexit lcdc_nt35582_spi_remove(struct spi_device *spi)
+ 	return 0;
+ }
+ 
+-static struct spi_driver lcdc_nt35582_spi_driver = {
++static struct spi_driver lcdc_nt35582_spi_driver __refdata = {
+ 	.driver = {
+ 		.name = LCDC_NT35582_SPI_DEVICE_NAME,
+ 		.owner = THIS_MODULE,
+@@ -384,7 +384,7 @@ static struct spi_driver lcdc_nt35582_spi_driver = {
+ 	.remove = __devexit_p(lcdc_nt35582_spi_remove),
+ };
+ #endif
+-static struct platform_driver this_driver = {
++static struct platform_driver this_driver __devinitdata = {
+ 	.probe = nt35582_probe,
+ 	.driver = {
+ 		.name = LCDC_NT35582_PANEL_NAME,
+diff --git a/drivers/video/msm/lcdc_panel.c b/drivers/video/msm/lcdc_panel.c
+index 5705325..9b17196 100644
+--- a/drivers/video/msm/lcdc_panel.c
++++ b/drivers/video/msm/lcdc_panel.c
+@@ -30,7 +30,7 @@ static int __devinit lcdc_panel_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver this_driver = {
++static struct platform_driver this_driver __devinitdata = {
+ 	.probe  = lcdc_panel_probe,
+ 	.driver = {
+ 		.name   = "lcdc_panel",
+diff --git a/drivers/video/msm/lcdc_samsung_oled_pt.c b/drivers/video/msm/lcdc_samsung_oled_pt.c
+index 16790f3..53728ac 100644
+--- a/drivers/video/msm/lcdc_samsung_oled_pt.c
++++ b/drivers/video/msm/lcdc_samsung_oled_pt.c
+@@ -534,7 +534,7 @@ static int __devexit lcdc_samsung_spi_remove(struct spi_device *spi)
+ 	lcdc_spi_client = NULL;
+ 	return 0;
+ }
+-static struct spi_driver lcdc_samsung_spi_driver = {
++static struct spi_driver lcdc_samsung_spi_driver __refdata = {
+ 	.driver.name   = LCDC_SAMSUNG_SPI_DEVICE_NAME,
+ 	.driver.owner  = THIS_MODULE,
+ 	.probe         = lcdc_samsung_spi_probe,
+@@ -542,7 +542,7 @@ static struct spi_driver lcdc_samsung_spi_driver = {
+ };
+ #endif
+ 
+-static struct platform_driver this_driver = {
++static struct platform_driver this_driver __devinitdata = {
+ 	.probe		= samsung_probe,
+ 	.driver.name	= "lcdc_samsung_oled",
+ };
+diff --git a/drivers/video/msm/lcdc_samsung_wsvga.c b/drivers/video/msm/lcdc_samsung_wsvga.c
+index 6b35e52..c329ef7 100644
+--- a/drivers/video/msm/lcdc_samsung_wsvga.c
++++ b/drivers/video/msm/lcdc_samsung_wsvga.c
+@@ -195,7 +195,7 @@ static int __devexit samsung_remove(struct platform_device *pdev)
+ }
+ #endif
+ 
+-static struct platform_driver this_driver = {
++static struct platform_driver this_driver __refdata = {
+ 	.probe  = samsung_probe,
+ #ifdef CONFIG_FB_MSM_LCDC_DSUB
+ 	.remove = samsung_remove,
+diff --git a/drivers/video/msm/lcdc_sharp_wvga_pt.c b/drivers/video/msm/lcdc_sharp_wvga_pt.c
+index 2ba2618..7e98cfb 100644
+--- a/drivers/video/msm/lcdc_sharp_wvga_pt.c
++++ b/drivers/video/msm/lcdc_sharp_wvga_pt.c
+@@ -320,7 +320,7 @@ static struct spi_driver lcdc_sharp_spi_driver = {
+ 	.remove        = __devexit_p(lcdc_sharp_spi_remove),
+ };
+ #endif
+-static struct platform_driver this_driver = {
++static struct platform_driver this_driver __devinitdata = {
+ 	.probe  = sharp_probe,
+ 	.driver = {
+ 		.name   = "lcdc_sharp_wvga",
+diff --git a/drivers/video/msm/lcdc_toshiba_fwvga_pt.c b/drivers/video/msm/lcdc_toshiba_fwvga_pt.c
+index 3e81471..78606e8 100644
+--- a/drivers/video/msm/lcdc_toshiba_fwvga_pt.c
++++ b/drivers/video/msm/lcdc_toshiba_fwvga_pt.c
+@@ -387,7 +387,7 @@ static int __devinit toshiba_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver this_driver = {
++static struct platform_driver this_driver __devinitdata = {
+ 	.probe  = toshiba_probe,
+ 	.driver = {
+ 		.name   = "lcdc_toshiba_fwvga_pt",
+diff --git a/drivers/video/msm/lcdc_toshiba_wvga_pt.c b/drivers/video/msm/lcdc_toshiba_wvga_pt.c
+index f0aa8f5..9a07c17 100644
+--- a/drivers/video/msm/lcdc_toshiba_wvga_pt.c
++++ b/drivers/video/msm/lcdc_toshiba_wvga_pt.c
+@@ -428,7 +428,7 @@ static struct spi_driver lcdc_toshiba_spi_driver = {
+ 	.remove        = __devexit_p(lcdc_toshiba_spi_remove),
+ };
+ #endif
+-static struct platform_driver this_driver = {
++static struct platform_driver this_driver __devinitdata = {
+ 	.probe  = toshiba_probe,
+ 	.driver = {
+ 		.name   = "lcdc_toshiba_wvga",
+diff --git a/drivers/video/msm/mddi.c b/drivers/video/msm/mddi.c
+index 9b9ee94..632cd87 100644
+--- a/drivers/video/msm/mddi.c
++++ b/drivers/video/msm/mddi.c
+@@ -93,7 +93,7 @@ static int pmdh_clk_status;
+ int irq_enabled;
+ unsigned char mddi_timer_shutdown_flag;
+ 
+-static struct platform_driver mddi_driver = {
++static struct platform_driver mddi_driver __refdata = {
+ 	.probe = mddi_probe,
+ 	.remove = mddi_remove,
+ #ifndef CONFIG_HAS_EARLYSUSPEND
+diff --git a/drivers/video/msm/mddi_client_dummy.c b/drivers/video/msm/mddi_client_dummy.c
+index ebbae87..aba5710 100644
+--- a/drivers/video/msm/mddi_client_dummy.c
++++ b/drivers/video/msm/mddi_client_dummy.c
+@@ -81,7 +81,7 @@ static int mddi_dummy_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver mddi_client_dummy = {
++static struct platform_driver mddi_client_dummy __refdata = {
+ 	.probe = mddi_dummy_probe,
+ 	.remove = mddi_dummy_remove,
+ 	.driver = { .name = "mddi_c_dummy" },
+diff --git a/drivers/video/msm/mddi_client_nt35399.c b/drivers/video/msm/mddi_client_nt35399.c
+index c9e9349..7773f29 100644
+--- a/drivers/video/msm/mddi_client_nt35399.c
++++ b/drivers/video/msm/mddi_client_nt35399.c
+@@ -241,7 +241,7 @@ static int mddi_nt35399_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver mddi_client_0bda_8a47 = {
++static struct platform_driver mddi_client_0bda_8a47 __refdata = {
+ 	.probe = mddi_nt35399_probe,
+ 	.remove = mddi_nt35399_remove,
+ 	.driver = { .name = "mddi_c_0bda_8a47" },
+diff --git a/drivers/video/msm/mddi_client_toshiba.c b/drivers/video/msm/mddi_client_toshiba.c
+index 8868781..d0ef389 100644
+--- a/drivers/video/msm/mddi_client_toshiba.c
++++ b/drivers/video/msm/mddi_client_toshiba.c
+@@ -240,7 +240,7 @@ static int mddi_toshiba_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver mddi_client_d263_0000 = {
++static struct platform_driver mddi_client_d263_0000 __refdata = {
+ 	.probe = mddi_toshiba_probe,
+ 	.remove = mddi_toshiba_remove,
+ 	.driver = { .name = "mddi_c_d263_0000" },
+diff --git a/drivers/video/msm/mddi_ext.c b/drivers/video/msm/mddi_ext.c
+index 0ecd593..abf86fd 100644
+--- a/drivers/video/msm/mddi_ext.c
++++ b/drivers/video/msm/mddi_ext.c
+@@ -74,7 +74,7 @@ static struct dev_pm_ops mddi_ext_dev_pm_ops = {
+ 	.runtime_idle = mddi_ext_runtime_idle,
+ };
+ 
+-static struct platform_driver mddi_ext_driver = {
++static struct platform_driver mddi_ext_driver __refdata = {
+ 	.probe = mddi_ext_probe,
+ 	.remove = mddi_ext_remove,
+ #ifndef CONFIG_HAS_EARLYSUSPEND
+diff --git a/drivers/video/msm/mddi_ext_lcd.c b/drivers/video/msm/mddi_ext_lcd.c
+index da79513..a3c7a50 100644
+--- a/drivers/video/msm/mddi_ext_lcd.c
++++ b/drivers/video/msm/mddi_ext_lcd.c
+@@ -35,7 +35,7 @@ static int __init mddi_ext_lcd_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver this_driver = {
++static struct platform_driver this_driver __devinitdata = {
+ 	.probe  = mddi_ext_lcd_probe,
+ 	.driver = {
+ 		.name   = "extmddi_svga",
+diff --git a/drivers/video/msm/mddi_prism.c b/drivers/video/msm/mddi_prism.c
+index 5269b22..69b7698 100644
+--- a/drivers/video/msm/mddi_prism.c
++++ b/drivers/video/msm/mddi_prism.c
+@@ -38,7 +38,7 @@ static int __devinit prism_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver this_driver = {
++static struct platform_driver this_driver __devinitdata = {
+ 	.probe  = prism_probe,
+ 	.driver = {
+ 		.name   = "mddi_prism_wvga",
+diff --git a/drivers/video/msm/mddi_quickvx.c b/drivers/video/msm/mddi_quickvx.c
+index 330e679..c120da9 100644
+--- a/drivers/video/msm/mddi_quickvx.c
++++ b/drivers/video/msm/mddi_quickvx.c
+@@ -609,7 +609,7 @@ static int __devinit mddi_quickvx_lcd_probe(struct platform_device *pdev)
+ }
+ 
+ /* Driver data structure */
+-static struct platform_driver this_driver = {
++static struct platform_driver this_driver __devinitdata = {
+ 	.probe  = mddi_quickvx_lcd_probe,
+ 	.driver	= {
+ 		.name	= "mddi_quickvx",
+diff --git a/drivers/video/msm/mddi_sharp.c b/drivers/video/msm/mddi_sharp.c
+index b2a7188..2d12c1e 100644
+--- a/drivers/video/msm/mddi_sharp.c
++++ b/drivers/video/msm/mddi_sharp.c
+@@ -760,7 +760,7 @@ static int __devinit mddi_sharp_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver this_driver = {
++static struct platform_driver this_driver __devinitdata = {
+ 	.probe  = mddi_sharp_probe,
+ 	.driver = {
+ 		.name   = "mddi_sharp_qvga",
+diff --git a/drivers/video/msm/mddi_toshiba.c b/drivers/video/msm/mddi_toshiba.c
+index 9727453..3d02b18 100644
+--- a/drivers/video/msm/mddi_toshiba.c
++++ b/drivers/video/msm/mddi_toshiba.c
+@@ -1672,7 +1672,7 @@ static int __devinit mddi_toshiba_lcd_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver this_driver = {
++static struct platform_driver this_driver __devinitdata = {
+ 	.probe  = mddi_toshiba_lcd_probe,
+ 	.driver = {
+ 		.name   = "mddi_toshiba",
+diff --git a/drivers/video/msm/mdp.c b/drivers/video/msm/mdp.c
+index aeeb503..f0ed7e3 100644
+--- a/drivers/video/msm/mdp.c
++++ b/drivers/video/msm/mdp.c
+@@ -995,7 +995,7 @@ static struct dev_pm_ops mdp_dev_pm_ops = {
+ };
+ 
+ 
+-static struct platform_driver mdp_driver = {
++static struct platform_driver mdp_driver __refdata = {
+ 	.probe = mdp_probe,
+ 	.remove = mdp_remove,
+ #ifndef CONFIG_HAS_EARLYSUSPEND
+diff --git a/drivers/video/msm/mdp4_dtv.c b/drivers/video/msm/mdp4_dtv.c
+index a44f7c0..7de035b 100644
+--- a/drivers/video/msm/mdp4_dtv.c
++++ b/drivers/video/msm/mdp4_dtv.c
+@@ -64,7 +64,7 @@ static const struct dev_pm_ops mdp4_dtv_dev_pm_ops = {
+ 	.runtime_resume = mdp4_dtv_runtime_resume,
+ };
+ 
+-static struct platform_driver dtv_driver = {
++static struct platform_driver dtv_driver __refdata = {
+ 	.probe = dtv_probe,
+ 	.remove = dtv_remove,
+ 	.suspend = NULL,
+diff --git a/drivers/video/msm/mdp4_wfd_writeback.c b/drivers/video/msm/mdp4_wfd_writeback.c
+index a8fdcc0..dcefdbf 100644
+--- a/drivers/video/msm/mdp4_wfd_writeback.c
++++ b/drivers/video/msm/mdp4_wfd_writeback.c
+@@ -84,7 +84,7 @@ static int writeback_probe(struct platform_device *pdev)
+ 	return rc;
+ }
+ 
+-static struct platform_driver writeback_driver = {
++static struct platform_driver writeback_driver __devinitdata = {
+ 	.probe = writeback_probe,
+ 	.driver = {
+ 		.name = "writeback",
+diff --git a/drivers/video/msm/mdp4_wfd_writeback_panel.c b/drivers/video/msm/mdp4_wfd_writeback_panel.c
+index 77f714c..a120283 100644
+--- a/drivers/video/msm/mdp4_wfd_writeback_panel.c
++++ b/drivers/video/msm/mdp4_wfd_writeback_panel.c
+@@ -52,7 +52,7 @@ static struct platform_device writeback_panel_device = {
+ 	.id = 1,
+ 	.dev.platform_data = &writeback_msm_panel_data,
+ };
+-static struct platform_driver writeback_panel_driver = {
++static struct platform_driver writeback_panel_driver __devinitdata = {
+ 	.probe = writeback_panel_probe,
+ 	.driver = {
+ 		.name = "writeback_panel"
+diff --git a/drivers/video/msm/mdp_lcdc.c b/drivers/video/msm/mdp_lcdc.c
+index be8d39d..c3bfbe9 100644
+--- a/drivers/video/msm/mdp_lcdc.c
++++ b/drivers/video/msm/mdp_lcdc.c
+@@ -390,7 +390,7 @@ static int mdp_lcdc_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver mdp_lcdc_driver = {
++static struct platform_driver mdp_lcdc_driver __refdata = {
+ 	.probe = mdp_lcdc_probe,
+ 	.remove = mdp_lcdc_remove,
+ 	.driver = {
+diff --git a/drivers/video/msm/mipi_dsi.c b/drivers/video/msm/mipi_dsi.c
+index aa210f1..4a0f841 100644
+--- a/drivers/video/msm/mipi_dsi.c
++++ b/drivers/video/msm/mipi_dsi.c
+@@ -51,7 +51,7 @@ static struct mipi_dsi_platform_data *mipi_dsi_pdata;
+ 
+ static int vsync_gpio = -1;
+ 
+-static struct platform_driver mipi_dsi_driver = {
++static struct platform_driver mipi_dsi_driver __refdata = {
+ 	.probe = mipi_dsi_probe,
+ 	.remove = mipi_dsi_remove,
+ 	.shutdown = NULL,
+diff --git a/drivers/video/msm/mipi_novatek.c b/drivers/video/msm/mipi_novatek.c
+index 5e2e515..1c602e4 100644
+--- a/drivers/video/msm/mipi_novatek.c
++++ b/drivers/video/msm/mipi_novatek.c
+@@ -116,7 +116,7 @@ static int __devexit panel_3d_spi_remove(struct spi_device *spi)
+ 	panel_3d_spi_client = NULL;
+ 	return 0;
+ }
+-static struct spi_driver panel_3d_spi_driver = {
++static struct spi_driver panel_3d_spi_driver __refdata = {
+ 	.probe         = panel_3d_spi_probe,
+ 	.remove        = __devexit_p(panel_3d_spi_remove),
+ 	.driver		   = {
+@@ -507,7 +507,7 @@ static int __devinit mipi_novatek_lcd_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver this_driver = {
++static struct platform_driver this_driver __devinitdata = {
+ 	.probe  = mipi_novatek_lcd_probe,
+ 	.driver = {
+ 		.name   = "mipi_novatek",
+diff --git a/drivers/video/msm/mipi_renesas.c b/drivers/video/msm/mipi_renesas.c
+index 6a7027a..773d18b 100644
+--- a/drivers/video/msm/mipi_renesas.c
++++ b/drivers/video/msm/mipi_renesas.c
+@@ -1196,7 +1196,7 @@ static void mipi_renesas_set_backlight(struct msm_fb_data_type *mfd)
+ 		pr_err("%s(): Backlight level set failed", __func__);
+ }
+ 
+-static struct platform_driver this_driver = {
++static struct platform_driver this_driver __refdata = {
+ 	.probe  = mipi_renesas_lcd_probe,
+ 	.driver = {
+ 		.name   = "mipi_renesas",
+diff --git a/drivers/video/msm/mipi_simulator.c b/drivers/video/msm/mipi_simulator.c
+index c6bf534..3f4fa0e 100644
+--- a/drivers/video/msm/mipi_simulator.c
++++ b/drivers/video/msm/mipi_simulator.c
+@@ -98,7 +98,7 @@ static int __devinit mipi_simulator_lcd_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver this_driver = {
++static struct platform_driver this_driver __devinitdata = {
+ 	.probe  = mipi_simulator_lcd_probe,
+ 	.driver = {
+ 		.name   = "mipi_simulator",
+diff --git a/drivers/video/msm/mipi_tc358764_dsi2lvds.c b/drivers/video/msm/mipi_tc358764_dsi2lvds.c
+index 2594c1d..c8619e5 100644
+--- a/drivers/video/msm/mipi_tc358764_dsi2lvds.c
++++ b/drivers/video/msm/mipi_tc358764_dsi2lvds.c
+@@ -653,7 +653,7 @@ err_device_put:
+ 	return ret;
+ }
+ 
+-static struct platform_driver d2l_driver = {
++static struct platform_driver d2l_driver __refdata = {
+ 	.probe  = mipi_d2l_probe,
+ 	.remove = __devexit_p(mipi_d2l_remove),
+ 	.driver = {
+diff --git a/drivers/video/msm/mipi_toshiba.c b/drivers/video/msm/mipi_toshiba.c
+index 5788f27..8f13190 100644
+--- a/drivers/video/msm/mipi_toshiba.c
++++ b/drivers/video/msm/mipi_toshiba.c
+@@ -275,7 +275,7 @@ static int __devinit mipi_toshiba_lcd_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver this_driver = {
++static struct platform_driver this_driver __devinitdata = {
+ 	.probe  = mipi_toshiba_lcd_probe,
+ 	.driver = {
+ 		.name   = "mipi_toshiba",
+diff --git a/drivers/video/msm/mipi_truly.c b/drivers/video/msm/mipi_truly.c
+index a2060f0..be3638b 100644
+--- a/drivers/video/msm/mipi_truly.c
++++ b/drivers/video/msm/mipi_truly.c
+@@ -194,7 +194,7 @@ static int __devinit mipi_truly_lcd_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver this_driver = {
++static struct platform_driver this_driver __devinitdata = {
+ 	.probe  = mipi_truly_lcd_probe,
+ 	.driver = {
+ 		.name   = "mipi_truly",
+diff --git a/drivers/video/msm/msm_fb.c b/drivers/video/msm/msm_fb.c
+index 10e4156..24e07f3 100644
+--- a/drivers/video/msm/msm_fb.c
++++ b/drivers/video/msm/msm_fb.c
+@@ -609,7 +609,7 @@ static struct dev_pm_ops msm_fb_dev_pm_ops = {
+ 	.runtime_idle = msm_fb_runtime_idle,
+ };
+ 
+-static struct platform_driver msm_fb_driver = {
++static struct platform_driver msm_fb_driver __refdata = {
+ 	.probe = msm_fb_probe,
+ 	.remove = msm_fb_remove,
+ #ifndef CONFIG_HAS_EARLYSUSPEND
+diff --git a/drivers/video/msm/tvenc.c b/drivers/video/msm/tvenc.c
+index 672b2a7..6444fab 100644
+--- a/drivers/video/msm/tvenc.c
++++ b/drivers/video/msm/tvenc.c
+@@ -75,7 +75,7 @@ static struct dev_pm_ops tvenc_dev_pm_ops = {
+ 	.runtime_resume = tvenc_runtime_resume,
+ };
+ 
+-static struct platform_driver tvenc_driver = {
++static struct platform_driver tvenc_driver __refdata = {
+ 	.probe = tvenc_probe,
+ 	.remove = tvenc_remove,
+ 	.suspend = NULL,
+diff --git a/drivers/video/msm/tvout_msm.c b/drivers/video/msm/tvout_msm.c
+index 9ee55cc..4bf8b37 100644
+--- a/drivers/video/msm/tvout_msm.c
++++ b/drivers/video/msm/tvout_msm.c
+@@ -565,7 +565,7 @@ static const struct dev_pm_ops tvout_device_pm_ops = {
+ 	.resume = tvout_device_pm_resume,
+ };
+ 
+-static struct platform_driver this_driver = {
++static struct platform_driver this_driver __refdata = {
+ 	.probe  = tvout_probe,
+ 	.remove = tvout_remove,
+ 	.driver = {
+diff --git a/drivers/video/msm/vidc/common/init/vidc_init.c b/drivers/video/msm/vidc/common/init/vidc_init.c
+index 1217f1f..0002c1c 100644
+--- a/drivers/video/msm/vidc/common/init/vidc_init.c
++++ b/drivers/video/msm/vidc/common/init/vidc_init.c
+@@ -202,7 +202,7 @@ static const struct dev_pm_ops vidc_dev_pm_ops = {
+ 	.runtime_resume = vidc_runtime_resume,
+ };
+ 
+-static struct platform_driver msm_vidc_720p_platform_driver = {
++static struct platform_driver msm_vidc_720p_platform_driver __refdata = {
+ 	.probe = vidc_720p_probe,
+ 	.remove = vidc_720p_remove,
+ 	.driver = {
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index 99f9aa7..bc6b75a 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -819,7 +819,8 @@ void __kfree_rcu(struct rcu_head *head, unsigned long offset)
+ {
+ 	typedef void (*rcu_callback)(struct rcu_head *);
+ 
+-	BUILD_BUG_ON(!__builtin_constant_p(offset));
++	// FIXME - Fails for Clang
++	//BUILD_BUG_ON(!__builtin_constant_p(offset));
+ 
+ 	/* See the kfree_rcu() header comment. */
+ 	BUILD_BUG_ON(!__is_kfree_rcu_offset(offset));
+diff --git a/include/net/net_namespace.h b/include/net/net_namespace.h
+index aef430d..c840046 100644
+--- a/include/net/net_namespace.h
++++ b/include/net/net_namespace.h
+@@ -239,10 +239,12 @@ static inline struct net *read_pnet(struct net * const *pnet)
+ #define __net_init
+ #define __net_exit
+ #define __net_initdata
++#define __net_initconst
+ #else
+ #define __net_init	__init
+ #define __net_exit	__exit_refok
+ #define __net_initdata	__initdata
++#define __net_initconst	__initconst
+ #endif
+ 
+ struct pernet_operations {
+diff --git a/lib/libcrc32c.c b/lib/libcrc32c.c
+index 244f548..6a1d998 100644
+--- a/lib/libcrc32c.c
++++ b/lib/libcrc32c.c
+@@ -43,10 +43,12 @@ u32 crc32c(u32 crc, const void *address, unsigned int length)
+ {
+ 	struct {
+ 		struct shash_desc shash;
+-		char ctx[crypto_shash_descsize(tfm)];
++		char *ctx;
+ 	} desc;
++	char desc_ctx[crypto_shash_descsize(tfm)];
+ 	int err;
+ 
++	desc.ctx = desc_ctx;
+ 	desc.shash.tfm = tfm;
+ 	desc.shash.flags = 0;
+ 	*(u32 *)desc.ctx = crc;
+diff --git a/net/core/fib_rules.c b/net/core/fib_rules.c
+index f39ef5c..75691a7 100644
+--- a/net/core/fib_rules.c
++++ b/net/core/fib_rules.c
+@@ -733,7 +733,7 @@ static int __net_init fib_rules_net_init(struct net *net)
+ 	return 0;
+ }
+ 
+-static struct pernet_operations fib_rules_net_ops = {
++static struct pernet_operations fib_rules_net_ops __initdata = {
+ 	.init = fib_rules_net_init,
+ };
+ 
+diff --git a/net/core/rtnetlink.c b/net/core/rtnetlink.c
+index abd936d..d7c7b58 100644
+--- a/net/core/rtnetlink.c
++++ b/net/core/rtnetlink.c
+@@ -1996,7 +1996,7 @@ static void __net_exit rtnetlink_net_exit(struct net *net)
+ 	net->rtnl = NULL;
+ }
+ 
+-static struct pernet_operations rtnetlink_net_ops = {
++static struct pernet_operations rtnetlink_net_ops __net_initdata = {
+ 	.init = rtnetlink_net_init,
+ 	.exit = rtnetlink_net_exit,
+ };
+diff --git a/net/ipv4/arp.c b/net/ipv4/arp.c
+index 1b74d3b..f9566d4 100644
+--- a/net/ipv4/arp.c
++++ b/net/ipv4/arp.c
+@@ -1442,7 +1442,7 @@ static int arp_seq_open(struct inode *inode, struct file *file)
+ 			    sizeof(struct neigh_seq_state));
+ }
+ 
+-static const struct file_operations arp_seq_fops = {
++static const struct file_operations arp_seq_fops __net_initconst = {
+ 	.owner		= THIS_MODULE,
+ 	.open           = arp_seq_open,
+ 	.read           = seq_read,
+@@ -1463,7 +1463,7 @@ static void __net_exit arp_net_exit(struct net *net)
+ 	proc_net_remove(net, "arp");
+ }
+ 
+-static struct pernet_operations arp_net_ops = {
++static struct pernet_operations arp_net_ops __net_initdata = {
+ 	.init = arp_net_init,
+ 	.exit = arp_net_exit,
+ };
+diff --git a/net/ipv4/fib_frontend.c b/net/ipv4/fib_frontend.c
+index 2252471..f1a69a2 100644
+--- a/net/ipv4/fib_frontend.c
++++ b/net/ipv4/fib_frontend.c
+@@ -1117,7 +1117,7 @@ static void __net_exit fib_net_exit(struct net *net)
+ 	ip_fib_net_exit(net);
+ }
+ 
+-static struct pernet_operations fib_net_ops = {
++static struct pernet_operations fib_net_ops __net_initdata = {
+ 	.init = fib_net_init,
+ 	.exit = fib_net_exit,
+ };
+diff --git a/net/ipv4/ip_fragment.c b/net/ipv4/ip_fragment.c
+index 0ad6035..91190f0 100644
+--- a/net/ipv4/ip_fragment.c
++++ b/net/ipv4/ip_fragment.c
+@@ -814,7 +814,7 @@ static void __net_exit ipv4_frags_exit_net(struct net *net)
+ 	inet_frags_exit_net(&net->ipv4.frags, &ip4_frags);
+ }
+ 
+-static struct pernet_operations ip4_frags_ops = {
++static struct pernet_operations ip4_frags_ops __net_initdata = {
+ 	.init = ipv4_frags_init_net,
+ 	.exit = ipv4_frags_exit_net,
+ };
+diff --git a/net/ipv4/netfilter/arp_tables.c b/net/ipv4/netfilter/arp_tables.c
+index fd7a3f6..a7de963 100644
+--- a/net/ipv4/netfilter/arp_tables.c
++++ b/net/ipv4/netfilter/arp_tables.c
+@@ -1865,7 +1865,7 @@ static void __net_exit arp_tables_net_exit(struct net *net)
+ 	xt_proto_fini(net, NFPROTO_ARP);
+ }
+ 
+-static struct pernet_operations arp_tables_net_ops = {
++static struct pernet_operations arp_tables_net_ops __refdata = {
+ 	.init = arp_tables_net_init,
+ 	.exit = arp_tables_net_exit,
+ };
+diff --git a/net/ipv4/netfilter/ip_tables.c b/net/ipv4/netfilter/ip_tables.c
+index 24e556e..2846b05 100644
+--- a/net/ipv4/netfilter/ip_tables.c
++++ b/net/ipv4/netfilter/ip_tables.c
+@@ -2216,7 +2216,7 @@ static void __net_exit ip_tables_net_exit(struct net *net)
+ 	xt_proto_fini(net, NFPROTO_IPV4);
+ }
+ 
+-static struct pernet_operations ip_tables_net_ops = {
++static struct pernet_operations ip_tables_net_ops __net_initdata = {
+ 	.init = ip_tables_net_init,
+ 	.exit = ip_tables_net_exit,
+ };
+diff --git a/net/ipv4/netfilter/iptable_filter.c b/net/ipv4/netfilter/iptable_filter.c
+index c37641e..ab09a8e 100644
+--- a/net/ipv4/netfilter/iptable_filter.c
++++ b/net/ipv4/netfilter/iptable_filter.c
+@@ -79,7 +79,7 @@ static void __net_exit iptable_filter_net_exit(struct net *net)
+ 	ipt_unregister_table(net, net->ipv4.iptable_filter);
+ }
+ 
+-static struct pernet_operations iptable_filter_net_ops = {
++static struct pernet_operations iptable_filter_net_ops __refdata = {
+ 	.init = iptable_filter_net_init,
+ 	.exit = iptable_filter_net_exit,
+ };
+diff --git a/net/ipv4/netfilter/nf_nat_core.c b/net/ipv4/netfilter/nf_nat_core.c
+index 3346de5..044a17d 100644
+--- a/net/ipv4/netfilter/nf_nat_core.c
++++ b/net/ipv4/netfilter/nf_nat_core.c
+@@ -711,7 +711,7 @@ static void __net_exit nf_nat_net_exit(struct net *net)
+ 	nf_ct_free_hashtable(net->ipv4.nat_bysource, net->ipv4.nat_htable_size);
+ }
+ 
+-static struct pernet_operations nf_nat_net_ops = {
++static struct pernet_operations nf_nat_net_ops __net_initdata = {
+ 	.init = nf_nat_net_init,
+ 	.exit = nf_nat_net_exit,
+ };
+diff --git a/net/ipv4/tcp_ipv4.c b/net/ipv4/tcp_ipv4.c
+index 33ffa13..cdbf313 100644
+--- a/net/ipv4/tcp_ipv4.c
++++ b/net/ipv4/tcp_ipv4.c
+@@ -2566,7 +2566,7 @@ static void __net_exit tcp4_proc_exit_net(struct net *net)
+ 	tcp_proc_unregister(net, &tcp4_seq_afinfo);
+ }
+ 
+-static struct pernet_operations tcp4_net_ops = {
++static struct pernet_operations tcp4_net_ops __net_initdata = {
+ 	.init = tcp4_proc_init_net,
+ 	.exit = tcp4_proc_exit_net,
+ };
+diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
+index 198f75b..8aa26d0 100644
+--- a/net/ipv4/udp.c
++++ b/net/ipv4/udp.c
+@@ -2142,7 +2142,7 @@ static void __net_exit udp4_proc_exit_net(struct net *net)
+ 	udp_proc_unregister(net, &udp4_seq_afinfo);
+ }
+ 
+-static struct pernet_operations udp4_net_ops = {
++static struct pernet_operations udp4_net_ops __net_initdata = {
+ 	.init = udp4_proc_init_net,
+ 	.exit = udp4_proc_exit_net,
+ };
+diff --git a/net/ipv4/udplite.c b/net/ipv4/udplite.c
+index aee9963..aa90768 100644
+--- a/net/ipv4/udplite.c
++++ b/net/ipv4/udplite.c
+@@ -93,7 +93,7 @@ static void __net_exit udplite4_proc_exit_net(struct net *net)
+ 	udp_proc_unregister(net, &udplite4_seq_afinfo);
+ }
+ 
+-static struct pernet_operations udplite4_net_ops = {
++static struct pernet_operations udplite4_net_ops __net_initdata = {
+ 	.init = udplite4_proc_init_net,
+ 	.exit = udplite4_proc_exit_net,
+ };
+diff --git a/net/ipv6/addrconf.c b/net/ipv6/addrconf.c
+index 713e09d..549f4d3 100644
+--- a/net/ipv6/addrconf.c
++++ b/net/ipv6/addrconf.c
+@@ -3129,7 +3129,7 @@ static void __net_exit if6_proc_net_exit(struct net *net)
+        proc_net_remove(net, "if_inet6");
+ }
+ 
+-static struct pernet_operations if6_proc_net_ops = {
++static struct pernet_operations if6_proc_net_ops __refdata = {
+        .init = if6_proc_net_init,
+        .exit = if6_proc_net_exit,
+ };
+@@ -4648,7 +4648,7 @@ static void __net_exit addrconf_exit_net(struct net *net)
+ 	}
+ }
+ 
+-static struct pernet_operations addrconf_ops = {
++static struct pernet_operations addrconf_ops __net_initdata = {
+ 	.init = addrconf_init_net,
+ 	.exit = addrconf_exit_net,
+ };
+diff --git a/net/ipv6/addrlabel.c b/net/ipv6/addrlabel.c
+index c8993e5..747bafe 100644
+--- a/net/ipv6/addrlabel.c
++++ b/net/ipv6/addrlabel.c
+@@ -381,7 +381,7 @@ static void __net_exit ip6addrlbl_net_exit(struct net *net)
+ 	spin_unlock(&ip6addrlbl_table.lock);
+ }
+ 
+-static struct pernet_operations ipv6_addr_label_ops = {
++static struct pernet_operations ipv6_addr_label_ops __initdata = {
+ 	.init = ip6addrlbl_net_init,
+ 	.exit = ip6addrlbl_net_exit,
+ };
+diff --git a/net/ipv6/af_inet6.c b/net/ipv6/af_inet6.c
+index 7e8340e..1f8ef02 100644
+--- a/net/ipv6/af_inet6.c
++++ b/net/ipv6/af_inet6.c
+@@ -1088,7 +1088,7 @@ static void __net_exit inet6_net_exit(struct net *net)
+ 	ipv6_cleanup_mibs(net);
+ }
+ 
+-static struct pernet_operations inet6_net_ops = {
++static struct pernet_operations inet6_net_ops __refdata = {
+ 	.init = inet6_net_init,
+ 	.exit = inet6_net_exit,
+ };
+diff --git a/net/ipv6/ip6_fib.c b/net/ipv6/ip6_fib.c
+index 4076a0b..7785593 100644
+--- a/net/ipv6/ip6_fib.c
++++ b/net/ipv6/ip6_fib.c
+@@ -1566,7 +1566,7 @@ static void fib6_net_exit(struct net *net)
+ 	kfree(net->ipv6.rt6_stats);
+ }
+ 
+-static struct pernet_operations fib6_net_ops = {
++static struct pernet_operations fib6_net_ops __refdata = {
+ 	.init = fib6_net_init,
+ 	.exit = fib6_net_exit,
+ };
+diff --git a/net/ipv6/ip6_flowlabel.c b/net/ipv6/ip6_flowlabel.c
+index f3caf1b..fd31066 100644
+--- a/net/ipv6/ip6_flowlabel.c
++++ b/net/ipv6/ip6_flowlabel.c
+@@ -729,7 +729,7 @@ static int ip6fl_seq_open(struct inode *inode, struct file *file)
+ 			    sizeof(struct ip6fl_iter_state));
+ }
+ 
+-static const struct file_operations ip6fl_seq_fops = {
++static const struct file_operations ip6fl_seq_fops __net_initconst = {
+ 	.owner		=	THIS_MODULE,
+ 	.open		=	ip6fl_seq_open,
+ 	.read		=	seq_read,
+@@ -765,7 +765,7 @@ static void __net_exit ip6_flowlabel_net_exit(struct net *net)
+ 	ip6_flowlabel_proc_fini(net);
+ }
+ 
+-static struct pernet_operations ip6_flowlabel_net_ops = {
++static struct pernet_operations ip6_flowlabel_net_ops __net_initdata = {
+ 	.init = ip6_flowlabel_proc_init,
+ 	.exit = ip6_flowlabel_net_exit,
+ };
+diff --git a/net/ipv6/mcast.c b/net/ipv6/mcast.c
+index ee7839f..59e1358 100644
+--- a/net/ipv6/mcast.c
++++ b/net/ipv6/mcast.c
+@@ -2663,7 +2663,7 @@ static void __net_exit igmp6_net_exit(struct net *net)
+ 	igmp6_proc_exit(net);
+ }
+ 
+-static struct pernet_operations igmp6_net_ops = {
++static struct pernet_operations igmp6_net_ops __net_initdata = {
+ 	.init = igmp6_net_init,
+ 	.exit = igmp6_net_exit,
+ };
+diff --git a/net/ipv6/ndisc.c b/net/ipv6/ndisc.c
+index 7596f07..b5ec4a7 100644
+--- a/net/ipv6/ndisc.c
++++ b/net/ipv6/ndisc.c
+@@ -1756,7 +1756,7 @@ static int ndisc_netdev_event(struct notifier_block *this, unsigned long event,
+ 	return NOTIFY_DONE;
+ }
+ 
+-static struct notifier_block ndisc_netdev_notifier = {
++static struct notifier_block ndisc_netdev_notifier __initdata = {
+ 	.notifier_call = ndisc_netdev_event,
+ };
+ 
+diff --git a/net/ipv6/netfilter/ip6_tables.c b/net/ipv6/netfilter/ip6_tables.c
+index 14cb310..377cec1 100644
+--- a/net/ipv6/netfilter/ip6_tables.c
++++ b/net/ipv6/netfilter/ip6_tables.c
+@@ -2238,7 +2238,7 @@ static void __net_exit ip6_tables_net_exit(struct net *net)
+ 	xt_proto_fini(net, NFPROTO_IPV6);
+ }
+ 
+-static struct pernet_operations ip6_tables_net_ops = {
++static struct pernet_operations ip6_tables_net_ops __net_initdata = {
+ 	.init = ip6_tables_net_init,
+ 	.exit = ip6_tables_net_exit,
+ };
+diff --git a/net/ipv6/netfilter/ip6table_filter.c b/net/ipv6/netfilter/ip6table_filter.c
+index c9e37c8..f045598 100644
+--- a/net/ipv6/netfilter/ip6table_filter.c
++++ b/net/ipv6/netfilter/ip6table_filter.c
+@@ -22,7 +22,7 @@ MODULE_DESCRIPTION("ip6tables filter table");
+ 			    (1 << NF_INET_FORWARD) | \
+ 			    (1 << NF_INET_LOCAL_OUT))
+ 
+-static const struct xt_table packet_filter = {
++static const struct xt_table packet_filter __refdata = {
+ 	.name		= "filter",
+ 	.valid_hooks	= FILTER_VALID_HOOKS,
+ 	.me		= THIS_MODULE,
+@@ -71,7 +71,7 @@ static void __net_exit ip6table_filter_net_exit(struct net *net)
+ 	ip6t_unregister_table(net, net->ipv6.ip6table_filter);
+ }
+ 
+-static struct pernet_operations ip6table_filter_net_ops = {
++static struct pernet_operations ip6table_filter_net_ops __net_initdata = {
+ 	.init = ip6table_filter_net_init,
+ 	.exit = ip6table_filter_net_exit,
+ };
+diff --git a/net/ipv6/raw.c b/net/ipv6/raw.c
+index cc7313b..ef27664 100644
+--- a/net/ipv6/raw.c
++++ b/net/ipv6/raw.c
+@@ -1302,7 +1302,7 @@ static void __net_exit raw6_exit_net(struct net *net)
+ 	proc_net_remove(net, "raw6");
+ }
+ 
+-static struct pernet_operations raw6_net_ops = {
++static struct pernet_operations raw6_net_ops __net_initdata = {
+ 	.init = raw6_init_net,
+ 	.exit = raw6_exit_net,
+ };
+@@ -1344,7 +1344,7 @@ static const struct proto_ops inet6_sockraw_ops = {
+ #endif
+ };
+ 
+-static struct inet_protosw rawv6_protosw = {
++static struct inet_protosw rawv6_protosw __initdata = {
+ 	.type		= SOCK_RAW,
+ 	.protocol	= IPPROTO_IP,	/* wild card */
+ 	.prot		= &rawv6_prot,
+diff --git a/net/ipv6/reassembly.c b/net/ipv6/reassembly.c
+index 7b954e2..7b4f685 100644
+--- a/net/ipv6/reassembly.c
++++ b/net/ipv6/reassembly.c
+@@ -720,7 +720,7 @@ static void __net_exit ipv6_frags_exit_net(struct net *net)
+ 	inet_frags_exit_net(&net->ipv6.frags, &ip6_frags);
+ }
+ 
+-static struct pernet_operations ip6_frags_ops = {
++static struct pernet_operations ip6_frags_ops __net_initdata = {
+ 	.init = ipv6_frags_init_net,
+ 	.exit = ipv6_frags_exit_net,
+ };
+diff --git a/net/ipv6/route.c b/net/ipv6/route.c
+index 0ef1f08..36e0158 100644
+--- a/net/ipv6/route.c
++++ b/net/ipv6/route.c
+@@ -2863,7 +2863,7 @@ static void __net_exit ip6_route_net_exit(struct net *net)
+ 	dst_entries_destroy(&net->ipv6.ip6_dst_ops);
+ }
+ 
+-static struct pernet_operations ip6_route_net_ops = {
++static struct pernet_operations ip6_route_net_ops __initdata = {
+ 	.init = ip6_route_net_init,
+ 	.exit = ip6_route_net_exit,
+ };
+diff --git a/net/ipv6/sysctl_net_ipv6.c b/net/ipv6/sysctl_net_ipv6.c
+index 6dcf5e7..83c8c5b 100644
+--- a/net/ipv6/sysctl_net_ipv6.c
++++ b/net/ipv6/sysctl_net_ipv6.c
+@@ -128,7 +128,7 @@ static void __net_exit ipv6_sysctl_net_exit(struct net *net)
+ 	kfree(ipv6_icmp_table);
+ }
+ 
+-static struct pernet_operations ipv6_sysctl_net_ops = {
++static struct pernet_operations ipv6_sysctl_net_ops __net_initdata = {
+ 	.init = ipv6_sysctl_net_init,
+ 	.exit = ipv6_sysctl_net_exit,
+ };
+diff --git a/net/ipv6/tcp_ipv6.c b/net/ipv6/tcp_ipv6.c
+index 7c43e86..af7123b 100644
+--- a/net/ipv6/tcp_ipv6.c
++++ b/net/ipv6/tcp_ipv6.c
+@@ -2272,7 +2272,7 @@ static void __net_exit tcpv6_net_exit_batch(struct list_head *net_exit_list)
+ 	inet_twsk_purge(&tcp_hashinfo, &tcp_death_row, AF_INET6);
+ }
+ 
+-static struct pernet_operations tcpv6_net_ops = {
++static struct pernet_operations tcpv6_net_ops __net_initdata = {
+ 	.init	    = tcpv6_net_init,
+ 	.exit	    = tcpv6_net_exit,
+ 	.exit_batch = tcpv6_net_exit_batch,
+diff --git a/net/ipv6/udplite.c b/net/ipv6/udplite.c
+index 986c4de..5e04305 100644
+--- a/net/ipv6/udplite.c
++++ b/net/ipv6/udplite.c
+@@ -115,7 +115,7 @@ static void __net_exit udplite6_proc_exit_net(struct net *net)
+ 	udp_proc_unregister(net, &udplite6_seq_afinfo);
+ }
+ 
+-static struct pernet_operations udplite6_net_ops = {
++static struct pernet_operations udplite6_net_ops __initdata = {
+ 	.init = udplite6_proc_init_net,
+ 	.exit = udplite6_proc_exit_net,
+ };
+diff --git a/net/ipv6/xfrm6_tunnel.c b/net/ipv6/xfrm6_tunnel.c
+index 4fe1db12..eaec572 100644
+--- a/net/ipv6/xfrm6_tunnel.c
++++ b/net/ipv6/xfrm6_tunnel.c
+@@ -345,7 +345,7 @@ static void __net_exit xfrm6_tunnel_net_exit(struct net *net)
+ {
+ }
+ 
+-static struct pernet_operations xfrm6_tunnel_net_ops = {
++static struct pernet_operations xfrm6_tunnel_net_ops __refdata = {
+ 	.init	= xfrm6_tunnel_net_init,
+ 	.exit	= xfrm6_tunnel_net_exit,
+ 	.id	= &xfrm6_tunnel_net_id,
+diff --git a/net/netfilter/nf_conntrack_proto_dccp.c b/net/netfilter/nf_conntrack_proto_dccp.c
+index 2e664a6..3c47a77 100644
+--- a/net/netfilter/nf_conntrack_proto_dccp.c
++++ b/net/netfilter/nf_conntrack_proto_dccp.c
+@@ -852,7 +852,7 @@ static __net_exit void dccp_net_exit(struct net *net)
+ #endif
+ }
+ 
+-static struct pernet_operations dccp_net_ops = {
++static struct pernet_operations dccp_net_ops __net_initdata = {
+ 	.init = dccp_net_init,
+ 	.exit = dccp_net_exit,
+ 	.id   = &dccp_net_id,
+diff --git a/net/netfilter/nfnetlink.c b/net/netfilter/nfnetlink.c
+index b4a4532..7797557 100644
+--- a/net/netfilter/nfnetlink.c
++++ b/net/netfilter/nfnetlink.c
+@@ -205,7 +205,7 @@ static void __net_exit nfnetlink_net_exit_batch(struct list_head *net_exit_list)
+ 		netlink_kernel_release(net->nfnl_stash);
+ }
+ 
+-static struct pernet_operations nfnetlink_net_ops = {
++static struct pernet_operations nfnetlink_net_ops __net_initdata = {
+ 	.init		= nfnetlink_net_init,
+ 	.exit_batch	= nfnetlink_net_exit_batch,
+ };
+diff --git a/net/netfilter/xt_hashlimit.c b/net/netfilter/xt_hashlimit.c
+index 9228ee0..590f645 100644
+--- a/net/netfilter/xt_hashlimit.c
++++ b/net/netfilter/xt_hashlimit.c
+@@ -797,7 +797,7 @@ static void __net_exit hashlimit_net_exit(struct net *net)
+ 	hashlimit_proc_net_exit(net);
+ }
+ 
+-static struct pernet_operations hashlimit_net_ops = {
++static struct pernet_operations hashlimit_net_ops __net_initdata = {
+ 	.init	= hashlimit_net_init,
+ 	.exit	= hashlimit_net_exit,
+ 	.id	= &hashlimit_net_id,
+diff --git a/net/netfilter/xt_repldata.h b/net/netfilter/xt_repldata.h
+index 6efe4e5..d3ee728 100644
+--- a/net/netfilter/xt_repldata.h
++++ b/net/netfilter/xt_repldata.h
+@@ -11,13 +11,16 @@
+ 	unsigned int bytes = 0, hooknum = 0, i = 0; \
+ 	struct { \
+ 		struct type##_replace repl; \
+-		struct type##_standard entries[nhooks]; \
+-		struct type##_error term; \
+-	} *tbl = kzalloc(sizeof(*tbl), GFP_KERNEL); \
++	} *tbl = kzalloc(sizeof(*tbl)+nhooks*sizeof(struct type##_standard)+\
++			sizeof(struct type##_error), GFP_KERNEL); \
++	struct type##_standard *entries;\
++	struct type##_error *term;\
+ 	if (tbl == NULL) \
+ 		return NULL; \
++	entries = (struct type##_standard *)(tbl+sizeof(*tbl));\
++	term = (struct type##_error *)(tbl+sizeof(*tbl)+nhooks*sizeof(struct type##_standard));\
+ 	strncpy(tbl->repl.name, info->name, sizeof(tbl->repl.name)); \
+-	tbl->term = (struct type##_error)typ2##_ERROR_INIT;  \
++	*term = (struct type##_error)typ2##_ERROR_INIT;  \
+ 	tbl->repl.valid_hooks = hook_mask; \
+ 	tbl->repl.num_entries = nhooks + 1; \
+ 	tbl->repl.size = nhooks * sizeof(struct type##_standard) + \
+@@ -27,7 +30,7 @@
+ 			continue; \
+ 		tbl->repl.hook_entry[hooknum] = bytes; \
+ 		tbl->repl.underflow[hooknum]  = bytes; \
+-		tbl->entries[i++] = (struct type##_standard) \
++		entries[i++] = (struct type##_standard) \
+ 			typ2##_STANDARD_INIT(NF_ACCEPT); \
+ 		bytes += sizeof(struct type##_standard); \
+ 	} \
+diff --git a/net/netlink/genetlink.c b/net/netlink/genetlink.c
+index 1781d99..d47e06e 100644
+--- a/net/netlink/genetlink.c
++++ b/net/netlink/genetlink.c
+@@ -844,7 +844,7 @@ static int genl_ctrl_event(int event, void *data)
+ 	return 0;
+ }
+ 
+-static struct genl_ops genl_ctrl_ops = {
++static struct genl_ops genl_ctrl_ops __initdata = {
+ 	.cmd		= CTRL_CMD_GETFAMILY,
+ 	.doit		= ctrl_getfamily,
+ 	.dumpit		= ctrl_dumpfamily,
+@@ -877,7 +877,7 @@ static void __net_exit genl_pernet_exit(struct net *net)
+ 	net->genl_sock = NULL;
+ }
+ 
+-static struct pernet_operations genl_pernet_ops = {
++static struct pernet_operations genl_pernet_ops __initdata = {
+ 	.init = genl_pernet_init,
+ 	.exit = genl_pernet_exit,
+ };
+diff --git a/net/packet/af_packet.c b/net/packet/af_packet.c
+index c0c3cda..6564d75 100644
+--- a/net/packet/af_packet.c
++++ b/net/packet/af_packet.c
+@@ -2771,7 +2771,7 @@ static void __net_exit packet_net_exit(struct net *net)
+ 	proc_net_remove(net, "packet");
+ }
+ 
+-static struct pernet_operations packet_net_ops = {
++static struct pernet_operations packet_net_ops __net_initdata = {
+ 	.init = packet_net_init,
+ 	.exit = packet_net_exit,
+ };
+diff --git a/net/sched/sch_api.c b/net/sched/sch_api.c
+index 6b86276..460f0d6 100644
+--- a/net/sched/sch_api.c
++++ b/net/sched/sch_api.c
+@@ -1737,7 +1737,7 @@ static int psched_open(struct inode *inode, struct file *file)
+ 	return single_open(file, psched_show, NULL);
+ }
+ 
+-static const struct file_operations psched_fops = {
++static const struct file_operations psched_fops __net_initconst = {
+ 	.owner = THIS_MODULE,
+ 	.open = psched_open,
+ 	.read  = seq_read,
+@@ -1771,7 +1771,7 @@ static void __net_exit psched_net_exit(struct net *net)
+ }
+ #endif
+ 
+-static struct pernet_operations psched_net_ops = {
++static struct pernet_operations psched_net_ops __initdata = {
+ 	.init = psched_net_init,
+ 	.exit = psched_net_exit,
+ };
+diff --git a/net/sysctl_net.c b/net/sysctl_net.c
+index ca84212..0a133b0 100644
+--- a/net/sysctl_net.c
++++ b/net/sysctl_net.c
+@@ -84,7 +84,7 @@ static void __net_exit sysctl_net_exit(struct net *net)
+ 	WARN_ON(!list_empty(&net->sysctls.list));
+ }
+ 
+-static struct pernet_operations sysctl_pernet_ops = {
++static struct pernet_operations sysctl_pernet_ops __initdata = {
+ 	.init = sysctl_net_init,
+ 	.exit = sysctl_net_exit,
+ };
+diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
+index 0722a25..5a4cf83 100644
+--- a/net/unix/af_unix.c
++++ b/net/unix/af_unix.c
+@@ -2342,7 +2342,7 @@ static void __net_exit unix_net_exit(struct net *net)
+ 	proc_net_remove(net, "unix");
+ }
+ 
+-static struct pernet_operations unix_net_ops = {
++static struct pernet_operations unix_net_ops __net_initdata = {
+ 	.init = unix_net_init,
+ 	.exit = unix_net_exit,
+ };
+diff --git a/net/wireless/wext-core.c b/net/wireless/wext-core.c
+index fdbc23c..167922b 100644
+--- a/net/wireless/wext-core.c
++++ b/net/wireless/wext-core.c
+@@ -352,7 +352,7 @@ static void __net_exit wext_pernet_exit(struct net *net)
+ 	skb_queue_purge(&net->wext_nlevents);
+ }
+ 
+-static struct pernet_operations wext_pernet_ops = {
++static struct pernet_operations wext_pernet_ops __initdata = {
+ 	.init = wext_pernet_init,
+ 	.exit = wext_pernet_exit,
+ };
+diff --git a/sound/soc/msm/lpass-dma.c b/sound/soc/msm/lpass-dma.c
+index 66c1836..9c2a495 100644
+--- a/sound/soc/msm/lpass-dma.c
++++ b/sound/soc/msm/lpass-dma.c
+@@ -424,7 +424,7 @@ static int dai_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver dai_driver = {
++static struct platform_driver dai_driver __refdata = {
+ 	.probe = dai_probe,
+ 	.remove = dai_remove,
+ 	.driver = {
+diff --git a/sound/soc/msm/msm-dai-q6.c b/sound/soc/msm/msm-dai-q6.c
+index 5e02797..96ab173 100644
+--- a/sound/soc/msm/msm-dai-q6.c
++++ b/sound/soc/msm/msm-dai-q6.c
+@@ -631,7 +631,7 @@ static struct snd_soc_dai_ops msm_dai_q6_auxpcm_ops = {
+ 	.shutdown	= msm_dai_q6_auxpcm_shutdown,
+ };
+ 
+-static struct snd_soc_dai_driver msm_dai_q6_i2s_rx_dai = {
++static struct snd_soc_dai_driver msm_dai_q6_i2s_rx_dai __refdata = {
+ 	.playback = {
+ 		.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_8000 |
+ 		SNDRV_PCM_RATE_16000,
+diff --git a/sound/soc/msm/msm-dai.c b/sound/soc/msm/msm-dai.c
+index 61e4675..835e356 100644
+--- a/sound/soc/msm/msm-dai.c
++++ b/sound/soc/msm/msm-dai.c
+@@ -102,7 +102,7 @@ static int __devexit asoc_pcm_cpu_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver asoc_codec_dai_driver = {
++static struct platform_driver asoc_codec_dai_driver __refdata = {
+ 	.probe = asoc_msm_codec_probe,
+ 	.remove = __devexit_p(asoc_msm_codec_remove),
+ 	.driver = {
+@@ -111,7 +111,7 @@ static struct platform_driver asoc_codec_dai_driver = {
+ 	},
+ };
+ 
+-static struct platform_driver asoc_cpu_dai_driver = {
++static struct platform_driver asoc_cpu_dai_driver __refdata = {
+ 	.probe = asoc_pcm_cpu_probe,
+ 	.remove = __devexit_p(asoc_pcm_cpu_remove),
+ 	.driver = {
+diff --git a/sound/soc/msm/msm-mvs.c b/sound/soc/msm/msm-mvs.c
+index 2e7114c..c5c6052 100644
+--- a/sound/soc/msm/msm-mvs.c
++++ b/sound/soc/msm/msm-mvs.c
+@@ -898,7 +898,7 @@ static int msm_pcm_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver msm_pcm_driver = {
++static struct platform_driver msm_pcm_driver __refdata = {
+ 	.driver = {
+ 		.name = "msm-mvs-audio",
+ 		.owner = THIS_MODULE,
+diff --git a/sound/soc/msm/msm-pcm-lpa.c b/sound/soc/msm/msm-pcm-lpa.c
+index 29f89ce..cc26f9a 100644
+--- a/sound/soc/msm/msm-pcm-lpa.c
++++ b/sound/soc/msm/msm-pcm-lpa.c
+@@ -514,7 +514,7 @@ static int msm_pcm_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver msm_pcm_driver = {
++static struct platform_driver msm_pcm_driver __refdata = {
+ 	.driver = {
+ 		.name = "msm-pcm-lpa",
+ 		.owner = THIS_MODULE,
+diff --git a/sound/soc/msm/msm-pcm-q6.c b/sound/soc/msm/msm-pcm-q6.c
+index 738e024..50029df 100644
+--- a/sound/soc/msm/msm-pcm-q6.c
++++ b/sound/soc/msm/msm-pcm-q6.c
+@@ -688,7 +688,7 @@ static int msm_pcm_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver msm_pcm_driver = {
++static struct platform_driver msm_pcm_driver __refdata = {
+ 	.driver = {
+ 		.name = "msm-pcm-dsp",
+ 		.owner = THIS_MODULE,
+diff --git a/sound/soc/msm/msm-pcm-voice.c b/sound/soc/msm/msm-pcm-voice.c
+index 5b50509..4e6376b 100644
+--- a/sound/soc/msm/msm-pcm-voice.c
++++ b/sound/soc/msm/msm-pcm-voice.c
+@@ -342,7 +342,7 @@ static int msm_pcm_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver msm_pcm_driver = {
++static struct platform_driver msm_pcm_driver __refdata = {
+ 	.driver = {
+ 		.name = "msm-pcm-voice",
+ 		.owner = THIS_MODULE,
+diff --git a/sound/soc/msm/msm-pcm-voip.c b/sound/soc/msm/msm-pcm-voip.c
+index 56b4cf5..48ac552 100644
+--- a/sound/soc/msm/msm-pcm-voip.c
++++ b/sound/soc/msm/msm-pcm-voip.c
+@@ -1008,7 +1008,7 @@ static int msm_asoc_pcm_new(struct snd_soc_pcm_runtime *rtd)
+ 	return ret;
+ }
+ 
+-static struct snd_soc_platform_driver msm_soc_platform = {
++static struct snd_soc_platform_driver msm_soc_platform __devinitdata = {
+ 	.ops		= &msm_pcm_ops,
+ 	.pcm_new	= msm_asoc_pcm_new,
+ 	.probe		= msm_pcm_voip_probe,
+diff --git a/sound/soc/msm/msm-voip.c b/sound/soc/msm/msm-voip.c
+index 082c840..85c90f3 100644
+--- a/sound/soc/msm/msm-voip.c
++++ b/sound/soc/msm/msm-voip.c
+@@ -576,7 +576,7 @@ static int msm_pcm_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver msm_pcm_driver = {
++static struct platform_driver msm_pcm_driver __refdata = {
+ 	.driver = {
+ 		.name = "msm-mvs-audio",
+ 		.owner = THIS_MODULE,
+diff --git a/sound/soc/msm/msm7k-pcm.c b/sound/soc/msm/msm7k-pcm.c
+index 1f36e3b..7f59e01 100644
+--- a/sound/soc/msm/msm7k-pcm.c
++++ b/sound/soc/msm/msm7k-pcm.c
+@@ -575,7 +575,7 @@ static int msm_pcm_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver msm_pcm_driver = {
++static struct platform_driver msm_pcm_driver __refdata = {
+ 	.driver = {
+ 		.name = "msm-dsp-audio",
+ 		.owner = THIS_MODULE,
+diff --git a/sound/soc/msm/msm7kv2-pcm.c b/sound/soc/msm/msm7kv2-pcm.c
+index c64a3ff..72127fd 100644
+--- a/sound/soc/msm/msm7kv2-pcm.c
++++ b/sound/soc/msm/msm7kv2-pcm.c
+@@ -749,7 +749,7 @@ static int msm_pcm_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver msm_pcm_driver = {
++static struct platform_driver msm_pcm_driver __refdata = {
+ 	.driver = {
+ 		.name = "msm-dsp-audio",
+ 		.owner = THIS_MODULE,
+diff --git a/sound/soc/msm/msm8x60-dai.c b/sound/soc/msm/msm8x60-dai.c
+index 8130f07..ce232e0 100644
+--- a/sound/soc/msm/msm8x60-dai.c
++++ b/sound/soc/msm/msm8x60-dai.c
+@@ -100,7 +100,7 @@ static int __devexit asoc_msm_cpu_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver asoc_msm_codec_driver = {
++static struct platform_driver asoc_msm_codec_driver __refdata = {
+ 	.probe = asoc_msm_codec_probe,
+ 	.remove = __devexit_p(asoc_msm_codec_remove),
+ 	.driver = {
+@@ -109,7 +109,7 @@ static struct platform_driver asoc_msm_codec_driver = {
+ 	},
+ };
+ 
+-static struct platform_driver asoc_msm_cpu_driver = {
++static struct platform_driver asoc_msm_cpu_driver __refdata = {
+ 	.probe = asoc_msm_cpu_probe,
+ 	.remove = __devexit_p(asoc_msm_cpu_remove),
+ 	.driver = {
+diff --git a/sound/soc/msm/msm8x60-pcm.c b/sound/soc/msm/msm8x60-pcm.c
+index 6f5ad32..dad5f76 100644
+--- a/sound/soc/msm/msm8x60-pcm.c
++++ b/sound/soc/msm/msm8x60-pcm.c
+@@ -781,7 +781,7 @@ static int msm_pcm_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver msm_pcm_driver = {
++static struct platform_driver msm_pcm_driver __refdata = {
+ 	.probe = msm_pcm_probe,
+ 	.remove = __devexit_p(msm_pcm_remove),
+ 	.driver = {
+diff --git a/sound/soc/msm/mvs-dai.c b/sound/soc/msm/mvs-dai.c
+index 521c5e5..74507ec 100644
+--- a/sound/soc/msm/mvs-dai.c
++++ b/sound/soc/msm/mvs-dai.c
+@@ -93,7 +93,7 @@ static int __devexit asoc_mvs_cpu_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver asoc_mvs_codec_driver = {
++static struct platform_driver asoc_mvs_codec_driver __refdata = {
+ 	.probe = asoc_mvs_codec_probe,
+ 	.remove = __devexit_p(asoc_mvs_codec_remove),
+ 	.driver = {
+@@ -102,7 +102,7 @@ static struct platform_driver asoc_mvs_codec_driver = {
+ 	},
+ };
+ 
+-static struct platform_driver asoc_mvs_cpu_driver = {
++static struct platform_driver asoc_mvs_cpu_driver __refdata = {
+ 	.probe = asoc_mvs_cpu_probe,
+ 	.remove = __devexit_p(asoc_mvs_cpu_remove),
+ 	.driver = {
+diff --git a/arch/arm/mach-msm/board-msm8x60.c b/arch/arm/mach-msm/board-msm8x60.c
+index ba7e658..1248188 100644
+--- a/arch/arm/mach-msm/board-msm8x60.c
++++ b/arch/arm/mach-msm/board-msm8x60.c
+@@ -7134,7 +7134,7 @@ static struct i2c_registry msm8x60_i2c_devices[] __initdata = {
+ };
+ #endif /* CONFIG_I2C */
+ 
+-static void fixup_i2c_configs(void)
++static void __init fixup_i2c_configs(void)
+ {
+ #ifdef CONFIG_I2C
+ #if defined(CONFIG_GPIO_SX150X) || defined(CONFIG_GPIO_SX150X_MODULE)
+@@ -7152,7 +7152,7 @@ static void fixup_i2c_configs(void)
+ #endif
+ }
+ 
+-static void register_i2c_devices(void)
++static void __init register_i2c_devices(void)
+ {
+ #ifdef CONFIG_I2C
+ 	u8 mach_mask = 0;
+diff --git a/drivers/mfd/pmic8901.c b/drivers/mfd/pmic8901.c
+index 080a3e3..20b0824 100644
+--- a/drivers/mfd/pmic8901.c
++++ b/drivers/mfd/pmic8901.c
+@@ -338,7 +338,7 @@ static int __devexit pm8901_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver pm8901_driver = {
++static struct platform_driver pm8901_driver __refdata = {
+ 	.probe		= pm8901_probe,
+ 	.remove		= __devexit_p(pm8901_remove),
+ 	.driver		= {
+diff --git a/drivers/regulator/pmic8901-regulator.c b/drivers/regulator/pmic8901-regulator.c
+index 6fd0a05..df2b81d 100644
+--- a/drivers/regulator/pmic8901-regulator.c
++++ b/drivers/regulator/pmic8901-regulator.c
+@@ -977,7 +977,7 @@ static int __devexit pm8901_vreg_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver pm8901_vreg_driver = {
++static struct platform_driver pm8901_vreg_driver __refdata = {
+ 	.probe = pm8901_vreg_probe,
+ 	.remove = __devexit_p(pm8901_vreg_remove),
+ 	.driver = {
+diff --git a/drivers/slimbus/slimbus.c b/drivers/slimbus/slimbus.c
+index a541d8b..e82f329 100644
+--- a/drivers/slimbus/slimbus.c
++++ b/drivers/slimbus/slimbus.c
+@@ -1997,7 +1997,7 @@ static int slim_sched_chans(struct slim_device *sb, u32 clkgear,
+ 				}
+ 			}
+ 			/* schedule 4k family channels */
+-			while (coeff1 < ctrl->sched.num_cc1 &&
++			while (slc1 && coeff1 < ctrl->sched.num_cc1 &&
+ 				curexp == (int)slc1->rootexp + expshft) {
+ 				/* searchorder effective when opensl valid */
+ 				static const int srcho[] = { 5, 2, 4, 1, 3, 0 };
