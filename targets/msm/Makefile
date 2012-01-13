@@ -29,6 +29,8 @@ CFGDIR=${TOPDIR}/config
 
 .PHONY: msm-fetch msm-patch msm-configure msm-build
 
+all: msm-build
+
 MSM_KERNEL="git://codeaurora.org/kernel/msm.git -b msm-3.0"
 MSM_BRANCH="msm-3.0"
 MSM_PATCH=msm-3.0-llvm.patch
@@ -42,6 +44,8 @@ state/msm-fetch:
 
 msm-patch: state/msm-patch
 state/msm-patch: state/msm-fetch
+	(cd ${MSMDIR} && patch -p1 < ${COMMON}/common.patch)
+	(cd ${MSMDIR} && patch -p1 < ${COMMON}/arm/common-arm.patch)
 	(cd ${MSMDIR} && patch -p1 < ${MSM_PATCH})
 	@mkdir -p state
 	@touch $@

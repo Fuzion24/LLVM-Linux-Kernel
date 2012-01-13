@@ -21,9 +21,9 @@ index f89515a..2bb8cac 100644
  #else
  
 -extern inline void *return_address(unsigned int level)
-+static inline void *return_address(unsigned int level)
++extern inline __attribute__((gnu_inline)) void *return_address(unsigned int level)
  {
- 	return NULL;
+        return NULL;
  }
 diff --git a/arch/arm/include/asm/thread_info.h b/arch/arm/include/asm/thread_info.h
 index 7b5cc8d..f7490d5 100644
@@ -39,20 +39,3 @@ index 7b5cc8d..f7490d5 100644
  }
  
  #define thread_saved_pc(tsk)	\
-diff --git a/arch/arm/kernel/return_address.c b/arch/arm/kernel/return_address.c
-index 0b13a72..a696f0d 100644
---- a/arch/arm/kernel/return_address.c
-+++ b/arch/arm/kernel/return_address.c
-@@ -62,10 +62,12 @@ void *return_address(unsigned int level)
- #warning "TODO: return_address should use unwind tables"
- #endif
- 
-+#if 0
- void *return_address(unsigned int level)
- {
- 	return NULL;
- }
-+#endif
- 
- #endif /* if defined(CONFIG_FRAME_POINTER) && !defined(CONFIG_ARM_UNWIND) / else */
- 
