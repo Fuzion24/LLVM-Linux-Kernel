@@ -43,7 +43,7 @@ state/clang-fetch:
 	@touch $@
 
 clang-configure: state/clang-configure
-state/clang-configure: state/clang-fetch
+state/clang-configure: clang-fetch
 	@mkdir -p ${LLVMBUILDDIR}
 	(cd ${LLVMBUILDDIR} && CC=gcc CXX=g++ ${SRCDIR}/llvm/configure \
 		--target=arm-linux --enable-targets=arm --disable-shared \
@@ -53,7 +53,7 @@ state/clang-configure: state/clang-fetch
 	@touch $@
 
 clang-build:  state/clang-build
-state/clang-build: state/clang-configure
+state/clang-build: clang-configure
 	@mkdir -p ${INSTALLDIR}
 	(cd ${LLVMBUILDDIR} && make -j2 install)
 	@mkdir -p state
@@ -70,17 +70,17 @@ state/qemu-fetch:
 	@touch $@
 
 qemu-configure: state/qemu-configure
-state/qemu-configure: state/qemu-fetch
+state/qemu-configure: qemu-fetch
 	@mkdir -p ${QEMUBUILDDIR}
 	(cd ${QEMUBUILDDIR} && ${SRCDIR}/qemu/configure \
 		--target-list=arm-softmmu --disable-kvm \
-		--disable-sdl --audio-drv-list="" \ --audio-card-list="" \
+		--disable-sdl --audio-drv-list="" --audio-card-list="" \
 		--disable-docs --prefix=${INSTALLDIR})
 	@mkdir -p state
 	@touch $@
 
 qemu-build: state/qemu-build
-state/qemu-build: state/qemu-configure
+state/qemu-build: qemu-configure
 	@mkdir -p ${INSTALLDIR}
 	(cd ${QEMUBUILDDIR} && make -j8 install)
 	@mkdir -p state
