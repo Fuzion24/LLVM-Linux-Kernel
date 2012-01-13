@@ -28,7 +28,10 @@ QEMUBUILDDIR:=${CWD}/build/qemu
 CFGDIR=${CWD}/config
 
 .PHONY: clang-fetch clang-configure clang-build qemu-fetch qemu-configure \
-	qemu-build \
+	qemu-build 
+
+
+all: clang-build qemu-build
 
 LLVM_GIT="http://llvm.org/git/llvm.git"
 CLANG_GIT="http://llvm.org/git/clang.git"
@@ -43,7 +46,7 @@ state/clang-fetch:
 	@touch $@
 
 clang-configure: state/clang-configure
-state/clang-configure: clang-fetch
+state/clang-configure: state/clang-fetch
 	@mkdir -p ${LLVMBUILDDIR}
 	(cd ${LLVMBUILDDIR} && CC=gcc CXX=g++ ${SRCDIR}/llvm/configure \
 		--target=arm-linux --enable-targets=arm --disable-shared \
@@ -53,7 +56,7 @@ state/clang-configure: clang-fetch
 	@touch $@
 
 clang-build:  state/clang-build
-state/clang-build: clang-configure
+state/clang-build: state/clang-configure
 	@mkdir -p ${INSTALLDIR}
 	(cd ${LLVMBUILDDIR} && make -j2 install)
 	@mkdir -p state
@@ -70,7 +73,7 @@ state/qemu-fetch:
 	@touch $@
 
 qemu-configure: state/qemu-configure
-state/qemu-configure: qemu-fetch
+state/qemu-configure: state/qemu-fetch
 	@mkdir -p ${QEMUBUILDDIR}
 	(cd ${QEMUBUILDDIR} && ${SRCDIR}/qemu/configure \
 		--target-list=arm-softmmu --disable-kvm \
@@ -80,7 +83,7 @@ state/qemu-configure: qemu-fetch
 	@touch $@
 
 qemu-build: state/qemu-build
-state/qemu-build: qemu-configure
+state/qemu-build: state/qemu-configure
 	@mkdir -p ${INSTALLDIR}
 	(cd ${QEMUBUILDDIR} && make -j8 install)
 	@mkdir -p state

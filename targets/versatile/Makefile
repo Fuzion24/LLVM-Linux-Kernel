@@ -21,13 +21,15 @@
 ##############################################################################
 
 CWD=${CURDIR}
-TOPDIR=${CWD}/..
+TOPDIR=${CWD}/../..
 SRCDIR:=${CWD}/src
-INSTALLDIR:=${CWD}/install
+INSTALLDIR:=${TOPDIR}/install
 KERNELDIR=${SRCDIR}/linux
 CFGDIR=${TOPDIR}/config
 
 .PHONY: kernel-fetch kernel-patch kernel-configure kernel-build test
+
+all: kernel-build
 
 LINUS_KERNEL=git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git)
 
@@ -40,24 +42,24 @@ state/kernel-fetch:
 
 kernel-patch: state/kernel-patch
 state/kernel-patch: state/kernel-fetch
-	(cd ${KERNELDIR} && patch -p1 < vexpress-llvm.patch)
+	(cd ${KERNELDIR} && patch -p1 < ${CWD}/vexpress-llvm.patch)
 	@mkdir -p state
 	@touch $@
 
 kernel-configure: state/kernel-configure
 state/kernel-configure: state/kernel-patch
-	@cp ./config_vexpress ${KERNELDIR}/.config
+	@cp ${CWD}/config_vexpress ${KERNELDIR}/.config
 	(cd ${KERNELDIR} && make ARCH=arm oldconfig)
 	@mkdir -p state
 	@touch $@
 
 kernel-build: state/kernel-build 
-state/kernel-build: state/kernel-configure state/clang-build
-	(cd ${KERNELDIR} && {CFGDIR}/make-kernel.sh ${INSTALLDIR})
+state/kernel-build: state/kernel-configure 
+	(cd ${KERNELDIR} && ${CFGDIR}/make-kernel.sh ${INSTALLDIR})
 	@mkdir -p state
 	@touch $@
 
-test: state/kernel-build state/qemu-build
+test: state/kernel-build 
 	@${INSTALLDIR}/bin/qemu-system-arm -kernel ${KERNELDIR}/arch/arm/boot/zImage \
 		-initrd myinitrd -M vexpress-a9 -append 'console=earlycon \
 		console=ttyAMA0,38400n8 earlyprintk init=/init' -nographic
