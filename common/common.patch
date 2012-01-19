@@ -1,8 +1,8 @@
 diff --git a/crypto/shash.c b/crypto/shash.c
-index 76f74b9..868bccc 100644
+index 9100912..5ec0ebd 100644
 --- a/crypto/shash.c
 +++ b/crypto/shash.c
-@@ -65,7 +65,8 @@ EXPORT_SYMBOL_GPL(crypto_shash_setkey);
+@@ -67,7 +67,8 @@ EXPORT_SYMBOL_GPL(crypto_shash_setkey);
  static inline unsigned int shash_align_buffer_size(unsigned len,
  						   unsigned long mask)
  {
@@ -12,11 +12,43 @@ index 76f74b9..868bccc 100644
  }
  
  static int shash_update_unaligned(struct shash_desc *desc, const u8 *data,
+diff --git a/drivers/mmc/host/mmci.c b/drivers/mmc/host/mmci.c
+index 0d955ff..cb42be4 100644
+--- a/drivers/mmc/host/mmci.c
++++ b/drivers/mmc/host/mmci.c
+@@ -1506,7 +1506,13 @@ static struct amba_id mmci_ids[] = {
+ 	{ 0, 0 },
+ };
+ 
+-MODULE_DEVICE_TABLE(amba, mmci_ids);
++// FIXME
++// MODULE_DEVICE_TABLE(amba, mmci_ids);
++// Which expands to:
++// extern const struct amba_device_id __mod_amba_device_table __attribute__ ((unused, __alias__("mmci_ids")));
++// causes the following error in LLVM:
++// ERROR: "__unnamed_1" [drivers/mmc/host/mmci.ko] undefined!
++
+ 
+ static struct amba_driver mmci_driver = {
+ 	.drv		= {
+diff --git a/drivers/tty/serial/8250.c b/drivers/tty/serial/8250.c
+index 9f50c4e..cd41fb3 100644
+--- a/drivers/tty/serial/8250.c
++++ b/drivers/tty/serial/8250.c
+@@ -3106,7 +3106,7 @@ static int serial8250_resume(struct platform_device *dev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver serial8250_isa_driver = {
++static struct platform_driver serial8250_isa_driver __refdata = {
+ 	.probe		= serial8250_probe,
+ 	.remove		= __devexit_p(serial8250_remove),
+ 	.suspend	= serial8250_suspend,
 diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index 8f4f881..384bd69 100644
+index 81c04f4..4bbda3c 100644
 --- a/include/linux/rcupdate.h
 +++ b/include/linux/rcupdate.h
-@@ -819,7 +819,7 @@ void __kfree_rcu(struct rcu_head *head, unsigned long offset)
+@@ -836,7 +836,7 @@ void __kfree_rcu(struct rcu_head *head, unsigned long offset)
  {
  	typedef void (*rcu_callback)(struct rcu_head *);
  
@@ -26,10 +58,10 @@ index 8f4f881..384bd69 100644
  	/* See the kfree_rcu() header comment. */
  	BUILD_BUG_ON(!__is_kfree_rcu_offset(offset));
 diff --git a/mm/slab.c b/mm/slab.c
-index 6d90a09..726bb4c 100644
+index f0bd785..1b55992 100644
 --- a/mm/slab.c
 +++ b/mm/slab.c
-@@ -308,7 +308,8 @@ static __always_inline int index_of(const size_t size)
+@@ -310,7 +310,8 @@ static __always_inline int index_of(const size_t size)
  {
  	extern void __bad_size(void);
  

@@ -1,5 +1,5 @@
 diff --git a/arch/arm/Makefile b/arch/arm/Makefile
-index 70c424e..27fbbf9 100644
+index 40319d9..00582ad 100644
 --- a/arch/arm/Makefile
 +++ b/arch/arm/Makefile
 @@ -92,7 +92,8 @@ tune-$(CONFIG_CPU_V6)		:=$(call cc-option,-mtune=arm1136j-s,-mtune=strongarm)
@@ -26,7 +26,7 @@ index f89515a..2bb8cac 100644
         return NULL;
  }
 diff --git a/arch/arm/include/asm/thread_info.h b/arch/arm/include/asm/thread_info.h
-index 7b5cc8d..f7490d5 100644
+index d4c24d4..01f7302 100644
 --- a/arch/arm/include/asm/thread_info.h
 +++ b/arch/arm/include/asm/thread_info.h
 @@ -93,8 +93,7 @@ static inline struct thread_info *current_thread_info(void) __attribute_const__;
@@ -39,3 +39,25 @@ index 7b5cc8d..f7490d5 100644
  }
  
  #define thread_saved_pc(tsk)	\
+diff --git a/sound/arm/aaci.c b/sound/arm/aaci.c
+index b37b702a..0aa454c 100644
+--- a/sound/arm/aaci.c
++++ b/sound/arm/aaci.c
+@@ -1097,9 +1097,14 @@ static struct amba_id aaci_ids[] = {
+ 	{ 0, 0 },
+ };
+ 
+-MODULE_DEVICE_TABLE(amba, aaci_ids);
+-
+-static struct amba_driver aaci_driver = {
++// FIXME
++// MODULE_DEVICE_TABLE(amba, aaci_ids);
++// Which expands to:
++// extern const struct amba_device_id __mod_amba_device_table __attribute__ ((unused, __alias__("aaci_ids")));
++// causes the following error in LLVM:
++// ERROR: "__unnamed_1" [sound/arm/snd-aaci.ko] undefined!
++
++static struct amba_driver aaci_driver __refdata = {
+ 	.drv		= {
+ 		.name	= DRIVER_NAME,
+ 	},
