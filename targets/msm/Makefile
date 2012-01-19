@@ -31,7 +31,7 @@ CFGDIR=${TOPDIR}/config
 
 all: msm-build
 
-MSM_KERNEL="git://codeaurora.org/kernel/msm.git -b msm-3.0"
+MSM_KERNEL="git://codeaurora.org/kernel/msm.git"
 MSM_BRANCH="msm-3.0"
 MSM_PATCH=msm-3.0-llvm.patch
 
