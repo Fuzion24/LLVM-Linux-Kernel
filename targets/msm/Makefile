@@ -34,7 +34,6 @@ all: msm-build
 
 MSM_KERNEL="git://codeaurora.org/kernel/msm.git"
 MSM_BRANCH="msm-3.0"
-MSM_PATCH=${CWD}/msm-3.0-llvm.patch
 
 msm-fetch: state/msm-fetch
 state/msm-fetch: 
@@ -46,8 +45,11 @@ state/msm-fetch:
 msm-patch: state/msm-patch
 state/msm-patch: state/msm-fetch
 	(cd ${MSMDIR} && patch -p1 < ${COMMON}/common.patch)
+	(cd ${MSMDIR} && patch -p1 < ${COMMON}/fix-warnings.patch)
 	(cd ${MSMDIR} && patch -p1 < ${COMMON}/arm/common-arm.patch)
-	(cd ${MSMDIR} && patch -p1 < ${MSM_PATCH})
+	(cd ${MSMDIR} && patch -p1 < ${COMMON}/arm/fix-warnings-arm.patch)
+	(cd ${MSMDIR} && patch -p1 < ${CWD}/msm-3.0-llvm.patch)
+	(cd ${MSMDIR} && patch -p1 < ${CWD}/fix-warnings.patch)
 	@mkdir -p state
 	@touch $@
 

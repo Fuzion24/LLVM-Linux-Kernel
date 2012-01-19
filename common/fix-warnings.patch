@@ -1,0 +1,357 @@
+diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
+index 50e2c16..77aa592 100644
+--- a/include/linux/bitmap.h
++++ b/include/linux/bitmap.h
+@@ -174,7 +174,7 @@ static inline void bitmap_zero(unsigned long *dst, int nbits)
+ 		*dst = 0UL;
+ 	else {
+ 		int len = BITS_TO_LONGS(nbits) * sizeof(unsigned long);
+-		memset(dst, 0, len);
++		(void)memset(dst, 0, len);
+ 	}
+ }
+ 
+@@ -183,7 +183,7 @@ static inline void bitmap_fill(unsigned long *dst, int nbits)
+ 	size_t nlongs = BITS_TO_LONGS(nbits);
+ 	if (!small_const_nbits(nbits)) {
+ 		int len = (nlongs - 1) * sizeof(unsigned long);
+-		memset(dst, 0xff,  len);
++		(void)memset(dst, 0xff,  len);
+ 	}
+ 	dst[nlongs - 1] = BITMAP_LAST_WORD_MASK(nbits);
+ }
+@@ -195,7 +195,7 @@ static inline void bitmap_copy(unsigned long *dst, const unsigned long *src,
+ 		*dst = *src;
+ 	else {
+ 		int len = BITS_TO_LONGS(nbits) * sizeof(unsigned long);
+-		memcpy(dst, src, len);
++		(void)memcpy(dst, src, len);
+ 	}
+ }
+ 
+diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+index 1a23722..a83f239 100644
+--- a/include/linux/blkdev.h
++++ b/include/linux/blkdev.h
+@@ -470,7 +470,7 @@ static inline int queue_in_flight(struct request_queue *q)
+ 
+ static inline void queue_flag_clear(unsigned int flag, struct request_queue *q)
+ {
+-	WARN_ON_ONCE(!queue_is_locked(q));
++	(void)WARN_ON_ONCE(!queue_is_locked(q));
+ 	__clear_bit(flag, &q->queue_flags);
+ }
+ 
+diff --git a/include/linux/clockchips.h b/include/linux/clockchips.h
+index d6733e2..fc57485 100644
+--- a/include/linux/clockchips.h
++++ b/include/linux/clockchips.h
+@@ -119,7 +119,7 @@ static inline unsigned long div_sc(unsigned long ticks, unsigned long nsec,
+ {
+ 	uint64_t tmp = ((uint64_t)ticks) << shift;
+ 
+-	do_div(tmp, nsec);
++	(void)do_div(tmp, nsec);
+ 	return (unsigned long) tmp;
+ }
+ 
+diff --git a/include/linux/clocksource.h b/include/linux/clocksource.h
+index 18a1baf..62ad876 100644
+--- a/include/linux/clocksource.h
++++ b/include/linux/clocksource.h
+@@ -226,7 +226,7 @@ static inline u32 clocksource_khz2mult(u32 khz, u32 shift_constant)
+ 	u64 tmp = ((u64)1000000) << shift_constant;
+ 
+ 	tmp += khz/2; /* round for do_div */
+-	do_div(tmp, khz);
++	(void)do_div(tmp, khz);
+ 
+ 	return (u32)tmp;
+ }
+@@ -252,7 +252,7 @@ static inline u32 clocksource_hz2mult(u32 hz, u32 shift_constant)
+ 	u64 tmp = ((u64)1000000000) << shift_constant;
+ 
+ 	tmp += hz/2; /* round for do_div */
+-	do_div(tmp, hz);
++	(void)do_div(tmp, hz);
+ 
+ 	return (u32)tmp;
+ }
+diff --git a/include/linux/gfp.h b/include/linux/gfp.h
+index cb40892..5a977f9 100644
+--- a/include/linux/gfp.h
++++ b/include/linux/gfp.h
+@@ -149,7 +149,7 @@ struct vm_area_struct;
+ /* Convert GFP flags to their corresponding migrate type */
+ static inline int allocflags_to_migratetype(gfp_t gfp_flags)
+ {
+-	WARN_ON((gfp_flags & GFP_MOVABLE_MASK) == GFP_MOVABLE_MASK);
++	(void)WARN_ON((gfp_flags & GFP_MOVABLE_MASK) == GFP_MOVABLE_MASK);
+ 
+ 	if (unlikely(page_group_by_mobility_disabled))
+ 		return MIGRATE_UNMOVABLE;
+diff --git a/include/linux/highmem.h b/include/linux/highmem.h
+index 3a93f73..06c16da 100644
+--- a/include/linux/highmem.h
++++ b/include/linux/highmem.h
+@@ -194,10 +194,10 @@ static inline void zero_user_segments(struct page *page,
+ 	BUG_ON(end1 > PAGE_SIZE || end2 > PAGE_SIZE);
+ 
+ 	if (end1 > start1)
+-		memset(kaddr + start1, 0, end1 - start1);
++		(void)memset(kaddr + start1, 0, end1 - start1);
+ 
+ 	if (end2 > start2)
+-		memset(kaddr + start2, 0, end2 - start2);
++		(void)memset(kaddr + start2, 0, end2 - start2);
+ 
+ 	kunmap_atomic(kaddr, KM_USER0);
+ 	flush_dcache_page(page);
+diff --git a/include/linux/irqflags.h b/include/linux/irqflags.h
+index d176d65..c02806e 100644
+--- a/include/linux/irqflags.h
++++ b/include/linux/irqflags.h
+@@ -60,22 +60,22 @@
+ #define raw_local_irq_enable()		arch_local_irq_enable()
+ #define raw_local_irq_save(flags)			\
+ 	do {						\
+-		typecheck(unsigned long, flags);	\
++		(void)typecheck(unsigned long, flags);	\
+ 		flags = arch_local_irq_save();		\
+ 	} while (0)
+ #define raw_local_irq_restore(flags)			\
+ 	do {						\
+-		typecheck(unsigned long, flags);	\
++		(void)typecheck(unsigned long, flags);	\
+ 		arch_local_irq_restore(flags);		\
+ 	} while (0)
+ #define raw_local_save_flags(flags)			\
+ 	do {						\
+-		typecheck(unsigned long, flags);	\
++		(void)typecheck(unsigned long, flags);	\
+ 		flags = arch_local_save_flags();	\
+ 	} while (0)
+ #define raw_irqs_disabled_flags(flags)			\
+ 	({						\
+-		typecheck(unsigned long, flags);	\
++		(void)typecheck(unsigned long, flags);	\
+ 		arch_irqs_disabled_flags(flags);	\
+ 	})
+ #define raw_irqs_disabled()		(arch_irqs_disabled())
+diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+index 33b5968..bfbec00 100644
+--- a/include/linux/netdevice.h
++++ b/include/linux/netdevice.h
+@@ -1375,8 +1375,8 @@ static inline
+ void netdev_reset_tc(struct net_device *dev)
+ {
+ 	dev->num_tc = 0;
+-	memset(dev->tc_to_txq, 0, sizeof(dev->tc_to_txq));
+-	memset(dev->prio_tc_map, 0, sizeof(dev->prio_tc_map));
++	(void)memset(dev->tc_to_txq, 0, sizeof(dev->tc_to_txq));
++	(void)memset(dev->prio_tc_map, 0, sizeof(dev->prio_tc_map));
+ }
+ 
+ static inline
+diff --git a/include/linux/netlink.h b/include/linux/netlink.h
+index a9dd895..a8c4173 100644
+--- a/include/linux/netlink.h
++++ b/include/linux/netlink.h
+@@ -244,7 +244,7 @@ __nlmsg_put(struct sk_buff *skb, u32 pid, u32 seq, int type, int len, int flags)
+ 	nlh->nlmsg_pid = pid;
+ 	nlh->nlmsg_seq = seq;
+ 	if (!__builtin_constant_p(size) || NLMSG_ALIGN(size) - size != 0)
+-		memset(NLMSG_DATA(nlh) + len, 0, NLMSG_ALIGN(size) - size);
++		(void)memset(NLMSG_DATA(nlh) + len, 0, NLMSG_ALIGN(size) - size);
+ 	return nlh;
+ }
+ 
+diff --git a/include/linux/poll.h b/include/linux/poll.h
+index cf40010..5273a23 100644
+--- a/include/linux/poll.h
++++ b/include/linux/poll.h
+@@ -110,7 +110,7 @@ int get_fd_set(unsigned long nr, void __user *ufdset, unsigned long *fdset)
+ 	if (ufdset)
+ 		return copy_from_user(fdset, ufdset, nr) ? -EFAULT : 0;
+ 
+-	memset(fdset, 0, nr);
++	(void)memset(fdset, 0, nr);
+ 	return 0;
+ }
+ 
+@@ -125,7 +125,7 @@ set_fd_set(unsigned long nr, void __user *ufdset, unsigned long *fdset)
+ static inline
+ void zero_fd_set(unsigned long nr, unsigned long *fdset)
+ {
+-	memset(fdset, 0, FDS_BYTES(nr));
++	(void)memset(fdset, 0, FDS_BYTES(nr));
+ }
+ 
+ #define MAX_INT64_SECONDS (((s64)(~((u64)0)>>1)/HZ)-1)
+diff --git a/include/linux/ptrace.h b/include/linux/ptrace.h
+index 9178d5c..8a6d650 100644
+--- a/include/linux/ptrace.h
++++ b/include/linux/ptrace.h
+@@ -310,7 +310,7 @@ extern void user_single_step_siginfo(struct task_struct *tsk,
+ static inline void user_single_step_siginfo(struct task_struct *tsk,
+ 				struct pt_regs *regs, siginfo_t *info)
+ {
+-	memset(info, 0, sizeof(*info));
++	(void)memset(info, 0, sizeof(*info));
+ 	info->si_signo = SIGTRAP;
+ }
+ #endif
+diff --git a/include/linux/regset.h b/include/linux/regset.h
+index 8abee65..3c3e979 100644
+--- a/include/linux/regset.h
++++ b/include/linux/regset.h
+@@ -283,7 +283,7 @@ static inline int user_regset_copyout_zero(unsigned int *pos,
+ 		unsigned int copy = (end_pos < 0 ? *count
+ 				     : min(*count, end_pos - *pos));
+ 		if (*kbuf) {
+-			memset(*kbuf, 0, copy);
++			(void)memset(*kbuf, 0, copy);
+ 			*kbuf += copy;
+ 		} else if (__clear_user(*ubuf, copy))
+ 			return -EFAULT;
+diff --git a/include/linux/security.h b/include/linux/security.h
+index 8ce59ef..2fd5a25 100644
+--- a/include/linux/security.h
++++ b/include/linux/security.h
+@@ -1917,13 +1917,13 @@ static inline int security_settime(const struct timespec *ts,
+ 
+ static inline int security_vm_enough_memory(long pages)
+ {
+-	WARN_ON(current->mm == NULL);
++	(void)WARN_ON(current->mm == NULL);
+ 	return cap_vm_enough_memory(current->mm, pages);
+ }
+ 
+ static inline int security_vm_enough_memory_mm(struct mm_struct *mm, long pages)
+ {
+-	WARN_ON(mm == NULL);
++	(void)WARN_ON(mm == NULL);
+ 	return cap_vm_enough_memory(mm, pages);
+ }
+ 
+diff --git a/include/linux/signal.h b/include/linux/signal.h
+index a822300..94b124d 100644
+--- a/include/linux/signal.h
++++ b/include/linux/signal.h
+@@ -159,7 +159,7 @@ static inline void sigemptyset(sigset_t *set)
+ {
+ 	switch (_NSIG_WORDS) {
+ 	default:
+-		memset(set, 0, sizeof(sigset_t));
++		(void)memset(set, 0, sizeof(sigset_t));
+ 		break;
+ 	case 2: set->sig[1] = 0;
+ 	case 1:	set->sig[0] = 0;
+@@ -171,7 +171,7 @@ static inline void sigfillset(sigset_t *set)
+ {
+ 	switch (_NSIG_WORDS) {
+ 	default:
+-		memset(set, -1, sizeof(sigset_t));
++		(void)memset(set, -1, sizeof(sigset_t));
+ 		break;
+ 	case 2: set->sig[1] = -1;
+ 	case 1:	set->sig[0] = -1;
+@@ -201,7 +201,7 @@ static inline void siginitset(sigset_t *set, unsigned long mask)
+ 	set->sig[0] = mask;
+ 	switch (_NSIG_WORDS) {
+ 	default:
+-		memset(&set->sig[1], 0, sizeof(long)*(_NSIG_WORDS-1));
++		(void)memset(&set->sig[1], 0, sizeof(long)*(_NSIG_WORDS-1));
+ 		break;
+ 	case 2: set->sig[1] = 0;
+ 	case 1: ;
+@@ -213,7 +213,7 @@ static inline void siginitsetinv(sigset_t *set, unsigned long mask)
+ 	set->sig[0] = ~mask;
+ 	switch (_NSIG_WORDS) {
+ 	default:
+-		memset(&set->sig[1], -1, sizeof(long)*(_NSIG_WORDS-1));
++		(void)memset(&set->sig[1], -1, sizeof(long)*(_NSIG_WORDS-1));
+ 		break;
+ 	case 2: set->sig[1] = -1;
+ 	case 1: ;
+diff --git a/include/linux/spinlock.h b/include/linux/spinlock.h
+index 0b22d51..0eedf77 100644
+--- a/include/linux/spinlock.h
++++ b/include/linux/spinlock.h
+@@ -175,7 +175,7 @@ static inline void do_raw_spin_unlock(raw_spinlock_t *lock) __releases(lock)
+ 
+ # define raw_spin_lock_nest_lock(lock, nest_lock)			\
+ 	 do {								\
+-		 typecheck(struct lockdep_map *, &(nest_lock)->dep_map);\
++		 (void)typecheck(struct lockdep_map *, &(nest_lock)->dep_map);\
+ 		 _raw_spin_lock_nest_lock(lock, &(nest_lock)->dep_map);	\
+ 	 } while (0)
+ #else
+@@ -187,20 +187,20 @@ static inline void do_raw_spin_unlock(raw_spinlock_t *lock) __releases(lock)
+ 
+ #define raw_spin_lock_irqsave(lock, flags)			\
+ 	do {						\
+-		typecheck(unsigned long, flags);	\
++		(void)typecheck(unsigned long, flags);	\
+ 		flags = _raw_spin_lock_irqsave(lock);	\
+ 	} while (0)
+ 
+ #ifdef CONFIG_DEBUG_LOCK_ALLOC
+ #define raw_spin_lock_irqsave_nested(lock, flags, subclass)		\
+ 	do {								\
+-		typecheck(unsigned long, flags);			\
++		(void)typecheck(unsigned long, flags);			\
+ 		flags = _raw_spin_lock_irqsave_nested(lock, subclass);	\
+ 	} while (0)
+ #else
+ #define raw_spin_lock_irqsave_nested(lock, flags, subclass)		\
+ 	do {								\
+-		typecheck(unsigned long, flags);			\
++		(void)typecheck(unsigned long, flags);			\
+ 		flags = _raw_spin_lock_irqsave(lock);			\
+ 	} while (0)
+ #endif
+@@ -209,7 +209,7 @@ static inline void do_raw_spin_unlock(raw_spinlock_t *lock) __releases(lock)
+ 
+ #define raw_spin_lock_irqsave(lock, flags)		\
+ 	do {						\
+-		typecheck(unsigned long, flags);	\
++		(void)typecheck(unsigned long, flags);	\
+ 		_raw_spin_lock_irqsave(lock, flags);	\
+ 	} while (0)
+ 
+@@ -225,7 +225,7 @@ static inline void do_raw_spin_unlock(raw_spinlock_t *lock) __releases(lock)
+ 
+ #define raw_spin_unlock_irqrestore(lock, flags)		\
+ 	do {							\
+-		typecheck(unsigned long, flags);		\
++		(void)typecheck(unsigned long, flags);		\
+ 		_raw_spin_unlock_irqrestore(lock, flags);	\
+ 	} while (0)
+ #define raw_spin_unlock_bh(lock)	_raw_spin_unlock_bh(lock)
+diff --git a/include/linux/vmstat.h b/include/linux/vmstat.h
+index bcd942f..4a82de2 100644
+--- a/include/linux/vmstat.h
++++ b/include/linux/vmstat.h
+@@ -181,7 +181,7 @@ extern void zone_statistics(struct zone *, struct zone *, gfp_t gfp);
+ 
+ static inline void zap_zone_vm_stats(struct zone *zone)
+ {
+-	memset(zone->vm_stat, 0, sizeof(zone->vm_stat));
++	(void)memset(zone->vm_stat, 0, sizeof(zone->vm_stat));
+ }
+ 
+ extern void inc_zone_state(struct zone *, enum zone_stat_item);
+diff --git a/include/net/ipv6.h b/include/net/ipv6.h
+index c39121f..f812f8a 100644
+--- a/include/net/ipv6.h
++++ b/include/net/ipv6.h
+@@ -313,7 +313,7 @@ static inline void ipv6_addr_prefix(struct in6_addr *pfx,
+ 	int o = plen >> 3,
+ 	    b = plen & 0x7;
+ 
+-	memset(pfx->s6_addr, 0, sizeof(pfx->s6_addr));
++	(void)memset(pfx->s6_addr, 0, sizeof(pfx->s6_addr));
+ 	memcpy(pfx->s6_addr, addr, o);
+ 	if (b != 0)
+ 		pfx->s6_addr[o] = addr->s6_addr[o] & (0xff00 >> b);

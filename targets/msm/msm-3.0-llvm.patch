@@ -2307,3 +2307,16 @@ index a541d8b..e82f329 100644
  				curexp == (int)slc1->rootexp + expshft) {
  				/* searchorder effective when opensl valid */
  				static const int srcho[] = { 5, 2, 4, 1, 3, 0 };
+diff --git a/arch/arm/mach-msm/msm_dsps.c b/arch/arm/mach-msm/msm_dsps.c
+index efb2bf6..057665b 100644
+--- a/arch/arm/mach-msm/msm_dsps.c
++++ b/arch/arm/mach-msm/msm_dsps.c
+@@ -39,7 +39,7 @@
+ #include <mach/subsystem_restart.h>
+ #include <mach/subsystem_notif.h>
+ 
+-#include <timer.h>
++#include "timer.h"
+ 
+ #define DRV_NAME	"msm_dsps"
+ #define DRV_VERSION	"3.02"

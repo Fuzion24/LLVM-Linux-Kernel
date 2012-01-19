@@ -1,0 +1,62 @@
+diff --git a/arch/arm/include/asm/uaccess.h b/arch/arm/include/asm/uaccess.h
+index b293616..0308934 100644
+--- a/arch/arm/include/asm/uaccess.h
++++ b/arch/arm/include/asm/uaccess.h
+@@ -406,7 +406,7 @@ static inline unsigned long __must_check copy_from_user(void *to, const void __u
+ 	if (access_ok(VERIFY_READ, from, n))
+ 		n = __copy_from_user(to, from, n);
+ 	else /* security hole - plug it */
+-		memset(to, 0, n);
++		(void)memset(to, 0, n);
+ 	return n;
+ }
+ 
+diff --git a/arch/arm/kernel/process.c b/arch/arm/kernel/process.c
+index 4ee00c8..551d99a 100644
+--- a/arch/arm/kernel/process.c
++++ b/arch/arm/kernel/process.c
+@@ -247,7 +247,7 @@ void cpu_idle(void)
+ 				 * functions should always return with IRQs
+ 				 * enabled.
+ 				 */
+-				WARN_ON(irqs_disabled());
++				(void)WARN_ON(irqs_disabled());
+ 				local_irq_enable();
+ 			}
+ 		}
+diff --git a/arch/arm/kernel/smp.c b/arch/arm/kernel/smp.c
+index 0faa7ea..48b8d25 100644
+--- a/arch/arm/kernel/smp.c
++++ b/arch/arm/kernel/smp.c
+@@ -652,7 +652,7 @@ void smp_send_reschedule(int cpu)
+ {
+ 
+ 	if (unlikely(cpu_is_offline(cpu))) {
+-		WARN_ON(1);
++		(void)WARN_ON(1);
+ 		return;
+ 	}
+ 	smp_cross_call(cpumask_of(cpu), IPI_RESCHEDULE);
+diff --git a/arch/arm/mm/dma-mapping.c b/arch/arm/mm/dma-mapping.c
+index 340c2d0..eff7868 100644
+--- a/arch/arm/mm/dma-mapping.c
++++ b/arch/arm/mm/dma-mapping.c
+@@ -94,7 +94,7 @@ static struct page *__dma_alloc_buffer(struct device *dev, size_t size, gfp_t gf
+ 	 * lurking in the kernel direct-mapped region is invalidated.
+ 	 */
+ 	ptr = page_address(page);
+-	memset(ptr, 0, size);
++	(void)memset(ptr, 0, size);
+ 	dmac_flush_range(ptr, ptr + size);
+ 	outer_flush_range(__pa(ptr), __pa(ptr) + size);
+ 
+@@ -171,7 +171,7 @@ static int __init consistent_init(void)
+ 			ret = -ENOMEM;
+ 			break;
+ 		}
+-		WARN_ON(!pmd_none(*pmd));
++		(void)WARN_ON(!pmd_none(*pmd));
+ 
+ 		pte = pte_alloc_kernel(pmd, base);
+ 		if (!pte) {
+
