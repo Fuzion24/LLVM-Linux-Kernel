@@ -1,3 +1,18 @@
+diff --git a/arch/arm/include/asm/posix_types.h b/arch/arm/include/asm/posix_types.h
+index 2446d23..cc3bd8d 100644
+--- a/arch/arm/include/asm/posix_types.h
++++ b/arch/arm/include/asm/posix_types.h
+@@ -27,7 +27,9 @@ typedef int			__kernel_pid_t;
+ typedef unsigned short		__kernel_ipc_pid_t;
+ typedef unsigned short		__kernel_uid_t;
+ typedef unsigned short		__kernel_gid_t;
+-typedef unsigned int		__kernel_size_t;
++// Changed __kernel_size_t to unsigned long or otherwise incompatible with
++// clang builtin functions
++typedef unsigned long		__kernel_size_t;
+ typedef int			__kernel_ssize_t;
+ typedef int			__kernel_ptrdiff_t;
+ typedef long			__kernel_time_t;
 diff --git a/arch/arm/include/asm/uaccess.h b/arch/arm/include/asm/uaccess.h
 index b293616..0308934 100644
 --- a/arch/arm/include/asm/uaccess.h
@@ -24,19 +39,6 @@ index 4ee00c8..551d99a 100644
  				local_irq_enable();
  			}
  		}
-diff --git a/arch/arm/kernel/smp.c b/arch/arm/kernel/smp.c
-index 0faa7ea..48b8d25 100644
---- a/arch/arm/kernel/smp.c
-+++ b/arch/arm/kernel/smp.c
-@@ -652,7 +652,7 @@ void smp_send_reschedule(int cpu)
- {
- 
- 	if (unlikely(cpu_is_offline(cpu))) {
--		WARN_ON(1);
-+		(void)WARN_ON(1);
- 		return;
- 	}
- 	smp_cross_call(cpumask_of(cpu), IPI_RESCHEDULE);
 diff --git a/arch/arm/mm/dma-mapping.c b/arch/arm/mm/dma-mapping.c
 index 340c2d0..eff7868 100644
 --- a/arch/arm/mm/dma-mapping.c
@@ -59,4 +61,64 @@ index 340c2d0..eff7868 100644
  
  		pte = pte_alloc_kernel(pmd, base);
  		if (!pte) {
-
+diff --git a/arch/arm/kernel/sys_oabi-compat.c b/arch/arm/kernel/sys_oabi-compat.c
+index af0aaeb..697f7b5 100644
+--- a/arch/arm/kernel/sys_oabi-compat.c
++++ b/arch/arm/kernel/sys_oabi-compat.c
+@@ -418,7 +418,7 @@ asmlinkage long sys_oabi_sendmsg(int fd, struct msghdr __user *msg, unsigned fla
+ 		 * to run for cover.  In most cases it will "just work fine".
+ 		 * If it doesn't, well, tough.
+ 		 */
+-		put_user(110, &msg->msg_namelen);
++		(void)put_user(110, &msg->msg_namelen);
+ 	}
+ 	return sys_sendmsg(fd, msg, flags);
+ }
+diff --git a/arch/arm/vfp/vfp.h b/arch/arm/vfp/vfp.h
+index c8c98dd..5a0c1e8 100644
+--- a/arch/arm/vfp/vfp.h
++++ b/arch/arm/vfp/vfp.h
+@@ -121,7 +121,7 @@ static inline u64 vfp_estimate_div128to64(u64 nh, u64 nl, u64 m)
+ 		z = 0xffffffff00000000ULL;
+ 	} else {
+ 		z = nh;
+-		do_div(z, mh);
++		(void)do_div(z, mh);
+ 		z <<= 32;
+ 	}
+ 	mul64to128(&termh, &terml, m, z);
+@@ -135,7 +135,7 @@ static inline u64 vfp_estimate_div128to64(u64 nh, u64 nl, u64 m)
+ 	if (mh << 32 <= remh) {
+ 		z |= 0xffffffff;
+ 	} else {
+-		do_div(remh, mh);
++		(void)do_div(remh, mh);
+ 		z |= remh;
+ 	}
+ 	return z;
+diff --git a/arch/arm/kernel/signal.c b/arch/arm/kernel/signal.c
+index 0340224..95ccd9a 100644
+--- a/arch/arm/kernel/signal.c
++++ b/arch/arm/kernel/signal.c
+@@ -92,8 +92,8 @@ sys_sigaction(int sig, const struct old_sigaction __user *act,
+ 		    __get_user(new_ka.sa.sa_handler, &act->sa_handler) ||
+ 		    __get_user(new_ka.sa.sa_restorer, &act->sa_restorer))
+ 			return -EFAULT;
+-		__get_user(new_ka.sa.sa_flags, &act->sa_flags);
+-		__get_user(mask, &act->sa_mask);
++		(void)__get_user(new_ka.sa.sa_flags, &act->sa_flags);
++		(void)__get_user(mask, &act->sa_mask);
+ 		siginitset(&new_ka.sa.sa_mask, mask);
+ 	}
+ 
+@@ -104,8 +104,8 @@ sys_sigaction(int sig, const struct old_sigaction __user *act,
+ 		    __put_user(old_ka.sa.sa_handler, &oact->sa_handler) ||
+ 		    __put_user(old_ka.sa.sa_restorer, &oact->sa_restorer))
+ 			return -EFAULT;
+-		__put_user(old_ka.sa.sa_flags, &oact->sa_flags);
+-		__put_user(old_ka.sa.sa_mask.sig[0], &oact->sa_mask);
++		(void)__put_user(old_ka.sa.sa_flags, &oact->sa_flags);
++		(void)__put_user(old_ka.sa.sa_mask.sig[0], &oact->sa_mask);
+ 	}
+ 
+ 	return ret;

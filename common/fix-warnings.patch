@@ -29,19 +29,6 @@ index 50e2c16..77aa592 100644
  	}
  }
  
-diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index 1a23722..a83f239 100644
---- a/include/linux/blkdev.h
-+++ b/include/linux/blkdev.h
-@@ -470,7 +470,7 @@ static inline int queue_in_flight(struct request_queue *q)
- 
- static inline void queue_flag_clear(unsigned int flag, struct request_queue *q)
- {
--	WARN_ON_ONCE(!queue_is_locked(q));
-+	(void)WARN_ON_ONCE(!queue_is_locked(q));
- 	__clear_bit(flag, &q->queue_flags);
- }
- 
 diff --git a/include/linux/clockchips.h b/include/linux/clockchips.h
 index d6733e2..fc57485 100644
 --- a/include/linux/clockchips.h
@@ -355,3 +342,205 @@ index c39121f..f812f8a 100644
  	memcpy(pfx->s6_addr, addr, o);
  	if (b != 0)
  		pfx->s6_addr[o] = addr->s6_addr[o] & (0xff00 >> b);
+diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+index 6c6a1f0..d69f132 100644
+--- a/include/linux/blkdev.h
++++ b/include/linux/blkdev.h
+@@ -448,7 +448,7 @@ static inline void queue_flag_set_unlocked(unsigned int flag,
+ static inline int queue_flag_test_and_clear(unsigned int flag,
+ 					    struct request_queue *q)
+ {
+-	WARN_ON_ONCE(!queue_is_locked(q));
++	(void)WARN_ON_ONCE(!queue_is_locked(q));
+ 
+ 	if (test_bit(flag, &q->queue_flags)) {
+ 		__clear_bit(flag, &q->queue_flags);
+@@ -461,7 +461,7 @@ static inline int queue_flag_test_and_clear(unsigned int flag,
+ static inline int queue_flag_test_and_set(unsigned int flag,
+ 					  struct request_queue *q)
+ {
+-	WARN_ON_ONCE(!queue_is_locked(q));
++	(void)WARN_ON_ONCE(!queue_is_locked(q));
+ 
+ 	if (!test_bit(flag, &q->queue_flags)) {
+ 		__set_bit(flag, &q->queue_flags);
+@@ -473,7 +473,7 @@ static inline int queue_flag_test_and_set(unsigned int flag,
+ 
+ static inline void queue_flag_set(unsigned int flag, struct request_queue *q)
+ {
+-	WARN_ON_ONCE(!queue_is_locked(q));
++	(void)WARN_ON_ONCE(!queue_is_locked(q));
+ 	__set_bit(flag, &q->queue_flags);
+ }
+ 
+@@ -490,7 +490,7 @@ static inline int queue_in_flight(struct request_queue *q)
+ 
+ static inline void queue_flag_clear(unsigned int flag, struct request_queue *q)
+ {
+-	WARN_ON_ONCE(!queue_is_locked(q));
++	(void)WARN_ON_ONCE(!queue_is_locked(q));
+ 	__clear_bit(flag, &q->queue_flags);
+ }
+ 
+diff --git a/include/linux/rtnetlink.h b/include/linux/rtnetlink.h
+index 8e872ea..4a5eb58 100644
+--- a/include/linux/rtnetlink.h
++++ b/include/linux/rtnetlink.h
+@@ -732,7 +732,7 @@ __rta_reserve(struct sk_buff *skb, int attrtype, int attrlen)
+ 	rta = (struct rtattr*)skb_put(skb, RTA_ALIGN(size));
+ 	rta->rta_type = attrtype;
+ 	rta->rta_len = size;
+-	memset(RTA_DATA(rta) + attrlen, 0, RTA_ALIGN(size) - size);
++	(void)memset(RTA_DATA(rta) + attrlen, 0, RTA_ALIGN(size) - size);
+ 	return rta;
+ }
+ 
+diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+index 50db9b0..622c720 100644
+--- a/include/linux/skbuff.h
++++ b/include/linux/skbuff.h
+@@ -510,7 +510,7 @@ static inline struct dst_entry *skb_dst(const struct sk_buff *skb)
+ 	/* If refdst was not refcounted, check we still are in a 
+ 	 * rcu_read_lock section
+ 	 */
+-	WARN_ON((skb->_skb_refdst & SKB_DST_NOREF) &&
++	(void)WARN_ON((skb->_skb_refdst & SKB_DST_NOREF) &&
+ 		!rcu_read_lock_held() &&
+ 		!rcu_read_lock_bh_held());
+ 	return (struct dst_entry *)(skb->_skb_refdst & SKB_DST_PTRMASK);
+@@ -1543,7 +1543,7 @@ extern int ___pskb_trim(struct sk_buff *skb, unsigned int len);
+ static inline void __skb_trim(struct sk_buff *skb, unsigned int len)
+ {
+ 	if (unlikely(skb_is_nonlinear(skb))) {
+-		WARN_ON(1);
++		(void)WARN_ON(1);
+ 		return;
+ 	}
+ 	skb->len = len;
+diff --git a/include/net/dst.h b/include/net/dst.h
+index 344c8dd..cbae81d 100644
+--- a/include/net/dst.h
++++ b/include/net/dst.h
+@@ -173,7 +173,7 @@ dst_metric_raw(const struct dst_entry *dst, const int metric)
+ static inline u32
+ dst_metric(const struct dst_entry *dst, const int metric)
+ {
+-	WARN_ON_ONCE(metric == RTAX_HOPLIMIT ||
++	(void)WARN_ON_ONCE(metric == RTAX_HOPLIMIT ||
+ 		     metric == RTAX_ADVMSS ||
+ 		     metric == RTAX_MTU);
+ 	return dst_metric_raw(dst, metric);
+@@ -303,7 +303,7 @@ static inline void skb_dst_copy(struct sk_buff *nskb, const struct sk_buff *oskb
+ static inline void skb_dst_force(struct sk_buff *skb)
+ {
+ 	if (skb_dst_is_noref(skb)) {
+-		WARN_ON(!rcu_read_lock_held());
++		(void)WARN_ON(!rcu_read_lock_held());
+ 		skb->_skb_refdst &= ~SKB_DST_NOREF;
+ 		dst_clone(skb_dst(skb));
+ 	}
+diff --git a/include/net/inet_connection_sock.h b/include/net/inet_connection_sock.h
+index dbf9aab..0bb043e 100644
+--- a/include/net/inet_connection_sock.h
++++ b/include/net/inet_connection_sock.h
+@@ -172,7 +172,7 @@ static inline int inet_csk_ack_scheduled(const struct sock *sk)
+ 
+ static inline void inet_csk_delack_init(struct sock *sk)
+ {
+-	memset(&inet_csk(sk)->icsk_ack, 0, sizeof(inet_csk(sk)->icsk_ack));
++	(void)memset(&inet_csk(sk)->icsk_ack, 0, sizeof(inet_csk(sk)->icsk_ack));
+ }
+ 
+ extern void inet_csk_delete_keepalive_timer(struct sock *sk);
+diff --git a/include/net/request_sock.h b/include/net/request_sock.h
+index 4c0766e..2c68508 100644
+--- a/include/net/request_sock.h
++++ b/include/net/request_sock.h
+@@ -181,7 +181,7 @@ static inline struct request_sock *reqsk_queue_remove(struct request_sock_queue
+ {
+ 	struct request_sock *req = queue->rskq_accept_head;
+ 
+-	WARN_ON(req == NULL);
++	(void)WARN_ON(req == NULL);
+ 
+ 	queue->rskq_accept_head = req->dl_next;
+ 	if (queue->rskq_accept_head == NULL)
+@@ -196,7 +196,7 @@ static inline struct sock *reqsk_queue_get_child(struct request_sock_queue *queu
+ 	struct request_sock *req = reqsk_queue_remove(queue);
+ 	struct sock *child = req->sk;
+ 
+-	WARN_ON(child == NULL);
++	(void)WARN_ON(child == NULL);
+ 
+ 	sk_acceptq_removed(parent);
+ 	__reqsk_free(req);
+diff --git a/include/net/sock.h b/include/net/sock.h
+index bb972d2..54d7904 100644
+--- a/include/net/sock.h
++++ b/include/net/sock.h
+@@ -474,7 +474,7 @@ static __inline__ int sk_del_node_init(struct sock *sk)
+ 
+ 	if (rc) {
+ 		/* paranoid for a while -acme */
+-		WARN_ON(atomic_read(&sk->sk_refcnt) == 1);
++		(void)WARN_ON(atomic_read(&sk->sk_refcnt) == 1);
+ 		__sock_put(sk);
+ 	}
+ 	return rc;
+diff --git a/init/do_mounts_rd.c b/init/do_mounts_rd.c
+index 887629e..a1c76ef 100644
+--- a/init/do_mounts_rd.c
++++ b/init/do_mounts_rd.c
+@@ -71,7 +71,7 @@ identify_ramdisk_image(int fd, int start_block, decompress_fn *decompressor)
+ 	romfsb = (struct romfs_super_block *) buf;
+ 	cramfsb = (struct cramfs_super *) buf;
+ 	squashfsb = (struct squashfs_super_block *) buf;
+-	memset(buf, 0xe5, size);
++	(void)memset(buf, 0xe5, size);
+ 
+ 	/*
+ 	 * Read block 0 to test for compressed kernel
+diff --git a/init/initramfs.c b/init/initramfs.c
+index 8216c30..5e6b06b 100644
+--- a/init/initramfs.c
++++ b/init/initramfs.c
+@@ -507,7 +507,7 @@ static void __init free_initrd(void)
+ 		 * Initialize initrd memory region since the kexec boot does
+ 		 * not do.
+ 		 */
+-		memset((void *)initrd_start, 0, initrd_end - initrd_start);
++		(void)memset((void *)initrd_start, 0, initrd_end - initrd_start);
+ 		if (initrd_start < crashk_start)
+ 			free_initrd_mem(initrd_start, crashk_start);
+ 		if (initrd_end > crashk_end)
+@@ -530,11 +530,11 @@ static void __init clean_rootfs(void)
+ 	int num;
+ 
+ 	fd = sys_open((const char __user __force *) "/", O_RDONLY, 0);
+-	WARN_ON(fd < 0);
++	(void)WARN_ON(fd < 0);
+ 	if (fd < 0)
+ 		return;
+ 	buf = kzalloc(BUF_SIZE, GFP_KERNEL);
+-	WARN_ON(!buf);
++	(void)WARN_ON(!buf);
+ 	if (!buf) {
+ 		sys_close(fd);
+ 		return;
+@@ -548,7 +548,7 @@ static void __init clean_rootfs(void)
+ 			int ret;
+ 
+ 			ret = sys_newlstat(dirp->d_name, &st);
+-			WARN_ON_ONCE(ret);
++			(void)WARN_ON_ONCE(ret);
+ 			if (!ret) {
+ 				if (S_ISDIR(st.st_mode))
+ 					sys_rmdir(dirp->d_name);
+@@ -560,7 +560,7 @@ static void __init clean_rootfs(void)
+ 			dirp = (void *)dirp + dirp->d_reclen;
+ 		}
+ 		dirp = buf;
+-		memset(buf, 0, BUF_SIZE);
++		(void)memset(buf, 0, BUF_SIZE);
+ 		num = sys_getdents64(fd, dirp, BUF_SIZE);
+ 	}
