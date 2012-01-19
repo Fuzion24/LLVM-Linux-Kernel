@@ -44,7 +44,9 @@ state/kernel-fetch:
 kernel-patch: state/kernel-patch
 state/kernel-patch: state/kernel-fetch
 	(cd ${KERNELDIR} && patch -p1 < ${COMMON}/common.patch)
+	(cd ${KERNELDIR} && patch -p1 < ${COMMON}/common-tip.patch)
 	(cd ${KERNELDIR} && patch -p1 < ${COMMON}/arm/common-arm.patch)
+	(cd ${KERNELDIR} && patch -p1 < ${COMMON}/arm/common-arm-tip.patch)
 	@mkdir -p state
 	@touch $@
 

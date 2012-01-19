@@ -21,10 +21,11 @@
 ##############################################################################
 
 CWD=${CURDIR}
-TOPDIR=${CWD}/..
-SRCDIR:=${CWD}/src
-INSTALLDIR:=${CWD}/install
+TOPDIR=${CWD}/../..
+SRCDIR=${CWD}/src
+INSTALLDIR=${TOPDIR}/install
 MSMDIR=${SRCDIR}/msm
+COMMON=${TOPDIR}/common
 CFGDIR=${TOPDIR}/config
 
 .PHONY: msm-fetch msm-patch msm-configure msm-build
@@ -33,7 +34,7 @@ all: msm-build
 
 MSM_KERNEL="git://codeaurora.org/kernel/msm.git"
 MSM_BRANCH="msm-3.0"
-MSM_PATCH=msm-3.0-llvm.patch
+MSM_PATCH=${CWD}/msm-3.0-llvm.patch
 
 msm-fetch: state/msm-fetch
 state/msm-fetch: 

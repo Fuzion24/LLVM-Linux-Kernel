@@ -39,25 +39,3 @@ index d4c24d4..01f7302 100644
  }
  
  #define thread_saved_pc(tsk)	\
-diff --git a/sound/arm/aaci.c b/sound/arm/aaci.c
-index b37b702a..0aa454c 100644
---- a/sound/arm/aaci.c
-+++ b/sound/arm/aaci.c
-@@ -1097,9 +1097,14 @@ static struct amba_id aaci_ids[] = {
- 	{ 0, 0 },
- };
- 
--MODULE_DEVICE_TABLE(amba, aaci_ids);
--
--static struct amba_driver aaci_driver = {
-+// FIXME
-+// MODULE_DEVICE_TABLE(amba, aaci_ids);
-+// Which expands to:
-+// extern const struct amba_device_id __mod_amba_device_table __attribute__ ((unused, __alias__("aaci_ids")));
-+// causes the following error in LLVM:
-+// ERROR: "__unnamed_1" [sound/arm/snd-aaci.ko] undefined!
-+
-+static struct amba_driver aaci_driver __refdata = {
- 	.drv		= {
- 		.name	= DRIVER_NAME,
- 	},
