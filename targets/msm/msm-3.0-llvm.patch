@@ -180,19 +180,6 @@ index 8d9544c..281a65d 100644
  	desc.shash.tfm = hash;
  	desc.shash.flags = crypto_shash_get_flags(parent) &
  			    CRYPTO_TFM_REQ_MAY_SLEEP;
-diff --git a/crypto/shash.c b/crypto/shash.c
-index 76f74b9..d9f0d07 100644
---- a/crypto/shash.c
-+++ b/crypto/shash.c
-@@ -65,7 +65,7 @@ EXPORT_SYMBOL_GPL(crypto_shash_setkey);
- static inline unsigned int shash_align_buffer_size(unsigned len,
- 						   unsigned long mask)
- {
--	return len + (mask & ~(__alignof__(u8 __attribute__ ((aligned))) - 1));
-+	return len + (mask & ~(__alignof__(u8) - 1));
- }
- 
- static int shash_update_unaligned(struct shash_desc *desc, const u8 *data,
 diff --git a/drivers/bluetooth/bluetooth-power.c b/drivers/bluetooth/bluetooth-power.c
 index 3bf49d1..b3a2a1f 100644
 --- a/drivers/bluetooth/bluetooth-power.c
@@ -1437,20 +1424,6 @@ index 1217f1f..0002c1c 100644
  	.probe = vidc_720p_probe,
  	.remove = vidc_720p_remove,
  	.driver = {
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index 99f9aa7..bc6b75a 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -819,7 +819,8 @@ void __kfree_rcu(struct rcu_head *head, unsigned long offset)
- {
- 	typedef void (*rcu_callback)(struct rcu_head *);
- 
--	BUILD_BUG_ON(!__builtin_constant_p(offset));
-+	// FIXME - Fails for Clang
-+	//BUILD_BUG_ON(!__builtin_constant_p(offset));
- 
- 	/* See the kfree_rcu() header comment. */
- 	BUILD_BUG_ON(!__is_kfree_rcu_offset(offset));
 diff --git a/include/net/net_namespace.h b/include/net/net_namespace.h
 index aef430d..c840046 100644
 --- a/include/net/net_namespace.h
