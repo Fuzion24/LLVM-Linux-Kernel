@@ -1,0 +1,48 @@
+diff --git a/include/linux/dma-mapping.h b/include/linux/dma-mapping.h
+index e13117c..35df364 100644
+--- a/include/linux/dma-mapping.h
++++ b/include/linux/dma-mapping.h
+@@ -126,7 +126,7 @@ static inline void *dma_zalloc_coherent(struct device *dev, size_t size,
+ {
+ 	void *ret = dma_alloc_coherent(dev, size, dma_handle, flag);
+ 	if (ret)
+-		memset(ret, 0, size);
++		(void)memset(ret, 0, size);
+ 	return ret;
+ }
+
+diff --git a/include/linux/kref.h b/include/linux/kref.h
+index 9c07dce..516b7a3 100644
+--- a/include/linux/kref.h
++++ b/include/linux/kref.h
+@@ -38,7 +38,7 @@ static inline void kref_init(struct kref *kref)
+  */
+ static inline void kref_get(struct kref *kref)
+ {
+-	WARN_ON(!atomic_read(&kref->refcount));
++	(void)WARN_ON(!atomic_read(&kref->refcount));
+ 	atomic_inc(&kref->refcount);
+ }
+ 
+@@ -63,7 +63,7 @@ static inline void kref_get(struct kref *kref)
+ static inline int kref_sub(struct kref *kref, unsigned int count,
+ 	     void (*release)(struct kref *kref))
+ {
+-	WARN_ON(release == NULL);
++	(void)WARN_ON(release == NULL);
+ 
+ 	if (atomic_sub_and_test((int) count, &kref->refcount)) {
+ 		release(kref);
+diff --git a/include/net/scm.h b/include/net/scm.h
+index d456f4c..3fd7dfc 100644
+--- a/include/net/scm.h
++++ b/include/net/scm.h
+@@ -73,7 +73,7 @@ static __inline__ void scm_destroy(struct scm_cookie *scm)
+ static __inline__ int scm_send(struct socket *sock, struct msghdr *msg,
+ 			       struct scm_cookie *scm)
+ {
+-	memset(scm, 0, sizeof(*scm));
++	(void)memset(scm, 0, sizeof(*scm));
+ 	unix_get_peersec_dgram(sock, scm);
+ 	if (msg->msg_controllen <= 0)
+ 		return 0;

@@ -46,11 +46,17 @@ state/kernel-patch: state/kernel-fetch
 	(cd ${KERNELDIR} && patch -p1 < ${COMMON}/common.patch)
 	(cd ${KERNELDIR} && patch -p1 < ${COMMON}/common-tip.patch)
 	(cd ${KERNELDIR} && patch -p1 < ${COMMON}/fix-warnings.patch)
+	(cd ${KERNELDIR} && patch -p1 < ${COMMON}/fix-warnings-tip.patch)
 	(cd ${KERNELDIR} && patch -p1 < ${COMMON}/arm/common-arm.patch)
 	(cd ${KERNELDIR} && patch -p1 < ${COMMON}/arm/common-arm-tip.patch)
 	(cd ${KERNELDIR} && patch -p1 < ${COMMON}/arm/fix-warnings-arm.patch)
 	@mkdir -p state
 	@touch $@
+
+kernel-clean: 
+	(cd ${KERNELDIR} && git status | grep "modified:" | cut -d":" -f 2 | xargs git checkout)
+	@rm -f ${CWD}/state/kernel-patch
+	@rm -f ${CWD}/state/kernel-configure
 
 kernel-configure: state/kernel-configure
 state/kernel-configure: state/kernel-patch
