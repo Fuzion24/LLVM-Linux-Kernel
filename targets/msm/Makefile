@@ -48,7 +48,7 @@ state/kernel-patch: state/kernel-fetch
 	(cd ${MSMDIR} && patch -p1 < ${COMMON}/fix-warnings.patch)
 	(cd ${MSMDIR} && patch -p1 < ${COMMON}/arm/common-arm.patch)
 	(cd ${MSMDIR} && patch -p1 < ${COMMON}/arm/fix-warnings-arm.patch)
-	(cd ${MSMDIR} && patch -p1 < ${CWD}/kernel-3.0-llvm.patch)
+	(cd ${MSMDIR} && patch -p1 < ${CWD}/msm-3.0-llvm.patch)
 	(cd ${MSMDIR} && patch -p1 < ${CWD}/fix-warnings.patch)
 	@mkdir -p state
 	@touch $@
