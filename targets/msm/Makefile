@@ -53,6 +53,11 @@ state/msm-patch: state/msm-fetch
 	@mkdir -p state
 	@touch $@
 
+msm-clean: 
+	(cd ${MSMDIR} && git status | grep "modified:" | cut -d":" -f 2 | xargs git checkout)
+	@rm -f ${CWD}/state/msm-patch
+	@rm -f ${CWD}/state/msm-configure
+
 msm-configure: state/msm-configure
 state/msm-configure: state/msm-patch
 	@cp config_msm ${MSMDIR}/.config
