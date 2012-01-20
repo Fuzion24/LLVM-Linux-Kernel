@@ -28,45 +28,45 @@ MSMDIR=${SRCDIR}/msm
 COMMON=${TOPDIR}/common
 CFGDIR=${TOPDIR}/config
 
-.PHONY: msm-fetch msm-patch msm-configure msm-build
+.PHONY: kernel-fetch kernel-patch kernel-configure kernel-build
 
-all: msm-build
+all: kernel-build
 
 MSM_KERNEL="git://codeaurora.org/kernel/msm.git"
-MSM_BRANCH="msm-3.0"
+MSM_BRANCH="kernel-3.0"
 
-msm-fetch: state/msm-fetch
-state/msm-fetch: 
+kernel-fetch: state/kernel-fetch
+state/kernel-fetch: 
 	@mkdir -p ${SRCDIR}
 	(cd ${SRCDIR} && git clone ${MSM_KERNEL} -b ${MSM_BRANCH})
 	@mkdir -p state
 	@touch $@
 
-msm-patch: state/msm-patch
-state/msm-patch: state/msm-fetch
+kernel-patch: state/kernel-patch
+state/kernel-patch: state/kernel-fetch
 	(cd ${MSMDIR} && patch -p1 < ${COMMON}/common.patch)
 	(cd ${MSMDIR} && patch -p1 < ${COMMON}/fix-warnings.patch)
 	(cd ${MSMDIR} && patch -p1 < ${COMMON}/arm/common-arm.patch)
 	(cd ${MSMDIR} && patch -p1 < ${COMMON}/arm/fix-warnings-arm.patch)
-	(cd ${MSMDIR} && patch -p1 < ${CWD}/msm-3.0-llvm.patch)
+	(cd ${MSMDIR} && patch -p1 < ${CWD}/kernel-3.0-llvm.patch)
 	(cd ${MSMDIR} && patch -p1 < ${CWD}/fix-warnings.patch)
 	@mkdir -p state
 	@touch $@
 
-msm-clean: 
+kernel-clean: 
 	(cd ${MSMDIR} && git status | grep "modified:" | cut -d":" -f 2 | xargs git checkout)
-	@rm -f ${CWD}/state/msm-patch
-	@rm -f ${CWD}/state/msm-configure
+	@rm -f ${CWD}/state/kernel-patch
+	@rm -f ${CWD}/state/kernel-configure
 
-msm-configure: state/msm-configure
-state/msm-configure: state/msm-patch
+kernel-configure: state/kernel-configure
+state/kernel-configure: state/kernel-patch
 	@cp config_msm ${MSMDIR}/.config
 	(cd ${MSMDIR} && make ARCH=arm oldconfig)
 	@mkdir -p state
 	@touch $@
 
-msm-build: state/msm-build
-state/msm-build: state/msm-configure
+kernel-build: state/kernel-build
+state/kernel-build: state/kernel-configure
 	(cd ${MSMDIR} && ${CFGDIR}/make-kernel.sh ${INSTALLDIR})
 	@mkdir -p state
 	@touch $@

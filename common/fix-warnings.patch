@@ -774,15 +774,6 @@ index bb972d2..54d7904 100644
  		__sock_put(sk);
  	}
  	return rc;
-@@ -496,7 +496,7 @@ static __inline__ int sk_nulls_del_node_init_rcu(struct sock *sk)
- 
- 	if (rc) {
- 		/* paranoid for a while -acme */
--		WARN_ON(atomic_read(&sk->sk_refcnt) == 1);
-+		(void)WARN_ON(atomic_read(&sk->sk_refcnt) == 1);
- 		__sock_put(sk);
- 	}
- 	return rc;
 diff --git a/init/do_mounts_rd.c b/init/do_mounts_rd.c
 index 887629e..a1c76ef 100644
 --- a/init/do_mounts_rd.c
