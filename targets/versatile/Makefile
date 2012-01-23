@@ -21,55 +21,16 @@
 ##############################################################################
 
 CWD=${CURDIR}
-TOPDIR=${CWD}/../..
-SRCDIR:=${CWD}/src
-INSTALLDIR:=${TOPDIR}/install
+KERNEL_CFG=${CWD}/config_vexpress
+KERNEL_GIT=git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
 KERNELDIR=${SRCDIR}/linux
-CFGDIR=${TOPDIR}/config
-COMMON=${TOPDIR}/common
 
-.PHONY: kernel-fetch kernel-patch kernel-configure kernel-build test
+include ../../common/common.mk
+include ../../common/common-tip.mk
+include ../../common/arm/common-arm.mk
+include ../../common/arm/common-arm-tip.mk
 
-all: kernel-build
-
-LINUS_KERNEL=git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git)
-
-kernel-fetch: state/kernel-fetch
-state/kernel-fetch:
-	@mkdir -p ${SRCDIR}
-	(cd ${SRCDIR} &&  git clone ${LINUS_KERNEL}
-	@mkdir -p state
-	@touch $@
-
-kernel-patch: state/kernel-patch
-state/kernel-patch: state/kernel-fetch
-	(cd ${KERNELDIR} && patch -p1 < ${COMMON}/common.patch)
-	(cd ${KERNELDIR} && patch -p1 < ${COMMON}/common-tip.patch)
-	(cd ${KERNELDIR} && patch -p1 < ${COMMON}/fix-warnings.patch)
-	(cd ${KERNELDIR} && patch -p1 < ${COMMON}/fix-warnings-tip.patch)
-	(cd ${KERNELDIR} && patch -p1 < ${COMMON}/arm/common-arm.patch)
-	(cd ${KERNELDIR} && patch -p1 < ${COMMON}/arm/common-arm-tip.patch)
-	(cd ${KERNELDIR} && patch -p1 < ${COMMON}/arm/fix-warnings-arm.patch)
-	@mkdir -p state
-	@touch $@
-
-kernel-clean: 
-	(cd ${KERNELDIR} && git status | grep "modified:" | cut -d":" -f 2 | xargs git checkout)
-	@rm -f ${CWD}/state/kernel-patch
-	@rm -f ${CWD}/state/kernel-configure
-
-kernel-configure: state/kernel-configure
-state/kernel-configure: state/kernel-patch
-	@cp ${CWD}/config_vexpress ${KERNELDIR}/.config
-	(cd ${KERNELDIR} && make ARCH=arm oldconfig)
-	@mkdir -p state
-	@touch $@
-
-kernel-build: state/kernel-build 
-state/kernel-build: state/kernel-configure 
-	(cd ${KERNELDIR} && ${CFGDIR}/make-kernel.sh ${INSTALLDIR})
-	@mkdir -p state
-	@touch $@
+.PHONY: test
 
 test: state/kernel-build 
 	@${INSTALLDIR}/bin/qemu-system-arm -kernel ${KERNELDIR}/arch/arm/boot/zImage \

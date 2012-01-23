@@ -20,12 +20,6 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
-CWD=${CURDIR}
-KERNEL_CFG=${CWD}/config_msm
-MSM_BRANCH="kernel-3.0"
-KERNEL_GIT="git://codeaurora.org/kernel/msm.git -b ${MSM_BRANCH}"
-KERNELDIR=${SRCDIR}/msm
-PATCH_FILES+="${CWD}/msm-3.0-llvm.patch ${CWD}/fix-warnings.patch"
+PATCH_FILES+=${COMMON}/arm/common-arm.patch ${COMMON}/arm/fix-warnings-arm.patch
+MAKE_FLAGS=ARCH=arm
 
-include ../../common/common.mk
-include ../../common/arm/common-arm.mk

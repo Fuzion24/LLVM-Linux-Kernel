@@ -20,12 +20,51 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
-CWD=${CURDIR}
-KERNEL_CFG=${CWD}/config_msm
-MSM_BRANCH="kernel-3.0"
-KERNEL_GIT="git://codeaurora.org/kernel/msm.git -b ${MSM_BRANCH}"
-KERNELDIR=${SRCDIR}/msm
-PATCH_FILES+="${CWD}/msm-3.0-llvm.patch ${CWD}/fix-warnings.patch"
+TOPDIR=${CWD}/../..
+SRCDIR=${CWD}/src
+INSTALLDIR=${TOPDIR}/install
+CFGDIR=${TOPDIR}/config
+COMMON=${TOPDIR}/common
+PATCH_FILES_COMMON=${COMMON}/common.patch ${COMMON}/fix-warnings.patch
+PATCH_FILES=${PATCH_FILES_COMMON}
 
-include ../../common/common.mk
-include ../../common/arm/common-arm.mk
+.PHONY: kernel-fetch kernel-patch kernel-configure kernel-build
+
+all: kernel-build
+
+kernel-fetch: state/kernel-fetch
+state/kernel-fetch: 
+	@mkdir -p ${SRCDIR}
+	(cd ${SRCDIR} && git clone ${KERNEL_GIT})
+	@mkdir -p state
+	@touch $@
+
+kernel-patch: state/kernel-patch
+state/kernel-patch: state/kernel-fetch
+	(cd ${KERNELDIR} && for patch in ${PATCH_FILES}; do \
+		patch -p1 < $$patch;\
+		done)
+	@mkdir -p state
+	@touch $@
+
+kernel-clean: 
+	(cd ${KERNELDIR} && git status | grep "modified:" | cut -d":" -f 2 | xargs git checkout)
+	@rm -f ${CWD}/state/kernel-patch
+	@rm -f ${CWD}/state/kernel-configure
+
+kernel-configure: state/kernel-configure
+state/kernel-configure: state/kernel-patch
+	@cp ${KERNEL_CFG} ${KERNELDIR}/.config
+	(cd ${KERNELDIR} && make ${MAKE_FLAGS} oldconfig)
+	@mkdir -p state
+	@touch $@
+
+kernel-build: state/kernel-build
+state/kernel-build: state/kernel-configure
+	(cd ${KERNELDIR} && ${CFGDIR}/make-kernel.sh ${INSTALLDIR})
+	@mkdir -p state
+	@touch $@
+
+sync: state/kernel-fetch
+	make kernel-clean
+	(cd ${KERNELDIR} && git pull)
