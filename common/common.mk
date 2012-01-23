@@ -23,10 +23,19 @@
 TOPDIR=${CWD}/../..
 SRCDIR=${CWD}/src
 INSTALLDIR=${TOPDIR}/install
-CFGDIR=${TOPDIR}/config
 COMMON=${TOPDIR}/common
-PATCH_FILES_COMMON=${COMMON}/common.patch ${COMMON}/fix-warnings.patch
-PATCH_FILES=${PATCH_FILES_COMMON}
+PATCH_FILES=${COMMON}/common.patch ${COMMON}/fix-warnings.patch
+
+# The ARCH makefile must provide the following:
+#   - PATCH_FILES+=... Additional arch specific patch file(s)
+#   - MAKE_FLAGS
+#   - MAKE_KERNEL
+#   
+# The target makefile must provide the following:
+#   - PATCH_FILES+=... Additional target specific patch file(s)
+#   - KERNEL_GIT
+#   - KERNEL_CFG
+#   - KERNELDIR
 
 .PHONY: kernel-fetch kernel-patch kernel-configure kernel-build
 
@@ -61,10 +70,10 @@ state/kernel-configure: state/kernel-patch
 
 kernel-build: state/kernel-build
 state/kernel-build: state/kernel-configure
-	(cd ${KERNELDIR} && ${CFGDIR}/make-kernel.sh ${INSTALLDIR})
+	(cd ${KERNELDIR} && ${MAKE_KERNEL} ${INSTALLDIR})
 	@mkdir -p state
 	@touch $@
 
-sync: state/kernel-fetch
+kernel-sync: state/kernel-fetch
 	make kernel-clean
 	(cd ${KERNELDIR} && git pull)

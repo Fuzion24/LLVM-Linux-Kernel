@@ -22,4 +22,4 @@
 
 PATCH_FILES+=${COMMON}/arm/common-arm.patch ${COMMON}/arm/fix-warnings-arm.patch
 MAKE_FLAGS=ARCH=arm
-
+MAKE_KERNEL=${COMMON}/arm/make-kernel.sh
