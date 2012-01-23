@@ -39,3 +39,41 @@ index d4c24d4..01f7302 100644
  }
  
  #define thread_saved_pc(tsk)	\
+diff --git a/arch/arm/kernel/stacktrace.c b/arch/arm/kernel/stacktrace.c
+index 381d23a..0d6d9de 100644
+--- a/arch/arm/kernel/stacktrace.c
++++ b/arch/arm/kernel/stacktrace.c
+@@ -109,11 +109,9 @@ void save_stack_trace_tsk(struct task_struct *tsk, struct stack_trace *trace)
+ 		frame.pc = thread_saved_pc(tsk);
+ #endif
+ 	} else {
+-		register unsigned long current_sp asm ("sp");
+-
+ 		data.no_sched_functions = 0;
+ 		frame.fp = (unsigned long)__builtin_frame_address(0);
+-		frame.sp = current_sp;
++		asm ("mov %0, r13" : "=r" (frame.sp));
+ 		frame.lr = (unsigned long)__builtin_return_address(0);
+ 		frame.pc = (unsigned long)save_stack_trace_tsk;
+ 	}
+diff --git a/arch/arm/kernel/unwind.c b/arch/arm/kernel/unwind.c
+index d2cb0b3..17cc494 100644
+--- a/arch/arm/kernel/unwind.c
++++ b/arch/arm/kernel/unwind.c
+@@ -352,7 +352,6 @@ int unwind_frame(struct stackframe *frame)
+ void unwind_backtrace(struct pt_regs *regs, struct task_struct *tsk)
+ {
+        struct stackframe frame;
+-       register unsigned long current_sp asm ("sp");
+ 
+        pr_debug("%s(regs = %p tsk = %p)\n", __func__, regs, tsk);
+ 
+@@ -368,7 +367,7 @@ void unwind_backtrace(struct pt_regs *regs, struct task_struct *tsk)
+                         ? regs->ARM_pc : regs->ARM_lr;
+        } else if (tsk == current) {
+                frame.fp = (unsigned long)__builtin_frame_address(0);
+-               frame.sp = current_sp;
++               asm ("mov %0, r13" : "=r" (frame.sp))
+                frame.lr = (unsigned long)__builtin_return_address(0);
+                frame.pc = (unsigned long)unwind_backtrace;
+        } else {
