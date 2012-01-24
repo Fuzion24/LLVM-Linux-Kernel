@@ -5336,15 +5336,6 @@ diff --git a/fs/file_table.c b/fs/file_table.c
 index 20002e3..7dd23bc 100644
 --- a/fs/file_table.c
 +++ b/fs/file_table.c
-@@ -35,7 +35,7 @@ struct files_stat_struct files_stat = {
- };
- 
- DECLARE_LGLOCK(files_lglock);
--DEFINE_LGLOCK(files_lglock);
-+(void)DEFINE_LGLOCK(files_lglock);
- 
- /* SLAB cache for file structures */
- static struct kmem_cache *filp_cachep __read_mostly;
 @@ -188,7 +188,7 @@ struct file *alloc_file(struct path *path, fmode_t mode,
  	 */
  	if ((mode & FMODE_WRITE) && !special_file(path->dentry->d_inode->i_mode)) {
@@ -5967,15 +5958,6 @@ diff --git a/fs/namespace.c b/fs/namespace.c
 index e608199..46a6601 100644
 --- a/fs/namespace.c
 +++ b/fs/namespace.c
-@@ -49,7 +49,7 @@ EXPORT_SYMBOL_GPL(fs_kobj);
-  * It should be taken for write in all cases where the vfsmount
-  * tree or hash is modified or when a vfsmount structure is modified.
-  */
--DEFINE_BRLOCK(vfsmount_lock);
-+(void)DEFINE_BRLOCK(vfsmount_lock);
- 
- static inline unsigned long hash(struct vfsmount *mnt, struct dentry *dentry)
- {
 @@ -792,7 +792,7 @@ static inline void mntfree(struct mount *mnt)
  	 * The locking used to deal with mnt_count decrement provides barriers,
  	 * so mnt_get_writers() below is safe.
@@ -7052,34 +7034,6 @@ index b76be5b..0703af5 100644
  		kernel_to_ipc64_perm(&shp->shm_perm, &tbuf.shm_perm);
  		tbuf.shm_segsz	= shp->shm_segsz;
  		tbuf.shm_atime	= shp->shm_atim;
-diff --git a/kernel/cpu_pm.c b/kernel/cpu_pm.c
-index 249152e..45f9c9e 100644
---- a/kernel/cpu_pm.c
-+++ b/kernel/cpu_pm.c
-@@ -50,9 +50,9 @@ int cpu_pm_register_notifier(struct notifier_block *nb)
- 	unsigned long flags;
- 	int ret;
- 
--	write_lock_irqsave(&cpu_pm_notifier_lock, flags);
-+	(void)write_lock_irqsave(&cpu_pm_notifier_lock, flags);
- 	ret = raw_notifier_chain_register(&cpu_pm_notifier_chain, nb);
--	write_unlock_irqrestore(&cpu_pm_notifier_lock, flags);
-+	(void)write_unlock_irqrestore(&cpu_pm_notifier_lock, flags);
- 
- 	return ret;
- }
-@@ -72,9 +72,9 @@ int cpu_pm_unregister_notifier(struct notifier_block *nb)
- 	unsigned long flags;
- 	int ret;
- 
--	write_lock_irqsave(&cpu_pm_notifier_lock, flags);
-+	(void)write_lock_irqsave(&cpu_pm_notifier_lock, flags);
- 	ret = raw_notifier_chain_unregister(&cpu_pm_notifier_chain, nb);
--	write_unlock_irqrestore(&cpu_pm_notifier_lock, flags);
-+	(void)write_unlock_irqrestore(&cpu_pm_notifier_lock, flags);
- 
- 	return ret;
- }
 diff --git a/kernel/exit.c b/kernel/exit.c
 index 294b170..8b137c6 100644
 --- a/kernel/exit.c
@@ -10781,23 +10735,8 @@ index 819a5c5..f5b90fa 100644
 -	write_lock_irqsave(&card->ctl_files_rwlock, flags);
 +	(void)write_lock_irqsave(&card->ctl_files_rwlock, flags);
  	list_add_tail(&ctl->list, &card->ctl_files);
--	write_unlock_irqrestore(&card->ctl_files_rwlock, flags);
-+	(void)write_unlock_irqrestore(&card->ctl_files_rwlock, flags);
+	write_unlock_irqrestore(&card->ctl_files_rwlock, flags);
  	return 0;
- 
-       __error:
-@@ -121,9 +121,9 @@ static int snd_ctl_release(struct inode *inode, struct file *file)
- 	ctl = file->private_data;
- 	file->private_data = NULL;
- 	card = ctl->card;
--	write_lock_irqsave(&card->ctl_files_rwlock, flags);
-+	(void)write_lock_irqsave(&card->ctl_files_rwlock, flags);
- 	list_del(&ctl->list);
--	write_unlock_irqrestore(&card->ctl_files_rwlock, flags);
-+	(void)write_unlock_irqrestore(&card->ctl_files_rwlock, flags);
- 	down_write(&card->controls_rwsem);
- 	list_for_each_entry(control, &card->controls, list)
- 		for (idx = 0; idx < control->count; idx++)
 @@ -231,7 +231,7 @@ struct snd_kcontrol *snd_ctl_new1(const struct snd_kcontrol_new *ncontrol,
  	
  	if (snd_BUG_ON(!ncontrol || !ncontrol->info))
@@ -11044,40 +10983,6 @@ index 3420bd3..3068060 100644
  	for (k = SNDRV_PCM_HW_PARAM_FIRST_MASK; k <= SNDRV_PCM_HW_PARAM_LAST_MASK; k++)
  		_snd_pcm_hw_param_any(params, k);
  	for (k = SNDRV_PCM_HW_PARAM_FIRST_INTERVAL; k <= SNDRV_PCM_HW_PARAM_LAST_INTERVAL; k++)
-@@ -1642,13 +1642,13 @@ static int snd_pcm_lib_ioctl_reset(struct snd_pcm_substream *substream,
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	unsigned long flags;
--	snd_pcm_stream_lock_irqsave(substream, flags);
-+	(void)snd_pcm_stream_lock_irqsave(substream, flags);
- 	if (snd_pcm_running(substream) &&
- 	    snd_pcm_update_hw_ptr(substream) >= 0)
- 		runtime->status->hw_ptr %= runtime->buffer_size;
- 	else
- 		runtime->status->hw_ptr = 0;
--	snd_pcm_stream_unlock_irqrestore(substream, flags);
-+	(void)snd_pcm_stream_unlock_irqrestore(substream, flags);
- 	return 0;
- }
- 
-@@ -1756,7 +1756,7 @@ void snd_pcm_period_elapsed(struct snd_pcm_substream *substream)
- 	if (runtime->transfer_ack_begin)
- 		runtime->transfer_ack_begin(substream);
- 
--	snd_pcm_stream_lock_irqsave(substream, flags);
-+	(void)snd_pcm_stream_lock_irqsave(substream, flags);
- 	if (!snd_pcm_running(substream) ||
- 	    snd_pcm_update_hw_ptr0(substream, 1) < 0)
- 		goto _end;
-@@ -1764,7 +1764,7 @@ void snd_pcm_period_elapsed(struct snd_pcm_substream *substream)
- 	if (substream->timer_running)
- 		snd_timer_interrupt(substream->timer, 1);
-  _end:
--	snd_pcm_stream_unlock_irqrestore(substream, flags);
-+	(void)snd_pcm_stream_unlock_irqrestore(substream, flags);
- 	if (runtime->transfer_ack_end)
- 		runtime->transfer_ack_end(substream);
- 	kill_fasync(&runtime->fasync, SIGIO, POLL_IN);
 diff --git a/sound/core/pcm_memory.c b/sound/core/pcm_memory.c
 index 9571313..0316561 100644
 --- a/sound/core/pcm_memory.c
@@ -11135,18 +11040,6 @@ index 25ed9fe..b2d1aa5 100644
  	info->channel = channel;
  	return substream->ops->ioctl(substream, SNDRV_PCM_IOCTL1_CHANNEL_INFO, info);
  }
-@@ -1097,9 +1097,9 @@ int snd_pcm_suspend(struct snd_pcm_substream *substream)
- 	if (! substream)
- 		return 0;
- 
--	snd_pcm_stream_lock_irqsave(substream, flags);
-+	(void)snd_pcm_stream_lock_irqsave(substream, flags);
- 	err = snd_pcm_action(&snd_pcm_action_suspend, substream, 0);
--	snd_pcm_stream_unlock_irqrestore(substream, flags);
-+	(void)snd_pcm_stream_unlock_irqrestore(substream, flags);
- 	return err;
- }
- 
 @@ -2453,7 +2453,7 @@ static int snd_pcm_sync_ptr(struct snd_pcm_substream *substream,
  	volatile struct snd_pcm_mmap_control *control;
  	int err;
