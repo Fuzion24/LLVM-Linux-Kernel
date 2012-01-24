@@ -2274,19 +2274,6 @@ index 4a67cc0..a4a1f2c 100644
  		sysfs_remove_link(kobj, devt_str);
  	}
  }
-@@ -1802,10 +1802,10 @@ void device_shutdown(void)
- 		pm_runtime_barrier(dev);
- 
- 		if (dev->bus && dev->bus->shutdown) {
--			dev_dbg(dev, "shutdown\n");
-+			(void)dev_dbg(dev, "shutdown\n");
- 			dev->bus->shutdown(dev);
- 		} else if (dev->driver && dev->driver->shutdown) {
--			dev_dbg(dev, "shutdown\n");
-+			(void)dev_dbg(dev, "shutdown\n");
- 			dev->driver->shutdown(dev);
- 		}
- 		put_device(dev);
 diff --git a/drivers/base/dd.c b/drivers/base/dd.c
 index 142e3d600..4721024 100644
 --- a/drivers/base/dd.c
@@ -2388,24 +2375,6 @@ index 26ab358..fafa513 100644
  		       (new_array_size - fw_priv->page_array_size));
  		kfree(fw_priv->pages);
  		fw_priv->pages = new_pages;
-@@ -530,7 +530,7 @@ static int _request_firmware(const struct firmware **firmware_p,
- 	}
- 
- 	if (fw_get_builtin_firmware(firmware, name)) {
--		dev_dbg(device, "firmware: using built-in firmware %s\n", name);
-+		(void)dev_dbg(device, "firmware: using built-in firmware %s\n", name);
- 		return 0;
- 	}
- 
-@@ -543,7 +543,7 @@ static int _request_firmware(const struct firmware **firmware_p,
- 	}
- 
- 	if (uevent)
--		dev_dbg(device, "firmware: requesting %s\n", name);
-+		(void)dev_dbg(device, "firmware: requesting %s\n", name);
- 
- 	fw_priv = fw_create_instance(firmware, name, device, uevent, nowait);
- 	if (IS_ERR(fw_priv)) {
 @@ -637,7 +637,7 @@ static int request_firmware_work_func(void *arg)
  	int ret;
  
@@ -2432,15 +2401,6 @@ diff --git a/drivers/base/power/main.c b/drivers/base/power/main.c
 index e2cc3d2..632238e 100644
 --- a/drivers/base/power/main.c
 +++ b/drivers/base/power/main.c
-@@ -305,7 +305,7 @@ static char *pm_verb(int event)
- 
- static void pm_dev_dbg(struct device *dev, pm_message_t state, char *info)
- {
--	dev_dbg(dev, "%s%s%s\n", info, pm_verb(state.event),
-+	(void)dev_dbg(dev, "%s%s%s\n", info, pm_verb(state.event),
- 		((state.event & PM_EVENT_SLEEP) && device_may_wakeup(dev)) ?
- 		", may wakeup" : "");
- }
 @@ -325,7 +325,7 @@ static void dpm_show_time(ktime_t starttime, pm_message_t state, char *info)
  
  	calltime = ktime_get();
@@ -2655,42 +2615,6 @@ diff --git a/drivers/i2c/i2c-core.c b/drivers/i2c/i2c-core.c
 index 1e56061..c7d76b2 100644
 --- a/drivers/i2c/i2c-core.c
 +++ b/drivers/i2c/i2c-core.c
-@@ -95,7 +95,7 @@ static int i2c_device_uevent(struct device *dev, struct kobj_uevent_env *env)
- 	if (add_uevent_var(env, "MODALIAS=%s%s",
- 			   I2C_MODULE_PREFIX, client->name))
- 		return -ENOMEM;
--	dev_dbg(dev, "uevent\n");
-+	(void)dev_dbg(dev, "uevent\n");
- 	return 0;
- }
- 
-@@ -119,7 +119,7 @@ static int i2c_device_probe(struct device *dev)
- 	if (!device_can_wakeup(&client->dev))
- 		device_init_wakeup(&client->dev,
- 					client->flags & I2C_CLIENT_WAKE);
--	dev_dbg(dev, "probe\n");
-+	(void)dev_dbg(dev, "probe\n");
- 
- 	status = driver->probe(client, i2c_match_id(driver->id_table, client));
- 	if (status) {
-@@ -140,7 +140,7 @@ static int i2c_device_remove(struct device *dev)
- 
- 	driver = to_i2c_driver(dev->driver);
- 	if (driver->remove) {
--		dev_dbg(dev, "remove\n");
-+		(void)dev_dbg(dev, "remove\n");
- 		status = driver->remove(client);
- 	} else {
- 		dev->driver = NULL;
-@@ -547,7 +547,7 @@ i2c_new_device(struct i2c_adapter *adap, struct i2c_board_info const *info)
- 	if (status)
- 		goto out_err;
- 
--	dev_dbg(&adap->dev, "client [%s] registered with bus id %s\n",
-+	(void)dev_dbg(&adap->dev, "client [%s] registered with bus id %s\n",
- 		client->name, dev_name(&client->dev));
- 
- 	return client;
 @@ -655,7 +655,7 @@ i2c_sysfs_new_device(struct device *dev, struct device_attribute *attr,
  	char *blank, end;
  	int res;
@@ -2700,42 +2624,6 @@ index 1e56061..c7d76b2 100644
  
  	blank = strchr(buf, ' ');
  	if (!blank) {
-@@ -851,7 +851,7 @@ static int i2c_register_adapter(struct i2c_adapter *adap)
- 	if (res)
- 		goto out_list;
- 
--	dev_dbg(&adap->dev, "adapter [%s] registered\n", adap->name);
-+	(void)dev_dbg(&adap->dev, "adapter [%s] registered\n", adap->name);
- 
- #ifdef CONFIG_I2C_COMPAT
- 	res = class_compat_create_link(i2c_adapter_compat_class, &adap->dev,
-@@ -983,7 +983,7 @@ static int i2c_do_del_adapter(struct i2c_driver *driver,
- 	 * probing (using a driver's detect method) */
- 	list_for_each_entry_safe(client, _n, &driver->clients, detected) {
- 		if (client->adapter == adapter) {
--			dev_dbg(&adapter->dev, "Removing %s at 0x%x\n",
-+			(void)dev_dbg(&adapter->dev, "Removing %s at 0x%x\n",
- 				client->name, client->addr);
- 			list_del(&client->detected);
- 			i2c_unregister_device(client);
-@@ -1058,7 +1058,7 @@ int i2c_del_adapter(struct i2c_adapter *adap)
- 	mutex_lock(&adap->userspace_clients_lock);
- 	list_for_each_entry_safe(client, next, &adap->userspace_clients,
- 				 detected) {
--		dev_dbg(&adap->dev, "Removing %s at 0x%x\n", client->name,
-+		(void)dev_dbg(&adap->dev, "Removing %s at 0x%x\n", client->name,
- 			client->addr);
- 		list_del(&client->detected);
- 		i2c_unregister_device(client);
-@@ -1079,7 +1079,7 @@ int i2c_del_adapter(struct i2c_adapter *adap)
- #endif
- 
- 	/* device name is gone after device_unregister */
--	dev_dbg(&adap->dev, "adapter [%s] unregistered\n", adap->name);
-+	(void)dev_dbg(&adap->dev, "adapter [%s] unregistered\n", adap->name);
- 
- 	/* clean up the sysfs representation */
- 	init_completion(&adap->dev_released);
 @@ -1095,7 +1095,7 @@ int i2c_del_adapter(struct i2c_adapter *adap)
  
  	/* Clear the device structure in case this adapter is ever going to be
@@ -2744,15 +2632,6 @@ index 1e56061..c7d76b2 100644
 +	(void)memset(&adap->dev, 0, sizeof(adap->dev));
  
  	return 0;
- }
-@@ -1359,7 +1359,7 @@ int i2c_transfer(struct i2c_adapter *adap, struct i2c_msg *msgs, int num)
- 
- 		return ret;
- 	} else {
--		dev_dbg(&adap->dev, "I2C level transfers not supported\n");
-+		(void)dev_dbg(&adap->dev, "I2C level transfers not supported\n");
- 		return -EOPNOTSUPP;
- 	}
  }
 @@ -1490,7 +1490,7 @@ static int i2c_detect_address(struct i2c_client *temp_client,
  		return 0;
@@ -2763,82 +2642,6 @@ index 1e56061..c7d76b2 100644
  	info.addr = addr;
  	err = driver->detect(temp_client, &info);
  	if (err) {
-@@ -1508,7 +1508,7 @@ static int i2c_detect_address(struct i2c_client *temp_client,
- 		struct i2c_client *client;
- 
- 		/* Detection succeeded, instantiate the device */
--		dev_dbg(&adapter->dev, "Creating %s at 0x%02x\n",
-+		(void)dev_dbg(&adapter->dev, "Creating %s at 0x%02x\n",
- 			info.type, info.addr);
- 		client = i2c_new_device(adapter, &info);
- 		if (client)
-@@ -1542,7 +1542,7 @@ static int i2c_detect(struct i2c_adapter *adapter, struct i2c_driver *driver)
- 	temp_client->adapter = adapter;
- 
- 	for (i = 0; address_list[i] != I2C_CLIENT_END; i += 1) {
--		dev_dbg(&adapter->dev, "found normal entry for adapter %d, "
-+		(void)dev_dbg(&adapter->dev, "found normal entry for adapter %d, "
- 			"addr 0x%02x\n", adap_id, address_list[i]);
- 		temp_client->addr = address_list[i];
- 		err = i2c_detect_address(temp_client, driver);
-@@ -1582,7 +1582,7 @@ i2c_new_probed_device(struct i2c_adapter *adap,
- 
- 		/* Check address availability */
- 		if (i2c_check_addr_busy(adap, addr_list[i])) {
--			dev_dbg(&adap->dev, "Address 0x%02x already in "
-+			(void)dev_dbg(&adap->dev, "Address 0x%02x already in "
- 				"use, not probing\n", addr_list[i]);
- 			continue;
- 		}
-@@ -1593,7 +1593,7 @@ i2c_new_probed_device(struct i2c_adapter *adap,
- 	}
- 
- 	if (addr_list[i] == I2C_CLIENT_END) {
--		dev_dbg(&adap->dev, "Probing failed, no device found\n");
-+		(void)dev_dbg(&adap->dev, "Probing failed, no device found\n");
- 		return NULL;
- 	}
- 
-diff --git a/drivers/i2c/i2c-dev.c b/drivers/i2c/i2c-dev.c
-index 10e7f1e..3b3394c 100644
---- a/drivers/i2c/i2c-dev.c
-+++ b/drivers/i2c/i2c-dev.c
-@@ -321,7 +321,7 @@ static noinline int i2cdev_ioctl_smbus(struct i2c_client *client,
- 	    (data_arg.size != I2C_SMBUS_I2C_BLOCK_BROKEN) &&
- 	    (data_arg.size != I2C_SMBUS_I2C_BLOCK_DATA) &&
- 	    (data_arg.size != I2C_SMBUS_BLOCK_PROC_CALL)) {
--		dev_dbg(&client->adapter->dev,
-+		(void)dev_dbg(&client->adapter->dev,
- 			"size out of range (%x) in ioctl I2C_SMBUS.\n",
- 			data_arg.size);
- 		return -EINVAL;
-@@ -330,7 +330,7 @@ static noinline int i2cdev_ioctl_smbus(struct i2c_client *client,
- 	   so the check is valid if size==I2C_SMBUS_QUICK too. */
- 	if ((data_arg.read_write != I2C_SMBUS_READ) &&
- 	    (data_arg.read_write != I2C_SMBUS_WRITE)) {
--		dev_dbg(&client->adapter->dev,
-+		(void)dev_dbg(&client->adapter->dev,
- 			"read_write out of range (%x) in ioctl I2C_SMBUS.\n",
- 			data_arg.read_write);
- 		return -EINVAL;
-@@ -347,7 +347,7 @@ static noinline int i2cdev_ioctl_smbus(struct i2c_client *client,
- 				      data_arg.command, data_arg.size, NULL);
- 
- 	if (data_arg.data == NULL) {
--		dev_dbg(&client->adapter->dev,
-+		(void)dev_dbg(&client->adapter->dev,
- 			"data is NULL pointer in ioctl I2C_SMBUS.\n");
- 		return -EINVAL;
- 	}
-@@ -391,7 +391,7 @@ static long i2cdev_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- 	struct i2c_client *client = file->private_data;
- 	unsigned long funcs;
- 
--	dev_dbg(&client->adapter->dev, "ioctl, cmd=0x%02x, arg=0x%02lx\n",
-+	(void)dev_dbg(&client->adapter->dev, "ioctl, cmd=0x%02x, arg=0x%02lx\n",
- 		cmd, arg);
- 
- 	switch (cmd) {
 diff --git a/drivers/input/input.c b/drivers/input/input.c
 index 1f78c95..9953204 100644
 --- a/drivers/input/input.c
@@ -2874,24 +2677,6 @@ diff --git a/drivers/input/keyboard/atkbd.c b/drivers/input/keyboard/atkbd.c
 index e05a2e7..4a793a5 100644
 --- a/drivers/input/keyboard/atkbd.c
 +++ b/drivers/input/keyboard/atkbd.c
-@@ -373,7 +373,7 @@ static irqreturn_t atkbd_interrupt(struct serio *serio, unsigned char data,
- 	int value;
- 	unsigned short keycode;
- 
--	dev_dbg(&serio->dev, "Received %02x flags %02x\n", data, flags);
-+	(void)dev_dbg(&serio->dev, "Received %02x flags %02x\n", data, flags);
- 
- #if !defined(__i386__) && !defined (__x86_64__)
- 	if ((flags & (SERIO_FRAME | SERIO_PARITY)) && (~flags & SERIO_TIMEOUT) && !atkbd->resend && atkbd->write) {
-@@ -438,7 +438,7 @@ static irqreturn_t atkbd_interrupt(struct serio *serio, unsigned char data,
- 		goto out;
- 	case ATKBD_RET_ERR:
- 		atkbd->err_count++;
--		dev_dbg(&serio->dev, "Keyboard on %s reports too many keys pressed.\n",
-+		(void)dev_dbg(&serio->dev, "Keyboard on %s reports too many keys pressed.\n",
- 			serio->phys);
- 		goto out;
- 	}
 @@ -976,7 +976,7 @@ static void atkbd_set_keycode_table(struct atkbd *atkbd)
  	unsigned int scancode;
  	int i, j;
@@ -2901,15 +2686,6 @@ index e05a2e7..4a793a5 100644
  	bitmap_zero(atkbd->force_release_mask, ATKBD_KEYMAP_SIZE);
  
  	if (atkbd->translated) {
-@@ -1192,7 +1192,7 @@ static int atkbd_reconnect(struct serio *serio)
- 	int retval = -1;
- 
- 	if (!atkbd || !drv) {
--		dev_dbg(&serio->dev,
-+		(void)dev_dbg(&serio->dev,
- 			"reconnect request, but serio is disconnected, ignoring...\n");
- 		return -1;
- 	}
 diff --git a/drivers/input/mousedev.c b/drivers/input/mousedev.c
 index 0110b5a..e71937d 100644
 --- a/drivers/input/mousedev.c
@@ -3090,19 +2866,6 @@ index 30055f2..442cb33 100644
  		!host->ops->enable_sdio_irq);
  
  	err = device_add(&host->class_dev);
-diff --git a/drivers/mmc/core/quirks.c b/drivers/mmc/core/quirks.c
-index 06ee1ae..48fa402 100644
---- a/drivers/mmc/core/quirks.c
-+++ b/drivers/mmc/core/quirks.c
-@@ -83,7 +83,7 @@ void mmc_fixup_device(struct mmc_card *card, const struct mmc_fixup *table)
- 		    (f->cis_device == card->cis.device ||
- 		     f->cis_device == (u16) SDIO_ANY_ID) &&
- 		    rev >= f->rev_start && rev <= f->rev_end) {
--			dev_dbg(&card->dev, "calling %pF\n", f->vendor_fixup);
-+			(void)dev_dbg(&card->dev, "calling %pF\n", f->vendor_fixup);
- 			f->vendor_fixup(card, f->data);
- 		}
- 	}
 diff --git a/drivers/mmc/core/sd.c b/drivers/mmc/core/sd.c
 index c63ad03..daf54e0 100644
 --- a/drivers/mmc/core/sd.c
@@ -3207,15 +2970,6 @@ diff --git a/drivers/mmc/host/mmci.c b/drivers/mmc/host/mmci.c
 index 0d955ff..06b696f 100644
 --- a/drivers/mmc/host/mmci.c
 +++ b/drivers/mmc/host/mmci.c
-@@ -580,7 +580,7 @@ static void mmci_start_data(struct mmci_host *host, struct mmc_data *data)
- 	void __iomem *base;
- 	int blksz_bits;
- 
--	dev_dbg(mmc_dev(host->mmc), "blksz %04x blks %04x flags %08x\n",
-+	(void)dev_dbg(mmc_dev(host->mmc), "blksz %04x blks %04x flags %08x\n",
- 		data->blksz, data->blocks, data->flags);
- 
- 	host->data = data;
 @@ -588,7 +588,7 @@ static void mmci_start_data(struct mmci_host *host, struct mmc_data *data)
  	data->bytes_xfered = 0;
  
@@ -3225,42 +2979,6 @@ index 0d955ff..06b696f 100644
  
  	timeout = data->timeout_clks + (unsigned int)clks;
  
-@@ -650,7 +650,7 @@ mmci_start_command(struct mmci_host *host, struct mmc_command *cmd, u32 c)
- {
- 	void __iomem *base = host->base;
- 
--	dev_dbg(mmc_dev(host->mmc), "op %02x arg %08x flags %08x\n",
-+	(void)dev_dbg(mmc_dev(host->mmc), "op %02x arg %08x flags %08x\n",
- 	    cmd->opcode, cmd->arg, cmd->flags);
- 
- 	if (readl(base + MMCICOMMAND) & MCI_CPSM_ENABLE) {
-@@ -696,7 +696,7 @@ mmci_data_irq(struct mmci_host *host, struct mmc_data *data,
- 		remain = readl(host->base + MMCIDATACNT);
- 		success = data->blksz * data->blocks - remain;
- 
--		dev_dbg(mmc_dev(host->mmc), "MCI ERROR IRQ, status 0x%08x at 0x%08x\n",
-+		(void)dev_dbg(mmc_dev(host->mmc), "MCI ERROR IRQ, status 0x%08x at 0x%08x\n",
- 			status, success);
- 		if (status & MCI_DATACRCFAIL) {
- 			/* Last block was not successful */
-@@ -867,7 +867,7 @@ static irqreturn_t mmci_pio_irq(int irq, void *dev_id)
- 
- 	status = readl(base + MMCISTATUS);
- 
--	dev_dbg(mmc_dev(host->mmc), "irq1 (pio) %08x\n", status);
-+	(void)dev_dbg(mmc_dev(host->mmc), "irq1 (pio) %08x\n", status);
- 
- 	local_irq_save(flags);
- 
-@@ -960,7 +960,7 @@ static irqreturn_t mmci_irq(int irq, void *dev_id)
- 		status &= readl(host->base + MMCIMASK0);
- 		writel(status, host->base + MMCICLEAR);
- 
--		dev_dbg(mmc_dev(host->mmc), "irq0 (data+cmd) %08x\n", status);
-+		(void)dev_dbg(mmc_dev(host->mmc), "irq0 (data+cmd) %08x\n", status);
- 
- 		data = host->data;
- 		if (status & (MCI_DATACRCFAIL|MCI_DATATIMEOUT|MCI_STARTBITERR|
 @@ -985,7 +985,7 @@ static void mmci_request(struct mmc_host *mmc, struct mmc_request *mrq)
  	struct mmci_host *host = mmc_priv(mmc);
  	unsigned long flags;
@@ -3270,35 +2988,6 @@ index 0d955ff..06b696f 100644
  
  	if (mrq->data && !is_power_of_2(mrq->data->blksz)) {
  		dev_err(mmc_dev(mmc), "unsupported block size (%d bytes)\n",
-@@ -1159,8 +1159,8 @@ static int __devinit mmci_probe(struct amba_device *dev,
- 
- 	host->hw_designer = amba_manf(dev);
- 	host->hw_revision = amba_rev(dev);
--	dev_dbg(mmc_dev(mmc), "designer ID = 0x%02x\n", host->hw_designer);
--	dev_dbg(mmc_dev(mmc), "revision = 0x%01x\n", host->hw_revision);
-+	(void)dev_dbg(mmc_dev(mmc), "designer ID = 0x%02x\n", host->hw_designer);
-+	(void)dev_dbg(mmc_dev(mmc), "revision = 0x%01x\n", host->hw_revision);
- 
- 	host->clk = clk_get(&dev->dev, NULL);
- 	if (IS_ERR(host->clk)) {
-@@ -1190,7 +1190,7 @@ static int __devinit mmci_probe(struct amba_device *dev,
- 		if (ret < 0)
- 			goto clk_disable;
- 		host->mclk = clk_get_rate(host->clk);
--		dev_dbg(mmc_dev(mmc), "eventual mclk rate: %u Hz\n",
-+		(void)dev_dbg(mmc_dev(mmc), "eventual mclk rate: %u Hz\n",
- 			host->mclk);
- 	}
- 	host->phybase = dev->res.start;
-@@ -1222,7 +1222,7 @@ static int __devinit mmci_probe(struct amba_device *dev,
- 		mmc->f_max = min(host->mclk, plat->f_max);
- 	else
- 		mmc->f_max = min(host->mclk, fmax);
--	dev_dbg(mmc_dev(mmc), "clocking block at %u Hz\n", mmc->f_max);
-+	(void)dev_dbg(mmc_dev(mmc), "clocking block at %u Hz\n", mmc->f_max);
- 
- #ifdef CONFIG_REGULATOR
- 	/* If we're using the regulator framework, try to fetch a regulator */
 diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
 index e1e122f..be1dfb7 100644
 --- a/drivers/mtd/chips/cfi_cmdset_0001.c
@@ -3479,19 +3168,6 @@ index 9f50c4e..4dab9be 100644
  
  	if (share_irqs)
  		irqflag = IRQF_SHARED;
-diff --git a/drivers/tty/serial/amba-pl011.c b/drivers/tty/serial/amba-pl011.c
-index 9ae0240..e078505 100644
---- a/drivers/tty/serial/amba-pl011.c
-+++ b/drivers/tty/serial/amba-pl011.c
-@@ -1152,7 +1152,7 @@ static void pl011_rx_chars(struct uart_amba_port *uap)
- 	 */
- 	if (pl011_dma_rx_available(uap)) {
- 		if (pl011_dma_rx_trigger_dma(uap)) {
--			dev_dbg(uap->port.dev, "could not trigger RX DMA job "
-+			(void)dev_dbg(uap->port.dev, "could not trigger RX DMA job "
- 				"fall back to interrupt mode again\n");
- 			uap->im |= UART011_RXIM;
- 		} else
 diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/serial_core.c
 index c7bf31a..bd971e1 100644
 --- a/drivers/tty/serial/serial_core.c
@@ -6413,19 +6089,6 @@ index ae34bf5..86324c7 100644
  
  	timer->state &= ~HRTIMER_STATE_CALLBACK;
  }
-diff --git a/kernel/irq/devres.c b/kernel/irq/devres.c
-index bd8e788..b126264 100644
---- a/kernel/irq/devres.c
-+++ b/kernel/irq/devres.c
-@@ -87,7 +87,7 @@ void devm_free_irq(struct device *dev, unsigned int irq, void *dev_id)
- {
- 	struct irq_devres match_data = { irq, dev_id };
- 
--	WARN_ON(devres_destroy(dev, devm_irq_release, devm_irq_match,
-+	(void)WARN_ON(devres_destroy(dev, devm_irq_release, devm_irq_match,
- 			       &match_data));
- 	free_irq(irq, dev_id);
- }
 diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
 index 1f9e265..dea8c12 100644
 --- a/kernel/irq/irqdomain.c
@@ -6854,48 +6517,6 @@ index 9cd928f..5107f0e 100644
  	if (!sec)
  		sec = 1;
  	else if (sec > 600 && dev->max_delta_ticks > UINT_MAX)
-diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
-index a45ca16..9e8ebfd 100644
---- a/kernel/time/clocksource.c
-+++ b/kernel/time/clocksource.c
-@@ -153,7 +153,7 @@ clocks_calc_mult_shift(u32 *mult, u32 *shift, u32 from, u32 to, u32 maxsec)
- 	for (sft = 32; sft > 0; sft--) {
- 		tmp = (u64) to << sft;
- 		tmp += from / 2;
--		do_div(tmp, from);
-+		(void)do_div(tmp, from);
- 		if ((tmp >> sftacc) == 0)
- 			break;
- 	}
-@@ -503,7 +503,7 @@ static u32 clocksource_max_adjustment(struct clocksource *cs)
- 	 * We won't try to correct for more then 11% adjustments (110,000 ppm),
- 	 */
- 	ret = (u64)cs->mult * 11;
--	do_div(ret,100);
-+	(void)do_div(ret,100);
- 	return (u32)ret;
- }
- 
-@@ -670,8 +670,8 @@ void __clocksource_updatefreq_scale(struct clocksource *cs, u32 scale, u32 freq)
- 	 * margin as we do in clocksource_max_deferment()
- 	 */
- 	sec = (cs->mask - (cs->mask >> 3));
--	do_div(sec, freq);
--	do_div(sec, scale);
-+	(void)do_div(sec, freq);
-+	(void)do_div(sec, scale);
- 	if (!sec)
- 		sec = 1;
- 	else if (sec > 600 && cs->mask > UINT_MAX)
-@@ -735,7 +735,7 @@ int clocksource_register(struct clocksource *cs)
- {
- 	/* calculate max adjustment for given mult/shift */
- 	cs->maxadj = clocksource_max_adjustment(cs);
--	WARN_ONCE(cs->mult + cs->maxadj < cs->mult,
-+	(void)WARN_ONCE(cs->mult + cs->maxadj < cs->mult,
- 		"Clocksource %s might overflow on 11%% adjustment\n",
- 		cs->name);
- 
 diff --git a/kernel/timer.c b/kernel/timer.c
 index a297ffc..d4e01c0 100644
 --- a/kernel/timer.c
@@ -8744,37 +8365,6 @@ index 7ce191e..cb0b81c 100644
  
  	if (!inode || !inode->i_op->getxattr)
  		return -ENODATA;
-diff --git a/sound/core/control.c b/sound/core/control.c
-index 819a5c5..f5b90fa 100644
---- a/sound/core/control.c
-+++ b/sound/core/control.c
-@@ -83,9 +83,9 @@ static int snd_ctl_open(struct inode *inode, struct file *file)
- 	ctl->prefer_rawmidi_subdevice = -1;
- 	ctl->pid = get_pid(task_pid(current));
- 	file->private_data = ctl;
--	write_lock_irqsave(&card->ctl_files_rwlock, flags);
-+	(void)write_lock_irqsave(&card->ctl_files_rwlock, flags);
- 	list_add_tail(&ctl->list, &card->ctl_files);
-	write_unlock_irqrestore(&card->ctl_files_rwlock, flags);
- 	return 0;
-@@ -231,7 +231,7 @@ struct snd_kcontrol *snd_ctl_new1(const struct snd_kcontrol_new *ncontrol,
- 	
- 	if (snd_BUG_ON(!ncontrol || !ncontrol->info))
- 		return NULL;
--	memset(&kctl, 0, sizeof(kctl));
-+	(void)memset(&kctl, 0, sizeof(kctl));
- 	kctl.id.iface = ncontrol->iface;
- 	kctl.id.device = ncontrol->device;
- 	kctl.id.subdevice = ncontrol->subdevice;
-@@ -1139,7 +1139,7 @@ static int snd_ctl_elem_add(struct snd_ctl_file *file,
- 				 SNDRV_CTL_ELEM_ACCESS_INACTIVE|
- 				 SNDRV_CTL_ELEM_ACCESS_TLV_READWRITE));
- 	info->id.numid = 0;
--	memset(&kctl, 0, sizeof(kctl));
-+	(void)memset(&kctl, 0, sizeof(kctl));
- 	down_write(&card->controls_rwsem);
- 	_kctl = snd_ctl_find_id(card, &info->id);
- 	err = 0;
 diff --git a/sound/core/info_oss.c b/sound/core/info_oss.c
 index cf42ab5..a5f4b6e 100644
 --- a/sound/core/info_oss.c

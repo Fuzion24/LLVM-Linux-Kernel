@@ -1,167 +1,3 @@
-diff --git a/arch/arm/include/asm/atomic.h b/arch/arm/include/asm/atomic.h
-index 7e79503..0a4ea5f 100644
---- a/arch/arm/include/asm/atomic.h
-+++ b/arch/arm/include/asm/atomic.h
-@@ -235,6 +235,7 @@ static inline int atomic_add_unless(atomic_t *v, int a, int u)
- #define smp_mb__before_atomic_inc()	smp_mb()
- #define smp_mb__after_atomic_inc()	smp_mb()
- 
-+#if 0
- #ifndef CONFIG_GENERIC_ATOMIC64
- typedef struct {
- 	u64 __aligned(8) counter;
-@@ -460,6 +461,8 @@ static inline int atomic64_add_unless(atomic64_t *v, u64 a, u64 u)
- #define atomic64_dec_and_test(v)	(atomic64_dec_return((v)) == 0)
- #define atomic64_inc_not_zero(v)	atomic64_add_unless((v), 1LL, 0LL)
- 
-+#endif
-+
- #else /* !CONFIG_GENERIC_ATOMIC64 */
- #include <asm-generic/atomic64.h>
- #endif
-diff --git a/arch/arm/kernel/pmu.c b/arch/arm/kernel/pmu.c
-index a4688e8..119488c 100644
---- a/arch/arm/kernel/pmu.c
-+++ b/arch/arm/kernel/pmu.c
-@@ -45,7 +45,7 @@ static int __devinit pmu_device_probe(struct platform_device *pdev)
- 	return 0;
- }
- 
--static struct platform_driver cpu_pmu_driver = {
-+static struct platform_driver cpu_pmu_driver __devinitdata= {
- 	.driver		= {
- 		.name	= "cpu-arm-pmu",
- 	},
-diff --git a/arch/arm/mach-msm/cpufreq.c b/arch/arm/mach-msm/cpufreq.c
-index 2477221..8bcd2f8 100644
---- a/arch/arm/mach-msm/cpufreq.c
-+++ b/arch/arm/mach-msm/cpufreq.c
-@@ -285,7 +285,7 @@ static struct freq_attr *msm_freq_attr[] = {
- 	NULL,
- };
- 
--static struct cpufreq_driver msm_cpufreq_driver = {
-+static struct cpufreq_driver msm_cpufreq_driver __initdata = {
- 	/* lps calculations are handled here. */
- 	.flags		= CPUFREQ_STICKY | CPUFREQ_CONST_LOOPS,
- 	.init		= msm_cpufreq_init,
-diff --git a/arch/arm/mach-msm/footswitch-8x60.c b/arch/arm/mach-msm/footswitch-8x60.c
-index 98447fa..ff2710d 100644
---- a/arch/arm/mach-msm/footswitch-8x60.c
-+++ b/arch/arm/mach-msm/footswitch-8x60.c
-@@ -561,7 +561,7 @@ static int __devexit footswitch_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
--static struct platform_driver footswitch_driver = {
-+static struct platform_driver footswitch_driver __refdata = {
- 	.probe		= footswitch_probe,
- 	.remove		= __devexit_p(footswitch_remove),
- 	.driver		= {
-diff --git a/arch/arm/mach-msm/footswitch-pcom.c b/arch/arm/mach-msm/footswitch-pcom.c
-index 8eec807..ed7f0c6 100644
---- a/arch/arm/mach-msm/footswitch-pcom.c
-+++ b/arch/arm/mach-msm/footswitch-pcom.c
-@@ -291,7 +291,7 @@ static int __devexit footswitch_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
--static struct platform_driver footswitch_driver = {
-+static struct platform_driver footswitch_driver __refdata = {
- 	.probe		= footswitch_probe,
- 	.remove		= __devexit_p(footswitch_remove),
- 	.driver		= {
-diff --git a/arch/arm/mach-msm/msm_dsps.c b/arch/arm/mach-msm/msm_dsps.c
-index bcb777f..2d48629 100644
---- a/arch/arm/mach-msm/msm_dsps.c
-+++ b/arch/arm/mach-msm/msm_dsps.c
-@@ -865,7 +865,7 @@ static int __devexit dsps_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
--static struct platform_driver dsps_driver = {
-+static struct platform_driver dsps_driver __refdata = {
- 	.probe          = dsps_probe,
- 	.remove         = __exit_p(dsps_remove),
- 	.driver         = {
-diff --git a/arch/arm/mach-msm/rpm-regulator.c b/arch/arm/mach-msm/rpm-regulator.c
-index 5c2bb8e..065ebfc 100644
---- a/arch/arm/mach-msm/rpm-regulator.c
-+++ b/arch/arm/mach-msm/rpm-regulator.c
-@@ -1393,7 +1393,7 @@ static int __devexit rpm_vreg_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
--static struct platform_driver rpm_vreg_driver = {
-+static struct platform_driver rpm_vreg_driver __refdata = {
- 	.probe = rpm_vreg_probe,
- 	.remove = __devexit_p(rpm_vreg_remove),
- 	.driver = {
-diff --git a/arch/arm/mach-msm/rpm.c b/arch/arm/mach-msm/rpm.c
-index ef2956a..3fc36fb 100644
---- a/arch/arm/mach-msm/rpm.c
-+++ b/arch/arm/mach-msm/rpm.c
-@@ -819,7 +819,7 @@ static int __devexit msm_rpm_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
--static struct platform_driver msm_rpm_platform_driver = {
-+static struct platform_driver msm_rpm_platform_driver __refdata = {
- 	.probe = msm_rpm_probe,
- 	.remove = __devexit_p(msm_rpm_remove),
- 	.driver = {
-diff --git a/arch/arm/mach-msm/rpm_log.c b/arch/arm/mach-msm/rpm_log.c
-index 3ed55da..df43a1a 100644
---- a/arch/arm/mach-msm/rpm_log.c
-+++ b/arch/arm/mach-msm/rpm_log.c
-@@ -335,7 +335,7 @@ static int __devexit msm_rpm_log_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
--static struct platform_driver msm_rpm_log_driver = {
-+static struct platform_driver msm_rpm_log_driver __refdata = {
- 	.probe		= msm_rpm_log_probe,
- 	.remove		= __devexit_p(msm_rpm_log_remove),
- 	.driver		= {
-diff --git a/arch/arm/mach-msm/rpm_stats.c b/arch/arm/mach-msm/rpm_stats.c
-index a831bd5..f5d8888 100644
---- a/arch/arm/mach-msm/rpm_stats.c
-+++ b/arch/arm/mach-msm/rpm_stats.c
-@@ -222,7 +222,7 @@ static int __devexit msm_rpmstats_remove(struct platform_device *pdev)
- 	platform_set_drvdata(pdev, NULL);
- 	return 0;
- }
--static struct platform_driver msm_rpmstats_driver = {
-+static struct platform_driver msm_rpmstats_driver __refdata = {
- 	.probe	= msm_rpmstats_probe,
- 	.remove = __devexit_p(msm_rpmstats_remove),
- 	.driver = {
-diff --git a/arch/arm/mach-msm/saw-regulator.c b/arch/arm/mach-msm/saw-regulator.c
-index b11b1fa..edb7ca4 100644
---- a/arch/arm/mach-msm/saw-regulator.c
-+++ b/arch/arm/mach-msm/saw-regulator.c
-@@ -208,7 +208,7 @@ static int __devexit saw_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
--static struct platform_driver saw_driver = {
-+static struct platform_driver saw_driver __refdata = {
- 	.probe = saw_probe,
- 	.remove = __devexit_p(saw_remove),
- 	.driver = {
-diff --git a/arch/arm/mach-msm/smd.c b/arch/arm/mach-msm/smd.c
-index e794801..d6c60bd 100644
---- a/arch/arm/mach-msm/smd.c
-+++ b/arch/arm/mach-msm/smd.c
-@@ -2580,7 +2580,7 @@ static __init int modem_restart_late_init(void)
- }
- late_initcall(modem_restart_late_init);
- 
--static struct platform_driver msm_smd_driver = {
-+static struct platform_driver msm_smd_driver __initdata = {
- 	.probe = msm_smd_probe,
- 	.driver = {
- 		.name = MODULE_NAME,
 diff --git a/crypto/hmac.c b/crypto/hmac.c
 index 8d9544c..281a65d 100644
 --- a/crypto/hmac.c
@@ -543,6 +379,19 @@ index ae721e4..7d9c730 100644
  	.probe		= pm8058_probe,
  	.remove		= __devexit_p(pm8058_remove),
  	.driver		= {
+diff --git a/drivers/mfd/pmic8901.c b/drivers/mfd/pmic8901.c
+index 080a3e3..20b0824 100644
+--- a/drivers/mfd/pmic8901.c
++++ b/drivers/mfd/pmic8901.c
+@@ -338,7 +338,7 @@ static int __devexit pm8901_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver pm8901_driver = {
++static struct platform_driver pm8901_driver __refdata = {
+ 	.probe		= pm8901_probe,
+ 	.remove		= __devexit_p(pm8901_remove),
+ 	.driver		= {
 diff --git a/drivers/misc/pm8xxx-upl.c b/drivers/misc/pm8xxx-upl.c
 index d3d9746..85a809e 100644
 --- a/drivers/misc/pm8xxx-upl.c
@@ -647,6 +496,19 @@ index 8a6dbf7..d6bfd21 100644
  	.probe		= msm_ssbi_probe,
  	.remove		= __exit_p(msm_ssbi_remove),
  	.driver		= {
+diff --git a/drivers/power/isl9519q.c b/drivers/power/isl9519q.c
+index 7ebbf46..7f43d7b 100644
+--- a/drivers/power/isl9519q.c
++++ b/drivers/power/isl9519q.c
+@@ -817,7 +817,7 @@ static const struct dev_pm_ops isl9519q_pm_ops = {
+ };
+ #endif
+ 
+-static struct i2c_driver isl9519q_driver = {
++static struct i2c_driver isl9519q_driver __refdata = {
+ 	.driver = {
+ 		   .name = "isl9519q",
+ 		   .owner = THIS_MODULE,
 diff --git a/drivers/power/msm_charger.c b/drivers/power/msm_charger.c
 index 0cd7967..a9b96d4 100644
 --- a/drivers/power/msm_charger.c
@@ -699,6 +561,19 @@ index 7ff8e28..0770e05 100644
  	.driver = {
  		   .name = "smb137b",
  		   .owner = THIS_MODULE,
+diff --git a/drivers/regulator/gpio-regulator.c b/drivers/regulator/gpio-regulator.c
+index b91e32f..95c913b 100644
+--- a/drivers/regulator/gpio-regulator.c
++++ b/drivers/regulator/gpio-regulator.c
+@@ -193,7 +193,7 @@ static int __devexit gpio_vreg_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver gpio_vreg_driver = {
++static struct platform_driver gpio_vreg_driver __refdata = {
+ 	.probe = gpio_vreg_probe,
+ 	.remove = __devexit_p(gpio_vreg_remove),
+ 	.driver = {
 diff --git a/drivers/regulator/pmic8058-regulator.c b/drivers/regulator/pmic8058-regulator.c
 index e137b0f..6d6286d 100644
 --- a/drivers/regulator/pmic8058-regulator.c
@@ -711,6 +586,19 @@ index e137b0f..6d6286d 100644
 +static struct platform_driver pm8058_vreg_driver __refdata = {
  	.probe = pm8058_vreg_probe,
  	.remove = __devexit_p(pm8058_vreg_remove),
+ 	.driver = {
+diff --git a/drivers/regulator/pmic8901-regulator.c b/drivers/regulator/pmic8901-regulator.c
+index 6fd0a05..df2b81d 100644
+--- a/drivers/regulator/pmic8901-regulator.c
++++ b/drivers/regulator/pmic8901-regulator.c
+@@ -977,7 +977,7 @@ static int __devexit pm8901_vreg_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver pm8901_vreg_driver = {
++static struct platform_driver pm8901_vreg_driver __refdata = {
+ 	.probe = pm8901_vreg_probe,
+ 	.remove = __devexit_p(pm8901_vreg_remove),
  	.driver = {
 diff --git a/drivers/rtc/rtc-pm8xxx.c b/drivers/rtc/rtc-pm8xxx.c
 index e53374e..321d92a 100644
@@ -725,6 +613,19 @@ index e53374e..321d92a 100644
  	.probe		= pm8xxx_rtc_probe,
  	.remove		= __devexit_p(pm8xxx_rtc_remove),
  	.shutdown	= pm8xxx_rtc_shutdown,
+diff --git a/drivers/slimbus/slimbus.c b/drivers/slimbus/slimbus.c
+index a541d8b..e82f329 100644
+--- a/drivers/slimbus/slimbus.c
++++ b/drivers/slimbus/slimbus.c
+@@ -1997,7 +1997,7 @@ static int slim_sched_chans(struct slim_device *sb, u32 clkgear,
+ 				}
+ 			}
+ 			/* schedule 4k family channels */
+-			while (coeff1 < ctrl->sched.num_cc1 &&
++			while (slc1 && coeff1 < ctrl->sched.num_cc1 &&
+ 				curexp == (int)slc1->rootexp + expshft) {
+ 				/* searchorder effective when opensl valid */
+ 				static const int srcho[] = { 5, 2, 4, 1, 3, 0 };
 diff --git a/drivers/spi/spidev.c b/drivers/spi/spidev.c
 index c174306..ee6c97c 100644
 --- a/drivers/spi/spidev.c
@@ -2246,77 +2147,3 @@ index 521c5e5..74507ec 100644
  	.probe = asoc_mvs_cpu_probe,
  	.remove = __devexit_p(asoc_mvs_cpu_remove),
  	.driver = {
-diff --git a/arch/arm/mach-msm/board-msm8x60.c b/arch/arm/mach-msm/board-msm8x60.c
-index ba7e658..1248188 100644
---- a/arch/arm/mach-msm/board-msm8x60.c
-+++ b/arch/arm/mach-msm/board-msm8x60.c
-@@ -7134,7 +7134,7 @@ static struct i2c_registry msm8x60_i2c_devices[] __initdata = {
- };
- #endif /* CONFIG_I2C */
- 
--static void fixup_i2c_configs(void)
-+static void __init fixup_i2c_configs(void)
- {
- #ifdef CONFIG_I2C
- #if defined(CONFIG_GPIO_SX150X) || defined(CONFIG_GPIO_SX150X_MODULE)
-@@ -7152,7 +7152,7 @@ static void fixup_i2c_configs(void)
- #endif
- }
- 
--static void register_i2c_devices(void)
-+static void __init register_i2c_devices(void)
- {
- #ifdef CONFIG_I2C
- 	u8 mach_mask = 0;
-diff --git a/drivers/mfd/pmic8901.c b/drivers/mfd/pmic8901.c
-index 080a3e3..20b0824 100644
---- a/drivers/mfd/pmic8901.c
-+++ b/drivers/mfd/pmic8901.c
-@@ -338,7 +338,7 @@ static int __devexit pm8901_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
--static struct platform_driver pm8901_driver = {
-+static struct platform_driver pm8901_driver __refdata = {
- 	.probe		= pm8901_probe,
- 	.remove		= __devexit_p(pm8901_remove),
- 	.driver		= {
-diff --git a/drivers/regulator/pmic8901-regulator.c b/drivers/regulator/pmic8901-regulator.c
-index 6fd0a05..df2b81d 100644
---- a/drivers/regulator/pmic8901-regulator.c
-+++ b/drivers/regulator/pmic8901-regulator.c
-@@ -977,7 +977,7 @@ static int __devexit pm8901_vreg_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
--static struct platform_driver pm8901_vreg_driver = {
-+static struct platform_driver pm8901_vreg_driver __refdata = {
- 	.probe = pm8901_vreg_probe,
- 	.remove = __devexit_p(pm8901_vreg_remove),
- 	.driver = {
-diff --git a/drivers/slimbus/slimbus.c b/drivers/slimbus/slimbus.c
-index a541d8b..e82f329 100644
---- a/drivers/slimbus/slimbus.c
-+++ b/drivers/slimbus/slimbus.c
-@@ -1997,7 +1997,7 @@ static int slim_sched_chans(struct slim_device *sb, u32 clkgear,
- 				}
- 			}
- 			/* schedule 4k family channels */
--			while (coeff1 < ctrl->sched.num_cc1 &&
-+			while (slc1 && coeff1 < ctrl->sched.num_cc1 &&
- 				curexp == (int)slc1->rootexp + expshft) {
- 				/* searchorder effective when opensl valid */
- 				static const int srcho[] = { 5, 2, 4, 1, 3, 0 };
-diff --git a/arch/arm/mach-msm/msm_dsps.c b/arch/arm/mach-msm/msm_dsps.c
-index efb2bf6..057665b 100644
---- a/arch/arm/mach-msm/msm_dsps.c
-+++ b/arch/arm/mach-msm/msm_dsps.c
-@@ -39,7 +39,7 @@
- #include <mach/subsystem_restart.h>
- #include <mach/subsystem_notif.h>
- 
--#include <timer.h>
-+#include "timer.h"
- 
- #define DRV_NAME	"msm_dsps"
- #define DRV_VERSION	"3.02"

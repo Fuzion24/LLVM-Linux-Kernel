@@ -76,7 +76,7 @@ qemu-configure: state/qemu-configure
 state/qemu-configure: state/qemu-fetch
 	@mkdir -p ${QEMUBUILDDIR}
 	(cd ${QEMUBUILDDIR} && ${SRCDIR}/qemu/configure \
-		--target-list=arm-softmmu --disable-kvm \
+		--target-list=arm-softmmu,mips-softmmu --disable-kvm \
 		--disable-sdl --audio-drv-list="" --audio-card-list="" \
 		--disable-docs --prefix=${INSTALLDIR})
 	@mkdir -p state

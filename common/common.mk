@@ -24,7 +24,7 @@ TOPDIR=${CWD}/../..
 SRCDIR=${CWD}/src
 INSTALLDIR=${TOPDIR}/install
 COMMON=${TOPDIR}/common
-PATCH_FILES=${COMMON}/common.patch ${COMMON}/fix-warnings.patch \
+PATCH_FILES+=${COMMON}/common.patch ${COMMON}/fix-warnings.patch \
 	${COMMON}/fix-warnings-unused.patch
 
 # The ARCH makefile must provide the following:
@@ -51,8 +51,10 @@ state/kernel-fetch:
 
 kernel-patch: state/kernel-patch
 state/kernel-patch: state/kernel-fetch
+	@echo "patching source: see patch.log"
+	@rm -f ${CWD}/patch.log
 	(cd ${KERNELDIR} && for patch in ${PATCH_FILES}; do \
-		patch -p1 < $$patch;\
+		patch -p1 < $$patch >> ${CWD}/patch.log;\
 		done)
 	@mkdir -p state
 	@touch $@
@@ -71,8 +73,8 @@ state/kernel-configure: state/kernel-patch
 
 kernel-build: state/kernel-build
 state/kernel-build: state/kernel-configure
-	@echo "Writing to ${CWD}/log..."
-	(cd ${KERNELDIR} && ${MAKE_KERNEL} ${INSTALLDIR} > ${CWD}/log 2>&1)
+	@echo "Writing to ${CWD}/build.log..."
+	(cd ${KERNELDIR} && ${MAKE_KERNEL} ${INSTALLDIR} > ${CWD}/build.log 2>&1)
 	@mkdir -p state
 	@touch $@
 

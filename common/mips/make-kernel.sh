@@ -33,24 +33,18 @@ export LANG=C
 export LC_ALL=C
 
 if [ ${USECLANG} -eq "1" ]; then
-export CC_FOR_BUILD="${INSTALLDIR}/bin/clang -g -march=armv7-a \
-	-ccc-host-triple arm -mfloat-abi=softfp -mfpu=neon \
+export CC_FOR_BUILD="${INSTALLDIR}/bin/clang -g \
+	-ccc-host-triple mips -mfloat-abi=softfp \
 	-ccc-gcc-name none-linux-gnueabi-gcc \
 	-I ${INSTALLDIR}/lib/clang/3.0/include"
-export CROSS_COMPILE=arm-none-linux-gnueabi-
-export PATH=${GCCHOME}/arm-2011.03/bin:${INSTALLDIR}/bin:$PATH
+export CROSS_COMPILE=mips-none-linux-gnueabi-
+export PATH=${GCCHOME}/tbd/bin:${INSTALLDIR}/bin:$PATH
 
 else
 
-if [ ${GCCVERSION} -eq "2010" ]; then
-export CC_FOR_BUILD=${GCCHOME}/arm-2010.09/bin/arm-none-eabi-gcc
-export CROSS_COMPILE=arm-none-eabi-
-export PATH=${GCCHOME}/arm-2010.09/bin:$PATH
-else
-export CC_FOR_BUILD=${GCCHOME}/arm-2011.03/bin/arm-none-linux-gnueabi-gcc
-export CROSS_COMPILE=arm-none-linux-gnueabi-
-export PATH=${GCCHOME}/arm-2011.03/bin:$PATH
-fi
+export CC_FOR_BUILD=${GCCHOME}/tbd/bin/mips-none-eabi-gcc
+export CROSS_COMPILE=mips-none-eabi-
+export PATH=${GCCHOME}/tbd/bin:$PATH
 
 fi
 

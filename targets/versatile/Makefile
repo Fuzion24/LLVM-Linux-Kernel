@@ -24,6 +24,7 @@ CWD=${CURDIR}
 KERNEL_CFG=${CWD}/config_vexpress
 KERNEL_GIT=git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
 KERNELDIR=${SRCDIR}/linux
+PATCH_FILES=
 
 include ../../common/common.mk
 include ../../common/common-tip.mk
