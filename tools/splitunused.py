@@ -30,8 +30,7 @@ def usage():
 
 def main():
 	searchstr="diff"
-	armpatches=[]
-	mipspatches=[]
+	unusedpatches=[]
 	allpatches=[]
 
 	if len(sys.argv) < 4:
@@ -42,20 +41,21 @@ def main():
 	patches = patchfile.split("\ndiff")
 
 	for p in patches:
-		if "/arm/" in p.split("\n")[0]:
-			armpatches.append(p)
-		elif "/mips/" in p.split("\n")[0]:
-			mipspatches.append(p)
-		else:
+		unused = 0
+		lines = p.split("\n")
+		for line in lines:
+			if len(line) > 8 and line[0] == "+" and line[1] != '+':
+				if line[1:].strip()[0:6] == "(void)":
+					unusedpatches.append(p)
+					unused = 1
+					break
+		
+		if not unused:
 			allpatches.append(p)
 
-	if armpatches:
-		fp=open(sys.argv[2]+"/"+sys.argv[3]+"-arm.patch", "w")
-		for p in armpatches:
-			fp.write(p)
-	if mipspatches:
-		fp=open(sys.argv[2]+"/"+sys.argv[3]+"-mips.patch", "w")
-		for p in mipspatches:
+	if unusedpatches:
+		fp=open(sys.argv[2]+"/"+sys.argv[3]+"-unused.patch", "w")
+		for p in unusedpatches:
 			fp.write(p)
 	if allpatches:
 		fp=open(sys.argv[2]+"/"+sys.argv[3]+".patch", "w")
