@@ -249,6 +249,15 @@ index efb2bf6..057665b 100644
  
  #define DRV_NAME	"msm_dsps"
  #define DRV_VERSION	"3.02"
+@@ -868,7 +868,7 @@ static int __devexit dsps_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver dsps_driver = {
++static struct platform_driver dsps_driver __refdata = {
+ 	.probe          = dsps_probe,
+ 	.remove         = __exit_p(dsps_remove),
+ 	.driver         = {
 diff --git a/arch/arm/mach-msm/pil-modem.c b/arch/arm/mach-msm/pil-modem.c
 index 5aa3834..a8344c3 100644
 --- a/arch/arm/mach-msm/pil-modem.c

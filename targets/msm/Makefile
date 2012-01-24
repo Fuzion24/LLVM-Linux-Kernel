@@ -26,7 +26,8 @@ MSM_BRANCH="kernel-3.0"
 KERNEL_GIT="git://codeaurora.org/kernel/msm.git -b ${MSM_BRANCH}"
 KERNELDIR=${SRCDIR}/msm
 PATCH_FILES=${CWD}/msm-3.0-llvm.patch ${CWD}/msm-3.0-llvm-arm.patch \
-	${CWD}/fix-warnings.patch
+	${CWD}/fix-warnings.patch ${CWD}/fix-warnings-arm.patch \
+	${CWD}/test.patch
 
 include ../../common/common.mk
 include ../../common/arm/common-arm.mk

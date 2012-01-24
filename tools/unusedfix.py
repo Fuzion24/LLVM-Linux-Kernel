@@ -44,7 +44,18 @@ false_positives = [	"dev_dbg",
 			"__put_user",
 			"clear_page",
 			"readl",
-			"if" ]
+			"if",
+			"DECLARE_EVENT_CLASS",
+			"TRACE_EVENT",
+			"dm_sector_div_up",
+			"DEFINE_EVENT_PRINT",
+			"trace_assign_type",
+			"CLEAR_HASH",
+			"mutex_lock_nest_lock",
+			"DEBUG_LOCKS_WARN_ON",
+			"might_lock_read",
+			"DEBUG_LOCKS_WARN_ON"
+			 ]
 			
 
 def skip_patch(line):
