@@ -40,7 +40,7 @@ def main():
 
 	patches = readpatch(sys.argv[1])
 
-	for k in patches.keys():
+	for k in sorted(patches.keys()):
 		p = patches[k][1]
 		unused = 0
 		lines = p.split("\n")

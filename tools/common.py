@@ -26,13 +26,11 @@ import os, sys
 
 def getpatchinfo(patch):
 	p = patch.split("\n--- a/")[1]
-	print p
 
 	filename = p.split("\n")[0]
 	lines=p.split("\n@@ ")[1:]
 	lines=[ x.split(",")[0] for x in lines ]
 
-	print filename, lines
 	return filename, lines
 
 def readpatch(patchfile):

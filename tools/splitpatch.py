@@ -45,7 +45,7 @@ def main():
 
 	patches = readpatch(sys.argv[1])
 
-	for name in patches.keys():
+	for name in sorted(patches.keys()):
 		if "/arm/" in name:
 			armpatches.append(patches[name][1])
 		elif "/mips/" in name:
