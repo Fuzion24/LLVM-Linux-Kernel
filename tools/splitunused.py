@@ -41,6 +41,12 @@ def main():
 	patches = patchfile.split("\ndiff")
 
 	for p in patches:
+		# add back the "diff" and "\n"
+		if p[0:4] != "diff":
+			p="diff"+p+"\n"
+		else:
+			p=p+"\n"
+
 		unused = 0
 		lines = p.split("\n")
 		for line in lines:
@@ -54,10 +60,14 @@ def main():
 			allpatches.append(p)
 
 	if unusedpatches:
+		# Remove trailing "\n"
+		unusedpatches[-1]=unusedpatches[-1][:-1]
 		fp=open(sys.argv[2]+"/"+sys.argv[3]+"-unused.patch", "w")
 		for p in unusedpatches:
 			fp.write(p)
 	if allpatches:
+		# Remove trailing "\n"
+		allpatches[-1]=allpatches[-1][:-1]
 		fp=open(sys.argv[2]+"/"+sys.argv[3]+".patch", "w")
 		for p in allpatches:
 			fp.write(p)

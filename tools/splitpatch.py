@@ -42,6 +42,12 @@ def main():
 	patches = patchfile.split("\ndiff")
 
 	for p in patches:
+		# add back the "diff" and "\n"
+		if p[0:4] != "diff":
+			p="diff"+p+"\n"
+		else:
+			p=p+"\n"
+
 		if "/arm/" in p.split("\n")[0]:
 			armpatches.append(p)
 		elif "/mips/" in p.split("\n")[0]:
@@ -50,14 +56,20 @@ def main():
 			allpatches.append(p)
 
 	if armpatches:
+		# Remove trailing "\n"
+		armpatches[-1]=armpatches[-1][:-1]
 		fp=open(sys.argv[2]+"/"+sys.argv[3]+"-arm.patch", "w")
 		for p in armpatches:
 			fp.write(p)
 	if mipspatches:
+		# Remove trailing "\n"
+		mipspatches[-1]=mipspatches[-1][:-1]
 		fp=open(sys.argv[2]+"/"+sys.argv[3]+"-mips.patch", "w")
 		for p in mipspatches:
 			fp.write(p)
 	if allpatches:
+		# Remove trailing "\n"
+		allpatches[-1]=allpatches[-1][:-1]
 		fp=open(sys.argv[2]+"/"+sys.argv[3]+".patch", "w")
 		for p in allpatches:
 			fp.write(p)

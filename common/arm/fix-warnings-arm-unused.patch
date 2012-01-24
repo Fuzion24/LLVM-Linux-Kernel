@@ -1,0 +1,432 @@
+diff --git a/arch/arm/include/asm/uaccess.h b/arch/arm/include/asm/uaccess.h
+index b293616..0308934 100644
+--- a/arch/arm/include/asm/uaccess.h
++++ b/arch/arm/include/asm/uaccess.h
+@@ -406,7 +406,7 @@ static inline unsigned long __must_check copy_from_user(void *to, const void __u
+ 	if (access_ok(VERIFY_READ, from, n))
+ 		n = __copy_from_user(to, from, n);
+ 	else /* security hole - plug it */
+-		memset(to, 0, n);
++		(void)memset(to, 0, n);
+ 	return n;
+ }
+ 
+diff --git a/arch/arm/kernel/process.c b/arch/arm/kernel/process.c
+index 4ee00c8..551d99a 100644
+--- a/arch/arm/kernel/process.c
++++ b/arch/arm/kernel/process.c
+@@ -247,7 +247,7 @@ void cpu_idle(void)
+ 				 * functions should always return with IRQs
+ 				 * enabled.
+ 				 */
+-				WARN_ON(irqs_disabled());
++				(void)WARN_ON(irqs_disabled());
+ 				local_irq_enable();
+ 			}
+ 		}
+diff --git a/arch/arm/mm/dma-mapping.c b/arch/arm/mm/dma-mapping.c
+index 340c2d0..eff7868 100644
+--- a/arch/arm/mm/dma-mapping.c
++++ b/arch/arm/mm/dma-mapping.c
+@@ -94,7 +94,7 @@ static struct page *__dma_alloc_buffer(struct device *dev, size_t size, gfp_t gf
+ 	 * lurking in the kernel direct-mapped region is invalidated.
+ 	 */
+ 	ptr = page_address(page);
+-	memset(ptr, 0, size);
++	(void)memset(ptr, 0, size);
+ 	dmac_flush_range(ptr, ptr + size);
+ 	outer_flush_range(__pa(ptr), __pa(ptr) + size);
+ 
+@@ -171,7 +171,7 @@ static int __init consistent_init(void)
+ 			ret = -ENOMEM;
+ 			break;
+ 		}
+-		WARN_ON(!pmd_none(*pmd));
++		(void)WARN_ON(!pmd_none(*pmd));
+ 
+ 		pte = pte_alloc_kernel(pmd, base);
+ 		if (!pte) {
+diff --git a/arch/arm/kernel/sys_oabi-compat.c b/arch/arm/kernel/sys_oabi-compat.c
+index af0aaeb..697f7b5 100644
+--- a/arch/arm/kernel/sys_oabi-compat.c
++++ b/arch/arm/kernel/sys_oabi-compat.c
+@@ -418,7 +418,7 @@ asmlinkage long sys_oabi_sendmsg(int fd, struct msghdr __user *msg, unsigned fla
+ 		 * to run for cover.  In most cases it will "just work fine".
+ 		 * If it doesn't, well, tough.
+ 		 */
+-		put_user(110, &msg->msg_namelen);
++		(void)put_user(110, &msg->msg_namelen);
+ 	}
+ 	return sys_sendmsg(fd, msg, flags);
+ }
+diff --git a/arch/arm/vfp/vfp.h b/arch/arm/vfp/vfp.h
+index c8c98dd..5a0c1e8 100644
+--- a/arch/arm/vfp/vfp.h
++++ b/arch/arm/vfp/vfp.h
+@@ -121,7 +121,7 @@ static inline u64 vfp_estimate_div128to64(u64 nh, u64 nl, u64 m)
+ 		z = 0xffffffff00000000ULL;
+ 	} else {
+ 		z = nh;
+-		do_div(z, mh);
++		(void)do_div(z, mh);
+ 		z <<= 32;
+ 	}
+ 	mul64to128(&termh, &terml, m, z);
+@@ -135,7 +135,7 @@ static inline u64 vfp_estimate_div128to64(u64 nh, u64 nl, u64 m)
+ 	if (mh << 32 <= remh) {
+ 		z |= 0xffffffff;
+ 	} else {
+-		do_div(remh, mh);
++		(void)do_div(remh, mh);
+ 		z |= remh;
+ 	}
+ 	return z;
+diff --git a/arch/arm/kernel/signal.c b/arch/arm/kernel/signal.c
+index 0340224..95ccd9a 100644
+--- a/arch/arm/kernel/signal.c
++++ b/arch/arm/kernel/signal.c
+@@ -92,8 +92,8 @@ sys_sigaction(int sig, const struct old_sigaction __user *act,
+ 		    __get_user(new_ka.sa.sa_handler, &act->sa_handler) ||
+ 		    __get_user(new_ka.sa.sa_restorer, &act->sa_restorer))
+ 			return -EFAULT;
+-		__get_user(new_ka.sa.sa_flags, &act->sa_flags);
+-		__get_user(mask, &act->sa_mask);
++		(void)__get_user(new_ka.sa.sa_flags, &act->sa_flags);
++		(void)__get_user(mask, &act->sa_mask);
+ 		siginitset(&new_ka.sa.sa_mask, mask);
+ 	}
+ 
+@@ -104,8 +104,8 @@ sys_sigaction(int sig, const struct old_sigaction __user *act,
+ 		    __put_user(old_ka.sa.sa_handler, &oact->sa_handler) ||
+ 		    __put_user(old_ka.sa.sa_restorer, &oact->sa_restorer))
+ 			return -EFAULT;
+-		__put_user(old_ka.sa.sa_flags, &oact->sa_flags);
+-		__put_user(old_ka.sa.sa_mask.sig[0], &oact->sa_mask);
++		(void)__put_user(old_ka.sa.sa_flags, &oact->sa_flags);
++		(void)__put_user(old_ka.sa.sa_mask.sig[0], &oact->sa_mask);
+ 	}
+ 
+ 	return ret;
+diff --git a/arch/arm/common/gic.c b/arch/arm/common/gic.c
+index b2dc2dd..8d962d9 100644
+--- a/arch/arm/common/gic.c
++++ b/arch/arm/common/gic.c
+@@ -685,7 +685,7 @@ void __init gic_init_bases(unsigned int gic_nr, int irq_start,
+ 	} else
+ #endif
+ 	{			/* Normal, sane GIC... */
+-		WARN(percpu_offset,
++		(void)WARN(percpu_offset,
+ 		     "GIC_NON_BANKED not enabled, ignoring %08x offset!",
+ 		     percpu_offset);
+ 		gic->dist_base.common_base = dist_base;
+@@ -720,7 +720,7 @@ void __init gic_init_bases(unsigned int gic_nr, int irq_start,
+ 	domain->irq_base = irq_alloc_descs(irq_start, 16, domain->nr_irq,
+ 					   numa_node_id());
+ 	if (IS_ERR_VALUE(domain->irq_base)) {
+-		WARN(1, "Cannot allocate irq_descs @ IRQ%d, assuming pre-allocated\n",
++		(void)WARN(1, "Cannot allocate irq_descs @ IRQ%d, assuming pre-allocated\n",
+ 		     irq_start);
+ 		domain->irq_base = irq_start;
+ 	}
+diff --git a/arch/arm/kernel/process.c b/arch/arm/kernel/process.c
+index 971d65c..e233e4b 100644
+--- a/arch/arm/kernel/process.c
++++ b/arch/arm/kernel/process.c
+@@ -377,9 +377,9 @@ void flush_thread(void)
+ 
+ 	flush_ptrace_hw_breakpoint(tsk);
+ 
+-	memset(thread->used_cp, 0, sizeof(thread->used_cp));
+-	memset(&tsk->thread.debug, 0, sizeof(struct debug_info));
+-	memset(&thread->fpstate, 0, sizeof(union fp_state));
++	(void)memset(thread->used_cp, 0, sizeof(thread->used_cp));
++	(void)memset(&tsk->thread.debug, 0, sizeof(struct debug_info));
++	(void)memset(&thread->fpstate, 0, sizeof(union fp_state));
+ 
+ 	thread_notify(THREAD_NOTIFY_FLUSH, thread);
+ }
+@@ -401,7 +401,7 @@ copy_thread(unsigned long clone_flags, unsigned long stack_start,
+ 	childregs->ARM_r0 = 0;
+ 	childregs->ARM_sp = stack_start;
+ 
+-	memset(&thread->cpu_context, 0, sizeof(struct cpu_context_save));
++	(void)memset(&thread->cpu_context, 0, sizeof(struct cpu_context_save));
+ 	thread->cpu_context.sp = (unsigned long)childregs;
+ 	thread->cpu_context.pc = (unsigned long)ret_from_fork;
+ 
+@@ -483,7 +483,7 @@ pid_t kernel_thread(int (*fn)(void *), void *arg, unsigned long flags)
+ {
+ 	struct pt_regs regs;
+ 
+-	memset(&regs, 0, sizeof(regs));
++	(void)memset(&regs, 0, sizeof(regs));
+ 
+ 	regs.ARM_r4 = (unsigned long)arg;
+ 	regs.ARM_r5 = (unsigned long)fn;
+diff --git a/arch/arm/kernel/sched_clock.c b/arch/arm/kernel/sched_clock.c
+index 5416c7c..9bcb20e 100644
+--- a/arch/arm/kernel/sched_clock.c
++++ b/arch/arm/kernel/sched_clock.c
+@@ -104,8 +104,8 @@ void __init setup_sched_clock(u32 (*read)(void), int bits, unsigned long rate)
+ 	char r_unit;
+ 
+ 	BUG_ON(bits > 32);
+-	WARN_ON(!irqs_disabled());
+-	WARN_ON(read_sched_clock != jiffy_sched_clock_read);
++	(void)WARN_ON(!irqs_disabled());
++	(void)WARN_ON(read_sched_clock != jiffy_sched_clock_read);
+ 	read_sched_clock = read;
+ 	sched_clock_mask = (1 << bits) - 1;
+ 
+@@ -124,7 +124,7 @@ void __init setup_sched_clock(u32 (*read)(void), int bits, unsigned long rate)
+ 
+ 	/* calculate how many ns until we wrap */
+ 	wrap = cyc_to_ns((1ULL << bits) - 1, cd.mult, cd.shift);
+-	do_div(wrap, NSEC_PER_MSEC);
++	(void)do_div(wrap, NSEC_PER_MSEC);
+ 	w = wrap;
+ 
+ 	/* calculate the ns resolution of this counter */
+diff --git a/arch/arm/kernel/signal.c b/arch/arm/kernel/signal.c
+index 0340224..79ff25b 100644
+--- a/arch/arm/kernel/signal.c
++++ b/arch/arm/kernel/signal.c
+@@ -574,7 +574,7 @@ setup_rt_frame(int usig, struct k_sigaction *ka, siginfo_t *info,
+ 	__put_user_error(0, &frame->sig.uc.uc_flags, err);
+ 	__put_user_error(NULL, &frame->sig.uc.uc_link, err);
+ 
+-	memset(&stack, 0, sizeof(stack));
++	(void)memset(&stack, 0, sizeof(stack));
+ 	stack.ss_sp = (void __user *)current->sas_ss_sp;
+ 	stack.ss_flags = sas_ss_flags(regs->ARM_sp);
+ 	stack.ss_size = current->sas_ss_size;
+diff --git a/arch/arm/kernel/sys_arm.c b/arch/arm/kernel/sys_arm.c
+index d2b1779..024f29c 100644
+--- a/arch/arm/kernel/sys_arm.c
++++ b/arch/arm/kernel/sys_arm.c
+@@ -86,7 +86,7 @@ int kernel_execve(const char *filename,
+ 	struct pt_regs regs;
+ 	int ret;
+ 
+-	memset(&regs, 0, sizeof(struct pt_regs));
++	(void)memset(&regs, 0, sizeof(struct pt_regs));
+ 	ret = do_execve(filename,
+ 			(const char __user *const __user *)argv,
+ 			(const char __user *const __user *)envp, &regs);
+diff --git a/arch/arm/kernel/traps.c b/arch/arm/kernel/traps.c
+index 99a5727..27e780d 100644
+--- a/arch/arm/kernel/traps.c
++++ b/arch/arm/kernel/traps.c
+@@ -106,7 +106,7 @@ static void dump_mem(const char *lvl, const char *str, unsigned long bottom,
+ 		unsigned long p;
+ 		char str[sizeof(" 12345678") * 8 + 1];
+ 
+-		memset(str, ' ', sizeof(str));
++		(void)memset(str, ' ', sizeof(str));
+ 		str[sizeof(str) - 1] = '\0';
+ 
+ 		for (p = first, i = 0; i < 8 && p < top; i++, p += 4) {
+@@ -388,15 +388,15 @@ asmlinkage void __exception do_undefinstr(struct pt_regs *regs)
+ #endif
+ 			instr = *(u32 *) pc;
+ 	} else if (thumb_mode(regs)) {
+-		get_user(instr, (u16 __user *)pc);
++		(void)get_user(instr, (u16 __user *)pc);
+ 		if (is_wide_instruction(instr)) {
+ 			unsigned int instr2;
+-			get_user(instr2, (u16 __user *)pc+1);
++			(void)get_user(instr2, (u16 __user *)pc+1);
+ 			instr <<= 16;
+ 			instr |= instr2;
+ 		}
+ 	} else {
+-		get_user(instr, (u32 __user *)pc);
++		(void)get_user(instr, (u32 __user *)pc);
+ 	}
+ 
+ 	if (call_undef_hook(regs, instr) == 0)
+diff --git a/arch/arm/mm/copypage-v6.c b/arch/arm/mm/copypage-v6.c
+index 3d9a155..18b900f 100644
+--- a/arch/arm/mm/copypage-v6.c
++++ b/arch/arm/mm/copypage-v6.c
+@@ -52,7 +52,7 @@ static void v6_copy_user_highpage_nonaliasing(struct page *to,
+ static void v6_clear_user_highpage_nonaliasing(struct page *page, unsigned long vaddr)
+ {
+ 	void *kaddr = kmap_atomic(page, KM_USER0);
+-	clear_page(kaddr);
++	(void)clear_page(kaddr);
+ 	kunmap_atomic(kaddr, KM_USER0);
+ }
+ 
+@@ -125,7 +125,7 @@ static void v6_clear_user_highpage_aliasing(struct page *page, unsigned long vad
+ 
+ 	set_pte_ext(TOP_PTE(to_address) + offset, pfn_pte(page_to_pfn(page), PAGE_KERNEL), 0);
+ 	flush_tlb_kernel_page(to);
+-	clear_page((void *)to);
++	(void)clear_page((void *)to);
+ 
+ 	raw_spin_unlock(&v6_lock);
+ }
+diff --git a/arch/arm/mm/dma-mapping.c b/arch/arm/mm/dma-mapping.c
+index 1aa664a..fcceda2 100644
+--- a/arch/arm/mm/dma-mapping.c
++++ b/arch/arm/mm/dma-mapping.c
+@@ -441,7 +441,7 @@ EXPORT_SYMBOL(dma_mmap_writecombine);
+  */
+ void dma_free_coherent(struct device *dev, size_t size, void *cpu_addr, dma_addr_t handle)
+ {
+-	WARN_ON(irqs_disabled());
++	(void)WARN_ON(irqs_disabled());
+ 
+ 	if (dma_release_from_coherent(dev, get_order(size), cpu_addr))
+ 		return;
+diff --git a/arch/arm/mm/init.c b/arch/arm/mm/init.c
+index 6ec1226..149f6d0 100644
+--- a/arch/arm/mm/init.c
++++ b/arch/arm/mm/init.c
+@@ -236,7 +236,7 @@ static void __init arm_bootmem_free(unsigned long min, unsigned long max_low,
+ 	/*
+ 	 * initialise the zones.
+ 	 */
+-	memset(zone_size, 0, sizeof(zone_size));
++	(void)memset(zone_size, 0, sizeof(zone_size));
+ 
+ 	/*
+ 	 * The memory size has already been determined.  If we need
+diff --git a/arch/arm/mm/mmu.c b/arch/arm/mm/mmu.c
+index 94c5a0c..a83e089 100644
+--- a/arch/arm/mm/mmu.c
++++ b/arch/arm/mm/mmu.c
+@@ -551,7 +551,7 @@ EXPORT_SYMBOL(phys_mem_access_prot);
+ static void __init *early_alloc_aligned(unsigned long sz, unsigned long align)
+ {
+ 	void *ptr = __va(memblock_alloc(sz, align));
+-	memset(ptr, 0, sz);
++	(void)memset(ptr, 0, sz);
+ 	return ptr;
+ }
+ 
+diff --git a/arch/arm/mm/pgd.c b/arch/arm/mm/pgd.c
+index a3e78cc..a5d9c27 100644
+--- a/arch/arm/mm/pgd.c
++++ b/arch/arm/mm/pgd.c
+@@ -40,7 +40,7 @@ pgd_t *pgd_alloc(struct mm_struct *mm)
+ 	if (!new_pgd)
+ 		goto no_pgd;
+ 
+-	memset(new_pgd, 0, USER_PTRS_PER_PGD * sizeof(pgd_t));
++	(void)memset(new_pgd, 0, USER_PTRS_PER_PGD * sizeof(pgd_t));
+ 
+ 	/*
+ 	 * Copy over the kernel and IO PGD entries
+diff --git a/arch/arm/nwfpe/fpa11.c b/arch/arm/nwfpe/fpa11.c
+index cc60acd..a316414 100644
+--- a/arch/arm/nwfpe/fpa11.c
++++ b/arch/arm/nwfpe/fpa11.c
+@@ -89,7 +89,7 @@ void nwfpe_init_fpa(union fp_state *fp)
+ #ifdef NWFPE_DEBUG
+ 	printk("NWFPE: setting up state.\n");
+ #endif
+- 	memset(fpa11, 0, sizeof(FPA11));
++ 	(void)memset(fpa11, 0, sizeof(FPA11));
+ 	resetFPA11();
+ 	fpa11->initflag = 1;
+ }
+diff --git a/arch/arm/nwfpe/softfloat.c b/arch/arm/nwfpe/softfloat.c
+index ffa6b43..9a9ded3 100644
+--- a/arch/arm/nwfpe/softfloat.c
++++ b/arch/arm/nwfpe/softfloat.c
+@@ -1327,7 +1327,7 @@ float32 float32_div( struct roundingData *roundData, float32 a, float32 b )
+     }
+     {
+         bits64 tmp = ( (bits64) aSig )<<32;
+-        do_div( tmp, bSig );
++        (void)do_div( tmp, bSig );
+         zSig = tmp;
+     }
+     if ( ( zSig & 0x3F ) == 0 ) {
+@@ -1396,7 +1396,7 @@ float32 float32_rem( struct roundingData *roundData, float32 a, float32 b )
+         if ( q ) aSig -= bSig;
+         if ( 0 < expDiff ) {
+             bits64 tmp = ( (bits64) aSig )<<32;
+-            do_div( tmp, bSig );
++            (void)do_div( tmp, bSig );
+             q = tmp;
+             q >>= 32 - expDiff;
+             bSig >>= 2;
+diff --git a/sound/arm/aaci.c b/sound/arm/aaci.c
+index b37b702a..5181a7f 100644
+--- a/sound/arm/aaci.c
++++ b/sound/arm/aaci.c
+@@ -46,13 +46,13 @@ static void aaci_ac97_select_codec(struct aaci *aaci, struct snd_ac97 *ac97)
+ 	 */
+ 	v = readl(aaci->base + AACI_SLFR);
+ 	if (v & SLFR_2RXV)
+-		readl(aaci->base + AACI_SL2RX);
++		(void)readl(aaci->base + AACI_SL2RX);
+ 	if (v & SLFR_1RXV)
+-		readl(aaci->base + AACI_SL1RX);
++		(void)readl(aaci->base + AACI_SL1RX);
+ 
+ 	if (maincr != readl(aaci->base + AACI_MAINCR)) {
+ 		writel(maincr, aaci->base + AACI_MAINCR);
+-		readl(aaci->base + AACI_MAINCR);
++		(void)readl(aaci->base + AACI_MAINCR);
+ 		udelay(1);
+ 	}
+ }
+@@ -264,7 +264,7 @@ static void aaci_fifo_irq(struct aaci *aaci, int channel, u32 mask)
+ 	}
+ 
+ 	if (mask & ISR_URINTR) {
+-		dev_dbg(&aaci->dev->dev, "TX underrun on chan %d\n", channel);
++		(void)dev_dbg(&aaci->dev->dev, "TX underrun on chan %d\n", channel);
+ 		writel(ICLR_TXUEC1 << channel, aaci->base + AACI_INTCLR);
+ 	}
+ 
+@@ -461,7 +461,7 @@ static int aaci_pcm_close(struct snd_pcm_substream *substream)
+ 	struct aaci *aaci = substream->private_data;
+ 	struct aaci_runtime *aacirun = substream->runtime->private_data;
+ 
+-	WARN_ON(aacirun->cr & CR_EN);
++	(void)WARN_ON(aacirun->cr & CR_EN);
+ 
+ 	aacirun->substream = NULL;
+ 
+@@ -480,7 +480,7 @@ static int aaci_pcm_hw_free(struct snd_pcm_substream *substream)
+ 	/*
+ 	 * This must not be called with the device enabled.
+ 	 */
+-	WARN_ON(aacirun->cr & CR_EN);
++	(void)WARN_ON(aacirun->cr & CR_EN);
+ 
+ 	if (aacirun->pcm_open)
+ 		snd_ac97_pcm_close(aacirun->pcm);
+@@ -859,7 +859,7 @@ static int __devinit aaci_probe_ac97(struct aaci *aaci)
+ 	ac97_bus->clock = 48000;
+ 	aaci->ac97_bus = ac97_bus;
+ 
+-	memset(&ac97_template, 0, sizeof(struct snd_ac97_template));
++	(void)memset(&ac97_template, 0, sizeof(struct snd_ac97_template));
+ 	ac97_template.private_data = aaci;
+ 	ac97_template.num = 0;
+ 	ac97_template.scaps = AC97_SCAP_SKIP_MODEM;
+@@ -970,7 +970,7 @@ static unsigned int __devinit aaci_size_fifo(struct aaci *aaci)
+ 	 * disabling the channel doesn't clear the FIFO.
+ 	 */
+ 	writel(aaci->maincr & ~MAINCR_IE, aaci->base + AACI_MAINCR);
+-	readl(aaci->base + AACI_MAINCR);
++	(void)readl(aaci->base + AACI_MAINCR);
+ 	udelay(1);
+ 	writel(aaci->maincr, aaci->base + AACI_MAINCR);
+ 
+@@ -1034,7 +1034,7 @@ static int __devinit aaci_probe(struct amba_device *dev,
+ 	 * Fix: ac97 read back fail errors by reading
+ 	 * from any arbitrary aaci register.
+ 	 */
+-	readl(aaci->base + AACI_CSCH1);
++	(void)readl(aaci->base + AACI_CSCH1);
+ 	ret = aaci_probe_ac97(aaci);
+ 	if (ret)
+ 		goto out;

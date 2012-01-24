@@ -24,7 +24,8 @@ TOPDIR=${CWD}/../..
 SRCDIR=${CWD}/src
 INSTALLDIR=${TOPDIR}/install
 COMMON=${TOPDIR}/common
-PATCH_FILES=${COMMON}/common.patch ${COMMON}/fix-warnings.patch
+PATCH_FILES=${COMMON}/common.patch ${COMMON}/fix-warnings.patch \
+	${COMMON}/fix-warnings-unused.patch
 
 # The ARCH makefile must provide the following:
 #   - PATCH_FILES+=... Additional arch specific patch file(s)
