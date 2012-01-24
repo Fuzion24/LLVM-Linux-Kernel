@@ -7794,24 +7794,6 @@ index df00cb0..7a5d563 100644
  		utime = (__force cputime_t) temp;
  	} else
  		utime = rtime;
-@@ -7048,7 +7048,7 @@ void normalize_rt_tasks(void)
- 	unsigned long flags;
- 	struct rq *rq;
- 
--	read_lock_irqsave(&tasklist_lock, flags);
-+	(void)read_lock_irqsave(&tasklist_lock, flags);
- 	do_each_thread(g, p) {
- 		/*
- 		 * Only normalize user tasks:
-@@ -7082,7 +7082,7 @@ void normalize_rt_tasks(void)
- 		raw_spin_unlock(&p->pi_lock);
- 	} while_each_thread(g, p);
- 
--	read_unlock_irqrestore(&tasklist_lock, flags);
-+	(void)read_unlock_irqrestore(&tasklist_lock, flags);
- }
- 
- #endif /* CONFIG_MAGIC_SYSRQ */
 diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
 index 2a075e1..41c5f34 100644
 --- a/kernel/sched/debug.c
@@ -7829,24 +7811,6 @@ index 2a075e1..41c5f34 100644
  
  	return nsec;
  }
-@@ -151,7 +151,7 @@ static void print_rq(struct seq_file *m, struct rq *rq, int rq_cpu)
- 	"------------------------------------------------------"
- 	"----------------------------------------------------\n");
- 
--	read_lock_irqsave(&tasklist_lock, flags);
-+	(void)read_lock_irqsave(&tasklist_lock, flags);
- 
- 	do_each_thread(g, p) {
- 		if (!p->on_rq || task_cpu(p) != rq_cpu)
-@@ -160,7 +160,7 @@ static void print_rq(struct seq_file *m, struct rq *rq, int rq_cpu)
- 		print_task(m, rq, p);
- 	} while_each_thread(g, p);
- 
--	read_unlock_irqrestore(&tasklist_lock, flags);
-+	(void)read_unlock_irqrestore(&tasklist_lock, flags);
- }
- 
- void print_cfs_rq(struct seq_file *m, int cpu, struct cfs_rq *cfs_rq)
 diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
 index 3640ebb..6056850 100644
 --- a/kernel/sched/rt.c
