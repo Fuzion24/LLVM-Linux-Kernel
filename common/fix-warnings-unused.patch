@@ -3042,29 +3042,6 @@ index 1f78c95..9953204 100644
  }
  EXPORT_SYMBOL(input_alloc_absinfo);
  
-@@ -1790,14 +1790,14 @@ static unsigned int input_estimate_events_per_packet(struct input_dev *dev)
- 
- static void input_cleanse_bitmasks(struct input_dev *dev)
- {
--	INPUT_CLEANSE_BITMASK(dev, KEY, key);
--	INPUT_CLEANSE_BITMASK(dev, REL, rel);
--	INPUT_CLEANSE_BITMASK(dev, ABS, abs);
--	INPUT_CLEANSE_BITMASK(dev, MSC, msc);
--	INPUT_CLEANSE_BITMASK(dev, LED, led);
--	INPUT_CLEANSE_BITMASK(dev, SND, snd);
--	INPUT_CLEANSE_BITMASK(dev, FF, ff);
--	INPUT_CLEANSE_BITMASK(dev, SW, sw);
-+	(void)INPUT_CLEANSE_BITMASK(dev, KEY, key);
-+	(void)INPUT_CLEANSE_BITMASK(dev, REL, rel);
-+	(void)INPUT_CLEANSE_BITMASK(dev, ABS, abs);
-+	(void)INPUT_CLEANSE_BITMASK(dev, MSC, msc);
-+	(void)INPUT_CLEANSE_BITMASK(dev, LED, led);
-+	(void)INPUT_CLEANSE_BITMASK(dev, SND, snd);
-+	(void)INPUT_CLEANSE_BITMASK(dev, FF, ff);
-+	(void)INPUT_CLEANSE_BITMASK(dev, SW, sw);
- }
- 
- /**
 @@ -1899,7 +1899,7 @@ void input_unregister_device(struct input_dev *dev)
  
  	list_for_each_entry_safe(handle, next, &dev->h_list, d_node)
@@ -4123,28 +4100,6 @@ index e41b9bb..9691b31 100644
  
  #ifdef CONFIG_VT
  	vty_init(&console_fops);
-diff --git a/drivers/tty/tty_ioctl.c b/drivers/tty/tty_ioctl.c
-index 9314d93..5a8e645 100644
---- a/drivers/tty/tty_ioctl.c
-+++ b/drivers/tty/tty_ioctl.c
-@@ -583,7 +583,7 @@ static int set_termios(struct tty_struct *tty, void __user *arg, int opt)
- 	mutex_unlock(&tty->termios_mutex);
- 
- 	if (opt & TERMIOS_TERMIO) {
--		if (user_termio_to_kernel_termios(&tmp_termios,
-+		(void)if (user_termio_to_kernel_termios(&tmp_termios,
- 						(struct termio __user *)arg))
- 			return -EFAULT;
- #ifdef TCGETS2
-@@ -648,7 +648,7 @@ static int get_termio(struct tty_struct *tty, struct termio __user *termio)
- {
- 	struct ktermios kterm;
- 	copy_termios(tty, &kterm);
--	if (kernel_termios_to_user_termio(termio, &kterm))
-+	(void)if (kernel_termios_to_user_termio(termio, &kterm))
- 		return -EFAULT;
- 	return 0;
- }
 diff --git a/drivers/tty/tty_ldisc.c b/drivers/tty/tty_ldisc.c
 index 24b95db..98ccbf7 100644
 --- a/drivers/tty/tty_ldisc.c
