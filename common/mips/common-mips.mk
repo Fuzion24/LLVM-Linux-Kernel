@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 ##############################################################################
 # Copyright (c) 2012 Mark Charlebois
 # 
@@ -21,51 +20,7 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
-##############################################################################
-# Purpose: Split the patch file into architecture and non-architecture 
-#          specific patches
-##############################################################################
-import os, sys
-from common import readpatch
-
-def usage():
-	print "Error: Invalid arguments"
-	print "Usage: %s patchfile outdir fileprefix" % os.path.basename(sys.argv[0])
-
-
-def main():
-	searchstr="diff"
-	armpatches=[]
-	mipspatches=[]
-	allpatches=[]
-
-	if len(sys.argv) < 4:
-		usage()
-		raise SystemExit
-
-	patches = readpatch(sys.argv[1])
-
-	for name in patches.keys():
-		if "/arm/" in name:
-			armpatches.append(patches[name][1])
-		elif "/mips/" in name:
-			mipspatches.append(patches[name][1])
-		else:
-			allpatches.append(patches[name][1])
-
-	if armpatches:
-		fp=open(sys.argv[2]+"/"+sys.argv[3]+"-arm.patch", "w")
-		for p in armpatches:
-			fp.write(p)
-	if mipspatches:
-		fp=open(sys.argv[2]+"/"+sys.argv[3]+"-mips.patch", "w")
-		for p in mipspatches:
-			fp.write(p)
-	if allpatches:
-		fp=open(sys.argv[2]+"/"+sys.argv[3]+".patch", "w")
-		for p in allpatches:
-			fp.write(p)
-
-	
-if __name__ == "__main__":
-    main()
+#PATCH_FILES+=${COMMON}/mips/common-mips.patch ${COMMON}/mips/fix-warnings-mips.patch \
+#	${COMMON}/mips/fix-warnings-mips-unused.patch
+MAKE_FLAGS=ARCH=mips
+MAKE_KERNEL=${COMMON}/mips/make-kernel.sh

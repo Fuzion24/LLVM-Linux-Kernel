@@ -21,51 +21,34 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
-##############################################################################
-# Purpose: Split the patch file into architecture and non-architecture 
-#          specific patches
-##############################################################################
 import os, sys
-from common import readpatch
-
-def usage():
-	print "Error: Invalid arguments"
-	print "Usage: %s patchfile outdir fileprefix" % os.path.basename(sys.argv[0])
 
 
-def main():
-	searchstr="diff"
-	armpatches=[]
-	mipspatches=[]
-	allpatches=[]
+def getpatchinfo(patch):
+	p = patch.split("\n--- a/")[1]
+	print p
 
-	if len(sys.argv) < 4:
-		usage()
-		raise SystemExit
+	filename = p.split("\n")[0]
+	lines=p.split("\n@@ ")[1:]
+	lines=[ x.split(",")[0] for x in lines ]
 
-	patches = readpatch(sys.argv[1])
+	print filename, lines
+	return filename, lines
 
-	for name in patches.keys():
-		if "/arm/" in name:
-			armpatches.append(patches[name][1])
-		elif "/mips/" in name:
-			mipspatches.append(patches[name][1])
+def readpatch(patchfile):
+	patchinfo = {}
+	patchdata = open(patchfile).read()
+	patches = patchdata.split("\ndiff")
+	for p in patches:
+		# add back the "diff" and "\n"
+		if p[0:4] != "diff":
+			p="diff"+p+"\n"
 		else:
-			allpatches.append(patches[name][1])
+			p=p+"\n"
+		filename, lines = getpatchinfo(p)
+		patchinfo[filename] = [lines, p]
 
-	if armpatches:
-		fp=open(sys.argv[2]+"/"+sys.argv[3]+"-arm.patch", "w")
-		for p in armpatches:
-			fp.write(p)
-	if mipspatches:
-		fp=open(sys.argv[2]+"/"+sys.argv[3]+"-mips.patch", "w")
-		for p in mipspatches:
-			fp.write(p)
-	if allpatches:
-		fp=open(sys.argv[2]+"/"+sys.argv[3]+".patch", "w")
-		for p in allpatches:
-			fp.write(p)
+	# Remove trailing "\n"
+	patchinfo[filename][1] = patchinfo[filename][1][:-1]
+	return patchinfo
 
-	
-if __name__ == "__main__":
-    main()

@@ -22,50 +22,37 @@
 ##############################################################################
 
 ##############################################################################
-# Purpose: Split the patch file into architecture and non-architecture 
-#          specific patches
+# Purpose: find duplicates in this patch file and other patch files
 ##############################################################################
 import os, sys
 from common import readpatch
 
+
 def usage():
 	print "Error: Invalid arguments"
-	print "Usage: %s patchfile outdir fileprefix" % os.path.basename(sys.argv[0])
-
+	print "Usage: %s patchfile patchfile1 patchfile2 ..." % os.path.basename(sys.argv[0])
 
 def main():
-	searchstr="diff"
-	armpatches=[]
-	mipspatches=[]
-	allpatches=[]
-
-	if len(sys.argv) < 4:
+	if len(sys.argv) < 3:
 		usage()
 		raise SystemExit
 
-	patches = readpatch(sys.argv[1])
+	patchedfiles = readpatch(sys.argv[1])
 
-	for name in patches.keys():
-		if "/arm/" in name:
-			armpatches.append(patches[name][1])
-		elif "/mips/" in name:
-			mipspatches.append(patches[name][1])
-		else:
-			allpatches.append(patches[name][1])
-
-	if armpatches:
-		fp=open(sys.argv[2]+"/"+sys.argv[3]+"-arm.patch", "w")
-		for p in armpatches:
-			fp.write(p)
-	if mipspatches:
-		fp=open(sys.argv[2]+"/"+sys.argv[3]+"-mips.patch", "w")
-		for p in mipspatches:
-			fp.write(p)
-	if allpatches:
-		fp=open(sys.argv[2]+"/"+sys.argv[3]+".patch", "w")
-		for p in allpatches:
-			fp.write(p)
-
+	for f in sys.argv[2:]:
+		if f.endswith(".patch"):
+			pf = readpatch(f)
+			for k in patchedfiles.keys():
+				if pf.has_key(k):
+					if pf[k][0] == patchedfiles[k][0]:
+						print "Exact match: %s : %s" % (f, k)
+					else:
+						for t in patchedfiles[k][0]:
+							if t in pf[k][0]:
+								print "Partial match: %s : %s line %s" % (f, k, t)
+					print "File match in %s : %s" % (f, k)
+					print "   %s: %s" % (pf[k][0], patchedfiles[k][0])
+	
 	
 if __name__ == "__main__":
     main()

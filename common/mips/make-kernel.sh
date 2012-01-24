@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/bin/bash
 ##############################################################################
 # Copyright (c) 2012 Mark Charlebois
 # 
@@ -21,51 +21,44 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
-##############################################################################
-# Purpose: Split the patch file into architecture and non-architecture 
-#          specific patches
-##############################################################################
-import os, sys
-from common import readpatch
+USECLANG=1
+GCCVERSION=2010
+GCCHOME=/opt
+#PARALLEL="-j8"
+PARALLEL=
 
-def usage():
-	print "Error: Invalid arguments"
-	print "Usage: %s patchfile outdir fileprefix" % os.path.basename(sys.argv[0])
+export INSTALLDIR=$1
 
+export LANG=C
+export LC_ALL=C
 
-def main():
-	searchstr="diff"
-	armpatches=[]
-	mipspatches=[]
-	allpatches=[]
+if [ ${USECLANG} -eq "1" ]; then
+export CC_FOR_BUILD="${INSTALLDIR}/bin/clang -g -march=armv7-a \
+	-ccc-host-triple arm -mfloat-abi=softfp -mfpu=neon \
+	-ccc-gcc-name none-linux-gnueabi-gcc \
+	-I ${INSTALLDIR}/lib/clang/3.0/include"
+export CROSS_COMPILE=arm-none-linux-gnueabi-
+export PATH=${GCCHOME}/arm-2011.03/bin:${INSTALLDIR}/bin:$PATH
 
-	if len(sys.argv) < 4:
-		usage()
-		raise SystemExit
+else
 
-	patches = readpatch(sys.argv[1])
+if [ ${GCCVERSION} -eq "2010" ]; then
+export CC_FOR_BUILD=${GCCHOME}/arm-2010.09/bin/arm-none-eabi-gcc
+export CROSS_COMPILE=arm-none-eabi-
+export PATH=${GCCHOME}/arm-2010.09/bin:$PATH
+else
+export CC_FOR_BUILD=${GCCHOME}/arm-2011.03/bin/arm-none-linux-gnueabi-gcc
+export CROSS_COMPILE=arm-none-linux-gnueabi-
+export PATH=${GCCHOME}/arm-2011.03/bin:$PATH
+fi
 
-	for name in patches.keys():
-		if "/arm/" in name:
-			armpatches.append(patches[name][1])
-		elif "/mips/" in name:
-			mipspatches.append(patches[name][1])
-		else:
-			allpatches.append(patches[name][1])
+fi
 
-	if armpatches:
-		fp=open(sys.argv[2]+"/"+sys.argv[3]+"-arm.patch", "w")
-		for p in armpatches:
-			fp.write(p)
-	if mipspatches:
-		fp=open(sys.argv[2]+"/"+sys.argv[3]+"-mips.patch", "w")
-		for p in mipspatches:
-			fp.write(p)
-	if allpatches:
-		fp=open(sys.argv[2]+"/"+sys.argv[3]+".patch", "w")
-		for p in allpatches:
-			fp.write(p)
+export HOSTCC_FOR_BUILD="gcc"
+export MAKE="make V=1"
 
-	
-if __name__ == "__main__":
-    main()
+export LD=${CROSS_COMPILE}ld
+
+$MAKE CONFIG_DEBUG_SECTION_MISMATCH=y ARCH=arm CONFIG_DEBUG_INFO=1 \
+	CC="$CC_FOR_BUILD" HOSTCC=$HOSTCC_FOR_BUILD ${PARALLEL}
+
