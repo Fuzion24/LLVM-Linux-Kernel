@@ -72,7 +72,7 @@ state/kernel-configure: state/kernel-patch
 kernel-build: state/kernel-build
 state/kernel-build: state/kernel-configure
 	@echo "Writing to ${CWD}/log..."
-	(cd ${KERNELDIR} && ${MAKE_KERNEL} ${INSTALLDIR} > ${CWD}log 2>&1)
+	(cd ${KERNELDIR} && ${MAKE_KERNEL} ${INSTALLDIR} > ${CWD}/log 2>&1)
 	@mkdir -p state
 	@touch $@
 
