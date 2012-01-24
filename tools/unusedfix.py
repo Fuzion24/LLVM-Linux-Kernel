@@ -28,6 +28,31 @@ def usage():
 	print "Error: Invalid arguments"
 	print "Usage: %s filename [srcdir]" % os.path.basename(sys.argv[0])
 
+false_positives = [	"dev_dbg", 
+			"INPUT_CLEANSE_BITMASK", 
+			"DEFINE_LGLOCK",
+			"DEFINE_BRLOCK",
+			"write_lock_irqsave",
+			"write_unlock_irqrestore",
+			"snd_pcm_stream_lock_irqsave",
+			"snd_pcm_stream_unlock_irqrestore",
+			"read_lock_irqsave",
+			"read_unlock_irqrestore",
+			"put_user",
+			"get_user",
+			"__get_user",
+			"__put_user",
+			"clear_page",
+			"readl",
+			"if" ]
+			
+
+def skip_patch(line):
+	for p in false_positives:
+		if line.startswith(p):
+			return 1
+	return 0
+
 def main():
 	searchstr="warning: expression result unused"
 	fixes=[]
@@ -46,7 +71,8 @@ def main():
 		if searchstr in line:
 			fixfile, fixline = line.split(":")[:2]
 			line = fp.readline().strip()
-			fixes.append([fixfile, int(fixline), line])
+			if not skip_patch(line):
+				fixes.append([fixfile, int(fixline), line])
 		line=fp.readline()
 
 	for fix in fixes:

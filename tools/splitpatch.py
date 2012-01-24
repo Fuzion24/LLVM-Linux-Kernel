@@ -21,12 +21,17 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
+##############################################################################
+# Purpose: Split the patch file into architecture and non-architecture 
+#          specific patches
+##############################################################################
 import os, sys
 
 
 def usage():
 	print "Error: Invalid arguments"
 	print "Usage: %s patchfile outdir fileprefix" % os.path.basename(sys.argv[0])
+
 
 def main():
 	searchstr="diff"
