@@ -73,7 +73,7 @@ index d2cb0b3..17cc494 100644
 	} else if (tsk == current) {
 		frame.fp = (unsigned long)__builtin_frame_address(0);
 -		frame.sp = current_sp;
-+		asm ("mov %0, r13" : "=r" (frame.sp))
++		asm ("mov %0, r13" : "=r" (frame.sp));
 		frame.lr = (unsigned long)__builtin_return_address(0);
 		frame.pc = (unsigned long)unwind_backtrace;
         } else {

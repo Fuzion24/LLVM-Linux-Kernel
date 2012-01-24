@@ -164,30 +164,6 @@ index 971d65c..e233e4b 100644
  
  	regs.ARM_r4 = (unsigned long)arg;
  	regs.ARM_r5 = (unsigned long)fn;
-diff --git a/arch/arm/kernel/sched_clock.c b/arch/arm/kernel/sched_clock.c
-index 5416c7c..9bcb20e 100644
---- a/arch/arm/kernel/sched_clock.c
-+++ b/arch/arm/kernel/sched_clock.c
-@@ -104,8 +104,8 @@ void __init setup_sched_clock(u32 (*read)(void), int bits, unsigned long rate)
- 	char r_unit;
- 
- 	BUG_ON(bits > 32);
--	WARN_ON(!irqs_disabled());
--	WARN_ON(read_sched_clock != jiffy_sched_clock_read);
-+	(void)WARN_ON(!irqs_disabled());
-+	(void)WARN_ON(read_sched_clock != jiffy_sched_clock_read);
- 	read_sched_clock = read;
- 	sched_clock_mask = (1 << bits) - 1;
- 
-@@ -124,7 +124,7 @@ void __init setup_sched_clock(u32 (*read)(void), int bits, unsigned long rate)
- 
- 	/* calculate how many ns until we wrap */
- 	wrap = cyc_to_ns((1ULL << bits) - 1, cd.mult, cd.shift);
--	do_div(wrap, NSEC_PER_MSEC);
-+	(void)do_div(wrap, NSEC_PER_MSEC);
- 	w = wrap;
- 
- 	/* calculate the ns resolution of this counter */
 diff --git a/arch/arm/kernel/signal.c b/arch/arm/kernel/signal.c
 index 0340224..79ff25b 100644
 --- a/arch/arm/kernel/signal.c
@@ -214,38 +190,6 @@ index d2b1779..024f29c 100644
  	ret = do_execve(filename,
  			(const char __user *const __user *)argv,
  			(const char __user *const __user *)envp, &regs);
-diff --git a/arch/arm/kernel/traps.c b/arch/arm/kernel/traps.c
-index 99a5727..27e780d 100644
---- a/arch/arm/kernel/traps.c
-+++ b/arch/arm/kernel/traps.c
-@@ -106,7 +106,7 @@ static void dump_mem(const char *lvl, const char *str, unsigned long bottom,
- 		unsigned long p;
- 		char str[sizeof(" 12345678") * 8 + 1];
- 
--		memset(str, ' ', sizeof(str));
-+		(void)memset(str, ' ', sizeof(str));
- 		str[sizeof(str) - 1] = '\0';
- 
- 		for (p = first, i = 0; i < 8 && p < top; i++, p += 4) {
-@@ -388,15 +388,15 @@ asmlinkage void __exception do_undefinstr(struct pt_regs *regs)
- #endif
- 			instr = *(u32 *) pc;
- 	} else if (thumb_mode(regs)) {
--		get_user(instr, (u16 __user *)pc);
-+		(void)get_user(instr, (u16 __user *)pc);
- 		if (is_wide_instruction(instr)) {
- 			unsigned int instr2;
--			get_user(instr2, (u16 __user *)pc+1);
-+			(void)get_user(instr2, (u16 __user *)pc+1);
- 			instr <<= 16;
- 			instr |= instr2;
- 		}
- 	} else {
--		get_user(instr, (u32 __user *)pc);
-+		(void)get_user(instr, (u32 __user *)pc);
- 	}
- 
- 	if (call_undef_hook(regs, instr) == 0)
 diff --git a/arch/arm/mm/copypage-v6.c b/arch/arm/mm/copypage-v6.c
 index 3d9a155..18b900f 100644
 --- a/arch/arm/mm/copypage-v6.c
@@ -294,19 +238,6 @@ index 6ec1226..149f6d0 100644
  
  	/*
  	 * The memory size has already been determined.  If we need
-diff --git a/arch/arm/mm/mmu.c b/arch/arm/mm/mmu.c
-index 94c5a0c..a83e089 100644
---- a/arch/arm/mm/mmu.c
-+++ b/arch/arm/mm/mmu.c
-@@ -551,7 +551,7 @@ EXPORT_SYMBOL(phys_mem_access_prot);
- static void __init *early_alloc_aligned(unsigned long sz, unsigned long align)
- {
- 	void *ptr = __va(memblock_alloc(sz, align));
--	memset(ptr, 0, sz);
-+	(void)memset(ptr, 0, sz);
- 	return ptr;
- }
- 
 diff --git a/arch/arm/mm/pgd.c b/arch/arm/mm/pgd.c
 index a3e78cc..a5d9c27 100644
 --- a/arch/arm/mm/pgd.c
