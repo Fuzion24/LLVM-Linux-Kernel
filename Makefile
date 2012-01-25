@@ -1,5 +1,6 @@
 ##############################################################################
 # Copyright (c) 2012 Mark Charlebois
+#               2012 Jan-Simon Möller
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to 
@@ -68,7 +69,7 @@ QEMU_VERSION="v0.15.1"
 qemu-fetch: state/qemu-fetch
 state/qemu-fetch:
 	@mkdir -p ${SRCDIR}
-	(cd ${SRCDIR} && git clone ${QEMU_GIT} && git checkout ${QEMU_VERSION})
+	(cd ${SRCDIR} && git clone ${QEMU_GIT} && cd qemu && git checkout ${QEMU_VERSION})
 	@mkdir -p state
 	@touch $@
 
