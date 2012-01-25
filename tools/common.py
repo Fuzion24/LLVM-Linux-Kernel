@@ -28,10 +28,33 @@ def getpatchinfo(patch):
 	p = patch.split("\n--- a/")[1]
 
 	filename = p.split("\n")[0]
-	lines=p.split("\n@@ ")[1:]
-	lines=[ x.split(",")[0] for x in lines ]
+	lines=p.split("\n@@ -")[1:]
+	lines=[ int(x.split(",")[0]) for x in lines ]
 
 	return filename, lines
+
+def gethunkinfo(patch):
+	hunks=patch.split("\n@@ -")
+	hunkinfo={}
+	hunkinfo["header"]=hunks[0]
+	for h in hunks[1:]:
+		hunkinfo[int(h.split(",")[0])] = "@@ -"+h
+	return hunkinfo
+
+def mergehunks(hunkinfo1, hunkinfo2):
+	for k in hunkinfo1.keys():
+		if hunkinfo2.has_key(k):
+			print "Patches have duplicated hunks! Merge failed."
+	patch=hunkinfo1["header"]
+	del hunkinfo1["header"]
+	del hunkinfo2["header"]
+
+	hunkinfo1.update(hunkinfo2)
+	
+	for k in sorted(hunkinfo1.keys()):
+		patch += "\n"+hunkinfo1[k]
+
+	return patch, sorted(hunkinfo1.keys())
 
 def readpatch(patchfile):
 	patchinfo = {}
@@ -44,9 +67,14 @@ def readpatch(patchfile):
 		else:
 			p=p+"\n"
 		filename, lines = getpatchinfo(p)
+		if patchinfo.has_key(filename):
+			print "Merging hunks in", filename
+			h1 = gethunkinfo(patchinfo[filename][1])
+			h2 = gethunkinfo(p)
+			p, lines = mergehunks(h1, h2)
 		patchinfo[filename] = [lines, p]
 
 	# Remove trailing "\n"
-	patchinfo[filename][1] = patchinfo[filename][1][:-1]
+	#patchinfo[filename][1] = patchinfo[filename][1][:-1]
 	return patchinfo
 

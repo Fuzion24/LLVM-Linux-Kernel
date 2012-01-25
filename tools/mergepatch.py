@@ -59,33 +59,36 @@ def main():
 	else:
 		usage()
 
-	patches1 = readpatch(sys.argv[1])
-	patches2 = readpatch(sys.argv[2])
+	patches1 = readpatch(sys.argv[2])
+	patches2 = readpatch(sys.argv[3])
 	patches3 = {}
 
 	for name in sorted(patches1.keys()):
 		if patches2.has_key(name):
+			print patches1[name][0]
+			print patches2[name][0]
 			# if all hunks are identical
 			if patches1[name][0] == patches2[name][0]:
-				if mode == "extract"
+				if mode == "extract":
 					patches3[name] = patches2[name]
 				if not mode == "keep":
+					print "Dropping", name, "from", sys.argv[2]
 					del patches1[name]
 				if not mode == "drop":
 					del patches2[name]
 
 	if mode == "extract":
 		fp=open(sys.argv[4], "w")
-		for p in patches3:
-			fp.write(p)
+		for key in sorted(patches3.keys()):
+			fp.write(patches3[key][1])
 	if not mode == "keep":
-		fp=open(sys.argv[1], "w")
-		for p in patches1:
-			fp.write(p)
-	if not mode == "drop":
 		fp=open(sys.argv[2], "w")
-		for p in patches2:
-			fp.write(p)
+		for key in sorted(patches1.keys()):
+			fp.write(patches1[key][1])
+	if not mode == "drop":
+		fp=open(sys.argv[3], "w")
+		for p in sorted(patches2.keys()):
+			fp.write(patches2[key][1])
 
 	
 if __name__ == "__main__":

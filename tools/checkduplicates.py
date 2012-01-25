@@ -40,18 +40,18 @@ def main():
 	patchedfiles = readpatch(sys.argv[1])
 
 	for f in sys.argv[2:]:
-		if f.endswith(".patch"):
-			pf = readpatch(f)
-			for k in patchedfiles.keys():
-				if pf.has_key(k):
-					if pf[k][0] == patchedfiles[k][0]:
-						print "Exact match: %s : %s" % (f, k)
-					else:
-						for t in patchedfiles[k][0]:
-							if t in pf[k][0]:
-								print "Partial match: %s : %s line %s" % (f, k, t)
-					print "File match in %s : %s" % (f, k)
-					print "   %s: %s" % (pf[k][0], patchedfiles[k][0])
+		pf = readpatch(f)
+		for k in patchedfiles.keys():
+			if pf.has_key(k):
+				if pf[k][0] == patchedfiles[k][0]:
+					print "Exact match: %s : %s" % (f, k)
+					continue
+				else:
+					for t in patchedfiles[k][0]:
+						if t in pf[k][0]:
+							print "Partial match: %s : %s line %s" % (f, k, t)
+				print "File match in %s : %s" % (f, k)
+				print "   %s: %s" % (pf[k][0], patchedfiles[k][0])
 	
 	
 if __name__ == "__main__":
