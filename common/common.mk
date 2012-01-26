@@ -21,11 +21,13 @@
 ##############################################################################
 
 TOPDIR=${CWD}/../..
+TOOLSDIR=${TOPDIR}/tools
 SRCDIR=${CWD}/src
 INSTALLDIR=${TOPDIR}/install
 COMMON=${TOPDIR}/common
 PATCH_FILES+=${COMMON}/common.patch ${COMMON}/fix-warnings.patch \
 	${COMMON}/fix-warnings-unused.patch
+FILTERFILE=${CWD}/state/kernel-filter
 
 # The ARCH makefile must provide the following:
 #   - PATCH_FILES+=... Additional arch specific patch file(s)
@@ -38,7 +40,7 @@ PATCH_FILES+=${COMMON}/common.patch ${COMMON}/fix-warnings.patch \
 #   - KERNEL_CFG
 #   - KERNELDIR
 
-.PHONY: kernel-fetch kernel-patch kernel-configure kernel-build
+.PHONY: kernel-fetch gen-patch kernel-patch kernel-configure kernel-build
 
 all: kernel-build
 
@@ -49,21 +51,54 @@ state/kernel-fetch:
 	@mkdir -p state
 	@touch $@
 
-kernel-patch: state/kernel-patch
-state/kernel-patch: state/kernel-fetch
+kernel-test-patch: state/kernel-fetch
 	@echo "patching source: see patch.log"
-	@rm -f ${CWD}/patch.log
+	@rm -f ${CWD}/testpatch.log
 	(cd ${KERNELDIR} && for patch in ${PATCH_FILES}; do \
-		patch -p1 < $$patch >> ${CWD}/patch.log;\
+		patch -p1 < $$patch >> ${CWD}/testpatch.log;\
 		done)
+
+kernel-test-filter: ${FILTERFILE}
+	@echo "Testing filtered patch: see ${FILTERFILE}"
+	@rm -f ${CWD}/filtertest.log
+	@rm -f ${CWD}/patch.unfiltered-test
+	@rm -f ${CWD}/patch.filtered-test
+	@for patch in ${PATCH_FILES}; do cat $$patch >> ${CWD}/patch.unfiltered-test; done
+	@${TOOLSDIR}/tidy.py ${CWD}/patch.unfiltered-test
+	@${TOOLSDIR}/applyfilter.py ${CWD}/patch.unfiltered-test ${CWD}/patch.filtered-test ${FILTERFILE}
+	(cd ${KERNELDIR} && patch -p1 < ${CWD}/patch.filtered-test >> ${CWD}/filtertest.log)
+
+kernel-patch: state/kernel-patch
+state/kernel-patch: ${FILTERFILE}
+	@echo "Generating filtered patch: see ${FILTERFILE}"
+	@rm -f ${CWD}/patch.log
+	@rm -f ${CWD}/patch.unfiltered
+	@rm -f ${CWD}/patch.filtered
+	@for patch in ${PATCH_FILES}; do cat $$patch >> ${CWD}/patch.unfiltered; done
+	@${TOOLSDIR}/tidy.py ${CWD}/patch.unfiltered
+	@${TOOLSDIR}/applyfilter.py ${CWD}/patch.unfiltered ${CWD}/patch.filtered ${FILTERFILE}
+	(cd ${KERNELDIR} && patch -p1 < ${CWD}/patch.filtered >> ${CWD}/patch.log)
 	@mkdir -p state
 	@touch $@
 
-kernel-clean: 
+kernel-prepare: 
 	(cd ${KERNELDIR} && git status | grep "modified:" | cut -d":" -f 2 | xargs git checkout)
+	@rm -f ${CWD}/testpatch.log
+	@rm -f ${CWD}/filtertest.log
+	@rm -f ${CWD}/patch.unfiltered-test
+	@rm -f ${CWD}/patch.filtered-test
 	@rm -f ${CWD}/state/kernel-patch
 	@rm -f ${CWD}/state/kernel-configure
+	@rm -f ${CWD}/state/kernel-build
 	@find ${KERNELDIR} -name "*.rej" | xargs rm -f
+
+kernel-clean: 
+	make kernel-prepare
+	@rm -f ${FILTERFILE}
+	@rm -f ${CWD}/filtertest.log
+	@rm -f ${CWD}/patch.unfiltered
+	@rm -f ${CWD}/patch.filtered
+	@rm -f ${CWD}/patch.log
 
 kernel-configure: state/kernel-configure
 state/kernel-configure: state/kernel-patch
@@ -82,3 +117,14 @@ state/kernel-build: state/kernel-configure
 kernel-sync: state/kernel-fetch
 	make kernel-clean
 	(cd ${KERNELDIR} && git pull)
+
+gen-patch: ${FILTERFILE}
+${FILTERFILE}: state/kernel-fetch
+	make kernel-prepare
+	make -i kernel-test-patch
+	@${TOOLSDIR}/genfilter.py ${CWD}/testpatch.log ${KERNELDIR} > $@
+	make kernel-prepare
+	make -i kernel-test-filter
+	@${TOOLSDIR}/genfilter.py ${CWD}/filtertest.log ${KERNELDIR} > ${FILTERFILE}-1
+	@cat ${FILTERFILE}-1 >> ${FILTERFILE}
+	make kernel-prepare

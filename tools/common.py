@@ -113,15 +113,16 @@ class PatchDict:
 
 	def filter(self, filterfile):
 		filename=""
-		for line in filterdata=open(filterfile).readlines():
-			if line[0]="F":
+		
+		for line in open(filterfile).readlines():
+			if line[0] == "F":
 				filename=line[2:-1]
 				print "Processing", filename
-			if line[0]="M":
+			elif line[0] == "M":
 				filename=line[2:-1]
 				if filename in self.patch:
 					del self.patch[filename]
-			if line[0]="R":
+			elif line[0] == "R":
 				filename=line[2:].split("[")[0][:-1]
 				tmp=line.split("[")[1].split("]")[0].split(",")
 				hunks=[ int(x) for x in tmp ]

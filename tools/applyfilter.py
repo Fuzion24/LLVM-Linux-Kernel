@@ -40,7 +40,7 @@ def main():
 
 	patches = PatchFile(sys.argv[1])
 
-	patches.applyFilter(sys.argv[3])
+	patches.filter(sys.argv[3])
 	patches.write(sys.argv[2])
 	
 if __name__ == "__main__":

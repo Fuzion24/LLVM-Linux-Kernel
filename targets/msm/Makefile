@@ -29,4 +29,6 @@ PATCH_FILES=${CWD}/msm-3.0-llvm.patch ${CWD}/msm-3.0-llvm-arm.patch
 #	${CWD}/fix-warnings.patch ${CWD}/fix-warnings-arm.patch 
 
 include ../../common/common.mk
+include ../../common/common-tip.mk
 include ../../common/arm/common-arm.mk
+include ../../common/arm/common-arm-tip.mk
