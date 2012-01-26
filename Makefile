@@ -93,6 +93,6 @@ state/qemu-build: state/qemu-configure
 versatile: qemu-build clang-build
 	(cd targets/versatile && make)
 
-msm: qemu-build clang-build
+msm: clang-build
 	(cd targets/msm && make)
 
