@@ -2,3 +2,5 @@ build/
 install/
 src/
 state/
+build.log
+patch.log
