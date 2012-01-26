@@ -63,6 +63,7 @@ kernel-clean:
 	(cd ${KERNELDIR} && git status | grep "modified:" | cut -d":" -f 2 | xargs git checkout)
 	@rm -f ${CWD}/state/kernel-patch
 	@rm -f ${CWD}/state/kernel-configure
+	@find ${KERNELDIR} -name "*.rej" | xargs rm -f
 
 kernel-configure: state/kernel-configure
 state/kernel-configure: state/kernel-patch

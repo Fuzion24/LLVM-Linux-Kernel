@@ -66,6 +66,16 @@ class Patch:
 		for h in hunks:
 			del self.hunkinfo[h]
 			
+class RejectedPatch(Patch):
+	def __init__(self, patchdata):
+		tmp = patchdata.split("--- ")[1]
+		self.filename = tmp.split("\n")[0]
+		hunks=patchdata.split("\n@@ -")
+		self.hunkinfo={}
+		self.header=hunks[0]
+		for h in hunks[1:]:
+			self.hunkinfo[int(h.split(",")[0])] = "@@ -"+h
+
 class PatchDict:
 	def __init__(self):
 		self.patch = {}
@@ -101,6 +111,25 @@ class PatchDict:
 	def drophunks(self, item, hunks):
 		self.patch[item].drophunks(hunks)
 
+	def filter(self, filterfile):
+		filename=""
+		for line in filterdata=open(filterfile).readlines():
+			if line[0]="F":
+				filename=line[2:-1]
+				print "Processing", filename
+			if line[0]="M":
+				filename=line[2:-1]
+				if filename in self.patch:
+					del self.patch[filename]
+			if line[0]="R":
+				filename=line[2:].split("[")[0][:-1]
+				tmp=line.split("[")[1].split("]")[0].split(",")
+				hunks=[ int(x) for x in tmp ]
+				self.drophunks(filename, hunks)
+			else:
+				print "Error: Invalid Filter File"
+				raise SystemExit
+				
 class PatchFile(PatchDict):
 	def __init__(self, patchfile):
 		PatchDict.__init__(self)
