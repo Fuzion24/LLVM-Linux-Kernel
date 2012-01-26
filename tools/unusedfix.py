@@ -54,7 +54,13 @@ false_positives = [	"dev_dbg",
 			"mutex_lock_nest_lock",
 			"DEBUG_LOCKS_WARN_ON",
 			"might_lock_read",
-			"DEBUG_LOCKS_WARN_ON"
+			"DEBUG_LOCKS_WARN_ON",
+			"ASSERT_RDEV_LOCK",
+			"lockdep_assert_held"
+			"CLEAR_AFTER_FIELD",
+			"SMSC_ASSERT_MAC_LOCK",
+			"dev_vdbg",
+			"wait_event_freezable"
 			 ]
 			
 
