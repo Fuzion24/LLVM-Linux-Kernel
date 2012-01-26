@@ -26,7 +26,5 @@ KERNEL_GIT=git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
 KERNELDIR=${SRCDIR}/linux
 
 include ../../common/common.mk
-include ../../common/common-tip.mk
 include ../../common/mips/common-mips.mk
-include ../../common/mips/common-mips-tip.mk
 

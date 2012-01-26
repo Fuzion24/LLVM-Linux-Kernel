@@ -27,9 +27,7 @@ KERNELDIR=${SRCDIR}/linux
 PATCH_FILES=
 
 include ../../common/common.mk
-include ../../common/common-tip.mk
 include ../../common/arm/common-arm.mk
-include ../../common/arm/common-arm-tip.mk
 
 .PHONY: test
 

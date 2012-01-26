@@ -12,6 +12,27 @@ index 9100912..5ec0ebd 100644
  }
  
  static int shash_update_unaligned(struct shash_desc *desc, const u8 *data,
+diff --git a/drivers/mmc/host/mmci.c b/drivers/mmc/host/mmci.c
+index 0d955ff..cb42be4 100644
+--- a/drivers/mmc/host/mmci.c
++++ b/drivers/mmc/host/mmci.c
+@@ -1506,7 +1506,13 @@ static struct amba_id mmci_ids[] = {
+ 	{ 0, 0 },
+ };
+ 
+-MODULE_DEVICE_TABLE(amba, mmci_ids);
++// FIXME
++// MODULE_DEVICE_TABLE(amba, mmci_ids);
++// Which expands to:
++// extern const struct amba_device_id __mod_amba_device_table __attribute__ ((unused, __alias__("mmci_ids")));
++// causes the following error in LLVM:
++// ERROR: "__unnamed_1" [drivers/mmc/host/mmci.ko] undefined!
++
+ 
+ static struct amba_driver mmci_driver = {
+ 	.drv		= {
+
+
 diff --git a/drivers/tty/serial/8250.c b/drivers/tty/serial/8250.c
 index 9f50c4e..cd41fb3 100644
 --- a/drivers/tty/serial/8250.c
