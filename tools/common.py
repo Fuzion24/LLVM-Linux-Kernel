@@ -39,7 +39,6 @@ class Patch:
 		return patch
 		
 	def merge(self, otherpatch):
-		print otherpatch
 		for k in self.hunkinfo:
 			if k in otherpatch.hunkinfo:
 				print "Warning: patches have duplicated hunks!"
@@ -96,7 +95,7 @@ class PatchDict:
 		
 class PatchFile(PatchDict):
 	def __init__(self, patchfile):
-		self.patch={}
+		PatchDict.__init__(self)
 		patchdata = open(patchfile).read()
 		patches = patchdata.split("\ndiff")
 		for p in patches:
@@ -104,5 +103,5 @@ class PatchFile(PatchDict):
 			if p[0:4] != "diff":
 				p="diff"+p
 			newpatch = Patch(p)
-			self.add(newpatch)
+			PatchDict.add(self, newpatch)
 

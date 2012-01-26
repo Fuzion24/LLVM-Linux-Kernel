@@ -37,13 +37,13 @@ def main():
 		usage()
 		raise SystemExit
 
-	patchedfile = PatchFile(sys.argv[1])
+	patchfile = PatchFile(sys.argv[1])
 
 	for otherfile in sys.argv[2:]:
 		pf = PatchFile(otherfile)
-		for f in patchedfile:
+		for f in patchfile:
 			if f in pf:
-				matchinglines = pf[f].compare(patchedfile[f])
+				matchinglines = pf[f].compare(patchfile[f])
 				if matchinglines == pf[f].getLines():
 					print "Exact match: %s %s" % (f, matchinglines)
 				elif matchinglines:

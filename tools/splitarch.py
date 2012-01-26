@@ -34,9 +34,9 @@ def usage():
 
 
 def main():
-	armpatches=[]
-	mipspatches=[]
-	allpatches=[]
+	armpatches=PatchDict()
+	mipspatches=PatchDict()
+	allpatches=PatchDict()
 
 	if len(sys.argv) < 4:
 		usage()
@@ -46,24 +46,20 @@ def main():
 
 	for name in sorted(patches):
 		if "/arm/" in name:
-			armpatches.append(patches[name])
+			armpatches.add(patches[name])
 		elif "/mips/" in name:
-			mipspatches.append(patches[name])
+			mipspatches.add(patches[name])
 		else:
-			allpatches.append(patches[name])
+			allpatches.add(patches[name])
 
 	if armpatches:
-		fp=open(sys.argv[2]+"/"+sys.argv[3]+"-arm.patch", "w")
-		for p in armpatches:
-			fp.write(p.str())
+		armpatches.write(sys.argv[2]+"/"+sys.argv[3]+"-arm.patch")
+
 	if mipspatches:
-		fp=open(sys.argv[2]+"/"+sys.argv[3]+"-mips.patch", "w")
-		for p in mipspatches:
-			fp.write(p.str())
+		mipspatches.write(sys.argv[2]+"/"+sys.argv[3]+"-mips.patch")
+
 	if allpatches:
-		fp=open(sys.argv[2]+"/"+sys.argv[3]+".patch", "w")
-		for p in allpatches:
-			fp.write(p.str())
+		allpatches.write(sys.argv[2]+"/"+sys.argv[3]+".patch")
 
 	
 if __name__ == "__main__":
