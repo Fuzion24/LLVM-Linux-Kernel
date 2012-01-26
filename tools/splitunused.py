@@ -22,7 +22,7 @@
 ##############################################################################
 
 import os, sys
-from common import readpatch
+from common import *
 
 
 def usage():
@@ -30,38 +30,34 @@ def usage():
 	print "Usage: %s patchfile outdir fileprefix" % os.path.basename(sys.argv[0])
 
 def main():
-	searchstr="diff"
-	unusedpatches=[]
-	allpatches=[]
+	unusedpatches=PatchDict()
+	allpatches=PatchDict()
 
 	if len(sys.argv) < 4:
 		usage()
 		raise SystemExit
 
-	patches = readpatch(sys.argv[1])
+	patches = PatchFile(sys.argv[1])
 
-	for k in sorted(patches.keys()):
-		p = patches[k][1]
+	for k in sorted(patches):
+		p = patches[k]
 		unused = 0
-		lines = p.split("\n")
+		lines = str(p).split("\n")
 		for line in lines:
 			if len(line) > 8 and line[0] == "+" and line[1] != '+':
 				if line[1:].strip()[0:6] == "(void)":
-					unusedpatches.append(p)
+					unusedpatches.add(p)
 					unused = 1
 					break
 		
 		if not unused:
-			allpatches.append(p)
+			allpatches.add(p)
 
 	if unusedpatches:
-		fp=open(sys.argv[2]+"/"+sys.argv[3]+"-unused.patch", "w")
-		for p in unusedpatches:
-			fp.write(p)
+		unusedpatches.write(sys.argv[2]+"/"+sys.argv[3]+"-unused.patch")
+
 	if allpatches:
-		fp=open(sys.argv[2]+"/"+sys.argv[3]+".patch", "w")
-		for p in allpatches:
-			fp.write(p)
+		allpatches.write(sys.argv[2]+"/"+sys.argv[3]+".patch")
 
 	
 if __name__ == "__main__":

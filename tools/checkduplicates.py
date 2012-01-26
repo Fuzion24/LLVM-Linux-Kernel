@@ -25,7 +25,7 @@
 # Purpose: find duplicates in this patch file and other patch files
 ##############################################################################
 import os, sys
-from common import readpatch
+from common import *
 
 
 def usage():
@@ -37,21 +37,19 @@ def main():
 		usage()
 		raise SystemExit
 
-	patchedfiles = readpatch(sys.argv[1])
+	patchedfile = PatchFile(sys.argv[1])
 
-	for f in sys.argv[2:]:
-		pf = readpatch(f)
-		for k in patchedfiles.keys():
-			if pf.has_key(k):
-				if pf[k][0] == patchedfiles[k][0]:
-					print "Exact match: %s : %s" % (f, k)
-					continue
+	for otherfile in sys.argv[2:]:
+		pf = PatchFile(otherfile)
+		for f in patchedfile:
+			if f in pf:
+				matchinglines = pf[f].compare(patchedfile[f])
+				if matchinglines == pf[f].getLines():
+					print "Exact match: %s %s" % (f, matchinglines)
+				elif matchinglines:
+					print "Hunk match in %s : %s" % (f, matchinglines)
 				else:
-					for t in patchedfiles[k][0]:
-						if t in pf[k][0]:
-							print "Partial match: %s : %s line %s" % (f, k, t)
-				print "File match in %s : %s" % (f, k)
-				print "   %s: %s" % (pf[k][0], patchedfiles[k][0])
+					print "File match: %s" % f
 	
 	
 if __name__ == "__main__":

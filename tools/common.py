@@ -23,58 +23,86 @@
 
 import os, sys
 
-
-def getpatchinfo(patch):
-	p = patch.split("\n--- a/")[1]
-
-	filename = p.split("\n")[0]
-	lines=p.split("\n@@ -")[1:]
-	lines=[ int(x.split(",")[0]) for x in lines ]
-
-	return filename, lines
-
-def gethunkinfo(patch):
-	hunks=patch.split("\n@@ -")
-	hunkinfo={}
-	hunkinfo["header"]=hunks[0]
-	for h in hunks[1:]:
-		hunkinfo[int(h.split(",")[0])] = "@@ -"+h
-	return hunkinfo
-
-def mergehunks(hunkinfo1, hunkinfo2):
-	for k in hunkinfo1.keys():
-		if hunkinfo2.has_key(k):
-			print "Patches have duplicated hunks! Merge failed."
-	patch=hunkinfo1["header"]
-	del hunkinfo1["header"]
-	del hunkinfo2["header"]
-
-	hunkinfo1.update(hunkinfo2)
+class Patch:
+	def __init__(self, patchdata):
+		self.filename = patchdata.split("--- a/")[1].split("\n")[0]
+		hunks=patchdata.split("\n@@ -")
+		self.hunkinfo={}
+		self.header=hunks[0]
+		for h in hunks[1:]:
+			self.hunkinfo[int(h.split(",")[0])] = "@@ -"+h
 	
-	for k in sorted(hunkinfo1.keys()):
-		patch += "\n"+hunkinfo1[k]
+	def __str__(self):
+		patch = self.header
+		for k in sorted(self.hunkinfo):
+			patch+="\n"+self.hunkinfo[k]
+		return patch
+		
+	def merge(self, otherpatch):
+		print otherpatch
+		for k in self.hunkinfo:
+			if k in otherpatch.hunkinfo:
+				print "Warning: patches have duplicated hunks!"
+		self.hunkinfo.update(otherpatch.hunkinfo)
 
-	return patch, sorted(hunkinfo1.keys())
+	def getLines(self):
+		return sorted(self.hunkinfo)
 
-def readpatch(patchfile):
-	patchinfo = {}
-	patchdata = open(patchfile).read()
-	patches = patchdata.split("\ndiff")
-	for p in patches:
-		# add back the "diff" and "\n"
-		if p[0:4] != "diff":
-			p="diff"+p+"\n"
+	def getFilename(self):
+		return self.filename
+
+	def compare(self, otherhunks):
+		sk = sorted(self.hunkinfo)
+		if sk == sorted(otherhunks.hunkinfo):
+			return sk;
+			
+		matchedoffsets=[]
+		for k in sk:
+			if k in otherhunks.hunkinfo:
+				matchedoffsets.append(k)
+		return matchedoffsets
+
+class PatchDict:
+	def __init__(self):
+		self.patch = {}
+
+	def __contains__(self, filename):
+		return filename in self.patch
+
+	def __getitem__(self, item):
+		return self.patch[item]
+
+	def __iter__(self):
+		return self.patch.__iter__()
+
+	def add(self, patch):
+		fn = patch.getFilename()
+		if fn in self.patch:
+			self.patch[fn].merge(patch)
 		else:
-			p=p+"\n"
-		filename, lines = getpatchinfo(p)
-		if patchinfo.has_key(filename):
-			print "Merging hunks in", filename
-			h1 = gethunkinfo(patchinfo[filename][1])
-			h2 = gethunkinfo(p)
-			p, lines = mergehunks(h1, h2)
-		patchinfo[filename] = [lines, p]
+			self.patch[fn] = patch
+		
+	def remove(self, item):
+		del self.patch[item]
 
-	# Remove trailing "\n"
-	#patchinfo[filename][1] = patchinfo[filename][1][:-1]
-	return patchinfo
+	def write(self, outfile):
+		plist = sorted(self.patch)
+		if len(plist):
+			fp=open(outfile,"w")
+			if len(plist) > 1:
+				for f in plist[:-1]:
+					fp.write(str(self.patch[f])+"\n")
+			fp.write(str(self.patch[plist[-1]]))
+		
+class PatchFile(PatchDict):
+	def __init__(self, patchfile):
+		self.patch={}
+		patchdata = open(patchfile).read()
+		patches = patchdata.split("\ndiff")
+		for p in patches:
+			# add back the "diff"
+			if p[0:4] != "diff":
+				p="diff"+p
+			newpatch = Patch(p)
+			self.add(newpatch)
 

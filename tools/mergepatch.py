@@ -26,7 +26,7 @@
 #          duplicates 
 ##############################################################################
 import os, sys
-from common import readpatch
+from common import *
 
 def usage():
 	print "Error: Invalid arguments"
@@ -40,7 +40,6 @@ def usage():
 
 
 def main():
-	searchstr="diff"
 	armpatches=[]
 	mipspatches=[]
 	allpatches=[]
@@ -59,16 +58,17 @@ def main():
 	else:
 		usage()
 
-	patches1 = readpatch(sys.argv[2])
-	patches2 = readpatch(sys.argv[3])
+	patches1 = PatchFile(sys.argv[2])
+	patches2 = PatchFile(sys.argv[3])
 	patches3 = {}
 
-	for name in sorted(patches1.keys()):
-		if patches2.has_key(name):
-			print patches1[name][0]
-			print patches2[name][0]
-			# if all hunks are identical
-			if patches1[name][0] == patches2[name][0]:
+	for name in sorted(patches1):
+		if name in patches2:
+			print patches1[name].getLines()
+			print patches2[name].getLines()
+			# if all hunk offsets are identical
+			matches = patches1[name].compare(patches2[name])
+			if matches == patches1[name].getLines():
 				if mode == "extract":
 					patches3[name] = patches2[name]
 				if not mode == "keep":
@@ -80,15 +80,15 @@ def main():
 	if mode == "extract":
 		fp=open(sys.argv[4], "w")
 		for key in sorted(patches3.keys()):
-			fp.write(patches3[key][1])
+			fp.write(patches3[key].str())
 	if not mode == "keep":
 		fp=open(sys.argv[2], "w")
 		for key in sorted(patches1.keys()):
-			fp.write(patches1[key][1])
+			fp.write(patches1[key].str())
 	if not mode == "drop":
 		fp=open(sys.argv[3], "w")
 		for p in sorted(patches2.keys()):
-			fp.write(patches2[key][1])
+			fp.write(patches2[key].str())
 
 	
 if __name__ == "__main__":

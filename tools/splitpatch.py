@@ -26,7 +26,7 @@
 #          specific patches
 ##############################################################################
 import os, sys
-from common import readpatch
+from common import *
 
 def usage():
 	print "Error: Invalid arguments"
@@ -34,7 +34,6 @@ def usage():
 
 
 def main():
-	searchstr="diff"
 	armpatches=[]
 	mipspatches=[]
 	allpatches=[]
@@ -43,28 +42,28 @@ def main():
 		usage()
 		raise SystemExit
 
-	patches = readpatch(sys.argv[1])
+	patches = PatchFile(sys.argv[1])
 
-	for name in sorted(patches.keys()):
+	for name in sorted(patches):
 		if "/arm/" in name:
-			armpatches.append(patches[name][1])
+			armpatches.append(patches[name])
 		elif "/mips/" in name:
-			mipspatches.append(patches[name][1])
+			mipspatches.append(patches[name])
 		else:
-			allpatches.append(patches[name][1])
+			allpatches.append(patches[name])
 
 	if armpatches:
 		fp=open(sys.argv[2]+"/"+sys.argv[3]+"-arm.patch", "w")
 		for p in armpatches:
-			fp.write(p)
+			fp.write(p.str())
 	if mipspatches:
 		fp=open(sys.argv[2]+"/"+sys.argv[3]+"-mips.patch", "w")
 		for p in mipspatches:
-			fp.write(p)
+			fp.write(p.str())
 	if allpatches:
 		fp=open(sys.argv[2]+"/"+sys.argv[3]+".patch", "w")
 		for p in allpatches:
-			fp.write(p)
+			fp.write(p.str())
 
 	
 if __name__ == "__main__":
