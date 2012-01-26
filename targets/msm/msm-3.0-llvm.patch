@@ -2121,3 +2121,16 @@ index 521c5e5..74507ec 100644
  	.probe = asoc_mvs_cpu_probe,
  	.remove = __devexit_p(asoc_mvs_cpu_remove),
  	.driver = {
+diff --git a/drivers/net/smc91x.c b/drivers/net/smc91x.c
+index f628574..33f1e36 100644
+--- a/drivers/net/smc91x.c
++++ b/drivers/net/smc91x.c
+@@ -2411,7 +2411,7 @@ static struct dev_pm_ops smc_drv_pm_ops = {
+ 	.resume		= smc_drv_resume,
+ };
+ 
+-static struct platform_driver smc_driver = {
++static struct platform_driver smc_driver __refdata = {
+ 	.probe		= smc_drv_probe,
+ 	.remove		= __devexit_p(smc_drv_remove),
+ 	.driver		= {
