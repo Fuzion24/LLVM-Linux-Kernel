@@ -1,14 +1,22 @@
 Here are a colection of tools to help manages the patches:
 
-unusedfix.py: Parse the log file to find the warnings due to an unused 
-	      returned value, and patch the source.
+unusedfix.py:	Parse the log file to find the warnings due to an unused 
+		returned value, and patch the source.
 
 The best way to use this is to do a make kernel-build, generate the log and
 then do a make kernel-clean, and then run this script. You can then generate
 a patch file via git diff.
 
-splitpatch.py: Split the patch file into architecture and non-architecture 
-               specific patches
+splitarch.py: 	Split the patch file into architecture and non-architecture 
+              	specific patches
 
-splitunused.py: Extracts the patches for unused return value warnings from
-                a patch file
+splitunused.py:	Extracts the patches for unused return value warnings from
+		a patch file
+
+mergepatch.py:	Merge two patch files with options of what to do with common
+		patches
+
+checkduplicates.py: Checks a patch file to check for separate patches to the 
+		same file
+
+common.py: 	Classes that manage parsing and merging patch files
