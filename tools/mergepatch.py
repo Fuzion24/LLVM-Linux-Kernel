@@ -40,9 +40,9 @@ def usage():
 
 
 def main():
-	armpatches=[]
-	mipspatches=[]
-	allpatches=[]
+	armpatches=PatchDict
+	mipspatches=PatchDict
+	allpatches=PatchDict
 
 	if len(sys.argv) < 4:
 		usage()
@@ -64,8 +64,8 @@ def main():
 
 	for name in sorted(patches1):
 		if name in patches2:
-			print patches1[name].getLines()
-			print patches2[name].getLines()
+			#print patches1[name].getLines()
+			#print patches2[name].getLines()
 			# if all hunk offsets are identical
 			matches = patches1[name].compare(patches2[name])
 			if matches == patches1[name].getLines():
@@ -76,19 +76,24 @@ def main():
 					del patches1[name]
 				if not mode == "drop":
 					del patches2[name]
+			elif matches:
+				if mode == "extract":
+					patches3[name] = patches2.createpatch(name, matches)
+				if not mode == "keep":
+					print "Dropping hunks", matches, "from", name, "in", sys.argv[2]
+					patches1.drophunks(name, matches)
+				if not mode == "drop":
+					patches2.drophunks(name, matches)
+				
 
 	if mode == "extract":
-		fp=open(sys.argv[4], "w")
-		for key in sorted(patches3.keys()):
-			fp.write(patches3[key].str())
+		patches3.write(sys.argv[4])
+
 	if not mode == "keep":
-		fp=open(sys.argv[2], "w")
-		for key in sorted(patches1.keys()):
-			fp.write(patches1[key].str())
+		patches1.write(sys.argv[2])
+
 	if not mode == "drop":
-		fp=open(sys.argv[3], "w")
-		for p in sorted(patches2.keys()):
-			fp.write(patches2[key].str())
+		patches2.write(sys.argv[3])
 
 	
 if __name__ == "__main__":

@@ -25,7 +25,8 @@ import os, sys
 
 class Patch:
 	def __init__(self, patchdata):
-		self.filename = patchdata.split("--- a/")[1].split("\n")[0]
+		tmp = patchdata.split("--- a/")[1]
+		self.filename = tmp.split("\n")[0]
 		hunks=patchdata.split("\n@@ -")
 		self.hunkinfo={}
 		self.header=hunks[0]
@@ -41,7 +42,7 @@ class Patch:
 	def merge(self, otherpatch):
 		for k in self.hunkinfo:
 			if k in otherpatch.hunkinfo:
-				print "Warning: patches have duplicated hunks!"
+				print "Warning: patches have duplicated hunks: %s %s %d" % (self.filename, otherpatch.filename, k)
 		self.hunkinfo.update(otherpatch.hunkinfo)
 
 	def getLines(self):
@@ -61,6 +62,10 @@ class Patch:
 				matchedoffsets.append(k)
 		return matchedoffsets
 
+	def drophunks(self, hunks):
+		for h in hunks:
+			del self.hunkinfo[h]
+			
 class PatchDict:
 	def __init__(self):
 		self.patch = {}
@@ -81,7 +86,7 @@ class PatchDict:
 		else:
 			self.patch[fn] = patch
 		
-	def remove(self, item):
+	def __delitem__(self, item):
 		del self.patch[item]
 
 	def write(self, outfile):
@@ -93,6 +98,9 @@ class PatchDict:
 					fp.write(str(self.patch[f])+"\n")
 			fp.write(str(self.patch[plist[-1]]))
 		
+	def drophunks(self, item, hunks):
+		self.patch[item].drophunks(hunks)
+
 class PatchFile(PatchDict):
 	def __init__(self, patchfile):
 		PatchDict.__init__(self)

@@ -97,37 +97,6 @@ index 0416091..2f20037 100644
  
  	return 0;
  }
-diff --git a/crypto/sha256_generic.c b/crypto/sha256_generic.c
-index c48459e..41fffde 100644
---- a/crypto/sha256_generic.c
-+++ b/crypto/sha256_generic.c
-@@ -210,7 +210,7 @@ static void sha256_transform(u32 *state, const u8 *input)
- 
- 	/* clear any sensitive info... */
- 	a = b = c = d = e = f = g = h = t1 = t2 = 0;
--	memset(W, 0, 64 * sizeof(u32));
-+	(void)memset(W, 0, 64 * sizeof(u32));
- }
- 
- 
-@@ -303,7 +303,7 @@ static int sha256_final(struct shash_desc *desc, u8 *out)
- 		dst[i] = cpu_to_be32(sctx->state[i]);
- 
- 	/* Zeroize sensitive information. */
--	memset(sctx, 0, sizeof(*sctx));
-+	(void)memset(sctx, 0, sizeof(*sctx));
- 
- 	return 0;
- }
-@@ -315,7 +315,7 @@ static int sha224_final(struct shash_desc *desc, u8 *hash)
- 	sha256_final(desc, D);
- 
- 	memcpy(hash, D, SHA224_DIGEST_SIZE);
--	memset(D, 0, SHA256_DIGEST_SIZE);
-+	(void)memset(D, 0, SHA256_DIGEST_SIZE);
- 
- 	return 0;
- }
 diff --git a/drivers/base/devres.c b/drivers/base/devres.c
 index cf7a0c7..5954aaa 100644
 --- a/drivers/base/devres.c
@@ -761,19 +730,6 @@ index 70e505e..4664a88 100644
  					chan_properties->adc_graph->dy*
  					chan_properties->gain_numerator);
  	} else {
-diff --git a/drivers/input/keyboard/matrix_keypad.c b/drivers/input/keyboard/matrix_keypad.c
-index c7aa2ce..5ab0bba 100644
---- a/drivers/input/keyboard/matrix_keypad.c
-+++ b/drivers/input/keyboard/matrix_keypad.c
-@@ -124,7 +124,7 @@ static void matrix_keypad_scan(struct work_struct *work)
- 	/* de-activate all columns for scanning */
- 	activate_all_cols(pdata, false);
- 
--	memset(new_state, 0, sizeof(new_state));
-+	(void)memset(new_state, 0, sizeof(new_state));
- 
- 	/* assert each column and read the row status out */
- 	for (col = 0; col < pdata->num_col_gpios; col++) {
 diff --git a/drivers/input/keyboard/pmic8xxx-keypad.c b/drivers/input/keyboard/pmic8xxx-keypad.c
 index 0866332..480fdf9 100644
 --- a/drivers/input/keyboard/pmic8xxx-keypad.c
@@ -789,19 +745,6 @@ index 0866332..480fdf9 100644
  
  	rc = pmic8xxx_kpd_init(kp);
  	if (rc < 0) {
-diff --git a/drivers/input/misc/uinput.c b/drivers/input/misc/uinput.c
-index 7360568..93d3ea5 100644
---- a/drivers/input/misc/uinput.c
-+++ b/drivers/input/misc/uinput.c
-@@ -713,7 +713,7 @@ static long uinput_ioctl_handler(struct file *file, unsigned int cmd,
- 			if (req->u.upload.old)
- 				ff_up.old = *req->u.upload.old;
- 			else
--				memset(&ff_up.old, 0, sizeof(struct ff_effect));
-+				(void)memset(&ff_up.old, 0, sizeof(struct ff_effect));
- 
- 			retval = uinput_ff_upload_to_user(p, &ff_up);
- 			break;
 diff --git a/drivers/input/mouse/psmouse-base.c b/drivers/input/mouse/psmouse-base.c
 index 3f74bae..94a51a5 100644
 --- a/drivers/input/mouse/psmouse-base.c
@@ -828,19 +771,6 @@ index e06e045..789e91e 100644
  
  	if (SYN_MODEL_NEWABS(priv->model_id)) {
  		hw->x = (((buf[3] & 0x10) << 8) |
-diff --git a/drivers/input/serio/serport.c b/drivers/input/serio/serport.c
-index 8755f5f..95a94f7 100644
---- a/drivers/input/serio/serport.c
-+++ b/drivers/input/serio/serport.c
-@@ -186,7 +186,7 @@ static ssize_t serport_ldisc_read(struct tty_struct * tty, struct file * file, u
- 	serio_register_port(serport->serio);
- 	printk(KERN_INFO "serio: Serial port %s\n", tty_name(tty, name));
- 
--	wait_event_interruptible(serport->wait, test_bit(SERPORT_DEAD, &serport->flags));
-+	(void)wait_event_interruptible(serport->wait, test_bit(SERPORT_DEAD, &serport->flags));
- 	serio_unregister_port(serport->serio);
- 	serport->serio = NULL;
- 
 diff --git a/drivers/md/dm-crypt.c b/drivers/md/dm-crypt.c
 index c8827ff..e1f05fc 100644
 --- a/drivers/md/dm-crypt.c
@@ -908,28 +838,6 @@ index c8827ff..e1f05fc 100644
  
  	return 0;
  }
-diff --git a/drivers/md/dm-io.c b/drivers/md/dm-io.c
-index ad2eba4..ebb001e 100644
---- a/drivers/md/dm-io.c
-+++ b/drivers/md/dm-io.c
-@@ -377,7 +377,7 @@ static int sync_io(struct dm_io_client *client, unsigned int num_regions,
- 	struct io *io = (struct io *)PTR_ALIGN(&io_, __alignof__(struct io));
- 
- 	if (num_regions > 1 && (rw & RW_MASK) != WRITE) {
--		WARN_ON(1);
-+		(void)WARN_ON(1);
- 		return -EIO;
- 	}
- 
-@@ -414,7 +414,7 @@ static int async_io(struct dm_io_client *client, unsigned int num_regions,
- 	struct io *io;
- 
- 	if (num_regions > 1 && (rw & RW_MASK) != WRITE) {
--		WARN_ON(1);
-+		(void)WARN_ON(1);
- 		fn(1, context);
- 		return -EIO;
- 	}
 diff --git a/drivers/md/dm-ioctl.c b/drivers/md/dm-ioctl.c
 index 4cacdad..2edf19d 100644
 --- a/drivers/md/dm-ioctl.c
@@ -952,19 +860,6 @@ index 4cacdad..2edf19d 100644
  
  	vfree(param);
  	return r;
-diff --git a/drivers/md/dm-stripe.c b/drivers/md/dm-stripe.c
-index 3d80cf0..e97b057 100644
---- a/drivers/md/dm-stripe.c
-+++ b/drivers/md/dm-stripe.c
-@@ -348,7 +348,7 @@ static int stripe_end_io(struct dm_target *ti, struct bio *bio,
- 	if (error == -EOPNOTSUPP)
- 		return error;
- 
--	memset(major_minor, 0, sizeof(major_minor));
-+	(void)memset(major_minor, 0, sizeof(major_minor));
- 	sprintf(major_minor, "%d:%d",
- 		MAJOR(disk_devt(bio->bi_bdev->bd_disk)),
- 		MINOR(disk_devt(bio->bi_bdev->bd_disk)));
 diff --git a/drivers/md/dm-table.c b/drivers/md/dm-table.c
 index ebdae6e..9c8f1b3 100644
 --- a/drivers/md/dm-table.c
@@ -1107,76 +1002,6 @@ index 57022e8..b8117ec 100644
  
  	mutex_unlock(&tda18271_list_mutex);
  
-diff --git a/drivers/media/common/tuners/tda8290.c b/drivers/media/common/tuners/tda8290.c
-index 8c48521..184b876 100644
---- a/drivers/media/common/tuners/tda8290.c
-+++ b/drivers/media/common/tuners/tda8290.c
-@@ -803,7 +803,7 @@ struct dvb_frontend *tda829x_attach(struct dvb_frontend *fe,
- 	return fe;
- 
- fail:
--	memset(&fe->ops.analog_ops, 0, sizeof(struct analog_demod_ops));
-+	(void)memset(&fe->ops.analog_ops, 0, sizeof(struct analog_demod_ops));
- 
- 	tda829x_release(fe);
- 	return NULL;
-diff --git a/drivers/media/common/tuners/tda9887.c b/drivers/media/common/tuners/tda9887.c
-index cdb645d..115f693 100644
---- a/drivers/media/common/tuners/tda9887.c
-+++ b/drivers/media/common/tuners/tda9887.c
-@@ -536,7 +536,7 @@ static int tda9887_status(struct dvb_frontend *fe)
- 	unsigned char buf[1];
- 	int rc;
- 
--	memset(buf,0,sizeof(buf));
-+	(void)memset(buf,0,sizeof(buf));
- 	if (1 != (rc = tuner_i2c_xfer_recv(&priv->i2c_props,buf,1)))
- 		tuner_info("i2c i/o error: rc == %d (should be 1)\n", rc);
- 	dump_read_message(fe, buf);
-@@ -548,7 +548,7 @@ static void tda9887_configure(struct dvb_frontend *fe)
- 	struct tda9887_priv *priv = fe->analog_demod_priv;
- 	int rc;
- 
--	memset(priv->data,0,sizeof(priv->data));
-+	(void)memset(priv->data,0,sizeof(priv->data));
- 	tda9887_set_tvnorm(fe);
- 
- 	/* A note on the port settings:
-@@ -652,7 +652,7 @@ static void tda9887_release(struct dvb_frontend *fe)
- 	mutex_lock(&tda9887_list_mutex);
- 
- 	if (priv)
--		hybrid_tuner_release_state(priv);
-+		(void)hybrid_tuner_release_state(priv);
- 
- 	mutex_unlock(&tda9887_list_mutex);
- 
-diff --git a/drivers/media/common/tuners/tea5761.c b/drivers/media/common/tuners/tea5761.c
-index bf78cb9..8105ede 100644
---- a/drivers/media/common/tuners/tea5761.c
-+++ b/drivers/media/common/tuners/tea5761.c
-@@ -203,7 +203,7 @@ static int tea5761_read_status(struct dvb_frontend *fe, char *buffer)
- 	struct tea5761_priv *priv = fe->tuner_priv;
- 	int rc;
- 
--	memset(buffer, 0, 16);
-+	(void)memset(buffer, 0, 16);
- 	if (16 != (rc = tuner_i2c_xfer_recv(&priv->i2c_props, buffer, 16))) {
- 		tuner_warn("i2c i/o error: rc == %d (should be 16)\n", rc);
- 		return -EREMOTEIO;
-diff --git a/drivers/media/common/tuners/tea5767.c b/drivers/media/common/tuners/tea5767.c
-index 36e85d8..f0df484 100644
---- a/drivers/media/common/tuners/tea5767.c
-+++ b/drivers/media/common/tuners/tea5767.c
-@@ -287,7 +287,7 @@ static int tea5767_read_status(struct dvb_frontend *fe, char *buffer)
- 	struct tea5767_priv *priv = fe->tuner_priv;
- 	int rc;
- 
--	memset(buffer, 0, 5);
-+	(void)memset(buffer, 0, 5);
- 	if (5 != (rc = tuner_i2c_xfer_recv(&priv->i2c_props, buffer, 5))) {
- 		tuner_warn("i2c i/o error: rc == %d (should be 5)\n", rc);
- 		return -EREMOTEIO;
 diff --git a/drivers/media/common/tuners/tuner-simple.c b/drivers/media/common/tuners/tuner-simple.c
 index f8ee29e..2c0b4e5 100644
 --- a/drivers/media/common/tuners/tuner-simple.c
@@ -1323,19 +1148,6 @@ index 1c5cc65..529f7eb 100644
  			lirc->gap_duration = min(lirc->gap_duration,
  							(u64)LIRC_VALUE_MASK);
  
-diff --git a/drivers/media/rc/lirc_dev.c b/drivers/media/rc/lirc_dev.c
-index 27997a9..70113e4 100644
---- a/drivers/media/rc/lirc_dev.c
-+++ b/drivers/media/rc/lirc_dev.c
-@@ -509,7 +509,7 @@ int lirc_dev_fop_close(struct inode *inode, struct file *file)
- 
- 	dev_dbg(ir->d.dev, LOGHEAD "close called\n", ir->d.name, ir->d.minor);
- 
--	WARN_ON(mutex_lock_killable(&lirc_dev_lock));
-+	(void)WARN_ON(mutex_lock_killable(&lirc_dev_lock));
- 
- 	ir->open--;
- 	if (ir->attached) {
 diff --git a/drivers/media/video/gspca/gspca.c b/drivers/media/video/gspca/gspca.c
 index 08ce994..826d3d3 100644
 --- a/drivers/media/video/gspca/gspca.c
@@ -1843,19 +1655,6 @@ index 543a803..e80d81f 100644
  		fmt->index = index;
  		fmt->type = type;
  
-diff --git a/drivers/media/video/uvc/uvc_video.c b/drivers/media/video/uvc/uvc_video.c
-index 4999479..365ddb0 100644
---- a/drivers/media/video/uvc/uvc_video.c
-+++ b/drivers/media/video/uvc/uvc_video.c
-@@ -183,7 +183,7 @@ static int uvc_get_video_ctrl(struct uvc_streaming *stream,
- 		uvc_warn_once(stream->dev, UVC_WARN_MINMAX, "UVC non "
- 			"compliance - GET_MIN/MAX(PROBE) incorrectly "
- 			"supported. Enabling workaround.\n");
--		memset(ctrl, 0, sizeof *ctrl);
-+		(void)memset(ctrl, 0, sizeof *ctrl);
- 		ctrl->wCompQuality = le16_to_cpup((__le16 *)data);
- 		ret = 0;
- 		goto out;
 diff --git a/drivers/media/video/v4l2-common.c b/drivers/media/video/v4l2-common.c
 index 06b9f9f..74fda0f 100644
 --- a/drivers/media/video/v4l2-common.c
@@ -2778,28 +2577,6 @@ index a3c32b9..0136f83 100644
  
  	smsc911x_mac_write(pdata, ADDRH, mac_high16);
  	smsc911x_mac_write(pdata, ADDRL, mac_low32);
-diff --git a/drivers/oprofile/event_buffer.c b/drivers/oprofile/event_buffer.c
-index dd87e86..9ebd10f 100644
---- a/drivers/oprofile/event_buffer.c
-+++ b/drivers/oprofile/event_buffer.c
-@@ -48,7 +48,7 @@ void add_event_entry(unsigned long value)
- 	 * canceled or flushed before the event buffer is freed.
- 	 */
- 	if (!event_buffer) {
--		WARN_ON_ONCE(1);
-+		(void)WARN_ON_ONCE(1);
- 		return;
- 	}
- 
-@@ -167,7 +167,7 @@ static ssize_t event_buffer_read(struct file *file, char __user *buf,
- 	if (count != max || *offset)
- 		return -EINVAL;
- 
--	wait_event_interruptible(buffer_wait, atomic_read(&buffer_ready));
-+	(void)wait_event_interruptible(buffer_wait, atomic_read(&buffer_ready));
- 
- 	if (signal_pending(current))
- 		return -EINTR;
 diff --git a/drivers/oprofile/oprofilefs.c b/drivers/oprofile/oprofilefs.c
 index e9ff6f7..60dbde7 100644
 --- a/drivers/oprofile/oprofilefs.c
@@ -2926,117 +2703,6 @@ index eb4c883..7d528b6 100644
  		alarm->enabled = rtc->aie_timer.enabled;
  		alarm->time = rtc_ktime_to_tm(rtc->aie_timer.node.expires);
  	}
-diff --git a/drivers/scsi/ch.c b/drivers/scsi/ch.c
-index a15474e..37465a1 100644
---- a/drivers/scsi/ch.c
-+++ b/drivers/scsi/ch.c
-@@ -245,7 +245,7 @@ ch_read_element_status(scsi_changer *ch, u_int elem, char *data)
- 		return -ENOMEM;
- 
-  retry:
--	memset(cmd,0,sizeof(cmd));
-+	(void)memset(cmd,0,sizeof(cmd));
- 	cmd[0] = READ_ELEMENT_STATUS;
- 	cmd[1] = (ch->device->lun << 5) |
- 		(ch->voltags ? 0x10 : 0) |
-@@ -281,7 +281,7 @@ ch_init_elem(scsi_changer *ch)
- 	u_char cmd[6];
- 
- 	VPRINTK(KERN_INFO, "INITIALIZE ELEMENT STATUS, may take some time ...\n");
--	memset(cmd,0,sizeof(cmd));
-+	(void)memset(cmd,0,sizeof(cmd));
- 	cmd[0] = INITIALIZE_ELEMENT_STATUS;
- 	cmd[1] = ch->device->lun << 5;
- 	err = ch_do_scsi(ch, cmd, NULL, 0, DMA_NONE);
-@@ -301,7 +301,7 @@ ch_readconfig(scsi_changer *ch)
- 	if (!buffer)
- 		return -ENOMEM;
- 
--	memset(cmd,0,sizeof(cmd));
-+	(void)memset(cmd,0,sizeof(cmd));
- 	cmd[0] = MODE_SENSE;
- 	cmd[1] = ch->device->lun << 5;
- 	cmd[2] = 0x1d;
-@@ -426,7 +426,7 @@ ch_position(scsi_changer *ch, u_int trans, u_int elem, int rotate)
- 	DPRINTK("position: 0x%x\n",elem);
- 	if (0 == trans)
- 		trans = ch->firsts[CHET_MT];
--	memset(cmd,0,sizeof(cmd));
-+	(void)memset(cmd,0,sizeof(cmd));
- 	cmd[0]  = POSITION_TO_ELEMENT;
- 	cmd[1]  = ch->device->lun << 5;
- 	cmd[2]  = (trans >> 8) & 0xff;
-@@ -445,7 +445,7 @@ ch_move(scsi_changer *ch, u_int trans, u_int src, u_int dest, int rotate)
- 	DPRINTK("move: 0x%x => 0x%x\n",src,dest);
- 	if (0 == trans)
- 		trans = ch->firsts[CHET_MT];
--	memset(cmd,0,sizeof(cmd));
-+	(void)memset(cmd,0,sizeof(cmd));
- 	cmd[0]  = MOVE_MEDIUM;
- 	cmd[1]  = ch->device->lun << 5;
- 	cmd[2]  = (trans >> 8) & 0xff;
-@@ -468,7 +468,7 @@ ch_exchange(scsi_changer *ch, u_int trans, u_int src,
- 		src,dest1,dest2);
- 	if (0 == trans)
- 		trans = ch->firsts[CHET_MT];
--	memset(cmd,0,sizeof(cmd));
-+	(void)memset(cmd,0,sizeof(cmd));
- 	cmd[0]  = EXCHANGE_MEDIUM;
- 	cmd[1]  = ch->device->lun << 5;
- 	cmd[2]  = (trans >> 8) & 0xff;
-@@ -516,7 +516,7 @@ ch_set_voltag(scsi_changer *ch, u_int elem,
- 		clear     ? "clear"     : "set",
- 		alternate ? "alternate" : "primary",
- 		elem, tag);
--	memset(cmd,0,sizeof(cmd));
-+	(void)memset(cmd,0,sizeof(cmd));
- 	cmd[0]  = SEND_VOLUME_TAG;
- 	cmd[1] = (ch->device->lun << 5) |
- 		ch_elem_to_typecode(ch,elem);
-@@ -631,7 +631,7 @@ static long ch_ioctl(struct file *file,
- 	{
- 		struct changer_vendor_params vparams;
- 
--		memset(&vparams,0,sizeof(vparams));
-+		(void)memset(&vparams,0,sizeof(vparams));
- 		if (ch->counts[CHET_V1]) {
- 			vparams.cvp_n1  = ch->counts[CHET_V1];
- 			strncpy(vparams.cvp_label1,vendor_labels[0],16);
-@@ -752,7 +752,7 @@ static long ch_ioctl(struct file *file,
- 		mutex_lock(&ch->lock);
- 
- 	voltag_retry:
--		memset(ch_cmd, 0, sizeof(ch_cmd));
-+		(void)memset(ch_cmd, 0, sizeof(ch_cmd));
- 		ch_cmd[0] = READ_ELEMENT_STATUS;
- 		ch_cmd[1] = (ch->device->lun << 5) |
- 			(ch->voltags ? 0x10 : 0) |
-diff --git a/drivers/scsi/constants.c b/drivers/scsi/constants.c
-index 450e011..f9eed3f 100644
---- a/drivers/scsi/constants.c
-+++ b/drivers/scsi/constants.c
-@@ -1341,7 +1341,7 @@ scsi_decode_sense_extras(const unsigned char *sense_buffer, int sense_len,
- 		info = ((sense_buffer[3] << 24) | (sense_buffer[4] << 16) |
- 			(sense_buffer[5] << 8) | sense_buffer[6]);
- 		res = 0;
--		memset(buff, 0, sizeof(buff));
-+		(void)memset(buff, 0, sizeof(buff));
- 		blen = sizeof(buff) - 1;
- 		if (fixed_valid)
- 			res += snprintf(buff + res, blen - res,
-diff --git a/drivers/scsi/scsi.c b/drivers/scsi/scsi.c
-index 2aeb2e9..13e5e44 100644
---- a/drivers/scsi/scsi.c
-+++ b/drivers/scsi/scsi.c
-@@ -263,7 +263,7 @@ struct scsi_cmnd *__scsi_get_command(struct Scsi_Host *shost, gfp_t gfp_mask)
- 			buf = cmd->sense_buffer;
- 			prot = cmd->prot_sdb;
- 
--			memset(cmd, 0, sizeof(*cmd));
-+			(void)memset(cmd, 0, sizeof(*cmd));
- 
- 			cmd->sense_buffer = buf;
- 			cmd->prot_sdb = prot;
 diff --git a/drivers/scsi/scsi_error.c b/drivers/scsi/scsi_error.c
 index a4b9cdb..52226c0 100644
 --- a/drivers/scsi/scsi_error.c
@@ -3431,50 +3097,6 @@ index 17b9f0d..0f8336e 100644
  	msm_spi_free_gpios(dd);
  
  suspend_exit:
-diff --git a/drivers/staging/android/binder.c b/drivers/staging/android/binder.c
-index e13b4c4..263a2f7 100644
---- a/drivers/staging/android/binder.c
-+++ b/drivers/staging/android/binder.c
-@@ -189,7 +189,7 @@ static struct binder_transaction_log_entry *binder_transaction_log_add(
- {
- 	struct binder_transaction_log_entry *e;
- 	e = &log->entry[log->next];
--	memset(e, 0, sizeof(*e));
-+	(void)memset(e, 0, sizeof(*e));
- 	log->next++;
- 	if (log->next == ARRAY_SIZE(log->entry)) {
- 		log->next = 0;
-@@ -2240,7 +2240,7 @@ retry:
- 				"for process work before calling BC_REGISTER_"
- 				"LOOPER or BC_ENTER_LOOPER (state %x)\n",
- 				proc->pid, thread->pid, thread->looper);
--			wait_event_interruptible(binder_user_error_wait,
-+			(void)wait_event_interruptible(binder_user_error_wait,
- 						 binder_stop_on_user_error < 2);
- 		}
- 		binder_set_nice(proc->default_priority);
-@@ -2745,7 +2745,7 @@ err:
- 	if (thread)
- 		thread->looper &= ~BINDER_LOOPER_STATE_NEED_RETURN;
- 	mutex_unlock(&binder_lock);
--	wait_event_interruptible(binder_user_error_wait, binder_stop_on_user_error < 2);
-+	(void)wait_event_interruptible(binder_user_error_wait, binder_stop_on_user_error < 2);
- 	if (ret && ret != -ERESTARTSYS)
- 		printk(KERN_INFO "binder: %d:%d ioctl %x %lx returned %d\n", proc->pid, current->pid, cmd, arg, ret);
- 	return ret;
-diff --git a/drivers/staging/android/ram_console.c b/drivers/staging/android/ram_console.c
-index cb42d89..565e55e 100644
---- a/drivers/staging/android/ram_console.c
-+++ b/drivers/staging/android/ram_console.c
-@@ -62,7 +62,7 @@ static void ram_console_encode_rs8(uint8_t *data, size_t len, uint8_t *ecc)
- 	int i;
- 	uint16_t par[ECC_SIZE];
- 	/* Initialize the parity buffer */
--	memset(par, 0, sizeof(par));
-+	(void)memset(par, 0, sizeof(par));
- 	encode_rs8(ram_console_rs_decoder, data, len, par, 0);
- 	for (i = 0; i < ECC_SIZE; i++)
- 		ecc[i] = par[i];
 diff --git a/drivers/thermal/thermal_sys.c b/drivers/thermal/thermal_sys.c
 index 7970e89..f90eb80 100644
 --- a/drivers/thermal/thermal_sys.c
@@ -3803,19 +3425,6 @@ index 5442297..968b0a0 100644
  				!list_empty(&hub_event_list) ||
  				kthread_should_stop());
  	} while (!kthread_should_stop() || !list_empty(&hub_event_list));
-diff --git a/drivers/usb/core/urb.c b/drivers/usb/core/urb.c
-index ae334b0..9f0efdd 100644
---- a/drivers/usb/core/urb.c
-+++ b/drivers/usb/core/urb.c
-@@ -38,7 +38,7 @@ static void urb_destroy(struct kref *kref)
- void usb_init_urb(struct urb *urb)
- {
- 	if (urb) {
--		memset(urb, 0, sizeof(*urb));
-+		(void)memset(urb, 0, sizeof(*urb));
- 		kref_init(&urb->kref);
- 		INIT_LIST_HEAD(&urb->anchor_list);
- 	}
 diff --git a/drivers/usb/gadget/msm72k_udc.c b/drivers/usb/gadget/msm72k_udc.c
 index ea62262..f7fb847 100644
 --- a/drivers/usb/gadget/msm72k_udc.c
@@ -3916,37 +3525,6 @@ index d438555..288fa6e 100644
  		//cpu_to_le32s ((u32 *) buf);
  		break;
  	case GetPortStatus:
-diff --git a/drivers/usb/host/ehci-mem.c b/drivers/usb/host/ehci-mem.c
-index 12f70c3..49e96cf 100644
---- a/drivers/usb/host/ehci-mem.c
-+++ b/drivers/usb/host/ehci-mem.c
-@@ -38,7 +38,7 @@
- static inline void ehci_qtd_init(struct ehci_hcd *ehci, struct ehci_qtd *qtd,
- 				  dma_addr_t dma)
- {
--	memset (qtd, 0, sizeof *qtd);
-+	(void)memset (qtd, 0, sizeof *qtd);
- 	qtd->qtd_dma = dma;
- 	qtd->hw_token = cpu_to_hc32(ehci, QTD_STS_HALT);
- 	qtd->hw_next = EHCI_LIST_END(ehci);
-@@ -91,7 +91,7 @@ static struct ehci_qh *ehci_qh_alloc (struct ehci_hcd *ehci, gfp_t flags)
- 		dma_pool_alloc(ehci->qh_pool, flags, &dma);
- 	if (!qh->hw)
- 		goto fail;
--	memset(qh->hw, 0, sizeof *qh->hw);
-+	(void)memset(qh->hw, 0, sizeof *qh->hw);
- 	qh->refcount = 1;
- 	qh->ehci = ehci;
- 	qh->qh_dma = dma;
-@@ -116,7 +116,7 @@ fail:
- /* to share a qh (cpu threads, or hc) */
- static inline struct ehci_qh *qh_get (struct ehci_qh *qh)
- {
--	WARN_ON(!qh->refcount);
-+	(void)WARN_ON(!qh->refcount);
- 	qh->refcount++;
- 	return qh;
- }
 diff --git a/drivers/usb/host/ehci-q.c b/drivers/usb/host/ehci-q.c
 index 9c24ff4..5baf24a 100644
 --- a/drivers/usb/host/ehci-q.c
@@ -4052,348 +3630,6 @@ index 7c38390..ee0bf72 100644
  	otg_id_active = NULL;
  }
  
-diff --git a/drivers/usb/storage/alauda.c b/drivers/usb/storage/alauda.c
-index 42d0eae..21dcc97 100644
---- a/drivers/usb/storage/alauda.c
-+++ b/drivers/usb/storage/alauda.c
-@@ -373,7 +373,7 @@ static int alauda_reset_media(struct us_data *us)
- {
- 	unsigned char *command = us->iobuf;
- 
--	memset(command, 0, 9);
-+	(void)memset(command, 0, 9);
- 	command[0] = ALAUDA_BULK_CMD;
- 	command[1] = ALAUDA_BULK_RESET_MEDIA;
- 	command[8] = MEDIA_PORT(us);
-@@ -853,7 +853,7 @@ static int alauda_write_lba(struct us_data *us, u16 lba,
- 		if (result != USB_STOR_XFER_GOOD)
- 			return result;
- 	} else {
--		memset(blockbuffer, 0, blocksize * (pagesize + 64));
-+		(void)memset(blockbuffer, 0, blocksize * (pagesize + 64));
- 	}
- 
- 	lbap = (lba_offset << 1) | 0x1000;
-@@ -986,7 +986,7 @@ static int alauda_read_data(struct us_data *us, unsigned long address,
- 			   Instead of returning USB_STOR_TRANSPORT_ERROR
- 			   it is better to return all zero data. */
- 
--			memset(buffer, 0, len);
-+			(void)memset(buffer, 0, len);
- 		} else {
- 			US_DEBUGP("Read %d pages, from PBA %d"
- 				  " (LBA %d) page %d\n",
-@@ -1220,7 +1220,7 @@ static int alauda_transport(struct scsi_cmnd *srb, struct us_data *us)
- 	if (srb->cmnd[0] == REQUEST_SENSE) {
- 		US_DEBUGP("alauda_transport: REQUEST_SENSE.\n");
- 
--		memset(ptr, 0, 18);
-+		(void)memset(ptr, 0, 18);
- 		ptr[0] = 0xF0;
- 		ptr[2] = info->sense_key;
- 		ptr[7] = 11;
-diff --git a/drivers/usb/storage/cypress_atacb.c b/drivers/usb/storage/cypress_atacb.c
-index c844718..bf52857 100644
---- a/drivers/usb/storage/cypress_atacb.c
-+++ b/drivers/usb/storage/cypress_atacb.c
-@@ -90,7 +90,7 @@ static void cypress_atacb_passthrough(struct scsi_cmnd *srb, struct us_data *us)
- 	}
- 
- 	memcpy(save_cmnd, srb->cmnd, sizeof(save_cmnd));
--	memset(srb->cmnd, 0, MAX_COMMAND_SIZE);
-+	(void)memset(srb->cmnd, 0, MAX_COMMAND_SIZE);
- 
- 	/* check if we support the command */
- 	if (save_cmnd[1] >> 5) /* MULTIPLE_COUNT */
-@@ -196,7 +196,7 @@ static void cypress_atacb_passthrough(struct scsi_cmnd *srb, struct us_data *us)
- 			goto invalid_fld;
- 
- 		/* build the sense */
--		memset(sb, 0, SCSI_SENSE_BUFFERSIZE);
-+		(void)memset(sb, 0, SCSI_SENSE_BUFFERSIZE);
- 
- 		/* set sk, asc for a good command */
- 		sb[1] = RECOVERED_ERROR;
-diff --git a/drivers/usb/storage/datafab.c b/drivers/usb/storage/datafab.c
-index ded836b..20124e5 100644
---- a/drivers/usb/storage/datafab.c
-+++ b/drivers/usb/storage/datafab.c
-@@ -487,7 +487,7 @@ static int datafab_handle_mode_sense(struct us_data *us,
- 		break;
- 	}
- 
--	memset(ptr, 0, 8);
-+	(void)memset(ptr, 0, 8);
- 	if (sense_6) {
- 		ptr[2] = 0x00;		// WP enable: 0x80
- 		i = 4;
-@@ -667,7 +667,7 @@ static int datafab_transport(struct scsi_cmnd *srb, struct us_data *us)
- 		// we can set the correct sense data.  so far though it hasn't been
- 		// necessary
- 		//
--		memset(ptr, 0, 18);
-+		(void)memset(ptr, 0, 18);
- 		ptr[0] = 0xF0;
- 		ptr[2] = info->sense_key;
- 		ptr[7] = 11;
-diff --git a/drivers/usb/storage/freecom.c b/drivers/usb/storage/freecom.c
-index 6542ca4..d7a05ce 100644
---- a/drivers/usb/storage/freecom.c
-+++ b/drivers/usb/storage/freecom.c
-@@ -159,7 +159,7 @@ freecom_readdata (struct scsi_cmnd *srb, struct us_data *us,
- 	fxfr->Type = FCM_PACKET_INPUT | 0x00;
- 	fxfr->Timeout = 0;    /* Short timeout for debugging. */
- 	fxfr->Count = cpu_to_le32 (count);
--	memset (fxfr->Pad, 0, sizeof (fxfr->Pad));
-+	(void)memset (fxfr->Pad, 0, sizeof (fxfr->Pad));
- 
- 	US_DEBUGP("Read data Freecom! (c=%d)\n", count);
- 
-@@ -192,7 +192,7 @@ freecom_writedata (struct scsi_cmnd *srb, struct us_data *us,
- 	fxfr->Type = FCM_PACKET_OUTPUT | 0x00;
- 	fxfr->Timeout = 0;    /* Short timeout for debugging. */
- 	fxfr->Count = cpu_to_le32 (count);
--	memset (fxfr->Pad, 0, sizeof (fxfr->Pad));
-+	(void)memset (fxfr->Pad, 0, sizeof (fxfr->Pad));
- 
- 	US_DEBUGP("Write data Freecom! (c=%d)\n", count);
- 
-@@ -240,7 +240,7 @@ static int freecom_transport(struct scsi_cmnd *srb, struct us_data *us)
- 	fcb->Type = FCM_PACKET_ATAPI | 0x00;
- 	fcb->Timeout = 0;
- 	memcpy (fcb->Atapi, srb->cmnd, 12);
--	memset (fcb->Filler, 0, sizeof (fcb->Filler));
-+	(void)memset (fcb->Filler, 0, sizeof (fcb->Filler));
- 
- 	US_DEBUG(pdump (srb->cmnd, 12));
- 
-@@ -281,8 +281,8 @@ static int freecom_transport(struct scsi_cmnd *srb, struct us_data *us)
- 		/* Get the status again */
- 		fcb->Type = FCM_PACKET_STATUS;
- 		fcb->Timeout = 0;
--		memset (fcb->Atapi, 0, sizeof(fcb->Atapi));
--		memset (fcb->Filler, 0, sizeof (fcb->Filler));
-+		(void)memset (fcb->Atapi, 0, sizeof(fcb->Atapi));
-+		(void)memset (fcb->Filler, 0, sizeof (fcb->Filler));
- 
- 		/* Send it out. */
- 		result = usb_stor_bulk_transfer_buf (us, opipe, fcb,
-diff --git a/drivers/usb/storage/initializers.c b/drivers/usb/storage/initializers.c
-index 105d900..4dc579b 100644
---- a/drivers/usb/storage/initializers.c
-+++ b/drivers/usb/storage/initializers.c
-@@ -75,7 +75,7 @@ int usb_stor_ucr61s2b_init(struct us_data *us)
- 	bcb->DataTransferLength = cpu_to_le32(0);
- 	bcb->Flags = bcb->Lun = 0;
- 	bcb->Length = sizeof(init_string) - 1;
--	memset(bcb->CDB, 0, sizeof(bcb->CDB));
-+	(void)memset(bcb->CDB, 0, sizeof(bcb->CDB));
- 	memcpy(bcb->CDB, init_string, sizeof(init_string) - 1);
- 
- 	res = usb_stor_bulk_transfer_buf(us, us->send_bulk_pipe, bcb,
-diff --git a/drivers/usb/storage/isd200.c b/drivers/usb/storage/isd200.c
-index ffc4193..f627fbc 100644
---- a/drivers/usb/storage/isd200.c
-+++ b/drivers/usb/storage/isd200.c
-@@ -496,7 +496,7 @@ static int isd200_action( struct us_data *us, int action,
- 	struct scsi_cmnd *srb = &info->srb;
- 	int status;
- 
--	memset(&ata, 0, sizeof(ata));
-+	(void)memset(&ata, 0, sizeof(ata));
- 	srb->cmnd = info->cmnd;
- 	srb->device = &srb_dev;
- 
-@@ -1141,7 +1141,7 @@ static int isd200_get_inquiry_data( struct us_data *us )
- 				isd200_fix_driveid(id);
- 				isd200_dump_driveid(id);
- 
--				memset(&info->InquiryData, 0, sizeof(info->InquiryData));
-+				(void)memset(&info->InquiryData, 0, sizeof(info->InquiryData));
- 
- 				/* Standard IDE interface only supports disks */
- 				info->InquiryData.DeviceType = DIRECT_ACCESS_DEVICE;
-@@ -1229,7 +1229,7 @@ static int isd200_scsi_to_ata(struct scsi_cmnd *srb, struct us_data *us,
- 	unsigned long blockCount;
- 	unsigned char senseData[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
- 
--	memset(ataCdb, 0, sizeof(union ata_cdb));
-+	(void)memset(ataCdb, 0, sizeof(union ata_cdb));
- 
- 	/* SCSI Command */
- 	switch (srb->cmnd[0]) {
-diff --git a/drivers/usb/storage/jumpshot.c b/drivers/usb/storage/jumpshot.c
-index 6168596..5f05805 100644
---- a/drivers/usb/storage/jumpshot.c
-+++ b/drivers/usb/storage/jumpshot.c
-@@ -413,7 +413,7 @@ static int jumpshot_handle_mode_sense(struct us_data *us,
- 		break;
- 	}
- 
--	memset(ptr, 0, 8);
-+	(void)memset(ptr, 0, 8);
- 	if (sense_6) {
- 		ptr[2] = 0x00;		// WP enable: 0x80
- 		i = 4;
-@@ -593,7 +593,7 @@ static int jumpshot_transport(struct scsi_cmnd *srb, struct us_data *us)
- 	if (srb->cmnd[0] == REQUEST_SENSE) {
- 		US_DEBUGP("jumpshot_transport:  REQUEST_SENSE.\n");
- 
--		memset(ptr, 0, 18);
-+		(void)memset(ptr, 0, 18);
- 		ptr[0] = 0xF0;
- 		ptr[2] = info->sense_key;
- 		ptr[7] = 11;
-diff --git a/drivers/usb/storage/karma.c b/drivers/usb/storage/karma.c
-index ba1b789..b69d522 100644
---- a/drivers/usb/storage/karma.c
-+++ b/drivers/usb/storage/karma.c
-@@ -107,7 +107,7 @@ static int rio_karma_send_command(char cmd, struct us_data *us)
- 	struct karma_data *data = (struct karma_data *) us->extra;
- 
- 	US_DEBUGP("karma: sending command %04x\n", cmd);
--	memset(us->iobuf, 0, RIO_SEND_LEN);
-+	(void)memset(us->iobuf, 0, RIO_SEND_LEN);
- 	memcpy(us->iobuf, RIO_PREFIX, RIO_PREFIX_LEN);
- 	us->iobuf[5] = cmd;
- 	us->iobuf[6] = seq;
-diff --git a/drivers/usb/storage/sddr09.c b/drivers/usb/storage/sddr09.c
-index bcb9a70..4be9c36 100644
---- a/drivers/usb/storage/sddr09.c
-+++ b/drivers/usb/storage/sddr09.c
-@@ -363,7 +363,7 @@ sddr09_request_sense(struct us_data *us, unsigned char *sensebuf, int buflen) {
- 	unsigned char *command = us->iobuf;
- 	int result;
- 
--	memset(command, 0, 12);
-+	(void)memset(command, 0, 12);
- 	command[0] = 0x03;
- 	command[1] = LUNBITS;
- 	command[4] = buflen;
-@@ -540,7 +540,7 @@ sddr09_erase(struct us_data *us, unsigned long Eaddress) {
- 
- 	US_DEBUGP("sddr09_erase: erase address %lu\n", Eaddress);
- 
--	memset(command, 0, 12);
-+	(void)memset(command, 0, 12);
- 	command[0] = 0xEA;
- 	command[1] = LUNBITS;
- 	command[6] = MSB_of(Eaddress>>16);
-@@ -729,7 +729,7 @@ sddr09_read_status(struct us_data *us, unsigned char *status) {
- 
- 	US_DEBUGP("Reading status...\n");
- 
--	memset(command, 0, 12);
-+	(void)memset(command, 0, 12);
- 	command[0] = 0xEC;
- 	command[1] = LUNBITS;
- 
-@@ -808,7 +808,7 @@ sddr09_read_data(struct us_data *us,
- 			   Instead of returning an error
- 			   it is better to return all zero data. */
- 
--			memset(buffer, 0, len);
-+			(void)memset(buffer, 0, len);
- 
- 		} else {
- 			US_DEBUGP("Read %d pages, from PBA %d"
-@@ -1087,7 +1087,7 @@ sddr09_read_deviceID(struct us_data *us, unsigned char *deviceID) {
- 	unsigned char *content = us->iobuf;
- 	int result, i;
- 
--	memset(command, 0, 12);
-+	(void)memset(command, 0, 12);
- 	command[0] = 0xED;
- 	command[1] = LUNBITS;
- 
-@@ -1571,7 +1571,7 @@ static int sddr09_transport(struct scsi_cmnd *srb, struct us_data *us)
- 
- 	if (srb->cmnd[0] == REQUEST_SENSE && havefakesense) {
- 		/* for a faked command, we have to follow with a faked sense */
--		memset(ptr, 0, 18);
-+		(void)memset(ptr, 0, 18);
- 		ptr[0] = 0x70;
- 		ptr[2] = sensekey;
- 		ptr[7] = 11;
-diff --git a/drivers/usb/storage/sddr55.c b/drivers/usb/storage/sddr55.c
-index 44dfed7..7840eda 100644
---- a/drivers/usb/storage/sddr55.c
-+++ b/drivers/usb/storage/sddr55.c
-@@ -139,7 +139,7 @@ static int sddr55_status(struct us_data *us)
- 	struct sddr55_card_info *info = (struct sddr55_card_info *)us->extra;
- 
- 	/* send command */
--	memset(command, 0, 8);
-+	(void)memset(command, 0, 8);
- 	command[5] = 0xB0;
- 	command[7] = 0x80;
- 	result = sddr55_bulk_transport(us,
-@@ -242,7 +242,7 @@ static int sddr55_read_data(struct us_data *us,
- 
- 		if (pba == NOT_ALLOCATED) {
- 			/* no pba for this lba, fill with zeroes */
--			memset (buffer, 0, len);
-+			(void)memset (buffer, 0, len);
- 		} else {
- 
- 			address = (pba << info->blockshift) + page;
-@@ -526,7 +526,7 @@ static int sddr55_read_deviceID(struct us_data *us,
- 	unsigned char *command = us->iobuf;
- 	unsigned char *content = us->iobuf;
- 
--	memset(command, 0, 8);
-+	(void)memset(command, 0, 8);
- 	command[5] = 0xB0;
- 	command[7] = 0x84;
- 	result = sddr55_bulk_transport(us, DMA_TO_DEVICE, command, 8);
-@@ -666,7 +666,7 @@ static int sddr55_read_map(struct us_data *us) {
- 	if (!buffer)
- 		return -1;
- 
--	memset(command, 0, 8);
-+	(void)memset(command, 0, 8);
- 	command[5] = 0xB0;
- 	command[6] = numblocks * 2 / 256;
- 	command[7] = 0x8A;
-@@ -706,8 +706,8 @@ static int sddr55_read_map(struct us_data *us) {
- 		return -1;
- 	}
- 
--	memset(info->lba_to_pba, 0xff, numblocks*sizeof(int));
--	memset(info->pba_to_lba, 0xff, numblocks*sizeof(int));
-+	(void)memset(info->lba_to_pba, 0xff, numblocks*sizeof(int));
-+	(void)memset(info->pba_to_lba, 0xff, numblocks*sizeof(int));
- 
- 	/* set maximum lba */
- 	max_lba = info->max_log_blks;
-@@ -814,12 +814,12 @@ static int sddr55_transport(struct scsi_cmnd *srb, struct us_data *us)
- 		ptr[0] = 0x70;
- 		ptr[7] = 11;
- 		usb_stor_set_xfer_buf (ptr, sizeof info->sense_data, srb);
--		memset (info->sense_data, 0, sizeof info->sense_data);
-+		(void)memset (info->sense_data, 0, sizeof info->sense_data);
- 
- 		return USB_STOR_TRANSPORT_GOOD;
- 	}
- 
--	memset (info->sense_data, 0, sizeof info->sense_data);
-+	(void)memset (info->sense_data, 0, sizeof info->sense_data);
- 
- 	/* Dummy up a response for INQUIRY since SDDR55 doesn't
- 	   respond to INQUIRY commands */
-diff --git a/drivers/usb/storage/shuttle_usbat.c b/drivers/usb/storage/shuttle_usbat.c
-index 0b00091..4e8ded5 100644
---- a/drivers/usb/storage/shuttle_usbat.c
-+++ b/drivers/usb/storage/shuttle_usbat.c
-@@ -1792,7 +1792,7 @@ static int usbat_flash_transport(struct scsi_cmnd * srb, struct us_data *us)
- 	if (srb->cmnd[0] == REQUEST_SENSE) {
- 		US_DEBUGP("usbat_flash_transport: REQUEST_SENSE.\n");
- 
--		memset(ptr, 0, 18);
-+		(void)memset(ptr, 0, 18);
- 		ptr[0] = 0xF0;
- 		ptr[2] = info->sense_key;
- 		ptr[7] = 11;
 diff --git a/drivers/usb/storage/transport.c b/drivers/usb/storage/transport.c
 index e8ae21b..d3aaee9 100644
 --- a/drivers/usb/storage/transport.c
@@ -4456,54 +3692,6 @@ index 0ca0958..d00f44a 100644
  	mutex_init(&(us->dev_mutex));
  	init_completion(&us->cmnd_ready);
  	init_completion(&(us->notify));
-diff --git a/drivers/video/backlight/backlight.c b/drivers/video/backlight/backlight.c
-index 80d292f..1fda96b 100644
---- a/drivers/video/backlight/backlight.c
-+++ b/drivers/video/backlight/backlight.c
-@@ -59,7 +59,7 @@ static int fb_notifier_callback(struct notifier_block *self,
- 
- static int backlight_register_fb(struct backlight_device *bd)
- {
--	memset(&bd->fb_notif, 0, sizeof(bd->fb_notif));
-+	(void)memset(&bd->fb_notif, 0, sizeof(bd->fb_notif));
- 	bd->fb_notif.notifier_call = fb_notifier_callback;
- 
- 	return fb_register_client(&bd->fb_notif);
-@@ -311,7 +311,7 @@ struct backlight_device *backlight_device_register(const char *name,
- 		memcpy(&new_bd->props, props,
- 		       sizeof(struct backlight_properties));
- 		if (props->type <= 0 || props->type >= BACKLIGHT_TYPE_MAX) {
--			WARN(1, "%s: invalid backlight type", name);
-+			(void)WARN(1, "%s: invalid backlight type", name);
- 			new_bd->props.type = BACKLIGHT_RAW;
- 		}
- 	} else {
-diff --git a/drivers/video/backlight/generic_bl.c b/drivers/video/backlight/generic_bl.c
-index 8c6befd..4e20a38 100644
---- a/drivers/video/backlight/generic_bl.c
-+++ b/drivers/video/backlight/generic_bl.c
-@@ -90,7 +90,7 @@ static int genericbl_probe(struct platform_device *pdev)
- 	if (machinfo->name)
- 		name = machinfo->name;
- 
--	memset(&props, 0, sizeof(struct backlight_properties));
-+	(void)memset(&props, 0, sizeof(struct backlight_properties));
- 	props.type = BACKLIGHT_RAW;
- 	props.max_brightness = machinfo->max_intensity;
- 	bd = backlight_device_register(name, &pdev->dev, NULL, &genericbl_ops,
-diff --git a/drivers/video/backlight/lcd.c b/drivers/video/backlight/lcd.c
-index 71a11ca..04fed02 100644
---- a/drivers/video/backlight/lcd.c
-+++ b/drivers/video/backlight/lcd.c
-@@ -57,7 +57,7 @@ static int fb_notifier_callback(struct notifier_block *self,
- 
- static int lcd_register_fb(struct lcd_device *ld)
- {
--	memset(&ld->fb_notif, 0, sizeof(ld->fb_notif));
-+	(void)memset(&ld->fb_notif, 0, sizeof(ld->fb_notif));
- 	ld->fb_notif.notifier_call = fb_notifier_callback;
- 	return fb_register_client(&ld->fb_notif);
- }
 diff --git a/drivers/video/modedb.c b/drivers/video/modedb.c
 index cb175fe..bd68c84 100644
 --- a/drivers/video/modedb.c
@@ -5451,46 +4639,6 @@ index a7b2dcd..f20450f 100644
  				cifsInode = CIFS_I(newinode);
  				dosattrs = cifsInode->cifsAttrs|ATTR_READONLY;
  				pInfo.Attributes = cpu_to_le32(dosattrs);
-diff --git a/fs/cifs/misc.c b/fs/cifs/misc.c
-index 03a1f49..30395b5 100644
---- a/fs/cifs/misc.c
-+++ b/fs/cifs/misc.c
-@@ -97,7 +97,7 @@ sesInfoFree(struct cifs_ses *buf_to_free)
- 	kfree(buf_to_free->serverDomain);
- 	kfree(buf_to_free->serverNOS);
- 	if (buf_to_free->password) {
--		memset(buf_to_free->password, 0, strlen(buf_to_free->password));
-+		(void)memset(buf_to_free->password, 0, strlen(buf_to_free->password));
- 		kfree(buf_to_free->password);
- 	}
- 	kfree(buf_to_free->user_name);
-@@ -133,7 +133,7 @@ tconInfoFree(struct cifs_tcon *buf_to_free)
- 	atomic_dec(&tconInfoAllocCount);
- 	kfree(buf_to_free->nativeFileSystem);
- 	if (buf_to_free->password) {
--		memset(buf_to_free->password, 0, strlen(buf_to_free->password));
-+		(void)memset(buf_to_free->password, 0, strlen(buf_to_free->password));
- 		kfree(buf_to_free->password);
- 	}
- 	kfree(buf_to_free);
-@@ -153,7 +153,7 @@ cifs_buf_get(void)
- 	/* clear the first few header bytes */
- 	/* for most paths, more is cleared in header_assemble */
- 	if (ret_buf) {
--		memset(ret_buf, 0, sizeof(struct smb_hdr) + 3);
-+		(void)memset(ret_buf, 0, sizeof(struct smb_hdr) + 3);
- 		atomic_inc(&bufAllocCount);
- #ifdef CONFIG_CIFS_STATS2
- 		atomic_inc(&totBufAllocCount);
-@@ -302,7 +302,7 @@ header_assemble(struct smb_hdr *buffer, char smb_command /* command */ ,
- 	struct cifs_ses *ses;
- 	char *temp = (char *) buffer;
- 
--	memset(temp, 0, 256); /* bigger than MAX_CIFS_HDR_SIZE */
-+	(void)memset(temp, 0, 256); /* bigger than MAX_CIFS_HDR_SIZE */
- 
- 	buffer->smb_buf_length = cpu_to_be32(
- 	    (2 * word_count) + sizeof(struct smb_hdr) -
 diff --git a/fs/cifs/readdir.c b/fs/cifs/readdir.c
 index 6751e74..8498154 100644
 --- a/fs/cifs/readdir.c
@@ -5745,46 +4893,6 @@ index e5a7111..74afa37 100644
  		node2->fake.rec_len = ext3_rec_len_to_disk(sb->s_blocksize);
  		BUFFER_TRACE(frame->bh, "get_write_access");
  		err = ext3_journal_get_write_access(handle, frame->bh);
-diff --git a/fs/ext3/resize.c b/fs/ext3/resize.c
-index 7916e4c..dc561e7 100644
---- a/fs/ext3/resize.c
-+++ b/fs/ext3/resize.c
-@@ -126,7 +126,7 @@ static struct buffer_head *bclean(handle_t *handle, struct super_block *sb,
- 		bh = ERR_PTR(err);
- 	} else {
- 		lock_buffer(bh);
--		memset(bh->b_data, 0, sb->s_blocksize);
-+		(void)memset(bh->b_data, 0, sb->s_blocksize);
- 		set_buffer_uptodate(bh);
- 		unlock_buffer(bh);
- 	}
-@@ -150,7 +150,7 @@ static void mark_bitmap_end(int start_bit, int end_bit, char *bitmap)
- 	for (i = start_bit; i < ((start_bit + 7) & ~7UL); i++)
- 		ext3_set_bit(i, bitmap);
- 	if (i < end_bit)
--		memset(bitmap + (i >> 3), 0xff, (end_bit - i) >> 3);
-+		(void)memset(bitmap + (i >> 3), 0xff, (end_bit - i) >> 3);
- }
- 
- /*
-@@ -526,7 +526,7 @@ static int add_new_gdb(handle_t *handle, struct inode *inode,
- 	err = ext3_mark_iloc_dirty(handle, inode, &iloc);
- 	if (err)
- 		goto exit_group_desc;
--	memset((*primary)->b_data, 0, sb->s_blocksize);
-+	(void)memset((*primary)->b_data, 0, sb->s_blocksize);
- 	err = ext3_journal_dirty_metadata(handle, *primary);
- 	if (err)
- 		goto exit_group_desc;
-@@ -738,7 +738,7 @@ static void update_backups(struct super_block *sb,
- 		lock_buffer(bh);
- 		memcpy(bh->b_data, data, size);
- 		if (rest)
--			memset(bh->b_data + size, 0, rest);
-+			(void)memset(bh->b_data + size, 0, rest);
- 		set_buffer_uptodate(bh);
- 		unlock_buffer(bh);
- 		err = ext3_journal_dirty_metadata(handle, bh);
 diff --git a/fs/ext3/super.c b/fs/ext3/super.c
 index aad153e..4633200 100644
 --- a/fs/ext3/super.c
@@ -5798,64 +4906,6 @@ index aad153e..4633200 100644
  	if (!page_has_buffers(page))
  		return 0;
  	if (journal)
-diff --git a/fs/ext3/xattr.c b/fs/ext3/xattr.c
-index d565759..3116621 100644
---- a/fs/ext3/xattr.c
-+++ b/fs/ext3/xattr.c
-@@ -562,7 +562,7 @@ ext3_xattr_set_entry(struct ext3_xattr_info *i, struct ext3_xattr_search *s)
- 		size_t size = EXT3_XATTR_LEN(name_len);
- 		size_t rest = (void *)last - (void *)s->here + sizeof(__u32);
- 		memmove((void *)s->here + size, s->here, rest);
--		memset(s->here, 0, size);
-+		(void)memset(s->here, 0, size);
- 		s->here->e_name_index = i->name_index;
- 		s->here->e_name_len = name_len;
- 		memcpy(s->here->e_name, i->name, name_len);
-@@ -579,7 +579,7 @@ ext3_xattr_set_entry(struct ext3_xattr_info *i, struct ext3_xattr_search *s)
- 				   size. Just replace. */
- 				s->here->e_value_size =
- 					cpu_to_le32(i->value_len);
--				memset(val + size - EXT3_XATTR_PAD, 0,
-+				(void)memset(val + size - EXT3_XATTR_PAD, 0,
- 				       EXT3_XATTR_PAD); /* Clear pad bytes. */
- 				memcpy(val, i->value, i->value_len);
- 				return 0;
-@@ -587,7 +587,7 @@ ext3_xattr_set_entry(struct ext3_xattr_info *i, struct ext3_xattr_search *s)
- 
- 			/* Remove the old value. */
- 			memmove(first_val + size, first_val, val - first_val);
--			memset(first_val, 0, size);
-+			(void)memset(first_val, 0, size);
- 			s->here->e_value_size = 0;
- 			s->here->e_value_offs = 0;
- 			min_offs += size;
-@@ -609,7 +609,7 @@ ext3_xattr_set_entry(struct ext3_xattr_info *i, struct ext3_xattr_search *s)
- 			last = ENTRY((void *)last - size);
- 			memmove(s->here, (void *)s->here + size,
- 				(void *)last - (void *)s->here + sizeof(__u32));
--			memset(last, 0, size);
-+			(void)memset(last, 0, size);
- 		}
- 	}
- 
-@@ -620,7 +620,7 @@ ext3_xattr_set_entry(struct ext3_xattr_info *i, struct ext3_xattr_search *s)
- 			size_t size = EXT3_XATTR_SIZE(i->value_len);
- 			void *val = s->base + min_offs - size;
- 			s->here->e_value_offs = cpu_to_le16(min_offs - size);
--			memset(val + size - EXT3_XATTR_PAD, 0,
-+			(void)memset(val + size - EXT3_XATTR_PAD, 0,
- 			       EXT3_XATTR_PAD); /* Clear the pad bytes. */
- 			memcpy(val, i->value, i->value_len);
- 		}
-@@ -977,7 +977,7 @@ ext3_xattr_set_handle(handle_t *handle, struct inode *inode, int name_index,
- 
- 	if (ext3_test_inode_state(inode, EXT3_STATE_NEW)) {
- 		struct ext3_inode *raw_inode = ext3_raw_inode(&is.iloc);
--		memset(raw_inode, 0, EXT3_SB(inode->i_sb)->s_inode_size);
-+		(void)memset(raw_inode, 0, EXT3_SB(inode->i_sb)->s_inode_size);
- 		ext3_clear_inode_state(inode, EXT3_STATE_NEW);
- 	}
- 
 diff --git a/fs/ext4/balloc.c b/fs/ext4/balloc.c
 index 264f694..5a7e3c6 100644
 --- a/fs/ext4/balloc.c
@@ -5949,19 +4999,6 @@ index f3aacb3..5d60e9a 100644
  			if ((ext4_ext_check_cache(inode, iblock, &cache_ex)) &&
  				!cache_ex.ec_start) {
  
-diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-index 2c09723..7c42b9a 100644
---- a/fs/ext4/file.c
-+++ b/fs/ext4/file.c
-@@ -176,7 +176,7 @@ static int ext4_file_open(struct inode * inode, struct file * filp)
- 		 * when trying to sort through large numbers of block
- 		 * devices or filesystem images.
- 		 */
--		memset(buf, 0, sizeof(buf));
-+		(void)memset(buf, 0, sizeof(buf));
- 		path.mnt = mnt;
- 		path.dentry = mnt->mnt_root;
- 		cp = d_path(&path, buf, sizeof(buf));
 diff --git a/fs/ext4/fsync.c b/fs/ext4/fsync.c
 index ce66d2f..bc3a086 100644
 --- a/fs/ext4/fsync.c
@@ -6772,28 +5809,6 @@ index e2d4285..70a2c39 100644
  	}
  
  	jbd_lock_bh_journal_head(bh);
-diff --git a/fs/jbd/recovery.c b/fs/jbd/recovery.c
-index 5b43e96..6337578 100644
---- a/fs/jbd/recovery.c
-+++ b/fs/jbd/recovery.c
-@@ -227,7 +227,7 @@ int journal_recover(journal_t *journal)
- 
- 	struct recovery_info	info;
- 
--	memset(&info, 0, sizeof(info));
-+	(void)memset(&info, 0, sizeof(info));
- 	sb = journal->j_superblock;
- 
- 	/*
-@@ -285,7 +285,7 @@ int journal_skip_recovery(journal_t *journal)
- 	int			err;
- 	struct recovery_info	info;
- 
--	memset (&info, 0, sizeof(info));
-+	(void)memset (&info, 0, sizeof(info));
- 
- 	err = do_one_pass(journal, &info, PASS_SCAN);
- 
 diff --git a/fs/jbd/transaction.c b/fs/jbd/transaction.c
 index f7ee81a..ce8a1b4 100644
 --- a/fs/jbd/transaction.c
@@ -6816,19 +5831,6 @@ index f7ee81a..ce8a1b4 100644
  			    "Possible IO failure.\n");
  		page = jh2bh(jh)->b_page;
  		offset = offset_in_page(jh2bh(jh)->b_data);
-diff --git a/fs/jbd2/checkpoint.c b/fs/jbd2/checkpoint.c
-index 2c62c5a..2258a68 100644
---- a/fs/jbd2/checkpoint.c
-+++ b/fs/jbd2/checkpoint.c
-@@ -168,7 +168,7 @@ void __jbd2_log_wait_for_space(journal_t *journal)
- 				printk(KERN_ERR "%s: no way to get more "
- 				       "journal space in %s\n", __func__,
- 				       journal->j_devname);
--				WARN_ON(1);
-+				(void)WARN_ON(1);
- 				jbd2_journal_abort(journal, 0);
- 			}
- 			write_lock(&journal->j_state_lock);
 diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
 index 0dfa5b5..110c031 100644
 --- a/fs/jbd2/journal.c
@@ -6869,28 +5871,6 @@ index 0dfa5b5..110c031 100644
  	}
  
  	jbd_lock_bh_journal_head(bh);
-diff --git a/fs/jbd2/recovery.c b/fs/jbd2/recovery.c
-index 1cad869..3dcebf3 100644
---- a/fs/jbd2/recovery.c
-+++ b/fs/jbd2/recovery.c
-@@ -229,7 +229,7 @@ int jbd2_journal_recover(journal_t *journal)
- 
- 	struct recovery_info	info;
- 
--	memset(&info, 0, sizeof(info));
-+	(void)memset(&info, 0, sizeof(info));
- 	sb = journal->j_superblock;
- 
- 	/*
-@@ -288,7 +288,7 @@ int jbd2_journal_skip_recovery(journal_t *journal)
- 
- 	struct recovery_info	info;
- 
--	memset (&info, 0, sizeof(info));
-+	(void)memset (&info, 0, sizeof(info));
- 
- 	err = do_one_pass(journal, &info, PASS_SCAN);
- 
 diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
 index 2d71094..0bfd834 100644
 --- a/fs/jbd2/transaction.c
@@ -6944,19 +5924,6 @@ index 7b4fa8f..6ac668b 100644
  	*where = page;
  	return 0;
  }
-diff --git a/fs/nfs/callback_xdr.c b/fs/nfs/callback_xdr.c
-index 918ad64..54427bc 100644
---- a/fs/nfs/callback_xdr.c
-+++ b/fs/nfs/callback_xdr.c
-@@ -111,7 +111,7 @@ static __be32 decode_fh(struct xdr_stream *xdr, struct nfs_fh *fh)
- 	if (unlikely(p == NULL))
- 		return htonl(NFS4ERR_RESOURCE);
- 	memcpy(&fh->data[0], p, fh->size);
--	memset(&fh->data[fh->size], 0, sizeof(fh->data) - fh->size);
-+	(void)memset(&fh->data[fh->size], 0, sizeof(fh->data) - fh->size);
- 	return 0;
- }
- 
 diff --git a/fs/nfs/idmap.c b/fs/nfs/idmap.c
 index 79664a1..9d0fee5 100644
 --- a/fs/nfs/idmap.c
@@ -7215,32 +6182,6 @@ index ea9120a..e7ab7be 100644
  		     "sysfs: cannot create duplicate filename '%s'\n",
  		     (path == NULL) ? sd->s_name :
  		     strcat(strcat(sysfs_pathname(acxt->parent_sd, path), "/"),
-diff --git a/fs/sysfs/file.c b/fs/sysfs/file.c
-index 1ad8c93..1d7353c 100644
---- a/fs/sysfs/file.c
-+++ b/fs/sysfs/file.c
-@@ -339,7 +339,7 @@ static int sysfs_open_file(struct inode *inode, struct file *file)
- 	if (kobj->ktype && kobj->ktype->sysfs_ops)
- 		ops = kobj->ktype->sysfs_ops;
- 	else {
--		WARN(1, KERN_ERR "missing sysfs attribute operations for "
-+		(void)WARN(1, KERN_ERR "missing sysfs attribute operations for "
- 		       "kobject: %s\n", kobject_name(kobj));
- 		goto err_out;
- 	}
-diff --git a/include/linux/ata.h b/include/linux/ata.h
-index 32df2b6..f615524 100644
---- a/include/linux/ata.h
-+++ b/include/linux/ata.h
-@@ -1039,7 +1039,7 @@ static inline unsigned ata_set_lba_range_entries(void *_buffer,
- 	}
- 
- 	used_bytes = ALIGN(i * 8, 512);
--	memset(buffer + i, 0, used_bytes - i * 8);
-+	(void)memset(buffer + i, 0, used_bytes - i * 8);
- 	return used_bytes;
- }
- 
 diff --git a/include/linux/clocksource.h b/include/linux/clocksource.h
 index 18a1baf..62ad876 100644
 --- a/include/linux/clocksource.h
@@ -7263,19 +6204,6 @@ index 18a1baf..62ad876 100644
  
  	return (u32)tmp;
  }
-diff --git a/include/linux/cpufreq.h b/include/linux/cpufreq.h
-index 957c5b4..c0b6f34 100644
---- a/include/linux/cpufreq.h
-+++ b/include/linux/cpufreq.h
-@@ -147,7 +147,7 @@ static inline unsigned long cpufreq_scale(unsigned long old, u_int div, u_int mu
- #if BITS_PER_LONG == 32
- 
- 	u64 result = ((u64) old) * ((u64) mult);
--	do_div(result, div);
-+	(void)do_div(result, div);
- 	return (unsigned long) result;
- 
- #elif BITS_PER_LONG == 64
 diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
 index bb4f5fb..80bdb71 100644
 --- a/include/linux/spi/spi.h
@@ -7306,28 +6234,6 @@ index 583ceb8..b835717 100644
  		ep = udev->ep_in[epnum];
  	}
  	if (!ep)
-diff --git a/include/media/lirc_dev.h b/include/media/lirc_dev.h
-index 168dd0b..25c7db4 100644
---- a/include/media/lirc_dev.h
-+++ b/include/media/lirc_dev.h
-@@ -41,7 +41,7 @@ static inline void lirc_buffer_clear(struct lirc_buffer *buf)
- 		kfifo_reset(&buf->fifo);
- 		spin_unlock_irqrestore(&buf->fifo_lock, flags);
- 	} else
--		WARN(1, "calling %s on an uninitialized lirc_buffer\n",
-+		(void)WARN(1, "calling %s on an uninitialized lirc_buffer\n",
- 		     __func__);
- }
- 
-@@ -68,7 +68,7 @@ static inline void lirc_buffer_free(struct lirc_buffer *buf)
- 		kfifo_free(&buf->fifo);
- 		buf->fifo_initialized = 0;
- 	} else
--		WARN(1, "calling %s on an uninitialized lirc_buffer\n",
-+		(void)WARN(1, "calling %s on an uninitialized lirc_buffer\n",
- 		     __func__);
- }
- 
 diff --git a/include/media/rc-core.h b/include/media/rc-core.h
 index 60536c7..986dd96 100644
 --- a/include/media/rc-core.h
@@ -7355,59 +6261,6 @@ index 66dd491..827205f 100644
 +		(void)memset(&np->rcv_saddr, 0, sizeof(np->rcv_saddr));
  	}
  #endif
- }
-diff --git a/include/net/netfilter/nf_tproxy_core.h b/include/net/netfilter/nf_tproxy_core.h
-index e505358..8f31f5f 100644
---- a/include/net/netfilter/nf_tproxy_core.h
-+++ b/include/net/netfilter/nf_tproxy_core.h
-@@ -97,7 +97,7 @@ nf_tproxy_get_sock_v4(struct net *net, const u8 protocol,
- 						    in->ifindex);
- 			break;
- 		default:
--			WARN_ON(1);
-+			(void)WARN_ON(1);
- 			sk = NULL;
- 			break;
- 		}
-@@ -121,7 +121,7 @@ nf_tproxy_get_sock_v4(struct net *net, const u8 protocol,
- 		}
- 		break;
- 	default:
--		WARN_ON(1);
-+		(void)WARN_ON(1);
- 		sk = NULL;
- 	}
- 
-@@ -166,7 +166,7 @@ nf_tproxy_get_sock_v6(struct net *net, const u8 protocol,
- 							in->ifindex);
- 			break;
- 		default:
--			WARN_ON(1);
-+			(void)WARN_ON(1);
- 			sk = NULL;
- 			break;
- 		}
-@@ -190,7 +190,7 @@ nf_tproxy_get_sock_v6(struct net *net, const u8 protocol,
- 		}
- 		break;
- 	default:
--		WARN_ON(1);
-+		(void)WARN_ON(1);
- 		sk = NULL;
- 	}
- 
-diff --git a/include/net/netfilter/xt_log.h b/include/net/netfilter/xt_log.h
-index 0dfb34a..b9d8f35 100644
---- a/include/net/netfilter/xt_log.h
-+++ b/include/net/netfilter/xt_log.h
-@@ -47,7 +47,7 @@ static void sb_close(struct sbuff *m)
- 	if (likely(m != &emergency))
- 		kfree(m);
- 	else {
--		xchg(&emergency_ptr, m);
-+		(void)xchg(&emergency_ptr, m);
- 		local_bh_enable();
- 	}
  }
 diff --git a/include/net/sock.h b/include/net/sock.h
 index c0b938c..eb9a65e 100644
@@ -7459,28 +6312,6 @@ index f2b321b..c66a8af 100644
  
  	if (unlikely(in_interrupt()))
  		panic("Aiee, killing interrupt handler!");
-diff --git a/kernel/hrtimer.c b/kernel/hrtimer.c
-index 2043c08..6e8e084 100644
---- a/kernel/hrtimer.c
-+++ b/kernel/hrtimer.c
-@@ -582,7 +582,7 @@ static int hrtimer_reprogram(struct hrtimer *timer,
- 	ktime_t expires = ktime_sub(hrtimer_get_expires(timer), base->offset);
- 	int res;
- 
--	WARN_ON_ONCE(hrtimer_get_expires_tv64(timer) < 0);
-+	(void)WARN_ON_ONCE(hrtimer_get_expires_tv64(timer) < 0);
- 
- 	/*
- 	 * When the callback is running, we do not reprogram the clock event
-@@ -1156,7 +1156,7 @@ static void __hrtimer_init(struct hrtimer *timer, clockid_t clock_id,
- #ifdef CONFIG_TIMER_STATS
- 	timer->start_site = NULL;
- 	timer->start_pid = -1;
--	memset(timer->start_comm, 0, TASK_COMM_LEN);
-+	(void)memset(timer->start_comm, 0, TASK_COMM_LEN);
- #endif
- }
- 
 diff --git a/kernel/irq/devres.c b/kernel/irq/devres.c
 index 1ef4ffc..60132ed 100644
 --- a/kernel/irq/devres.c
@@ -7702,37 +6533,6 @@ index dbaa948..208f4ee 100644
  				 "but no CAP_SYSLOG (deprecated).\n");
  			return 0;
  		}
-diff --git a/kernel/profile.c b/kernel/profile.c
-index 961b389..b081b71 100644
---- a/kernel/profile.c
-+++ b/kernel/profile.c
-@@ -218,7 +218,7 @@ EXPORT_SYMBOL_GPL(register_timer_hook);
- 
- void unregister_timer_hook(int (*hook)(struct pt_regs *))
- {
--	WARN_ON(hook != timer_hook);
-+	(void)WARN_ON(hook != timer_hook);
- 	timer_hook = NULL;
- 	/* make sure all CPUs see the NULL hook */
- 	synchronize_sched();  /* Allow ongoing interrupts to complete. */
-@@ -298,7 +298,7 @@ static void profile_discard_flip_buffers(void)
- 	on_each_cpu(__profile_flip_buffers, NULL, 1);
- 	for_each_online_cpu(cpu) {
- 		struct profile_hit *hits = per_cpu(cpu_profile_hits, cpu)[i];
--		memset(hits, 0, NR_PROFILE_HIT*sizeof(struct profile_hit));
-+		(void)memset(hits, 0, NR_PROFILE_HIT*sizeof(struct profile_hit));
- 	}
- 	mutex_unlock(&profile_flip_mutex);
- }
-@@ -548,7 +548,7 @@ static ssize_t write_profile(struct file *file, const char __user *buf,
- 	}
- #endif
- 	profile_discard_flip_buffers();
--	memset(prof_buffer, 0, prof_len * sizeof(atomic_t));
-+	(void)memset(prof_buffer, 0, prof_len * sizeof(atomic_t));
- 	return count;
- }
- 
 diff --git a/kernel/ptrace.c b/kernel/ptrace.c
 index 2df1157..45f00d4 100644
 --- a/kernel/ptrace.c
@@ -8294,109 +7094,6 @@ index 415d85d..c3f9ad6 100644
  		return -EPERM;
  	}
  	info->si_signo = sig;
-diff --git a/kernel/smp.c b/kernel/smp.c
-index fb67dfa..b9069e0 100644
---- a/kernel/smp.c
-+++ b/kernel/smp.c
-@@ -118,7 +118,7 @@ static void csd_lock(struct call_single_data *data)
- 
- static void csd_unlock(struct call_single_data *data)
- {
--	WARN_ON(!(data->flags & CSD_FLAG_LOCK));
-+	(void)WARN_ON(!(data->flags & CSD_FLAG_LOCK));
- 
- 	/*
- 	 * ensure we're all done before releasing data:
-@@ -175,7 +175,7 @@ void generic_smp_call_function_interrupt(void)
- 	/*
- 	 * Shouldn't receive this interrupt on a cpu that is not yet online.
- 	 */
--	WARN_ON_ONCE(!cpu_online(cpu));
-+	(void)WARN_ON_ONCE(!cpu_online(cpu));
- 
- 	/*
- 	 * Ensure entry is visible on call_function_queue after we have
-@@ -221,17 +221,17 @@ void generic_smp_call_function_interrupt(void)
- 		 * on this cpu.  That nested execution decremented refs.
- 		 */
- 		if (!cpumask_test_and_clear_cpu(cpu, data->cpumask)) {
--			WARN(1, "%pf enabled interrupts and double executed\n", func);
-+			(void)WARN(1, "%pf enabled interrupts and double executed\n", func);
- 			continue;
- 		}
- 
- 		refs = atomic_dec_return(&data->refs);
--		WARN_ON(refs < 0);
-+		(void)WARN_ON(refs < 0);
- 
- 		if (refs)
- 			continue;
- 
--		WARN_ON(!cpumask_empty(data->cpumask));
-+		(void)WARN_ON(!cpumask_empty(data->cpumask));
- 
- 		raw_spin_lock(&call_function.lock);
- 		list_del_rcu(&data->csd.list);
-@@ -255,7 +255,7 @@ void generic_smp_call_function_single_interrupt(void)
- 	/*
- 	 * Shouldn't receive this interrupt on a cpu that is not yet online.
- 	 */
--	WARN_ON_ONCE(!cpu_online(smp_processor_id()));
-+	(void)WARN_ON_ONCE(!cpu_online(smp_processor_id()));
- 
- 	raw_spin_lock(&q->lock);
- 	list_replace_init(&q->list, &list);
-@@ -316,7 +316,7 @@ int smp_call_function_single(int cpu, smp_call_func_t func, void *info,
- 	 * send smp call function interrupt to this cpu and as such deadlocks
- 	 * can't happen.
- 	 */
--	WARN_ON_ONCE(cpu_online(this_cpu) && irqs_disabled()
-+	(void)WARN_ON_ONCE(cpu_online(this_cpu) && irqs_disabled()
- 		     && !oops_in_progress);
- 
- 	if (cpu == this_cpu) {
-@@ -414,7 +414,7 @@ void __smp_call_function_single(int cpu, struct call_single_data *data,
- 	 * send smp call function interrupt to this cpu and as such deadlocks
- 	 * can't happen.
- 	 */
--	WARN_ON_ONCE(cpu_online(smp_processor_id()) && wait && irqs_disabled()
-+	(void)WARN_ON_ONCE(cpu_online(smp_processor_id()) && wait && irqs_disabled()
- 		     && !oops_in_progress);
- 
- 	if (cpu == this_cpu) {
-@@ -455,7 +455,7 @@ void smp_call_function_many(const struct cpumask *mask,
- 	 * send smp call function interrupt to this cpu and as such deadlocks
- 	 * can't happen.
- 	 */
--	WARN_ON_ONCE(cpu_online(this_cpu) && irqs_disabled()
-+	(void)WARN_ON_ONCE(cpu_online(this_cpu) && irqs_disabled()
- 		     && !oops_in_progress && !early_boot_irqs_disabled);
- 
- 	/* Try to fastpath.  So, what's a CPU they want? Ignoring this one. */
-diff --git a/kernel/softirq.c b/kernel/softirq.c
-index fca82c3..34ad7ce 100644
---- a/kernel/softirq.c
-+++ b/kernel/softirq.c
-@@ -95,7 +95,7 @@ static void __local_bh_disable(unsigned long ip, unsigned int cnt)
- {
- 	unsigned long flags;
- 
--	WARN_ON_ONCE(in_irq());
-+	(void)WARN_ON_ONCE(in_irq());
- 
- 	raw_local_irq_save(flags);
- 	/*
-diff --git a/kernel/stacktrace.c b/kernel/stacktrace.c
-index eb212f8..2de0394 100644
---- a/kernel/stacktrace.c
-+++ b/kernel/stacktrace.c
-@@ -33,5 +33,5 @@ EXPORT_SYMBOL_GPL(print_stack_trace);
- __weak void
- save_stack_trace_tsk(struct task_struct *tsk, struct stack_trace *trace)
- {
--	WARN_ONCE(1, KERN_INFO "save_stack_trace_tsk() not implemented yet.\n");
-+	(void)WARN_ONCE(1, KERN_INFO "save_stack_trace_tsk() not implemented yet.\n");
- }
 diff --git a/kernel/stop_machine.c b/kernel/stop_machine.c
 index 0cae1cc..0feaabe 100644
 --- a/kernel/stop_machine.c
@@ -8549,21 +7246,6 @@ index 342408c..71390f7b 100644
  
  	do {
  		seq = read_seqbegin(&xtime_lock);
-diff --git a/kernel/time/timer_stats.c b/kernel/time/timer_stats.c
-index a5d0a3a..97f2849 100644
---- a/kernel/time/timer_stats.c
-+++ b/kernel/time/timer_stats.c
-@@ -138,8 +138,8 @@ static struct entry *tstat_hash_table[TSTAT_HASH_SIZE] __read_mostly;
- static void reset_entries(void)
- {
- 	nr_entries = 0;
--	memset(entries, 0, sizeof(entries));
--	memset(tstat_hash_table, 0, sizeof(tstat_hash_table));
-+	(void)memset(entries, 0, sizeof(entries));
-+	(void)memset(tstat_hash_table, 0, sizeof(tstat_hash_table));
- 	atomic_set(&overflow_count, 0);
- }
- 
 diff --git a/kernel/timer.c b/kernel/timer.c
 index 8cff361..52ba7e9 100644
 --- a/kernel/timer.c
@@ -8855,28 +7537,6 @@ index ee9c921..d1fd512 100644
  		goto out_free_cpumask;
  	}
  	global_trace.entries = ring_buffer_size(global_trace.buffer);
-diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
-index 3e2a7c9..f9b9b42 100644
---- a/kernel/trace/trace_events.c
-+++ b/kernel/trace/trace_events.c
-@@ -248,7 +248,7 @@ static void __put_system(struct event_subsystem *system)
- {
- 	struct event_filter *filter = system->filter;
- 
--	WARN_ON_ONCE(system->ref_count == 0);
-+	(void)WARN_ON_ONCE(system->ref_count == 0);
- 	if (--system->ref_count)
- 		return;
- 
-@@ -262,7 +262,7 @@ static void __put_system(struct event_subsystem *system)
- 
- static void __get_system(struct event_subsystem *system)
- {
--	WARN_ON_ONCE(system->ref_count == 0);
-+	(void)WARN_ON_ONCE(system->ref_count == 0);
- 	system->ref_count++;
- }
- 
 diff --git a/kernel/trace/trace_events_filter.c b/kernel/trace/trace_events_filter.c
 index 256764e..71ea8b1 100644
 --- a/kernel/trace/trace_events_filter.c
@@ -8930,28 +7590,6 @@ index e37de49..4cc9502 100644
  		}
  	}
  
-diff --git a/kernel/trace/trace_sched_switch.c b/kernel/trace/trace_sched_switch.c
-index 7e62c0a..0efe426 100644
---- a/kernel/trace/trace_sched_switch.c
-+++ b/kernel/trace/trace_sched_switch.c
-@@ -208,7 +208,7 @@ void tracing_stop_cmdline_record(void)
- void tracing_start_sched_switch_record(void)
- {
- 	if (unlikely(!ctx_trace)) {
--		WARN_ON(1);
-+		(void)WARN_ON(1);
- 		return;
- 	}
- 
-@@ -228,7 +228,7 @@ void tracing_stop_sched_switch_record(void)
- {
- 	mutex_lock(&sched_register_mutex);
- 	tracer_enabled--;
--	WARN_ON(tracer_enabled < 0);
-+	(void)WARN_ON(tracer_enabled < 0);
- 	mutex_unlock(&sched_register_mutex);
- 
- 	tracing_stop_sched_switch();
 diff --git a/kernel/tracepoint.c b/kernel/tracepoint.c
 index b219f14..5e0b208 100644
 --- a/kernel/tracepoint.c
@@ -9066,24 +7704,6 @@ index 3efb882..80c5753 100644
  
  	if (atomic_sub_and_test((int) count, &kref->refcount)) {
  		release(kref);
-diff --git a/lib/list_debug.c b/lib/list_debug.c
-index b8029a5..64e2b8d 100644
---- a/lib/list_debug.c
-+++ b/lib/list_debug.c
-@@ -20,11 +20,11 @@ void __list_add(struct list_head *new,
- 			      struct list_head *prev,
- 			      struct list_head *next)
- {
--	WARN(next->prev != prev,
-+	(void)WARN(next->prev != prev,
- 		"list_add corruption. next->prev should be "
- 		"prev (%p), but was %p. (next=%p).\n",
- 		prev, next->prev, next);
--	WARN(prev->next != next,
-+	(void)WARN(prev->next != next,
- 		"list_add corruption. prev->next should be "
- 		"next (%p), but was %p. (prev=%p).\n",
- 		next, prev->next, prev);
 diff --git a/lib/memory_alloc.c b/lib/memory_alloc.c
 index d931e14..75d6caf 100644
 --- a/lib/memory_alloc.c
@@ -9097,19 +7717,6 @@ index d931e14..75d6caf 100644
  			mutex_unlock(&alloc_mutex);
  			return -EINVAL;
  		}
-diff --git a/lib/reed_solomon/decode_rs.c b/lib/reed_solomon/decode_rs.c
-index 0ec3f25..5e848f3 100644
---- a/lib/reed_solomon/decode_rs.c
-+++ b/lib/reed_solomon/decode_rs.c
-@@ -93,7 +93,7 @@
- 	}
- 
-  decode:
--	memset(&lambda[1], 0, nroots * sizeof(lambda[0]));
-+	(void)memset(&lambda[1], 0, nroots * sizeof(lambda[0]));
- 	lambda[0] = 1;
- 
- 	if (no_eras > 0) {
 diff --git a/mm/bounce.c b/mm/bounce.c
 index 1481de6..a5a5e49 100644
 --- a/mm/bounce.c
@@ -9531,19 +8138,6 @@ index 61c946c..940119b 100644
  	memcpy(ci->dst, s->eh.h_source, ETH_ALEN);
  	strcpy(ci->device, s->dev->name);
  	ci->flags = s->flags;
-diff --git a/net/bluetooth/bnep/netdev.c b/net/bluetooth/bnep/netdev.c
-index d4f5dff..1b1f8c5 100644
---- a/net/bluetooth/bnep/netdev.c
-+++ b/net/bluetooth/bnep/netdev.c
-@@ -227,7 +227,7 @@ static const struct net_device_ops bnep_netdev_ops = {
- void bnep_net_setup(struct net_device *dev)
- {
- 
--	memset(dev->broadcast, 0xff, ETH_ALEN);
-+	(void)memset(dev->broadcast, 0xff, ETH_ALEN);
- 	dev->addr_len = ETH_ALEN;
- 
- 	ether_setup(dev);
 diff --git a/net/bluetooth/hci_conn.c b/net/bluetooth/hci_conn.c
 index ccf3623..5c23e43 100644
 --- a/net/bluetooth/hci_conn.c
@@ -10544,85 +9138,6 @@ index 0c99db4..2c7c4c2 100644
  	netif_rx_ni(newskb);
  	return 0;
  }
-diff --git a/net/ipv4/netfilter/arp_tables.c b/net/ipv4/netfilter/arp_tables.c
-index fd7a3f6..789730d 100644
---- a/net/ipv4/netfilter/arp_tables.c
-+++ b/net/ipv4/netfilter/arp_tables.c
-@@ -914,7 +914,7 @@ static int get_info(struct net *net, void __user *user,
- 			private = &tmp;
- 		}
- #endif
--		memset(&info, 0, sizeof(info));
-+		(void)memset(&info, 0, sizeof(info));
- 		info.valid_hooks = t->valid_hooks;
- 		memcpy(info.hook_entry, private->hook_entry,
- 		       sizeof(info.hook_entry));
-@@ -1748,7 +1748,7 @@ static int do_arpt_get_ctl(struct sock *sk, int cmd, void __user *user, int *len
- 		}
- 		rev.name[sizeof(rev.name)-1] = 0;
- 
--		try_then_request_module(xt_find_revision(NFPROTO_ARP, rev.name,
-+		(void)try_then_request_module(xt_find_revision(NFPROTO_ARP, rev.name,
- 							 rev.revision, 1, &ret),
- 					"arpt_%s", rev.name);
- 		break;
-diff --git a/net/ipv4/netfilter/ip_tables.c b/net/ipv4/netfilter/ip_tables.c
-index 24e556e..4f80eae 100644
---- a/net/ipv4/netfilter/ip_tables.c
-+++ b/net/ipv4/netfilter/ip_tables.c
-@@ -1103,7 +1103,7 @@ static int get_info(struct net *net, void __user *user,
- 			private = &tmp;
- 		}
- #endif
--		memset(&info, 0, sizeof(info));
-+		(void)memset(&info, 0, sizeof(info));
- 		info.valid_hooks = t->valid_hooks;
- 		memcpy(info.hook_entry, private->hook_entry,
- 		       sizeof(info.hook_entry));
-@@ -2041,7 +2041,7 @@ do_ipt_get_ctl(struct sock *sk, int cmd, void __user *user, int *len)
- 		else
- 			target = 0;
- 
--		try_then_request_module(xt_find_revision(AF_INET, rev.name,
-+		(void)try_then_request_module(xt_find_revision(AF_INET, rev.name,
- 							 rev.revision,
- 							 target, &ret),
- 					"ipt_%s", rev.name);
-diff --git a/net/ipv4/netfilter/ipt_REJECT.c b/net/ipv4/netfilter/ipt_REJECT.c
-index 9dd754c..c3aa336 100644
---- a/net/ipv4/netfilter/ipt_REJECT.c
-+++ b/net/ipv4/netfilter/ipt_REJECT.c
-@@ -82,7 +82,7 @@ static void send_reset(struct sk_buff *oldskb, int hook)
- 	niph->daddr	= oiph->saddr;
- 
- 	tcph = (struct tcphdr *)skb_put(nskb, sizeof(struct tcphdr));
--	memset(tcph, 0, sizeof(*tcph));
-+	(void)memset(tcph, 0, sizeof(*tcph));
- 	tcph->source	= oth->dest;
- 	tcph->dest	= oth->source;
- 	tcph->doff	= sizeof(struct tcphdr) / 4;
-diff --git a/net/ipv4/netfilter/nf_conntrack_l3proto_ipv4.c b/net/ipv4/netfilter/nf_conntrack_l3proto_ipv4.c
-index de9da21..334ebbe 100644
---- a/net/ipv4/netfilter/nf_conntrack_l3proto_ipv4.c
-+++ b/net/ipv4/netfilter/nf_conntrack_l3proto_ipv4.c
-@@ -249,7 +249,7 @@ getorigdst(struct sock *sk, int optval, void __user *user, int *len)
- 	const struct nf_conntrack_tuple_hash *h;
- 	struct nf_conntrack_tuple tuple;
- 
--	memset(&tuple, 0, sizeof(tuple));
-+	(void)memset(&tuple, 0, sizeof(tuple));
- 	tuple.src.u3.ip = inet->inet_rcv_saddr;
- 	tuple.src.u.tcp.port = inet->inet_sport;
- 	tuple.dst.u3.ip = inet->inet_daddr;
-@@ -279,7 +279,7 @@ getorigdst(struct sock *sk, int optval, void __user *user, int *len)
- 			.tuple.dst.u.tcp.port;
- 		sin.sin_addr.s_addr = ct->tuplehash[IP_CT_DIR_ORIGINAL]
- 			.tuple.dst.u3.ip;
--		memset(sin.sin_zero, 0, sizeof(sin.sin_zero));
-+		(void)memset(sin.sin_zero, 0, sizeof(sin.sin_zero));
- 
- 		pr_debug("SO_ORIGINAL_DST: %pI4 %u\n",
- 			 &sin.sin_addr.s_addr, ntohs(sin.sin_port));
 diff --git a/net/ipv4/netfilter/nf_nat_core.c b/net/ipv4/netfilter/nf_nat_core.c
 index 3346de5..6ba0cbd 100644
 --- a/net/ipv4/netfilter/nf_nat_core.c
@@ -10777,19 +9292,6 @@ index 713e09d..f0c0898 100644
  	spin_unlock_bh(&addrconf_hash_lock);
  
  	del_timer(&addr_chk_timer);
-diff --git a/net/ipv6/addrlabel.c b/net/ipv6/addrlabel.c
-index c8993e5..c9ac1be 100644
---- a/net/ipv6/addrlabel.c
-+++ b/net/ipv6/addrlabel.c
-@@ -580,7 +580,7 @@ static int ip6addrlbl_get(struct sk_buff *in_skb, struct nlmsghdr* nlh,
- 	ip6addrlbl_put(p);
- 
- 	if (err < 0) {
--		WARN_ON(err == -EMSGSIZE);
-+		(void)WARN_ON(err == -EMSGSIZE);
- 		kfree_skb(skb);
- 		goto out;
- 	}
 diff --git a/net/ipv6/af_inet6.c b/net/ipv6/af_inet6.c
 index 7e8340e..d80056c 100644
 --- a/net/ipv6/af_inet6.c
@@ -10856,19 +9358,6 @@ index 1656033..c201c0b 100644
  	if (np->sndflow) {
  		fl6.flowlabel = usin->sin6_flowinfo&IPV6_FLOWINFO_MASK;
  		if (fl6.flowlabel&IPV6_FLOWLABEL_MASK) {
-diff --git a/net/ipv6/esp6.c b/net/ipv6/esp6.c
-index 1ac7938..e248cd8 100644
---- a/net/ipv6/esp6.c
-+++ b/net/ipv6/esp6.c
-@@ -212,7 +212,7 @@ static int esp6_output(struct xfrm_state *x, struct sk_buff *skb)
- 	/* Fill padding... */
- 	tail = skb_tail_pointer(trailer);
- 	if (tfclen) {
--		memset(tail, 0, tfclen);
-+		(void)memset(tail, 0, tfclen);
- 		tail += tfclen;
- 	}
- 	do {
 diff --git a/net/ipv6/exthdrs.c b/net/ipv6/exthdrs.c
 index 79a485e..47d1724 100644
 --- a/net/ipv6/exthdrs.c
@@ -10944,37 +9433,6 @@ index 8a58e8c..8c14251 100644
  	fl6.flowi6_proto = sk->sk_protocol;
  	ipv6_addr_copy(&fl6.daddr, &np->daddr);
  	ipv6_addr_copy(&fl6.saddr, &np->saddr);
-diff --git a/net/ipv6/inet6_hashtables.c b/net/ipv6/inet6_hashtables.c
-index 73f1a00..615b7b1 100644
---- a/net/ipv6/inet6_hashtables.c
-+++ b/net/ipv6/inet6_hashtables.c
-@@ -28,7 +28,7 @@ int __inet6_hash(struct sock *sk, struct inet_timewait_sock *tw)
- 	struct inet_hashinfo *hashinfo = sk->sk_prot->h.hashinfo;
- 	int twrefcnt = 0;
- 
--	WARN_ON(!sk_unhashed(sk));
-+	(void)WARN_ON(!sk_unhashed(sk));
- 
- 	if (sk->sk_state == TCP_LISTEN) {
- 		struct inet_listen_hashbucket *ilb;
-@@ -48,7 +48,7 @@ int __inet6_hash(struct sock *sk, struct inet_timewait_sock *tw)
- 		spin_lock(lock);
- 		__sk_nulls_add_node_rcu(sk, list);
- 		if (tw) {
--			WARN_ON(sk->sk_hash != tw->tw_hash);
-+			(void)WARN_ON(sk->sk_hash != tw->tw_hash);
- 			twrefcnt = inet_twsk_unhash(tw);
- 		}
- 		spin_unlock(lock);
-@@ -259,7 +259,7 @@ unique:
- 	inet->inet_num = lport;
- 	inet->inet_sport = htons(lport);
- 	sk->sk_hash = hash;
--	WARN_ON(!sk_unhashed(sk));
-+	(void)WARN_ON(!sk_unhashed(sk));
- 	__sk_nulls_add_node_rcu(sk, &head->chain);
- 	if (tw) {
- 		twrefcnt = inet_twsk_unhash(tw);
 diff --git a/net/ipv6/ip6_fib.c b/net/ipv6/ip6_fib.c
 index 4076a0b..3ec6ec3 100644
 --- a/net/ipv6/ip6_fib.c
@@ -11115,19 +9573,6 @@ index f3caf1b..4095f07 100644
  
  		err = datagram_send_ctl(net, &msg, &flowi6, fl->opt, &junk,
  					&junk, &junk);
-diff --git a/net/ipv6/ip6_input.c b/net/ipv6/ip6_input.c
-index 027c7ff..491d664 100644
---- a/net/ipv6/ip6_input.c
-+++ b/net/ipv6/ip6_input.c
-@@ -79,7 +79,7 @@ int ipv6_rcv(struct sk_buff *skb, struct net_device *dev, struct packet_type *pt
- 		goto drop;
- 	}
- 
--	memset(IP6CB(skb), 0, sizeof(struct inet6_skb_parm));
-+	(void)memset(IP6CB(skb), 0, sizeof(struct inet6_skb_parm));
- 
- 	/*
- 	 * Store incoming device index. When the packet will
 diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
 index 79d6e82..9897987 100644
 --- a/net/ipv6/ip6_output.c
@@ -11234,58 +9679,6 @@ index ee7839f..ce96086 100644
  	hdr->mld_type = type;
  	ipv6_addr_copy(&hdr->mld_mca, addr);
  
-diff --git a/net/ipv6/mip6.c b/net/ipv6/mip6.c
-index 43242e6..4dfe486 100644
---- a/net/ipv6/mip6.c
-+++ b/net/ipv6/mip6.c
-@@ -49,7 +49,7 @@ static inline void *mip6_padn(__u8 *data, __u8 padlen)
- 		data[0] = IPV6_TLV_PADN;
- 		data[1] = padlen - 2;
- 		if (padlen > 2)
--			memset(data+2, 0, data[1]);
-+			(void)memset(data+2, 0, data[1]);
- 	}
- 	return data + padlen;
- }
-@@ -174,7 +174,7 @@ static int mip6_destopt_output(struct xfrm_state *x, struct sk_buff *skb)
- 	memcpy(&iph->saddr, x->coaddr, sizeof(iph->saddr));
- 	spin_unlock_bh(&x->lock);
- 
--	WARN_ON(len != x->props.header_len);
-+	(void)WARN_ON(len != x->props.header_len);
- 	dstopt->hdrlen = (x->props.header_len >> 3) - 1;
- 
- 	return 0;
-@@ -233,7 +233,7 @@ static int mip6_destopt_reject(struct xfrm_state *x, struct sk_buff *skb,
- 				  opt->iif))
- 		goto out;
- 
--	memset(&sel, 0, sizeof(sel));
-+	(void)memset(&sel, 0, sizeof(sel));
- 	memcpy(&sel.daddr, (xfrm_address_t *)&ipv6_hdr(skb)->daddr,
- 	       sizeof(sel.daddr));
- 	sel.prefixlen_d = 128;
-@@ -320,7 +320,7 @@ static int mip6_destopt_init_state(struct xfrm_state *x)
- 	x->props.header_len = sizeof(struct ipv6_destopt_hdr) +
- 		calc_padlen(sizeof(struct ipv6_destopt_hdr), 6) +
- 		sizeof(struct ipv6_destopt_hao);
--	WARN_ON(x->props.header_len != 24);
-+	(void)WARN_ON(x->props.header_len != 24);
- 
- 	return 0;
- }
-@@ -382,9 +382,9 @@ static int mip6_rthdr_output(struct xfrm_state *x, struct sk_buff *skb)
- 	rt2->rt_hdr.hdrlen = (x->props.header_len >> 3) - 1;
- 	rt2->rt_hdr.type = IPV6_SRCRT_TYPE_2;
- 	rt2->rt_hdr.segments_left = 1;
--	memset(&rt2->reserved, 0, sizeof(rt2->reserved));
-+	(void)memset(&rt2->reserved, 0, sizeof(rt2->reserved));
- 
--	WARN_ON(rt2->rt_hdr.hdrlen != 2);
-+	(void)WARN_ON(rt2->rt_hdr.hdrlen != 2);
- 
- 	memcpy(&rt2->addr, &iph->daddr, sizeof(rt2->addr));
- 	spin_lock_bh(&x->lock);
 diff --git a/net/ipv6/ndisc.c b/net/ipv6/ndisc.c
 index 7596f07..e9c048b 100644
 --- a/net/ipv6/ndisc.c
@@ -11344,28 +9737,6 @@ index 7596f07..e9c048b 100644
  
  	switch (msg->icmph.icmp6_type) {
  	case NDISC_NEIGHBOUR_SOLICITATION:
-diff --git a/net/ipv6/netfilter/ip6_tables.c b/net/ipv6/netfilter/ip6_tables.c
-index 14cb310..8cebbbb 100644
---- a/net/ipv6/netfilter/ip6_tables.c
-+++ b/net/ipv6/netfilter/ip6_tables.c
-@@ -1125,7 +1125,7 @@ static int get_info(struct net *net, void __user *user,
- 			private = &tmp;
- 		}
- #endif
--		memset(&info, 0, sizeof(info));
-+		(void)memset(&info, 0, sizeof(info));
- 		info.valid_hooks = t->valid_hooks;
- 		memcpy(info.hook_entry, private->hook_entry,
- 		       sizeof(info.hook_entry));
-@@ -2063,7 +2063,7 @@ do_ip6t_get_ctl(struct sock *sk, int cmd, void __user *user, int *len)
- 		else
- 			target = 0;
- 
--		try_then_request_module(xt_find_revision(AF_INET6, rev.name,
-+		(void)try_then_request_module(xt_find_revision(AF_INET6, rev.name,
- 							 rev.revision,
- 							 target, &ret),
- 					"ip6t_%s", rev.name);
 diff --git a/net/ipv6/netfilter/nf_conntrack_reasm.c b/net/ipv6/netfilter/nf_conntrack_reasm.c
 index 0857272..0160ed9 100644
 --- a/net/ipv6/netfilter/nf_conntrack_reasm.c
@@ -11569,19 +9940,6 @@ index 0d920c5..ceae3e0 100644
  		opt->tot_len = sizeof(*opt);
  
  		err = datagram_send_ctl(sock_net(sk), msg, &fl6, opt, &hlimit,
-diff --git a/net/ipv6/xfrm6_mode_beet.c b/net/ipv6/xfrm6_mode_beet.c
-index 3437d7d..c636609 100644
---- a/net/ipv6/xfrm6_mode_beet.c
-+++ b/net/ipv6/xfrm6_mode_beet.c
-@@ -67,7 +67,7 @@ static int xfrm6_beet_output(struct xfrm_state *x, struct sk_buff *skb)
- 		ph->hdrlen = optlen / 8;
- 		ph->nexthdr = top_iph->nexthdr;
- 		if (ph->padlen)
--			memset(ph + 1, IPOPT_NOP, ph->padlen);
-+			(void)memset(ph + 1, IPOPT_NOP, ph->padlen);
- 
- 		top_iph->nexthdr = IPPROTO_BEETPH;
- 	}
 diff --git a/net/ipv6/xfrm6_output.c b/net/ipv6/xfrm6_output.c
 index 49a91c5f..e43b24f 100644
 --- a/net/ipv6/xfrm6_output.c
@@ -11595,28 +9953,6 @@ index 49a91c5f..e43b24f 100644
  #ifdef CONFIG_NETFILTER
  	IP6CB(skb)->flags |= IP6SKB_XFRM_TRANSFORMED;
  #endif
-diff --git a/net/ipv6/xfrm6_policy.c b/net/ipv6/xfrm6_policy.c
-index d879f7e..b6a1203 100644
---- a/net/ipv6/xfrm6_policy.c
-+++ b/net/ipv6/xfrm6_policy.c
-@@ -34,7 +34,7 @@ static struct dst_entry *xfrm6_dst_lookup(struct net *net, int tos,
- 	struct dst_entry *dst;
- 	int err;
- 
--	memset(&fl6, 0, sizeof(fl6));
-+	(void)memset(&fl6, 0, sizeof(fl6));
- 	memcpy(&fl6.daddr, daddr, sizeof(fl6.daddr));
- 	if (saddr)
- 		memcpy(&fl6.saddr, saddr, sizeof(fl6.saddr));
-@@ -129,7 +129,7 @@ _decode_session6(struct sk_buff *skb, struct flowi *fl, int reverse)
- 	const unsigned char *nh = skb_network_header(skb);
- 	u8 nexthdr = nh[IP6CB(skb)->nhoff];
- 
--	memset(fl6, 0, sizeof(struct flowi6));
-+	(void)memset(fl6, 0, sizeof(struct flowi6));
- 	fl6->flowi6_mark = skb->mark;
- 
- 	ipv6_addr_copy(&fl6->daddr, reverse ? &hdr->saddr : &hdr->daddr);
 diff --git a/net/ipv6/xfrm6_state.c b/net/ipv6/xfrm6_state.c
 index 248f0b2..7699b8b 100644
 --- a/net/ipv6/xfrm6_state.c
@@ -11630,36 +9966,6 @@ index 248f0b2..7699b8b 100644
  
  	for (i = 0; i < n; i++) {
  		int c;
-diff --git a/net/netfilter/nf_conntrack_amanda.c b/net/netfilter/nf_conntrack_amanda.c
-index 13fd2c5..7d7c3b0 100644
---- a/net/netfilter/nf_conntrack_amanda.c
-+++ b/net/netfilter/nf_conntrack_amanda.c
-@@ -112,14 +112,14 @@ static int amanda_help(struct sk_buff *skb,
- 		return NF_ACCEPT;
- 	}
- 
--	memset(&ts, 0, sizeof(ts));
-+	(void)memset(&ts, 0, sizeof(ts));
- 	start = skb_find_text(skb, dataoff, skb->len,
- 			      search[SEARCH_CONNECT].ts, &ts);
- 	if (start == UINT_MAX)
- 		goto out;
- 	start += dataoff + search[SEARCH_CONNECT].len;
- 
--	memset(&ts, 0, sizeof(ts));
-+	(void)memset(&ts, 0, sizeof(ts));
- 	stop = skb_find_text(skb, start, skb->len,
- 			     search[SEARCH_NEWLINE].ts, &ts);
- 	if (stop == UINT_MAX)
-@@ -127,7 +127,7 @@ static int amanda_help(struct sk_buff *skb,
- 	stop += start;
- 
- 	for (i = SEARCH_DATA; i <= SEARCH_INDEX; i++) {
--		memset(&ts, 0, sizeof(ts));
-+		(void)memset(&ts, 0, sizeof(ts));
- 		off = skb_find_text(skb, start, stop, search[i].ts, &ts);
- 		if (off == UINT_MAX)
- 			continue;
 diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf_conntrack_core.c
 index f7af8b8..3bfde88 100644
 --- a/net/netfilter/nf_conntrack_core.c
@@ -11700,66 +10006,6 @@ index f7af8b8..3bfde88 100644
  	       offsetof(struct nf_conn, proto) -
  	       offsetof(struct nf_conn, tuplehash[IP_CT_DIR_MAX]));
  	spin_lock_init(&ct->lock);
-diff --git a/net/netfilter/nf_conntrack_expect.c b/net/netfilter/nf_conntrack_expect.c
-index cd1e8e0..1e3a607 100644
---- a/net/netfilter/nf_conntrack_expect.c
-+++ b/net/netfilter/nf_conntrack_expect.c
-@@ -268,15 +268,15 @@ void nf_ct_expect_init(struct nf_conntrack_expect *exp, unsigned int class,
- 		memcpy(&exp->tuple.src.u3, saddr, len);
- 		if (sizeof(exp->tuple.src.u3) > len)
- 			/* address needs to be cleared for nf_ct_tuple_equal */
--			memset((void *)&exp->tuple.src.u3 + len, 0x00,
-+			(void)memset((void *)&exp->tuple.src.u3 + len, 0x00,
- 			       sizeof(exp->tuple.src.u3) - len);
--		memset(&exp->mask.src.u3, 0xFF, len);
-+		(void)memset(&exp->mask.src.u3, 0xFF, len);
- 		if (sizeof(exp->mask.src.u3) > len)
--			memset((void *)&exp->mask.src.u3 + len, 0x00,
-+			(void)memset((void *)&exp->mask.src.u3 + len, 0x00,
- 			       sizeof(exp->mask.src.u3) - len);
- 	} else {
--		memset(&exp->tuple.src.u3, 0x00, sizeof(exp->tuple.src.u3));
--		memset(&exp->mask.src.u3, 0x00, sizeof(exp->mask.src.u3));
-+		(void)memset(&exp->tuple.src.u3, 0x00, sizeof(exp->tuple.src.u3));
-+		(void)memset(&exp->mask.src.u3, 0x00, sizeof(exp->mask.src.u3));
- 	}
- 
- 	if (src) {
-@@ -290,7 +290,7 @@ void nf_ct_expect_init(struct nf_conntrack_expect *exp, unsigned int class,
- 	memcpy(&exp->tuple.dst.u3, daddr, len);
- 	if (sizeof(exp->tuple.dst.u3) > len)
- 		/* address needs to be cleared for nf_ct_tuple_equal */
--		memset((void *)&exp->tuple.dst.u3 + len, 0x00,
-+		(void)memset((void *)&exp->tuple.dst.u3 + len, 0x00,
- 		       sizeof(exp->tuple.dst.u3) - len);
- 
- 	exp->tuple.dst.u.all = *dst;
-diff --git a/net/netfilter/nf_conntrack_extend.c b/net/netfilter/nf_conntrack_extend.c
-index 05ecdc2..219ef9a 100644
---- a/net/netfilter/nf_conntrack_extend.c
-+++ b/net/netfilter/nf_conntrack_extend.c
-@@ -114,7 +114,7 @@ void *__nf_ct_ext_add(struct nf_conn *ct, enum nf_ct_ext_id id, gfp_t gfp)
- 
- 	new->offset[id] = newoff;
- 	new->len = newlen;
--	memset((void *)new + newoff, 0, newlen - newoff);
-+	(void)memset((void *)new + newoff, 0, newlen - newoff);
- 	return (void *)new + newoff;
- }
- EXPORT_SYMBOL(__nf_ct_ext_add);
-diff --git a/net/netfilter/nf_conntrack_ftp.c b/net/netfilter/nf_conntrack_ftp.c
-index 6f5801e..0b9acf3 100644
---- a/net/netfilter/nf_conntrack_ftp.c
-+++ b/net/netfilter/nf_conntrack_ftp.c
-@@ -119,7 +119,7 @@ static int try_number(const char *data, size_t dlen, u_int32_t array[],
- {
- 	u_int32_t i, len;
- 
--	memset(array, 0, sizeof(array[0])*array_size);
-+	(void)memset(array, 0, sizeof(array[0])*array_size);
- 
- 	/* Keep data pointing at next char. */
- 	for (i = 0, len = 0; len < dlen && i < array_size; len++, data++) {
 diff --git a/net/netfilter/nf_conntrack_h323_main.c b/net/netfilter/nf_conntrack_h323_main.c
 index f03c2d4..9941123 100644
 --- a/net/netfilter/nf_conntrack_h323_main.c
@@ -11804,45 +10050,6 @@ index f03c2d4..9941123 100644
  	tuple.src.u.tcp.port = 0;
  	memcpy(&tuple.dst.u3, addr, sizeof(tuple.dst.u3));
  	tuple.dst.u.tcp.port = port;
-diff --git a/net/netfilter/nf_conntrack_helper.c b/net/netfilter/nf_conntrack_helper.c
-index 1bdfea3..03eb83a 100644
---- a/net/netfilter/nf_conntrack_helper.c
-+++ b/net/netfilter/nf_conntrack_helper.c
-@@ -142,7 +142,7 @@ int __nf_ct_try_assign_helper(struct nf_conn *ct, struct nf_conn *tmpl,
- 			goto out;
- 		}
- 	} else {
--		memset(&help->help, 0, sizeof(help->help));
-+		(void)memset(&help->help, 0, sizeof(help->help));
- 	}
- 
- 	rcu_assign_pointer(help->helper, helper);
-diff --git a/net/netfilter/nf_conntrack_l3proto_generic.c b/net/netfilter/nf_conntrack_l3proto_generic.c
-index e7eb807..3e233dc 100644
---- a/net/netfilter/nf_conntrack_l3proto_generic.c
-+++ b/net/netfilter/nf_conntrack_l3proto_generic.c
-@@ -34,8 +34,8 @@
- static bool generic_pkt_to_tuple(const struct sk_buff *skb, unsigned int nhoff,
- 				 struct nf_conntrack_tuple *tuple)
- {
--	memset(&tuple->src.u3, 0, sizeof(tuple->src.u3));
--	memset(&tuple->dst.u3, 0, sizeof(tuple->dst.u3));
-+	(void)memset(&tuple->src.u3, 0, sizeof(tuple->src.u3));
-+	(void)memset(&tuple->dst.u3, 0, sizeof(tuple->dst.u3));
- 
- 	return true;
- }
-@@ -43,8 +43,8 @@ static bool generic_pkt_to_tuple(const struct sk_buff *skb, unsigned int nhoff,
- static bool generic_invert_tuple(struct nf_conntrack_tuple *tuple,
- 				 const struct nf_conntrack_tuple *orig)
- {
--	memset(&tuple->src.u3, 0, sizeof(tuple->src.u3));
--	memset(&tuple->dst.u3, 0, sizeof(tuple->dst.u3));
-+	(void)memset(&tuple->src.u3, 0, sizeof(tuple->src.u3));
-+	(void)memset(&tuple->dst.u3, 0, sizeof(tuple->dst.u3));
- 
- 	return true;
- }
 diff --git a/net/netfilter/nf_conntrack_netlink.c b/net/netfilter/nf_conntrack_netlink.c
 index 482e90c..11b55b1 100644
 --- a/net/netfilter/nf_conntrack_netlink.c
@@ -11892,103 +10099,6 @@ index 482e90c..11b55b1 100644
  	memcpy(&m.src.u3, &mask->src.u3, sizeof(m.src.u3));
  	m.src.u.all = mask->src.u.all;
  	m.dst.protonum = tuple->dst.protonum;
-diff --git a/net/netfilter/nf_conntrack_proto_sctp.c b/net/netfilter/nf_conntrack_proto_sctp.c
-index 6772b11..a20679f 100644
---- a/net/netfilter/nf_conntrack_proto_sctp.c
-+++ b/net/netfilter/nf_conntrack_proto_sctp.c
-@@ -413,7 +413,7 @@ static bool sctp_new(struct nf_conn *ct, const struct sk_buff *skb,
- 	    test_bit(SCTP_CID_COOKIE_ACK, map))
- 		return false;
- 
--	memset(&ct->proto.sctp, 0, sizeof(ct->proto.sctp));
-+	(void)memset(&ct->proto.sctp, 0, sizeof(ct->proto.sctp));
- 	new_state = SCTP_CONNTRACK_MAX;
- 	for_each_sctp_chunk (skb, sch, _sch, offset, dataoff, count) {
- 		/* Don't need lock here: this conntrack not in circulation yet */
-diff --git a/net/netfilter/nf_conntrack_proto_tcp.c b/net/netfilter/nf_conntrack_proto_tcp.c
-index 37bf943..5b068d8 100644
---- a/net/netfilter/nf_conntrack_proto_tcp.c
-+++ b/net/netfilter/nf_conntrack_proto_tcp.c
-@@ -912,7 +912,7 @@ static int tcp_packet(struct nf_conn *ct,
- 				ct->proto.tcp.last_wscale;
- 			ct->proto.tcp.seen[ct->proto.tcp.last_dir].flags =
- 				ct->proto.tcp.last_flags;
--			memset(&ct->proto.tcp.seen[dir], 0,
-+			(void)memset(&ct->proto.tcp.seen[dir], 0,
- 			       sizeof(struct ip_ct_tcp_state));
- 			break;
- 		}
-@@ -1075,7 +1075,7 @@ static bool tcp_new(struct nf_conn *ct, const struct sk_buff *skb,
- 	}
- 
- 	if (new_state == TCP_CONNTRACK_SYN_SENT) {
--		memset(&ct->proto.tcp, 0, sizeof(ct->proto.tcp));
-+		(void)memset(&ct->proto.tcp, 0, sizeof(ct->proto.tcp));
- 		/* SYN packet */
- 		ct->proto.tcp.seen[0].td_end =
- 			segment_seq_plus_len(ntohl(th->seq), skb->len,
-@@ -1091,7 +1091,7 @@ static bool tcp_new(struct nf_conn *ct, const struct sk_buff *skb,
- 		/* Don't try to pick up connections. */
- 		return false;
- 	} else {
--		memset(&ct->proto.tcp, 0, sizeof(ct->proto.tcp));
-+		(void)memset(&ct->proto.tcp, 0, sizeof(ct->proto.tcp));
- 		/*
- 		 * We are in the middle of a connection,
- 		 * its history is lost for us.
-diff --git a/net/netfilter/nf_conntrack_sip.c b/net/netfilter/nf_conntrack_sip.c
-index 93faf6a..293141a 100644
---- a/net/netfilter/nf_conntrack_sip.c
-+++ b/net/netfilter/nf_conntrack_sip.c
-@@ -193,7 +193,7 @@ static int parse_addr(const struct nf_conn *ct, const char *cp,
- 	if (!ct)
- 		return 0;
- 
--	memset(addr, 0, sizeof(*addr));
-+	(void)memset(addr, 0, sizeof(*addr));
- 	switch (nf_ct_l3num(ct)) {
- 	case AF_INET:
- 		ret = in4_pton(cp, limit - cp, (u8 *)&addr->ip, -1, &end);
-@@ -546,7 +546,7 @@ int ct_sip_parse_header_uri(const struct nf_conn *ct, const char *dptr,
- 
- 	ret = ct_sip_walk_headers(ct, dptr, dataoff ? *dataoff : 0, datalen,
- 				  type, in_header, matchoff, matchlen);
--	WARN_ON(ret < 0);
-+	(void)WARN_ON(ret < 0);
- 	if (ret == 0)
- 		return ret;
- 
-@@ -869,7 +869,7 @@ static int set_expected_rtp_rtcp(struct sk_buff *skb, unsigned int dataoff,
- 	 * outside, and additionally need to expect the direct RTP stream
- 	 * in case it passes through us even without NAT.
- 	 */
--	memset(&tuple, 0, sizeof(tuple));
-+	(void)memset(&tuple, 0, sizeof(tuple));
- 	if (saddr)
- 		tuple.src.u3 = *saddr;
- 	tuple.src.l3num		= nf_ct_l3num(ct);
-@@ -1562,7 +1562,7 @@ static int __init nf_conntrack_sip_init(void)
- 		ports[ports_c++] = SIP_PORT;
- 
- 	for (i = 0; i < ports_c; i++) {
--		memset(&sip[i], 0, sizeof(sip[i]));
-+		(void)memset(&sip[i], 0, sizeof(sip[i]));
- 
- 		sip[i][0].tuple.src.l3num = AF_INET;
- 		sip[i][0].tuple.dst.protonum = IPPROTO_UDP;
-diff --git a/net/netfilter/nf_conntrack_tftp.c b/net/netfilter/nf_conntrack_tftp.c
-index 75466fd..6bf5b5b 100644
---- a/net/netfilter/nf_conntrack_tftp.c
-+++ b/net/netfilter/nf_conntrack_tftp.c
-@@ -118,7 +118,7 @@ static int __init nf_conntrack_tftp_init(void)
- 		ports[ports_c++] = TFTP_PORT;
- 
- 	for (i = 0; i < ports_c; i++) {
--		memset(&tftp[i], 0, sizeof(tftp[i]));
-+		(void)memset(&tftp[i], 0, sizeof(tftp[i]));
- 
- 		tftp[i][0].tuple.src.l3num = AF_INET;
- 		tftp[i][1].tuple.src.l3num = AF_INET6;
 diff --git a/net/netfilter/x_tables.c b/net/netfilter/x_tables.c
 index b0869fe..20b4890 100644
 --- a/net/netfilter/x_tables.c
@@ -12002,19 +10112,6 @@ index b0869fe..20b4890 100644
  
  	i->stacksize *= xt_jumpstack_multiplier;
  	size = sizeof(void *) * i->stacksize;
-diff --git a/net/netfilter/xt_connlimit.c b/net/netfilter/xt_connlimit.c
-index c6d5a83..5f12355 100644
---- a/net/netfilter/xt_connlimit.c
-+++ b/net/netfilter/xt_connlimit.c
-@@ -231,7 +231,7 @@ static int connlimit_mt_check(const struct xt_mtchk_param *par)
- 		do {
- 			get_random_bytes(&rand, sizeof(rand));
- 		} while (!rand);
--		cmpxchg(&connlimit_rnd, 0, rand);
-+		(void)cmpxchg(&connlimit_rnd, 0, rand);
- 	}
- 	ret = nf_ct_l3proto_try_module_get(par->family);
- 	if (ret < 0) {
 diff --git a/net/netfilter/xt_hashlimit.c b/net/netfilter/xt_hashlimit.c
 index 9228ee0..5eb760f 100644
 --- a/net/netfilter/xt_hashlimit.c
@@ -12028,19 +10125,6 @@ index 9228ee0..5eb760f 100644
  
  	switch (hinfo->family) {
  	case NFPROTO_IPV4:
-diff --git a/net/netfilter/xt_string.c b/net/netfilter/xt_string.c
-index d3c48b1..c97b7ce 100644
---- a/net/netfilter/xt_string.c
-+++ b/net/netfilter/xt_string.c
-@@ -29,7 +29,7 @@ string_mt(const struct sk_buff *skb, struct xt_action_param *par)
- 	struct ts_state state;
- 	bool invert;
- 
--	memset(&state, 0, sizeof(struct ts_state));
-+	(void)memset(&state, 0, sizeof(struct ts_state));
- 	invert = conf->u.v1.flags & XT_STRING_FLAG_INVERT;
- 
- 	return (skb_find_text((struct sk_buff *)skb, conf->from_offset,
 diff --git a/net/netlink/af_netlink.c b/net/netlink/af_netlink.c
 index 6ef64ad..4412542 100644
 --- a/net/netlink/af_netlink.c
@@ -12150,28 +10234,6 @@ index a606025..b192b2e 100644
  		     a_o->kind);
  		goto nla_put_failure;
  	}
-diff --git a/net/sched/cls_api.c b/net/sched/cls_api.c
-index bb2c523..3a911d3 100644
---- a/net/sched/cls_api.c
-+++ b/net/sched/cls_api.c
-@@ -460,7 +460,7 @@ static int tc_dump_tfilter(struct sk_buff *skb, struct netlink_callback *cb)
- 		    TC_H_MIN(tcm->tcm_info) != tp->protocol)
- 			continue;
- 		if (t > s_t)
--			memset(&cb->args[1], 0, sizeof(cb->args)-sizeof(cb->args[0]));
-+			(void)memset(&cb->args[1], 0, sizeof(cb->args)-sizeof(cb->args[0]));
- 		if (cb->args[1] == 0) {
- 			if (tcf_fill_node(skb, tp, 0, NETLINK_CB(cb->skb).pid,
- 					  cb->nlh->nlmsg_seq, NLM_F_MULTI,
-@@ -507,7 +507,7 @@ int tcf_exts_validate(struct tcf_proto *tp, struct nlattr **tb,
- 		  struct nlattr *rate_tlv, struct tcf_exts *exts,
- 		  const struct tcf_ext_map *map)
- {
--	memset(exts, 0, sizeof(*exts));
-+	(void)memset(exts, 0, sizeof(*exts));
- 
- #ifdef CONFIG_NET_CLS_ACT
- 	{
 diff --git a/net/sched/cls_flow.c b/net/sched/cls_flow.c
 index 8ec0139..a7034e2 100644
 --- a/net/sched/cls_flow.c
@@ -12185,83 +10247,6 @@ index 8ec0139..a7034e2 100644
  		return 0;
  	}
  }
-diff --git a/net/sched/cls_tcindex.c b/net/sched/cls_tcindex.c
-index 36667fa..e548d3d 100644
---- a/net/sched/cls_tcindex.c
-+++ b/net/sched/cls_tcindex.c
-@@ -213,12 +213,12 @@ tcindex_set_parms(struct tcf_proto *tp, unsigned long base, u32 handle,
- 		return err;
- 
- 	memcpy(&cp, p, sizeof(cp));
--	memset(&new_filter_result, 0, sizeof(new_filter_result));
-+	(void)memset(&new_filter_result, 0, sizeof(new_filter_result));
- 
- 	if (old_r)
- 		memcpy(&cr, r, sizeof(cr));
- 	else
--		memset(&cr, 0, sizeof(cr));
-+		(void)memset(&cr, 0, sizeof(cr));
- 
- 	if (tb[TCA_TCINDEX_HASH])
- 		cp.hash = nla_get_u32(tb[TCA_TCINDEX_HASH]);
-@@ -302,7 +302,7 @@ tcindex_set_parms(struct tcf_proto *tp, unsigned long base, u32 handle,
- 
- 	tcf_tree_lock(tp);
- 	if (old_r && old_r != r)
--		memset(old_r, 0, sizeof(*old_r));
-+		(void)memset(old_r, 0, sizeof(*old_r));
- 
- 	memcpy(p, &cp, sizeof(cp));
- 	memcpy(r, &cr, sizeof(cr));
-diff --git a/net/sched/cls_u32.c b/net/sched/cls_u32.c
-index 3b93fc0..6c3e5d4 100644
---- a/net/sched/cls_u32.c
-+++ b/net/sched/cls_u32.c
-@@ -370,7 +370,7 @@ static int u32_delete_key(struct tcf_proto *tp, struct tc_u_knode* key)
- 			}
- 		}
- 	}
--	WARN_ON(1);
-+	(void)WARN_ON(1);
- 	return 0;
- }
- 
-@@ -393,7 +393,7 @@ static int u32_destroy_hnode(struct tcf_proto *tp, struct tc_u_hnode *ht)
- 	struct tc_u_common *tp_c = tp->data;
- 	struct tc_u_hnode **hn;
- 
--	WARN_ON(ht->refcnt);
-+	(void)WARN_ON(ht->refcnt);
- 
- 	u32_clear_hnode(tp, ht);
- 
-@@ -405,7 +405,7 @@ static int u32_destroy_hnode(struct tcf_proto *tp, struct tc_u_hnode *ht)
- 		}
- 	}
- 
--	WARN_ON(1);
-+	(void)WARN_ON(1);
- 	return -ENOENT;
- }
- 
-@@ -414,7 +414,7 @@ static void u32_destroy(struct tcf_proto *tp)
- 	struct tc_u_common *tp_c = tp->data;
- 	struct tc_u_hnode *root_ht = tp->root;
- 
--	WARN_ON(root_ht == NULL);
-+	(void)WARN_ON(root_ht == NULL);
- 
- 	if (root_ht && --root_ht->refcnt == 0)
- 		u32_destroy_hnode(tp, root_ht);
-@@ -432,7 +432,7 @@ static void u32_destroy(struct tcf_proto *tp)
- 		while ((ht = tp_c->hlist) != NULL) {
- 			tp_c->hlist = ht->next;
- 
--			WARN_ON(ht->refcnt != 0);
-+			(void)WARN_ON(ht->refcnt != 0);
- 
- 			kfree(ht);
- 		}
 diff --git a/net/sched/em_meta.c b/net/sched/em_meta.c
 index 49130e8..55e685a 100644
 --- a/net/sched/em_meta.c
@@ -12274,19 +10259,6 @@ index 49130e8..55e685a 100644
 +	(void)memset(&hdr, 0, sizeof(hdr));
  	memcpy(&hdr.left, &meta->lvalue.hdr, sizeof(hdr.left));
  	memcpy(&hdr.right, &meta->rvalue.hdr, sizeof(hdr.right));
- 
-diff --git a/net/sched/ematch.c b/net/sched/ematch.c
-index 88d93eb..6b0293c 100644
---- a/net/sched/ematch.c
-+++ b/net/sched/ematch.c
-@@ -307,7 +307,7 @@ int tcf_em_tree_validate(struct tcf_proto *tp, struct nlattr *nla,
- 	struct tcf_ematch_tree_hdr *tree_hdr;
- 	struct tcf_ematch *em;
- 
--	memset(tree, 0, sizeof(*tree));
-+	(void)memset(tree, 0, sizeof(*tree));
- 	if (!nla)
- 		return 0;
  
 diff --git a/net/sched/sch_api.c b/net/sched/sch_api.c
 index 6b86276..8644f20 100644
@@ -12310,139 +10282,6 @@ index 6b86276..8644f20 100644
  	arg.w.fn = qdisc_class_dump;
  	arg.skb = skb;
  	arg.cb = cb;
-diff --git a/net/sched/sch_dsmark.c b/net/sched/sch_dsmark.c
-index 2c79020..9a5ee79 100644
---- a/net/sched/sch_dsmark.c
-+++ b/net/sched/sch_dsmark.c
-@@ -372,10 +372,10 @@ static int dsmark_init(struct Qdisc *sch, struct nlattr *opt)
- 	}
- 
- 	p->mask = mask;
--	memset(p->mask, 0xff, indices);
-+	(void)memset(p->mask, 0xff, indices);
- 
- 	p->value = p->mask + indices;
--	memset(p->value, 0, indices);
-+	(void)memset(p->value, 0, indices);
- 
- 	p->indices = indices;
- 	p->default_index = default_index;
-diff --git a/net/sched/sch_htb.c b/net/sched/sch_htb.c
-index 29b942c..7d89564 100644
---- a/net/sched/sch_htb.c
-+++ b/net/sched/sch_htb.c
-@@ -330,7 +330,7 @@ static inline void htb_add_class_to_row(struct htb_sched *q,
- static void htb_safe_rb_erase(struct rb_node *rb, struct rb_root *root)
- {
- 	if (RB_EMPTY_NODE(rb)) {
--		WARN_ON(1);
-+		(void)WARN_ON(1);
- 	} else {
- 		rb_erase(rb, root);
- 		RB_CLEAR_NODE(rb);
-@@ -521,7 +521,7 @@ htb_change_class_mode(struct htb_sched *q, struct htb_class *cl, long *diff)
-  */
- static inline void htb_activate(struct htb_sched *q, struct htb_class *cl)
- {
--	WARN_ON(cl->level || !cl->un.leaf.q || !cl->un.leaf.q->q.qlen);
-+	(void)WARN_ON(cl->level || !cl->un.leaf.q || !cl->un.leaf.q->q.qlen);
- 
- 	if (!cl->prio_activity) {
- 		cl->prio_activity = 1 << cl->prio;
-@@ -539,7 +539,7 @@ static inline void htb_activate(struct htb_sched *q, struct htb_class *cl)
-  */
- static inline void htb_deactivate(struct htb_sched *q, struct htb_class *cl)
- {
--	WARN_ON(!cl->prio_activity);
-+	(void)WARN_ON(!cl->prio_activity);
- 
- 	htb_deactivate_prios(q, cl);
- 	cl->prio_activity = 0;
-@@ -763,7 +763,7 @@ static struct htb_class *htb_lookup_leaf(struct rb_root *tree, int prio,
- 			if (sp > stk) {
- 				sp--;
- 				if (!*sp->pptr) {
--					WARN_ON(1);
-+					(void)WARN_ON(1);
- 					return NULL;
- 				}
- 				htb_next_rb_node(sp->pptr);
-@@ -778,7 +778,7 @@ static struct htb_class *htb_lookup_leaf(struct rb_root *tree, int prio,
- 			sp->pid = cl->un.inner.last_ptr_id + prio;
- 		}
- 	}
--	WARN_ON(1);
-+	(void)WARN_ON(1);
- 	return NULL;
- }
- 
-@@ -949,7 +949,7 @@ static void htb_reset(struct Qdisc *sch)
- 	for (i = 0; i < q->clhash.hashsize; i++) {
- 		hlist_for_each_entry(cl, n, &q->clhash.hash[i], common.hnode) {
- 			if (cl->level)
--				memset(&cl->un.inner, 0, sizeof(cl->un.inner));
-+				(void)memset(&cl->un.inner, 0, sizeof(cl->un.inner));
- 			else {
- 				if (cl->un.leaf.q)
- 					qdisc_reset(cl->un.leaf.q);
-@@ -963,10 +963,10 @@ static void htb_reset(struct Qdisc *sch)
- 	qdisc_watchdog_cancel(&q->watchdog);
- 	__skb_queue_purge(&q->direct_queue);
- 	sch->q.qlen = 0;
--	memset(q->row, 0, sizeof(q->row));
--	memset(q->row_mask, 0, sizeof(q->row_mask));
--	memset(q->wait_pq, 0, sizeof(q->wait_pq));
--	memset(q->ptr, 0, sizeof(q->ptr));
-+	(void)memset(q->row, 0, sizeof(q->row));
-+	(void)memset(q->row_mask, 0, sizeof(q->row_mask));
-+	(void)memset(q->wait_pq, 0, sizeof(q->wait_pq));
-+	(void)memset(q->ptr, 0, sizeof(q->ptr));
- 	for (i = 0; i < TC_HTB_NUMPRIO; i++)
- 		INIT_LIST_HEAD(q->drops + i);
- }
-@@ -1081,7 +1081,7 @@ static int htb_dump_class(struct Qdisc *sch, unsigned long arg,
- 	if (nest == NULL)
- 		goto nla_put_failure;
- 
--	memset(&opt, 0, sizeof(opt));
-+	(void)memset(&opt, 0, sizeof(opt));
- 
- 	opt.rate = cl->rate->rate;
- 	opt.buffer = cl->buffer;
-@@ -1181,13 +1181,13 @@ static void htb_parent_to_leaf(struct htb_sched *q, struct htb_class *cl,
- {
- 	struct htb_class *parent = cl->parent;
- 
--	WARN_ON(cl->level || !cl->un.leaf.q || cl->prio_activity);
-+	(void)WARN_ON(cl->level || !cl->un.leaf.q || cl->prio_activity);
- 
- 	if (parent->cmode != HTB_CAN_SEND)
- 		htb_safe_rb_erase(&parent->pq_node, q->wait_pq + parent->level);
- 
- 	parent->level = 0;
--	memset(&parent->un.inner, 0, sizeof(parent->un.inner));
-+	(void)memset(&parent->un.inner, 0, sizeof(parent->un.inner));
- 	INIT_LIST_HEAD(&parent->un.leaf.drop_list);
- 	parent->un.leaf.q = new_q ? new_q : &noop_qdisc;
- 	parent->tokens = parent->buffer;
-@@ -1199,7 +1199,7 @@ static void htb_parent_to_leaf(struct htb_sched *q, struct htb_class *cl,
- static void htb_destroy_class(struct Qdisc *sch, struct htb_class *cl)
- {
- 	if (!cl->level) {
--		WARN_ON(!cl->un.leaf.q);
-+		(void)WARN_ON(!cl->un.leaf.q);
- 		qdisc_destroy(cl->un.leaf.q);
- 	}
- 	gen_kill_estimator(&cl->bstats, &cl->rate_est);
-@@ -1405,7 +1405,7 @@ static int htb_change_class(struct Qdisc *sch, u32 classid,
- 			}
- 			parent->level = (parent->parent ? parent->parent->level
- 					 : TC_HTB_MAXDEPTH) - 1;
--			memset(&parent->un.inner, 0, sizeof(parent->un.inner));
-+			(void)memset(&parent->un.inner, 0, sizeof(parent->un.inner));
- 		}
- 		/* leaf (we) needs elementary qdisc */
- 		cl->un.leaf.q = new_q ? new_q : &noop_qdisc;
 diff --git a/net/sched/sch_tbf.c b/net/sched/sch_tbf.c
 index 1dcfb52..0959ba4 100644
 --- a/net/sched/sch_tbf.c
@@ -12482,100 +10321,6 @@ index 5daf6cc..6bb06db 100644
  	iov->iov_len += pad;
  	snd_buf->len += pad;
  
-diff --git a/net/sunrpc/auth_gss/svcauth_gss.c b/net/sunrpc/auth_gss/svcauth_gss.c
-index 8d0f7d3..0dca63e 100644
---- a/net/sunrpc/auth_gss/svcauth_gss.c
-+++ b/net/sunrpc/auth_gss/svcauth_gss.c
-@@ -198,7 +198,7 @@ static int rsi_parse(struct cache_detail *cd,
- 	time_t expiry;
- 	int status = -EINVAL;
- 
--	memset(&rsii, 0, sizeof(rsii));
-+	(void)memset(&rsii, 0, sizeof(rsii));
- 	/* handle */
- 	len = qword_get(&mesg, buf, mlen);
- 	if (len < 0)
-@@ -400,7 +400,7 @@ update_rsc(struct cache_head *cnew, struct cache_head *ctmp)
- 
- 	new->mechctx = tmp->mechctx;
- 	tmp->mechctx = NULL;
--	memset(&new->seqdata, 0, sizeof(new->seqdata));
-+	(void)memset(&new->seqdata, 0, sizeof(new->seqdata));
- 	spin_lock_init(&new->seqdata.sd_lock);
- 	new->cred = tmp->cred;
- 	tmp->cred.cr_group_info = NULL;
-@@ -429,7 +429,7 @@ static int rsc_parse(struct cache_detail *cd,
- 	int status = -EINVAL;
- 	struct gss_api_mech *gm = NULL;
- 
--	memset(&rsci, 0, sizeof(rsci));
-+	(void)memset(&rsci, 0, sizeof(rsci));
- 	/* context handle */
- 	len = qword_get(&mesg, buf, mlen);
- 	if (len < 0) goto out;
-@@ -563,7 +563,7 @@ gss_svc_searchbyctx(struct xdr_netobj *handle)
- 	struct rsc rsci;
- 	struct rsc *found;
- 
--	memset(&rsci, 0, sizeof(rsci));
-+	(void)memset(&rsci, 0, sizeof(rsci));
- 	if (dup_to_netobj(&rsci.handle, handle->data, handle->len))
- 		return NULL;
- 	found = rsc_lookup(&rsci);
-@@ -584,7 +584,7 @@ gss_check_seq_num(struct rsc *rsci, int seq_num)
- 	spin_lock(&sd->sd_lock);
- 	if (seq_num > sd->sd_max) {
- 		if (seq_num >= sd->sd_max + GSS_SEQ_WIN) {
--			memset(sd->sd_win,0,sizeof(sd->sd_win));
-+			(void)memset(sd->sd_win,0,sizeof(sd->sd_win));
- 			sd->sd_max = seq_num;
- 		} else while (sd->sd_max < seq_num) {
- 			sd->sd_max++;
-@@ -641,7 +641,7 @@ svc_safe_putnetobj(struct kvec *resv, struct xdr_netobj *o)
- 	if (resv->iov_len > PAGE_SIZE)
- 		return -1;
- 	memcpy(p, o->data, o->len);
--	memset(p + o->len, 0, round_up_to_quad(o->len) - o->len);
-+	(void)memset(p + o->len, 0, round_up_to_quad(o->len) - o->len);
- 	return 0;
- }
- 
-@@ -732,7 +732,7 @@ gss_write_verf(struct svc_rqst *rqstp, struct gss_ctx *ctx_id, u32 seq)
- 	if (maj_stat != GSS_S_COMPLETE)
- 		return -1;
- 	*p++ = htonl(mic.len);
--	memset((u8 *)p + mic.len, 0, round_up_to_quad(mic.len) - mic.len);
-+	(void)memset((u8 *)p + mic.len, 0, round_up_to_quad(mic.len) - mic.len);
- 	p += XDR_QUADLEN(mic.len);
- 	if (!xdr_ressize_check(rqstp, p))
- 		return -1;
-@@ -1014,7 +1014,7 @@ static int svcauth_gss_handle_init(struct svc_rqst *rqstp,
- 	*authp = rpc_autherr_badcred;
- 	if (gc->gc_proc == RPC_GSS_PROC_INIT && gc->gc_ctx.len != 0)
- 		return SVC_DENIED;
--	memset(&rsikey, 0, sizeof(rsikey));
-+	(void)memset(&rsikey, 0, sizeof(rsikey));
- 	if (dup_netobj(&rsikey.in_handle, &gc->gc_ctx))
- 		return SVC_CLOSE;
- 	*authp = rpc_autherr_badverf;
-@@ -1278,7 +1278,7 @@ svcauth_gss_wrap_resp_integ(struct svc_rqst *rqstp)
- 	if (gss_get_mic(gsd->rsci->mechctx, &integ_buf, &mic))
- 		goto out_err;
- 	svc_putnl(resv, mic.len);
--	memset(mic.data + mic.len, 0,
-+	(void)memset(mic.data + mic.len, 0,
- 			round_up_to_quad(mic.len) - mic.len);
- 	resv->iov_len += XDR_QUADLEN(mic.len) << 2;
- 	/* not strictly required: */
-@@ -1349,7 +1349,7 @@ svcauth_gss_wrap_resp_priv(struct svc_rqst *rqstp)
- 	*len = htonl(resbuf->len - offset);
- 	pad = 3 - ((resbuf->len - offset - 1)&3);
- 	p = (__be32 *)(resbuf->tail[0].iov_base + resbuf->tail[0].iov_len);
--	memset(p, 0, pad);
-+	(void)memset(p, 0, pad);
- 	resbuf->tail[0].iov_len += pad;
- 	resbuf->len += pad;
- 	return 0;
 diff --git a/net/wireless/chan.c b/net/wireless/chan.c
 index 17cd0c0..92dec79 100644
 --- a/net/wireless/chan.c
@@ -12692,19 +10437,6 @@ index a570ff9..41f9038 100644
  }
  
  
-diff --git a/net/wireless/ethtool.c b/net/wireless/ethtool.c
-index 9bde4d1..c8be1ee 100644
---- a/net/wireless/ethtool.c
-+++ b/net/wireless/ethtool.c
-@@ -44,7 +44,7 @@ static void cfg80211_get_ringparam(struct net_device *dev,
- 	struct wireless_dev *wdev = dev->ieee80211_ptr;
- 	struct cfg80211_registered_device *rdev = wiphy_to_dev(wdev->wiphy);
- 
--	memset(rp, 0, sizeof(*rp));
-+	(void)memset(rp, 0, sizeof(*rp));
- 
- 	if (rdev->ops->get_ringparam)
- 		rdev->ops->get_ringparam(wdev->wiphy,
 diff --git a/net/wireless/ibss.c b/net/wireless/ibss.c
 index f33fbb7..92f03bc 100644
 --- a/net/wireless/ibss.c
@@ -13453,19 +11185,6 @@ index f7f9d93..3676dff 100644
  		}
  	}
  
-diff --git a/security/keys/request_key.c b/security/keys/request_key.c
-index 8246532..1bd2d50 100644
---- a/security/keys/request_key.c
-+++ b/security/keys/request_key.c
-@@ -252,7 +252,7 @@ static int construct_key(struct key *key, const void *callout_info,
- 
- 		/* check that the actor called complete_request_key() prior to
- 		 * returning an error */
--		WARN_ON(ret < 0 &&
-+		(void)WARN_ON(ret < 0 &&
- 			!test_bit(KEY_FLAG_REVOKED, &authkey->flags));
- 		key_put(authkey);
- 	}
 diff --git a/sound/core/control.c b/sound/core/control.c
 index f8c5be4..76ac536 100644
 --- a/sound/core/control.c
@@ -13519,28 +11238,6 @@ index a70ee7f..996fe85 100644
  	if (copy_from_user(&info, _info, sizeof(info)))
  		return -EFAULT;
  	/* check whether the dsp was already loaded */
-diff --git a/sound/core/jack.c b/sound/core/jack.c
-index 80453a9..386dd32 100644
---- a/sound/core/jack.c
-+++ b/sound/core/jack.c
-@@ -161,7 +161,7 @@ EXPORT_SYMBOL(snd_jack_new);
-  */
- void snd_jack_set_parent(struct snd_jack *jack, struct device *parent)
- {
--	WARN_ON(jack->registered);
-+	(void)WARN_ON(jack->registered);
- 
- 	jack->input_dev->dev.parent = parent;
- }
-@@ -192,7 +192,7 @@ int snd_jack_set_key(struct snd_jack *jack, enum snd_jack_types type,
- {
- 	int key = fls(SND_JACK_BTN_0) - fls(type);
- 
--	WARN_ON(jack->registered);
-+	(void)WARN_ON(jack->registered);
- 
- 	if (!keytype || key >= ARRAY_SIZE(jack->key))
- 		return -EINVAL;
 diff --git a/sound/core/rawmidi.c b/sound/core/rawmidi.c
 index cbbed0d..07f147c 100644
 --- a/sound/core/rawmidi.c
@@ -13711,19 +11408,6 @@ index 219ae10..e54a5ca 100644
  		regbuf[regsize] = '\0';
  	} else {
  		snprintf(regbuf, regsize + 1, "%.*x", regsize, ret);
-diff --git a/sound/usb/clock.c b/sound/usb/clock.c
-index 075195e..05a9d37 100644
---- a/sound/usb/clock.c
-+++ b/sound/usb/clock.c
-@@ -197,7 +197,7 @@ static int __uac_clock_find_source(struct snd_usb_audio *chip,
- int snd_usb_clock_find_source(struct snd_usb_audio *chip, int entity_id)
- {
- 	DECLARE_BITMAP(visited, 256);
--	memset(visited, 0, sizeof(visited));
-+	(void)memset(visited, 0, sizeof(visited));
- 	return __uac_clock_find_source(chip, entity_id, visited);
- }
- 
 diff --git a/sound/usb/midi.c b/sound/usb/midi.c
 index f928910..275144b 100644
 --- a/sound/usb/midi.c
@@ -13790,3 +11474,4 @@ index e184349..fbd3cfc 100644
  	       runtime->format == SNDRV_PCM_FORMAT_U8 ? 0x80 : 0,
  	       offs * stride);
  	return 0;
+

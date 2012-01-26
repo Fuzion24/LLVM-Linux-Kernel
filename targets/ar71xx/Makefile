@@ -21,12 +21,12 @@
 ##############################################################################
 
 CWD=${CURDIR}
-KERNEL_CFG=${CWD}/config_msm
-MSM_BRANCH="kernel-3.0"
-KERNEL_GIT="git://codeaurora.org/kernel/msm.git -b ${MSM_BRANCH}"
-KERNELDIR=${SRCDIR}/msm
-PATCH_FILES=${CWD}/msm-3.0-llvm.patch ${CWD}/msm-3.0-llvm-arm.patch 
-#	${CWD}/fix-warnings.patch ${CWD}/fix-warnings-arm.patch 
+KERNEL_CFG=${CWD}/config_ar7
+KERNEL_GIT=git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+KERNELDIR=${SRCDIR}/linux
 
 include ../../common/common.mk
-include ../../common/arm/common-arm.mk
+include ../../common/common-tip.mk
+include ../../common/mips/common-mips.mk
+include ../../common/mips/common-mips-tip.mk
+

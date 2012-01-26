@@ -457,19 +457,6 @@ index 053863a..3ee4490 100644
  	.probe		 = smc911x_drv_probe,
  	.remove	 = __devexit_p(smc911x_drv_remove),
  	.suspend	 = smc911x_drv_suspend,
-diff --git a/drivers/net/smc91x.c b/drivers/net/smc91x.c
-index f628574..33f1e36 100644
---- a/drivers/net/smc91x.c
-+++ b/drivers/net/smc91x.c
-@@ -2411,7 +2411,7 @@ static struct dev_pm_ops smc_drv_pm_ops = {
- 	.resume		= smc_drv_resume,
- };
- 
--static struct platform_driver smc_driver = {
-+static struct platform_driver smc_driver __refdata = {
- 	.probe		= smc_drv_probe,
- 	.remove		= __devexit_p(smc_drv_remove),
- 	.driver		= {
 diff --git a/drivers/net/smsc911x.c b/drivers/net/smsc911x.c
 index a3c32b9..07ed9b4 100644
 --- a/drivers/net/smsc911x.c
@@ -639,19 +626,6 @@ index c174306..ee6c97c 100644
  	.driver = {
  		.name =		"spidev",
  		.owner =	THIS_MODULE,
-diff --git a/drivers/thermal/msm8960_tsens.c b/drivers/thermal/msm8960_tsens.c
-index 0accb32..4fb3138 100644
---- a/drivers/thermal/msm8960_tsens.c
-+++ b/drivers/thermal/msm8960_tsens.c
-@@ -829,7 +829,7 @@ static int __devexit tsens_tm_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
--static struct platform_driver tsens_tm_driver = {
-+static struct platform_driver tsens_tm_driver __refdata = {
- 	.probe	= tsens_tm_probe,
- 	.remove	= __devexit_p(tsens_tm_remove),
- 	.driver	= {
 diff --git a/drivers/thermal/msm_tsens.c b/drivers/thermal/msm_tsens.c
 index d9a6efc..51f1d07 100644
 --- a/drivers/thermal/msm_tsens.c

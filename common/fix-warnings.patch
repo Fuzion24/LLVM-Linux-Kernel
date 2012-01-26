@@ -24,6 +24,21 @@ index 9ae0240..b7a84e4 100644
  	.name		= "ttyAMA",
  	.write		= pl011_console_write,
  	.device		= uart_console_device,
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 17b27cd..008069d 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -333,7 +333,8 @@ static inline void compound_unlock(struct page *page)
+ 
+ static inline unsigned long compound_lock_irqsave(struct page *page)
+ {
+-	unsigned long uninitialized_var(flags);
++	// FIXME - initialized to get rid of compilation warning from clang
++	unsigned long flags = 0;
+ #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+ 	local_irq_save(flags);
+ 	compound_lock(page);
+
 diff --git a/net/sunrpc/xprtsock.c b/net/sunrpc/xprtsock.c
 index 55472c4..c078dcc 100644
 --- a/net/sunrpc/xprtsock.c
@@ -64,17 +79,3 @@ index 55472c4..c078dcc 100644
  	xs_tcp_check_fraghdr(transport);
  }
  
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 17b27cd..008069d 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -333,7 +333,8 @@ static inline void compound_unlock(struct page *page)
- 
- static inline unsigned long compound_lock_irqsave(struct page *page)
- {
--	unsigned long uninitialized_var(flags);
-+	// FIXME - initialized to get rid of compilation warning from clang
-+	unsigned long flags = 0;
- #ifdef CONFIG_TRANSPARENT_HUGEPAGE
- 	local_irq_save(flags);
- 	compound_lock(page);
