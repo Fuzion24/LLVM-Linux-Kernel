@@ -557,15 +557,6 @@ index b37b702a..5181a7f 100644
  		udelay(1);
  	}
  }
-@@ -264,7 +264,7 @@ static void aaci_fifo_irq(struct aaci *aaci, int channel, u32 mask)
- 	}
- 
- 	if (mask & ISR_URINTR) {
--		dev_dbg(&aaci->dev->dev, "TX underrun on chan %d\n", channel);
-+		(void)dev_dbg(&aaci->dev->dev, "TX underrun on chan %d\n", channel);
- 		writel(ICLR_TXUEC1 << channel, aaci->base + AACI_INTCLR);
- 	}
- 
 @@ -461,7 +461,7 @@ static int aaci_pcm_close(struct snd_pcm_substream *substream)
  	struct aaci *aaci = substream->private_data;
  	struct aaci_runtime *aacirun = substream->runtime->private_data;
@@ -611,6 +602,7 @@ index b37b702a..5181a7f 100644
  	ret = aaci_probe_ac97(aaci);
  	if (ret)
  		goto out;diff --git a/arch/arm/mm/mmu.c b/arch/arm/mm/mmu.c
+diff --git a/arch/arm/mm/mmu.c b/arch/arm/mm/mmu.c
 index 94c5a0c..a83e089 100644
 --- a/arch/arm/mm/mmu.c
 +++ b/arch/arm/mm/mmu.c
