@@ -60,13 +60,13 @@ kernel-test-patch: state/kernel-fetch
 
 kernel-test-filter: ${FILTERFILE}
 	@echo "Testing filtered patch: see ${FILTERFILE}"
-	@rm -f ${CWD}/filtertest.log
+	@rm -f ${CWD}/testfilter.log
 	@rm -f ${CWD}/patch.unfiltered-test
 	@rm -f ${CWD}/patch.filtered-test
 	@for patch in ${PATCH_FILES}; do cat $$patch >> ${CWD}/patch.unfiltered-test; done
 	@${TOOLSDIR}/tidy.py ${CWD}/patch.unfiltered-test
 	@${TOOLSDIR}/applyfilter.py ${CWD}/patch.unfiltered-test ${CWD}/patch.filtered-test ${FILTERFILE}
-	(cd ${KERNELDIR} && patch -p1 < ${CWD}/patch.filtered-test >> ${CWD}/filtertest.log)
+	(cd ${KERNELDIR} && patch -p1 < ${CWD}/patch.filtered-test >> ${CWD}/testfilter.log)
 
 kernel-patch: state/kernel-patch
 state/kernel-patch: ${FILTERFILE}
@@ -77,16 +77,13 @@ state/kernel-patch: ${FILTERFILE}
 	@for patch in ${PATCH_FILES}; do cat $$patch >> ${CWD}/patch.unfiltered; done
 	@${TOOLSDIR}/tidy.py ${CWD}/patch.unfiltered
 	@${TOOLSDIR}/applyfilter.py ${CWD}/patch.unfiltered ${CWD}/patch.filtered ${FILTERFILE}
-	(cd ${KERNELDIR} && patch -p1 < ${CWD}/patch.filtered >> ${CWD}/patch.log)
+	(cd ${KERNELDIR} && patch -p1 < ${CWD}/patch.filtered > ${CWD}/patch.log)
 	@mkdir -p state
 	@touch $@
 
 kernel-prepare: 
+	
 	(cd ${KERNELDIR} && git status | grep "modified:" | cut -d":" -f 2 | xargs git checkout)
-	@rm -f ${CWD}/testpatch.log
-	@rm -f ${CWD}/filtertest.log
-	@rm -f ${CWD}/patch.unfiltered-test
-	@rm -f ${CWD}/patch.filtered-test
 	@rm -f ${CWD}/state/kernel-patch
 	@rm -f ${CWD}/state/kernel-configure
 	@rm -f ${CWD}/state/kernel-build
@@ -95,10 +92,15 @@ kernel-prepare:
 kernel-clean: 
 	make kernel-prepare
 	@rm -f ${FILTERFILE}
-	@rm -f ${CWD}/filtertest.log
-	@rm -f ${CWD}/patch.unfiltered
+	@rm -f ${FILTERFILE}-1
+	@rm -f ${CWD}/testpatch.log
+	@rm -f ${CWD}/testfilter.log
+	@rm -f ${CWD}/patch.unfiltered-test
+	@rm -f ${CWD}/patch.filtered-test
 	@rm -f ${CWD}/patch.filtered
+	@rm -f ${CWD}/patch.unfiltered
 	@rm -f ${CWD}/patch.log
+	@rm -f ${CWD}/build.log
 
 kernel-configure: state/kernel-configure
 state/kernel-configure: state/kernel-patch
@@ -122,9 +124,9 @@ gen-patch: ${FILTERFILE}
 ${FILTERFILE}: state/kernel-fetch
 	make kernel-prepare
 	make -i kernel-test-patch
-	@${TOOLSDIR}/genfilter.py ${CWD}/testpatch.log ${KERNELDIR} > $@
+	@${TOOLSDIR}/genfilter.py ${CWD}/testpatch.log ${KERNELDIR} > ${FILTERFILE}
 	make kernel-prepare
 	make -i kernel-test-filter
-	@${TOOLSDIR}/genfilter.py ${CWD}/filtertest.log ${KERNELDIR} > ${FILTERFILE}-1
+	@${TOOLSDIR}/genfilter.py ${CWD}/testfilter.log ${KERNELDIR} > ${FILTERFILE}-1
 	@cat ${FILTERFILE}-1 >> ${FILTERFILE}
 	make kernel-prepare
