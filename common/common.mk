@@ -84,7 +84,6 @@ state/kernel-patch: ${FILTERFILE}
 kernel-prepare: 
 	(cd ${KERNELDIR} && git status | grep "modified:" | cut -d":" -f 2 | xargs git checkout)
 	@rm -f ${CWD}/testpatch.log
-	@rm -f ${CWD}/filtertest.log
 	@rm -f ${CWD}/patch.unfiltered-test
 	@rm -f ${CWD}/patch.filtered-test
 	@rm -f ${CWD}/state/kernel-patch

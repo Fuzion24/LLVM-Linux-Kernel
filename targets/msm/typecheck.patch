@@ -1,0 +1,51 @@
+diff --git a/include/linux/rwlock.h b/include/linux/rwlock.h
+index bc2994e..970f1a8 100644
+--- a/include/linux/rwlock.h
++++ b/include/linux/rwlock.h
+@@ -68,12 +68,12 @@ do {								\
+ 
+ #define read_lock_irqsave(lock, flags)			\
+ 	do {						\
+-		typecheck(unsigned long, flags);	\
++		(void)typecheck(unsigned long, flags);	\
+ 		flags = _raw_read_lock_irqsave(lock);	\
+ 	} while (0)
+ #define write_lock_irqsave(lock, flags)			\
+ 	do {						\
+-		typecheck(unsigned long, flags);	\
++		(void)typecheck(unsigned long, flags);	\
+ 		flags = _raw_write_lock_irqsave(lock);	\
+ 	} while (0)
+ 
+@@ -81,12 +81,12 @@ do {								\
+ 
+ #define read_lock_irqsave(lock, flags)			\
+ 	do {						\
+-		typecheck(unsigned long, flags);	\
++		(void)typecheck(unsigned long, flags);	\
+ 		_raw_read_lock_irqsave(lock, flags);	\
+ 	} while (0)
+ #define write_lock_irqsave(lock, flags)			\
+ 	do {						\
+-		typecheck(unsigned long, flags);	\
++		(void)typecheck(unsigned long, flags);	\
+ 		_raw_write_lock_irqsave(lock, flags);	\
+ 	} while (0)
+ 
+@@ -103,14 +103,14 @@ do {								\
+ 
+ #define read_unlock_irqrestore(lock, flags)			\
+ 	do {							\
+-		typecheck(unsigned long, flags);		\
++		(void)typecheck(unsigned long, flags);		\
+ 		_raw_read_unlock_irqrestore(lock, flags);	\
+ 	} while (0)
+ #define read_unlock_bh(lock)		_raw_read_unlock_bh(lock)
+ 
+ #define write_unlock_irqrestore(lock, flags)		\
+ 	do {						\
+-		typecheck(unsigned long, flags);	\
++		(void)typecheck(unsigned long, flags);	\
+ 		_raw_write_unlock_irqrestore(lock, flags);	\
+ 	} while (0)
+ #define write_unlock_bh(lock)		_raw_write_unlock_bh(lock)

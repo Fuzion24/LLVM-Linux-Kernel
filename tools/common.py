@@ -64,7 +64,8 @@ class Patch:
 
 	def drophunks(self, hunks):
 		for h in hunks:
-			del self.hunkinfo[h]
+			if h in self.hunkinfo:
+				del self.hunkinfo[h]
 			
 class RejectedPatch(Patch):
 	def __init__(self, patchdata):
@@ -97,7 +98,8 @@ class PatchDict:
 			self.patch[fn] = patch
 		
 	def __delitem__(self, item):
-		del self.patch[item]
+		if item in self.patch:
+			del self.patch[item]
 
 	def write(self, outfile):
 		plist = sorted(self.patch)

@@ -1,0 +1,95 @@
+diff --git a/include/linux/signal.h b/include/linux/signal.h
+index 84f997f..d7220fd 100644
+--- a/include/linux/signal.h
++++ b/include/linux/signal.h
+@@ -73,9 +73,6 @@ static inline int sigisemptyset(sigset_t *set)
+ {
+ 	extern void _NSIG_WORDS_is_unsupported_size(void);
+ 	switch (_NSIG_WORDS) {
+-	case 4:
+-		return (set->sig[3] | set->sig[2] |
+-			set->sig[1] | set->sig[0]) == 0;
+ 	case 2:
+ 		return (set->sig[1] | set->sig[0]) == 0;
+ 	case 1:
+@@ -98,11 +95,6 @@ static inline void name(sigset_t *r, const sigset_t *a, const sigset_t *b) \
+ 	unsigned long a0, a1, a2, a3, b0, b1, b2, b3;			\
+ 									\
+ 	switch (_NSIG_WORDS) {						\
+-	    case 4:							\
+-		a3 = a->sig[3]; a2 = a->sig[2];				\
+-		b3 = b->sig[3]; b2 = b->sig[2];				\
+-		r->sig[3] = op(a3, b3);					\
+-		r->sig[2] = op(a2, b2);					\
+ 	    case 2:							\
+ 		a1 = a->sig[1]; b1 = b->sig[1];				\
+ 		r->sig[1] = op(a1, b1);					\
+@@ -135,8 +127,6 @@ static inline void name(sigset_t *set)					\
+ 	extern void _NSIG_WORDS_is_unsupported_size(void);		\
+ 									\
+ 	switch (_NSIG_WORDS) {						\
+-	    case 4: set->sig[3] = op(set->sig[3]);			\
+-		    set->sig[2] = op(set->sig[2]);			\
+ 	    case 2: set->sig[1] = op(set->sig[1]);			\
+ 	    case 1: set->sig[0] = op(set->sig[0]);			\
+ 		    break;						\
+@@ -155,9 +145,11 @@ static inline void sigemptyset(sigset_t *set)
+ {
+ 	switch (_NSIG_WORDS) {
+ 	default:
+-		memset(set, 0, sizeof(sigset_t));
++		(void)memset(set, 0, sizeof(sigset_t));
+ 		break;
++#if _NSIG_WORDS>1
+ 	case 2: set->sig[1] = 0;
++#endif
+ 	case 1:	set->sig[0] = 0;
+ 		break;
+ 	}
+@@ -167,9 +159,11 @@ static inline void sigfillset(sigset_t *set)
+ {
+ 	switch (_NSIG_WORDS) {
+ 	default:
+-		memset(set, -1, sizeof(sigset_t));
++		(void)memset(set, -1, sizeof(sigset_t));
+ 		break;
++#if _NSIG_WORDS>1
+ 	case 2: set->sig[1] = -1;
++#endif
+ 	case 1:	set->sig[0] = -1;
+ 		break;
+ 	}
+@@ -197,7 +191,7 @@ static inline void siginitset(sigset_t *set, unsigned long mask)
+ 	set->sig[0] = mask;
+ 	switch (_NSIG_WORDS) {
+ 	default:
+-		memset(&set->sig[1], 0, sizeof(long)*(_NSIG_WORDS-1));
++		(void)memset(&set->sig[1], 0, sizeof(long)*(_NSIG_WORDS-1));
+ 		break;
+ 	case 2: set->sig[1] = 0;
+ 	case 1: ;
+@@ -209,9 +203,11 @@ static inline void siginitsetinv(sigset_t *set, unsigned long mask)
+ 	set->sig[0] = ~mask;
+ 	switch (_NSIG_WORDS) {
+ 	default:
+-		memset(&set->sig[1], -1, sizeof(long)*(_NSIG_WORDS-1));
++		(void)memset(&set->sig[1], -1, sizeof(long)*(_NSIG_WORDS-1));
+ 		break;
++#if _NSIG_WORDS>1
+ 	case 2: set->sig[1] = -1;
++#endif
+ 	case 1: ;
+ 	}
+ }
+diff --git a/Makefile b/Makefile
+index d6e3169..1ab3ebf 100644
+--- a/Makefile
++++ b/Makefile
+@@ -346,7 +346,6 @@ KBUILD_CPPFLAGS := -D__KERNEL__
+ 
+ KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
+ 		   -fno-strict-aliasing -fno-common \
+-		   -Werror \
+ 		   -Werror-implicit-function-declaration
+ KBUILD_AFLAGS   := -D__ASSEMBLY__
+ 
