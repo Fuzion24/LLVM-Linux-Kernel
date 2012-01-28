@@ -37,6 +37,46 @@ index bc90867..7136055 100644
  		res = check_part[i++](state);
  		if (res < 0) {
  			/* We have hit an I/O error which we don't report now.
+diff --git a/drivers/base/power/clock_ops.c b/drivers/base/power/clock_ops.c
+index 428e55e..d1faa07 100644
+--- a/drivers/base/power/clock_ops.c
++++ b/drivers/base/power/clock_ops.c
+@@ -43,7 +43,7 @@ static void pm_clk_acquire(struct device *dev, struct pm_clock_entry *ce)
+ 		ce->status = PCE_STATUS_ERROR;
+ 	} else {
+ 		ce->status = PCE_STATUS_ACQUIRED;
+-		dev_dbg(dev, "Clock %s managed by runtime PM.\n", ce->con_id);
++		(void)dev_dbg(dev, "Clock %s managed by runtime PM.\n", ce->con_id);
+ 	}
+ }
+ 
+@@ -341,7 +341,7 @@ int pm_clk_suspend(struct device *dev)
+ 	struct pm_clock_entry *ce;
+ 	unsigned long flags;
+ 
+-	dev_dbg(dev, "%s()\n", __func__);
++	(void)dev_dbg(dev, "%s()\n", __func__);
+ 
+ 	/* If there is no driver, the clocks are already disabled. */
+ 	if (!psd || !dev->driver)
+@@ -367,7 +367,7 @@ int pm_clk_resume(struct device *dev)
+ 	struct pm_clock_entry *ce;
+ 	unsigned long flags;
+ 
+-	dev_dbg(dev, "%s()\n", __func__);
++	(void)dev_dbg(dev, "%s()\n", __func__);
+ 
+ 	/* If there is no driver, the clocks should remain disabled. */
+ 	if (!psd || !dev->driver)
+@@ -437,7 +437,7 @@ static int pm_clk_notify(struct notifier_block *nb,
+ 	struct device *dev = data;
+ 	char **con_id;
+ 
+-	dev_dbg(dev, "%s() %ld\n", __func__, action);
++	(void)dev_dbg(dev, "%s() %ld\n", __func__, action);
+ 
+ 	clknb = container_of(nb, struct pm_clk_notifier_block, nb);
+ 
 diff --git a/drivers/base/power/qos.c b/drivers/base/power/qos.c
 index c5d3588..a0ce7d9 100644
 --- a/drivers/base/power/qos.c
@@ -1003,6 +1043,61 @@ index 115dee1..26282bb 100644
  	     "gso_type=%d ip_summed=%d\n",
  	     driver, dev ? &dev->features : &null_features,
  	     skb->sk ? &skb->sk->sk_route_caps : &null_features,
+@@ -5317,14 +5317,14 @@ static netdev_features_t netdev_fix_features(struct net_device *dev,
+ 	/* Fix illegal SG+CSUM combinations. */
+ 	if ((features & NETIF_F_SG) &&
+ 	    !(features & NETIF_F_ALL_CSUM)) {
+-		netdev_dbg(dev,
++		(void)netdev_dbg(dev,
+ 			"Dropping NETIF_F_SG since no checksum feature.\n");
+ 		features &= ~NETIF_F_SG;
+ 	}
+ 
+ 	/* TSO requires that SG is present as well. */
+ 	if ((features & NETIF_F_ALL_TSO) && !(features & NETIF_F_SG)) {
+-		netdev_dbg(dev, "Dropping TSO features since no SG feature.\n");
++		(void)netdev_dbg(dev, "Dropping TSO features since no SG feature.\n");
+ 		features &= ~NETIF_F_ALL_TSO;
+ 	}
+ 
+@@ -5334,7 +5334,7 @@ static netdev_features_t netdev_fix_features(struct net_device *dev,
+ 
+ 	/* Software GSO depends on SG. */
+ 	if ((features & NETIF_F_GSO) && !(features & NETIF_F_SG)) {
+-		netdev_dbg(dev, "Dropping NETIF_F_GSO since no SG feature.\n");
++		(void)netdev_dbg(dev, "Dropping NETIF_F_GSO since no SG feature.\n");
+ 		features &= ~NETIF_F_GSO;
+ 	}
+ 
+@@ -5344,13 +5344,13 @@ static netdev_features_t netdev_fix_features(struct net_device *dev,
+ 		if (!((features & NETIF_F_GEN_CSUM) ||
+ 		    (features & (NETIF_F_IP_CSUM|NETIF_F_IPV6_CSUM))
+ 			    == (NETIF_F_IP_CSUM|NETIF_F_IPV6_CSUM))) {
+-			netdev_dbg(dev,
++			(void)netdev_dbg(dev,
+ 				"Dropping NETIF_F_UFO since no checksum offload features.\n");
+ 			features &= ~NETIF_F_UFO;
+ 		}
+ 
+ 		if (!(features & NETIF_F_SG)) {
+-			netdev_dbg(dev,
++			(void)netdev_dbg(dev,
+ 				"Dropping NETIF_F_UFO since no NETIF_F_SG feature.\n");
+ 			features &= ~NETIF_F_UFO;
+ 		}
+@@ -5377,7 +5377,7 @@ int __netdev_update_features(struct net_device *dev)
+ 	if (dev->features == features)
+ 		return 0;
+ 
+-	netdev_dbg(dev, "Features changed: %pNF -> %pNF\n",
++	(void)netdev_dbg(dev, "Features changed: %pNF -> %pNF\n",
+ 		&dev->features, &features);
+ 
+ 	if (dev->netdev_ops->ndo_set_features)
+@@ -5821,15 +5821,15 @@ void netdev_run_todo(void)
+ 
+ 		dev->reg_state = NETREG_UNREGISTERED;
+ 
 -		on_each_cpu(flush_backlog, dev, 1);
 +		(void)on_each_cpu(flush_backlog, dev, 1);
  
