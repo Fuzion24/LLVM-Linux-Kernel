@@ -11,6 +11,20 @@ index 8407d5b..e60eaa9 100644
  	.drv		= {
  		.name	= "kmi-pl050",
  		.owner	= THIS_MODULE,
+diff --git a/drivers/net/ethernet/smsc/smc91x.c b/drivers/net/ethernet/smsc/smc91x.c
+index 64ad3ed..459835a 100644
+--- a/drivers/net/ethernet/smsc/smc91x.c
++++ b/drivers/net/ethernet/smsc/smc91x.c
+@@ -2406,7 +2406,7 @@ static struct dev_pm_ops smc_drv_pm_ops = {
+ 	.resume		= smc_drv_resume,
+ };
+ 
+-static struct platform_driver smc_driver = {
++static struct platform_driver smc_driver __refdata = {
+ 	.probe		= smc_drv_probe,
+ 	.remove		= __devexit_p(smc_drv_remove),
+ 	.driver		= {
+
 diff --git a/drivers/tty/serial/amba-pl011.c b/drivers/tty/serial/amba-pl011.c
 index 9ae0240..b7a84e4 100644
 --- a/drivers/tty/serial/amba-pl011.c

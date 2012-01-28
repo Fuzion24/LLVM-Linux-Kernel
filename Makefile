@@ -21,6 +21,17 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
+##############################################################################
+# The automation uses two passes to create a filter of the upstream patches
+# for those targets that are not synced to the tip. The filtered set of
+# patches are appied so it is easy to tell exactly what patches were made
+# and which did not apply.
+# The patches that do not apply are listed in state/kernel-filter:
+#   F - patch file
+#   M - File is missing from the current code base
+#   R - Rejected hunk(s) from a patch
+##############################################################################
+
 CWD=${CURDIR}
 SRCDIR:=${CWD}/src
 INSTALLDIR:=${CWD}/install

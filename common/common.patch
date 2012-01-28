@@ -12,6 +12,28 @@ index 9100912..5ec0ebd 100644
  }
  
  static int shash_update_unaligned(struct shash_desc *desc, const u8 *data,
+diff --git a/drivers/mmc/host/mmci.c b/drivers/mmc/host/mmci.c
+index 0d955ff..667ce16 100644
+--- a/drivers/mmc/host/mmci.c
++++ b/drivers/mmc/host/mmci.c
+@@ -1506,9 +1506,15 @@ static struct amba_id mmci_ids[] = {
+ 	{ 0, 0 },
+ };
+ 
+-MODULE_DEVICE_TABLE(amba, mmci_ids);
++// FIXME
++// MODULE_DEVICE_TABLE(amba, mmci_ids);
++// Which expands to:
++// extern const struct amba_device_id __mod_amba_device_table __attribute__ ((unused, __alias__("mmci_ids")));
++// causes the following error in LLVM:
++// ERROR: "__unnamed_1" [drivers/mmc/host/mmci.ko] undefined!
+ 
+-static struct amba_driver mmci_driver = {
++
++static struct amba_driver mmci_driver __refdata = {
+ 	.drv		= {
+ 		.name	= DRIVER_NAME,
+ 	},
 diff --git a/drivers/tty/serial/8250.c b/drivers/tty/serial/8250.c
 index 9f50c4e..cd41fb3 100644
 --- a/drivers/tty/serial/8250.c
@@ -51,4 +73,25 @@ index f0bd785..1b55992 100644
 +	if (1) {
  		int i = 0;
  
- #define CACHE(x) \
+ #define CACHE(x) \diff --git a/drivers/mmc/host/mmci.c b/drivers/mmc/host/mmci.c
+diff --git a/sound/arm/aaci.c b/sound/arm/aaci.c
+index b37b702a..c16beea 100644
+--- a/sound/arm/aaci.c
++++ b/sound/arm/aaci.c
+@@ -1097,9 +1097,14 @@ static struct amba_id aaci_ids[] = {
+ 	{ 0, 0 },
+ };
+ 
+-MODULE_DEVICE_TABLE(amba, aaci_ids);
++// FIXME
++// MODULE_DEVICE_TABLE(amba, aaci_ids);
++// Which expands to:
++// extern const struct amba_device_id __mod_amba_device_table __attribute__ ((unused, __alias__("aaci_ids")));
++// causes the following error in LLVM:
++// ERROR: "__unnamed_1" [sound/arm/snd-aaci.ko] undefined!
+ 
+-static struct amba_driver aaci_driver = {
++static struct amba_driver aaci_driver __refdata = {
+ 	.drv		= {
+ 		.name	= DRIVER_NAME,
+ 	},

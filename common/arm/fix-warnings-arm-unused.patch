@@ -103,6 +103,30 @@ index e1d5e19..6013d4a 100644
  }
  
  /*
+diff --git a/arch/arm/kernel/sched_clock.c b/arch/arm/kernel/sched_clock.c
+index 5416c7c..9bcb20e 100644
+--- a/arch/arm/kernel/sched_clock.c
++++ b/arch/arm/kernel/sched_clock.c
+@@ -104,8 +104,8 @@ void __init setup_sched_clock(u32 (*read)(void), int bits, unsigned long rate)
+ 	char r_unit;
+ 
+ 	BUG_ON(bits > 32);
+-	WARN_ON(!irqs_disabled());
+-	WARN_ON(read_sched_clock != jiffy_sched_clock_read);
++	(void)WARN_ON(!irqs_disabled());
++	(void)WARN_ON(read_sched_clock != jiffy_sched_clock_read);
+ 	read_sched_clock = read;
+ 	sched_clock_mask = (1 << bits) - 1;
+ 
+@@ -124,7 +124,7 @@ void __init setup_sched_clock(u32 (*read)(void), int bits, unsigned long rate)
+ 
+ 	/* calculate how many ns until we wrap */
+ 	wrap = cyc_to_ns((1ULL << bits) - 1, cd.mult, cd.shift);
+-	do_div(wrap, NSEC_PER_MSEC);
++	(void)do_div(wrap, NSEC_PER_MSEC);
+ 	w = wrap;
+ 
+ 	/* calculate the ns resolution of this counter */
 diff --git a/arch/arm/kernel/signal.c b/arch/arm/kernel/signal.c
 index 0340224..95ccd9a 100644
 --- a/arch/arm/kernel/signal.c
@@ -178,6 +202,25 @@ index 99a5727..27e780d 100644
  
  		for (p = first, i = 0; i < 8 && p < top; i++, p += 4) {
 
+@@ -388,15 +388,15 @@ asmlinkage void __exception do_undefinstr(struct pt_regs *regs)
+ #endif
+ 			instr = *(u32 *) pc;
+ 	} else if (thumb_mode(regs)) {
+-		get_user(instr, (u16 __user *)pc);
++		(void)get_user(instr, (u16 __user *)pc);
+ 		if (is_wide_instruction(instr)) {
+ 			unsigned int instr2;
+-			get_user(instr2, (u16 __user *)pc+1);
++			(void)get_user(instr2, (u16 __user *)pc+1);
+ 			instr <<= 16;
+ 			instr |= instr2;
+ 		}
+ 	} else {
+-		get_user(instr, (u32 __user *)pc);
++		(void)get_user(instr, (u32 __user *)pc);
+ 	}
+ 
+ 	if (call_undef_hook(regs, instr) == 0)
 diff --git a/arch/arm/mm/copypage-v6.c b/arch/arm/mm/copypage-v6.c
 index 3d9a155..18b900f 100644
 --- a/arch/arm/mm/copypage-v6.c
@@ -244,6 +287,19 @@ index 6ec1226..149f6d0 100644
  
  	/*
  	 * The memory size has already been determined.  If we need
+diff --git a/arch/arm/mm/mmu.c b/arch/arm/mm/mmu.c
+index 94c5a0c..a83e089 100644
+--- a/arch/arm/mm/mmu.c
++++ b/arch/arm/mm/mmu.c
+@@ -551,7 +551,7 @@ EXPORT_SYMBOL(phys_mem_access_prot);
+ static void __init *early_alloc_aligned(unsigned long sz, unsigned long align)
+ {
+ 	void *ptr = __va(memblock_alloc(sz, align));
+-	memset(ptr, 0, sz);
++	(void)memset(ptr, 0, sz);
+ 	return ptr;
+ }
+ 
 diff --git a/arch/arm/mm/pgd.c b/arch/arm/mm/pgd.c
 index a3e78cc..a5d9c27 100644
 --- a/arch/arm/mm/pgd.c
@@ -536,6 +592,20 @@ index b252631..90c2b05 100644
  		vsd.significand = significand;
  	}
  	if ((vsd.significand & 0x3f) == 0)
+diff --git a/kernel/irq/devres.c b/kernel/irq/devres.c
+index bd8e788..b126264 100644
+--- a/kernel/irq/devres.c
++++ b/kernel/irq/devres.c
+@@ -87,7 +87,7 @@ void devm_free_irq(struct device *dev, unsigned int irq, void *dev_id)
+ {
+ 	struct irq_devres match_data = { irq, dev_id };
+ 
+-	WARN_ON(devres_destroy(dev, devm_irq_release, devm_irq_match,
++	(void)WARN_ON(devres_destroy(dev, devm_irq_release, devm_irq_match,
+ 			       &match_data));
+ 	free_irq(irq, dev_id);
+ }
+
 diff --git a/sound/arm/aaci.c b/sound/arm/aaci.c
 index b37b702a..5181a7f 100644
 --- a/sound/arm/aaci.c
@@ -557,15 +627,6 @@ index b37b702a..5181a7f 100644
  		udelay(1);
  	}
  }
-@@ -264,7 +264,7 @@ static void aaci_fifo_irq(struct aaci *aaci, int channel, u32 mask)
- 	}
- 
- 	if (mask & ISR_URINTR) {
--		dev_dbg(&aaci->dev->dev, "TX underrun on chan %d\n", channel);
-+		(void)dev_dbg(&aaci->dev->dev, "TX underrun on chan %d\n", channel);
- 		writel(ICLR_TXUEC1 << channel, aaci->base + AACI_INTCLR);
- 	}
- 
 @@ -461,7 +461,7 @@ static int aaci_pcm_close(struct snd_pcm_substream *substream)
  	struct aaci *aaci = substream->private_data;
  	struct aaci_runtime *aacirun = substream->runtime->private_data;
@@ -610,4 +671,4 @@ index b37b702a..5181a7f 100644
 +	(void)readl(aaci->base + AACI_CSCH1);
  	ret = aaci_probe_ac97(aaci);
  	if (ret)
- 		goto out;
+ 		goto out;diff --git a/arch/arm/mm/mmu.c b/arch/arm/mm/mmu.c
