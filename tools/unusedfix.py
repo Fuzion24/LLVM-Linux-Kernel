@@ -86,17 +86,27 @@ def main():
 	line=fp.readline()
 	while line:
 		if searchstr in line:
+			print line
+			if line.startswith("clang: "):
+				line=line[7:]
 			fixfile, fixline = line.split(":")[:2]
-			line = fp.readline().strip()
-			if not skip_patch(line):
-				fixes.append([fixfile, int(fixline), line])
+			if fixfile.strip() and fixline.strip():
+				print "**", fixfile, fixline
+				line = fp.readline().strip()
+				print line
+				if not skip_patch(line):
+					fixes.append([fixfile, int(fixline), line])
 		line=fp.readline()
 
 	for fix in fixes:
 		if applied.has_key((fix[0],fix[1])):
 			continue
 
-		file_lines = open(prefix+fix[0]).readlines()
+		try:
+			file_lines = open(prefix+fix[0]).readlines()
+		except:
+			print "Error: Failed to open", prefix+fix[0]
+			continue
 		idx = fix[1]-1
 		old_line = file_lines[idx];
 		file_lines[idx] = file_lines[idx].replace(fix[2], "(void)"+fix[2])
