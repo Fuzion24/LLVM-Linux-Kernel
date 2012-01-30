@@ -84,6 +84,7 @@ state/kernel-patch: ${FILTERFILE}
 kernel-prepare: 
 	
 	(cd ${KERNELDIR} && git status | grep "modified:" | cut -d":" -f 2 | xargs git checkout)
+	@git reset --hard HEAD
 	@rm -f ${CWD}/state/kernel-patch
 	@rm -f ${CWD}/state/kernel-configure
 	@rm -f ${CWD}/state/kernel-build
