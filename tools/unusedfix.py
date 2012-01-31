@@ -26,62 +26,75 @@ import os, sys
 
 def usage():
 	print "Error: Invalid arguments"
-	print "Usage: %s filename [srcdir]" % os.path.basename(sys.argv[0])
+	print "Usage: %s logfile srcdir" % os.path.basename(sys.argv[0])
 
-false_positives = [	"dev_dbg", 
-			"INPUT_CLEANSE_BITMASK", 
-			"DEFINE_LGLOCK",
-			"DEFINE_BRLOCK",
-			"write_lock_irqsave",
-			"write_unlock_irqrestore",
-			"snd_pcm_stream_lock_irqsave",
-			"snd_pcm_stream_unlock_irqrestore",
-			"read_lock_irqsave",
-			"read_unlock_irqrestore",
-			"put_user",
-			"get_user",
-			"__get_user",
-			"__put_user",
-			"clear_page",
-			"readl",
-			"if",
-			"DECLARE_EVENT_CLASS",
-			"TRACE_EVENT",
-			"dm_sector_div_up",
-			"DEFINE_EVENT_PRINT",
-			"trace_assign_type",
-			"CLEAR_HASH",
-			"mutex_lock_nest_lock",
-			"DEBUG_LOCKS_WARN_ON",
-			"might_lock_read",
-			"DEBUG_LOCKS_WARN_ON",
-			"ASSERT_RDEV_LOCK",
-			"lockdep_assert_held"
-			"CLEAR_AFTER_FIELD",
-			"SMSC_ASSERT_MAC_LOCK",
-			"dev_vdbg",
-			"wait_event_freezable"
-			 ]
-			
-
+fixable = [
+	"memset",
+	"ASSERT_RDEV_LOCK",
+	"ASSERT_WDEV_LOCK",
+	"bio_integrity_clone",
+	"blk_integrity_register",
+	"CFG80211_DEV_WARN_ON",
+	"CLEAR_AFTER_FIELD",
+	"clear_page",
+	"cmpxchg",
+	"dev_vdbg",
+	"do_div",
+	"fops_get",
+	"format_dev_t",
+	"freezable_schedule_timeout_killable",
+	"__get_user",
+	"get_user",
+	"hugetlb_free_pgd_range",
+	"hybrid_tuner_release_state",
+	"inb",
+	"J_EXPECT_JH",
+	"lockdep_assert_held",
+	"lock_task_sighand",
+	"memcpy",
+	"memzero",
+	"netdev_WARN",
+	"on_each_cpu",
+	"psmouse_dbg",
+	"__put_user",
+	"put_user",
+	"RB_WARN_ON",
+	"readb",
+	"register_hotcpu_notifier",
+	"sk_wait_event",
+	"start_thread",
+	"tcp_verify_left_out",
+	"try_then_request_module",
+	"typecheck",
+	"wait_event_freezable",
+	"wait_event_interruptible",
+	"wait_event_interruptible_timeout",
+	"wait_event_interruptible_tty",
+	"wait_event_timeout",
+	"WARN",
+	"WARN_CONSOLE_UNLOCKED",
+	"WARN_ON",
+	"WARN_ONCE",
+	"WARN_ON_ONCE",
+	"WARN_RATELIMIT",
+	"xchg" ]
+		
 def skip_patch(line):
-	for p in false_positives:
+	for p in fixable:
 		if line.startswith(p):
-			return 1
-	return 0
+			return 0
+	return 1
 
 def main():
 	searchstr="warning: expression result unused"
 	fixes=[]
 	applied={}
-	prefix=""
 
-	if len(sys.argv) < 2 or len(sys.argv) > 3:
+	if len(sys.argv) != 3:
 		usage()
 		raise SystemExit
 
-	if len(sys.argv) == 3:
-		prefix=sys.argv[2]+"/"
+	prefix=sys.argv[2]+"/"
 	fp=open(sys.argv[1])
 	line=fp.readline()
 	while line:
