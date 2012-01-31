@@ -28,7 +28,7 @@ INSTALLDIR=${TOPDIR}/install
 COMMON=${TOPDIR}/common
 PATCH_FILES+=${COMMON}/common.patch ${COMMON}/fix-warnings.patch \
 	${COMMON}/fix-warnings-unused.patch
-FILTERFILE=${CWD}/state/kernel-filter
+FILTERFILE=${CWD}/kernel-filter
 
 # The ARCH makefile must provide the following:
 #   - PATCH_FILES+=... Additional arch specific patch file(s)
