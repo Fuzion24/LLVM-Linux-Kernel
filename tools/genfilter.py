@@ -30,7 +30,7 @@ from common import *
 
 def usage():
 	print "Error: Invalid arguments"
-	print "Usage: %s patch.log srcdir" % os.path.basename(sys.argv[0])
+	print "Usage: %s patch.log filterfile" % os.path.basename(sys.argv[0])
 
 
 def main():
@@ -39,24 +39,21 @@ def main():
 		raise SystemExit
 
 	patchlog = open(sys.argv[1]).read()
-	srcdir=sys.argv[2]
-	tmp = patchlog.split("\n|diff --git a/")[1:]
-	missing = [ x.split(" b/")[0] for x in tmp ]
-	
-	tmp = patchlog.split("saving rejects to file ")[1:]
-	rejects = [ x.split("\n")[0] for x in tmp ]
-
-	rejectinfo=[]
-	for r in rejects:
-		patchdata = open(srcdir+"/"+r).read()
-		patch = RejectedPatch(patchdata)
-		rejectinfo.append((patch.getFilename(), patch.getLines()))
-
-	print "F", sys.argv[1]
-	for m in missing:
-		print "M", m
-	for r in rejectinfo:
-		print "R", r[0], r[1]
+	filterfile = open(sys.argv[2], "w")
+	filterfile.write("F %s\n" % sys.argv[1]);
+	patches = patchlog.split("patching file ")
+	offsets=[]
+	missing=[]
+	for p in patches:
+		filename=p.split("\n")[0]
+		failedHunks=p.split(" FAILED at ")[1:]
+		offsets=[ int(x.split(".")[0]) for x in failedHunks ]
+		missing = p.split("\n|diff --git a/")[1:]
+		if offsets:
+			filterfile.write("R %s %s\n" % (filename, offsets))
+		if missing:
+			filterfile.write("M %s\n" % filename)
+	filterfile.close()	
 	
 if __name__ == "__main__":
     main()
