@@ -9067,6 +9067,26 @@ index 9c07dce..516b7a3 100644
  
  	if (atomic_sub_and_test((int) count, &kref->refcount)) {
  		release(kref);
+diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
+index d36619e..ece7af1 100644
+--- a/include/linux/lockdep.h
++++ b/include/linux/lockdep.h
+@@ -536,13 +536,13 @@ static inline void print_irqtrace_events(struct task_struct *curr)
+ #ifdef CONFIG_PROVE_LOCKING
+ # define might_lock(lock) 						\
+ do {									\
+-	typecheck(struct lockdep_map *, &(lock)->dep_map);		\
++	(void)typecheck(struct lockdep_map *, &(lock)->dep_map);		\
+ 	lock_acquire(&(lock)->dep_map, 0, 0, 0, 2, NULL, _THIS_IP_);	\
+ 	lock_release(&(lock)->dep_map, 0, _THIS_IP_);			\
+ } while (0)
+ # define might_lock_read(lock) 						\
+ do {									\
+-	typecheck(struct lockdep_map *, &(lock)->dep_map);		\
++	(void)typecheck(struct lockdep_map *, &(lock)->dep_map);		\
+ 	lock_acquire(&(lock)->dep_map, 0, 0, 1, 2, NULL, _THIS_IP_);	\
+ 	lock_release(&(lock)->dep_map, 0, _THIS_IP_);			\
+ } while (0)
 diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
 index 1a81fde..9e8a8bd 100644
 --- a/include/linux/mtd/mtd.h
@@ -9088,6 +9108,19 @@ index 1a81fde..9e8a8bd 100644
 +	(void)do_div(sz, mtd->writesize);
  	return sz;
  }
+ 
+diff --git a/include/linux/mutex.h b/include/linux/mutex.h
+index 9121595..6fb630e 100644
+--- a/include/linux/mutex.h
++++ b/include/linux/mutex.h
+@@ -144,7 +144,7 @@ extern int __must_check mutex_lock_killable_nested(struct mutex *lock,
+ 
+ #define mutex_lock_nest_lock(lock, nest_lock)				\
+ do {									\
+-	typecheck(struct lockdep_map *, &(nest_lock)->dep_map);		\
++	(void)typecheck(struct lockdep_map *, &(nest_lock)->dep_map);		\
+ 	_mutex_lock_nest_lock(lock, &(nest_lock)->dep_map);		\
+ } while (0)
  
 diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
 index 0eac07c..c4fced5 100644
@@ -9178,6 +9211,58 @@ index 8e872ea..4a5eb58 100644
  	return rta;
  }
  
+diff --git a/include/linux/rwlock.h b/include/linux/rwlock.h
+index bc2994e..970f1a8 100644
+--- a/include/linux/rwlock.h
++++ b/include/linux/rwlock.h
+@@ -68,12 +68,12 @@ do {								\
+ 
+ #define read_lock_irqsave(lock, flags)			\
+ 	do {						\
+-		typecheck(unsigned long, flags);	\
++		(void)typecheck(unsigned long, flags);	\
+ 		flags = _raw_read_lock_irqsave(lock);	\
+ 	} while (0)
+ #define write_lock_irqsave(lock, flags)			\
+ 	do {						\
+-		typecheck(unsigned long, flags);	\
++		(void)typecheck(unsigned long, flags);	\
+ 		flags = _raw_write_lock_irqsave(lock);	\
+ 	} while (0)
+ 
+@@ -81,12 +81,12 @@ do {								\
+ 
+ #define read_lock_irqsave(lock, flags)			\
+ 	do {						\
+-		typecheck(unsigned long, flags);	\
++		(void)typecheck(unsigned long, flags);	\
+ 		_raw_read_lock_irqsave(lock, flags);	\
+ 	} while (0)
+ #define write_lock_irqsave(lock, flags)			\
+ 	do {						\
+-		typecheck(unsigned long, flags);	\
++		(void)typecheck(unsigned long, flags);	\
+ 		_raw_write_lock_irqsave(lock, flags);	\
+ 	} while (0)
+ 
+@@ -103,14 +103,14 @@ do {								\
+ 
+ #define read_unlock_irqrestore(lock, flags)			\
+ 	do {							\
+-		typecheck(unsigned long, flags);		\
++		(void)typecheck(unsigned long, flags);		\
+ 		_raw_read_unlock_irqrestore(lock, flags);	\
+ 	} while (0)
+ #define read_unlock_bh(lock)		_raw_read_unlock_bh(lock)
+ 
+ #define write_unlock_irqrestore(lock, flags)		\
+ 	do {						\
+-		typecheck(unsigned long, flags);	\
++		(void)typecheck(unsigned long, flags);	\
+ 		_raw_write_unlock_irqrestore(lock, flags);	\
+ 	} while (0)
+ #define write_unlock_bh(lock)		_raw_write_unlock_bh(lock)
+
 diff --git a/include/linux/security.h b/include/linux/security.h
 index 83c18e8..2dae9d0 100644
 --- a/include/linux/security.h
