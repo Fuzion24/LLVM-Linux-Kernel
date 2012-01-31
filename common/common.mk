@@ -24,6 +24,7 @@ TOPDIR=${CWD}/../..
 TOOLSDIR=${TOPDIR}/tools
 SRCDIR=${CWD}/src
 LOGDIR=${CWD}/log
+TMPDIR=${CWD}/tmp
 INSTALLDIR=${TOPDIR}/install
 COMMON=${TOPDIR}/common
 PATCH_FILES+=${COMMON}/common.patch ${COMMON}/fix-warnings.patch \
@@ -55,33 +56,34 @@ state/kernel-fetch:
 kernel-patch: state/kernel-patch
 state/kernel-patch: state/kernel-fetch
 	@mkdir -p ${LOGDIR}
+	@mkdir -p ${TMPDIR}
 	@echo "Testing upstream patches: see ${LOGDIR}/testpatch.log"
 	@${TOOLSDIR}/checkduplicates.py ${PATCH_FILES}
 	@echo ${PATCH_FILES}
-	@rm -f ${CWD}/test.patch ${FILTERFILE} ${FILTERFILE}-1
-	@for patch in ${PATCH_FILES}; do cat $$patch >> ${CWD}/test.patch; done
+	@rm -f ${TMPDIR}/test.patch ${FILTERFILE} ${FILTERFILE}-1
+	@for patch in ${PATCH_FILES}; do cat $$patch >> ${TMPDIR}/test.patch; done
 	@make -i patch-dry-run1
 	@echo "Creating patch filter: see ${LOGDIR}/filteredpatch.log"
 	@${TOOLSDIR}/genfilter.py ${LOGDIR}/testpatch.log ${FILTERFILE}
-	@${TOOLSDIR}/applyfilter.py ${CWD}/test.patch ${CWD}/filtered.patch ${FILTERFILE}
+	@${TOOLSDIR}/applyfilter.py ${TMPDIR}/test.patch ${TMPDIR}/filtered.patch ${FILTERFILE}
 	@echo "Testing for missed, unapplied patches: see ${LOGDIR}/filteredpatch.log"
 	@make -i patch-dry-run2
 	@${TOOLSDIR}/genfilter.py ${LOGDIR}/filteredpatch.log ${FILTERFILE}-1
 	@echo "Creating final patch: see ${LOGDIR}/filteredpatch.log"
 	@cat ${FILTERFILE} ${FILTERFILE}-1 > ${FILTERFILE}-2
-	@${TOOLSDIR}/applyfilter.py ${CWD}/test.patch ${CWD}/final.patch ${FILTERFILE}-2
-	@echo "patching source: see patch.log"
-	(cd ${KERNELDIR} && patch -p1 -i ${CWD}/final.patch > ${LOGDIR}/patch.log)
+	@${TOOLSDIR}/applyfilter.py ${TMPDIR}/test.patch ${TMPDIR}/final.patch ${FILTERFILE}-2
+	@echo "Patching source: see patch.log"
+	(cd ${KERNELDIR} && patch -p1 -i ${TMPDIR}/final.patch > ${LOGDIR}/patch.log)
 	@mkdir -p state
 	@touch $@
 
 patch-dry-run1:
 	@rm -f ${LOGDIR}/testpatch.log
-	(cd ${KERNELDIR} && patch --dry-run -p1 -i ${CWD}/test.patch > ${LOGDIR}/testpatch.log)
+	(cd ${KERNELDIR} && patch --dry-run -p1 -i ${TMPDIR}/test.patch > ${LOGDIR}/testpatch.log)
 
 patch-dry-run2:
 	@rm -f ${LOGDIR}/filteredpatch.log
-	(cd ${KERNELDIR} && patch --dry-run -p1 -i ${CWD}/filtered.patch > ${LOGDIR}/filteredpatch.log)
+	(cd ${KERNELDIR} && patch --dry-run -p1 -i ${TMPDIR}/filtered.patch > ${LOGDIR}/filteredpatch.log)
 
 kernel-clean: 
 	(cd ${KERNELDIR} && git reset --hard HEAD)
@@ -92,9 +94,7 @@ kernel-clean:
 	@rm -f ${FILTERFILE}-1
 	@rm -f ${FILTERFILE}-2
 	@rm -f ${LOGDIR}/*.log
-	@rm -f ${CWD}/test.patch
-	@rm -f ${CWD}/filtered.patch
-	@rm -f ${CWD}/final.patch
+	@rm -f ${TMPDIR}/*.patch
 
 kernel-configure: state/kernel-configure
 state/kernel-configure: state/kernel-patch
@@ -111,6 +111,6 @@ state/kernel-build: state/kernel-configure
 	@touch $@
 
 kernel-sync: state/kernel-fetch
-	make kernel-clean
+	@make kernel-clean
 	(cd ${KERNELDIR} && git pull)
 
