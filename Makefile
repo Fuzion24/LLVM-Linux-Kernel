@@ -101,8 +101,8 @@ state/qemu-build: state/qemu-configure
 	@mkdir -p state
 	@touch $@
 	
-versatile: qemu-build clang-build
-	(cd targets/versatile && make)
+vexpress: qemu-build clang-build
+	(cd targets/vexpress && make)
 
 msm: clang-build
 	(cd targets/msm && make)
