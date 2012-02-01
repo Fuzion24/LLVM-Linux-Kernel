@@ -42,7 +42,7 @@ FILTERFILE=${CWD}/kernel-filter
 #   - KERNEL_CFG
 #   - KERNELDIR
 
-.PHONY: kernel-fetch gen-patch kernel-patch kernel-configure kernel-build
+.PHONY: kernel-fetch kernel-patch kernel-configure kernel-build
 
 all: kernel-build
 
@@ -60,7 +60,7 @@ state/kernel-patch: state/kernel-fetch
 	@echo "Testing upstream patches: see ${LOGDIR}/testpatch.log"
 	@${TOOLSDIR}/checkduplicates.py ${PATCH_FILES}
 	@echo ${PATCH_FILES}
-	@rm -f ${TMPDIR}/test.patch ${FILTERFILE} ${FILTERFILE}-1
+	@rm -f ${TMPDIR}/test.patch ${FILTERFILE} ${FILTERFILE}-1 ${FILTERFILE}-2
 	@for patch in ${PATCH_FILES}; do cat $$patch >> ${TMPDIR}/test.patch; done
 	@make -i patch-dry-run1
 	@echo "Creating patch filter: see ${LOGDIR}/filteredpatch.log"
