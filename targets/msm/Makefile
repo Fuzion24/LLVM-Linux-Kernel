@@ -25,8 +25,23 @@ KERNEL_CFG=${CWD}/config_msm
 MSM_BRANCH="msm-3.0"
 KERNEL_GIT="git://codeaurora.org/kernel/msm.git -b ${MSM_BRANCH}"
 KERNELDIR=${SRCDIR}/msm
+KERNELCOPY=${SRCDIR}/msm-copy
 PATCH_FILES=${CWD}/msm-3.0-llvm.patch ${CWD}/msm-3.0-llvm-arm.patch \
 	${CWD}/fix-warnings.patch ${CWD}/fix-warnings-arm.patch 
 
 include ../../common/common.mk
 include ../../common/arm/common-arm.mk
+
+kernel-copy: state/kernel-copy
+state/kernel-copy: kernel-fetch
+	@echo "(cd ${SRCDIR} && git clone ${KERNELDIR} -b ${MSM_BRANCH} msm-copy)"
+	@touch $@
+
+kernel-autopatch: kernel-build kernel-copy
+	(cd ${KERNELCOPY} && git reset --hard HEAD)
+	@${TOOLSDIR}/unusedfix.py ${LOGDIR}/build.log ${KERNELCOPY} 
+	(cd ${KERNELCOPY} && git diff > ${TMPDIR}/autopatch.patch)
+	@${TOOLSDIR}/splitarch.py ${TMPDIR}/autopatch.patch ${CWD} autopatch
+	@cat ${CWD}/autopatch.patch >> ${CWD}/fix-warnings.patch
+	(test -f ${CWD}/autopatch-arm.patch && cat ${CWD}/autopatch-arm.patch >> ${CWD}/fix-warnings-arm.patch)
+	@touch $@
