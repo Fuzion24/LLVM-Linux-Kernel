@@ -25,25 +25,27 @@ import os, sys
 
 class Patch:
 	def __init__(self, patchdata):
-		tmp = patchdata.split("--- a/")[1]
-		self.filename = tmp.split("\n")[0]
+		tmp=patchdata.split("--- a/")[1]
+		self.filename=tmp.split("\n")[0]
 		hunks=patchdata.split("\n@@ -")
 		self.hunkinfo={}
 		self.header=hunks[0]
 		for h in hunks[1:]:
-			self.hunkinfo[int(h.split(",")[0])] = "@@ -"+h
+			self.hunkinfo[int(h.split(",")[0])]="@@ -"+h
 	
 	def __str__(self):
-		patch = self.header
+		patch=self.header
 		for k in sorted(self.hunkinfo):
 			patch+="\n"+self.hunkinfo[k]
-		return patch
+		return patch+"\n"
 		
 	def merge(self, otherpatch):
+		duplicates=[]
 		for k in self.hunkinfo:
 			if k in otherpatch.hunkinfo:
-				print "Warning: patches have duplicated hunks: %s %s %d" % (self.filename, otherpatch.filename, k)
+				duplicates.append(k)
 		self.hunkinfo.update(otherpatch.hunkinfo)
+		return (otherpatch.filename, duplicates)
 
 	def getLines(self):
 		return sorted(self.hunkinfo)
@@ -52,8 +54,8 @@ class Patch:
 		return self.filename
 
 	def compare(self, otherhunks):
-		sk = sorted(self.hunkinfo)
-		if sk == sorted(otherhunks.hunkinfo):
+		sk=sorted(self.hunkinfo)
+		if sk==sorted(otherhunks.hunkinfo):
 			return sk;
 			
 		matchedoffsets=[]
@@ -66,20 +68,21 @@ class Patch:
 		for h in hunks:
 			if h in self.hunkinfo:
 				del self.hunkinfo[h]
+				
 			
 class RejectedPatch(Patch):
 	def __init__(self, patchdata):
-		tmp = patchdata.split("--- ")[1]
-		self.filename = tmp.split("\n")[0]
+		tmp=patchdata.split("--- ")[1]
+		self.filename=tmp.split("\n")[0]
 		hunks=patchdata.split("\n@@ -")
 		self.hunkinfo={}
 		self.header=hunks[0]
 		for h in hunks[1:]:
-			self.hunkinfo[int(h.split(",")[0])] = "@@ -"+h
+			self.hunkinfo[int(h.split(",")[0])]="@@ -"+h
 
 class PatchDict:
 	def __init__(self):
-		self.patch = {}
+		self.patch={}
 
 	def __contains__(self, filename):
 		return filename in self.patch
@@ -91,41 +94,49 @@ class PatchDict:
 		return self.patch.__iter__()
 
 	def add(self, patch):
-		fn = patch.getFilename()
+		dups=[]
+		fn=patch.getFilename()
 		if fn in self.patch:
-			self.patch[fn].merge(patch)
+			fn, duplicates=self.patch[fn].merge(patch)
+			if duplicates:
+				dups.append((fn, duplicates))
 		else:
-			self.patch[fn] = patch
+			self.patch[fn]=patch
+		return dups
 		
 	def __delitem__(self, item):
 		if item in self.patch:
 			del self.patch[item]
 
 	def write(self, outfile):
-		plist = sorted(self.patch)
+		plist=sorted(self.patch)
 		if len(plist):
 			fp=open(outfile,"w")
 			if len(plist) > 1:
 				for f in plist[:-1]:
-					fp.write(str(self.patch[f])+"\n")
+					patch=str(self.patch[f])
+					fp.write(patch)
 			fp.write(str(self.patch[plist[-1]]))
 		
 	def drophunks(self, item, hunks):
 		if item in self.patch:
 			self.patch[item].drophunks(hunks)
+			# If no hunks left, remove patch
+			if not self.patch[item].getLines():
+				del self.patch[item]
 
 	def filter(self, filterfile):
 		filename=""
 		
 		for line in open(filterfile).readlines():
-			if line[0] == "F":
+			if line[0]=="F":
 				filename=line[2:-1]
 				print "Processing", filename
-			elif line[0] == "M":
+			elif line[0]=="M":
 				filename=line[2:-1]
 				if filename in self.patch:
 					del self.patch[filename]
-			elif line[0] == "R":
+			elif line[0]=="R":
 				filename=line[2:].split("[")[0][:-1]
 				tmp=line.split("[")[1].split("]")[0].split(",")
 				hunks=[ int(x) for x in tmp ]
@@ -137,12 +148,19 @@ class PatchDict:
 class PatchFile(PatchDict):
 	def __init__(self, patchfile):
 		PatchDict.__init__(self)
-		patchdata = open(patchfile).read()
-		patches = patchdata.split("\ndiff")
+		self.filename=patchfile
+		patchdata=open(patchfile).read()
+		# Strip ending newline
+		if patchdata.endswith("\n"):
+			patchdata=patchdata[:-1]
+		patches=patchdata.split("\ndiff")
 		for p in patches:
 			# add back the "diff"
-			if p[0:4] != "diff":
-				p="diff"+p
-			newpatch = Patch(p)
+			if p[0:4] !="diff":
+				p="diff"+p+"\n"
+			else:
+				p+="\n"
+			newpatch=Patch(p)
 			PatchDict.add(self, newpatch)
+
 

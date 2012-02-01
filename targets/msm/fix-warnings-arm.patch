@@ -117,15 +117,6 @@ diff --git a/arch/arm/kernel/traps.c b/arch/arm/kernel/traps.c
 index 738a166..573d1aa 100644
 --- a/arch/arm/kernel/traps.c
 +++ b/arch/arm/kernel/traps.c
-@@ -106,7 +106,7 @@ static void dump_mem(const char *lvl, const char *str, unsigned long bottom,
- 		unsigned long p;
- 		char str[sizeof(" 12345678") * 8 + 1];
- 
--		memset(str, ' ', sizeof(str));
-+		(void)memset(str, ' ', sizeof(str));
- 		str[sizeof(str) - 1] = '\0';
- 
- 		for (p = first, i = 0; i < 8 && p < top; i++, p += 4) {
 @@ -382,9 +382,9 @@ asmlinkage void __exception do_undefinstr(struct pt_regs *regs)
  	if (processor_mode(regs) == SVC_MODE) {
  		instr = *(u32 *) pc;
@@ -914,6 +905,16 @@ index a8d787a..0c60ade 100644
  	sel_masks[msm_rpm_get_sel_mask_reg(MSM_RPM_SEL_INVALIDATE)] |=
  		msm_rpm_get_sel_mask(MSM_RPM_SEL_INVALIDATE);
  
+@@ -488,7 +488,7 @@ static int msm_rpm_clear_common(
+ 		r[i].value = sel_masks[i];
+ 	}
+ 
+-	memset(sel_masks, 0, sizeof(sel_masks));
++	(void)memset(sel_masks, 0, sizeof(sel_masks));
+ 	sel_masks[msm_rpm_get_sel_mask_reg(msm_rpm_data.sel_invalidate)] |=
+ 		msm_rpm_get_sel_mask(msm_rpm_data.sel_invalidate);
+ 
+
 @@ -650,7 +650,7 @@ EXPORT_SYMBOL(msm_rpm_set);
   */
  int msm_rpm_set_noirq(int ctx, struct msm_rpm_iv_pair *req, int count)
@@ -1308,25 +1309,3 @@ index d25fabf..9f9953b 100644
  
  	info.si_signo = SIGFPE;
  	info.si_code = sicode;
-diff --git a/arch/arm/vfp/vfpsingle.c b/arch/arm/vfp/vfpsingle.c
-index b252631..90c2b05 100644
---- a/arch/arm/vfp/vfpsingle.c
-+++ b/arch/arm/vfp/vfpsingle.c
-@@ -308,7 +308,7 @@ u32 vfp_estimate_sqrt_significand(u32 exponent, u32 significand)
- 	}
- 	{
- 		u64 v = (u64)a << 31;
--		do_div(v, z);
-+		(void)do_div(v, z);
- 		return v + (z >> 1);
- 	}
- }
-@@ -1117,7 +1117,7 @@ static u32 vfp_single_fdiv(int sd, int sn, s32 m, u32 fpscr)
- 	}
- 	{
- 		u64 significand = (u64)vsn.significand << 32;
--		do_div(significand, vsm.significand);
-+		(void)do_div(significand, vsm.significand);
- 		vsd.significand = significand;
- 	}
- 	if ((vsd.significand & 0x3f) == 0)

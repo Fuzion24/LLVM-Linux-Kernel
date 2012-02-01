@@ -30,27 +30,30 @@ from common import *
 
 def usage():
 	print "Error: Invalid arguments"
-	print "Usage: %s patchfile patchfile1 patchfile2 ..." % os.path.basename(sys.argv[0])
+	print "Usage: %s patchfile1 patchfile2 ..." % os.path.basename(sys.argv[0])
 
 def main():
 	if len(sys.argv) < 3:
 		usage()
 		raise SystemExit
 
-	patchfile = PatchFile(sys.argv[1])
-
-	for otherfile in sys.argv[2:]:
-		pf = PatchFile(otherfile)
-		for f in patchfile:
-			if f in pf:
-				matchinglines = pf[f].compare(patchfile[f])
-				if matchinglines == pf[f].getLines():
-					print "Exact match: %s %s" % (f, matchinglines)
-				elif matchinglines:
-					print "Hunk match in %s : %s" % (f, matchinglines)
+	filemap = {}
+	for patchfile in sys.argv[1:]:
+		pf = PatchFile(patchfile)
+		for k in pf.patch:
+			p = pf.patch[k]
+			for linenum in p.getLines():
+				key = (p.filename, linenum)
+				if not key in filemap:
+					filemap[(p.filename, linenum)] = [patchfile]
 				else:
-					print "File match: %s" % f
-	
+					filemap[(p.filename, linenum)].append(patchfile)
+	for k in filemap:
+		if len(filemap[k]) > 1:
+			print "Duplicate hunk: %s %d in:" % k
+			for f in filemap[k]:
+				print "  %s" % f
+			
 	
 if __name__ == "__main__":
     main()

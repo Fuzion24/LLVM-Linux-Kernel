@@ -57,22 +57,23 @@ kernel-patch: state/kernel-patch
 state/kernel-patch: state/kernel-fetch
 	@mkdir -p ${LOGDIR}
 	@mkdir -p ${TMPDIR}
-	@echo "Testing upstream patches: see ${LOGDIR}/testpatch.log"
+	@${TOOLSDIR}/banner.sh "Checking for duplicated patches:"
 	@${TOOLSDIR}/checkduplicates.py ${PATCH_FILES}
-	@echo ${PATCH_FILES}
+	@echo "Testing upstream patches: see ${LOGDIR}/testpatch.log"
 	@rm -f ${TMPDIR}/test.patch ${FILTERFILE} ${FILTERFILE}-1 ${FILTERFILE}-2
 	@for patch in ${PATCH_FILES}; do cat $$patch >> ${TMPDIR}/test.patch; done
+	(cd ${KERNELDIR} && git reset --hard HEAD)
 	@make -i patch-dry-run1
-	@echo "Creating patch filter: see ${LOGDIR}/filteredpatch.log"
+	@${TOOLSDIR}/banner.sh "Creating patch filter: see ${LOGDIR}/filteredpatch.log"
 	@${TOOLSDIR}/genfilter.py ${LOGDIR}/testpatch.log ${FILTERFILE}
 	@${TOOLSDIR}/applyfilter.py ${TMPDIR}/test.patch ${TMPDIR}/filtered.patch ${FILTERFILE}
-	@echo "Testing for missed, unapplied patches: see ${LOGDIR}/filteredpatch.log"
+	@${TOOLSDIR}/banner.sh "Testing for missed, unapplied patches: see ${LOGDIR}/filteredpatch.log"
 	@make -i patch-dry-run2
 	@${TOOLSDIR}/genfilter.py ${LOGDIR}/filteredpatch.log ${FILTERFILE}-1
-	@echo "Creating final patch: see ${LOGDIR}/filteredpatch.log"
+	@${TOOLSDIR}/banner.sh "Creating final patch: see ${LOGDIR}/filteredpatch.log"
 	@cat ${FILTERFILE} ${FILTERFILE}-1 > ${FILTERFILE}-2
 	@${TOOLSDIR}/applyfilter.py ${TMPDIR}/test.patch ${TMPDIR}/final.patch ${FILTERFILE}-2
-	@echo "Patching source: see patch.log"
+	@${TOOLSDIR}/banner.sh "Patching source: see patch.log"
 	(cd ${KERNELDIR} && patch -p1 -i ${TMPDIR}/final.patch > ${LOGDIR}/patch.log)
 	@mkdir -p state
 	@touch $@
@@ -105,7 +106,7 @@ state/kernel-configure: state/kernel-patch
 
 kernel-build: state/kernel-build
 state/kernel-build: state/kernel-configure
-	@echo "Writing to ${LOGDIR}/build.log..."
+	@${TOOLSDIR}/banner.sh "Writing to ${LOGDIR}/build.log..."
 	(cd ${KERNELDIR} && ${MAKE_KERNEL} ${INSTALLDIR} > ${LOGDIR}/build.log 2>&1)
 	@mkdir -p state
 	@touch $@
