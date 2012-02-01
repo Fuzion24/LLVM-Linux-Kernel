@@ -27,7 +27,8 @@ KERNEL_GIT="git://codeaurora.org/kernel/msm.git -b ${MSM_BRANCH}"
 KERNELDIR=${SRCDIR}/msm
 KERNELCOPY=${SRCDIR}/msm-copy
 PATCH_FILES=${CWD}/msm-3.0-llvm.patch ${CWD}/msm-3.0-llvm-arm.patch \
-	${CWD}/fix-warnings.patch ${CWD}/fix-warnings-arm.patch 
+	${CWD}/fix-warnings.patch ${CWD}/fix-warnings-arm.patch \
+#	${CWD}/autopatch.patch
 
 include ../../common/common.mk
 include ../../common/arm/common-arm.mk
@@ -41,11 +42,11 @@ state/kernel-copy: kernel-fetch
 
 kernel-autopatch: kernel-build
 	(cd ${KERNELCOPY} && git reset --hard HEAD && git pull)
+	(cd ${KERNELCOPY} &&  patch -p1 -i ${TMPDIR}/final.patch >> ${LOGDIR}/patchcopy.log)
 	@${TOOLSDIR}/unusedfix.py ${LOGDIR}/build.log ${KERNELCOPY} 
+	(cd ${KERNELCOPY} &&  patch -R -p1 -i ${TMPDIR}/final.patch >> ${LOGDIR}/patchcopy.log)
 	(cd ${KERNELCOPY} && git diff > ${TMPDIR}/autopatch.patch)
 	@${TOOLSDIR}/splitarch.py ${TMPDIR}/autopatch.patch ${CWD} autopatch
-	@cat ${CWD}/autopatch.patch >> ${CWD}/fix-warnings.patch
-	(test -f ${CWD}/autopatch-arm.patch && cat ${CWD}/autopatch-arm.patch >> ${CWD}/fix-warnings-arm.patch)
 	@touch $@
 
 check-dups:

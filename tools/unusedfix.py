@@ -30,8 +30,6 @@ def usage():
 
 fixable = [
 	"memset",
-	"ASSERT_RDEV_LOCK",
-	"ASSERT_WDEV_LOCK",
 	"bio_integrity_clone",
 	"blk_integrity_register",
 	"CFG80211_DEV_WARN_ON",

@@ -46,6 +46,19 @@ index cbf7b88..b785b94 100644
  
  	disk_add_events(disk);
  }
+diff --git a/crypto/hmac.c b/crypto/hmac.c
+index 8d9544c..5b1f052 100644
+--- a/crypto/hmac.c
++++ b/crypto/hmac.c
+@@ -73,7 +73,7 @@ static int hmac_setkey(struct crypto_shash *parent,
+ 	} else
+ 		memcpy(ipad, inkey, keylen);
+ 
+-	memset(ipad + keylen, 0, bs - keylen);
++	(void)memset(ipad + keylen, 0, bs - keylen);
+ 	memcpy(opad, ipad, bs);
+ 
+ 	for (i = 0; i < bs; i++) {
 diff --git a/crypto/md4.c b/crypto/md4.c
 index 7fca1f59..f0762d4 100644
 --- a/crypto/md4.c
@@ -97,6 +110,28 @@ index 0416091..2f20037 100644
  
  	return 0;
  }
+diff --git a/crypto/shash.c b/crypto/shash.c
+index 76f74b9..86abce2 100644
+--- a/crypto/shash.c
++++ b/crypto/shash.c
+@@ -86,7 +86,7 @@ static int shash_update_unaligned(struct shash_desc *desc, const u8 *data,
+ 
+ 	memcpy(buf, data, unaligned_len);
+ 	err = shash->update(desc, buf, unaligned_len);
+-	memset(buf, 0, unaligned_len);
++	(void)memset(buf, 0, unaligned_len);
+ 
+ 	return err ?:
+ 	       shash->update(desc, data + unaligned_len, len - unaligned_len);
+@@ -124,7 +124,7 @@ static int shash_final_unaligned(struct shash_desc *desc, u8 *out)
+ 	memcpy(out, buf, ds);
+ 
+ out:
+-	memset(buf, 0, ds);
++	(void)memset(buf, 0, ds);
+ 	return err;
+ }
+ 
 diff --git a/drivers/base/devres.c b/drivers/base/devres.c
 index cf7a0c7..5954aaa 100644
 --- a/drivers/base/devres.c
@@ -842,6 +877,33 @@ index c8827ff..e1f05fc 100644
 +		(void)memset(lmk->seed, 0, LMK_SEED_SIZE);
  
  	return 0;
+ }
+@@ -595,7 +595,7 @@ static int crypt_iv_lmk_gen(struct crypt_config *cc, u8 *iv,
+ 		r = crypt_iv_lmk_one(cc, iv, dmreq, src + dmreq->sg_in.offset);
+ 		kunmap_atomic(src, KM_USER0);
+ 	} else
+-		memset(iv, 0, cc->iv_size);
++		(void)memset(iv, 0, cc->iv_size);
+ 
+ 	return r;
+ }
+@@ -1344,7 +1344,7 @@ static int crypt_set_key(struct crypt_config *cc, char *key)
+ 
+ out:
+ 	/* Hex key string not needed after here, so wipe it. */
+-	memset(key, '0', key_string_len);
++	(void)memset(key, '0', key_string_len);
+ 
+ 	return r;
+ }
+@@ -1352,7 +1352,7 @@ out:
+ static int crypt_wipe_key(struct crypt_config *cc)
+ {
+ 	clear_bit(DM_CRYPT_KEY_VALID, &cc->flags);
+-	memset(&cc->key, 0, cc->key_size * sizeof(u8));
++	(void)memset(&cc->key, 0, cc->key_size * sizeof(u8));
+ 
+ 	return crypt_setkey_allcpus(cc);
  }
 diff --git a/drivers/md/dm-ioctl.c b/drivers/md/dm-ioctl.c
 index 4cacdad..2edf19d 100644
@@ -5842,6 +5904,19 @@ index a0a041d..dd48014 100644
  		res = check_part[i++](state);
  		if (res < 0) {
  			/* We have hit an I/O error which we don't report now.
+diff --git a/fs/proc/generic.c b/fs/proc/generic.c
+index f1637f1..93fb4b8 100644
+--- a/fs/proc/generic.c
++++ b/fs/proc/generic.c
+@@ -619,7 +619,7 @@ static struct proc_dir_entry *__proc_create(struct proc_dir_entry **parent,
+ 	ent = kmalloc(sizeof(struct proc_dir_entry) + len + 1, GFP_KERNEL);
+ 	if (!ent) goto out;
+ 
+-	memset(ent, 0, sizeof(struct proc_dir_entry));
++	(void)memset(ent, 0, sizeof(struct proc_dir_entry));
+ 	memcpy(((char *) ent) + sizeof(struct proc_dir_entry), fn, len + 1);
+ 	ent->name = ((char *) ent) + sizeof(*ent);
+ 	ent->namelen = len;
 diff --git a/fs/super.c b/fs/super.c
 index ab3d672..c9042ad 100644
 --- a/fs/super.c
@@ -6453,6 +6528,15 @@ index b85f675..daa5851 100644
  #endif
  #if defined(CONFIG_SMP)
  	p->on_cpu = 0;
+@@ -3131,7 +3131,7 @@ asmlinkage void schedule_tail(struct task_struct *prev)
+ 	preempt_enable();
+ #endif
+ 	if (current->set_child_tid)
+-		put_user(task_pid_vnr(current), current->set_child_tid);
++		(void)put_user(task_pid_vnr(current), current->set_child_tid);
+ }
+ 
+ /*
 @@ -4012,7 +4012,7 @@ void task_times(struct task_struct *p, cputime_t *ut, cputime_t *st)
  		u64 temp = rtime;
  
@@ -7418,6 +7502,15 @@ index 03bf3bb..bb4b87f 100644
  #endif
  
  	page->in_use--;
+@@ -501,6 +501,6 @@ void dmam_pool_destroy(struct dma_pool *pool)
+ 	struct device *dev = pool->dev;
+ 
+ 	dma_pool_destroy(pool);
+-	WARN_ON(devres_destroy(dev, dmam_pool_release, dmam_pool_match, pool));
++	(void)WARN_ON(devres_destroy(dev, dmam_pool_release, dmam_pool_match, pool));
+ }
+ EXPORT_SYMBOL(dmam_pool_destroy);
+
 diff --git a/mm/filemap.c b/mm/filemap.c
 index a8251a8..14823ec 100644
 --- a/mm/filemap.c
@@ -7756,6 +7849,32 @@ index 61c946c..940119b 100644
  	memcpy(ci->dst, s->eh.h_source, ETH_ALEN);
  	strcpy(ci->device, s->dev->name);
  	ci->flags = s->flags;
+diff --git a/net/bluetooth/hci_conn.c b/net/bluetooth/hci_conn.c
+index ccf3623..84550d3 100644
+--- a/net/bluetooth/hci_conn.c
++++ b/net/bluetooth/hci_conn.c
+@@ -58,7 +58,7 @@ static void hci_le_connect(struct hci_conn *conn)
+ 	conn->sec_level = BT_SECURITY_LOW;
+ 	conn->type = LE_LINK;
+ 
+-	memset(&cp, 0, sizeof(cp));
++	(void)memset(&cp, 0, sizeof(cp));
+ 	cp.scan_interval = cpu_to_le16(0x0004);
+ 	cp.scan_window = cpu_to_le16(0x0004);
+ 	bacpy(&cp.peer_addr, &conn->dst);
+diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
+index 47bfde5..9a81ec9 100644
+--- a/net/bluetooth/hci_core.c
++++ b/net/bluetooth/hci_core.c
+@@ -193,7 +193,7 @@ static void hci_reset_req(struct hci_dev *hdev, unsigned long opt)
+ 
+ 	/* Reset device */
+ 	set_bit(HCI_RESET, &hdev->flags);
+-	memset(&hdev->features, 0, sizeof(hdev->features));
++	(void)memset(&hdev->features, 0, sizeof(hdev->features));
+ 	hci_send_cmd(hdev, HCI_OP_RESET, 0, NULL);
+ }
+ 
 diff --git a/net/bluetooth/hci_sock.c b/net/bluetooth/hci_sock.c
 index 92d72b7..6380b83 100644
 --- a/net/bluetooth/hci_sock.c
@@ -7930,6 +8049,28 @@ index cf6cf59..33f0fa5 100644
  	control.reqseq = pi->amp_move_reqseq;
  
  	if (pi->amp_move_event == L2CAP_ERTM_EVENT_RECV_IFRAME)
+diff --git a/net/bluetooth/l2cap_sock.c b/net/bluetooth/l2cap_sock.c
+index 94cacde..99ac046 100644
+--- a/net/bluetooth/l2cap_sock.c
++++ b/net/bluetooth/l2cap_sock.c
+@@ -403,7 +403,7 @@ static int l2cap_sock_getsockopt_old(struct socket *sock, int optname, char __us
+ 
+ 	switch (optname) {
+ 	case L2CAP_OPTIONS:
+-		memset(&opts, 0, sizeof(opts));
++		(void)memset(&opts, 0, sizeof(opts));
+ 		opts.imtu     = l2cap_pi(sk)->imtu;
+ 		opts.omtu     = l2cap_pi(sk)->omtu;
+ 		opts.flush_to = l2cap_pi(sk)->flush_to;
+@@ -502,7 +502,7 @@ static int l2cap_sock_getsockopt(struct socket *sock, int level, int optname, ch
+ 			break;
+ 		}
+ 
+-		memset(&sec, 0, sizeof(sec));
++		(void)memset(&sec, 0, sizeof(sec));
+ 		sec.level = l2cap_pi(sk)->sec_level;
+ 
+ 		if (sk->sk_state == BT_CONNECTED)
 diff --git a/net/bluetooth/mgmt.c b/net/bluetooth/mgmt.c
 index 67a2900..23cccbe 100644
 --- a/net/bluetooth/mgmt.c
@@ -8410,6 +8551,91 @@ index 33d2a1f..01e661c 100644
  	dev_put(queue->dev);
  }
  
+diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+index 46cbd28..a118859 100644
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -196,7 +196,7 @@ struct sk_buff *__alloc_skb(unsigned int size, gfp_t gfp_mask,
+ 	 * actually initialise below. Hence, don't put any more fields after
+ 	 * the tail pointer in struct sk_buff!
+ 	 */
+-	memset(skb, 0, offsetof(struct sk_buff, tail));
++	(void)memset(skb, 0, offsetof(struct sk_buff, tail));
+ 	skb->truesize = size + sizeof(struct sk_buff);
+ 	atomic_set(&skb->users, 1);
+ 	skb->head = data;
+@@ -377,7 +377,7 @@ static void skb_release_head_state(struct sk_buff *skb)
+ 	secpath_put(skb->sp);
+ #endif
+ 	if (skb->destructor) {
+-		WARN_ON(in_irq());
++		(void)WARN_ON(in_irq());
+ 		skb->destructor(skb);
+ 	}
+ #if defined(CONFIG_NF_CONNTRACK) || defined(CONFIG_NF_CONNTRACK_MODULE)
+@@ -497,7 +497,7 @@ bool skb_recycle_check(struct sk_buff *skb, int skb_size)
+ 	memset(shinfo, 0, offsetof(struct skb_shared_info, dataref));
+ 	atomic_set(&shinfo->dataref, 1);
+ 
+-	memset(skb, 0, offsetof(struct sk_buff, tail));
++	(void)memset(skb, 0, offsetof(struct sk_buff, tail));
+ 	skb->data = skb->head + NET_SKB_PAD;
+ 	skb_reset_tail_pointer(skb);
+ 
+@@ -1313,7 +1313,7 @@ int skb_copy_bits(const struct sk_buff *skb, int offset, void *to, int len)
+ 	for (i = 0; i < skb_shinfo(skb)->nr_frags; i++) {
+ 		int end;
+ 
+-		WARN_ON(start > offset + len);
++		(void)WARN_ON(start > offset + len);
+ 
+ 		end = start + skb_shinfo(skb)->frags[i].size;
+ 		if ((copy = end - offset) > 0) {
+@@ -1620,7 +1620,7 @@ int skb_store_bits(struct sk_buff *skb, int offset, const void *from, int len)
+ 		skb_frag_t *frag = &skb_shinfo(skb)->frags[i];
+ 		int end;
+ 
+-		WARN_ON(start > offset + len);
++		(void)WARN_ON(start > offset + len);
+ 
+ 		end = start + frag->size;
+ 		if ((copy = end - offset) > 0) {
+@@ -1693,7 +1693,7 @@ __wsum skb_checksum(const struct sk_buff *skb, int offset,
+ 	for (i = 0; i < skb_shinfo(skb)->nr_frags; i++) {
+ 		int end;
+ 
+-		WARN_ON(start > offset + len);
++		(void)WARN_ON(start > offset + len);
+ 
+ 		end = start + skb_shinfo(skb)->frags[i].size;
+ 		if ((copy = end - offset) > 0) {
+@@ -1719,7 +1719,7 @@ __wsum skb_checksum(const struct sk_buff *skb, int offset,
+ 	skb_walk_frags(skb, frag_iter) {
+ 		int end;
+ 
+-		WARN_ON(start > offset + len);
++		(void)WARN_ON(start > offset + len);
+ 
+ 		end = start + frag_iter->len;
+ 		if ((copy = end - offset) > 0) {
+@@ -1768,7 +1768,7 @@ __wsum skb_copy_and_csum_bits(const struct sk_buff *skb, int offset,
+ 	for (i = 0; i < skb_shinfo(skb)->nr_frags; i++) {
+ 		int end;
+ 
+-		WARN_ON(start > offset + len);
++		(void)WARN_ON(start > offset + len);
+ 
+ 		end = start + skb_shinfo(skb)->frags[i].size;
+ 		if ((copy = end - offset) > 0) {
+@@ -2814,7 +2814,7 @@ __skb_to_sgvec(struct sk_buff *skb, struct scatterlist *sg, int offset, int len)
+ 	for (i = 0; i < skb_shinfo(skb)->nr_frags; i++) {
+ 		int end;
+ 
+-		WARN_ON(start > offset + len);
++		(void)WARN_ON(start > offset + len);
+ 
+ 		end = start + skb_shinfo(skb)->frags[i].size;
+ 		if ((copy = end - offset) > 0) {
 diff --git a/net/ipv4/inet_diag.c b/net/ipv4/inet_diag.c
 index 3267d38..1d728d7 100644
 --- a/net/ipv4/inet_diag.c
@@ -8436,6 +8662,19 @@ index 6877645..779a1f5 100644
  		INIT_LIST_HEAD(&p->unused);
  
  
+diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
+index 0c99db4..2c7c4c2 100644
+--- a/net/ipv4/ip_output.c
++++ b/net/ipv4/ip_output.c
+@@ -121,7 +121,7 @@ static int ip_dev_loopback_xmit(struct sk_buff *newskb)
+ 	__skb_pull(newskb, skb_network_offset(newskb));
+ 	newskb->pkt_type = PACKET_LOOPBACK;
+ 	newskb->ip_summed = CHECKSUM_UNNECESSARY;
+-	WARN_ON(!skb_dst(newskb));
++	(void)WARN_ON(!skb_dst(newskb));
+ 	netif_rx_ni(newskb);
+ 	return 0;
+ }
 diff --git a/net/ipv4/netfilter/nf_nat_core.c b/net/ipv4/netfilter/nf_nat_core.c
 index 3346de5..6ba0cbd 100644
 --- a/net/ipv4/netfilter/nf_nat_core.c
@@ -8660,6 +8899,19 @@ index 79a485e..47d1724 100644
  
  	opt2->tot_len = tot_len;
  	p = (char *)(opt2 + 1);
+diff --git a/net/ipv6/icmp.c b/net/ipv6/icmp.c
+index 1190041..46a43cb 100644
+--- a/net/ipv6/icmp.c
++++ b/net/ipv6/icmp.c
+@@ -790,7 +790,7 @@ void icmpv6_flow_init(struct sock *sk, struct flowi6 *fl6,
+ 		      const struct in6_addr *daddr,
+ 		      int oif)
+ {
+-	memset(fl6, 0, sizeof(*fl6));
++	(void)memset(fl6, 0, sizeof(*fl6));
+ 	ipv6_addr_copy(&fl6->saddr, saddr);
+ 	ipv6_addr_copy(&fl6->daddr, daddr);
+ 	fl6->flowi6_proto 	= IPPROTO_ICMPV6;
 diff --git a/net/ipv6/inet6_connection_sock.c b/net/ipv6/inet6_connection_sock.c
 index 8a58e8c..8c14251 100644
 --- a/net/ipv6/inet6_connection_sock.c
@@ -9649,6 +9901,15 @@ index 493b939..ff83705 100644
  	req.reason_code = reason;
  	req.local_state_change = local_state_change;
  	req.ie = ie;
+@@ -596,7 +596,7 @@ int __cfg80211_mlme_deauth(struct cfg80211_registered_device *rdev,
+ 
+ 	ASSERT_WDEV_LOCK(wdev);
+ 
+-	memset(&req, 0, sizeof(req));
++	(void)memset(&req, 0, sizeof(req));
+ 	req.reason_code = reason;
+ 	req.local_state_change = local_state_change;
+ 	req.ie = ie;
 @@ -647,7 +647,7 @@ static int __cfg80211_mlme_disassoc(struct cfg80211_registered_device *rdev,
  	struct wireless_dev *wdev = dev->ieee80211_ptr;
  	struct cfg80211_disassoc_request req;
@@ -9753,6 +10014,28 @@ index cbbc927..ad5e06d 100644
  
  	request->aborted = aborted;
  	queue_work(cfg80211_wq, &wiphy_to_dev(request->wiphy)->scan_done_wk);
+diff --git a/net/wireless/sme.c b/net/wireless/sme.c
+index cf4be21..bcba270 100644
+--- a/net/wireless/sme.c
++++ b/net/wireless/sme.c
+@@ -620,7 +620,7 @@ void cfg80211_roamed(struct net_device *dev,
+ 	struct cfg80211_event *ev;
+ 	unsigned long flags;
+ 
+-	CFG80211_DEV_WARN_ON(wdev->sme_state != CFG80211_SME_CONNECTED);
++	(void)CFG80211_DEV_WARN_ON(wdev->sme_state != CFG80211_SME_CONNECTED);
+ 
+ 	ev = kzalloc(sizeof(*ev) + req_ie_len + resp_ie_len, gfp);
+ 	if (!ev)
+@@ -697,7 +697,7 @@ void __cfg80211_disconnected(struct net_device *dev, const u8 *ie,
+ 			ret = __cfg80211_mlme_deauth(rdev, dev, bssid, NULL, 0,
+ 						WLAN_REASON_DEAUTH_LEAVING,
+ 						false);
+-			WARN(ret, "deauth failed: %d\n", ret);
++			(void)WARN(ret, "deauth failed: %d\n", ret);
+ 		}
+ 	}
+ 
 diff --git a/net/wireless/util.c b/net/wireless/util.c
 index c00a511..9fb21ef 100644
 --- a/net/wireless/util.c
