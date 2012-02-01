@@ -136,6 +136,7 @@ index cf7a0c7..5954aaa 100644
 +	(void)WARN_ON(rc);
  }
  EXPORT_SYMBOL_GPL(devm_kfree);
+
 diff --git a/drivers/block/loop.c b/drivers/block/loop.c
 index 2ebacf0..97c5b53 100644
 --- a/drivers/block/loop.c
@@ -2004,7 +2005,6 @@ index 69e8c6f..d5821df 100644
  			if (ops->vidioc_try_fmt_sliced_vbi_out)
  				ret = ops->vidioc_try_fmt_sliced_vbi_out(file,
  								fh, f);
-
 @@ -2336,10 +2336,10 @@ video_usercopy(struct file *file, unsigned int cmd, unsigned long arg,
  
  			/* zero out anything we don't copy from userspace */
@@ -2468,7 +2468,6 @@ index 57e5696..8d78706 100644
  		mmc_wait_for_req(mmc, &mrq);
  
  		if (!cmd.error && !data.error &&
-
 @@ -3113,7 +3113,7 @@ msmsdcc_status_notify_cb(int card_present, void *dev_id)
  static int
  msmsdcc_init_dma(struct msmsdcc_host *host)
@@ -3152,7 +3151,6 @@ index 909ed9e..3dc03cc 100644
  		return 0;
  	case SG_GET_NUM_WAITING:
  		read_lock_irqsave(&sfp->rq_list_lock, iflags);
-
 @@ -972,7 +972,7 @@ sg_ioctl(struct file *filp, unsigned int cmd_in, unsigned long arg)
  			read_lock_irqsave(&sfp->rq_list_lock, iflags);
  			for (srp = sfp->headrp, val = 0; val < SG_MAX_QUEUE;
@@ -3989,6 +3987,7 @@ index 1e02a2c..4716b07 100644
 +	(void)memset(ddl_context, 0, sizeof(struct ddl_context));
  	return true;
  }
+
 diff --git a/drivers/video/msm/vidc/1080p/ddl/vcd_ddl_helper.c b/drivers/video/msm/vidc/1080p/ddl/vcd_ddl_helper.c
 index d54c01e..93daf9c 100644
 --- a/drivers/video/msm/vidc/1080p/ddl/vcd_ddl_helper.c
@@ -4681,7 +4680,6 @@ index 1c5b770..3bad34f 100644
  
  	return rc;
  }
-
 @@ -351,8 +351,8 @@ SMBNTencrypt(unsigned char *passwd, unsigned char *c8, unsigned char *p24)
  	int rc;
  	unsigned char p16[16], p21[21];
@@ -5047,7 +5045,6 @@ index c94774c..347ea0a 100644
  		branch[n].p = (__le32 *) bh->b_data + offsets[n];
  		branch[n].key = cpu_to_le32(new_blocks[n]);
  		*branch[n].p = branch[n].key;
-
 diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
 index 0f1be7f..006f9dd 100644
 --- a/fs/ext4/mballoc.c
@@ -6629,6 +6626,7 @@ index a6710a1..ab8a550 100644
 +	(void)memset(&p->se.statistics, 0, sizeof(p->se.statistics));
  #endif
  }
+
 diff --git a/kernel/sched_fair.c b/kernel/sched_fair.c
 index c768588..cf25d12 100644
 --- a/kernel/sched_fair.c
@@ -7905,7 +7903,6 @@ index cf6cf59..33f0fa5 100644
  			rfc.mode = pi->mode;
  		}
  
-
 @@ -5662,7 +5662,7 @@ static inline int l2cap_conn_param_update_req(struct l2cap_conn *conn,
  	BT_DBG("min 0x%4.4x max 0x%4.4x latency: 0x%4.4x Timeout: 0x%4.4x",
  						min, max, latency, to_multiplier);
@@ -8027,7 +8024,6 @@ index 67a2900..23cccbe 100644
  
  	bacpy(&ev.bdaddr, bdaddr);
  	memcpy(ev.dev_class, dev_class, 3);
-
 @@ -2889,7 +2889,7 @@ int mgmt_remote_class(u16 index, bdaddr_t *bdaddr, u8 dev_class[3])
  {
  	struct mgmt_ev_remote_class ev;
@@ -8151,7 +8147,6 @@ index e301edf..719abf2 100644
  				SMP_MAX_ENC_KEY_SIZE - hcon->smp_key_size);
  
  		hci_le_start_enc(hcon, ediv, rand, stk);
-
 @@ -630,7 +630,7 @@ static u8 smp_cmd_pairing_random(struct l2cap_conn *conn, struct sk_buff *skb)
  		u8 stk[16], r[16], rand[8];
  		__le16 ediv;
@@ -9687,7 +9682,6 @@ index 493b939..ff83705 100644
  	req.reason_code = WLAN_REASON_DEAUTH_LEAVING;
  	req.ie = NULL;
  	req.ie_len = 0;
-
 @@ -696,7 +696,7 @@ void cfg80211_mlme_down(struct cfg80211_registered_device *rdev,
  	if (!rdev->ops->deauth)
  		return;
@@ -10175,4 +10169,3 @@ index e184349..fbd3cfc 100644
  	       runtime->format == SNDRV_PCM_FORMAT_U8 ? 0x80 : 0,
  	       offs * stride);
  	return 0;
-

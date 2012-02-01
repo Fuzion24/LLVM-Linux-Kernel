@@ -51,6 +51,15 @@ diff --git a/block/blk-exec.c b/block/blk-exec.c
 index fb2cbd5..21fcc0e 100644
 --- a/block/blk-exec.c
 +++ b/block/blk-exec.c
+@@ -50,7 +50,7 @@ void blk_execute_rq_nowait(struct request_queue *q, struct gendisk *bd_disk,
+ {
+ 	int where = at_head ? ELEVATOR_INSERT_FRONT : ELEVATOR_INSERT_BACK;
+ 
+-	WARN_ON(irqs_disabled());
++	(void)WARN_ON(irqs_disabled());
+ 	spin_lock_irq(q->queue_lock);
+ 
+ 	if (unlikely(blk_queue_dead(q))) {
 @@ -98,7 +98,7 @@ int blk_execute_rq(struct request_queue *q, struct gendisk *bd_disk,
  	rq->ref_count++;
  
@@ -280,6 +289,15 @@ index 23b4f70..30ca52e 100644
  		return;
  	}
  	disk_to_dev(disk)->devt = devt;
+@@ -614,7 +614,7 @@ void add_disk(struct gendisk *disk)
+ 	 * Take an extra ref on queue which will be put on disk_release()
+ 	 * so that it sticks around as long as @disk is there.
+ 	 */
+-	WARN_ON_ONCE(!blk_get_queue(disk->queue));
++	(void)WARN_ON_ONCE(!blk_get_queue(disk->queue));
+ 
+ 	retval = sysfs_create_link(&disk_to_dev(disk)->kobj, &bdi->dev->kobj,
+ 				   "bdi");
 @@ -618,7 +618,7 @@ void add_disk(struct gendisk *disk)
  
  	retval = sysfs_create_link(&disk_to_dev(disk)->kobj, &bdi->dev->kobj,
@@ -297,6 +315,7 @@ index 23b4f70..30ca52e 100644
 +	(void)WARN_ON_ONCE(disk->ev && disk->ev->block != 1);
  	kfree(disk->ev);
  }
+
 diff --git a/block/ioctl.c b/block/ioctl.c
 index ba15b2d..0fb0f1ef 100644
 --- a/block/ioctl.c
@@ -706,6 +725,7 @@ index 524bf96..d681942 100644
 +	(void)WARN_ON(rc);
  }
  EXPORT_SYMBOL_GPL(devm_kfree);
+
 diff --git a/drivers/base/dma-coherent.c b/drivers/base/dma-coherent.c
 index bb0025c..62d59f1 100644
 --- a/drivers/base/dma-coherent.c
@@ -2291,7 +2311,6 @@ index 3f62385..4b0b454 100644
  			v4l_print_pix_fmt_mplane(vfd, &f->fmt.pix_mp);
  			if (ops->vidioc_s_fmt_vid_out_mplane)
  				ret = ops->vidioc_s_fmt_vid_out_mplane(file,
-
 @@ -895,7 +895,7 @@ static long __video_do_ioctl(struct file *file,
  			break;
  
@@ -3535,6 +3554,28 @@ diff --git a/drivers/tty/serial/8250.c b/drivers/tty/serial/8250.c
 index 9f50c4e..4dab9be 100644
 --- a/drivers/tty/serial/8250.c
 +++ b/drivers/tty/serial/8250.c
+@@ -2194,7 +2194,7 @@ static void serial8250_shutdown(struct uart_port *port)
+ 	spin_lock_irqsave(&up->port.lock, flags);
+ 	if (up->port.flags & UPF_FOURPORT) {
+ 		/* reset interrupts on the AST Fourport board */
+-		inb((up->port.iobase & 0xfe0) | 0x1f);
++		(void)inb((up->port.iobase & 0xfe0) | 0x1f);
+ 		up->port.mctrl |= TIOCM_OUT1;
+ 	} else
+ 		up->port.mctrl &= ~TIOCM_OUT2;
+@@ -3026,7 +3026,7 @@ static int __devinit serial8250_probe(struct platform_device *dev)
+ 	struct uart_port port;
+ 	int ret, i, irqflag = 0;
+ 
+-	memset(&port, 0, sizeof(struct uart_port));
++	(void)memset(&port, 0, sizeof(struct uart_port));
+ 
+ 	if (share_irqs)
+ 		irqflag = IRQF_SHARED;
+diff --git a/drivers/tty/serial/8250/8250.c b/drivers/tty/serial/8250/8250.c
+index 9f50c4e..4dab9be 100644
+--- a/drivers/tty/serial/8250/8250.c
++++ b/drivers/tty/serial/8250/8250.c
 @@ -2194,7 +2194,7 @@ static void serial8250_shutdown(struct uart_port *port)
  	spin_lock_irqsave(&up->port.lock, flags);
  	if (up->port.flags & UPF_FOURPORT) {
@@ -8625,6 +8666,15 @@ index 62f4fb3..4f60de2 100644
  		       "kobject: %s\n", kobject_name(kobj));
  		goto err_out;
  	}
+@@ -494,7 +494,7 @@ int sysfs_attr_ns(struct kobject *kobj, const struct attribute *attr,
+ 	int err;
+ 
+ 	if (!dir_sd) {
+-		WARN(1, KERN_ERR "sysfs: kobject %s without dirent\n",
++		(void)WARN(1, KERN_ERR "sysfs: kobject %s without dirent\n",
+ 			kobject_name(kobj));
+ 		return -ENOENT;
+ 	}
 @@ -510,7 +510,7 @@ int sysfs_attr_ns(struct kobject *kobj, const struct attribute *attr,
  	ns = ops->namespace(kobj, attr);
  out:
@@ -8647,6 +8697,19 @@ index dd1701c..b550730 100644
  				"kobject '%s'\n", grp, kobject_name(kobj));
  			return;
  		}
+diff --git a/fs/sysfs/inode.c b/fs/sysfs/inode.c
+index 85eb816..1420eca 100644
+--- a/fs/sysfs/inode.c
++++ b/fs/sysfs/inode.c
+@@ -319,7 +319,7 @@ int sysfs_hash_and_remove(struct sysfs_dirent *dir_sd, const void *ns, const cha
+ 	struct sysfs_dirent *sd;
+ 
+ 	if (!dir_sd) {
+-		WARN(1, KERN_WARNING "sysfs: can not remove '%s', no directory\n",
++		(void)WARN(1, KERN_WARNING "sysfs: can not remove '%s', no directory\n",
+ 			name);
+ 		return -ENOENT;
+ 	}
 diff --git a/fs/sysfs/symlink.c b/fs/sysfs/symlink.c
 index a7ac78f..c2ff2aa 100644
 --- a/fs/sysfs/symlink.c
@@ -9262,7 +9325,6 @@ index bc2994e..970f1a8 100644
  		_raw_write_unlock_irqrestore(lock, flags);	\
  	} while (0)
  #define write_unlock_bh(lock)		_raw_write_unlock_bh(lock)
-
 diff --git a/include/linux/security.h b/include/linux/security.h
 index 83c18e8..2dae9d0 100644
 --- a/include/linux/security.h
@@ -9701,6 +9763,7 @@ index bb972d2..54d7904 100644
  	return rc;
 --- a/block/blk-exec.c
 +++ b/block/blk-exec.c
+
 diff --git a/include/sound/pcm_params.h b/include/sound/pcm_params.h
 index f494f1e..a352c2b 100644
 --- a/include/sound/pcm_params.h
@@ -11188,7 +11251,6 @@ index 4070153..bd40a01 100644
  	utime = stime = 0;
  
  	if (who == RUSAGE_THREAD) {
-
 diff --git a/kernel/sysctl.c b/kernel/sysctl.c
 index f487f25..1ed87ef 100644
 --- a/kernel/sysctl.c
@@ -11281,6 +11343,35 @@ index a45ca16..d436d36 100644
  		if ((tmp >> sftacc) == 0)
  			break;
  	}
+@@ -503,7 +503,7 @@ static u32 clocksource_max_adjustment(struct clocksource *cs)
+ 	 * We won't try to correct for more then 11% adjustments (110,000 ppm),
+ 	 */
+ 	ret = (u64)cs->mult * 11;
+-	do_div(ret,100);
++	(void)do_div(ret,100);
+ 	return (u32)ret;
+ }
+ 
+@@ -670,8 +670,8 @@ void __clocksource_updatefreq_scale(struct clocksource *cs, u32 scale, u32 freq)
+ 	 * margin as we do in clocksource_max_deferment()
+ 	 */
+ 	sec = (cs->mask - (cs->mask >> 3));
+-	do_div(sec, freq);
+-	do_div(sec, scale);
++	(void)do_div(sec, freq);
++	(void)do_div(sec, scale);
+ 	if (!sec)
+ 		sec = 1;
+ 	else if (sec > 600 && cs->mask > UINT_MAX)
+@@ -735,7 +735,7 @@ int clocksource_register(struct clocksource *cs)
+ {
+ 	/* calculate max adjustment for given mult/shift */
+ 	cs->maxadj = clocksource_max_adjustment(cs);
+-	WARN_ONCE(cs->mult + cs->maxadj < cs->mult,
++	(void)WARN_ONCE(cs->mult + cs->maxadj < cs->mult,
+ 		"Clocksource %s might overflow on 11%% adjustment\n",
+ 		cs->name);
+ 
 diff --git a/kernel/time/timekeeping.c b/kernel/time/timekeeping.c
 index 0c63581..f319425 100644
 --- a/kernel/time/timekeeping.c
@@ -15228,6 +15319,15 @@ index 2877c3e..6be2d34 100644
  
  	/* Don't muck with the congestion window here.
  	 * Reason is that we do not increase amount of _data_
+@@ -3032,7 +3032,7 @@ static void tcp_fastretrans_alert(struct sock *sk, int pkts_acked,
+ 		return;
+ 
+ 	/* C. Check consistency of the current state. */
+-	tcp_verify_left_out(tp);
++	(void)tcp_verify_left_out(tp);
+ 
+ 	/* D. Check state exit conditions. State can be terminated
+ 	 *    when high_seq is ACKed. */
 @@ -3043,7 +3043,7 @@ static void tcp_fastretrans_alert(struct sock *sk, int pkts_acked,
  	}
  
@@ -17207,6 +17307,7 @@ index 67fc573..b4b2b09 100644
 -	WARN_ON(timer_pending(&dev->watchdog_timer));
 +	(void)WARN_ON(timer_pending(&dev->watchdog_timer));
  }
+
 diff --git a/net/sched/sch_htb.c b/net/sched/sch_htb.c
 index 29b942c..7d89564 100644
 --- a/net/sched/sch_htb.c
@@ -19305,123 +19406,3 @@ index ab23869..e9c9664 100644
  	state.chip = mixer->chip;
  	state.mixer = mixer;
  	state.buffer = mixer->hostif->extra;
-diff --git a/block/blk-exec.c b/block/blk-exec.c
-index fb2cbd5..5f19ca1 100644
---- a/block/blk-exec.c
-+++ b/block/blk-exec.c
-@@ -50,7 +50,7 @@ void blk_execute_rq_nowait(struct request_queue *q, struct gendisk *bd_disk,
- {
- 	int where = at_head ? ELEVATOR_INSERT_FRONT : ELEVATOR_INSERT_BACK;
- 
--	WARN_ON(irqs_disabled());
-+	(void)WARN_ON(irqs_disabled());
- 	spin_lock_irq(q->queue_lock);
- 
- 	if (unlikely(blk_queue_dead(q))) {
-diff --git a/block/genhd.c b/block/genhd.c
-index 23b4f70..b6e52e1 100644
---- a/block/genhd.c
-+++ b/block/genhd.c
-@@ -614,7 +614,7 @@ void add_disk(struct gendisk *disk)
- 	 * Take an extra ref on queue which will be put on disk_release()
- 	 * so that it sticks around as long as @disk is there.
- 	 */
--	WARN_ON_ONCE(!blk_get_queue(disk->queue));
-+	(void)WARN_ON_ONCE(!blk_get_queue(disk->queue));
- 
- 	retval = sysfs_create_link(&disk_to_dev(disk)->kobj, &bdi->dev->kobj,
- 				   "bdi");
-diff --git a/drivers/tty/serial/8250/8250.c b/drivers/tty/serial/8250/8250.c
-index 9f50c4e..4dab9be 100644
---- a/drivers/tty/serial/8250/8250.c
-+++ b/drivers/tty/serial/8250/8250.c
-@@ -2194,7 +2194,7 @@ static void serial8250_shutdown(struct uart_port *port)
- 	spin_lock_irqsave(&up->port.lock, flags);
- 	if (up->port.flags & UPF_FOURPORT) {
- 		/* reset interrupts on the AST Fourport board */
--		inb((up->port.iobase & 0xfe0) | 0x1f);
-+		(void)inb((up->port.iobase & 0xfe0) | 0x1f);
- 		up->port.mctrl |= TIOCM_OUT1;
- 	} else
- 		up->port.mctrl &= ~TIOCM_OUT2;
-@@ -3026,7 +3026,7 @@ static int __devinit serial8250_probe(struct platform_device *dev)
- 	struct uart_port port;
- 	int ret, i, irqflag = 0;
- 
--	memset(&port, 0, sizeof(struct uart_port));
-+	(void)memset(&port, 0, sizeof(struct uart_port));
- 
- 	if (share_irqs)
- 		irqflag = IRQF_SHARED;
-diff --git a/fs/sysfs/file.c b/fs/sysfs/file.c
-index 00012e3..01c8f3c 100644
---- a/fs/sysfs/file.c
-+++ b/fs/sysfs/file.c
-@@ -494,7 +494,7 @@ int sysfs_attr_ns(struct kobject *kobj, const struct attribute *attr,
- 	int err;
- 
- 	if (!dir_sd) {
--		WARN(1, KERN_ERR "sysfs: kobject %s without dirent\n",
-+		(void)WARN(1, KERN_ERR "sysfs: kobject %s without dirent\n",
- 			kobject_name(kobj));
- 		return -ENOENT;
- 	}
-diff --git a/fs/sysfs/inode.c b/fs/sysfs/inode.c
-index 85eb816..1420eca 100644
---- a/fs/sysfs/inode.c
-+++ b/fs/sysfs/inode.c
-@@ -319,7 +319,7 @@ int sysfs_hash_and_remove(struct sysfs_dirent *dir_sd, const void *ns, const cha
- 	struct sysfs_dirent *sd;
- 
- 	if (!dir_sd) {
--		WARN(1, KERN_WARNING "sysfs: can not remove '%s', no directory\n",
-+		(void)WARN(1, KERN_WARNING "sysfs: can not remove '%s', no directory\n",
- 			name);
- 		return -ENOENT;
- 	}
-diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
-index a45ca16..d8f5b73 100644
---- a/kernel/time/clocksource.c
-+++ b/kernel/time/clocksource.c
-@@ -503,7 +503,7 @@ static u32 clocksource_max_adjustment(struct clocksource *cs)
- 	 * We won't try to correct for more then 11% adjustments (110,000 ppm),
- 	 */
- 	ret = (u64)cs->mult * 11;
--	do_div(ret,100);
-+	(void)do_div(ret,100);
- 	return (u32)ret;
- }
- 
-@@ -670,8 +670,8 @@ void __clocksource_updatefreq_scale(struct clocksource *cs, u32 scale, u32 freq)
- 	 * margin as we do in clocksource_max_deferment()
- 	 */
- 	sec = (cs->mask - (cs->mask >> 3));
--	do_div(sec, freq);
--	do_div(sec, scale);
-+	(void)do_div(sec, freq);
-+	(void)do_div(sec, scale);
- 	if (!sec)
- 		sec = 1;
- 	else if (sec > 600 && cs->mask > UINT_MAX)
-@@ -735,7 +735,7 @@ int clocksource_register(struct clocksource *cs)
- {
- 	/* calculate max adjustment for given mult/shift */
- 	cs->maxadj = clocksource_max_adjustment(cs);
--	WARN_ONCE(cs->mult + cs->maxadj < cs->mult,
-+	(void)WARN_ONCE(cs->mult + cs->maxadj < cs->mult,
- 		"Clocksource %s might overflow on 11%% adjustment\n",
- 		cs->name);
- 
-diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
-index 976034f..f401705 100644
---- a/net/ipv4/tcp_input.c
-+++ b/net/ipv4/tcp_input.c
-@@ -3032,7 +3032,7 @@ static void tcp_fastretrans_alert(struct sock *sk, int pkts_acked,
- 		return;
- 
- 	/* C. Check consistency of the current state. */
--	tcp_verify_left_out(tp);
-+	(void)tcp_verify_left_out(tp);
- 
- 	/* D. Check state exit conditions. State can be terminated
- 	 *    when high_seq is ACKed. */

@@ -31,7 +31,13 @@ class Patch:
 		self.hunkinfo={}
 		self.header=hunks[0]
 		for h in hunks[1:]:
-			self.hunkinfo[int(h.split(",")[0])]="@@ -"+h
+			lineno = int(h.split(",")[0])
+			validate=h.split("\n+")[-1]
+			validate=validate.split("\n-")[-1]
+			validate=validate.split("\n")
+			if len(validate) > 4:
+				h = "\n".join(h.split("\n")[:(4-len(validate))]);
+			self.hunkinfo[lineno]="@@ -"+h
 	
 	def __str__(self):
 		patch=self.header

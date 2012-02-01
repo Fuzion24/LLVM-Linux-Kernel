@@ -24,7 +24,6 @@ index 64ad3ed..459835a 100644
  	.probe		= smc_drv_probe,
  	.remove		= __devexit_p(smc_drv_remove),
  	.driver		= {
-
 diff --git a/drivers/tty/serial/amba-pl011.c b/drivers/tty/serial/amba-pl011.c
 index 9ae0240..b7a84e4 100644
 --- a/drivers/tty/serial/amba-pl011.c
@@ -52,7 +51,6 @@ index 17b27cd..008069d 100644
  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
  	local_irq_save(flags);
  	compound_lock(page);
-
 diff --git a/net/sunrpc/xprtsock.c b/net/sunrpc/xprtsock.c
 index 55472c4..c078dcc 100644
 --- a/net/sunrpc/xprtsock.c

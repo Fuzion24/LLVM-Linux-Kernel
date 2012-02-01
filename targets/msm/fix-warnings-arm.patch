@@ -914,7 +914,6 @@ index a8d787a..0c60ade 100644
  	sel_masks[msm_rpm_get_sel_mask_reg(msm_rpm_data.sel_invalidate)] |=
  		msm_rpm_get_sel_mask(msm_rpm_data.sel_invalidate);
  
-
 @@ -650,7 +650,7 @@ EXPORT_SYMBOL(msm_rpm_set);
   */
  int msm_rpm_set_noirq(int ctx, struct msm_rpm_iv_pair *req, int count)
