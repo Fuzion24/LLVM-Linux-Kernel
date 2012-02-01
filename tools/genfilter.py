@@ -48,11 +48,12 @@ def main():
 		filename=p.split("\n")[0]
 		failedHunks=p.split(" FAILED at ")[1:]
 		offsets=[ int(x.split(".")[0]) for x in failedHunks ]
-		missing = p.split("\n|diff --git a/")[1:]
 		if offsets:
 			filterfile.write("R %s %s\n" % (filename, offsets))
-		if missing:
-			filterfile.write("M %s\n" % filename)
+	missing = patchlog.split("\n|diff --git a/")[1:]
+	for m in missing:
+		filename=m.split(" b/")[0]
+		filterfile.write("M %s\n" % filename)
 	filterfile.close()	
 	
 if __name__ == "__main__":
