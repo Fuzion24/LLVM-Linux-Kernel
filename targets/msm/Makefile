@@ -31,6 +31,8 @@ PATCH_FILES=${CWD}/msm-3.0-llvm.patch ${CWD}/msm-3.0-llvm-arm.patch \
 	${CWD}/fix-warnings.patch ${CWD}/fix-warnings-arm.patch \
 #	${CWD}/autopatch.patch
 
+all: kernel-build
+
 include ../../common/common.mk
 include ../../common/arm/common-arm.mk
 
