@@ -4,3 +4,6 @@ src/
 state/
 build.log
 patch.log
+arm-test
+arm-test-0.2.tar.gz
+*.pyc
