@@ -21,29 +21,46 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
-##############################################################################
-# The automation uses two passes to create a filter of the upstream patches
-# for those targets that are not synced to the tip. The filtered set of
-# patches are appied so it is easy to tell exactly what patches were made
-# and which did not apply.
-# The patches that do not apply are listed in the file
-# targets/<targetname>/state/kernel-filter-2:
-#   F - log file used to create the following patch filter entries
-#   M - File is missing from the current code base
-#   R - Rejected hunk(s) from a patch
-##############################################################################
+# NOTE: TOPQEMUDIR must be defined by the calling Makefile
 
-TOPDIR=${CURDIR}
+TOPQEMUDIR=${TOPDIR}/qemu
+QEMUSRCDIR=${TOPQEMUDIR}/src
+INSTALLDIR=${TOPQEMUDIR}/install
+QEMUBUILDDIR=${TOPQEMUDIR}/build/qemu
+QEMUSTATE=${TOPQEMUDIR}/state
 
-include clang/clang.mk
-include qemu/qemu.mk
+.PHONY: qemu-fetch qemu-configure qemu-build 
 
-vexpress: qemu-build clang-build
-	(cd targets/vexpress && make)
+QEMU_GIT="git://git.qemu.org/qemu.git"
+QEMU_BRANCH="stable-1.0"
 
-msm: clang-build
-	(cd targets/msm && make)
+qemu-fetch: ${QEMUSTATE}/qemu-fetch
+${QEMUSTATE}/qemu-fetch:
+	@mkdir -p ${QEMUSRCDIR}
+	(cd ${QEMUSRCDIR} && git clone ${QEMU_GIT} -b ${QEMU_BRANCH})
+	@mkdir -p ${QEMUSTATE}
+	@touch $@
 
-hexagon: clang-build
-	(cd targets/hexagon && make)
+qemu-configure: ${QEMUSTATE}/qemu-configure
+${QEMUSTATE}/qemu-configure: ${QEMUSTATE}/qemu-fetch
+	@mkdir -p ${QEMUBUILDDIR}
+	(cd ${QEMUBUILDDIR} && ${QEMUSRCDIR}/qemu/configure \
+		--target-list=arm-softmmu,mips-softmmu --disable-kvm \
+		--disable-sdl --audio-drv-list="" --audio-card-list="" \
+		--disable-docs --prefix=${INSTALLDIR})
+	@mkdir -p ${QEMUSTATE}
+	@touch $@
 
+qemu-build: ${QEMUSTATE}/qemu-build
+${QEMUSTATE}/qemu-build: ${QEMUSTATE}/qemu-configure
+	@mkdir -p ${INSTALLDIR}
+	(cd ${QEMUBUILDDIR} && make -j8 install)
+	@mkdir -p ${QEMUSTATE}
+	@touch $@
+	
+qemu-clean:
+	rm -rf ${QEMUBUILDDIR} 
+	rm -f ${QEMUSTATE}/qemu-configure ${QEMUSTATE}/qemu-build
+	
+qemu-sync:
+	(cd ${QEMUSRCDIR}/qemu && git checkout ${QEMU_BRANCH} && git pull)

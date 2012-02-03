@@ -20,6 +20,8 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
+# Note: This file must be included after ${TOPDIR}/makefiles/common.mk
+
 PATCH_FILES+=${COMMON}/arm/common-arm.patch ${COMMON}/arm/fix-warnings-arm.patch \
 	${COMMON}/arm/fix-warnings-arm-unused.patch
 MAKE_FLAGS=ARCH=arm

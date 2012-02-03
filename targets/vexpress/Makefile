@@ -20,14 +20,17 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
+TOPDIR=${CWD}/../..
 CWD=${CURDIR}
 KERNEL_CFG=${CWD}/config_vexpress
 KERNEL_GIT=git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
 KERNELDIR=${SRCDIR}/linux
 PATCH_FILES=
 
-include ../../common/common.mk
-include ../../common/arm/common-arm.mk
+all: kernel-build 
+
+include ${TOPDIR}/common/common.mk
+include ${TOPDIR}/common/arm/common-arm.mk
 
 .PHONY: test
 

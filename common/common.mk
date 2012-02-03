@@ -20,13 +20,16 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
-TOPDIR=${CWD}/../..
+# NOTE: TOPDIR and CWD must be defined in the calling Makefile
+
+include ${TOPDIR}/clang/clang.mk
+
 TOOLSDIR=${TOPDIR}/tools
+COMMON=${TOPDIR}/common
+
 SRCDIR=${CWD}/src
 LOGDIR=${CWD}/log
 TMPDIR=${CWD}/tmp
-INSTALLDIR=${TOPDIR}/install
-COMMON=${TOPDIR}/common
 PATCH_FILES+=${COMMON}/common.patch ${COMMON}/fix-warnings.patch \
 	${COMMON}/fix-warnings-unused.patch
 FILTERFILE=${CWD}/kernel-filter
@@ -104,10 +107,10 @@ state/kernel-configure: state/kernel-patch
 	@mkdir -p state
 	@touch $@
 
-kernel-build: state/kernel-build
+kernel-build: ${LLVMSTATE}/clang-build state/kernel-build
 state/kernel-build: state/kernel-configure
 	@${TOOLSDIR}/banner.sh "Writing to ${LOGDIR}/build.log..."
-	(cd ${KERNELDIR} && ${MAKE_KERNEL} ${INSTALLDIR} > ${LOGDIR}/build.log 2>&1)
+	(cd ${KERNELDIR} && ${MAKE_KERNEL} ${DEVLLVMINSTALLDIR} > ${LOGDIR}/build.log 2>&1)
 	@mkdir -p state
 	@touch $@
 

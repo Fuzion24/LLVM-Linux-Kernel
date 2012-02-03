@@ -35,10 +35,10 @@ export LC_ALL=C
 if [ ${USECLANG} -eq "1" ]; then
 export CC_FOR_BUILD="${INSTALLDIR}/bin/clang -g -march=armv7-a \
 	-ccc-host-triple arm -mfloat-abi=softfp -mfpu=neon \
-	-ccc-gcc-name none-linux-gnueabi-gcc \
+	-ccc-gcc-name arm-none-linux-gnueabi-gcc \
 	-I ${INSTALLDIR}/lib/clang/3.0/include"
-export CROSS_COMPILE=arm-none-linux-gnueabi-
 export PATH=${GCCHOME}/arm-2011.03/bin:${INSTALLDIR}/bin:$PATH
+export CROSS_COMPILE=arm-none-linux-gnueabi-
 
 else
 

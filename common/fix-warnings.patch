@@ -37,6 +37,19 @@ index 9ae0240..b7a84e4 100644
  	.name		= "ttyAMA",
  	.write		= pl011_console_write,
  	.device		= uart_console_device,
+diff --git a/include/linux/lglock.h b/include/linux/lglock.h
+index 87f402c..e6896b2 100644
+--- a/include/linux/lglock.h
++++ b/include/linux/lglock.h
+@@ -106,7 +106,7 @@
+ 		lock = &per_cpu(name##_lock, i);			\
+ 		*lock = (arch_spinlock_t)__ARCH_SPIN_LOCK_UNLOCKED;	\
+ 	}								\
+-	register_hotcpu_notifier(&name##_lg_cpu_notifier);		\
++	(void)register_hotcpu_notifier(&name##_lg_cpu_notifier);	\
+ 	get_online_cpus();						\
+ 	for_each_online_cpu(i)						\
+ 		cpu_set(i, name##_cpus);				\
 diff --git a/include/linux/mm.h b/include/linux/mm.h
 index 17b27cd..008069d 100644
 --- a/include/linux/mm.h
@@ -91,3 +104,16 @@ index 55472c4..c078dcc 100644
  	xs_tcp_check_fraghdr(transport);
  }
 
+diff --git a/arch/arm/include/asm/processor.h b/arch/arm/include/asm/processor.h
+index ce280b8..3cdb83c 100644
+--- a/arch/arm/include/asm/processor.h
++++ b/arch/arm/include/asm/processor.h
+@@ -56,7 +56,7 @@ struct thread_struct {
+ ({									\
+ 	unsigned long *stack = (unsigned long *)sp;			\
+ 	set_fs(USER_DS);						\
+-	memset(regs->uregs, 0, sizeof(regs->uregs));			\
++	(void)memset(regs->uregs, 0, sizeof(regs->uregs));		\
+ 	if (current->personality & ADDR_LIMIT_32BIT)			\
+ 		regs->ARM_cpsr = USR_MODE;				\
+ 	else								\

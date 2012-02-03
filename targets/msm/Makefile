@@ -21,6 +21,7 @@
 ##############################################################################
 
 CWD=${CURDIR}
+TOPDIR=${CWD}/../..
 KERNEL_CFG=${CWD}/config_msm
 MSM_BRANCH="msm-3.0"
 KERNEL_GIT="git://codeaurora.org/kernel/msm.git -b ${MSM_BRANCH}"
