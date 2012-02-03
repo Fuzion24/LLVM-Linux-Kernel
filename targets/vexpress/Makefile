@@ -29,12 +29,13 @@ PATCH_FILES=
 
 all: kernel-build 
 
+include ${TOPDIR}/qemu/qemu.mk
 include ${TOPDIR}/common/common.mk
 include ${TOPDIR}/common/arm/common-arm.mk
 
 .PHONY: test
 
-test: state/kernel-build 
+test: state/kernel-build ${QEMUSTATE}/qemu-build
 	@${INSTALLDIR}/bin/qemu-system-arm -kernel ${KERNELDIR}/arch/arm/boot/zImage \
 		-initrd myinitrd -M vexpress-a9 -append 'console=earlycon \
 		console=ttyAMA0,38400n8 earlyprintk init=/init' -nographic

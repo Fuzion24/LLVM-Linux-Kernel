@@ -51,33 +51,6 @@ diff --git a/fs/bio.c b/fs/bio.c
 index b1fe82c..152fa2a 100644
 --- a/fs/bio.c
 +++ b/fs/bio.c
-@@ -137,7 +137,7 @@ static void bio_put_slab(struct bio_set *bs)
- 	if (WARN(!bslab, KERN_ERR "bio: unable to find slab!\n"))
- 		goto out;
- 
--	WARN_ON(!bslab->slab_ref);
-+	(void)WARN_ON(!bslab->slab_ref);
- 
- 	if (--bslab->slab_ref)
- 		goto out;
-@@ -253,7 +253,7 @@ EXPORT_SYMBOL(bio_free);
- 
- void bio_init(struct bio *bio)
- {
--	memset(bio, 0, sizeof(*bio));
-+	(void)memset(bio, 0, sizeof(*bio));
- 	bio->bi_flags = 1 << BIO_UPTODATE;
- 	atomic_set(&bio->bi_cnt, 1);
- }
-@@ -395,7 +395,7 @@ void zero_fill_bio(struct bio *bio)
- 
- 	bio_for_each_segment(bv, bio, i) {
- 		char *data = bvec_kmap_irq(bv, &flags);
--		memset(data, 0, bv->bv_len);
-+		(void)memset(data, 0, bv->bv_len);
- 		flush_dcache_page(bv->bv_page);
- 		bvec_kunmap_irq(data, &flags);
- 	}
 @@ -424,7 +424,7 @@ void bio_put(struct bio *bio)
  }
  EXPORT_SYMBOL(bio_put);
@@ -100,53 +73,6 @@ index 0e575d1..ee252b0 100644
  {
  	return &BDEV_I(inode)->bdev;
  }
-@@ -461,7 +461,7 @@ static void init_once(void *foo)
- 	struct bdev_inode *ei = (struct bdev_inode *) foo;
- 	struct block_device *bdev = &ei->bdev;
- 
--	memset(bdev, 0, sizeof(*bdev));
-+	(void)memset(bdev, 0, sizeof(*bdev));
- 	mutex_init(&bdev->bd_mutex);
- 	INIT_LIST_HEAD(&bdev->bd_inodes);
- 	INIT_LIST_HEAD(&bdev->bd_list);
-@@ -890,7 +890,7 @@ int bd_link_disk_holder(struct block_device *bdev, struct gendisk *disk)
- 
- 	mutex_lock(&bdev->bd_mutex);
- 
--	WARN_ON_ONCE(!bdev->bd_holder);
-+	(void)WARN_ON_ONCE(!bdev->bd_holder);
- 
- 	/* FIXME: remove the following once add_disk() handles errors */
- 	if (WARN_ON(!disk->slave_dir || !bdev->bd_part->holder_dir))
-@@ -1274,7 +1274,7 @@ int blkdev_get(struct block_device *bdev, fmode_t mode, void *holder)
- 	struct block_device *whole = NULL;
- 	int res;
- 
--	WARN_ON_ONCE((mode & FMODE_EXCL) && !holder);
-+	(void)WARN_ON_ONCE((mode & FMODE_EXCL) && !holder);
- 
- 	if ((mode & FMODE_EXCL) && holder) {
- 		whole = bd_start_claiming(bdev, holder);
-@@ -1453,7 +1453,7 @@ static int __blkdev_put(struct block_device *bdev, fmode_t mode, int for_part)
- 		bdev->bd_part_count--;
- 
- 	if (!--bdev->bd_openers) {
--		WARN_ON_ONCE(bdev->bd_holders);
-+		(void)WARN_ON_ONCE(bdev->bd_holders);
- 		sync_blockdev(bdev);
- 		kill_bdev(bdev);
- 		/* ->release can cause the old bdi to disappear,
-@@ -1500,8 +1500,8 @@ int blkdev_put(struct block_device *bdev, fmode_t mode)
- 		 */
- 		spin_lock(&bdev_lock);
- 
--		WARN_ON_ONCE(--bdev->bd_holders < 0);
--		WARN_ON_ONCE(--bdev->bd_contains->bd_holders < 0);
-+		(void)WARN_ON_ONCE(--bdev->bd_holders < 0);
-+		(void)WARN_ON_ONCE(--bdev->bd_contains->bd_holders < 0);
- 
- 		/* bd_contains might point to self, check in a separate step */
- 		if ((bdev_free = !bdev->bd_holders))
 diff --git a/fs/buffer.c b/fs/buffer.c
 index 1a30db7..adf9efb 100644
 --- a/fs/buffer.c
@@ -160,96 +86,6 @@ index 1a30db7..adf9efb 100644
  init_buffer(struct buffer_head *bh, bh_end_io_t *handler, void *private)
  {
  	bh->b_end_io = handler;
-@@ -465,7 +465,7 @@ EXPORT_SYMBOL(mark_buffer_async_write);
- static void __remove_assoc_queue(struct buffer_head *bh)
- {
- 	list_del_init(&bh->b_assoc_buffers);
--	WARN_ON(!bh->b_assoc_map);
-+	(void)WARN_ON(!bh->b_assoc_map);
- 	if (buffer_write_io_error(bh))
- 		set_bit(AS_EIO, &bh->b_assoc_map->flags);
- 	bh->b_assoc_map = NULL;
-@@ -615,7 +615,7 @@ static void __set_page_dirty(struct page *page,
- {
- 	spin_lock_irq(&mapping->tree_lock);
- 	if (page->mapping) {	/* Race with truncate? */
--		WARN_ON_ONCE(warn && !PageUptodate(page));
-+		(void)WARN_ON_ONCE(warn && !PageUptodate(page));
- 		account_page_dirtied(page, mapping);
- 		radix_tree_tag_set(&mapping->page_tree,
- 				page_index(page), PAGECACHE_TAG_DIRTY);
-@@ -1100,7 +1100,7 @@ __getblk_slow(struct block_device *bdev, sector_t block, int size)
-  */
- void mark_buffer_dirty(struct buffer_head *bh)
- {
--	WARN_ON_ONCE(!buffer_uptodate(bh));
-+	(void)WARN_ON_ONCE(!buffer_uptodate(bh));
- 
- 	/*
- 	 * Very *carefully* optimize the it-is-already-dirty case.
-@@ -1138,7 +1138,7 @@ void __brelse(struct buffer_head * buf)
- 		put_bh(buf);
- 		return;
- 	}
--	WARN(1, KERN_ERR "VFS: brelse: Trying to free free buffer\n");
-+	(void)WARN(1, KERN_ERR "VFS: brelse: Trying to free free buffer\n");
- }
- EXPORT_SYMBOL(__brelse);
- 
-@@ -1387,7 +1387,7 @@ static void invalidate_bh_lru(void *arg)
- 	
- void invalidate_bh_lrus(void)
- {
--	on_each_cpu(invalidate_bh_lru, NULL, 1);
-+	(void)on_each_cpu(invalidate_bh_lru, NULL, 1);
- }
- EXPORT_SYMBOL_GPL(invalidate_bh_lrus);
- 
-@@ -1623,7 +1623,7 @@ static int __block_write_full_page(struct inode *inode, struct page *page,
- 			set_buffer_uptodate(bh);
- 		} else if ((!buffer_mapped(bh) || buffer_delay(bh)) &&
- 			   buffer_dirty(bh)) {
--			WARN_ON(bh->b_size != blocksize);
-+			(void)WARN_ON(bh->b_size != blocksize);
- 			err = get_block(inode, block, bh, 1);
- 			if (err)
- 				goto recover;
-@@ -1815,7 +1815,7 @@ int __block_write_begin(struct page *page, loff_t pos, unsigned len,
- 		if (buffer_new(bh))
- 			clear_buffer_new(bh);
- 		if (!buffer_mapped(bh)) {
--			WARN_ON(bh->b_size != blocksize);
-+			(void)WARN_ON(bh->b_size != blocksize);
- 			err = get_block(inode, block, bh, 1);
- 			if (err)
- 				break;
-@@ -2081,7 +2081,7 @@ int block_read_full_page(struct page *page, get_block_t *get_block)
- 
- 			fully_mapped = 0;
- 			if (iblock < lblock) {
--				WARN_ON(bh->b_size != blocksize);
-+				(void)WARN_ON(bh->b_size != blocksize);
- 				err = get_block(inode, iblock, bh, 0);
- 				if (err)
- 					SetPageError(page);
-@@ -2744,7 +2744,7 @@ int block_truncate_page(struct address_space *mapping,
- 
- 	err = 0;
- 	if (!buffer_mapped(bh)) {
--		WARN_ON(bh->b_size != blocksize);
-+		(void)WARN_ON(bh->b_size != blocksize);
- 		err = get_block(inode, iblock, bh, 0);
- 		if (err)
- 			goto unlock;
-@@ -2982,7 +2982,7 @@ int __sync_dirty_buffer(struct buffer_head *bh, int rw)
- {
- 	int ret = 0;
- 
--	WARN_ON(atomic_read(&bh->b_count) < 1);
-+	(void)WARN_ON(atomic_read(&bh->b_count) < 1);
- 	lock_buffer(bh);
- 	if (test_clear_buffer_dirty(bh)) {
- 		get_bh(bh);
 diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
 index 81c04f4..4bbda3c 100644
 --- a/include/linux/rcupdate.h
@@ -289,15 +125,6 @@ diff --git a/mm/filemap.c b/mm/filemap.c
 index 97f49ed..9878f2f 100644
 --- a/mm/filemap.c
 +++ b/mm/filemap.c
-@@ -835,7 +835,7 @@ repeat:
- 				 * when entry at index 0 moves out of or back
- 				 * to root: none yet gotten, safe to restart.
- 				 */
--				WARN_ON(start | i);
-+				(void)WARN_ON(start | i);
- 				goto restart;
- 			}
- 			/*
 @@ -2162,7 +2162,7 @@ EXPORT_SYMBOL(iov_iter_single_seg_count);
   * Returns appropriate error code that caller should return or
   * zero in case that write should be allowed.
@@ -325,78 +152,6 @@ diff --git a/net/core/dev.c b/net/core/dev.c
 index 115dee1..7cd0a28 100644
 --- a/net/core/dev.c
 +++ b/net/core/dev.c
-@@ -498,7 +498,7 @@ static int netdev_boot_setup_add(char *name, struct ifmap *map)
- 	s = dev_boot_setup;
- 	for (i = 0; i < NETDEV_BOOT_SETUP_MAX; i++) {
- 		if (s[i].name[0] == '\0' || s[i].name[0] == ' ') {
--			memset(s[i].name, 0, sizeof(s[i].name));
-+			(void)memset(s[i].name, 0, sizeof(s[i].name));
- 			strlcpy(s[i].name, name, IFNAMSIZ);
- 			memcpy(&s[i].map, map, sizeof(s[i].map));
- 			break;
-@@ -581,7 +581,7 @@ int __init netdev_boot_setup(char *str)
- 		return 0;
- 
- 	/* Save settings */
--	memset(&map, 0, sizeof(map));
-+	(void)memset(&map, 0, sizeof(map));
- 	if (ints[0] > 0)
- 		map.irq = ints[1];
- 	if (ints[0] > 1)
-@@ -1330,7 +1330,7 @@ void dev_disable_lro(struct net_device *dev)
- 	netdev_update_features(dev);
- 
- 	if (unlikely(dev->features & NETIF_F_LRO))
--		netdev_WARN(dev, "failed to disable LRO!\n");
-+		(void)netdev_WARN(dev, "failed to disable LRO!\n");
- }
- EXPORT_SYMBOL(dev_disable_lro);
- 
-@@ -1461,7 +1461,7 @@ void net_enable_timestamp(void)
- 		return;
- 	}
- #endif
--	WARN_ON(in_interrupt());
-+	(void)WARN_ON(in_interrupt());
- 	jump_label_inc(&netstamp_needed);
- }
- EXPORT_SYMBOL(net_enable_timestamp);
-@@ -1896,7 +1896,7 @@ static void skb_warn_bad_offload(const struct sk_buff *skb)
- 	if (dev && dev->dev.parent)
- 		driver = dev_driver_string(dev->dev.parent);
- 
--	WARN(1, "%s: caps=(%pNF, %pNF) len=%d data_len=%d gso_size=%d "
-+	(void)WARN(1, "%s: caps=(%pNF, %pNF) len=%d data_len=%d gso_size=%d "
- 	     "gso_type=%d ip_summed=%d\n",
- 	     driver, dev ? &dev->features : &null_features,
- 	     skb->sk ? &skb->sk->sk_route_caps : &null_features,
-@@ -2725,7 +2725,7 @@ static int get_rps_cpu(struct net_device *dev, struct sk_buff *skb,
- 	if (skb_rx_queue_recorded(skb)) {
- 		u16 index = skb_get_rx_queue(skb);
- 		if (unlikely(index >= dev->real_num_rx_queues)) {
--			WARN_ONCE(dev->real_num_rx_queues > 1,
-+			(void)WARN_ONCE(dev->real_num_rx_queues > 1,
- 				  "%s received packet on queue %u, but number "
- 				  "of RX queues is %u\n",
- 				  dev->name, index, dev->real_num_rx_queues);
-@@ -3001,7 +3001,7 @@ static void net_tx_action(struct softirq_action *h)
- 			struct sk_buff *skb = clist;
- 			clist = clist->next;
- 
--			WARN_ON(atomic_read(&skb->users));
-+			(void)WARN_ON(atomic_read(&skb->users));
- 			trace_kfree_skb(skb, net_tx_action);
- 			__kfree_skb(skb);
- 		}
-@@ -3380,7 +3380,7 @@ static int napi_gro_complete(struct sk_buff *skb)
- 	rcu_read_unlock();
- 
- 	if (err) {
--		WARN_ON(&ptype->list == head);
-+		(void)WARN_ON(&ptype->list == head);
- 		kfree_skb(skb);
- 		return NET_RX_SUCCESS;
- 	}
 @@ -3389,7 +3389,7 @@ out:
  	return netif_receive_skb(skb);
  }
@@ -406,107 +161,6 @@ index 115dee1..7cd0a28 100644
  {
  	struct sk_buff *skb, *next;
  
-@@ -3871,7 +3871,7 @@ static void net_rx_action(struct softirq_action *h)
- 			trace_napi_poll(n);
- 		}
- 
--		WARN_ON_ONCE(work > weight);
-+		(void)WARN_ON_ONCE(work > weight);
- 
- 		budget -= work;
- 
-@@ -4859,7 +4859,7 @@ static int dev_ifsioc_locked(struct net *net, struct ifreq *ifr, unsigned int cm
- 
- 	case SIOCGIFHWADDR:
- 		if (!dev->addr_len)
--			memset(ifr->ifr_hwaddr.sa_data, 0, sizeof ifr->ifr_hwaddr.sa_data);
-+			(void)memset(ifr->ifr_hwaddr.sa_data, 0, sizeof ifr->ifr_hwaddr.sa_data);
- 		else
- 			memcpy(ifr->ifr_hwaddr.sa_data, dev->dev_addr,
- 			       min(sizeof ifr->ifr_hwaddr.sa_data, (size_t) dev->addr_len));
-@@ -4891,7 +4891,7 @@ static int dev_ifsioc_locked(struct net *net, struct ifreq *ifr, unsigned int cm
- 		/* dev_ioctl() should ensure this case
- 		 * is never reached
- 		 */
--		WARN_ON(1);
-+		(void)WARN_ON(1);
- 		err = -ENOTTY;
- 		break;
- 
-@@ -5235,7 +5235,7 @@ static void rollback_registered_many(struct list_head *head)
- 			pr_debug("unregister_netdevice: device %s/%p never "
- 				 "was registered\n", dev->name, dev);
- 
--			WARN_ON(1);
-+			(void)WARN_ON(1);
- 			list_del(&dev->unreg_list);
- 			continue;
- 		}
-@@ -5279,7 +5279,7 @@ static void rollback_registered_many(struct list_head *head)
- 			dev->netdev_ops->ndo_uninit(dev);
- 
- 		/* Notifier chain MUST detach us from master device. */
--		WARN_ON(dev->master);
-+		(void)WARN_ON(dev->master);
- 
- 		/* Remove entries from kobject tree */
- 		netdev_unregister_kobject(dev);
-@@ -5650,7 +5650,7 @@ int init_dummy_netdev(struct net_device *dev)
- 	 * NAPI code and this dummy netdev is supposed to be
- 	 * only ever used for NAPI polls
- 	 */
--	memset(dev, 0, sizeof(struct net_device));
-+	(void)memset(dev, 0, sizeof(struct net_device));
- 
- 	/* make sure we BUG if trying to hit standard
- 	 * register/unregister code path
-@@ -5821,15 +5821,15 @@ void netdev_run_todo(void)
- 
- 		dev->reg_state = NETREG_UNREGISTERED;
- 
--		on_each_cpu(flush_backlog, dev, 1);
-+		(void)on_each_cpu(flush_backlog, dev, 1);
- 
- 		netdev_wait_allrefs(dev);
- 
- 		/* paranoia */
- 		BUG_ON(netdev_refcnt_read(dev));
--		WARN_ON(rcu_access_pointer(dev->ip_ptr));
--		WARN_ON(rcu_access_pointer(dev->ip6_ptr));
--		WARN_ON(dev->dn_ptr);
-+		(void)WARN_ON(rcu_access_pointer(dev->ip_ptr));
-+		(void)WARN_ON(rcu_access_pointer(dev->ip6_ptr));
-+		(void)WARN_ON(dev->dn_ptr);
- 
- 		if (dev->destructor)
- 			dev->destructor(dev);
-@@ -5876,7 +5876,7 @@ struct rtnl_link_stats64 *dev_get_stats(struct net_device *dev,
- 	const struct net_device_ops *ops = dev->netdev_ops;
- 
- 	if (ops->ndo_get_stats64) {
--		memset(storage, 0, sizeof(*storage));
-+		(void)memset(storage, 0, sizeof(*storage));
- 		ops->ndo_get_stats64(dev, storage);
- 	} else if (ops->ndo_get_stats) {
- 		netdev_stats_to_stats64(storage, ops->ndo_get_stats(dev));
-@@ -6228,7 +6228,7 @@ int dev_change_net_namespace(struct net_device *dev, struct net *net, const char
- 
- 	/* Fixup kobjects */
- 	err = device_rename(&dev->dev, dev->name);
--	WARN_ON(err);
-+	(void)WARN_ON(err);
- 
- 	/* Add the device back in the hashes */
- 	list_netdevice(dev);
-@@ -6561,7 +6561,7 @@ static int __init net_dev_init(void)
- 	for_each_possible_cpu(i) {
- 		struct softnet_data *sd = &per_cpu(softnet_data, i);
- 
--		memset(sd, 0, sizeof(*sd));
-+		(void)memset(sd, 0, sizeof(*sd));
- 		skb_queue_head_init(&sd->input_pkt_queue);
- 		skb_queue_head_init(&sd->process_queue);
- 		sd->completion_queue = NULL;
 diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
 index ff302bd..c5cce53 100644
 --- a/net/ipv4/ip_output.c
@@ -520,15 +174,6 @@ index ff302bd..c5cce53 100644
  {
  	iph->check = 0;
  	iph->check = ip_fast_csum((unsigned char *)iph, iph->ihl);
-@@ -121,7 +121,7 @@ static int ip_dev_loopback_xmit(struct sk_buff *newskb)
- 	__skb_pull(newskb, skb_network_offset(newskb));
- 	newskb->pkt_type = PACKET_LOOPBACK;
- 	newskb->ip_summed = CHECKSUM_UNNECESSARY;
--	WARN_ON(!skb_dst(newskb));
-+	(void)WARN_ON(!skb_dst(newskb));
- 	skb_dst_force(newskb);
- 	netif_rx_ni(newskb);
- 	return 0;
 diff --git a/sound/arm/aaci.c b/sound/arm/aaci.c
 index b37b702a..c16beea 100644
 --- a/sound/arm/aaci.c
