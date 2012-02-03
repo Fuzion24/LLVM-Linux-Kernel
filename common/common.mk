@@ -20,7 +20,9 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
-# NOTE: TOPDIR and CWD must be defined in the calling Makefile
+# NOTE: TOPDIR, CWD must be defined in the calling Makefile
+# NOTE: MAKE_KERNEL and/or MAKE_DEVKERNEL must also be defined in the calling 
+#       Makefile
 
 include ${TOPDIR}/clang/clang.mk
 
@@ -33,6 +35,7 @@ TMPDIR=${CWD}/tmp
 PATCH_FILES+=${COMMON}/common.patch ${COMMON}/fix-warnings.patch \
 	${COMMON}/fix-warnings-unused.patch
 FILTERFILE=${CWD}/kernel-filter
+TMPFILTERFILE=${CWD}/tmp/kernel-filter
 
 # The ARCH makefile must provide the following:
 #   - PATCH_FILES+=... Additional arch specific patch file(s)
@@ -46,8 +49,6 @@ FILTERFILE=${CWD}/kernel-filter
 #   - KERNELDIR
 
 .PHONY: kernel-fetch kernel-patch kernel-configure kernel-build
-
-all: kernel-build
 
 kernel-fetch: state/kernel-fetch
 state/kernel-fetch: 
@@ -63,19 +64,19 @@ state/kernel-patch: state/kernel-fetch
 	@${TOOLSDIR}/banner.sh "Checking for duplicated patches:"
 	@${TOOLSDIR}/checkduplicates.py ${PATCH_FILES}
 	@echo "Testing upstream patches: see ${LOGDIR}/testpatch.log"
-	@rm -f ${TMPDIR}/test.patch ${FILTERFILE} ${FILTERFILE}-1 ${FILTERFILE}-2
+	@rm -f ${TMPDIR}/test.patch ${TMPFILTERFILE}-1 ${TMPFILTERFILE}-2 ${FILTERFILE}
 	@for patch in ${PATCH_FILES}; do cat $$patch >> ${TMPDIR}/test.patch; done
 	(cd ${KERNELDIR} && git reset --hard HEAD)
 	@make -i patch-dry-run1
 	@${TOOLSDIR}/banner.sh "Creating patch filter: see ${LOGDIR}/filteredpatch.log"
-	@${TOOLSDIR}/genfilter.py ${LOGDIR}/testpatch.log ${FILTERFILE}
-	@${TOOLSDIR}/applyfilter.py ${TMPDIR}/test.patch ${TMPDIR}/filtered.patch ${FILTERFILE}
+	@${TOOLSDIR}/genfilter.py ${LOGDIR}/testpatch.log ${TMPFILTERFILE}-1
+	@${TOOLSDIR}/applyfilter.py ${TMPDIR}/test.patch ${TMPDIR}/filtered.patch ${TMPFILTERFILE}-1
 	@${TOOLSDIR}/banner.sh "Testing for missed, unapplied patches: see ${LOGDIR}/filteredpatch.log"
 	@make -i patch-dry-run2
-	@${TOOLSDIR}/genfilter.py ${LOGDIR}/filteredpatch.log ${FILTERFILE}-1
+	@${TOOLSDIR}/genfilter.py ${LOGDIR}/filteredpatch.log ${TMPFILTERFILE}-2
 	@${TOOLSDIR}/banner.sh "Creating final patch: see ${LOGDIR}/filteredpatch.log"
-	@cat ${FILTERFILE} ${FILTERFILE}-1 > ${FILTERFILE}-2
-	@${TOOLSDIR}/applyfilter.py ${TMPDIR}/test.patch ${TMPDIR}/final.patch ${FILTERFILE}-2
+	@cat ${TMPFILTERFILE}-1 ${TMPFILTERFILE}-2 > ${FILTERFILE}
+	@${TOOLSDIR}/applyfilter.py ${TMPDIR}/test.patch ${TMPDIR}/final.patch ${FILTERFILE}
 	@${TOOLSDIR}/banner.sh "Patching source: see patch.log"
 	(cd ${KERNELDIR} && patch -p1 -i ${TMPDIR}/final.patch > ${LOGDIR}/patch.log)
 	@mkdir -p state
@@ -94,9 +95,10 @@ kernel-clean:
 	@rm -f ${CWD}/state/kernel-patch
 	@rm -f ${CWD}/state/kernel-configure
 	@rm -f ${CWD}/state/kernel-build
+	@rm -f ${CWD}/state/kernel-devbuild
 	@rm -f ${FILTERFILE}
-	@rm -f ${FILTERFILE}-1
-	@rm -f ${FILTERFILE}-2
+	@rm -f ${TMPFILTERFILE}-1
+	@rm -f ${TMPFILTERFILE}-2
 	@rm -f ${LOGDIR}/*.log
 	@rm -f ${TMPDIR}/*.patch
 
@@ -109,8 +111,17 @@ state/kernel-configure: state/kernel-patch
 
 kernel-build: ${LLVMSTATE}/clang-build state/kernel-build
 state/kernel-build: state/kernel-configure
+	@test -n "${MAKE_KERNEL}" || (echo "Error: MAKE_KERNEL undefined" && false)
 	@${TOOLSDIR}/banner.sh "Writing to ${LOGDIR}/build.log..."
-	(cd ${KERNELDIR} && ${MAKE_KERNEL} ${DEVLLVMINSTALLDIR} > ${LOGDIR}/build.log 2>&1)
+	(cd ${KERNELDIR} && ${MAKE_KERNEL} > ${LOGDIR}/build.log 2>&1)
+	@mkdir -p state
+	@touch $@
+
+kernel-devbuild: ${LLVMSTATE}/clangdev-build state/kernel-devbuild
+state/kernel-devbuild: state/kernel-configure
+	@test -n "${MAKE_DEVKERNEL}" || (echo "Error: MAKE_DEVKERNEL undefined" && false)
+	@${TOOLSDIR}/banner.sh "Writing to ${LOGDIR}/devbuild.log..."
+	(cd ${KERNELDIR} && ${MAKE_DEVKERNEL} > ${LOGDIR}/devbuild.log 2>&1)
 	@mkdir -p state
 	@touch $@
 

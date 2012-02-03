@@ -25,4 +25,5 @@
 PATCH_FILES+=${COMMON}/arm/common-arm.patch ${COMMON}/arm/fix-warnings-arm.patch \
 	${COMMON}/arm/fix-warnings-arm-unused.patch
 MAKE_FLAGS=ARCH=arm
-MAKE_KERNEL=${COMMON}/arm/make-kernel.sh
+MAKE_KERNEL=${COMMON}/arm/make-kernel.sh ${LLVMINSTALLDIR}
+MAKE_DEVKERNEL=${COMMON}/arm/make-kernel.sh ${LLVMDEVINSTALLDIR}

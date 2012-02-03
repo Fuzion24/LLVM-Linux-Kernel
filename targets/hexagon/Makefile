@@ -1,6 +1,5 @@
 ##############################################################################
 # Copyright (c) 2012 Mark Charlebois
-#               2012 Jan-Simon Möller
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to 
@@ -21,8 +20,17 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
-TOPDIR=${CURDIR}
+CWD=${CURDIR}
+TOPDIR=${CWD}/../..
+KERNEL_GIT=git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+KERNELDIR=${SRCDIR}/linux
+KERNEL_CFG=${KERNELDIR}/arch/hexagon/configs/comet_defconfig
+PATCH_FILES=
+MAKE_DEVKERNEL=${CWD}/make_kernel.sh
 
-include clang/clang.mk
-include qemu/qemu.mk
+# Only the development version of clang supoprts hexagon
+all: kernel-devbuild
+
+include ${TOPDIR}/common/common.mk
+
 

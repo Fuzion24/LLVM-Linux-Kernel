@@ -32,7 +32,7 @@ LLVMSTATE=${LLVMTOP}/state
 
 LLVMDEVSRC=`basename ${LLVMDEVBUILDDIR}`
 
-DEVLLVMINSTALLDIR=${LLVMTOP}/install-dev
+LLVMDEVINSTALLDIR=${LLVMTOP}/install-dev
 LLVMDEVBUILDDIR=${LLVMTOP}/build/llvm-dev
 LLVMDEVDIR=${LLVMSRCDIR}/${LLVMDEVSRC}
 CLANGDEVDIR=${LLVMDEVDIR}/tools/clang
@@ -57,7 +57,7 @@ clang-configure: ${LLVMSTATE}/clang-configure
 ${LLVMSTATE}/clang-configure: ${LLVMSTATE}/clang-fetch
 	@mkdir -p ${LLVMBUILDDIR}
 	(cd ${LLVMBUILDDIR} && CC=gcc CXX=g++ ${LLVMSRCDIR}/llvm/configure \
-		--enable-targets=arm,hexagon,mips --disable-shared \
+		--enable-targets=arm,mips --disable-shared \
 		--enable-languages=c,c++ --enable-bindings=none \
 		--prefix=${LLVMINSTALLDIR} target_alias=arm-linux)
 	@mkdir -p ${LLVMSTATE}
@@ -84,13 +84,13 @@ ${LLVMSTATE}/clangdev-configure: ${LLVMSTATE}/clangdev-fetch
 	(cd ${LLVMDEVBUILDDIR} && CC=gcc CXX=g++ ${LLVMDEVDIR}/configure \
 		--enable-targets=arm,hexagon,mips --disable-shared \
 		--enable-languages=c,c++ --enable-bindings=none \
-		--prefix=${DEVLLVMINSTALLDIR})
+		--prefix=${LLVMDEVINSTALLDIR})
 	@mkdir -p ${LLVMSTATE}
 	@touch $@
 
 clangdev-build:  ${LLVMSTATE}/clangdev-build
 ${LLVMSTATE}/clangdev-build: ${LLVMSTATE}/clangdev-configure
-	@mkdir -p ${DEVLLVMINSTALLDIR}
+	@mkdir -p ${LLVMDEVINSTALLDIR}
 	(cd ${LLVMDEVBUILDDIR} && make -j2 install)
 	@mkdir -p ${LLVMSTATE}
 	@touch $@
@@ -99,8 +99,22 @@ clang-clean:
 	@rm -rf ${LLVMINSTALLDIR} ${LLVMBUILDDIR}
 	@rm -f ${LLVMSTATE}/clang-configure ${LLVMSTATE}/clang-build
 
-clang-sync:
+clangdev-clean:
+	@rm -rf ${LLVMDEVINSTALLDIR} ${LLVMDEVBUILDDIR}
+	@rm -f ${LLVMSTATE}/clangdev-configure ${LLVMSTATE}/clangdev-build
+
+clang-sync: ${LLVMSTATE}/clang-fetch
 	(cd ${LLVMSRCDIR}/llvm && git checkout ${LLVM_BRANCH} && git pull)
 	(cd ${LLVMSRCDIR}/llvm/tools/clang && git checkout ${LLVM_BRANCH} && git pull)
-	(test -d ${LLVMDEVDIR} && cd ${LLVMDEVDIR} && git checkout ${LLVM_MASTER} && git pull)
-	(test -d ${CLANGDEVDIR} && cd ${CLANGDEVDIR} && git checkout ${LLVM_MASTER} && git pull)
+
+clangdev-sync: ${LLVMSTATE}/clangdev-fetch
+	(cd ${LLVMDEVDIR} && git checkout ${LLVM_MASTER} && git pull)
+	(cd ${CLANGDEVDIR} && git checkout ${LLVM_MASTER} && git pull)
+
+clang-update-all: ${LLVMSTATE}/clang-fetch ${LLVMSTATE}/clangdev-fetch
+	@make clang-clean
+	@make clang-sync
+	@make clang-build
+	@make clangdev-clean
+	@make clangdev-sync
+	@make clangdev-build
