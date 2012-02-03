@@ -1,7 +1,7 @@
 Choose a target in the targets directory and cd to it.
 Type make, this will build the target and all the dependencies.
 
-Valid build targets for platforms in targets/<targetname>:
+Valid build targets for platforms in llvm-setup and llvm-setup/targets/<targetname>:
 
 	clang-fetch
 	clang-configure
@@ -15,6 +15,10 @@ Valid build targets for platforms in targets/<targetname>:
 	clangdev-sync
 	clangdev-clean
 
+	clang-update-all
+
+Valid build targets for platforms in llvm-setup/targets/<targetname>:
+
 	kernel-fetch
 	kernel-configure
 	kernel-build
@@ -22,7 +26,7 @@ Valid build targets for platforms in targets/<targetname>:
 	kernel-sync
 	kernel-clean
 
-Additional build targets for platorms that support testing via QEMU:
+Valid build targets for platforms that support testing via QEMU:
 
 	qemu-fetch
 	qemu-configure
@@ -38,7 +42,7 @@ patches are appied so it is easy to tell exactly what patches were made
 and which did not apply.
 
 The patches that do not apply are listed in the file
-targets/<targetname>/kernel-filter:
+llvm-setup/targets/<targetname>/kernel-filter:
 
 	F - log file used to create the following patch filter entries
 	M - File is missing from the current code base
@@ -48,7 +52,7 @@ Patch files are also organized by common, arch specific, and platform specific.
 
 Common patches are in common/*.patch
 Arch specific patches are in common/<arch>/*.patch
-Platform specific patches are in targets/<targetname>/*.patch
+Platform specific patches are in llvm-setup/targets/<targetname>/*.patch
 
 Patches are further separated into those for unused return value warnings, general
 warnings, and error fixes.
