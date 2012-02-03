@@ -5904,19 +5904,6 @@ index a0a041d..dd48014 100644
  		res = check_part[i++](state);
  		if (res < 0) {
  			/* We have hit an I/O error which we don't report now.
-diff --git a/fs/proc/generic.c b/fs/proc/generic.c
-index f1637f1..93fb4b8 100644
---- a/fs/proc/generic.c
-+++ b/fs/proc/generic.c
-@@ -619,7 +619,7 @@ static struct proc_dir_entry *__proc_create(struct proc_dir_entry **parent,
- 	ent = kmalloc(sizeof(struct proc_dir_entry) + len + 1, GFP_KERNEL);
- 	if (!ent) goto out;
- 
--	memset(ent, 0, sizeof(struct proc_dir_entry));
-+	(void)memset(ent, 0, sizeof(struct proc_dir_entry));
- 	memcpy(((char *) ent) + sizeof(struct proc_dir_entry), fn, len + 1);
- 	ent->name = ((char *) ent) + sizeof(*ent);
- 	ent->namelen = len;
 diff --git a/fs/super.c b/fs/super.c
 index ab3d672..c9042ad 100644
 --- a/fs/super.c
@@ -7502,15 +7489,6 @@ index 03bf3bb..bb4b87f 100644
  #endif
  
  	page->in_use--;
-@@ -501,6 +501,6 @@ void dmam_pool_destroy(struct dma_pool *pool)
- 	struct device *dev = pool->dev;
- 
- 	dma_pool_destroy(pool);
--	WARN_ON(devres_destroy(dev, dmam_pool_release, dmam_pool_match, pool));
-+	(void)WARN_ON(devres_destroy(dev, dmam_pool_release, dmam_pool_match, pool));
- }
- EXPORT_SYMBOL(dmam_pool_destroy);
-
 diff --git a/mm/filemap.c b/mm/filemap.c
 index a8251a8..14823ec 100644
 --- a/mm/filemap.c
@@ -8662,19 +8640,6 @@ index 6877645..779a1f5 100644
  		INIT_LIST_HEAD(&p->unused);
  
  
-diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
-index 0c99db4..2c7c4c2 100644
---- a/net/ipv4/ip_output.c
-+++ b/net/ipv4/ip_output.c
-@@ -121,7 +121,7 @@ static int ip_dev_loopback_xmit(struct sk_buff *newskb)
- 	__skb_pull(newskb, skb_network_offset(newskb));
- 	newskb->pkt_type = PACKET_LOOPBACK;
- 	newskb->ip_summed = CHECKSUM_UNNECESSARY;
--	WARN_ON(!skb_dst(newskb));
-+	(void)WARN_ON(!skb_dst(newskb));
- 	netif_rx_ni(newskb);
- 	return 0;
- }
 diff --git a/net/ipv4/netfilter/nf_nat_core.c b/net/ipv4/netfilter/nf_nat_core.c
 index 3346de5..6ba0cbd 100644
 --- a/net/ipv4/netfilter/nf_nat_core.c
