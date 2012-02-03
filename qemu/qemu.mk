@@ -28,6 +28,11 @@ QEMUSRCDIR=${TOPQEMUDIR}/src
 INSTALLDIR=${TOPQEMUDIR}/install
 QEMUBUILDDIR=${TOPQEMUDIR}/build/qemu
 QEMUSTATE=${TOPQEMUDIR}/state
+JOBS:=${shell getconf _NPROCESSORS_ONLN}
+ifeq "${JOBS}" ""
+JOBS:=2
+endif
+
 
 .PHONY: qemu-fetch qemu-configure qemu-build 
 
@@ -54,7 +59,7 @@ ${QEMUSTATE}/qemu-configure: ${QEMUSTATE}/qemu-fetch
 qemu-build: ${QEMUSTATE}/qemu-build
 ${QEMUSTATE}/qemu-build: ${QEMUSTATE}/qemu-configure
 	@mkdir -p ${INSTALLDIR}
-	(cd ${QEMUBUILDDIR} && make -j8 install)
+	(cd ${QEMUBUILDDIR} && make -j${JOBS} install)
 	@mkdir -p ${QEMUSTATE}
 	@touch $@
 	

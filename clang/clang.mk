@@ -36,6 +36,10 @@ LLVMDEVINSTALLDIR=${LLVMTOP}/install-dev
 LLVMDEVBUILDDIR=${LLVMTOP}/build/llvm-dev
 LLVMDEVDIR=${LLVMSRCDIR}/${LLVMDEVSRC}
 CLANGDEVDIR=${LLVMDEVDIR}/tools/clang
+JOBS:=${shell getconf _NPROCESSORS_ONLN}
+ifeq "${JOBS}" ""
+JOBS:=2
+endif
 
 .PHONY: clang-fetch clang-configure clang-build \
 	clangdev-fetch clangdev-configure clangdev-build
@@ -66,7 +70,7 @@ ${LLVMSTATE}/clang-configure: ${LLVMSTATE}/clang-fetch
 clang-build:  ${LLVMSTATE}/clang-build
 ${LLVMSTATE}/clang-build: ${LLVMSTATE}/clang-configure
 	@mkdir -p ${LLVMINSTALLDIR}
-	(cd ${LLVMBUILDDIR} && make -j2 install)
+	(cd ${LLVMBUILDDIR} && make -j${JOBS} install)
 	@mkdir -p ${LLVMSTATE}
 	@touch $@
 
@@ -91,7 +95,7 @@ ${LLVMSTATE}/clangdev-configure: ${LLVMSTATE}/clangdev-fetch
 clangdev-build:  ${LLVMSTATE}/clangdev-build
 ${LLVMSTATE}/clangdev-build: ${LLVMSTATE}/clangdev-configure
 	@mkdir -p ${LLVMDEVINSTALLDIR}
-	(cd ${LLVMDEVBUILDDIR} && make -j2 install)
+	(cd ${LLVMDEVBUILDDIR} && make -j${JOBS} install)
 	@mkdir -p ${LLVMSTATE}
 	@touch $@
 
