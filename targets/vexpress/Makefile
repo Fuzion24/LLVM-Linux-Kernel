@@ -35,6 +35,8 @@ include ${TOPDIR}/common/arm/common-arm.mk
 
 .PHONY: test
 
+clean: qemu-clean kernel-clean clang-clean
+
 fetch-initrd: state/fetch-initrd
 state/fetch-initrd:
 	rm -f arm-test-0.2.tar.gz
@@ -46,5 +48,5 @@ state/fetch-initrd:
 test: state/kernel-build ${QEMUSTATE}/qemu-build state/fetch-initrd
 	@${INSTALLDIR}/bin/qemu-system-arm -kernel ${KERNELDIR}/arch/arm/boot/zImage \
 		-initrd arm-test/arm_root.img -M vexpress-a9 -append 'console=earlycon \
-		console=ttyAMA0,38400n8 earlyprintk init=/init' -nographic
+		console=ttyAMA0,38400n8 earlyprintk root=/dev/ram0 rdinit=/bin/sh init=/bin/sh' -nographic -net none
 
