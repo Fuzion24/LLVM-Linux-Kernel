@@ -1,0 +1,14 @@
+diff --git a/arch/arm/mm/init.c b/arch/arm/mm/init.c
+index 5dc7d12..16e7f37 100644
+--- a/arch/arm/mm/init.c
++++ b/arch/arm/mm/init.c
+@@ -725,7 +725,8 @@ void free_initmem(void)
+ 				    "TCM link");
+ #endif
+ 
+-	poison_init_mem(__init_begin, __init_end - __init_begin);
++	// FIXME - This causes a data abort, fails part way through
++	//poison_init_mem(__init_begin, __init_end - __init_begin);
+ 	if (!machine_is_integrator() && !machine_is_cintegrator())
+ 		totalram_pages += free_area(__phys_to_pfn(__pa(__init_begin)),
+ 					    __phys_to_pfn(__pa(__init_end)),
