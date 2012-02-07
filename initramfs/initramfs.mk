@@ -22,12 +22,12 @@
 
 # NOTE: MAKE_BINARY, BUILDDIR and TOPDIR must be defined by the calling Makefile
 
-${BUILDDIR}/initramfs-build/init: ${TOPDIR}/initramfs/src/hello.c
+${BUILDDIR}/initramfs-build/init: ${TOPDIR}/initramfs/hello.c
 	@rm -rf ${BUILDDIR}/initramfs
 	@rm -rf ${BUILDDIR}/initramfs-build
 	@mkdir ${BUILDDIR}/initramfs
 	@mkdir ${BUILDDIR}/initramfs-build
-	(cd ${BUILDDIR}/initramfs-build && ${MAKE_BINARY} -static ${TOPDIR}/initramfs/src/hello.c -o $@)
+	(cd ${BUILDDIR}/initramfs-build && ${MAKE_BINARY} -static ${TOPDIR}/initramfs/hello.c -o $@)
 
 ${BUILDDIR}/initramfs-build/initramfs.cpio: ${BUILDDIR}/initramfs-build/init
 	@(cd ${BUILDDIR}/initramfs && mkdir bin sys dev proc)
