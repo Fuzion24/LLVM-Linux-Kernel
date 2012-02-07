@@ -59,7 +59,7 @@ test: ${QEMUSTATE}/qemu-build state/fetch-initrd
 		-initrd arm-test/arm_root.img -M vexpress-a9 -append 'console=earlycon \
 		console=ttyAMA0,38400n8 earlyprintk init=/init' -nographic ${GDB_OPTS}
 
-test2: ${QEMUSTATE}/qemu-build initramfs.img.gz
+test2: ${QEMUSTATE}/qemu-build initramfs
 	test -f state/kernel-build || test -f state/kernel-devbuild || \
 		(echo "Error: must have built either kernel-build or kernel-devbuild" && false)
 	@${INSTALLDIR}/bin/qemu-system-arm -kernel ${KERNELDIR}/arch/arm/boot/zImage \

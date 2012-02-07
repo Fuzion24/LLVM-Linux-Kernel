@@ -20,21 +20,48 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
-# NOTE: MAKE_BINARY, BUILDDIR and TOPDIR must be defined by the calling Makefile
+# NOTE: BUILDDIR must be defined by the calling Makefile
 
-${BUILDDIR}/initramfs-build/init: ${TOPDIR}/initramfs/hello.c
-	@rm -rf ${BUILDDIR}/initramfs
-	@rm -rf ${BUILDDIR}/initramfs-build
-	@mkdir ${BUILDDIR}/initramfs
-	@mkdir ${BUILDDIR}/initramfs-build
-	(cd ${BUILDDIR}/initramfs-build && ${MAKE_BINARY} -static ${TOPDIR}/initramfs/hello.c -o $@)
+#${BUILDDIR}/initramfs-build/init: ${TOPDIR}/initramfs/hello.c
+#	(cd ${BUILDDIR}/initramfs-build && ${MAKE_BINARY} -static ${TOPDIR}/initramfs/hello.c -o $@)
 
-${BUILDDIR}/initramfs-build/initramfs.cpio: ${BUILDDIR}/initramfs-build/init
-	@(cd ${BUILDDIR}/initramfs && mkdir bin sys dev proc)
-	@cp ${BUILDDIR}/initramfs-build/init ${BUILDDIR}/initramfs/init
-	@(cd ${BUILDDIR}/initramfs && find . | cpio -H newc -o > ${BUILDDIR}/initramfs-build/initramfs.cpio)
+.Phony: prep ${BUILDDIR}/initramfs/sbin/toybox ${BUILDDIR}/initramfs/bin/dash ${BUILDDIR}/initramfs/init initramfs initramfs-clean ${BUILDDIR}/initramfs.cpio 
+
+${BUILDDIR}/initramfs.cpio: prep ${BUILDDIR}/initramfs/sbin/toybox ${BUILDDIR}/initramfs/init
+	@(cd ${BUILDDIR}/initramfs && mkdir -p bin sys dev proc tmp)
+	@(cd ${BUILDDIR}/initramfs && find . | cpio -H newc -o > ${BUILDDIR}/initramfs.cpio)
 	
-initramfs.img.gz: ${BUILDDIR}/initramfs-build/initramfs.cpio
-	@cp ${BUILDDIR}/initramfs-build/initramfs.cpio initramfs.img
+initramfs.img.gz: ${BUILDDIR}/initramfs.cpio
+	@rm -f initramfs.img
+	@cp ${BUILDDIR}/initramfs.cpio initramfs.img
 	@gzip -9 initramfs.img
 
+initramfs: 
+	@test -f initramfs.img.gz || make initramfs.img.gz
+
+initramfs-clean:
+	@rm -rf ${BUILDDIR}/initramfs
+	@rm -rf ${BUILDDIR}/initramfs-build
+	@rm -rf ${BUILDDIR}/dash-0.5.7
+	@rm -rf ${BUILDDIR}/toybox*
+	@rm -f initramfs.img.gz
+
+${BUILDDIR}/initramfs/sbin/toybox: 
+	@test -f ${BUILDDIR}/tip.tar.bz2 || (cd ${BUILDDIR} && wget http://www.landley.net/hg/toybox/archive/tip.tar.bz2)
+	@rm -rf ${BUILDDIR}/toybox*
+	(cd ${BUILDDIR} && tar -xjf tip.tar.bz2)
+	(cd ${BUILDDIR}/toybox* && CFLAGS=--static CC=gcc CROSS_COMPILE=/opt/arm-2011.03/bin/arm-none-linux-gnueabi- PREFIX=${BUILDDIR}/initramfs make defconfig toybox install)
+
+${BUILDDIR}/initramfs/bin/dash: 
+	@test -f ${BUILDDIR}/dash-0.5.7.tar.gz || (cd ${BUILDDIR} && wget http://gondor.apana.org.au/~herbert/dash/files/dash-0.5.7.tar.gz)
+	@rm -rf ${BUILDDIR}/dash-0.5.7
+	(cd ${BUILDDIR} && tar xzf ${BUILDDIR}/dash-0.5.7.tar.gz)
+	(cd ${BUILDDIR}/dash-0.5.7 && CFLAGS="--static" CC=/opt/arm-2011.03/bin/arm-none-linux-gnueabi-gcc ./configure --prefix=${BUILDDIR}/initramfs --host="arm-none-linux-gnueabi")
+	(cd ${BUILDDIR}/dash-0.5.7 && make install)
+	
+${BUILDDIR}/initramfs/init: ${BUILDDIR}/initramfs/bin/dash
+	(cd ${BUILDDIR}/initramfs && ln -s bin/dash init)
+
+prep:
+	@rm -rf ${BUILDDIR}/initramfs
+	@mkdir ${BUILDDIR}/initramfs
