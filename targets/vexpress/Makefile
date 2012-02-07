@@ -25,13 +25,22 @@ CWD=${CURDIR}
 KERNEL_CFG=${CWD}/config_vexpress
 KERNEL_GIT=git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
 KERNELDIR=${SRCDIR}/linux
-PATCH_FILES=
+PATCH_FILES=${CWD}/workaround.patch
+
+#GDB_OPTS=-gdb tcp::1234 -s -S
+GDB_OPTS=
+
+# initramfs.mk settings
+BUILDDIR=${CWD}/tmp
+MAKE_BINARY=/opt/arm-2011.03/bin/arm-none-linux-gnueabi-gcc
+
 
 all: kernel-build 
 
 include ${TOPDIR}/qemu/qemu.mk
 include ${TOPDIR}/common/common.mk
 include ${TOPDIR}/common/arm/common-arm.mk
+include ${TOPDIR}/initramfs/initramfs.mk
 
 .PHONY: test
 
@@ -43,8 +52,17 @@ state/fetch-initrd:
 	@mkdir -p state
 	@touch $@
   
-test: state/kernel-build ${QEMUSTATE}/qemu-build state/fetch-initrd
+test: ${QEMUSTATE}/qemu-build state/fetch-initrd
+	test -f state/kernel-build || test -f state/kernel-devbuild || \
+		(echo "Error: must have built either kernel-build or kernel-devbuild" && false)
 	@${INSTALLDIR}/bin/qemu-system-arm -kernel ${KERNELDIR}/arch/arm/boot/zImage \
 		-initrd arm-test/arm_root.img -M vexpress-a9 -append 'console=earlycon \
-		console=ttyAMA0,38400n8 earlyprintk init=/init' -nographic
+		console=ttyAMA0,38400n8 earlyprintk init=/init' -nographic ${GDB_OPTS}
+
+test2: ${QEMUSTATE}/qemu-build initramfs.img.gz
+	test -f state/kernel-build || test -f state/kernel-devbuild || \
+		(echo "Error: must have built either kernel-build or kernel-devbuild" && false)
+	@${INSTALLDIR}/bin/qemu-system-arm -kernel ${KERNELDIR}/arch/arm/boot/zImage \
+		-initrd initramfs.img.gz -M vexpress-a9 -append 'console=earlycon \
+		console=ttyAMA0,38400n8 earlyprintk init=/init' -nographic ${GDB_OPTS}
 
