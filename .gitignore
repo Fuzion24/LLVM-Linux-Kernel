@@ -10,3 +10,5 @@ arm-test-0.2.tar.gz
 targets/*/kernel-filter
 targets/*/log
 targets/*/tmp
+initramfs.img.gz
+rootfs_custom.img.xz
