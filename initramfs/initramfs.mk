@@ -50,13 +50,13 @@ ${BUILDDIR}/initramfs/sbin/toybox:
 	@test -f ${BUILDDIR}/tip.tar.bz2 || (cd ${BUILDDIR} && wget http://www.landley.net/hg/toybox/archive/tip.tar.bz2)
 	@rm -rf ${BUILDDIR}/toybox*
 	(cd ${BUILDDIR} && tar -xjf tip.tar.bz2)
-	(cd ${BUILDDIR}/toybox* && CFLAGS=--static CC=gcc CROSS_COMPILE=/opt/arm-2011.03/bin/arm-none-linux-gnueabi- PREFIX=${BUILDDIR}/initramfs make defconfig toybox install)
+	(cd ${BUILDDIR}/toybox* && CFLAGS=--static CC=gcc CROSS_COMPILE=arm-none-linux-gnueabi- PREFIX=${BUILDDIR}/initramfs make defconfig toybox install)
 
 ${BUILDDIR}/initramfs/bin/dash: 
 	@test -f ${BUILDDIR}/dash-0.5.7.tar.gz || (cd ${BUILDDIR} && wget http://gondor.apana.org.au/~herbert/dash/files/dash-0.5.7.tar.gz)
 	@rm -rf ${BUILDDIR}/dash-0.5.7
 	(cd ${BUILDDIR} && tar xzf ${BUILDDIR}/dash-0.5.7.tar.gz)
-	(cd ${BUILDDIR}/dash-0.5.7 && CFLAGS="--static" CC=/opt/arm-2011.03/bin/arm-none-linux-gnueabi-gcc ./configure --prefix=${BUILDDIR}/initramfs --host="arm-none-linux-gnueabi")
+	(cd ${BUILDDIR}/dash-0.5.7 && CFLAGS="--static" CC=arm-none-linux-gnueabi-gcc ./configure --prefix=${BUILDDIR}/initramfs --host="arm-none-linux-gnueabi")
 	(cd ${BUILDDIR}/dash-0.5.7 && make install)
 	
 ${BUILDDIR}/initramfs/init: ${BUILDDIR}/initramfs/bin/dash
