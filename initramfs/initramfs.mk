@@ -20,10 +20,8 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
+# NOTE: CROSS_COMPILE, HOST and CC must be defined by common-<arch>.mk
 # NOTE: BUILDDIR must be defined by the calling Makefile
-
-#${BUILDDIR}/initramfs-build/init: ${TOPDIR}/initramfs/hello.c
-#	(cd ${BUILDDIR}/initramfs-build && ${MAKE_BINARY} -static ${TOPDIR}/initramfs/hello.c -o $@)
 
 .Phony: prep ${BUILDDIR}/initramfs/sbin/toybox ${BUILDDIR}/initramfs/bin/dash ${BUILDDIR}/initramfs/init initramfs initramfs-clean ${BUILDDIR}/initramfs.cpio 
 
@@ -50,13 +48,13 @@ ${BUILDDIR}/initramfs/sbin/toybox:
 	@test -f ${BUILDDIR}/tip.tar.bz2 || (cd ${BUILDDIR} && wget http://www.landley.net/hg/toybox/archive/tip.tar.bz2)
 	@rm -rf ${BUILDDIR}/toybox*
 	(cd ${BUILDDIR} && tar -xjf tip.tar.bz2)
-	(cd ${BUILDDIR}/toybox* && CFLAGS=--static CC=gcc CROSS_COMPILE=arm-none-linux-gnueabi- PREFIX=${BUILDDIR}/initramfs make defconfig toybox install)
+	(cd ${BUILDDIR}/toybox* && CFLAGS=--static CC=${CC} CROSS_COMPILE=${CROSS_COMPILE} PREFIX=${BUILDDIR}/initramfs make defconfig toybox install)
 
 ${BUILDDIR}/initramfs/bin/dash: 
 	@test -f ${BUILDDIR}/dash-0.5.7.tar.gz || (cd ${BUILDDIR} && wget http://gondor.apana.org.au/~herbert/dash/files/dash-0.5.7.tar.gz)
 	@rm -rf ${BUILDDIR}/dash-0.5.7
 	(cd ${BUILDDIR} && tar xzf ${BUILDDIR}/dash-0.5.7.tar.gz)
-	(cd ${BUILDDIR}/dash-0.5.7 && CFLAGS="--static" CC=arm-none-linux-gnueabi-gcc ./configure --prefix=${BUILDDIR}/initramfs --host="arm-none-linux-gnueabi")
+	(cd ${BUILDDIR}/dash-0.5.7 && CFLAGS="--static" CC=${CC} CPP="${CPP}" ./configure --prefix=${BUILDDIR}/initramfs --host=${HOST})
 	(cd ${BUILDDIR}/dash-0.5.7 && make install)
 	
 ${BUILDDIR}/initramfs/init: ${BUILDDIR}/initramfs/bin/dash

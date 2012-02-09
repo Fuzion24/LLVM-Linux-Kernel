@@ -27,3 +27,10 @@ PATCH_FILES+=${COMMON}/arm/common-arm.patch ${COMMON}/arm/fix-warnings-arm.patch
 MAKE_FLAGS=ARCH=arm
 MAKE_KERNEL=${COMMON}/arm/make-kernel.sh ${LLVMINSTALLDIR}
 MAKE_DEVKERNEL=${COMMON}/arm/make-kernel.sh ${LLVMDEVINSTALLDIR}
+HOST=arm-none-linux-gnueabi
+CROSS_COMPILE=arm-none-linux-gnueabi-
+CC=clang-wrap.sh
+CPP=${CC} -E
+
+# Add path so that ${CROSS_COMPILE}${CC} is resolved
+PATH+=:/opt/arm-2011.03/bin:${COMMON}/arm/bin
