@@ -35,16 +35,23 @@ BUILDDIR=${CWD}/tmp
 MAKE_BINARY=/opt/arm-2011.03/bin/arm-none-linux-gnueabi-gcc
 
 
-all: kernel-build 
+all: kernel-build qemu-build fetch-initrd
 
 include ${TOPDIR}/qemu/qemu.mk
 include ${TOPDIR}/common/common.mk
 include ${TOPDIR}/common/arm/common-arm.mk
 include ${TOPDIR}/initramfs/initramfs.mk
 
-.PHONY: test
+.PHONY: test clean mrproper
+clean: qemu-clean kernel-clean clang-clean initramfs-clean
 
-clean: qemu-clean kernel-clean clang-clean
+# do a real wipe
+mrproper: clean
+	rm -rRf arm-test-0.2.tar.gz arm-test
+	rm -f state/fetch-initrd
+	rm -f tmp/*
+	rm -f log/*
+	( cd ${KERNELDIR} && make mrproper )
 
 fetch-initrd: state/fetch-initrd
 state/fetch-initrd:

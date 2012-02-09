@@ -23,6 +23,29 @@
 
 TOPDIR=${CURDIR}
 
+all: help
+.PHONY: mrproper
+
+help:
+	@echo "Usage: Go into target directory ( cd targets/<target> ) and execute make there."
+	@echo "       Valid targets:"
+	@echo "       * vexpress  (make ; make test or make test2)"
+	@echo "       * msm       (make)"
+	@echo "       * hexagon   "
+	@echo "       * ar71xx    "
+	@echo "       "
+	@echo "       Cleanup with:"
+	@echo "         make mrproper "
+	@exit 0
+
+
+mrproper:
+	( cd targets/vexpress ; make mrproper )
+	( cd targets/msm ; make mrproper )
+	( cd targets/hexagon ; make mrproper )
+	( cd targets/ar71xx ; make mrproper )
+
+
+
 include clang/clang.mk
 include qemu/qemu.mk
-
