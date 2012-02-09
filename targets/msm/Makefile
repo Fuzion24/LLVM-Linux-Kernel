@@ -31,12 +31,19 @@ PATCH_FILES=${CWD}/msm-3.0-llvm.patch ${CWD}/msm-3.0-llvm-arm.patch \
 	${CWD}/fix-warnings.patch ${CWD}/fix-warnings-arm.patch \
 #	${CWD}/autopatch.patch
 
-all: kernel-build
+all: prep kernel-build
 
 include ../../common/common.mk
 include ../../common/arm/common-arm.mk
 
 .PHONY: kernel-copy clean mrproper
+
+prep: state/prep
+state/prep:
+	@mkdir -p tmp
+	@mkdir -p log
+	@mkdir -p state
+	@touch $@
 
 kernel-copy: state/kernel-copy
 state/kernel-copy: kernel-fetch
@@ -62,3 +69,5 @@ clean:
 # do a real wipe
 mrproper: clean
 	( ( test -e ${KERNELDIR} && cd ${KERNELDIR} && make mrproper ) || exit 0 )
+	@rm -rf tmp/*
+	@rm -rf log/*

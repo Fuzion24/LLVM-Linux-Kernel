@@ -33,7 +33,7 @@ GDB_OPTS=
 # initramfs.mk settings
 BUILDDIR=${CWD}/tmp
 
-all: kernel-build qemu-build fetch-initrd
+all: prep kernel-build qemu-build fetch-initrd
 
 include ${TOPDIR}/qemu/qemu.mk
 include ${TOPDIR}/common/common.mk
@@ -41,6 +41,15 @@ include ${TOPDIR}/common/arm/common-arm.mk
 include ${TOPDIR}/initramfs/initramfs.mk
 
 .PHONY: test clean mrproper
+
+prep: state/prep
+state/prep:
+	@mkdir -p tmp
+	@mkdir -p log
+	@mkdir -p state
+	@touch $@
+
+
 clean: qemu-clean kernel-clean clang-clean initramfs-clean
 
 # do a real wipe

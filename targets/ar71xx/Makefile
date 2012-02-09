@@ -30,8 +30,15 @@ KERNELDIR=${SRCDIR}/linux
 include ../../common/common.mk
 include ../../common/mips/common-mips.mk
 
-all: kernel-build
+all: prep kernel-build
 .PHONY: clean mrproper
+
+prep: state/prep
+state/prep:
+	@mkdir -p tmp
+	@mkdir -p log
+	@mkdir -p state
+	@touch $@
 
 clean: 
 	( ( test -e ${KERNELDIR} && make kernel-clean ) || exit 0 )
@@ -40,3 +47,6 @@ clean:
 # do a real wipe
 mrproper: clean
 	( ( test -e ${KERNELDIR} && cd ${KERNELDIR} && make mrproper ) || exit 0 )
+	@rm -rf log/*
+	@rm -rf tmp/*
+

@@ -29,11 +29,17 @@ PATCH_FILES=
 MAKE_DEVKERNEL=${CWD}/make_kernel.sh
 
 # Only the development version of clang supoprts hexagon
-all: kernel-devbuild
+all: prep kernel-devbuild
 .PHONY: clean mrproper
 
 include ${TOPDIR}/common/common.mk
 
+prep: state/prep
+state/prep:
+	@mkdir -p tmp
+	@mkdir -p log
+	@mkdir -p state
+	@touch $@
 
 clean: 
 	( ( test -e ${KERNELDIR} && make kernel-clean ) || exit 0 )
@@ -42,3 +48,6 @@ clean:
 # do a real wipe
 mrproper: clean
 	( ( test -e ${KERNELDIR} && cd ${KERNELDIR} && make mrproper ) || exit 0 )
+	@rm -rf tmp/*
+	@rm -rf log/*
+
