@@ -43,12 +43,14 @@ include ${TOPDIR}/common/arm/common-arm.mk
 include ${TOPDIR}/initramfs/initramfs.mk
 
 .PHONY: test clean mrproper
-clean: qemu-clean kernel-clean clang-clean
+clean: qemu-clean kernel-clean clang-clean initramfs-clean
 
 # do a real wipe
 mrproper: clean
 	rm -rRf arm-test-0.2.tar.gz arm-test
 	rm -f state/fetch-initrd
+	rm -f tmp/*
+	rm -f log/*
 	( cd ${KERNELDIR} && make mrproper )
 
 fetch-initrd: state/fetch-initrd
