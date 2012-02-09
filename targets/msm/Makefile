@@ -23,8 +23,8 @@
 CWD=${CURDIR}
 TOPDIR=${CWD}/../..
 KERNEL_CFG=${CWD}/config_msm
-MSM_BRANCH="msm-3.0"
-KERNEL_GIT="git://codeaurora.org/kernel/msm.git -b ${MSM_BRANCH}"
+MSM_BRANCH=msm-3.0
+KERNEL_GIT=git://codeaurora.org/kernel/msm.git -b ${MSM_BRANCH}
 KERNELDIR=${SRCDIR}/msm
 KERNELCOPY=${SRCDIR}/msm-copy
 PATCH_FILES=${CWD}/msm-3.0-llvm.patch ${CWD}/msm-3.0-llvm-arm.patch \
