@@ -1,5 +1,6 @@
 ##############################################################################
 # Copyright (c) 2012 Mark Charlebois
+#                    Jan-Simon Möller
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to 
@@ -21,6 +22,7 @@
 ##############################################################################
 
 CWD=${CURDIR}
+TOPDIR=${CWD}/../..
 KERNEL_CFG=${CWD}/config_ar7
 KERNEL_GIT=git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
 KERNELDIR=${SRCDIR}/linux
@@ -28,3 +30,13 @@ KERNELDIR=${SRCDIR}/linux
 include ../../common/common.mk
 include ../../common/mips/common-mips.mk
 
+all: kernel-build
+.PHONY: clean mrproper
+
+clean: 
+	( ( test -e ${KERNELDIR} && make kernel-clean ) || exit 0 )
+	@make clang-clean
+
+# do a real wipe
+mrproper: clean
+	( ( test -e ${KERNELDIR} && cd ${KERNELDIR} && make mrproper ) || exit 0 )

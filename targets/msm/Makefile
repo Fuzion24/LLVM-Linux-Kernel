@@ -1,6 +1,6 @@
 ##############################################################################
 # Copyright (c) 2012 Mark Charlebois
-# 
+# 					 Jan-Simon Möller
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to 
 # deal in the Software without restriction, including without limitation the 
@@ -36,7 +36,7 @@ all: kernel-build
 include ../../common/common.mk
 include ../../common/arm/common-arm.mk
 
-.PHONY: kernel-copy
+.PHONY: kernel-copy clean mrproper
 
 kernel-copy: state/kernel-copy
 state/kernel-copy: kernel-fetch
@@ -54,3 +54,11 @@ kernel-autopatch: kernel-build
 
 check-dups:
 	${TOOLSDIR}/checkduplicates.py ${PATCH_FILES}
+
+clean: 
+	( ( test -e ${KERNELDIR} && make kernel-clean ) || exit 0 )
+	@make clang-clean
+
+# do a real wipe
+mrproper: clean
+	( ( test -e ${KERNELDIR} && cd ${KERNELDIR} && make mrproper ) || exit 0 )
