@@ -32,8 +32,6 @@ GDB_OPTS=
 
 # initramfs.mk settings
 BUILDDIR=${CWD}/tmp
-MAKE_BINARY=/opt/arm-2011.03/bin/arm-none-linux-gnueabi-gcc
-
 
 all: kernel-build qemu-build fetch-initrd
 
