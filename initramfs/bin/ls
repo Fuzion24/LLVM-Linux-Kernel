@@ -76,10 +76,12 @@ if [ -d $k ]; then
 	if [ -n "$flag_R" ]; then
 		dlist=${dlist}" $k"
 	fi
-	if [ -n "$flag_F" ]; then
-		flist=${flist}"$k/  "
-	else 
-		flist=${flist}"$k  "
+	if [ "$k" != "." ]; then
+		if [ -n "$flag_F" ]; then
+			flist=${flist}"$k/  "
+		else 
+			flist=${flist}"$k  "
+		fi
 	fi
 	dirs=1
 else
@@ -110,7 +112,9 @@ do
 	cd $d
 	echo
 	echo ${d}:
-	$cmd $flags *
+	if [ "`echo *`" != "*" ]; then
+		$cmd $flags *
+	fi
 	cd $pwd
 done
 
