@@ -78,9 +78,9 @@ if [ -d $k ]; then
 	fi
 	dirs=1
 else
-	if [ -n "$flag_F" -a -L $k ]; then
+	if [ -n "$flag_F" -a -L "$k" ]; then
 		flist=${flist}"${k}@  "
-	elif [ -n "$flag_F" -a -x $k ]; then
+	elif [ -n "$flag_F" -a -x "$k" ]; then
 		flist=${flist}"${k}*  "
 	else
 		flist=${flist}"$k  "
