@@ -43,16 +43,21 @@ do
 		;;
 	-*)
 		echo "Usage $0 -[RF1] [file...]"
-		exit
+		exit 1
 		;;
 	*)
-		if [ -n "$list" ]; then
-			num=2
+		if [ -e "$k" ]; then
+			if [ -n "$list" ]; then
+				num=2
+			else
+				num=1
+			fi
+			list=${list}" $k"
+			continue
 		else
-			num=1
+			echo "ls: cannot access ${k}: No such file or directory"
+			exit 1
 		fi
-		list=${list}" $k"
-		continue
 		;;
 	esac
 	flags=${flags}" $k"
