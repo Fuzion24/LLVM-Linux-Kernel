@@ -41,6 +41,9 @@ do
 	-F)
 		flag_F=1;
 		;;
+	-z)
+		flag_z=1;
+		;;
 	-*)
 		echo "Usage $0 -[RF1] [file...]"
 		exit 1
@@ -66,17 +69,17 @@ if [ -z "$list" ]; then
 	if [ -n "$flag_R" ]; then
 		list="."
 	else
-		list=`echo *`
+		list="."
 	fi
 fi
 flist=""
 for k in $list
 do
 if [ -d $k ]; then 
-	if [ -n "$flag_R" ]; then
+	if [ -n "$flag_R" -o -z "$flag_z" ]; then
 		dlist=${dlist}" $k"
 	fi
-	if [ "$k" != "." ]; then
+	if [ -n "$flag_z" ]; then
 		if [ -n "$flag_F" ]; then
 			flist=${flist}"$k/  "
 		else 
@@ -110,8 +113,12 @@ for d in $dlist
 do
 	pwd=`pwd`
 	cd $d
-	echo
-	echo ${d}:
+	if [ -n $flags_z ]; then
+		echo
+		echo ${d}:
+	else
+		$flags=${flags}" -z"
+	fi
 	if [ "`echo *`" != "*" ]; then
 		$cmd $flags *
 	fi
