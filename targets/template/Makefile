@@ -1,6 +1,7 @@
 ##############################################################################
 # Copyright (c) 2012 Mark Charlebois
 #                    Jan-Simon Möller
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to 
 # deal in the Software without restriction, including without limitation the 
@@ -22,21 +23,17 @@
 
 CWD=${CURDIR}
 TOPDIR=${CWD}/../..
-KERNEL_CFG=${CWD}/config_msm
-MSM_BRANCH=msm-3.0
-KERNEL_GIT=git://codeaurora.org/kernel/msm.git -b ${MSM_BRANCH}
-KERNELDIR=${SRCDIR}/msm
-KERNELCOPY=${SRCDIR}/msm-copy
-PATCH_FILES=${CWD}/msm-3.0-llvm.patch ${CWD}/msm-3.0-llvm-arm.patch \
-	${CWD}/fix-warnings.patch ${CWD}/fix-warnings-arm.patch \
-#	${CWD}/autopatch.patch
-
-all: prep kernel-build
+KERNEL_CFG=${CWD}/config_template
+KERNEL_GIT=git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+KERNELDIR=${SRCDIR}/linux
 
 include ../../common/common.mk
-include ../../common/arm/common-arm.mk
 
-.PHONY: kernel-copy clean mrproper
+all: bailout_remove prep kernel-build
+.PHONY: clean mrproper
+
+bailout_remove:
+	@exit 1
 
 prep: state/prep
 state/prep:
@@ -45,23 +42,6 @@ state/prep:
 	@mkdir -p state
 	@touch $@
 
-kernel-copy: state/kernel-copy
-state/kernel-copy: kernel-fetch
-	(cd ${SRCDIR} && git clone ${KERNELDIR} -b ${MSM_BRANCH} msm-copy)
-	@touch $@
-
-kernel-autopatch: kernel-build
-	(cd ${KERNELCOPY} && git reset --hard HEAD && git pull)
-	(cd ${KERNELCOPY} &&  patch -p1 -i ${TMPDIR}/final.patch >> ${LOGDIR}/patchcopy.log)
-	@${TOOLSDIR}/unusedfix.py ${LOGDIR}/build.log ${KERNELCOPY} 
-	(cd ${KERNELCOPY} &&  patch -R -p1 -i ${TMPDIR}/final.patch >> ${LOGDIR}/patchcopy.log)
-	(cd ${KERNELCOPY} && git diff > ${TMPDIR}/autopatch.patch)
-	@${TOOLSDIR}/splitarch.py ${TMPDIR}/autopatch.patch ${CWD} autopatch
-	@touch $@
-
-check-dups:
-	${TOOLSDIR}/checkduplicates.py ${PATCH_FILES}
-
 clean: 
 	( ( test -e ${KERNELDIR} && make kernel-clean ) || exit 0 )
 	@make clang-clean
@@ -69,5 +49,6 @@ clean:
 # do a real wipe
 mrproper: clean
 	( ( test -e ${KERNELDIR} && cd ${KERNELDIR} && make mrproper ) || exit 0 )
-	@rm -rf tmp/*
 	@rm -rf log/*
+	@rm -rf tmp/*
+

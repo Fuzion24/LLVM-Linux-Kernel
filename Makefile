@@ -1,7 +1,7 @@
 ##############################################################################
 # Copyright (c) 2012 Mark Charlebois
 #               2012 Jan-Simon Möller
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to 
 # deal in the Software without restriction, including without limitation the 
@@ -26,13 +26,14 @@ TOPDIR=${CURDIR}
 all: help
 .PHONY: mrproper
 
+clean: help
 help:
 	@echo "Usage: Go into target directory ( cd targets/<target> ) and execute make there."
 	@echo "       Valid targets:"
-	@echo "       * vexpress  (make ; make test or make test2)"
-	@echo "       * msm       (make)"
-	@echo "       * hexagon   "
-	@echo "       * ar71xx    "
+	@echo "       * vexpress  (make <all|test|test2|clean|mrproper>)"
+	@echo "       * msm       (make <all|clean|mrproper>)"
+	@echo "       * hexagon   (make <all|clean|mrproper>)"
+	@echo "       * ar71xx    (make <all|clean|mrproper>)"
 	@echo "       "
 	@echo "       Cleanup with:"
 	@echo "         make mrproper "
@@ -44,8 +45,6 @@ mrproper:
 	( cd targets/msm ; make mrproper )
 	( cd targets/hexagon ; make mrproper )
 	( cd targets/ar71xx ; make mrproper )
-
-
 
 include clang/clang.mk
 include qemu/qemu.mk
