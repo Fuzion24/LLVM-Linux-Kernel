@@ -1,0 +1,13 @@
+diff --git a/arch/arm/mach-vexpress/v2m.c b/arch/arm/mach-vexpress/v2m.c
+index b4a28ca..c7e1ae8 100644
+--- a/arch/arm/mach-vexpress/v2m.c
++++ b/arch/arm/mach-vexpress/v2m.c
+@@ -65,7 +65,7 @@ static void __init v2m_timer_init(void)
+ 		"v2m-timer0");
+ }
+ 
+-static struct sys_timer v2m_timer = {
++static struct sys_timer v2m_timer __initdata = {
+ 	.init	= v2m_timer_init,
+ };
+ 

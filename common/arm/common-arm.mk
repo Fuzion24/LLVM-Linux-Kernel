@@ -25,8 +25,8 @@
 PATCH_FILES+=${COMMON}/arm/common-arm.patch ${COMMON}/arm/fix-warnings-arm.patch \
 	${COMMON}/arm/fix-warnings-arm-unused.patch
 MAKE_FLAGS=ARCH=arm
-MAKE_KERNEL=${COMMON}/arm/bin/make-kernel.sh ${LLVMINSTALLDIR}
-MAKE_DEVKERNEL=${COMMON}/arm/bin/make-kernel.sh ${LLVMDEVINSTALLDIR}
+MAKE_KERNEL=${COMMON}/arm/bin/make-kernel.sh ${LLVMINSTALLDIR} ${EXTRAFLAGS}
+MAKE_DEVKERNEL=${COMMON}/arm/bin/make-kernel.sh ${LLVMDEVINSTALLDIR} ${EXTRAFLAGS}
 HOST=arm-none-linux-gnueabi
 CROSS_COMPILE=arm-none-linux-gnueabi-
 CC=clang-wrap.sh

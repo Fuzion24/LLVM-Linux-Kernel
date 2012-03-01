@@ -26,7 +26,7 @@ CWD=${CURDIR}
 KERNEL_CFG=${CWD}/config_vexpress
 KERNEL_GIT=git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
 KERNELDIR=${SRCDIR}/linux
-PATCH_FILES=${CWD}/workaround.patch
+PATCH_FILES=${CWD}/workaround.patch ${CWD}/vexpress.patch
 
 #GDB_OPTS=-gdb tcp::1234 -s -S
 GDB_OPTS=

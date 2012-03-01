@@ -2134,3 +2134,30 @@ index f628574..33f1e36 100644
  	.probe		= smc_drv_probe,
  	.remove		= __devexit_p(smc_drv_remove),
  	.driver		= {
+diff --git a/drivers/usb/host/ehci-msm2.c b/drivers/usb/host/ehci-msm2.c
+index 4f6fe3e..05d816d 100644
+--- a/drivers/usb/host/ehci-msm2.c
++++ b/drivers/usb/host/ehci-msm2.c
+@@ -991,7 +991,7 @@ static const struct dev_pm_ops ehci_msm2_dev_pm_ops = {
+ };
+ #endif
+ 
+-static struct platform_driver ehci_msm2_driver = {
++static struct platform_driver ehci_msm2_driver __refdata = {
+ 	.probe	= ehci_msm2_probe,
+ 	.remove	= __devexit_p(ehci_msm2_remove),
+ 	.driver = {
+diff --git a/drivers/video/msm/mipi_NT35510.c b/drivers/video/msm/mipi_NT35510.c
+index 930b4e9..3c4bd26 100644
+--- a/drivers/video/msm/mipi_NT35510.c
++++ b/drivers/video/msm/mipi_NT35510.c
+@@ -514,7 +514,7 @@ static int __devinit mipi_nt35510_lcd_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver this_driver = {
++static struct platform_driver this_driver __initdata = {
+ 	.probe  = mipi_nt35510_lcd_probe,
+ 	.driver = {
+ 		.name   = "mipi_NT35510",
+

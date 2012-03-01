@@ -117,3 +117,43 @@ index ce280b8..3cdb83c 100644
  	if (current->personality & ADDR_LIMIT_32BIT)			\
  		regs->ARM_cpsr = USR_MODE;				\
  	else								\
+diff --git a/drivers/tty/serial/8250/8250.c b/drivers/tty/serial/8250/8250.c
+index 9b7336f..1c105b0 100644
+--- a/drivers/tty/serial/8250/8250.c
++++ b/drivers/tty/serial/8250/8250.c
+@@ -3106,7 +3106,7 @@ static int serial8250_resume(struct platform_device *dev)
+        return 0;
+ }
+ 
+-static struct platform_driver serial8250_isa_driver = {
++static struct platform_driver serial8250_isa_driver __refdata = {
+        .probe          = serial8250_probe,
+        .remove         = __devexit_p(serial8250_remove),
+        .suspend        = serial8250_suspend,
+diff --git a/drivers/mmc/host/sdhci-pxav2.c b/drivers/mmc/host/sdhci-pxav2.c
+index dbb75bf..c3c4719 100644
+--- a/drivers/mmc/host/sdhci-pxav2.c
++++ b/drivers/mmc/host/sdhci-pxav2.c
+@@ -214,7 +214,7 @@ static int __devexit sdhci_pxav2_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver sdhci_pxav2_driver = {
++static struct platform_driver sdhci_pxav2_driver __refdata = {
+ 	.driver		= {
+ 		.name	= "sdhci-pxav2",
+ 		.owner	= THIS_MODULE,
+diff --git a/drivers/mmc/host/sdhci-pxav3.c b/drivers/mmc/host/sdhci-pxav3.c
+index f296956..9e363bb 100644
+--- a/drivers/mmc/host/sdhci-pxav3.c
++++ b/drivers/mmc/host/sdhci-pxav3.c
+@@ -260,7 +260,7 @@ static int __devexit sdhci_pxav3_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver sdhci_pxav3_driver = {
++static struct platform_driver sdhci_pxav3_driver __refdata = {
+ 	.driver		= {
+ 		.name	= "sdhci-pxav3",
+ 		.owner	= THIS_MODULE,
+
