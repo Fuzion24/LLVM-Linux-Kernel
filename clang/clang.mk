@@ -41,6 +41,10 @@ ifeq "${JOBS}" ""
 JOBS:=2
 endif
 
+TARGETS+= clang-fetch clang-configure clang-build clang-clean clang-sync \
+	clangdev-fetch clangdev-configure clangdev-build clangdev-sync clangdev-clean \
+	clang-update-all
+
 .PHONY: clang-fetch clang-configure clang-build \
 	clangdev-fetch clangdev-configure clangdev-build
 

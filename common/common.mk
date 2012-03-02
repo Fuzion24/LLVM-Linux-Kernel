@@ -48,6 +48,9 @@ TMPFILTERFILE=${CWD}/tmp/kernel-filter
 #   - KERNEL_CFG
 #   - KERNELDIR
 
+
+TARGETS+=kernel-fetch kernel-patch kernel-configure kernel-build kernel-devbuild kernel-sync
+
 .PHONY: kernel-fetch kernel-patch kernel-configure kernel-build
 
 kernel-fetch: state/kernel-fetch
@@ -129,3 +132,6 @@ kernel-sync: state/kernel-fetch
 	@make kernel-clean
 	(cd ${KERNELDIR} && git pull)
 
+list-targets:
+	@echo "List of available make targets:"
+	@(for t in ${TARGETS}; do echo $$t; done)

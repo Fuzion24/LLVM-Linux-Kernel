@@ -34,6 +34,7 @@ JOBS:=2
 endif
 
 
+TARGETS+= qemu-fetch qemu-configure qemu-build qemu-clean qemu-sync
 .PHONY: qemu-fetch qemu-configure qemu-build 
 
 QEMU_GIT="git://git.qemu.org/qemu.git"

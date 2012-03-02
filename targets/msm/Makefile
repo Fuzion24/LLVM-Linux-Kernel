@@ -37,6 +37,7 @@ all: prep kernel-build
 include ../../common/common.mk
 include ../../common/arm/common-arm.mk
 
+TARGETS+= check-dups kernel-autopatch clean mrproper
 .PHONY: kernel-copy clean mrproper
 
 prep: state/prep
@@ -51,7 +52,7 @@ state/kernel-copy: kernel-fetch
 	(cd ${SRCDIR} && git clone ${KERNELDIR} -b ${MSM_BRANCH} msm-copy)
 	@touch $@
 
-kernel-autopatch: kernel-build
+kernel-autopatch: kernel-build state/kernel-copy
 	(cd ${KERNELCOPY} && git reset --hard HEAD && git pull)
 	(cd ${KERNELCOPY} &&  patch -p1 -i ${TMPDIR}/final.patch >> ${LOGDIR}/patchcopy.log)
 	@${TOOLSDIR}/unusedfix.py ${LOGDIR}/build.log ${KERNELCOPY} 

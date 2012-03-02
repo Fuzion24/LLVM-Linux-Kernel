@@ -41,7 +41,8 @@ include ${TOPDIR}/common/common.mk
 include ${TOPDIR}/common/arm/common-arm.mk
 include ${TOPDIR}/initramfs/initramfs.mk
 
-.PHONY: test clean mrproper
+TARGETS+= clean mrproper test test2
+.PHONY: test test2 fetch-initrd prep clean mrproper
 
 prep: state/prep
 state/prep:

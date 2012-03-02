@@ -23,9 +23,11 @@
 # NOTE: CROSS_COMPILE, HOST and CC must be defined by common-<arch>.mk
 # NOTE: TOPDIR and BUILDDIR must be defined by the calling Makefile
 
-.Phony: prep ${BUILDDIR}/initramfs/sbin/toybox ${BUILDDIR}/initramfs/bin/dash ${BUILDDIR}/initramfs/init initramfs initramfs-clean ${BUILDDIR}/initramfs.cpio 
+TARGETS+= initramfs initramfs-clean
 
-${BUILDDIR}/initramfs.cpio: prep ${BUILDDIR}/initramfs/sbin/toybox ${BUILDDIR}/initramfs/init
+.PHONY: initramfs-prep initramfs initramfs-clean  
+
+${BUILDDIR}/initramfs.cpio: initramfs-prep ${BUILDDIR}/initramfs/sbin/toybox ${BUILDDIR}/initramfs/init
 	@(cd ${BUILDDIR}/initramfs && mkdir -p bin sys dev proc tmp usr/bin)
 	@cp ${TOPDIR}/initramfs/bin/ls ${BUILDDIR}/initramfs/usr/bin
 	@(cd ${BUILDDIR}/initramfs && find . | cpio -H newc -o > ${BUILDDIR}/initramfs.cpio)
@@ -61,6 +63,6 @@ ${BUILDDIR}/initramfs/bin/dash:
 ${BUILDDIR}/initramfs/init: ${BUILDDIR}/initramfs/bin/dash
 	(cd ${BUILDDIR}/initramfs && ln -s bin/dash init)
 
-prep:
+initramfs-prep:
 	@rm -rf ${BUILDDIR}/initramfs
 	@mkdir ${BUILDDIR}/initramfs
