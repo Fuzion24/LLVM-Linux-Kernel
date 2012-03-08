@@ -25,13 +25,25 @@
 
 TARGETS+= initramfs initramfs-clean
 
-.PHONY: initramfs-prep initramfs initramfs-clean  
+.PHONY: initramfs-prep initramfs initramfs-clean ltp dash
 
-${BUILDDIR}/initramfs.cpio: initramfs-prep ${BUILDDIR}/initramfs/sbin/toybox ${BUILDDIR}/initramfs/init
+TOYBOXVER=0.2.1
+TOYBOX=toybox-${TOYBOXVER}
+DASHVER=0.5.7
+DASH=dash-${DASHVER}
+LTPVER=20120104
+LTP=ltp-full-${LTPVER}
+
+${BUILDDIR}/initramfs.cpio: initramfs-prep toybox dash ltp
 	@(cd ${BUILDDIR}/initramfs && mkdir -p bin sys dev proc tmp usr/bin)
-	@cp ${TOPDIR}/initramfs/bin/ls ${BUILDDIR}/initramfs/usr/bin
+	@(cd ${BUILDDIR}/${TOYBOX} && PREFIX=${BUILDDIR}/initramfs make install)
+	@(cd ${BUILDDIR}/${DASH} && make install)
+	@(cd ${BUILDDIR}/initramfs && ln -s bin/dash init)
 	@(cd ${BUILDDIR}/initramfs && find . | cpio -H newc -o > ${BUILDDIR}/initramfs.cpio)
-	
+
+#	@cp ${TOPDIR}/initramfs/bin/ls ${BUILDDIR}/initramfs/usr/bin
+#	@(cd ${BUILDDIR}/${LTP} && make install)
+
 initramfs.img.gz: ${BUILDDIR}/initramfs.cpio
 	@rm -f initramfs.img
 	@cp ${BUILDDIR}/initramfs.cpio initramfs.img
@@ -43,26 +55,35 @@ initramfs:
 initramfs-clean:
 	@rm -rf ${BUILDDIR}/initramfs
 	@rm -rf ${BUILDDIR}/initramfs-build
-	@rm -rf ${BUILDDIR}/dash-0.5.7
-	@rm -rf ${BUILDDIR}/toybox*
+	@rm -rf ${BUILDDIR}/${DASH}
+	@rm -rf ${BUILDDIR}/${TOYBOX}
 	@rm -f initramfs.img.gz
 
-${BUILDDIR}/initramfs/sbin/toybox: 
-	@test -f ${BUILDDIR}/tip.tar.bz2 || (cd ${BUILDDIR} && wget http://www.landley.net/hg/toybox/archive/tip.tar.bz2)
-	@rm -rf ${BUILDDIR}/toybox*
-	(cd ${BUILDDIR} && tar -xjf tip.tar.bz2)
-	(cd ${BUILDDIR}/toybox* && CFLAGS=--static CC=${CC} CROSS_COMPILE=${CROSS_COMPILE} PREFIX=${BUILDDIR}/initramfs make defconfig toybox install)
+toybox: ${BUILDDIR}/${TOYBOX}/toybox
+${BUILDDIR}/${TOYBOX}/toybox:
+	@test -f ${BUILDDIR}/${TOYBOX}.tar.bz2 || (cd ${BUILDDIR} && wget http://landley.net/toybox/downloads/toybox-0.2.1.tar.bz2)
+	@rm -rf ${BUILDDIR}/${TOYBOX}
+	(cd ${BUILDDIR} && tar -xjf ${TOYBOX}.tar.bz2)
+	(cd ${BUILDDIR}/${TOYBOX} && CFLAGS="--static" CC=${CC} CROSS_COMPILE=${CROSS_COMPILE} PREFIX=${BUILDDIR}/initramfs make allyesconfig toybox)
 
-${BUILDDIR}/initramfs/bin/dash: 
-	@test -f ${BUILDDIR}/dash-0.5.7.tar.gz || (cd ${BUILDDIR} && wget http://gondor.apana.org.au/~herbert/dash/files/dash-0.5.7.tar.gz)
-	@rm -rf ${BUILDDIR}/dash-0.5.7
-	(cd ${BUILDDIR} && tar xzf ${BUILDDIR}/dash-0.5.7.tar.gz)
-	(cd ${BUILDDIR}/dash-0.5.7 && CFLAGS="--static" CC=${CC} CPP="${CPP}" ./configure --prefix=${BUILDDIR}/initramfs --host=${HOST})
-	(cd ${BUILDDIR}/dash-0.5.7 && make install)
-	
-${BUILDDIR}/initramfs/init: ${BUILDDIR}/initramfs/bin/dash
-	(cd ${BUILDDIR}/initramfs && ln -s bin/dash init)
+# && cd ${TOYBOX} && patch -p1 < ${TOPDIR}/initramfs/toybox.patch)
+
+dash: ${BUILDDIR}/${DASH}/src/dash
+${BUILDDIR}/${DASH}/src/dash:
+	@test -f ${BUILDDIR}/${DASH}.tar.gz || (cd ${BUILDDIR} && wget http://gondor.apana.org.au/~herbert/dash/files/${DASH}.tar.gz)
+	@rm -rf ${BUILDDIR}/${DASH}
+	(cd ${BUILDDIR} && tar xzf ${BUILDDIR}/${DASH}.tar.gz)
+	(cd ${BUILDDIR}/${DASH} && CFLAGS="--static" CC=${CC} CPP="${CPP}" ./configure --prefix=${BUILDDIR}/initramfs --host=${HOST})
+	(cd ${BUILDDIR}/${DASH} && make)
 
 initramfs-prep:
 	@rm -rf ${BUILDDIR}/initramfs
 	@mkdir ${BUILDDIR}/initramfs
+
+ltp: ${BUILDDIR}/${LTP}/Version
+${BUILDDIR}/${LTP}/Version:
+	@test -f ${BUILDDIR}/${LTP}.bz2 || (cd ${BUILDDIR} && wget -c http://prdownloads.sourceforge.net/ltp/${LTP}.bz2?download)
+	@rm -rf ${BUILDDIR}/${LTP}
+	(cd ${BUILDDIR} && tar xjf ${BUILDDIR}/${LTP}.bz2 && cd ${LTP} && patch -p1 < ${TOPDIR}/initramfs/ltp.patch)
+	(cd ${BUILDDIR}/${LTP} && CFLAGS="-D_GNU_SOURCE=1 -std=gnu89" CC=${CC} CPP="${CPP}" ./configure --prefix=${BUILDDIR}/initramfs --without-expect --without-perl --without-python --host=${HOST})
+	(cd ${BUILDDIR}/${LTP} && make)
