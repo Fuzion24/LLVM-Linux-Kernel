@@ -26,7 +26,7 @@ GCCVERSION=2010
 GCCHOME=/opt
 #PARALLEL="-j8"
 JOBS=`getconf _NPROCESSORS_ONLN`
-if x"${JOBS}" -eq x""; then
+if [ "x${JOBS}" != "x" ]; then
   JOBS=2
 fi
 PARALLEL="-j${JOBS}"

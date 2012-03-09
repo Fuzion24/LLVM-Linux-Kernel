@@ -28,6 +28,7 @@ QEMUSRCDIR=${TOPQEMUDIR}/src
 INSTALLDIR=${TOPQEMUDIR}/install
 QEMUBUILDDIR=${TOPQEMUDIR}/build/qemu
 QEMUSTATE=${TOPQEMUDIR}/state
+SYNC_TARGETS+=qemu-sync
 JOBS:=${shell getconf _NPROCESSORS_ONLN}
 ifeq "${JOBS}" ""
 JOBS:=2
@@ -69,4 +70,5 @@ qemu-clean:
 	rm -f ${QEMUSTATE}/qemu-configure ${QEMUSTATE}/qemu-build
 	
 qemu-sync:
+	@make qemu-clean
 	(cd ${QEMUSRCDIR}/qemu && git checkout ${QEMU_BRANCH} && git pull)

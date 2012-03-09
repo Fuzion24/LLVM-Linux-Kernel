@@ -36,6 +36,7 @@ PATCH_FILES+=${COMMON}/common.patch ${COMMON}/fix-warnings.patch \
 	${COMMON}/fix-warnings-unused.patch
 FILTERFILE=${CWD}/kernel-filter
 TMPFILTERFILE=${CWD}/tmp/kernel-filter
+SYNC_TARGETS+=kernel-sync
 
 # The ARCH makefile must provide the following:
 #   - PATCH_FILES+=... Additional arch specific patch file(s)
@@ -49,7 +50,7 @@ TMPFILTERFILE=${CWD}/tmp/kernel-filter
 #   - KERNELDIR
 
 
-TARGETS+=kernel-fetch kernel-patch kernel-configure kernel-build kernel-devbuild kernel-sync
+TARGETS+=kernel-fetch kernel-patch kernel-configure kernel-build kernel-sync
 
 .PHONY: kernel-fetch kernel-patch kernel-configure kernel-build
 
@@ -98,7 +99,6 @@ kernel-clean:
 	@rm -f ${CWD}/state/kernel-patch
 	@rm -f ${CWD}/state/kernel-configure
 	@rm -f ${CWD}/state/kernel-build
-	@rm -f ${CWD}/state/kernel-devbuild
 	@rm -f ${FILTERFILE}
 	@rm -f ${TMPFILTERFILE}-1
 	@rm -f ${TMPFILTERFILE}-2
@@ -112,19 +112,11 @@ state/kernel-configure: state/kernel-patch
 	@mkdir -p state
 	@touch $@
 
-kernel-build: ${LLVMSTATE}/clang-build state/kernel-build
-state/kernel-build: state/kernel-configure
+kernel-build: state/kernel-build
+state/kernel-build: ${LLVMSTATE}/clang-build state/kernel-configure
 	@test -n "${MAKE_KERNEL}" || (echo "Error: MAKE_KERNEL undefined" && false)
 	@${TOOLSDIR}/banner.sh "Writing to ${LOGDIR}/build.log..."
 	(cd ${KERNELDIR} && ${MAKE_KERNEL} > ${LOGDIR}/build.log 2>&1)
-	@mkdir -p state
-	@touch $@
-
-kernel-devbuild: ${LLVMSTATE}/clangdev-build state/kernel-devbuild
-state/kernel-devbuild: state/kernel-configure
-	@test -n "${MAKE_DEVKERNEL}" || (echo "Error: MAKE_DEVKERNEL undefined" && false)
-	@${TOOLSDIR}/banner.sh "Writing to ${LOGDIR}/devbuild.log..."
-	(cd ${KERNELDIR} && ${MAKE_DEVKERNEL} > ${LOGDIR}/devbuild.log 2>&1)
 	@mkdir -p state
 	@touch $@
 
@@ -132,6 +124,10 @@ kernel-sync: state/kernel-fetch
 	@make kernel-clean
 	(cd ${KERNELDIR} && git pull)
 
+sync-all:
+	@for t in ${SYNC_TARGETS}; do make $$t; done
+
 list-targets:
 	@echo "List of available make targets:"
 	@(for t in ${TARGETS}; do echo $$t; done)
+

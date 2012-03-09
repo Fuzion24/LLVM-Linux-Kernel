@@ -26,10 +26,10 @@ KERNEL_GIT=git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
 KERNELDIR=${SRCDIR}/linux
 KERNEL_CFG=${KERNELDIR}/arch/hexagon/configs/comet_defconfig
 PATCH_FILES=
-MAKE_DEVKERNEL=${CWD}/make_kernel.sh
+MAKE_KERNEL=${CWD}/make_kernel.sh
 
 # Only the development version of clang supoprts hexagon
-all: prep kernel-devbuild
+all: prep kernel-build
 .PHONY: clean mrproper
 
 include ${TOPDIR}/common/common.mk
