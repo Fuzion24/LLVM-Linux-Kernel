@@ -2160,4 +2160,17 @@ index 930b4e9..3c4bd26 100644
  	.probe  = mipi_nt35510_lcd_probe,
  	.driver = {
  		.name   = "mipi_NT35510",
+diff --git a/drivers/staging/android/ram_console.c b/drivers/staging/android/ram_console.c
+index 93730ae..9cb526b 100644
+--- a/drivers/staging/android/ram_console.c
++++ b/drivers/staging/android/ram_console.c
+@@ -367,7 +367,7 @@ static int __devinit ram_console_driver_probe(struct platform_device *pdev)
+ 	return ram_console_init(buffer, buffer_size, bootinfo, NULL/* allocate */);
+ }
+ 
+-static struct platform_driver ram_console_driver = {
++static struct platform_driver ram_console_driver __initdata = {
+ 	.probe = ram_console_driver_probe,
+ 	.driver		= {
+ 		.name	= "ram_console",
 
