@@ -49,8 +49,8 @@ LLVM_BRANCH="master"
 clang-fetch: ${LLVMSTATE}/clang-fetch ${LLVMSTATE}/clang-fetch 
 ${LLVMSTATE}/clang-fetch:
 	@mkdir -p ${LLVMSRCDIR}
-	(cd ${LLVMSRCDIR} && git clone ${LLVMSRCDIR}/llvm -b ${LLVM_BRANCH} ${LLVMSRC})
-	(cd ${LLVMDIR}/tools && git clone ${LLVMSRCDIR}/llvm/tools/clang -b ${LLVM_BRANCH})
+	(cd ${LLVMSRCDIR} && git clone ${LLVM_GIT} -b ${LLVM_BRANCH} ${LLVMSRC})
+	(cd ${LLVMDIR}/tools && git clone ${CLANG_GIT} -b ${LLVM_BRANCH})
 	@mkdir -p ${LLVMSTATE}
 	@touch $@
 
