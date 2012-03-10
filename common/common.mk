@@ -37,6 +37,7 @@ PATCH_FILES+=${COMMON}/common.patch ${COMMON}/fix-warnings.patch \
 FILTERFILE=${CWD}/kernel-filter
 TMPFILTERFILE=${CWD}/tmp/kernel-filter
 SYNC_TARGETS+=kernel-sync
+LOG_OUTPUT= > ${LOGDIR}/build.log 2>&1
 
 # The ARCH makefile must provide the following:
 #   - PATCH_FILES+=... Additional arch specific patch file(s)
@@ -115,8 +116,8 @@ state/kernel-configure: state/kernel-patch
 kernel-build: state/kernel-build
 state/kernel-build: ${LLVMSTATE}/clang-build state/kernel-configure
 	@test -n "${MAKE_KERNEL}" || (echo "Error: MAKE_KERNEL undefined" && false)
-	@${TOOLSDIR}/banner.sh "Writing to ${LOGDIR}/build.log..."
-	(cd ${KERNELDIR} && ${MAKE_KERNEL} > ${LOGDIR}/build.log 2>&1)
+	@${TOOLSDIR}/banner.sh "Building kernel..."
+	(cd ${KERNELDIR} && ${MAKE_KERNEL} ${LOG_OUTPUT})
 	@mkdir -p state
 	@touch $@
 
