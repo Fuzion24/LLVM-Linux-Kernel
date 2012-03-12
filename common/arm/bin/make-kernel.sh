@@ -21,9 +21,19 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
+if [ "x${USECLANG}" = "x" ]; then
+# Use clang by default
 USECLANG=1
-GCCVERSION=2010
+fi
+if [ "x${GCCVERSION}" = "x" ]; then
+# Use arm-2011.03 by default
+GCCVERSION=2011.03
+fi
+
+if [ "x${GCCHOME}" = "x" ]; then
 GCCHOME=/opt
+fi
+
 #PARALLEL="-j8"
 JOBS=`getconf _NPROCESSORS_ONLN`
 if [ "x${JOBS}" != "x" ]; then
@@ -47,14 +57,13 @@ export CROSS_COMPILE=arm-none-linux-gnueabi-
 
 else
 
-if [ ${GCCVERSION} -eq "2010" ]; then
-export CC_FOR_BUILD=${GCCHOME}/arm-2010.09/bin/arm-none-eabi-gcc
-export CROSS_COMPILE=arm-none-eabi-
-export PATH=${GCCHOME}/arm-2010.09/bin:$PATH
-else
-export CC_FOR_BUILD=${GCCHOME}/arm-2011.03/bin/arm-none-linux-gnueabi-gcc
+if [ -d ${GCCHOME}/arm-${GCCVERSION} ]; then
+export CC_FOR_BUILD=${GCCHOME}/arm-${GCCVERSION}/bin/arm-none-linux-gnueabi-gcc
 export CROSS_COMPILE=arm-none-linux-gnueabi-
-export PATH=${GCCHOME}/arm-2011.03/bin:$PATH
+export PATH=${GCCHOME}/arm-${GCCVERSION}/bin:$PATH
+else
+echo "Compiler not found: ${GCCHOME}/arm-${GCCVERSION}"
+exit 1
 fi
 
 fi

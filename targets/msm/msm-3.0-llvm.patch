@@ -2173,4 +2173,17 @@ index 93730ae..9cb526b 100644
  	.probe = ram_console_driver_probe,
  	.driver		= {
  		.name	= "ram_console",
+diff --git a/drivers/usb/gadget/msm72k_udc.c b/drivers/usb/gadget/msm72k_udc.c
+index 28e217b..276acae 100644
+--- a/drivers/usb/gadget/msm72k_udc.c
++++ b/drivers/usb/gadget/msm72k_udc.c
+@@ -2800,7 +2800,7 @@ static int __exit msm72k_remove(struct platform_device *pdev)
+ 	return usb_free(ui, 0);
+ }
+ 
+-static struct platform_driver usb_driver = {
++static struct platform_driver usb_driver __exitdata = {
+ 	.probe = msm72k_probe,
+ 	.remove = msm72k_remove,
+ 	.driver = { .name = "msm_hsusb",
 
