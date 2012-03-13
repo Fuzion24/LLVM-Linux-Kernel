@@ -2186,4 +2186,17 @@ index 28e217b..276acae 100644
  	.probe = msm72k_probe,
  	.remove = msm72k_remove,
  	.driver = { .name = "msm_hsusb",
+diff --git a/drivers/video/msm/mipi_truly_tft540960_1_e.c b/drivers/video/msm/mipi_truly_tft540960_1_e.c
+index 937a598..732c494 100644
+--- a/drivers/video/msm/mipi_truly_tft540960_1_e.c
++++ b/drivers/video/msm/mipi_truly_tft540960_1_e.c
+@@ -734,7 +734,7 @@ static int __devinit mipi_truly_lcd_probe(struct platform_device *pdev)
+ 	return rc;
+ }
+ 
+-static struct platform_driver this_driver = {
++static struct platform_driver this_driver __initdata = {
+ 	.probe  = mipi_truly_lcd_probe,
+ 	.driver = {
+ 		.name   = "mipi_truly_tft540960_1_e",
 
