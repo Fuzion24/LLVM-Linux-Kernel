@@ -2,7 +2,7 @@
 
 TOPDIR=`dirname $0`/../../..
 export PATH=/opt/arm-2011.03/bin:$PATH
-CLANG_INSTALL_DIR=${TOPDIR}/clang/install-dev
+CLANG_INSTALL_DIR=${TOPDIR}/clang/install
 ARMGCC=`which arm-none-linux-gnueabi-gcc`
 ARMGCCDIR=`dirname $ARMGCC`
 ARMGCCINCLUDE="$ARMGCCDIR"/../arm-none-linux-gnueabi/libc/usr/include
