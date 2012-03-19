@@ -1308,3 +1308,26 @@ index d25fabf..9f9953b 100644
  
  	info.si_signo = SIGFPE;
  	info.si_code = sicode;
+diff --git a/arch/arm/Makefile b/arch/arm/Makefile
+index 9698160..d318661 100644
+--- a/arch/arm/Makefile
++++ b/arch/arm/Makefile
+@@ -46,7 +46,7 @@ KBUILD_CPPFLAGS	+= -mbig-endian
+ AS		+= -EB
+ LD		+= -EB
+ else
+-KBUILD_CPPFLAGS	+= -mlittle-endian
++#KBUILD_CPPFLAGS	+= -mlittle-endian
+ AS		+= -EL
+ LD		+= -EL
+ endif
+@@ -113,7 +113,7 @@ endif
+ endif
+ 
+ # Need -Uarm for gcc < 3.x
+-KBUILD_CFLAGS	+=$(CFLAGS_ABI) $(CFLAGS_THUMB2) $(arch-y) $(tune-y) $(call cc-option,-mshort-load-bytes,$(call cc-option,-malignment-traps,)) -msoft-float -Uarm
++KBUILD_CFLAGS	+=$(CFLAGS_ABI) $(CFLAGS_THUMB2) $(arch-y) $(tune-y) -msoft-float -Uarm
+ KBUILD_AFLAGS	+=$(CFLAGS_ABI) $(AFLAGS_THUMB2) $(arch-y) $(tune-y) -include asm/unified.h -msoft-float
+ 
+ CHECKFLAGS	+= -D__arm__
+

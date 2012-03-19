@@ -2199,4 +2199,30 @@ index 937a598..732c494 100644
  	.probe  = mipi_truly_lcd_probe,
  	.driver = {
  		.name   = "mipi_truly_tft540960_1_e",
+diff --git a/drivers/usb/gadget/msm72k_udc.c b/drivers/usb/gadget/msm72k_udc.c
+index 28e217b..33f79f8 100644
+--- a/drivers/usb/gadget/msm72k_udc.c
++++ b/drivers/usb/gadget/msm72k_udc.c
+@@ -2800,7 +2800,7 @@ static int __exit msm72k_remove(struct platform_device *pdev)
+ 	return usb_free(ui, 0);
+ }
+ 
+-static struct platform_driver usb_driver = {
++static struct platform_driver usb_driver __refdata = {
+ 	.probe = msm72k_probe,
+ 	.remove = msm72k_remove,
+ 	.driver = { .name = "msm_hsusb",
+diff --git a/drivers/video/msm/mipi_truly.c b/drivers/video/msm/mipi_truly.c
+index a2060f0..2624389 100644
+--- a/drivers/video/msm/mipi_truly.c
++++ b/drivers/video/msm/mipi_truly.c
+@@ -194,7 +194,7 @@ static int __devinit mipi_truly_lcd_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver this_driver = {
++static struct platform_driver this_driver __initdata = {
+ 	.probe  = mipi_truly_lcd_probe,
+ 	.driver = {
+ 		.name   = "mipi_truly",
 
