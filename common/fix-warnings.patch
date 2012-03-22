@@ -1,3 +1,16 @@
+diff --git a/arch/arm/include/asm/processor.h b/arch/arm/include/asm/processor.h
+index ce280b8..3cdb83c 100644
+--- a/arch/arm/include/asm/processor.h
++++ b/arch/arm/include/asm/processor.h
+@@ -56,7 +56,7 @@ struct thread_struct {
+ ({									\
+ 	unsigned long *stack = (unsigned long *)sp;			\
+ 	set_fs(USER_DS);						\
+-	memset(regs->uregs, 0, sizeof(regs->uregs));			\
++	(void)memset(regs->uregs, 0, sizeof(regs->uregs));		\
+ 	if (current->personality & ADDR_LIMIT_32BIT)			\
+ 		regs->ARM_cpsr = USR_MODE;				\
+ 	else								\
 diff --git a/drivers/input/serio/ambakmi.c b/drivers/input/serio/ambakmi.c
 index 8407d5b..e60eaa9 100644
 --- a/drivers/input/serio/ambakmi.c
@@ -10,6 +23,32 @@ index 8407d5b..e60eaa9 100644
 +static struct amba_driver ambakmi_driver __refdata = {
  	.drv		= {
  		.name	= "kmi-pl050",
+ 		.owner	= THIS_MODULE,
+diff --git a/drivers/mmc/host/sdhci-pxav2.c b/drivers/mmc/host/sdhci-pxav2.c
+index dbb75bf..c3c4719 100644
+--- a/drivers/mmc/host/sdhci-pxav2.c
++++ b/drivers/mmc/host/sdhci-pxav2.c
+@@ -214,7 +214,7 @@ static int __devexit sdhci_pxav2_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver sdhci_pxav2_driver = {
++static struct platform_driver sdhci_pxav2_driver __refdata = {
+ 	.driver		= {
+ 		.name	= "sdhci-pxav2",
+ 		.owner	= THIS_MODULE,
+diff --git a/drivers/mmc/host/sdhci-pxav3.c b/drivers/mmc/host/sdhci-pxav3.c
+index f296956..9e363bb 100644
+--- a/drivers/mmc/host/sdhci-pxav3.c
++++ b/drivers/mmc/host/sdhci-pxav3.c
+@@ -260,7 +260,7 @@ static int __devexit sdhci_pxav3_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver sdhci_pxav3_driver = {
++static struct platform_driver sdhci_pxav3_driver __refdata = {
+ 	.driver		= {
+ 		.name	= "sdhci-pxav3",
  		.owner	= THIS_MODULE,
 diff --git a/drivers/net/ethernet/smsc/smc91x.c b/drivers/net/ethernet/smsc/smc91x.c
 index 64ad3ed..459835a 100644
@@ -103,57 +142,4 @@ index 55472c4..c078dcc 100644
 +	dprintk("RPC:       discarded %zu bytes\n", len);
  	xs_tcp_check_fraghdr(transport);
  }
-
-diff --git a/arch/arm/include/asm/processor.h b/arch/arm/include/asm/processor.h
-index ce280b8..3cdb83c 100644
---- a/arch/arm/include/asm/processor.h
-+++ b/arch/arm/include/asm/processor.h
-@@ -56,7 +56,7 @@ struct thread_struct {
- ({									\
- 	unsigned long *stack = (unsigned long *)sp;			\
- 	set_fs(USER_DS);						\
--	memset(regs->uregs, 0, sizeof(regs->uregs));			\
-+	(void)memset(regs->uregs, 0, sizeof(regs->uregs));		\
- 	if (current->personality & ADDR_LIMIT_32BIT)			\
- 		regs->ARM_cpsr = USR_MODE;				\
- 	else								\
-diff --git a/drivers/tty/serial/8250/8250.c b/drivers/tty/serial/8250/8250.c
-index 9b7336f..1c105b0 100644
---- a/drivers/tty/serial/8250/8250.c
-+++ b/drivers/tty/serial/8250/8250.c
-@@ -3106,7 +3106,7 @@ static int serial8250_resume(struct platform_device *dev)
-        return 0;
- }
- 
--static struct platform_driver serial8250_isa_driver = {
-+static struct platform_driver serial8250_isa_driver __refdata = {
-        .probe          = serial8250_probe,
-        .remove         = __devexit_p(serial8250_remove),
-        .suspend        = serial8250_suspend,
-diff --git a/drivers/mmc/host/sdhci-pxav2.c b/drivers/mmc/host/sdhci-pxav2.c
-index dbb75bf..c3c4719 100644
---- a/drivers/mmc/host/sdhci-pxav2.c
-+++ b/drivers/mmc/host/sdhci-pxav2.c
-@@ -214,7 +214,7 @@ static int __devexit sdhci_pxav2_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
--static struct platform_driver sdhci_pxav2_driver = {
-+static struct platform_driver sdhci_pxav2_driver __refdata = {
- 	.driver		= {
- 		.name	= "sdhci-pxav2",
- 		.owner	= THIS_MODULE,
-diff --git a/drivers/mmc/host/sdhci-pxav3.c b/drivers/mmc/host/sdhci-pxav3.c
-index f296956..9e363bb 100644
---- a/drivers/mmc/host/sdhci-pxav3.c
-+++ b/drivers/mmc/host/sdhci-pxav3.c
-@@ -260,7 +260,7 @@ static int __devexit sdhci_pxav3_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
--static struct platform_driver sdhci_pxav3_driver = {
-+static struct platform_driver sdhci_pxav3_driver __refdata = {
- 	.driver		= {
- 		.name	= "sdhci-pxav3",
- 		.owner	= THIS_MODULE,
 

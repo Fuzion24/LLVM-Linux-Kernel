@@ -26,6 +26,7 @@ CWD=${CURDIR}
 KERNEL_CFG=${CWD}/config_vexpress
 KERNEL_GIT=git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
 KERNELDIR=${SRCDIR}/linux
+KERNELCOPY=${SRCDIR}/linux-copy
 PATCH_FILES=${CWD}/workaround.patch ${CWD}/vexpress.patch
 
 #GDB_OPTS=-gdb tcp::1234 -s -S
@@ -79,4 +80,26 @@ test2: ${QEMUSTATE}/qemu-build initramfs state/kernel-build
 	@${INSTALLDIR}/bin/qemu-system-arm -kernel ${KERNELDIR}/arch/arm/boot/zImage \
 		-initrd initramfs.img.gz -M vexpress-a9 -append \
 		'console=earlycon console=ttyAMA0,38400n8 earlyprintk init=/init' -nographic ${GDB_OPTS}
+
+patch-update: state/kernel-patch
+	@${TOPDIR}/tools/applyfilter.py ${TOPDIR}/common/common.patch ${TMPDIR}/common.patch ${CWD}/kernel-filter
+	@${TOPDIR}/tools/applyfilter.py ${TOPDIR}/common/fix-warnings.patch ${TMPDIR}/fix-warnings.patch ${CWD}/kernel-filter
+	@${TOPDIR}/tools/applyfilter.py ${TOPDIR}/common/fix-warnings-unused.patch ${TMPDIR}/fix-warnings-unused.patch ${CWD}/kernel-filter
+	@${TOPDIR}/tools/applyfilter.py ${TOPDIR}/common/arm/common-arm.patch ${TMPDIR}/common-arm.patch ${CWD}/kernel-filter
+	@${TOPDIR}/tools/applyfilter.py ${TOPDIR}/common/arm/fix-warnings-arm.patch ${TMPDIR}/fix-warnings-arm.patch ${CWD}/kernel-filter
+	@${TOPDIR}/tools/applyfilter.py ${TOPDIR}/common/arm/fix-warnings-arm-unused.patch ${TMPDIR}/fix-warnings-arm-unused.patch ${CWD}/kernel-filter
+
+kernel-copy: state/kernel-copy
+state/kernel-copy: kernel-fetch
+	(cd ${SRCDIR} && git clone ${KERNELDIR} linux-copy)
+	@touch $@
+
+kernel-autopatch: kernel-build state/kernel-copy
+	(cd ${KERNELCOPY} && git reset --hard HEAD && git pull)
+	(cd ${KERNELCOPY} &&  patch -p1 -i ${TMPDIR}/final.patch >> ${LOGDIR}/patchcopy.log)
+	@${TOOLSDIR}/unusedfix.py ${LOGDIR}/build.log ${KERNELCOPY} 
+	(cd ${KERNELCOPY} &&  patch -R -p1 -i ${TMPDIR}/final.patch >> ${LOGDIR}/patchcopy.log)
+	(cd ${KERNELCOPY} && git diff > ${TMPDIR}/autopatch.patch)
+	@${TOOLSDIR}/splitarch.py ${TMPDIR}/autopatch.patch ${CWD} autopatch
+	@touch $@
 

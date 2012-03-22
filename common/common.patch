@@ -34,19 +34,6 @@ index 0d955ff..667ce16 100644
  	.drv		= {
  		.name	= DRIVER_NAME,
  	},
-diff --git a/drivers/tty/serial/8250.c b/drivers/tty/serial/8250.c
-index 9f50c4e..cd41fb3 100644
---- a/drivers/tty/serial/8250.c
-+++ b/drivers/tty/serial/8250.c
-@@ -3106,7 +3106,7 @@ static int serial8250_resume(struct platform_device *dev)
- 	return 0;
- }
- 
--static struct platform_driver serial8250_isa_driver = {
-+static struct platform_driver serial8250_isa_driver __refdata = {
- 	.probe		= serial8250_probe,
- 	.remove		= __devexit_p(serial8250_remove),
- 	.suspend	= serial8250_suspend,
 diff --git a/fs/bio.c b/fs/bio.c
 index b1fe82c..152fa2a 100644
 --- a/fs/bio.c

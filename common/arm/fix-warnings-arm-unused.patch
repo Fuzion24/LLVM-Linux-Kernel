@@ -11,15 +11,6 @@ index b2dc2dd..8d962d9 100644
  		     "GIC_NON_BANKED not enabled, ignoring %08x offset!",
  		     percpu_offset);
  		gic->dist_base.common_base = dist_base;
-@@ -720,7 +720,7 @@ void __init gic_init_bases(unsigned int gic_nr, int irq_start,
- 	domain->irq_base = irq_alloc_descs(irq_start, 16, domain->nr_irq,
- 					   numa_node_id());
- 	if (IS_ERR_VALUE(domain->irq_base)) {
--		WARN(1, "Cannot allocate irq_descs @ IRQ%d, assuming pre-allocated\n",
-+		(void)WARN(1, "Cannot allocate irq_descs @ IRQ%d, assuming pre-allocated\n",
- 		     irq_start);
- 		domain->irq_base = irq_start;
- 	}
 diff --git a/arch/arm/include/asm/uaccess.h b/arch/arm/include/asm/uaccess.h
 index b293616..0308934 100644
 --- a/arch/arm/include/asm/uaccess.h
@@ -224,15 +215,6 @@ diff --git a/arch/arm/mm/copypage-v6.c b/arch/arm/mm/copypage-v6.c
 index 3d9a155..18b900f 100644
 --- a/arch/arm/mm/copypage-v6.c
 +++ b/arch/arm/mm/copypage-v6.c
-@@ -52,7 +52,7 @@ static void v6_copy_user_highpage_nonaliasing(struct page *to,
- static void v6_clear_user_highpage_nonaliasing(struct page *page, unsigned long vaddr)
- {
- 	void *kaddr = kmap_atomic(page, KM_USER0);
--	clear_page(kaddr);
-+	(void)clear_page(kaddr);
- 	kunmap_atomic(kaddr, KM_USER0);
- }
- 
 @@ -125,7 +125,7 @@ static void v6_clear_user_highpage_aliasing(struct page *page, unsigned long vad
  
  	set_pte_ext(TOP_PTE(to_address) + offset, pfn_pte(page_to_pfn(page), PAGE_KERNEL), 0);
