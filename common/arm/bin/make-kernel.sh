@@ -48,8 +48,7 @@ export LANG=C
 export LC_ALL=C
 
 if [ ${USECLANG} -eq "1" ]; then
-export CC_FOR_BUILD="${INSTALLDIR}/bin/clang -g -march=armv7-a \
-	-ccc-host-triple arm -mfloat-abi=softfp -mfpu=neon \
+export CC_FOR_BUILD="${INSTALLDIR}/bin/clang -ccc-host-triple armv7 -mfloat-abi=softfp -mfpu=neon \
 	-ccc-gcc-name arm-none-linux-gnueabi-gcc ${EXTRAFLAGS}"
 
 export PATH=${GCCHOME}/arm-2011.03/bin:${INSTALLDIR}/bin:$PATH
@@ -60,7 +59,8 @@ else
 if [ -d ${GCCHOME}/arm-${GCCVERSION} ]; then
 export CC_FOR_BUILD=${GCCHOME}/arm-${GCCVERSION}/bin/arm-none-linux-gnueabi-gcc
 export CROSS_COMPILE=arm-none-linux-gnueabi-
-export PATH=${GCCHOME}/arm-${GCCVERSION}/bin:$PATH
+export COMPILER_PATH=${GCCHOME}/arm-${GCCVERSION}
+#export PATH=${GCCHOME}/arm-${GCCVERSION}/bin:$PATH
 else
 echo "Compiler not found: ${GCCHOME}/arm-${GCCVERSION}"
 exit 1

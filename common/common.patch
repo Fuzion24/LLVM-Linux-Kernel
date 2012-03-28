@@ -182,3 +182,60 @@ index b37b702a..c16beea 100644
  	.drv		= {
  		.name	= DRIVER_NAME,
  	},
+diff --git a/scripts/Kbuild.include b/scripts/Kbuild.include
+index d897278..f09c26d 100644
+--- a/scripts/Kbuild.include
++++ b/scripts/Kbuild.include
+@@ -106,9 +106,44 @@ as-option = $(call try-run,\
+ as-instr = $(call try-run,\
+ 	/bin/echo -e "$(1)" | $(CC) $(KBUILD_AFLAGS) -c -xassembler -o "$$TMP" -,$(2),$(3))
+ 
++# Test for clang
++ifeq ($(shell $(CC) -v | grep "clang version" | wc -l), 1)
++
+ # cc-option
+ # Usage: cflags-y += $(call cc-option,-march=winchip-c6,-march=i586)
++cc-option = $(call try-run,\
++	$(CC) $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) $(1) -c -xc /dev/null -o "$$TMP" | grep "argument unused during compilation: '$(1)'" | xargs -I{} test -z "{}",$(1),$(2))
++
++# cc-option-yn
++# Usage: flag := $(call cc-option-yn,-march=winchip-c6)
++cc-option-yn = $(call try-run,\
++	$(CC) $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) $(1) -c -xc /dev/null -o "$$TMP" | grep "argument unused during compilation: '$(1)'" | xargs -I{} test -z "{}",y,n)
++
++# cc-option-align
++# Prefix align with either -falign or -malign
++cc-option-align = $(subst -functions=0,,\
++	$(call cc-option,-falign-functions=0,-malign-functions=0))
+ 
++# cc-disable-warning
++# Usage: cflags-y += $(call cc-disable-warning,unused-but-set-variable)
++cc-disable-warning = $(call try-run,\
++	$(CC) $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) -W$(strip $(1)) -c -xc /dev/null -o "$$TMP" | grep "argument unused during compilation: '$(1)'" | xargs -I{} test -z "{}",-Wno-$(strip $(1)))
++
++# cc-version and cc-fullversion are not used in clang supported targets
++
++# cc-version
++# Usage gcc-ver := $(call cc-version)
++cc-version = 0
++
++# cc-fullversion
++# Usage gcc-ver := $(call cc-fullversion)
++cc-fullversion = 0
++
++# Otherwise assume GCC or something compatible
++else
++
++# cc-option
++# Usage: cflags-y += $(call cc-option,-march=winchip-c6,-march=i586)
+ cc-option = $(call try-run,\
+ 	$(CC) $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) $(1) -c -xc /dev/null -o "$$TMP",$(1),$(2))
+ 
+@@ -135,6 +170,7 @@ cc-version = $(shell $(CONFIG_SHELL) $(srctree)/scripts/gcc-version.sh $(CC))
+ # Usage gcc-ver := $(call cc-fullversion)
+ cc-fullversion = $(shell $(CONFIG_SHELL) \
+ 	$(srctree)/scripts/gcc-version.sh -p $(CC))
++endif
+ 
+ # cc-ifversion
+ # Usage:  EXTRA_CFLAGS += $(call cc-ifversion, -lt, 0402, -O1)

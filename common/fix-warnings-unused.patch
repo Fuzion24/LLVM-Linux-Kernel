@@ -871,54 +871,6 @@ index c5d3588..a0ce7d9 100644
  	} else {
  		/* Return if the device has been removed */
  		ret = -ENODEV;
-diff --git a/drivers/base/sys.c b/drivers/base/sys.c
-index 409f5ce..b67da8d 100644
---- a/drivers/base/sys.c
-+++ b/drivers/base/sys.c
-@@ -135,7 +135,7 @@ int sysdev_class_register(struct sysdev_class *cls)
- 	pr_debug("Registering sysdev class '%s'\n", cls->name);
- 
- 	INIT_LIST_HEAD(&cls->drivers);
--	memset(&cls->kset.kobj, 0x00, sizeof(struct kobject));
-+	(void)memset(&cls->kset.kobj, 0x00, sizeof(struct kobject));
- 	cls->kset.kobj.parent = &system_kset->kobj;
- 	cls->kset.kobj.ktype = &ktype_sysdev_class;
- 	cls->kset.kobj.kset = system_kset;
-@@ -211,14 +211,14 @@ int sysdev_driver_register(struct sysdev_class *cls, struct sysdev_driver *drv)
- 	int err = 0;
- 
- 	if (!cls) {
--		WARN(1, KERN_WARNING "sysdev: invalid class passed to %s!\n",
-+		(void)WARN(1, KERN_WARNING "sysdev: invalid class passed to %s!\n",
- 			__func__);
- 		return -EINVAL;
- 	}
- 
- 	/* Check whether this driver has already been added to a class. */
- 	if (drv->entry.next && !list_empty(&drv->entry))
--		WARN(1, KERN_WARNING "sysdev: class %s: driver (%p) has already"
-+		(void)WARN(1, KERN_WARNING "sysdev: class %s: driver (%p) has already"
- 			" been registered to a class, something is wrong, but "
- 			"will forge on!\n", cls->name, drv);
- 
-@@ -236,7 +236,7 @@ int sysdev_driver_register(struct sysdev_class *cls, struct sysdev_driver *drv)
- 		}
- 	} else {
- 		err = -EINVAL;
--		WARN(1, KERN_ERR "%s: invalid device class\n", __func__);
-+		(void)WARN(1, KERN_ERR "%s: invalid device class\n", __func__);
- 	}
- 
- 	goto unlock;
-@@ -281,7 +281,7 @@ int sysdev_register(struct sys_device *sysdev)
- 		 kobject_name(&cls->kset.kobj));
- 
- 	/* initialize the kobject to 0, in case it had previously been used */
--	memset(&sysdev->kobj, 0x00, sizeof(struct kobject));
-+	(void)memset(&sysdev->kobj, 0x00, sizeof(struct kobject));
- 
- 	/* Make sure the kset is set */
- 	sysdev->kobj.kset = &cls->kset;
 diff --git a/drivers/base/syscore.c b/drivers/base/syscore.c
 index e8d11b6..2a0cf2f 100644
 --- a/drivers/base/syscore.c
@@ -3480,19 +3432,6 @@ index 7491801..6e05588 100644
  	if (ret && ret != -ERESTARTSYS)
  		printk(KERN_INFO "binder: %d:%d ioctl %x %lx returned %d\n", proc->pid, current->pid, cmd, arg, ret);
  	return ret;
-diff --git a/drivers/staging/android/ram_console.c b/drivers/staging/android/ram_console.c
-index 6d4d679..7e47a9811 100644
---- a/drivers/staging/android/ram_console.c
-+++ b/drivers/staging/android/ram_console.c
-@@ -62,7 +62,7 @@ static void ram_console_encode_rs8(uint8_t *data, size_t len, uint8_t *ecc)
- 	int i;
- 	uint16_t par[ECC_SIZE];
- 	/* Initialize the parity buffer */
--	memset(par, 0, sizeof(par));
-+	(void)memset(par, 0, sizeof(par));
- 	encode_rs8(ram_console_rs_decoder, data, len, par, 0);
- 	for (i = 0; i < ECC_SIZE; i++)
- 		ecc[i] = par[i];
 diff --git a/drivers/thermal/thermal_sys.c b/drivers/thermal/thermal_sys.c
 index dd9a574..3d6d257 100644
 --- a/drivers/thermal/thermal_sys.c
@@ -3550,41 +3489,10 @@ index d8653ab..a6b7cd5 100644
  	else {
  		if (tty->count > 2)
  			return;
-diff --git a/drivers/tty/serial/8250.c b/drivers/tty/serial/8250.c
-index 9f50c4e..4dab9be 100644
---- a/drivers/tty/serial/8250.c
-+++ b/drivers/tty/serial/8250.c
-@@ -2194,7 +2194,7 @@ static void serial8250_shutdown(struct uart_port *port)
- 	spin_lock_irqsave(&up->port.lock, flags);
- 	if (up->port.flags & UPF_FOURPORT) {
- 		/* reset interrupts on the AST Fourport board */
--		inb((up->port.iobase & 0xfe0) | 0x1f);
-+		(void)inb((up->port.iobase & 0xfe0) | 0x1f);
- 		up->port.mctrl |= TIOCM_OUT1;
- 	} else
- 		up->port.mctrl &= ~TIOCM_OUT2;
-@@ -3026,7 +3026,7 @@ static int __devinit serial8250_probe(struct platform_device *dev)
- 	struct uart_port port;
- 	int ret, i, irqflag = 0;
- 
--	memset(&port, 0, sizeof(struct uart_port));
-+	(void)memset(&port, 0, sizeof(struct uart_port));
- 
- 	if (share_irqs)
- 		irqflag = IRQF_SHARED;
 diff --git a/drivers/tty/serial/8250/8250.c b/drivers/tty/serial/8250/8250.c
 index 9f50c4e..4dab9be 100644
 --- a/drivers/tty/serial/8250/8250.c
 +++ b/drivers/tty/serial/8250/8250.c
-@@ -2194,7 +2194,7 @@ static void serial8250_shutdown(struct uart_port *port)
- 	spin_lock_irqsave(&up->port.lock, flags);
- 	if (up->port.flags & UPF_FOURPORT) {
- 		/* reset interrupts on the AST Fourport board */
--		inb((up->port.iobase & 0xfe0) | 0x1f);
-+		(void)inb((up->port.iobase & 0xfe0) | 0x1f);
- 		up->port.mctrl |= TIOCM_OUT1;
- 	} else
- 		up->port.mctrl &= ~TIOCM_OUT2;
 @@ -3026,7 +3026,7 @@ static int __devinit serial8250_probe(struct platform_device *dev)
  	struct uart_port port;
  	int ret, i, irqflag = 0;
@@ -4116,15 +4024,6 @@ diff --git a/drivers/tty/vt/vt_ioctl.c b/drivers/tty/vt/vt_ioctl.c
 index 5e096f4..f9f7d1c 100644
 --- a/drivers/tty/vt/vt_ioctl.c
 +++ b/drivers/tty/vt/vt_ioctl.c
-@@ -130,7 +130,7 @@ static void vt_event_wait(struct vt_event_wait *vw)
- 	list_add(&vw->list, &vt_events);
- 	spin_unlock_irqrestore(&vt_event_lock, flags);
- 	/* Wait for it to pass */
--	wait_event_interruptible_tty(vt_event_waitqueue, vw->done);
-+	(void)wait_event_interruptible_tty(vt_event_waitqueue, vw->done);
- 	/* Dequeue it */
- 	spin_lock_irqsave(&vt_event_lock, flags);
- 	list_del(&vw->list);
 @@ -1166,12 +1166,12 @@ int vt_ioctl(struct tty_struct *tty,
  			break;
  		}
@@ -4522,15 +4421,6 @@ diff --git a/drivers/usb/otg/msm_otg.c b/drivers/usb/otg/msm_otg.c
 index b276f8f..43f5ce8 100644
 --- a/drivers/usb/otg/msm_otg.c
 +++ b/drivers/usb/otg/msm_otg.c
-@@ -299,7 +299,7 @@ static void ulpi_init(struct msm_otg *motg)
- 		return;
- 
- 	while (seq[0] >= 0) {
--		dev_vdbg(motg->otg.dev, "ulpi: write 0x%02x to 0x%02x\n",
-+		(void)dev_vdbg(motg->otg.dev, "ulpi: write 0x%02x to 0x%02x\n",
- 				seq[0], seq[1]);
- 		ulpi_write(&motg->otg, seq[0], seq[1]);
- 		seq += 2;
 @@ -1313,7 +1313,7 @@ static ssize_t msm_otg_mode_write(struct file *file, const char __user *ubuf,
  	int status = count;
  	enum usb_mode_type req_mode;
@@ -5797,19 +5687,6 @@ index aeb135c..d6edac6 100644
  					nr += zap_process(p, exit_code);
  					unlock_task_sighand(p, &flags);
  				}
-diff --git a/fs/ext2/dir.c b/fs/ext2/dir.c
-index d37df35..7f09677 100644
---- a/fs/ext2/dir.c
-+++ b/fs/ext2/dir.c
-@@ -646,7 +646,7 @@ int ext2_make_empty(struct inode *inode, struct inode *parent)
- 		goto fail;
- 	}
- 	kaddr = kmap_atomic(page, KM_USER0);
--	memset(kaddr, 0, chunk_size);
-+	(void)memset(kaddr, 0, chunk_size);
- 	de = (struct ext2_dir_entry_2 *)kaddr;
- 	de->name_len = 1;
- 	de->rec_len = ext2_rec_len_to_disk(EXT2_DIR_REC_LEN(1));
 diff --git a/fs/ext2/ialloc.c b/fs/ext2/ialloc.c
 index 8b15cf8..25d13bc 100644
 --- a/fs/ext2/ialloc.c
@@ -7756,15 +7633,6 @@ index 085a926..c529091 100644
  		de->inode = inode->i_ino;
  	}
  	err = dir_commit_chunk(page, pos, sbi->s_dirsize);
-@@ -336,7 +336,7 @@ int minix_make_empty(struct inode *inode, struct inode *dir)
- 	}
- 
- 	kaddr = kmap_atomic(page, KM_USER0);
--	memset(kaddr, 0, PAGE_CACHE_SIZE);
-+	(void)memset(kaddr, 0, PAGE_CACHE_SIZE);
- 
- 	if (sbi->s_version == MINIX_V3) {
- 		minix3_dirent *de3 = (minix3_dirent *)kaddr;
 diff --git a/fs/minix/itree_common.c b/fs/minix/itree_common.c
 index a731cab..806686b 100644
 --- a/fs/minix/itree_common.c
@@ -7866,15 +7734,6 @@ index fd9a872..8636cb6 100644
  		else
  			kfree(dentry->d_fsdata);
  	}
-@@ -1873,7 +1873,7 @@ static int nfs_symlink(struct inode *dir, struct dentry *dentry, const char *sym
- 	kaddr = kmap_atomic(page, KM_USER0);
- 	memcpy(kaddr, symname, pathlen);
- 	if (pathlen < PAGE_SIZE)
--		memset(kaddr + pathlen, 0, PAGE_SIZE - pathlen);
-+		(void)memset(kaddr + pathlen, 0, PAGE_SIZE - pathlen);
- 	kunmap_atomic(kaddr, KM_USER0);
- 
- 	error = NFS_PROTO(dir)->symlink(dir, dentry, page, pathlen, &attr);
 diff --git a/fs/nfs/direct.c b/fs/nfs/direct.c
 index 1940f1a..9031fa0 100644
 --- a/fs/nfs/direct.c
@@ -7901,59 +7760,6 @@ index a6e711a..18b3a90 100644
  
  	ttl = get_expiry(&buf);
  	if (ttl == 0)
-diff --git a/fs/nfs/idmap.c b/fs/nfs/idmap.c
-index 2c05f19..fe09f19 100644
---- a/fs/nfs/idmap.c
-+++ b/fs/nfs/idmap.c
-@@ -578,13 +578,13 @@ nfs_idmap_id(struct idmap *idmap, struct idmap_hashtable *h,
- 		goto out;
- 	}
- 
--	memset(im, 0, sizeof(*im));
-+	(void)memset(im, 0, sizeof(*im));
- 	memcpy(im->im_name, name, namelen);
- 
- 	im->im_type = h->h_type;
- 	im->im_conv = IDMAP_CONV_NAMETOID;
- 
--	memset(&msg, 0, sizeof(msg));
-+	(void)memset(&msg, 0, sizeof(msg));
- 	msg.data = im;
- 	msg.len = sizeof(*im);
- 
-@@ -607,7 +607,7 @@ nfs_idmap_id(struct idmap *idmap, struct idmap_hashtable *h,
- 	}
- 
-  out:
--	memset(im, 0, sizeof(*im));
-+	(void)memset(im, 0, sizeof(*im));
- 	mutex_unlock(&idmap->idmap_im_lock);
- 	mutex_unlock(&idmap->idmap_lock);
- 	return ret;
-@@ -639,12 +639,12 @@ nfs_idmap_name(struct idmap *idmap, struct idmap_hashtable *h,
- 		goto out;
- 	}
- 
--	memset(im, 0, sizeof(*im));
-+	(void)memset(im, 0, sizeof(*im));
- 	im->im_type = h->h_type;
- 	im->im_conv = IDMAP_CONV_IDTONAME;
- 	im->im_id = id;
- 
--	memset(&msg, 0, sizeof(msg));
-+	(void)memset(&msg, 0, sizeof(msg));
- 	msg.data = im;
- 	msg.len = sizeof(*im);
- 
-@@ -670,7 +670,7 @@ nfs_idmap_name(struct idmap *idmap, struct idmap_hashtable *h,
- 	}
- 
-  out:
--	memset(im, 0, sizeof(*im));
-+	(void)memset(im, 0, sizeof(*im));
- 	mutex_unlock(&idmap->idmap_im_lock);
- 	mutex_unlock(&idmap->idmap_lock);
- 	return ret;
 diff --git a/fs/nfs/inode.c b/fs/nfs/inode.c
 index f649fba..95ecd05 100644
 --- a/fs/nfs/inode.c
@@ -8087,19 +7893,6 @@ index f0c849c..7f2a6ad 100644
  		return 0;
  	}
  
-diff --git a/fs/nfs/nfs4state.c b/fs/nfs/nfs4state.c
-index a53f33b..190357d 100644
---- a/fs/nfs/nfs4state.c
-+++ b/fs/nfs/nfs4state.c
-@@ -1239,7 +1239,7 @@ restart:
- 				 * Open state on this file cannot be recovered
- 				 * All we can do is revert to using the zero stateid.
- 				 */
--				memset(state->stateid.data, 0,
-+				(void)memset(state->stateid.data, 0,
- 					sizeof(state->stateid.data));
- 				/* Mark the file as being 'closed' */
- 				state->state = 0;
 diff --git a/fs/nfs/nfs4xdr.c b/fs/nfs/nfs4xdr.c
 index 95e92e4..7ec1753 100644
 --- a/fs/nfs/nfs4xdr.c
@@ -8391,28 +8184,6 @@ index 2edf34f..7bde9be 100644
  			"'%s/%s', leaking at least '%s'\n", __func__,
  			de->parent->name, de->name, de->subdir->name);
  	pde_put(de);
-diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
-index a6b6217..d85ee28 100644
---- a/fs/proc/proc_sysctl.c
-+++ b/fs/proc/proc_sysctl.c
-@@ -101,7 +101,7 @@ static struct dentry *proc_sys_lookup(struct inode *dir, struct dentry *dentry,
- 		return ERR_CAST(head);
- 
- 	if (table && !table->child) {
--		WARN_ON(1);
-+		(void)WARN_ON(1);
- 		goto out;
- 	}
- 
-@@ -296,7 +296,7 @@ static int proc_sys_readdir(struct file *filp, void *dirent, filldir_t filldir)
- 		return PTR_ERR(head);
- 
- 	if (table && !table->child) {
--		WARN_ON(1);
-+		(void)WARN_ON(1);
- 		goto out;
- 	}
- 
 diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
 index 7dcd2a2..97611cf 100644
 --- a/fs/proc/task_mmu.c
@@ -9055,15 +8826,6 @@ diff --git a/include/linux/highmem.h b/include/linux/highmem.h
 index 3a93f73..63ed5d1 100644
 --- a/include/linux/highmem.h
 +++ b/include/linux/highmem.h
-@@ -181,7 +181,7 @@ alloc_zeroed_user_highpage_movable(struct vm_area_struct *vma,
- static inline void clear_highpage(struct page *page)
- {
- 	void *kaddr = kmap_atomic(page, KM_USER0);
--	clear_page(kaddr);
-+	(void)clear_page(kaddr);
- 	kunmap_atomic(kaddr, KM_USER0);
- }
- 
 @@ -194,10 +194,10 @@ static inline void zero_user_segments(struct page *page,
  	BUG_ON(end1 > PAGE_SIZE || end2 > PAGE_SIZE);
  
@@ -9200,19 +8962,6 @@ index 0eac07c..c4fced5 100644
  }
  
  static inline
-diff --git a/include/linux/netlink.h b/include/linux/netlink.h
-index 52e4895..31f3eb6 100644
---- a/include/linux/netlink.h
-+++ b/include/linux/netlink.h
-@@ -250,7 +250,7 @@ __nlmsg_put(struct sk_buff *skb, u32 pid, u32 seq, int type, int len, int flags)
- 	nlh->nlmsg_pid = pid;
- 	nlh->nlmsg_seq = seq;
- 	if (!__builtin_constant_p(size) || NLMSG_ALIGN(size) - size != 0)
--		memset(NLMSG_DATA(nlh) + len, 0, NLMSG_ALIGN(size) - size);
-+		(void)memset(NLMSG_DATA(nlh) + len, 0, NLMSG_ALIGN(size) - size);
- 	return nlh;
- }
- 
 diff --git a/include/linux/poll.h b/include/linux/poll.h
 index cf40010..5273a23 100644
 --- a/include/linux/poll.h
@@ -9325,26 +9074,6 @@ index bc2994e..970f1a8 100644
  		_raw_write_unlock_irqrestore(lock, flags);	\
  	} while (0)
  #define write_unlock_bh(lock)		_raw_write_unlock_bh(lock)
-diff --git a/include/linux/security.h b/include/linux/security.h
-index 83c18e8..2dae9d0 100644
---- a/include/linux/security.h
-+++ b/include/linux/security.h
-@@ -1898,13 +1898,13 @@ static inline int security_settime(const struct timespec *ts,
- 
- static inline int security_vm_enough_memory(long pages)
- {
--	WARN_ON(current->mm == NULL);
-+	(void)WARN_ON(current->mm == NULL);
- 	return cap_vm_enough_memory(current->mm, pages);
- }
- 
- static inline int security_vm_enough_memory_mm(struct mm_struct *mm, long pages)
- {
--	WARN_ON(mm == NULL);
-+	(void)WARN_ON(mm == NULL);
- 	return cap_vm_enough_memory(mm, pages);
- }
- 
 diff --git a/include/linux/signal.h b/include/linux/signal.h
 index 7987ce74..2256c0a 100644
 --- a/include/linux/signal.h
@@ -9763,6 +9492,7 @@ index bb972d2..54d7904 100644
  	return rc;
 --- a/block/blk-exec.c
 +++ b/block/blk-exec.c
+
 
 diff --git a/include/sound/pcm_params.h b/include/sound/pcm_params.h
 index f494f1e..a352c2b 100644
@@ -10267,25 +9997,6 @@ index ae34bf5..86324c7 100644
  
  	timer->state &= ~HRTIMER_STATE_CALLBACK;
  }
-diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
-index 1f9e265..dea8c12 100644
---- a/kernel/irq/irqdomain.c
-+++ b/kernel/irq/irqdomain.c
-@@ -30,12 +30,12 @@ void irq_domain_add(struct irq_domain *domain)
- 	irq_domain_for_each_irq(domain, hwirq, irq) {
- 		d = irq_get_irq_data(irq);
- 		if (!d) {
--			WARN(1, "error: assigning domain to non existant irq_desc");
-+			(void)WARN(1, "error: assigning domain to non existant irq_desc");
- 			return;
- 		}
- 		if (d->domain) {
- 			/* things are broken; just report, don't clean up */
--			WARN(1, "error: irq_desc already assigned to a domain");
-+			(void)WARN(1, "error: irq_desc already assigned to a domain");
- 			return;
- 		}
- 		d->domain = domain;
 diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
 index a9a9dbe..aeae73a 100644
 --- a/kernel/irq/manage.c
@@ -10733,15 +10444,6 @@ index 977296d..df20d79 100644
  			  current->pid, current->comm,
  			  idle->pid, idle->comm); /* must be idle task! */
  	}
-@@ -140,7 +140,7 @@ void rcu_idle_exit(void)
- 
- 	local_irq_save(flags);
- 	oldval = rcu_dynticks_nesting;
--	WARN_ON_ONCE(oldval != 0);
-+	(void)WARN_ON_ONCE(oldval != 0);
- 	rcu_dynticks_nesting = DYNTICK_TASK_NESTING;
- 	rcu_idle_exit_common(oldval);
- 	local_irq_restore(flags);
 @@ -157,7 +157,7 @@ void rcu_irq_enter(void)
  	local_irq_save(flags);
  	oldval = rcu_dynticks_nesting;
@@ -11251,19 +10953,6 @@ index 4070153..bd40a01 100644
  	utime = stime = 0;
  
  	if (who == RUSAGE_THREAD) {
-diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-index f487f25..1ed87ef 100644
---- a/kernel/sysctl.c
-+++ b/kernel/sysctl.c
-@@ -1985,7 +1985,7 @@ void unregister_sysctl_table(struct ctl_table_header * header)
- 	spin_lock(&sysctl_lock);
- 	start_unregistering(header);
- 	if (!--header->parent->count) {
--		WARN_ON(1);
-+		(void)WARN_ON(1);
- 		kfree_rcu(header->parent, rcu);
- 	}
- 	if (!--header->count)
 diff --git a/kernel/time/alarmtimer.c b/kernel/time/alarmtimer.c
 index 8a46f5d..c92849a 100644
 --- a/kernel/time/alarmtimer.c
@@ -12333,15 +12022,6 @@ index 4ceb05d..af9e1f7 100644
  
  	/* drop resources from the last iteration */
  	if (miter->addr) {
-@@ -423,7 +423,7 @@ void sg_miter_stop(struct sg_mapping_iter *miter)
- 			flush_kernel_dcache_page(miter->page);
- 
- 		if (miter->__flags & SG_MITER_ATOMIC) {
--			WARN_ON(!irqs_disabled());
-+			(void)WARN_ON(!irqs_disabled());
- 			kunmap_atomic(miter->addr, KM_BIO_SRC_IRQ);
- 		} else
- 			kunmap(miter->page);
 diff --git a/lib/string_helpers.c b/lib/string_helpers.c
 index ab431d4..472c8db 100644
 --- a/lib/string_helpers.c
@@ -12590,15 +12270,6 @@ index fa2f04e..46950a7 100644
  }
  
  static inline void add_mm_rss_vec(struct mm_struct *mm, int *rss)
-@@ -2457,7 +2457,7 @@ static inline void cow_user_page(struct page *dst, struct page *src, unsigned lo
- 		 * zeroes.
- 		 */
- 		if (__copy_from_user_inatomic(kaddr, uaddr, PAGE_SIZE))
--			clear_page(kaddr);
-+			(void)clear_page(kaddr);
- 		kunmap_atomic(kaddr, KM_USER0);
- 		flush_dcache_page(dst);
- 	} else
 diff --git a/mm/mmap.c b/mm/mmap.c
 index 3f758c7..953cc3d 100644
 --- a/mm/mmap.c
@@ -13287,24 +12958,6 @@ index bc8e59d..b834dbf 100644
  	memcpy(ev.name, name, HCI_MAX_NAME_LENGTH);
  
  	cmd = mgmt_pending_find(MGMT_OP_SET_LOCAL_NAME, hdev);
-@@ -2705,7 +2705,7 @@ int mgmt_device_found(struct hci_dev *hdev, bdaddr_t *bdaddr, u8 link_type,
- {
- 	struct mgmt_ev_device_found ev;
- 
--	memset(&ev, 0, sizeof(ev));
-+	(void)memset(&ev, 0, sizeof(ev));
- 
- 	bacpy(&ev.addr.bdaddr, bdaddr);
- 	ev.addr.type = link_to_mgmt(link_type, addr_type);
-@@ -2724,7 +2724,7 @@ int mgmt_remote_name(struct hci_dev *hdev, bdaddr_t *bdaddr, u8 *name)
- {
- 	struct mgmt_ev_remote_name ev;
- 
--	memset(&ev, 0, sizeof(ev));
-+	(void)memset(&ev, 0, sizeof(ev));
- 
- 	bacpy(&ev.bdaddr, bdaddr);
- 	memcpy(ev.name, name, HCI_MAX_NAME_LENGTH);
 diff --git a/net/bluetooth/rfcomm/core.c b/net/bluetooth/rfcomm/core.c
 index 501649b..24429f4 100644
 --- a/net/bluetooth/rfcomm/core.c
@@ -13505,15 +13158,6 @@ index 115dee1..08e2b35 100644
  }
  EXPORT_SYMBOL(dev_disable_lro);
  
-@@ -1461,7 +1461,7 @@ void net_enable_timestamp(void)
- 		return;
- 	}
- #endif
--	WARN_ON(in_interrupt());
-+	(void)WARN_ON(in_interrupt());
- 	jump_label_inc(&netstamp_needed);
- }
- EXPORT_SYMBOL(net_enable_timestamp);
 @@ -1896,7 +1896,7 @@ static void skb_warn_bad_offload(const struct sk_buff *skb)
  	if (dev && dev->dev.parent)
  		driver = dev_driver_string(dev->dev.parent);
@@ -14705,19 +14349,6 @@ index 89168c6..4f79d22 100644
  	inet_twsk_add_bind_node(tw, &tw->tw_tb->owners);
  	spin_unlock(&bhead->lock);
  
-diff --git a/net/ipv4/inetpeer.c b/net/ipv4/inetpeer.c
-index bf4a9c4..b56eb06 100644
---- a/net/ipv4/inetpeer.c
-+++ b/net/ipv4/inetpeer.c
-@@ -448,7 +448,7 @@ relookup:
- 		p->pmtu_expires = 0;
- 		p->pmtu_orig = 0;
- 		p->redirect_genid = 0;
--		memset(&p->redirect_learned, 0, sizeof(p->redirect_learned));
-+		(void)memset(&p->redirect_learned, 0, sizeof(p->redirect_learned));
- 
- 
- 		/* Link the node. */
 diff --git a/net/ipv4/ip_fragment.c b/net/ipv4/ip_fragment.c
 index 1f23a57..d97316d 100644
 --- a/net/ipv4/ip_fragment.c
@@ -15327,15 +14958,6 @@ index 2877c3e..6be2d34 100644
 +	(void)tcp_verify_left_out(tp);
  
  	/* D. Check state exit conditions. State can be terminated
- 	 *    when high_seq is ACKed. */
-@@ -3043,7 +3043,7 @@ static void tcp_fastretrans_alert(struct sock *sk, int pkts_acked,
- 	}
- 
- 	/* D. Check consistency of the current state. */
--	tcp_verify_left_out(tp);
-+	(void)tcp_verify_left_out(tp);
- 
- 	/* E. Check state exit conditions. State can be terminated
  	 *    when high_seq is ACKed. */
 @@ -3048,7 +3048,7 @@ static void tcp_fastretrans_alert(struct sock *sk, int pkts_acked,
  	/* E. Check state exit conditions. State can be terminated
@@ -17308,6 +16930,7 @@ index 67fc573..b4b2b09 100644
 +	(void)WARN_ON(timer_pending(&dev->watchdog_timer));
  }
 
+
 diff --git a/net/sched/sch_htb.c b/net/sched/sch_htb.c
 index 29b942c..7d89564 100644
 --- a/net/sched/sch_htb.c
@@ -17714,19 +17337,6 @@ index 593f4c6..0735555 100644
  	buf->pages =  pages;
  	buf->page_len =  len;
  	buf->buflen =  len;
-diff --git a/net/sysctl_net.c b/net/sysctl_net.c
-index e758139..e3a86d9 100644
---- a/net/sysctl_net.c
-+++ b/net/sysctl_net.c
-@@ -82,7 +82,7 @@ static int __net_init sysctl_net_init(struct net *net)
- 
- static void __net_exit sysctl_net_exit(struct net *net)
- {
--	WARN_ON(!list_empty(&net->sysctls.list));
-+	(void)WARN_ON(!list_empty(&net->sysctls.list));
- }
- 
- static struct pernet_operations sysctl_pernet_ops = {
 diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
 index aad8fb6..7ca7faa 100644
 --- a/net/unix/af_unix.c
@@ -17993,18 +17603,6 @@ index 438dfc1..ab0be5d 100644
  
  	nl80211_send_disassoc(rdev, dev, buf, len, GFP_KERNEL);
  
-@@ -243,9 +243,9 @@ void __cfg80211_send_disassoc(struct net_device *dev,
- 			cfg80211_sme_disassoc(dev, i);
- 			break;
- 		}
--		WARN_ON(!done);
-+		(void)WARN_ON(!done);
- 	} else
--		WARN_ON(1);
-+		(void)WARN_ON(1);
- 
- 
- 	reason_code = le16_to_cpu(mgmt->u.disassoc.reason_code);
 @@ -292,7 +292,7 @@ static void __cfg80211_auth_remove(struct wireless_dev *wdev, const u8 *addr)
  	int i;
  	bool done = false;
@@ -18014,24 +17612,6 @@ index 438dfc1..ab0be5d 100644
  
  	for (i = 0; addr && i < MAX_AUTH_BSSES; i++) {
  		if (wdev->authtry_bsses[i] &&
-@@ -306,7 +306,7 @@ static void __cfg80211_auth_remove(struct wireless_dev *wdev, const u8 *addr)
- 		}
- 	}
- 
--	WARN_ON(!done);
-+	(void)WARN_ON(!done);
- }
- 
- void __cfg80211_auth_canceled(struct net_device *dev, const u8 *addr)
-@@ -363,7 +363,7 @@ void cfg80211_send_assoc_timeout(struct net_device *dev, const u8 *addr)
- 		}
- 	}
- 
--	WARN_ON(!done);
-+	(void)WARN_ON(!done);
- 
- 	wdev_unlock(wdev);
- }
 @@ -411,7 +411,7 @@ int __cfg80211_mlme_auth(struct cfg80211_registered_device *rdev,
  	struct cfg80211_internal_bss *bss;
  	int i, err, slot = -1, nfree = 0;
@@ -18041,39 +17621,6 @@ index 438dfc1..ab0be5d 100644
  
  	if (auth_type == NL80211_AUTHTYPE_SHARED_KEY)
  		if (!key || !key_len || key_idx < 0 || key_idx > 4)
-@@ -432,7 +432,7 @@ int __cfg80211_mlme_auth(struct cfg80211_registered_device *rdev,
- 			return -EALREADY;
- 	}
- 
--	memset(&req, 0, sizeof(req));
-+	(void)memset(&req, 0, sizeof(req));
- 
- 	req.local_state_change = local_state_change;
- 	req.ie = ie;
-@@ -534,9 +534,9 @@ int __cfg80211_mlme_assoc(struct cfg80211_registered_device *rdev,
- 	int i, err, slot = -1;
- 	bool was_connected = false;
- 
--	ASSERT_WDEV_LOCK(wdev);
-+	(void)ASSERT_WDEV_LOCK(wdev);
- 
--	memset(&req, 0, sizeof(req));
-+	(void)memset(&req, 0, sizeof(req));
- 
- 	if (wdev->current_bss && prev_bssid &&
- 	    memcmp(wdev->current_bss->pub.bssid, prev_bssid, ETH_ALEN) == 0) {
-@@ -627,9 +627,9 @@ int __cfg80211_mlme_deauth(struct cfg80211_registered_device *rdev,
- 	struct cfg80211_deauth_request req;
- 	int i;
- 
--	ASSERT_WDEV_LOCK(wdev);
-+	(void)ASSERT_WDEV_LOCK(wdev);
- 
--	memset(&req, 0, sizeof(req));
-+	(void)memset(&req, 0, sizeof(req));
- 	req.reason_code = reason;
- 	req.local_state_change = local_state_change;
- 	req.ie = ie;
 @@ -680,7 +680,7 @@ static int __cfg80211_mlme_disassoc(struct cfg80211_registered_device *rdev,
  	struct wireless_dev *wdev = dev->ieee80211_ptr;
  	struct cfg80211_disassoc_request req;
@@ -18083,30 +17630,6 @@ index 438dfc1..ab0be5d 100644
  
  	if (wdev->sme_state != CFG80211_SME_CONNECTED)
  		return -ENOTCONN;
-@@ -688,7 +688,7 @@ static int __cfg80211_mlme_disassoc(struct cfg80211_registered_device *rdev,
- 	if (WARN_ON(!wdev->current_bss))
- 		return -ENOTCONN;
- 
--	memset(&req, 0, sizeof(req));
-+	(void)memset(&req, 0, sizeof(req));
- 	req.reason_code = reason;
- 	req.local_state_change = local_state_change;
- 	req.ie = ie;
-@@ -724,12 +724,12 @@ void cfg80211_mlme_down(struct cfg80211_registered_device *rdev,
- 	struct cfg80211_deauth_request req;
- 	int i;
- 
--	ASSERT_WDEV_LOCK(wdev);
-+	(void)ASSERT_WDEV_LOCK(wdev);
- 
- 	if (!rdev->ops->deauth)
- 		return;
- 
--	memset(&req, 0, sizeof(req));
-+	(void)memset(&req, 0, sizeof(req));
- 	req.reason_code = WLAN_REASON_DEAUTH_LEAVING;
- 	req.ie = NULL;
- 	req.ie_len = 0;
 diff --git a/net/wireless/nl80211.c b/net/wireless/nl80211.c
 index afeea32..b8862fa 100644
 --- a/net/wireless/nl80211.c
@@ -18165,15 +17688,6 @@ index afeea32..b8862fa 100644
  
  	switch (info->genlhdr->cmd) {
  	case NL80211_CMD_NEW_BEACON:
-@@ -2164,7 +2164,7 @@ static int nl80211_addset_beacon(struct sk_buff *skb, struct genl_info *info)
- 		call = rdev->ops->set_beacon;
- 		break;
- 	default:
--		WARN_ON(1);
-+		(void)WARN_ON(1);
- 		return -EOPNOTSUPP;
- 	}
- 
 @@ -2475,7 +2475,7 @@ static int nl80211_dump_station(struct sk_buff *skb,
  	}
  
