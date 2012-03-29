@@ -13,3 +13,29 @@ index 2446d23..cc3bd8d 100644
  typedef int			__kernel_ssize_t;
  typedef int			__kernel_ptrdiff_t;
  typedef long			__kernel_time_t;
+diff --git a/arch/arm/common/gic.c b/arch/arm/common/gic.c
+index f0783be..2963374 100644
+--- a/arch/arm/common/gic.c
++++ b/arch/arm/common/gic.c
+@@ -708,7 +708,7 @@ void __init gic_init_bases(unsigned int gic_nr, int irq_start,
+ 	gic_irqs -= hwirq_base; /* calculate # of irqs to allocate */
+ 	irq_base = irq_alloc_descs(irq_start, 16, gic_irqs, numa_node_id());
+ 	if (IS_ERR_VALUE(irq_base)) {
+-		WARN(1, "Cannot allocate irq_descs @ IRQ%d, assuming pre-allocated\n",
++		(void)WARN(1, "Cannot allocate irq_descs @ IRQ%d, assuming pre-allocated\n",
+ 		     irq_start);
+ 		irq_base = irq_start;
+ 	}
+diff --git a/arch/arm/mm/copypage-v6.c b/arch/arm/mm/copypage-v6.c
+index 8b03a58..1dd52e1 100644
+--- a/arch/arm/mm/copypage-v6.c
++++ b/arch/arm/mm/copypage-v6.c
+@@ -52,7 +52,7 @@ static void v6_copy_user_highpage_nonaliasing(struct page *to,
+ static void v6_clear_user_highpage_nonaliasing(struct page *page, unsigned long vaddr)
+ {
+ 	void *kaddr = kmap_atomic(page);
+-	clear_page(kaddr);
++	(void)clear_page(kaddr);
+ 	kunmap_atomic(kaddr);
+ }
+ 

@@ -143,3 +143,815 @@ index 55472c4..c078dcc 100644
  	xs_tcp_check_fraghdr(transport);
  }
 
+diff --git a/crypto/shash.c b/crypto/shash.c
+index 21fc12e..deabc92 100644
+--- a/crypto/shash.c
++++ b/crypto/shash.c
+@@ -88,7 +88,7 @@ static int shash_update_unaligned(struct shash_desc *desc, const u8 *data,
+ 
+ 	memcpy(buf, data, unaligned_len);
+ 	err = shash->update(desc, buf, unaligned_len);
+-	memset(buf, 0, unaligned_len);
++	(void)memset(buf, 0, unaligned_len);
+ 
+ 	return err ?:
+ 	       shash->update(desc, data + unaligned_len, len - unaligned_len);
+@@ -126,7 +126,7 @@ static int shash_final_unaligned(struct shash_desc *desc, u8 *out)
+ 	memcpy(out, buf, ds);
+ 
+ out:
+-	memset(buf, 0, ds);
++	(void)memset(buf, 0, ds);
+ 	return err;
+ }
+ 
+diff --git a/drivers/base/cpu.c b/drivers/base/cpu.c
+index adf937b..3a798bf 100644
+--- a/drivers/base/cpu.c
++++ b/drivers/base/cpu.c
+@@ -241,7 +241,7 @@ int __cpuinit register_cpu(struct cpu *cpu, int num)
+ 	int error;
+ 
+ 	cpu->node_id = cpu_to_node(num);
+-	memset(&cpu->dev, 0x00, sizeof(struct device));
++	(void)memset(&cpu->dev, 0x00, sizeof(struct device));
+ 	cpu->dev.id = num;
+ 	cpu->dev.bus = &cpu_subsys;
+ 	cpu->dev.release = cpu_device_release;
+diff --git a/drivers/base/power/wakeup.c b/drivers/base/power/wakeup.c
+index 2a3e581..903cc1a 100644
+--- a/drivers/base/power/wakeup.c
++++ b/drivers/base/power/wakeup.c
+@@ -63,7 +63,7 @@ static LIST_HEAD(wakeup_sources);
+ void wakeup_source_prepare(struct wakeup_source *ws, const char *name)
+ {
+ 	if (ws) {
+-		memset(ws, 0, sizeof(*ws));
++		(void)memset(ws, 0, sizeof(*ws));
+ 		ws->name = name;
+ 	}
+ }
+diff --git a/drivers/cdrom/cdrom.c b/drivers/cdrom/cdrom.c
+index d620b44..d9e9a5c 100644
+--- a/drivers/cdrom/cdrom.c
++++ b/drivers/cdrom/cdrom.c
+@@ -1560,9 +1560,9 @@ void sanitize_format(union cdrom_addr *addr,
+ void init_cdrom_command(struct packet_command *cgc, void *buf, int len,
+ 			int type)
+ {
+-	memset(cgc, 0, sizeof(struct packet_command));
++	(void)memset(cgc, 0, sizeof(struct packet_command));
+ 	if (buf)
+-		memset(buf, 0, len);
++		(void)memset(buf, 0, len);
+ 	cgc->buffer = (char *) buf;
+ 	cgc->buflen = len;
+ 	cgc->data_direction = type;
+@@ -1626,7 +1626,7 @@ static int dvd_do_auth(struct cdrom_device_info *cdi, dvd_authinfo *ai)
+ 	struct cdrom_device_ops *cdo = cdi->ops;
+ 	rpc_state_t rpc_state;
+ 
+-	memset(buf, 0, sizeof(buf));
++	(void)memset(buf, 0, sizeof(buf));
+ 	init_cdrom_command(&cgc, buf, 0, CGC_DATA_READ);
+ 
+ 	switch (ai->type) {
+@@ -1734,7 +1734,7 @@ static int dvd_do_auth(struct cdrom_device_info *cdi, dvd_authinfo *ai)
+ 	case DVD_LU_SEND_RPC_STATE:
+ 		cdinfo(CD_DVD, "entering DVD_LU_SEND_RPC_STATE\n");
+ 		setup_report_key(&cgc, 0, 8);
+-		memset(&rpc_state, 0, sizeof(rpc_state_t));
++		(void)memset(&rpc_state, 0, sizeof(rpc_state_t));
+ 		cgc.buffer = (char *) &rpc_state;
+ 
+ 		if ((ret = cdo->generic_packet(cdi, &cgc)))
+@@ -1799,7 +1799,7 @@ static int dvd_read_physical(struct cdrom_device_info *cdi, dvd_struct *s,
+ 	 * place the data... really ugly, but at least we won't have to
+ 	 * worry about endianess in userspace.
+ 	 */
+-	memset(layer, 0, sizeof(*layer));
++	(void)memset(layer, 0, sizeof(*layer));
+ 	layer->book_version = base[0] & 0xf;
+ 	layer->book_type = base[0] >> 4;
+ 	layer->min_rate = base[1] & 0xf;
+@@ -1977,7 +1977,7 @@ int cdrom_mode_sense(struct cdrom_device_info *cdi,
+ {
+ 	struct cdrom_device_ops *cdo = cdi->ops;
+ 
+-	memset(cgc->cmd, 0, sizeof(cgc->cmd));
++	(void)memset(cgc->cmd, 0, sizeof(cgc->cmd));
+ 
+ 	cgc->cmd[0] = GPCMD_MODE_SENSE_10;
+ 	cgc->cmd[2] = page_code | (page_control << 6);
+@@ -1992,8 +1992,8 @@ int cdrom_mode_select(struct cdrom_device_info *cdi,
+ {
+ 	struct cdrom_device_ops *cdo = cdi->ops;
+ 
+-	memset(cgc->cmd, 0, sizeof(cgc->cmd));
+-	memset(cgc->buffer, 0, 2);
++	(void)memset(cgc->cmd, 0, sizeof(cgc->cmd));
++	(void)memset(cgc->buffer, 0, 2);
+ 	cgc->cmd[0] = GPCMD_MODE_SELECT_10;
+ 	cgc->cmd[1] = 0x10;		/* PF */
+ 	cgc->cmd[7] = cgc->buflen >> 8;
+@@ -2045,7 +2045,7 @@ static int cdrom_read_cd(struct cdrom_device_info *cdi,
+ {
+ 	struct cdrom_device_ops *cdo = cdi->ops;
+ 
+-	memset(&cgc->cmd, 0, sizeof(cgc->cmd));
++	(void)memset(&cgc->cmd, 0, sizeof(cgc->cmd));
+ 	cgc->cmd[0] = GPCMD_READ_10;
+ 	cgc->cmd[2] = (lba >> 24) & 0xff;
+ 	cgc->cmd[3] = (lba >> 16) & 0xff;
+@@ -2065,7 +2065,7 @@ static int cdrom_read_block(struct cdrom_device_info *cdi,
+ {
+ 	struct cdrom_device_ops *cdo = cdi->ops;
+ 
+-	memset(&cgc->cmd, 0, sizeof(cgc->cmd));
++	(void)memset(&cgc->cmd, 0, sizeof(cgc->cmd));
+ 	cgc->cmd[0] = GPCMD_READ_CD;
+ 	/* expected sector size - cdda,mode1,etc. */
+ 	cgc->cmd[1] = format << 2;
+@@ -2100,7 +2100,7 @@ static int cdrom_read_cdda_old(struct cdrom_device_info *cdi, __u8 __user *ubuf,
+ 
+ 	cdi->last_sense = 0;
+ 
+-	memset(&cgc, 0, sizeof(cgc));
++	(void)memset(&cgc, 0, sizeof(cgc));
+ 
+ 	/*
+ 	 * start with will ra.nframes size, back down if alloc fails
+@@ -2835,12 +2835,12 @@ static int cdrom_switch_blocksize(struct cdrom_device_info *cdi, int size)
+ 	struct packet_command cgc;
+ 	struct modesel_head mh;
+ 
+-	memset(&mh, 0, sizeof(mh));
++	(void)memset(&mh, 0, sizeof(mh));
+ 	mh.block_desc_length = 0x08;
+ 	mh.block_length_med = (size >> 8) & 0xff;
+ 	mh.block_length_lo = size & 0xff;
+ 
+-	memset(&cgc, 0, sizeof(cgc));
++	(void)memset(&cgc, 0, sizeof(cgc));
+ 	cgc.cmd[0] = 0x15;
+ 	cgc.cmd[1] = 1 << 4;
+ 	cgc.cmd[4] = 12;
+@@ -2886,7 +2886,7 @@ static noinline int mmc_ioctl_cdrom_read_data(struct cdrom_device_info *cdi,
+ 	if (cgc->buffer == NULL)
+ 		return -ENOMEM;
+ 
+-	memset(&sense, 0, sizeof(sense));
++	(void)memset(&sense, 0, sizeof(sense));
+ 	cgc->sense = &sense;
+ 	cgc->data_direction = CGC_DATA_READ;
+ 	ret = cdrom_read_block(cdi, cgc, lba, 1, format, blocksize);
+@@ -3064,7 +3064,7 @@ static noinline int mmc_ioctl_cdrom_volume(struct cdrom_device_info *cdi,
+ 
+ 	/* set volume */
+ 	cgc->buffer = buffer + offset - 8;
+-	memset(cgc->buffer, 0, 8);
++	(void)memset(cgc->buffer, 0, 8);
+ 	return cdrom_mode_select(cdi, cgc);
+ }
+ 
+@@ -3173,7 +3173,7 @@ static int mmc_ioctl(struct cdrom_device_info *cdi, unsigned int cmd,
+ 	struct packet_command cgc;
+ 	void __user *userptr = (void __user *)arg;
+ 
+-	memset(&cgc, 0, sizeof(cgc));
++	(void)memset(&cgc, 0, sizeof(cgc));
+ 
+ 	/* build a unified command and queue it through
+ 	   cdo->generic_packet() */
+diff --git a/drivers/mmc/host/dw_mmc.c b/drivers/mmc/host/dw_mmc.c
+index 8bec1c3..032ac46 100644
+--- a/drivers/mmc/host/dw_mmc.c
++++ b/drivers/mmc/host/dw_mmc.c
+@@ -268,7 +268,7 @@ static void dw_mci_start_command(struct dw_mci *host,
+ 				 struct mmc_command *cmd, u32 cmd_flags)
+ {
+ 	host->cmd = cmd;
+-	dev_vdbg(&host->pdev->dev,
++	(void)dev_vdbg(&host->pdev->dev,
+ 		 "start command: ARGR=0x%08x CMDR=0x%08x\n",
+ 		 cmd->arg, cmd_flags);
+ 
+@@ -465,7 +465,7 @@ static int dw_mci_submit_data_dma(struct dw_mci *host, struct mmc_data *data)
+ 	sg_len = dma_map_sg(&host->pdev->dev, data->sg, data->sg_len,
+ 			    direction);
+ 
+-	dev_vdbg(&host->pdev->dev,
++	(void)dev_vdbg(&host->pdev->dev,
+ 		 "sd sg_cpu: %#lx sg_dma: %#lx sg_len: %d\n",
+ 		 (unsigned long)host->sg_cpu, (unsigned long)host->sg_dma,
+ 		 sg_len);
+@@ -491,7 +491,7 @@ static void dw_mci_submit_data(struct dw_mci *host, struct mmc_data *data)
+ 
+ 	data->error = -EINPROGRESS;
+ 
+-	WARN_ON(host->data);
++	(void)WARN_ON(host->data);
+ 	host->sg = NULL;
+ 	host->data = data;
+ 
+@@ -653,7 +653,7 @@ static void dw_mci_start_request(struct dw_mci *host,
+ static void dw_mci_queue_request(struct dw_mci *host, struct dw_mci_slot *slot,
+ 				 struct mmc_request *mrq)
+ {
+-	dev_vdbg(&slot->mmc->class_dev, "queue request: state=%d\n",
++	(void)dev_vdbg(&slot->mmc->class_dev, "queue request: state=%d\n",
+ 		 host->state);
+ 
+ 	slot->mrq = mrq;
+@@ -671,7 +671,7 @@ static void dw_mci_request(struct mmc_host *mmc, struct mmc_request *mrq)
+ 	struct dw_mci_slot *slot = mmc_priv(mmc);
+ 	struct dw_mci *host = slot->host;
+ 
+-	WARN_ON(slot->mrq);
++	(void)WARN_ON(slot->mrq);
+ 
+ 	/*
+ 	 * The check for card presence and queueing of the request must be
+@@ -813,7 +813,7 @@ static void dw_mci_request_end(struct dw_mci *host, struct mmc_request *mrq)
+ 	struct dw_mci_slot *slot;
+ 	struct mmc_host	*prev_mmc = host->cur_slot->mmc;
+ 
+-	WARN_ON(host->cmd || host->data);
++	(void)WARN_ON(host->cmd || host->data);
+ 
+ 	host->cur_slot->mrq = NULL;
+ 	host->mrq = NULL;
+@@ -821,12 +821,12 @@ static void dw_mci_request_end(struct dw_mci *host, struct mmc_request *mrq)
+ 		slot = list_entry(host->queue.next,
+ 				  struct dw_mci_slot, queue_node);
+ 		list_del(&slot->queue_node);
+-		dev_vdbg(&host->pdev->dev, "list not empty: %s is next\n",
++		(void)dev_vdbg(&host->pdev->dev, "list not empty: %s is next\n",
+ 			 mmc_hostname(slot->mmc));
+ 		host->state = STATE_SENDING_CMD;
+ 		dw_mci_start_request(host, slot);
+ 	} else {
+-		dev_vdbg(&host->pdev->dev, "list empty\n");
++		(void)dev_vdbg(&host->pdev->dev, "list empty\n");
+ 		host->state = STATE_IDLE;
+ 	}
+ 
+@@ -1921,7 +1921,7 @@ static int dw_mci_probe(struct platform_device *pdev)
+ 		host->data_shift = 3;
+ 	} else {
+ 		/* Check for a reserved value, and warn if it is */
+-		WARN((i != 1),
++		(void)WARN((i != 1),
+ 		     "HCON reports a reserved host data width!\n"
+ 		     "Defaulting to 32-bit access.\n");
+ 		host->push_data = dw_mci_push_data32;
+diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
+index 8d66706..b6361ac 100644
+--- a/drivers/mmc/host/sdhci.c
++++ b/drivers/mmc/host/sdhci.c
+@@ -511,7 +511,7 @@ static int sdhci_adma_table_pre(struct sdhci_host *host,
+ 		if (offset) {
+ 			if (data->flags & MMC_DATA_WRITE) {
+ 				buffer = sdhci_kmap_atomic(sg, &flags);
+-				WARN_ON(((long)buffer & PAGE_MASK) > (PAGE_SIZE - 3));
++				(void)WARN_ON(((long)buffer & PAGE_MASK) > (PAGE_SIZE - 3));
+ 				memcpy(align, buffer, offset);
+ 				sdhci_kunmap_atomic(buffer, &flags);
+ 			}
+@@ -540,7 +540,7 @@ static int sdhci_adma_table_pre(struct sdhci_host *host,
+ 		 * If this triggers then we have a calculation bug
+ 		 * somewhere. :/
+ 		 */
+-		WARN_ON((desc - host->adma_desc) > (128 * 2 + 1) * 4);
++		(void)WARN_ON((desc - host->adma_desc) > (128 * 2 + 1) * 4);
+ 	}
+ 
+ 	if (host->quirks & SDHCI_QUIRK_NO_ENDATTR_IN_NOPDESC) {
+@@ -619,7 +619,7 @@ static void sdhci_adma_table_post(struct sdhci_host *host,
+ 				size = 4 - (sg_dma_address(sg) & 0x3);
+ 
+ 				buffer = sdhci_kmap_atomic(sg, &flags);
+-				WARN_ON(((long)buffer & PAGE_MASK) > (PAGE_SIZE - 3));
++				(void)WARN_ON(((long)buffer & PAGE_MASK) > (PAGE_SIZE - 3));
+ 				memcpy(buffer, align, size);
+ 				sdhci_kunmap_atomic(buffer, &flags);
+ 
+@@ -706,7 +706,7 @@ static void sdhci_prepare_data(struct sdhci_host *host, struct mmc_command *cmd)
+ 	struct mmc_data *data = cmd->data;
+ 	int ret;
+ 
+-	WARN_ON(host->data);
++	(void)WARN_ON(host->data);
+ 
+ 	if (data || (cmd->flags & MMC_RSP_BUSY)) {
+ 		count = sdhci_calc_timeout(host, cmd);
+@@ -800,7 +800,7 @@ static void sdhci_prepare_data(struct sdhci_host *host, struct mmc_command *cmd)
+ 				 * This only happens when someone fed
+ 				 * us an invalid request.
+ 				 */
+-				WARN_ON(1);
++				(void)WARN_ON(1);
+ 				host->flags &= ~SDHCI_REQ_USE_DMA;
+ 			} else {
+ 				sdhci_writel(host, host->adma_addr,
+@@ -819,10 +819,10 @@ static void sdhci_prepare_data(struct sdhci_host *host, struct mmc_command *cmd)
+ 				 * This only happens when someone fed
+ 				 * us an invalid request.
+ 				 */
+-				WARN_ON(1);
++				(void)WARN_ON(1);
+ 				host->flags &= ~SDHCI_REQ_USE_DMA;
+ 			} else {
+-				WARN_ON(sg_cnt != 1);
++				(void)WARN_ON(sg_cnt != 1);
+ 				sdhci_writel(host, sg_dma_address(data->sg),
+ 					SDHCI_DMA_ADDRESS);
+ 			}
+@@ -874,7 +874,7 @@ static void sdhci_set_transfer_mode(struct sdhci_host *host,
+ 	if (data == NULL)
+ 		return;
+ 
+-	WARN_ON(!host->data);
++	(void)WARN_ON(!host->data);
+ 
+ 	mode = SDHCI_TRNS_BLK_CNT_EN;
+ 	if (mmc_op_multi(cmd->opcode) || data->blocks > 1) {
+@@ -959,7 +959,7 @@ static void sdhci_send_command(struct sdhci_host *host, struct mmc_command *cmd)
+ 	u32 mask;
+ 	unsigned long timeout;
+ 
+-	WARN_ON(host->cmd);
++	(void)WARN_ON(host->cmd);
+ 
+ 	/* Wait max 10 ms */
+ 	timeout = 10;
+@@ -1252,7 +1252,7 @@ static void sdhci_request(struct mmc_host *mmc, struct mmc_request *mrq)
+ 
+ 	spin_lock_irqsave(&host->lock, flags);
+ 
+-	WARN_ON(host->mrq != NULL);
++	(void)WARN_ON(host->mrq != NULL);
+ 
+ #ifndef SDHCI_USE_LEDS_CLASS
+ 	sdhci_activate_led(host);
+@@ -1802,7 +1802,7 @@ static int sdhci_execute_tuning(struct mmc_host *mmc, u32 opcode)
+ 		enable_irq(host->irq);
+ 
+ 		/* Wait for Buffer Read Ready interrupt */
+-		wait_event_interruptible_timeout(host->buf_ready_int,
++		(void)wait_event_interruptible_timeout(host->buf_ready_int,
+ 					(host->tuning_done == 1),
+ 					msecs_to_jiffies(50));
+ 		disable_irq(host->irq);
+@@ -2547,7 +2547,7 @@ struct sdhci_host *sdhci_alloc_host(struct device *dev,
+ 	struct mmc_host *mmc;
+ 	struct sdhci_host *host;
+ 
+-	WARN_ON(dev == NULL);
++	(void)WARN_ON(dev == NULL);
+ 
+ 	mmc = mmc_alloc_host(sizeof(struct sdhci_host) + priv_size, dev);
+ 	if (!mmc)
+@@ -2569,7 +2569,7 @@ int sdhci_add_host(struct sdhci_host *host)
+ 	unsigned int ocr_avail;
+ 	int ret;
+ 
+-	WARN_ON(host == NULL);
++	(void)WARN_ON(host == NULL);
+ 	if (host == NULL)
+ 		return -EINVAL;
+ 
+diff --git a/drivers/scsi/scsi_ioctl.c b/drivers/scsi/scsi_ioctl.c
+index d9564fb..06d634f 100644
+--- a/drivers/scsi/scsi_ioctl.c
++++ b/drivers/scsi/scsi_ioctl.c
+@@ -229,12 +229,12 @@ int scsi_ioctl(struct scsi_device *sdev, int cmd, void __user *arg)
+ 		if (!access_ok(VERIFY_WRITE, arg, sizeof(struct scsi_idlun)))
+ 			return -EFAULT;
+ 
+-		__put_user((sdev->id & 0xff)
++		(void)__put_user((sdev->id & 0xff)
+ 			 + ((sdev->lun & 0xff) << 8)
+ 			 + ((sdev->channel & 0xff) << 16)
+ 			 + ((sdev->host->host_no & 0xff) << 24),
+ 			 &((struct scsi_idlun __user *)arg)->dev_id);
+-		__put_user(sdev->host->unique_id,
++		(void)__put_user(sdev->host->unique_id,
+ 			 &((struct scsi_idlun __user *)arg)->host_unique_id);
+ 		return 0;
+ 	case SCSI_IOCTL_GET_BUS_NUMBER:
+diff --git a/drivers/scsi/scsi_lib.c b/drivers/scsi/scsi_lib.c
+index a33b2b6..2c517b3 100644
+--- a/drivers/scsi/scsi_lib.c
++++ b/drivers/scsi/scsi_lib.c
+@@ -1697,7 +1697,7 @@ void scsi_free_queue(struct request_queue *q)
+ {
+ 	unsigned long flags;
+ 
+-	WARN_ON(q->queuedata);
++	(void)WARN_ON(q->queuedata);
+ 
+ 	/* cause scsi_request_fn() to kill all non-finished requests */
+ 	spin_lock_irqsave(q->queue_lock, flags);
+diff --git a/drivers/scsi/scsi_scan.c b/drivers/scsi/scsi_scan.c
+index 01b0374..3dcb433 100644
+--- a/drivers/scsi/scsi_scan.c
++++ b/drivers/scsi/scsi_scan.c
+@@ -297,7 +297,7 @@ static struct scsi_device *scsi_alloc_sdev(struct scsi_target *starget,
+ 		kfree(sdev);
+ 		goto out;
+ 	}
+-	WARN_ON_ONCE(!blk_get_queue(sdev->request_queue));
++	(void)WARN_ON_ONCE(!blk_get_queue(sdev->request_queue));
+ 	sdev->request_queue->queuedata = sdev;
+ 	scsi_adjust_queue_depth(sdev, 0, sdev->host->cmd_per_lun);
+ 
+diff --git a/drivers/scsi/sg.c b/drivers/scsi/sg.c
+index eacd46b..34a1e60 100644
+--- a/drivers/scsi/sg.c
++++ b/drivers/scsi/sg.c
+@@ -572,7 +572,7 @@ sg_write(struct file *filp, const char __user *buf, size_t count, loff_t * ppos)
+ 		return -EDOM;
+ 	}
+ 	buf += SZ_SG_HEADER;
+-	__get_user(opcode, buf);
++	(void)__get_user(opcode, buf);
+ 	if (sfp->next_cmd_len > 0) {
+ 		if (sfp->next_cmd_len > MAX_COMMAND_SIZE) {
+ 			SCSI_LOG_TIMEOUT(1, printk("sg_write: command length too long\n"));
+@@ -867,19 +867,19 @@ sg_ioctl(struct file *filp, unsigned int cmd_in, unsigned long arg)
+ 
+ 			if (sdp->detached)
+ 				return -ENODEV;
+-			__put_user((int) sdp->device->host->host_no,
++			(void)__put_user((int) sdp->device->host->host_no,
+ 				   &sg_idp->host_no);
+-			__put_user((int) sdp->device->channel,
++			(void)__put_user((int) sdp->device->channel,
+ 				   &sg_idp->channel);
+-			__put_user((int) sdp->device->id, &sg_idp->scsi_id);
+-			__put_user((int) sdp->device->lun, &sg_idp->lun);
+-			__put_user((int) sdp->device->type, &sg_idp->scsi_type);
+-			__put_user((short) sdp->device->host->cmd_per_lun,
++			(void)__put_user((int) sdp->device->id, &sg_idp->scsi_id);
++			(void)__put_user((int) sdp->device->lun, &sg_idp->lun);
++			(void)__put_user((int) sdp->device->type, &sg_idp->scsi_type);
++			(void)__put_user((short) sdp->device->host->cmd_per_lun,
+ 				   &sg_idp->h_cmd_per_lun);
+-			__put_user((short) sdp->device->queue_depth,
++			(void)__put_user((short) sdp->device->queue_depth,
+ 				   &sg_idp->d_queue_depth);
+-			__put_user(0, &sg_idp->unused[0]);
+-			__put_user(0, &sg_idp->unused[1]);
++			(void)__put_user(0, &sg_idp->unused[0]);
++			(void)__put_user(0, &sg_idp->unused[1]);
+ 			return 0;
+ 		}
+ 	case SG_SET_FORCE_PACK_ID:
+@@ -896,12 +896,12 @@ sg_ioctl(struct file *filp, unsigned int cmd_in, unsigned long arg)
+ 			if ((1 == srp->done) && (!srp->sg_io_owned)) {
+ 				read_unlock_irqrestore(&sfp->rq_list_lock,
+ 						       iflags);
+-				__put_user(srp->header.pack_id, ip);
++				(void)__put_user(srp->header.pack_id, ip);
+ 				return 0;
+ 			}
+ 		}
+ 		read_unlock_irqrestore(&sfp->rq_list_lock, iflags);
+-		__put_user(-1, ip);
++		(void)__put_user(-1, ip);
+ 		return 0;
+ 	case SG_GET_NUM_WAITING:
+ 		read_lock_irqsave(&sfp->rq_list_lock, iflags);
+diff --git a/drivers/scsi/sr.c b/drivers/scsi/sr.c
+index 5fc97d2..1cd9ed7 100644
+--- a/drivers/scsi/sr.c
++++ b/drivers/scsi/sr.c
+@@ -739,8 +739,8 @@ static void get_sectorsize(struct scsi_cd *cd)
+ 
+ 	do {
+ 		cmd[0] = READ_CAPACITY;
+-		memset((void *) &cmd[1], 0, 9);
+-		memset(buffer, 0, sizeof(buffer));
++		(void)memset((void *) &cmd[1], 0, 9);
++		(void)memset(buffer, 0, sizeof(buffer));
+ 
+ 		/* Do the command and wait.. */
+ 		the_result = scsi_execute_req(cd->device, cmd, DMA_FROM_DEVICE,
+diff --git a/drivers/scsi/sr_ioctl.c b/drivers/scsi/sr_ioctl.c
+index a3911c3..5ebf3cf 100644
+--- a/drivers/scsi/sr_ioctl.c
++++ b/drivers/scsi/sr_ioctl.c
+@@ -49,7 +49,7 @@ static int sr_read_tochdr(struct cdrom_device_info *cdi,
+ 	if (!buffer)
+ 		return -ENOMEM;
+ 
+-	memset(&cgc, 0, sizeof(struct packet_command));
++	(void)memset(&cgc, 0, sizeof(struct packet_command));
+ 	cgc.timeout = IOCTL_TIMEOUT;
+ 	cgc.cmd[0] = GPCMD_READ_TOC_PMA_ATIP;
+ 	cgc.cmd[8] = 12;		/* LSB of length */
+@@ -79,7 +79,7 @@ static int sr_read_tocentry(struct cdrom_device_info *cdi,
+ 	if (!buffer)
+ 		return -ENOMEM;
+ 
+-	memset(&cgc, 0, sizeof(struct packet_command));
++	(void)memset(&cgc, 0, sizeof(struct packet_command));
+ 	cgc.timeout = IOCTL_TIMEOUT;
+ 	cgc.cmd[0] = GPCMD_READ_TOC_PMA_ATIP;
+ 	cgc.cmd[1] |= (tocentry->cdte_format == CDROM_MSF) ? 0x02 : 0;
+@@ -142,7 +142,7 @@ static int sr_fake_playtrkind(struct cdrom_device_info *cdi, struct cdrom_ti *ti
+ 	if (ret)
+ 		return ret;
+ 
+-	memset(&cgc, 0, sizeof(struct packet_command));
++	(void)memset(&cgc, 0, sizeof(struct packet_command));
+ 	cgc.cmd[0] = GPCMD_PLAY_AUDIO_MSF;
+ 	cgc.cmd[3] = trk0_te.cdte_addr.msf.minute;
+ 	cgc.cmd[4] = trk0_te.cdte_addr.msf.second;
+@@ -163,7 +163,7 @@ static int sr_play_trkind(struct cdrom_device_info *cdi,
+ 	struct packet_command cgc;
+ 	int result;
+ 
+-	memset(&cgc, 0, sizeof(struct packet_command));
++	(void)memset(&cgc, 0, sizeof(struct packet_command));
+ 	cgc.timeout = IOCTL_TIMEOUT;
+ 	cgc.cmd[0] = GPCMD_PLAYAUDIO_TI;
+ 	cgc.cmd[4] = ti->cdti_trk0;
+@@ -206,7 +206,7 @@ int sr_do_ioctl(Scsi_CD *cd, struct packet_command *cgc)
+ 		goto out;
+ 	}
+ 
+-	memset(sense, 0, sizeof(*sense));
++	(void)memset(sense, 0, sizeof(*sense));
+ 	result = scsi_execute(SDev, cgc->cmd, cgc->data_direction,
+ 			      cgc->buffer, cgc->buflen, (char *)sense,
+ 			      cgc->timeout, IOCTL_RETRIES, 0, NULL);
+@@ -282,7 +282,7 @@ int sr_tray_move(struct cdrom_device_info *cdi, int pos)
+ 	Scsi_CD *cd = cdi->handle;
+ 	struct packet_command cgc;
+ 
+-	memset(&cgc, 0, sizeof(struct packet_command));
++	(void)memset(&cgc, 0, sizeof(struct packet_command));
+ 	cgc.cmd[0] = GPCMD_START_STOP_UNIT;
+ 	cgc.cmd[4] = (pos == 0) ? 0x03 /* close */ : 0x02 /* eject */ ;
+ 	cgc.data_direction = DMA_NONE;
+@@ -407,7 +407,7 @@ int sr_get_mcn(struct cdrom_device_info *cdi, struct cdrom_mcn *mcn)
+ 	if (!buffer)
+ 		return -ENOMEM;
+ 
+-	memset(&cgc, 0, sizeof(struct packet_command));
++	(void)memset(&cgc, 0, sizeof(struct packet_command));
+ 	cgc.cmd[0] = GPCMD_READ_SUBCHANNEL;
+ 	cgc.cmd[2] = 0x40;	/* I do want the subchannel info */
+ 	cgc.cmd[3] = 0x02;	/* Give me medium catalog number info */
+@@ -440,7 +440,7 @@ int sr_select_speed(struct cdrom_device_info *cdi, int speed)
+ 	else
+ 		speed *= 177;	/* Nx to kbyte/s */
+ 
+-	memset(&cgc, 0, sizeof(struct packet_command));
++	(void)memset(&cgc, 0, sizeof(struct packet_command));
+ 	cgc.cmd[0] = GPCMD_SET_SPEED;	/* SET CD SPEED */
+ 	cgc.cmd[2] = (speed >> 8) & 0xff;	/* MSB for speed (in kbytes/sec) */
+ 	cgc.cmd[3] = speed & 0xff;	/* LSB */
+@@ -495,7 +495,7 @@ static int sr_read_cd(Scsi_CD *cd, unsigned char *dest, int lba, int format, int
+ 	       cd->cdi.name, lba, format, blksize);
+ #endif
+ 
+-	memset(&cgc, 0, sizeof(struct packet_command));
++	(void)memset(&cgc, 0, sizeof(struct packet_command));
+ 	cgc.cmd[0] = GPCMD_READ_CD;	/* READ_CD */
+ 	cgc.cmd[1] = ((format & 7) << 2);
+ 	cgc.cmd[2] = (unsigned char) (lba >> 24) & 0xff;
+@@ -551,7 +551,7 @@ static int sr_read_sector(Scsi_CD *cd, int lba, int blksize, unsigned char *dest
+ 	printk("%s: sr_read_sector lba=%d blksize=%d\n", cd->cdi.name, lba, blksize);
+ #endif
+ 
+-	memset(&cgc, 0, sizeof(struct packet_command));
++	(void)memset(&cgc, 0, sizeof(struct packet_command));
+ 	cgc.cmd[0] = GPCMD_READ_10;
+ 	cgc.cmd[2] = (unsigned char) (lba >> 24) & 0xff;
+ 	cgc.cmd[3] = (unsigned char) (lba >> 16) & 0xff;
+diff --git a/drivers/scsi/sr_vendor.c b/drivers/scsi/sr_vendor.c
+index 92cc2ef..2a49601 100644
+--- a/drivers/scsi/sr_vendor.c
++++ b/drivers/scsi/sr_vendor.c
+@@ -125,12 +125,12 @@ int sr_set_blocklength(Scsi_CD *cd, int blocklength)
+ #ifdef DEBUG
+ 	printk("%s: MODE SELECT 0x%x/%d\n", cd->cdi.name, density, blocklength);
+ #endif
+-	memset(&cgc, 0, sizeof(struct packet_command));
++	(void)memset(&cgc, 0, sizeof(struct packet_command));
+ 	cgc.cmd[0] = MODE_SELECT;
+ 	cgc.cmd[1] = (1 << 4);
+ 	cgc.cmd[4] = 12;
+ 	modesel = (struct ccs_modesel_head *) buffer;
+-	memset(modesel, 0, sizeof(*modesel));
++	(void)memset(modesel, 0, sizeof(*modesel));
+ 	modesel->block_desc_length = 0x08;
+ 	modesel->density = density;
+ 	modesel->block_length_med = (blocklength >> 8) & 0xff;
+@@ -173,7 +173,7 @@ int sr_cd_check(struct cdrom_device_info *cdi)
+ 	no_multi = 0;		/* flag: the drive can't handle multisession */
+ 	rc = 0;
+ 
+-	memset(&cgc, 0, sizeof(struct packet_command));
++	(void)memset(&cgc, 0, sizeof(struct packet_command));
+ 
+ 	switch (cd->vendor) {
+ 
+diff --git a/drivers/tty/serial/8250/8250.c b/drivers/tty/serial/8250/8250.c
+index 5b149b4..2e958ca 100644
+--- a/drivers/tty/serial/8250/8250.c
++++ b/drivers/tty/serial/8250/8250.c
+@@ -1218,7 +1218,7 @@ static void autoconfig_irq(struct uart_8250_port *up)
+ 		ICP = (port->iobase & 0xfe0) | 0x1f;
+ 		save_ICP = inb_p(ICP);
+ 		outb_p(0x80, ICP);
+-		inb_p(ICP);
++		(void)inb_p(ICP);
+ 	}
+ 
+ 	/* forget possible initially masked and pending IRQ */
+@@ -2153,7 +2153,7 @@ dont_test_tx_en:
+ 		 */
+ 		icp = (port->iobase & 0xfe0) | 0x01f;
+ 		outb_p(0x80, icp);
+-		inb_p(icp);
++		(void)inb_p(icp);
+ 	}
+ 
+ 	return 0;
+@@ -2174,7 +2174,7 @@ static void serial8250_shutdown(struct uart_port *port)
+ 	spin_lock_irqsave(&port->lock, flags);
+ 	if (port->flags & UPF_FOURPORT) {
+ 		/* reset interrupts on the AST Fourport board */
+-		inb((port->iobase & 0xfe0) | 0x1f);
++		(void)inb((port->iobase & 0xfe0) | 0x1f);
+ 		port->mctrl |= TIOCM_OUT1;
+ 	} else
+ 		port->mctrl &= ~TIOCM_OUT2;
+diff --git a/include/linux/highmem.h b/include/linux/highmem.h
+index 6549ed7..154cbcd 100644
+--- a/include/linux/highmem.h
++++ b/include/linux/highmem.h
+@@ -216,7 +216,7 @@ alloc_zeroed_user_highpage_movable(struct vm_area_struct *vma,
+ static inline void clear_highpage(struct page *page)
+ {
+ 	void *kaddr = kmap_atomic(page);
+-	clear_page(kaddr);
++	(void)clear_page(kaddr);
+ 	kunmap_atomic(kaddr);
+ }
+ 
+diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
+index af48e59..d25a09a 100644
+--- a/kernel/irq/irqdomain.c
++++ b/kernel/irq/irqdomain.c
+@@ -313,7 +313,7 @@ unsigned int irq_create_direct_mapping(struct irq_domain *domain)
+ 		domain = irq_default_domain;
+ 
+ 	BUG_ON(domain == NULL);
+-	WARN_ON(domain->revmap_type != IRQ_DOMAIN_MAP_NOMAP);
++	(void)WARN_ON(domain->revmap_type != IRQ_DOMAIN_MAP_NOMAP);
+ 
+ 	virq = irq_alloc_desc_from(1, 0);
+ 	if (!virq) {
+@@ -360,7 +360,7 @@ unsigned int irq_create_mapping(struct irq_domain *domain,
+ 	if (domain == NULL) {
+ 		printk(KERN_WARNING "irq_create_mapping called for"
+ 		       " NULL domain, hwirq=%lx\n", hwirq);
+-		WARN_ON(1);
++		(void)WARN_ON(1);
+ 		return 0;
+ 	}
+ 	pr_debug("irq: -> using domain @%p\n", domain);
+diff --git a/kernel/rcutiny.c b/kernel/rcutiny.c
+index 37a5444..25154d1 100644
+--- a/kernel/rcutiny.c
++++ b/kernel/rcutiny.c
+@@ -88,7 +88,7 @@ void rcu_idle_enter(void)
+ 
+ 	local_irq_save(flags);
+ 	oldval = rcu_dynticks_nesting;
+-	WARN_ON_ONCE((rcu_dynticks_nesting & DYNTICK_TASK_NEST_MASK) == 0);
++	(void)WARN_ON_ONCE((rcu_dynticks_nesting & DYNTICK_TASK_NEST_MASK) == 0);
+ 	if ((rcu_dynticks_nesting & DYNTICK_TASK_NEST_MASK) ==
+ 	    DYNTICK_TASK_NEST_VALUE)
+ 		rcu_dynticks_nesting = 0;
+@@ -146,7 +146,7 @@ void rcu_idle_exit(void)
+ 
+ 	local_irq_save(flags);
+ 	oldval = rcu_dynticks_nesting;
+-	WARN_ON_ONCE(rcu_dynticks_nesting < 0);
++	(void)WARN_ON_ONCE(rcu_dynticks_nesting < 0);
+ 	if (rcu_dynticks_nesting & DYNTICK_TASK_NEST_MASK)
+ 		rcu_dynticks_nesting += DYNTICK_TASK_NEST_VALUE;
+ 	else
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 503d642..5af5052 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -3792,8 +3792,8 @@ void rt_mutex_setprio(struct task_struct *p, int prio)
+ 	 * real need to boost.
+ 	 */
+ 	if (unlikely(p == rq->idle)) {
+-		WARN_ON(p != rq->curr);
+-		WARN_ON(p->pi_blocked_on);
++		(void)WARN_ON(p != rq->curr);
++		(void)WARN_ON(p->pi_blocked_on);
+ 		goto out_unlock;
+ 	}
+ 
+diff --git a/mm/slab.c b/mm/slab.c
+index f0bd785..4793eec 100644
+--- a/mm/slab.c
++++ b/mm/slab.c
+@@ -2490,7 +2490,7 @@ kmem_cache_create (const char *name, size_t size, size_t align,
+ 		 * Would deadlock through slab_destroy()->call_rcu()->
+ 		 * debug_object_activate()->kmem_cache_alloc().
+ 		 */
+-		WARN_ON_ONCE(flags & SLAB_DESTROY_BY_RCU);
++		(void)WARN_ON_ONCE(flags & SLAB_DESTROY_BY_RCU);
+ 
+ 		slab_set_debugobj_lock_classes(cachep);
+ 	}
+@@ -2566,7 +2566,7 @@ static void drain_cpu_caches(struct kmem_cache *cachep)
+ 	struct kmem_list3 *l3;
+ 	int node;
+ 
+-	on_each_cpu(do_drain, cachep, 1);
++	(void)on_each_cpu(do_drain, cachep, 1);
+ 	check_irq_on();
+ 	for_each_online_node(node) {
+ 		l3 = cachep->nodelists[node];
+@@ -3563,7 +3563,7 @@ __cache_alloc(struct kmem_cache *cachep, gfp_t flags, void *caller)
+ 		kmemcheck_slab_alloc(cachep, flags, objp, obj_size(cachep));
+ 
+ 	if (unlikely((flags & __GFP_ZERO) && objp))
+-		memset(objp, 0, obj_size(cachep));
++		(void)memset(objp, 0, obj_size(cachep));
+ 
+ 	return objp;
+ }
+@@ -4038,7 +4038,7 @@ static int do_tune_cpucache(struct kmem_cache *cachep, int limit,
+ 	}
+ 	new->cachep = cachep;
+ 
+-	on_each_cpu(do_ccupdate_local, (void *)new, 1);
++	(void)on_each_cpu(do_ccupdate_local, (void *)new, 1);
+ 
+ 	check_irq_on();
+ 	cachep->batchcount = batchcount;
+diff --git a/net/core/dev.c b/net/core/dev.c
+index 0f3eb7d..fd9f833 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -1459,7 +1459,7 @@ void net_enable_timestamp(void)
+ 		return;
+ 	}
+ #endif
+-	WARN_ON(in_interrupt());
++	(void)WARN_ON(in_interrupt());
+ 	static_key_slow_inc(&netstamp_needed);
+ }
+ EXPORT_SYMBOL(net_enable_timestamp);
+diff --git a/net/ipv4/inetpeer.c b/net/ipv4/inetpeer.c
+index d4d61b6..14a13fe 100644
+--- a/net/ipv4/inetpeer.c
++++ b/net/ipv4/inetpeer.c
+@@ -498,7 +498,7 @@ relookup:
+ 		p->rate_last = 0;
+ 		p->pmtu_expires = 0;
+ 		p->pmtu_orig = 0;
+-		memset(&p->redirect_learned, 0, sizeof(p->redirect_learned));
++		(void)memset(&p->redirect_learned, 0, sizeof(p->redirect_learned));
+ 		INIT_LIST_HEAD(&p->gc_list);
+ 
+ 		/* Link the node. */
+diff --git a/net/netlink/af_netlink.c b/net/netlink/af_netlink.c
+index 32bb753..00239e5 100644
+--- a/net/netlink/af_netlink.c
++++ b/net/netlink/af_netlink.c
+@@ -1658,7 +1658,7 @@ __nlmsg_put(struct sk_buff *skb, u32 pid, u32 seq, int type, int len, int flags)
+ 	nlh->nlmsg_pid = pid;
+ 	nlh->nlmsg_seq = seq;
+ 	if (!__builtin_constant_p(size) || NLMSG_ALIGN(size) - size != 0)
+-		memset(NLMSG_DATA(nlh) + len, 0, NLMSG_ALIGN(size) - size);
++		(void)memset(NLMSG_DATA(nlh) + len, 0, NLMSG_ALIGN(size) - size);
+ 	return nlh;
+ }
+ EXPORT_SYMBOL(__nlmsg_put);
+diff --git a/net/sunrpc/xprtsock.c b/net/sunrpc/xprtsock.c
+index 55472c4..ae7ba6b 100644
+--- a/net/sunrpc/xprtsock.c
++++ b/net/sunrpc/xprtsock.c
+@@ -2005,7 +2005,7 @@ static void xs_abort_connection(struct sock_xprt *transport)
+ 	 * Disconnect the transport socket by doing a connect operation
+ 	 * with AF_UNSPEC.  This should return immediately...
+ 	 */
+-	memset(&any, 0, sizeof(any));
++	(void)memset(&any, 0, sizeof(any));
+ 	any.sa_family = AF_UNSPEC;
+ 	result = kernel_connect(transport->sock, &any, sizeof(any), 0);
+ 	if (!result)

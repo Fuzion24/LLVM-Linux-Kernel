@@ -41,15 +41,6 @@ diff --git a/arch/arm/kernel/process.c b/arch/arm/kernel/process.c
 index 4ee00c8..551d99a 100644
 --- a/arch/arm/kernel/process.c
 +++ b/arch/arm/kernel/process.c
-@@ -247,7 +247,7 @@ void cpu_idle(void)
- 				 * functions should always return with IRQs
- 				 * enabled.
- 				 */
--				WARN_ON(irqs_disabled());
-+				(void)WARN_ON(irqs_disabled());
- 				local_irq_enable();
- 			}
- 		}
 @@ -377,9 +377,9 @@ void flush_thread(void)
  
  	flush_ptrace_hw_breakpoint(tsk);
