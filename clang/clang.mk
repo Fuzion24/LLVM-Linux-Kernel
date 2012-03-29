@@ -68,6 +68,8 @@ clang-build:  ${LLVMSTATE}/clang-build
 ${LLVMSTATE}/clang-build: ${LLVMSTATE}/clang-configure
 	@mkdir -p ${LLVMINSTALLDIR}
 	(cd ${LLVMBUILDDIR} && make -j${JOBS} install)
+	ln -s ${LLVMSRCDIR}/llvm/tools/clang/tools/scan-build/scan-build ${LLVMINSTALLDIR}/bin/scan-build
+	ln -s ${LLVMSRCDIR}/llvm/tools/clang/tools/scan-view/scan-view ${LLVMINSTALLDIR}/bin/scan-view
 	@mkdir -p ${LLVMSTATE}
 	@touch $@
 
