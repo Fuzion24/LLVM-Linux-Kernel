@@ -110,28 +110,6 @@ index 0416091..2f20037 100644
  
  	return 0;
  }
-diff --git a/crypto/shash.c b/crypto/shash.c
-index 76f74b9..86abce2 100644
---- a/crypto/shash.c
-+++ b/crypto/shash.c
-@@ -86,7 +86,7 @@ static int shash_update_unaligned(struct shash_desc *desc, const u8 *data,
- 
- 	memcpy(buf, data, unaligned_len);
- 	err = shash->update(desc, buf, unaligned_len);
--	memset(buf, 0, unaligned_len);
-+	(void)memset(buf, 0, unaligned_len);
- 
- 	return err ?:
- 	       shash->update(desc, data + unaligned_len, len - unaligned_len);
-@@ -124,7 +124,7 @@ static int shash_final_unaligned(struct shash_desc *desc, u8 *out)
- 	memcpy(out, buf, ds);
- 
- out:
--	memset(buf, 0, ds);
-+	(void)memset(buf, 0, ds);
- 	return err;
- }
- 
 diff --git a/drivers/base/devres.c b/drivers/base/devres.c
 index cf7a0c7..5954aaa 100644
 --- a/drivers/base/devres.c
