@@ -52,7 +52,7 @@ qemu-configure: ${QEMUSTATE}/qemu-configure
 ${QEMUSTATE}/qemu-configure: ${QEMUSTATE}/qemu-fetch
 	@mkdir -p ${QEMUBUILDDIR}
 	(cd ${QEMUBUILDDIR} && ${QEMUSRCDIR}/qemu/configure \
-		--target-list=arm-softmmu,mips-softmmu --disable-kvm \
+		--target-list=arm-softmmu,mips-softmmu,i386-softmmu,x86_64-softmmu --disable-kvm \
 		--disable-sdl --audio-drv-list="" --audio-card-list="" \
 		--disable-docs --prefix=${INSTALLDIR})
 	@mkdir -p ${QEMUSTATE}

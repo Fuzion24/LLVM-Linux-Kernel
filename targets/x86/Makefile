@@ -27,7 +27,7 @@ KERNEL_CFG=${CWD}/config_x86
 KERNEL_GIT=git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
 KERNELDIR=${SRCDIR}/linux
 KERNELCOPY=${SRCDIR}/linux-copy
-PATCH_FILES=${CWD}/workaround.patch ${CWD}/x86.patch
+PATCH_FILES=
 
 #GDB_OPTS=-gdb tcp::1234 -s -S
 GDB_OPTS=
@@ -62,7 +62,7 @@ mrproper: clean
 	( cd ${KERNELDIR} && make mrproper )
 
 test: ${QEMUSTATE}/qemu-build initramfs state/kernel-build
-	@${INSTALLDIR}/bin/qemu -kernel ${KERNELDIR}/arch/x86/boot/bzImage \
+	@${INSTALLDIR}/bin/qemu-system-i386 -kernel ${KERNELDIR}/arch/x86/boot/bzImage \
 		-initrd initramfs.img.gz -append \
 		'console=earlycon console=ttyAMA0,38400n8 earlyprintk init=/init' -nographic ${GDB_OPTS}
 
