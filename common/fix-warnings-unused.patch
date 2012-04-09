@@ -814,15 +814,6 @@ index 26ab358..fafa513 100644
  		       (new_array_size - fw_priv->page_array_size));
  		kfree(fw_priv->pages);
  		fw_priv->pages = new_pages;
-@@ -637,7 +637,7 @@ static int request_firmware_work_func(void *arg)
- 	int ret;
- 
- 	if (!arg) {
--		WARN_ON(1);
-+		(void)WARN_ON(1);
- 		return 0;
- 	}
- 
 diff --git a/drivers/base/platform.c b/drivers/base/platform.c
 index f0c605e..5f5b481 100644
 --- a/drivers/base/platform.c
@@ -1119,24 +1110,6 @@ index 17fdf4b..34f0331 100644
 +		(void)WARN_ON(extra_checks);
  
  	spin_unlock_irqrestore(&gpio_lock, flags);
- }
-@@ -1560,7 +1560,7 @@ int __gpio_get_value(unsigned gpio)
- 	int value;
- 
- 	chip = gpio_to_chip(gpio);
--	WARN_ON(chip->can_sleep);
-+	(void)WARN_ON(chip->can_sleep);
- 	value = chip->get ? chip->get(chip, gpio - chip->base) : 0;
- 	trace_gpio_value(gpio, 1, value);
- 	return value;
-@@ -1581,7 +1581,7 @@ void __gpio_set_value(unsigned gpio, int value)
- 	struct gpio_chip	*chip;
- 
- 	chip = gpio_to_chip(gpio);
--	WARN_ON(chip->can_sleep);
-+	(void)WARN_ON(chip->can_sleep);
- 	trace_gpio_value(gpio, 0, value);
- 	chip->set(chip, gpio - chip->base, value);
  }
 diff --git a/drivers/hid/hid-core.c b/drivers/hid/hid-core.c
 index af08ce7..db67cc6 100644
@@ -2409,15 +2382,6 @@ index f545a3e..900ef5b 100644
  	cmd->retries = retries;
  
  	mrq.cmd = cmd;
-@@ -831,7 +831,7 @@ EXPORT_SYMBOL(mmc_host_lazy_disable);
-  */
- void mmc_release_host(struct mmc_host *host)
- {
--	WARN_ON(!host->claimed);
-+	(void)WARN_ON(!host->claimed);
- 
- 	mmc_host_lazy_disable(host);
- 
 @@ -876,7 +876,7 @@ void mmc_set_chip_select(struct mmc_host *host, int mode)
   */
  static void __mmc_set_clock(struct mmc_host *host, unsigned int hz)
@@ -2474,15 +2438,6 @@ index f545a3e..900ef5b 100644
  		cmd.opcode = MMC_SEND_STATUS;
  		cmd.arg = card->rca << 16;
  		cmd.flags = MMC_RSP_R1 | MMC_CMD_AC;
-@@ -2078,7 +2078,7 @@ int mmc_detect_card_removed(struct mmc_host *host)
- {
- 	struct mmc_card *card = host->card;
- 
--	WARN_ON(!host->claimed);
-+	(void)WARN_ON(!host->claimed);
- 	/*
- 	 * The card will be considered unchanged unless we have been asked to
- 	 * detect a change or host requires polling to provide card detection.
 diff --git a/drivers/mmc/core/host.c b/drivers/mmc/core/host.c
 index 30055f2..442cb33 100644
 --- a/drivers/mmc/core/host.c
@@ -5221,15 +5176,6 @@ index 1a30db7..bfd2487 100644
  }
  EXPORT_SYMBOL(__brelse);
  
-@@ -1387,7 +1387,7 @@ static void invalidate_bh_lru(void *arg)
- 	
- void invalidate_bh_lrus(void)
- {
--	on_each_cpu(invalidate_bh_lru, NULL, 1);
-+	(void)on_each_cpu(invalidate_bh_lru, NULL, 1);
- }
- EXPORT_SYMBOL_GPL(invalidate_bh_lrus);
- 
 @@ -1623,7 +1623,7 @@ static int __block_write_full_page(struct inode *inode, struct page *page,
  			set_buffer_uptodate(bh);
  		} else if ((!buffer_mapped(bh) || buffer_delay(bh)) &&
@@ -5358,24 +5304,6 @@ index 986709a..a48347a 100644
  	for (i = 0; i < strnlen(nodename, RFC1001_NAME_LEN); i++)
  		vol->source_rfc1001_name[i] = toupper(nodename[i]);
  
-@@ -1340,7 +1340,7 @@ cifs_parse_mount_options(const char *mountdata, const char *devname,
- 			if (!value || !*value || (*value == ' ')) {
- 				cFYI(1, "invalid (empty) netbiosname");
- 			} else {
--				memset(vol->source_rfc1001_name, 0x20,
-+				(void)memset(vol->source_rfc1001_name, 0x20,
- 					RFC1001_NAME_LEN);
- 				/*
- 				 * FIXME: are there cases in which a comma can
-@@ -1365,7 +1365,7 @@ cifs_parse_mount_options(const char *mountdata, const char *devname,
- 				cFYI(1, "empty server netbiosname specified");
- 			} else {
- 				/* last byte, type, is 0x20 for servr type */
--				memset(vol->target_rfc1001_name, 0x20,
-+				(void)memset(vol->target_rfc1001_name, 0x20,
- 					RFC1001_NAME_LEN_WITH_NULL);
- 
- 				for (i = 0; i < 15; i++) {
 @@ -1648,7 +1648,7 @@ srcip_matches(struct sockaddr *srcaddr, struct sockaddr *rhs)
  		return ipv6_addr_equal(&saddr6->sin6_addr, &vaddr6->sin6_addr);
  	}
@@ -6019,33 +5947,6 @@ index 74f23c2..a1d7330 100644
  	/*
  	 * It is safe to convert extent to initialized via explicit
  	 * zeroout only if extent is fully insde i_size or new_size.
-@@ -4435,7 +4435,7 @@ int ext4_convert_unwritten_extents(struct inode *inode, loff_t offset,
- 		ret = ext4_map_blocks(handle, inode, &map,
- 				      EXT4_GET_BLOCKS_IO_CONVERT_EXT);
- 		if (ret <= 0) {
--			WARN_ON(ret <= 0);
-+			(void)WARN_ON(ret <= 0);
- 			printk(KERN_ERR "%s: ext4_ext_map_blocks "
- 				    "returned error inode#%lu, block=%u, "
- 				    "max_blocks=%u", __func__,
-@@ -4847,7 +4847,7 @@ int ext4_ext_punch_hole(struct file *file, loff_t offset, loff_t length)
- 	while (iblock < last_block) {
- 		max_blocks = last_block - iblock;
- 		num_blocks = 1;
--		memset(&map, 0, sizeof(map));
-+		(void)memset(&map, 0, sizeof(map));
- 		map.m_lblk = iblock;
- 		map.m_len = max_blocks;
- 		ret = ext4_ext_map_blocks(handle, inode, &map,
-@@ -4864,7 +4864,7 @@ int ext4_ext_punch_hole(struct file *file, loff_t offset, loff_t length)
- 			 * put it in the cache.  So we can get the hole
- 			 * out of the cache
- 			 */
--			memset(&cache_ex, 0, sizeof(cache_ex));
-+			(void)memset(&cache_ex, 0, sizeof(cache_ex));
- 			if ((ext4_ext_check_cache(inode, iblock, &cache_ex)) &&
- 				!cache_ex.ec_start) {
- 
 diff --git a/fs/ext4/file.c b/fs/ext4/file.c
 index cb70f18..b9aec18 100644
 --- a/fs/ext4/file.c
@@ -6567,24 +6468,6 @@ index 4c6992d..b53e865 100644
  }
  
  static struct fdtable * alloc_fdtable(unsigned int nr)
-@@ -376,14 +376,14 @@ struct files_struct *dup_fd(struct files_struct *oldf, int *errorp)
- 	size = (new_fdt->max_fds - open_files) * sizeof(struct file *);
- 
- 	/* This is long word aligned thus could use a optimized version */
--	memset(new_fds, 0, size);
-+	(void)memset(new_fds, 0, size);
- 
- 	if (new_fdt->max_fds > open_files) {
- 		int left = (new_fdt->max_fds-open_files)/8;
- 		int start = open_files / (8 * sizeof(unsigned long));
- 
--		memset(&new_fdt->open_fds->fds_bits[start], 0, left);
--		memset(&new_fdt->close_on_exec->fds_bits[start], 0, left);
-+		(void)memset(&new_fdt->open_fds->fds_bits[start], 0, left);
-+		(void)memset(&new_fdt->close_on_exec->fds_bits[start], 0, left);
- 	}
- 
- 	rcu_assign_pointer(newf->fdt, new_fdt);
 diff --git a/fs/file_table.c b/fs/file_table.c
 index 20002e3..7dd23bc 100644
 --- a/fs/file_table.c
@@ -7156,15 +7039,6 @@ index c0a5f9f..c37fede 100644
  	set_buffer_uptodate(bh);
  	unlock_buffer(bh);
  	BUFFER_TRACE(bh, "return this buffer");
-@@ -1590,7 +1590,7 @@ static int journal_convert_superblock_v1(journal_t *journal,
- 	/* Pre-initialise new fields to zero */
- 	offset = ((char *) &(sb->s_feature_compat)) - ((char *) sb);
- 	blocksize = be32_to_cpu(sb->s_blocksize);
--	memset(&sb->s_feature_compat, 0, blocksize-offset);
-+	(void)memset(&sb->s_feature_compat, 0, blocksize-offset);
- 
- 	sb->s_nr_users = cpu_to_be32(1);
- 	sb->s_header.h_blocktype = cpu_to_be32(JBD2_SUPERBLOCK_V2);
 @@ -2121,7 +2121,7 @@ struct journal_head *jbd2_journal_add_journal_head(struct buffer_head *bh)
  repeat:
  	if (!buffer_jbd(bh)) {
@@ -7336,32 +7210,6 @@ index 3f39be1..a1d88cd 100644
  		goto out_ri;
  	}
  
-@@ -177,14 +177,14 @@ int jffs2_read_inode_range(struct jffs2_sb_info *c, struct jffs2_inode_info *f,
- 				holesize = min(holesize, frag->ofs - offset);
- 			}
- 			D1(printk(KERN_DEBUG "Filling non-frag hole from %d-%d\n", offset, offset+holesize));
--			memset(buf, 0, holesize);
-+			(void)memset(buf, 0, holesize);
- 			buf += holesize;
- 			offset += holesize;
- 			continue;
- 		} else if (unlikely(!frag->node)) {
- 			uint32_t holeend = min(end, frag->ofs + frag->size);
- 			D1(printk(KERN_DEBUG "Filling frag hole from %d-%d (frag 0x%x 0x%x)\n", offset, holeend, frag->ofs, frag->ofs + frag->size));
--			memset(buf, 0, holeend - offset);
-+			(void)memset(buf, 0, holeend - offset);
- 			buf += holeend - offset;
- 			offset = holeend;
- 			frag = frag_next(frag);
-@@ -202,7 +202,7 @@ int jffs2_read_inode_range(struct jffs2_sb_info *c, struct jffs2_inode_info *f,
- 			D2(printk(KERN_DEBUG "node read done\n"));
- 			if (ret) {
- 				D1(printk(KERN_DEBUG"jffs2_read_inode_range error %d\n",ret));
--				memset(buf, 0, readlen);
-+				(void)memset(buf, 0, readlen);
- 				return ret;
- 			}
- 			buf += readlen;
 diff --git a/fs/jffs2/readinode.c b/fs/jffs2/readinode.c
 index 3093ac4..2e244dc 100644
 --- a/fs/jffs2/readinode.c
@@ -7454,15 +7302,6 @@ index 30d175b..3b81141 100644
  
  	f->inocache = ic;
  	f->inocache->pino_nlink = 1; /* Will be overwritten shortly for directories */
-@@ -222,7 +222,7 @@ struct jffs2_full_dirent *jffs2_write_dirent(struct jffs2_sb_info *c, struct jff
- 		printk(KERN_CRIT "Directory inode #%u, name at *0x%p \"%s\"->ino #%u, name_crc 0x%08x\n",
- 		       je32_to_cpu(rd->pino), name, name, je32_to_cpu(rd->ino),
- 		       je32_to_cpu(rd->name_crc));
--		WARN_ON(1);
-+		(void)WARN_ON(1);
- 		return ERR_PTR(-EIO);
- 	}
- 
 diff --git a/fs/libfs.c b/fs/libfs.c
 index 5b2dbb3..4a42414 100644
 --- a/fs/libfs.c
@@ -8011,15 +7850,6 @@ diff --git a/fs/nfsd/nfssvc.c b/fs/nfsd/nfssvc.c
 index eda7d7e..adb1729 100644
 --- a/fs/nfsd/nfssvc.c
 +++ b/fs/nfsd/nfssvc.c
-@@ -311,7 +311,7 @@ int nfsd_create_serv(void)
- {
- 	int err = 0;
- 
--	WARN_ON(!mutex_is_locked(&nfsd_mutex));
-+	(void)WARN_ON(!mutex_is_locked(&nfsd_mutex));
- 	if (nfsd_serv) {
- 		svc_get(nfsd_serv);
- 		return 0;
 @@ -370,7 +370,7 @@ int nfsd_set_nrthreads(int n, int *nthreads)
  	int tot = 0;
  	int err = 0;
@@ -9394,19 +9224,6 @@ index 75ca929..e988bbf 100644
  		sk = NULL;
  	}
  
-diff --git a/include/net/netfilter/xt_log.h b/include/net/netfilter/xt_log.h
-index 0dfb34a..b9d8f35 100644
---- a/include/net/netfilter/xt_log.h
-+++ b/include/net/netfilter/xt_log.h
-@@ -47,7 +47,7 @@ static void sb_close(struct sbuff *m)
- 	if (likely(m != &emergency))
- 		kfree(m);
- 	else {
--		xchg(&emergency_ptr, m);
-+		(void)xchg(&emergency_ptr, m);
- 		local_bh_enable();
- 	}
- }
 diff --git a/include/net/netlabel.h b/include/net/netlabel.h
 index f674409..6b50c2a 100644
 --- a/include/net/netlabel.h
@@ -9492,6 +9309,7 @@ index bb972d2..54d7904 100644
  	return rc;
 --- a/block/blk-exec.c
 +++ b/block/blk-exec.c
+
 
 
 diff --git a/include/sound/pcm_params.h b/include/sound/pcm_params.h
@@ -10352,23 +10170,6 @@ index 995e3bd..e31bc0a 100644
  		return;
  	}
  
-@@ -301,14 +301,14 @@ void pm_qos_remove_request(struct pm_qos_request *req)
- 		/* silent return to keep pcm code cleaner */
- 
- 	if (!pm_qos_request_active(req)) {
--		WARN(1, KERN_ERR "pm_qos_remove_request() called for unknown object\n");
-+		(void)WARN(1, KERN_ERR "pm_qos_remove_request() called for unknown object\n");
- 		return;
- 	}
- 
- 	pm_qos_update_target(pm_qos_array[req->pm_qos_class]->constraints,
- 			     &req->node, PM_QOS_REMOVE_REQ,
- 			     PM_QOS_DEFAULT_VALUE);
--	memset(req, 0, sizeof(*req));
-+	(void)memset(req, 0, sizeof(*req));
- }
- EXPORT_SYMBOL_GPL(pm_qos_remove_request);
- 
 diff --git a/kernel/profile.c b/kernel/profile.c
 index 76b8e77..79d7c3e 100644
 --- a/kernel/profile.c
@@ -11086,33 +10887,6 @@ index 0c63581..f319425 100644
 @@ -242,7 +242,7 @@ ktime_t ktime_get(void)
  	unsigned int seq;
  	s64 secs, nsecs;
- 
--	WARN_ON(timekeeping_suspended);
-+	(void)WARN_ON(timekeeping_suspended);
- 
- 	do {
- 		seq = read_seqbegin(&xtime_lock);
-@@ -275,7 +275,7 @@ void ktime_get_ts(struct timespec *ts)
- 	unsigned int seq;
- 	s64 nsecs;
- 
--	WARN_ON(timekeeping_suspended);
-+	(void)WARN_ON(timekeeping_suspended);
- 
- 	do {
- 		seq = read_seqbegin(&xtime_lock);
-@@ -854,7 +854,7 @@ static void timekeeping_adjust(s64 offset)
- 	} else /* No adjustment needed */
- 		return;
- 
--	WARN_ONCE(timekeeper.clock->maxadj &&
-+	(void)WARN_ONCE(timekeeper.clock->maxadj &&
- 			(timekeeper.mult + adj > timekeeper.clock->mult +
- 						timekeeper.clock->maxadj),
- 			"Adjusting %s more then 11%% (%ld vs %ld)\n",
-@@ -1098,7 +1098,7 @@ void get_monotonic_boottime(struct timespec *ts)
- 	unsigned int seq;
- 	s64 nsecs;
  
 -	WARN_ON(timekeeping_suspended);
 +	(void)WARN_ON(timekeeping_suspended);
@@ -12204,19 +11978,6 @@ index c5ab33b..fe64d88 100644
  	dma_pool_destroy(pool);
  }
  EXPORT_SYMBOL(dmam_pool_destroy);
-diff --git a/mm/filemap.c b/mm/filemap.c
-index 97f49ed..5eca728 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -835,7 +835,7 @@ repeat:
- 				 * when entry at index 0 moves out of or back
- 				 * to root: none yet gotten, safe to restart.
- 				 */
--				WARN_ON(start | i);
-+				(void)WARN_ON(start | i);
- 				goto restart;
- 			}
- 			/*
 diff --git a/mm/memblock.c b/mm/memblock.c
 index 2f55f19..961e38d5 100644
 --- a/mm/memblock.c
@@ -12347,15 +12108,6 @@ index d2186ec..0e1f655 100644
  	saved_gfp_mask = gfp_allowed_mask;
  	gfp_allowed_mask &= ~GFP_IOFS;
  }
-@@ -1165,7 +1165,7 @@ void drain_local_pages(void *arg)
-  */
- void drain_all_pages(void)
- {
--	on_each_cpu(drain_local_pages, NULL, 1);
-+	(void)on_each_cpu(drain_local_pages, NULL, 1);
- }
- 
- #ifdef CONFIG_HIBERNATION
 @@ -1391,7 +1391,7 @@ again:
  			 * allocate greater than order-1 page units with
  			 * __GFP_NOFAIL.

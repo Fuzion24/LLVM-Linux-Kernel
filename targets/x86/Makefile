@@ -1,6 +1,7 @@
 ##############################################################################
 # Copyright (c) 2012 Mark Charlebois
 #                    Jan-Simon Möller
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to 
 # deal in the Software without restriction, including without limitation the 
@@ -20,19 +21,29 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
-CWD=${CURDIR}
 TOPDIR=${CWD}/../..
+CWD=${CURDIR}
+KERNEL_CFG=${CWD}/config_x86
 KERNEL_GIT=git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
 KERNELDIR=${SRCDIR}/linux
-KERNEL_CFG=${KERNELDIR}/arch/hexagon/configs/comet_defconfig
-PATCH_FILES=
-MAKE_KERNEL=${CWD}/make_kernel.sh
+KERNELCOPY=${SRCDIR}/linux-copy
+PATCH_FILES=${CWD}/workaround.patch ${CWD}/x86.patch
 
-# Only the development version of clang supoprts hexagon
-all: prep kernel-build
-.PHONY: clean mrproper
+#GDB_OPTS=-gdb tcp::1234 -s -S
+GDB_OPTS=
+
+# initramfs.mk settings
+BUILDDIR=${CWD}/tmp
+
+all: prep kernel-build qemu-build fetch-initrd
 
 include ${TOPDIR}/common/common.mk
+include ${TOPDIR}/qemu/qemu.mk
+include ${TOPDIR}/common/x86/common-x86.mk
+include ${TOPDIR}/initramfs/initramfs.mk
+
+TARGETS+= clean mrproper test test2
+.PHONY: test test2 fetch-initrd prep clean mrproper
 
 prep: state/prep
 state/prep:
@@ -41,13 +52,31 @@ state/prep:
 	@mkdir -p state
 	@touch $@
 
-clean: 
-	( ( test -e ${KERNELDIR} && make kernel-clean ) || exit 0 )
-	@make clang-clean
+
+clean: qemu-clean kernel-clean clang-clean initramfs-clean
 
 # do a real wipe
 mrproper: clean
-	( ( test -e ${KERNELDIR} && cd ${KERNELDIR} && make mrproper ) || exit 0 )
-	@rm -rf tmp/*
-	@rm -rf log/*
+	rm -f tmp/*
+	rm -f log/*
+	( cd ${KERNELDIR} && make mrproper )
+
+test: ${QEMUSTATE}/qemu-build initramfs state/kernel-build
+	@${INSTALLDIR}/bin/qemu -kernel ${KERNELDIR}/arch/x86/boot/bzImage \
+		-initrd initramfs.img.gz -append \
+		'console=earlycon console=ttyAMA0,38400n8 earlyprintk init=/init' -nographic ${GDB_OPTS}
+
+kernel-copy: state/kernel-copy
+state/kernel-copy: kernel-fetch
+	(cd ${SRCDIR} && git clone ${KERNELDIR} linux-copy)
+	@touch $@
+
+kernel-autopatch: kernel-build state/kernel-copy
+	(cd ${KERNELCOPY} && git reset --hard HEAD && git pull)
+	(cd ${KERNELCOPY} &&  patch -p1 -i ${TMPDIR}/final.patch >> ${LOGDIR}/patchcopy.log)
+	@${TOOLSDIR}/unusedfix.py ${LOGDIR}/build.log ${KERNELCOPY} 
+	(cd ${KERNELCOPY} &&  patch -R -p1 -i ${TMPDIR}/final.patch >> ${LOGDIR}/patchcopy.log)
+	(cd ${KERNELCOPY} && git diff > ${TMPDIR}/autopatch.patch)
+	@${TOOLSDIR}/splitarch.py ${TMPDIR}/autopatch.patch ${CWD} autopatch
+	@touch $@
 

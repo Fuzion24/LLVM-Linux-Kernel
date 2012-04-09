@@ -1,18 +1,3 @@
-diff --git a/arch/arm/include/asm/posix_types.h b/arch/arm/include/asm/posix_types.h
-index 2446d23..cc3bd8d 100644
---- a/arch/arm/include/asm/posix_types.h
-+++ b/arch/arm/include/asm/posix_types.h
-@@ -27,7 +27,9 @@ typedef int			__kernel_pid_t;
- typedef unsigned short		__kernel_ipc_pid_t;
- typedef unsigned short		__kernel_uid_t;
- typedef unsigned short		__kernel_gid_t;
--typedef unsigned int		__kernel_size_t;
-+// Changed __kernel_size_t to unsigned long or otherwise incompatible with
-+// clang builtin functions
-+typedef unsigned long		__kernel_size_t;
- typedef int			__kernel_ssize_t;
- typedef int			__kernel_ptrdiff_t;
- typedef long			__kernel_time_t;
 diff --git a/arch/arm/common/gic.c b/arch/arm/common/gic.c
 index f0783be..2963374 100644
 --- a/arch/arm/common/gic.c

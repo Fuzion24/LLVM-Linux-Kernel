@@ -202,19 +202,6 @@ index 99a5727..27e780d 100644
  	}
  
  	if (call_undef_hook(regs, instr) == 0)
-diff --git a/arch/arm/mm/copypage-v6.c b/arch/arm/mm/copypage-v6.c
-index 3d9a155..18b900f 100644
---- a/arch/arm/mm/copypage-v6.c
-+++ b/arch/arm/mm/copypage-v6.c
-@@ -125,7 +125,7 @@ static void v6_clear_user_highpage_aliasing(struct page *page, unsigned long vad
- 
- 	set_pte_ext(TOP_PTE(to_address) + offset, pfn_pte(page_to_pfn(page), PAGE_KERNEL), 0);
- 	flush_tlb_kernel_page(to);
--	clear_page((void *)to);
-+	(void)clear_page((void *)to);
- 
- 	raw_spin_unlock(&v6_lock);
- }
 diff --git a/arch/arm/mm/dma-mapping.c b/arch/arm/mm/dma-mapping.c
 index 340c2d0..eff7868 100644
 --- a/arch/arm/mm/dma-mapping.c

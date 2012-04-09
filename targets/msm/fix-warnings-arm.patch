@@ -52,19 +52,6 @@ index 0455878..b9fe543 100644
  	writel(mask, gic_dist_base(d) +
  			GIC_DIST_PENDING_CLEAR + (gic_irq(d) / 32) * 4);
  	raw_spin_unlock(&irq_controller_lock);
-diff --git a/arch/arm/kernel/module.c b/arch/arm/kernel/module.c
-index 016d6a0..0867f7a 100644
---- a/arch/arm/kernel/module.c
-+++ b/arch/arm/kernel/module.c
-@@ -305,7 +305,7 @@ int module_finalize(const Elf32_Ehdr *hdr, const Elf_Shdr *sechdrs,
- 	struct mod_unwind_map maps[ARM_SEC_MAX];
- 	int i;
- 
--	memset(maps, 0, sizeof(maps));
-+	(void)memset(maps, 0, sizeof(maps));
- 
- 	for (s = sechdrs; s < sechdrs_end; s++) {
- 		const char *secname = secstrs + s->sh_name;
 diff --git a/arch/arm/kernel/ptrace.c b/arch/arm/kernel/ptrace.c
 index 9726006..52d8ec7 100644
 --- a/arch/arm/kernel/ptrace.c
@@ -78,15 +65,6 @@ index 9726006..52d8ec7 100644
  	}
  
  	if (instr2 == 0xa000) {
-@@ -426,7 +426,7 @@ static void ptrace_hbptriggered(struct perf_event *bp, int unused,
-  */
- void clear_ptrace_hw_breakpoint(struct task_struct *tsk)
- {
--	memset(tsk->thread.debug.hbp, 0, sizeof(tsk->thread.debug.hbp));
-+	(void)memset(tsk->thread.debug.hbp, 0, sizeof(tsk->thread.debug.hbp));
- }
- 
- /*
 diff --git a/arch/arm/kernel/sched_clock.c b/arch/arm/kernel/sched_clock.c
 index 9a46370..3ce5269 100644
 --- a/arch/arm/kernel/sched_clock.c
@@ -479,15 +457,6 @@ index b16b687..62c86ae 100644
  		iounmap(buf);
  
  		count -= size;
-@@ -293,7 +293,7 @@ void pil_put(void *peripheral_handle)
- 		return;
- 
- 	mutex_lock(&pil->lock);
--	WARN(!pil->count, "%s: Reference count mismatch\n", __func__);
-+	(void)WARN(!pil->count, "%s: Reference count mismatch\n", __func__);
- 	/* TODO: Peripheral shutdown support */
- 	if (pil->count == 1)
- 		goto unlock;
 diff --git a/arch/arm/mach-msm/platsmp.c b/arch/arm/mach-msm/platsmp.c
 index f1c6c48..ef95601 100644
 --- a/arch/arm/mach-msm/platsmp.c
@@ -896,15 +865,6 @@ diff --git a/arch/arm/mach-msm/rpm.c b/arch/arm/mach-msm/rpm.c
 index a8d787a..0c60ade 100644
 --- a/arch/arm/mach-msm/rpm.c
 +++ b/arch/arm/mach-msm/rpm.c
-@@ -459,7 +459,7 @@ static int msm_rpm_clear_common(
- 		r[i].value = sel_masks[i];
- 	}
- 
--	memset(sel_masks, 0, sizeof(sel_masks));
-+	(void)memset(sel_masks, 0, sizeof(sel_masks));
- 	sel_masks[msm_rpm_get_sel_mask_reg(MSM_RPM_SEL_INVALIDATE)] |=
- 		msm_rpm_get_sel_mask(MSM_RPM_SEL_INVALIDATE);
- 
 @@ -488,7 +488,7 @@ static int msm_rpm_clear_common(
  		r[i].value = sel_masks[i];
  	}
@@ -1308,4 +1268,18 @@ index d25fabf..9f9953b 100644
  
  	info.si_signo = SIGFPE;
  	info.si_code = sicode;
-
+diff --git a/arch/arm/include/asm/posix_types.h b/arch/arm/include/asm/posix_types.h
+index 2446d23..cc3bd8d 100644
+--- a/arch/arm/include/asm/posix_types.h
++++ b/arch/arm/include/asm/posix_types.h
+@@ -27,7 +27,9 @@ typedef int			__kernel_pid_t;
+ typedef unsigned short		__kernel_ipc_pid_t;
+ typedef unsigned short		__kernel_uid_t;
+ typedef unsigned short		__kernel_gid_t;
+-typedef unsigned int		__kernel_size_t;
++// Changed __kernel_size_t to unsigned long or otherwise incompatible with
++// clang builtin functions
++typedef unsigned long		__kernel_size_t;
+ typedef int			__kernel_ssize_t;
+ typedef int			__kernel_ptrdiff_t;
+ typedef long			__kernel_time_t;

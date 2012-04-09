@@ -1,148 +1,3 @@
-diff --git a/arch/arm/include/asm/processor.h b/arch/arm/include/asm/processor.h
-index ce280b8..3cdb83c 100644
---- a/arch/arm/include/asm/processor.h
-+++ b/arch/arm/include/asm/processor.h
-@@ -56,7 +56,7 @@ struct thread_struct {
- ({									\
- 	unsigned long *stack = (unsigned long *)sp;			\
- 	set_fs(USER_DS);						\
--	memset(regs->uregs, 0, sizeof(regs->uregs));			\
-+	(void)memset(regs->uregs, 0, sizeof(regs->uregs));		\
- 	if (current->personality & ADDR_LIMIT_32BIT)			\
- 		regs->ARM_cpsr = USR_MODE;				\
- 	else								\
-diff --git a/drivers/input/serio/ambakmi.c b/drivers/input/serio/ambakmi.c
-index 8407d5b..e60eaa9 100644
---- a/drivers/input/serio/ambakmi.c
-+++ b/drivers/input/serio/ambakmi.c
-@@ -197,7 +197,7 @@ static struct amba_id amba_kmi_idtable[] = {
- 
- MODULE_DEVICE_TABLE(amba, amba_kmi_idtable);
- 
--static struct amba_driver ambakmi_driver = {
-+static struct amba_driver ambakmi_driver __refdata = {
- 	.drv		= {
- 		.name	= "kmi-pl050",
- 		.owner	= THIS_MODULE,
-diff --git a/drivers/mmc/host/sdhci-pxav2.c b/drivers/mmc/host/sdhci-pxav2.c
-index dbb75bf..c3c4719 100644
---- a/drivers/mmc/host/sdhci-pxav2.c
-+++ b/drivers/mmc/host/sdhci-pxav2.c
-@@ -214,7 +214,7 @@ static int __devexit sdhci_pxav2_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
--static struct platform_driver sdhci_pxav2_driver = {
-+static struct platform_driver sdhci_pxav2_driver __refdata = {
- 	.driver		= {
- 		.name	= "sdhci-pxav2",
- 		.owner	= THIS_MODULE,
-diff --git a/drivers/mmc/host/sdhci-pxav3.c b/drivers/mmc/host/sdhci-pxav3.c
-index f296956..9e363bb 100644
---- a/drivers/mmc/host/sdhci-pxav3.c
-+++ b/drivers/mmc/host/sdhci-pxav3.c
-@@ -260,7 +260,7 @@ static int __devexit sdhci_pxav3_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
--static struct platform_driver sdhci_pxav3_driver = {
-+static struct platform_driver sdhci_pxav3_driver __refdata = {
- 	.driver		= {
- 		.name	= "sdhci-pxav3",
- 		.owner	= THIS_MODULE,
-diff --git a/drivers/net/ethernet/smsc/smc91x.c b/drivers/net/ethernet/smsc/smc91x.c
-index 64ad3ed..459835a 100644
---- a/drivers/net/ethernet/smsc/smc91x.c
-+++ b/drivers/net/ethernet/smsc/smc91x.c
-@@ -2406,7 +2406,7 @@ static struct dev_pm_ops smc_drv_pm_ops = {
- 	.resume		= smc_drv_resume,
- };
- 
--static struct platform_driver smc_driver = {
-+static struct platform_driver smc_driver __refdata = {
- 	.probe		= smc_drv_probe,
- 	.remove		= __devexit_p(smc_drv_remove),
- 	.driver		= {
-diff --git a/drivers/tty/serial/amba-pl011.c b/drivers/tty/serial/amba-pl011.c
-index 9ae0240..b7a84e4 100644
---- a/drivers/tty/serial/amba-pl011.c
-+++ b/drivers/tty/serial/amba-pl011.c
-@@ -1843,7 +1843,7 @@ static int __init pl011_console_setup(struct console *co, char *options)
- }
- 
- static struct uart_driver amba_reg;
--static struct console amba_console = {
-+static struct console amba_console __initdata = {
- 	.name		= "ttyAMA",
- 	.write		= pl011_console_write,
- 	.device		= uart_console_device,
-diff --git a/include/linux/lglock.h b/include/linux/lglock.h
-index 87f402c..e6896b2 100644
---- a/include/linux/lglock.h
-+++ b/include/linux/lglock.h
-@@ -106,7 +106,7 @@
- 		lock = &per_cpu(name##_lock, i);			\
- 		*lock = (arch_spinlock_t)__ARCH_SPIN_LOCK_UNLOCKED;	\
- 	}								\
--	register_hotcpu_notifier(&name##_lg_cpu_notifier);		\
-+	(void)register_hotcpu_notifier(&name##_lg_cpu_notifier);	\
- 	get_online_cpus();						\
- 	for_each_online_cpu(i)						\
- 		cpu_set(i, name##_cpus);				\
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 17b27cd..008069d 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -333,7 +333,8 @@ static inline void compound_unlock(struct page *page)
- 
- static inline unsigned long compound_lock_irqsave(struct page *page)
- {
--	unsigned long uninitialized_var(flags);
-+	// FIXME - initialized to get rid of compilation warning from clang
-+	unsigned long flags = 0;
- #ifdef CONFIG_TRANSPARENT_HUGEPAGE
- 	local_irq_save(flags);
- 	compound_lock(page);
-diff --git a/net/sunrpc/xprtsock.c b/net/sunrpc/xprtsock.c
-index 55472c4..c078dcc 100644
---- a/net/sunrpc/xprtsock.c
-+++ b/net/sunrpc/xprtsock.c
-@@ -1080,7 +1080,7 @@ static inline void xs_tcp_read_xid(struct sock_xprt *transport, struct xdr_skb_r
- 	char *p;
- 
- 	len = sizeof(transport->tcp_xid) - transport->tcp_offset;
--	dprintk("RPC:       reading XID (%Zu bytes)\n", len);
-+	dprintk("RPC:       reading XID (%zu bytes)\n", len);
- 	p = ((char *) &transport->tcp_xid) + transport->tcp_offset;
- 	used = xdr_skb_read_bits(desc, p, len);
- 	transport->tcp_offset += used;
-@@ -1111,7 +1111,7 @@ static inline void xs_tcp_read_calldir(struct sock_xprt *transport,
- 	 */
- 	offset = transport->tcp_offset - sizeof(transport->tcp_xid);
- 	len = sizeof(transport->tcp_calldir) - offset;
--	dprintk("RPC:       reading CALL/REPLY flag (%Zu bytes)\n", len);
-+	dprintk("RPC:       reading CALL/REPLY flag (%zu bytes)\n", len);
- 	p = ((char *) &transport->tcp_calldir) + offset;
- 	used = xdr_skb_read_bits(desc, p, len);
- 	transport->tcp_offset += used;
-@@ -1202,7 +1202,7 @@ static inline void xs_tcp_read_common(struct rpc_xprt *xprt,
- 		return;
- 	}
- 
--	dprintk("RPC:       XID %08x read %Zd bytes\n",
-+	dprintk("RPC:       XID %08x read %zd bytes\n",
- 			ntohl(transport->tcp_xid), r);
- 	dprintk("RPC:       xprt = %p, tcp_copied = %lu, tcp_offset = %u, "
- 			"tcp_reclen = %u\n", xprt, transport->tcp_copied,
-@@ -1344,7 +1344,7 @@ static inline void xs_tcp_read_discard(struct sock_xprt *transport, struct xdr_s
- 	desc->count -= len;
- 	desc->offset += len;
- 	transport->tcp_offset += len;
--	dprintk("RPC:       discarded %Zu bytes\n", len);
-+	dprintk("RPC:       discarded %zu bytes\n", len);
- 	xs_tcp_check_fraghdr(transport);
- }
-
 diff --git a/crypto/shash.c b/crypto/shash.c
 index 21fc12e..deabc92 100644
 --- a/crypto/shash.c
@@ -323,28 +178,23 @@ index d620b44..d9e9a5c 100644
  
  	/* build a unified command and queue it through
  	   cdo->generic_packet() */
+diff --git a/drivers/input/serio/ambakmi.c b/drivers/input/serio/ambakmi.c
+index 8407d5b..e60eaa9 100644
+--- a/drivers/input/serio/ambakmi.c
++++ b/drivers/input/serio/ambakmi.c
+@@ -197,7 +197,7 @@ static struct amba_id amba_kmi_idtable[] = {
+ 
+ MODULE_DEVICE_TABLE(amba, amba_kmi_idtable);
+ 
+-static struct amba_driver ambakmi_driver = {
++static struct amba_driver ambakmi_driver __refdata = {
+ 	.drv		= {
+ 		.name	= "kmi-pl050",
+ 		.owner	= THIS_MODULE,
 diff --git a/drivers/mmc/host/dw_mmc.c b/drivers/mmc/host/dw_mmc.c
 index 8bec1c3..032ac46 100644
 --- a/drivers/mmc/host/dw_mmc.c
 +++ b/drivers/mmc/host/dw_mmc.c
-@@ -268,7 +268,7 @@ static void dw_mci_start_command(struct dw_mci *host,
- 				 struct mmc_command *cmd, u32 cmd_flags)
- {
- 	host->cmd = cmd;
--	dev_vdbg(&host->pdev->dev,
-+	(void)dev_vdbg(&host->pdev->dev,
- 		 "start command: ARGR=0x%08x CMDR=0x%08x\n",
- 		 cmd->arg, cmd_flags);
- 
-@@ -465,7 +465,7 @@ static int dw_mci_submit_data_dma(struct dw_mci *host, struct mmc_data *data)
- 	sg_len = dma_map_sg(&host->pdev->dev, data->sg, data->sg_len,
- 			    direction);
- 
--	dev_vdbg(&host->pdev->dev,
-+	(void)dev_vdbg(&host->pdev->dev,
- 		 "sd sg_cpu: %#lx sg_dma: %#lx sg_len: %d\n",
- 		 (unsigned long)host->sg_cpu, (unsigned long)host->sg_dma,
- 		 sg_len);
 @@ -491,7 +491,7 @@ static void dw_mci_submit_data(struct dw_mci *host, struct mmc_data *data)
  
  	data->error = -EINPROGRESS;
@@ -381,21 +231,6 @@ index 8bec1c3..032ac46 100644
  
  	host->cur_slot->mrq = NULL;
  	host->mrq = NULL;
-@@ -821,12 +821,12 @@ static void dw_mci_request_end(struct dw_mci *host, struct mmc_request *mrq)
- 		slot = list_entry(host->queue.next,
- 				  struct dw_mci_slot, queue_node);
- 		list_del(&slot->queue_node);
--		dev_vdbg(&host->pdev->dev, "list not empty: %s is next\n",
-+		(void)dev_vdbg(&host->pdev->dev, "list not empty: %s is next\n",
- 			 mmc_hostname(slot->mmc));
- 		host->state = STATE_SENDING_CMD;
- 		dw_mci_start_request(host, slot);
- 	} else {
--		dev_vdbg(&host->pdev->dev, "list empty\n");
-+		(void)dev_vdbg(&host->pdev->dev, "list empty\n");
- 		host->state = STATE_IDLE;
- 	}
- 
 @@ -1921,7 +1921,7 @@ static int dw_mci_probe(struct platform_device *pdev)
  		host->data_shift = 3;
  	} else {
@@ -405,6 +240,32 @@ index 8bec1c3..032ac46 100644
  		     "HCON reports a reserved host data width!\n"
  		     "Defaulting to 32-bit access.\n");
  		host->push_data = dw_mci_push_data32;
+diff --git a/drivers/mmc/host/sdhci-pxav2.c b/drivers/mmc/host/sdhci-pxav2.c
+index dbb75bf..c3c4719 100644
+--- a/drivers/mmc/host/sdhci-pxav2.c
++++ b/drivers/mmc/host/sdhci-pxav2.c
+@@ -214,7 +214,7 @@ static int __devexit sdhci_pxav2_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver sdhci_pxav2_driver = {
++static struct platform_driver sdhci_pxav2_driver __refdata = {
+ 	.driver		= {
+ 		.name	= "sdhci-pxav2",
+ 		.owner	= THIS_MODULE,
+diff --git a/drivers/mmc/host/sdhci-pxav3.c b/drivers/mmc/host/sdhci-pxav3.c
+index f296956..9e363bb 100644
+--- a/drivers/mmc/host/sdhci-pxav3.c
++++ b/drivers/mmc/host/sdhci-pxav3.c
+@@ -260,7 +260,7 @@ static int __devexit sdhci_pxav3_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver sdhci_pxav3_driver = {
++static struct platform_driver sdhci_pxav3_driver __refdata = {
+ 	.driver		= {
+ 		.name	= "sdhci-pxav3",
+ 		.owner	= THIS_MODULE,
 diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
 index 8d66706..b6361ac 100644
 --- a/drivers/mmc/host/sdhci.c
@@ -521,6 +382,19 @@ index 8d66706..b6361ac 100644
  	if (host == NULL)
  		return -EINVAL;
  
+diff --git a/drivers/net/ethernet/smsc/smc91x.c b/drivers/net/ethernet/smsc/smc91x.c
+index 64ad3ed..459835a 100644
+--- a/drivers/net/ethernet/smsc/smc91x.c
++++ b/drivers/net/ethernet/smsc/smc91x.c
+@@ -2406,7 +2406,7 @@ static struct dev_pm_ops smc_drv_pm_ops = {
+ 	.resume		= smc_drv_resume,
+ };
+ 
+-static struct platform_driver smc_driver = {
++static struct platform_driver smc_driver __refdata = {
+ 	.probe		= smc_drv_probe,
+ 	.remove		= __devexit_p(smc_drv_remove),
+ 	.driver		= {
 diff --git a/drivers/scsi/scsi_ioctl.c b/drivers/scsi/scsi_ioctl.c
 index d9564fb..06d634f 100644
 --- a/drivers/scsi/scsi_ioctl.c
@@ -791,19 +665,46 @@ index 5b149b4..2e958ca 100644
  		port->mctrl |= TIOCM_OUT1;
  	} else
  		port->mctrl &= ~TIOCM_OUT2;
-diff --git a/include/linux/highmem.h b/include/linux/highmem.h
-index 6549ed7..154cbcd 100644
---- a/include/linux/highmem.h
-+++ b/include/linux/highmem.h
-@@ -216,7 +216,7 @@ alloc_zeroed_user_highpage_movable(struct vm_area_struct *vma,
- static inline void clear_highpage(struct page *page)
- {
- 	void *kaddr = kmap_atomic(page);
--	clear_page(kaddr);
-+	(void)clear_page(kaddr);
- 	kunmap_atomic(kaddr);
+diff --git a/drivers/tty/serial/amba-pl011.c b/drivers/tty/serial/amba-pl011.c
+index 9ae0240..b7a84e4 100644
+--- a/drivers/tty/serial/amba-pl011.c
++++ b/drivers/tty/serial/amba-pl011.c
+@@ -1843,7 +1843,7 @@ static int __init pl011_console_setup(struct console *co, char *options)
  }
  
+ static struct uart_driver amba_reg;
+-static struct console amba_console = {
++static struct console amba_console __initdata = {
+ 	.name		= "ttyAMA",
+ 	.write		= pl011_console_write,
+ 	.device		= uart_console_device,
+diff --git a/include/linux/lglock.h b/include/linux/lglock.h
+index 87f402c..e6896b2 100644
+--- a/include/linux/lglock.h
++++ b/include/linux/lglock.h
+@@ -106,7 +106,7 @@
+ 		lock = &per_cpu(name##_lock, i);			\
+ 		*lock = (arch_spinlock_t)__ARCH_SPIN_LOCK_UNLOCKED;	\
+ 	}								\
+-	register_hotcpu_notifier(&name##_lg_cpu_notifier);		\
++	(void)register_hotcpu_notifier(&name##_lg_cpu_notifier);	\
+ 	get_online_cpus();						\
+ 	for_each_online_cpu(i)						\
+ 		cpu_set(i, name##_cpus);				\
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 17b27cd..008069d 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -333,7 +333,8 @@ static inline void compound_unlock(struct page *page)
+ 
+ static inline unsigned long compound_lock_irqsave(struct page *page)
+ {
+-	unsigned long uninitialized_var(flags);
++	// FIXME - initialized to get rid of compilation warning from clang
++	unsigned long flags = 0;
+ #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+ 	local_irq_save(flags);
+ 	compound_lock(page);
 diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
 index af48e59..d25a09a 100644
 --- a/kernel/irq/irqdomain.c
@@ -943,9 +844,45 @@ index 32bb753..00239e5 100644
  }
  EXPORT_SYMBOL(__nlmsg_put);
 diff --git a/net/sunrpc/xprtsock.c b/net/sunrpc/xprtsock.c
-index 55472c4..ae7ba6b 100644
+index 55472c4..c078dcc 100644
 --- a/net/sunrpc/xprtsock.c
 +++ b/net/sunrpc/xprtsock.c
+@@ -1080,7 +1080,7 @@ static inline void xs_tcp_read_xid(struct sock_xprt *transport, struct xdr_skb_r
+ 	char *p;
+ 
+ 	len = sizeof(transport->tcp_xid) - transport->tcp_offset;
+-	dprintk("RPC:       reading XID (%Zu bytes)\n", len);
++	dprintk("RPC:       reading XID (%zu bytes)\n", len);
+ 	p = ((char *) &transport->tcp_xid) + transport->tcp_offset;
+ 	used = xdr_skb_read_bits(desc, p, len);
+ 	transport->tcp_offset += used;
+@@ -1111,7 +1111,7 @@ static inline void xs_tcp_read_calldir(struct sock_xprt *transport,
+ 	 */
+ 	offset = transport->tcp_offset - sizeof(transport->tcp_xid);
+ 	len = sizeof(transport->tcp_calldir) - offset;
+-	dprintk("RPC:       reading CALL/REPLY flag (%Zu bytes)\n", len);
++	dprintk("RPC:       reading CALL/REPLY flag (%zu bytes)\n", len);
+ 	p = ((char *) &transport->tcp_calldir) + offset;
+ 	used = xdr_skb_read_bits(desc, p, len);
+ 	transport->tcp_offset += used;
+@@ -1202,7 +1202,7 @@ static inline void xs_tcp_read_common(struct rpc_xprt *xprt,
+ 		return;
+ 	}
+ 
+-	dprintk("RPC:       XID %08x read %Zd bytes\n",
++	dprintk("RPC:       XID %08x read %zd bytes\n",
+ 			ntohl(transport->tcp_xid), r);
+ 	dprintk("RPC:       xprt = %p, tcp_copied = %lu, tcp_offset = %u, "
+ 			"tcp_reclen = %u\n", xprt, transport->tcp_copied,
+@@ -1344,7 +1344,7 @@ static inline void xs_tcp_read_discard(struct sock_xprt *transport, struct xdr_s
+ 	desc->count -= len;
+ 	desc->offset += len;
+ 	transport->tcp_offset += len;
+-	dprintk("RPC:       discarded %Zu bytes\n", len);
++	dprintk("RPC:       discarded %zu bytes\n", len);
+ 	xs_tcp_check_fraghdr(transport);
+ }
+
 @@ -2005,7 +2005,7 @@ static void xs_abort_connection(struct sock_xprt *transport)
  	 * Disconnect the transport socket by doing a connect operation
  	 * with AF_UNSPEC.  This should return immediately...
