@@ -2225,4 +2225,56 @@ index a2060f0..2624389 100644
  	.probe  = mipi_truly_lcd_probe,
  	.driver = {
  		.name   = "mipi_truly",
+diff --git a/sound/soc/soc-utils.c b/sound/soc/soc-utils.c
+index cd987de..c681b56 100644
+--- a/sound/soc/soc-utils.c
++++ b/sound/soc/soc-utils.c
+@@ -100,7 +100,7 @@ static __devexit int snd_soc_dummy_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver soc_dummy_driver = {
++static struct platform_driver soc_dummy_driver __refdata = {
+ 	.driver = {
+ 		.name = "snd-soc-dummy",
+ 		.owner = THIS_MODULE,
+diff --git a/drivers/regulator/dummy.c b/drivers/regulator/dummy.c
+index 910583f..65362f2 100644
+--- a/drivers/regulator/dummy.c
++++ b/drivers/regulator/dummy.c
+@@ -51,7 +51,7 @@ static int __devinit dummy_regulator_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver dummy_regulator_driver = {
++static struct platform_driver dummy_regulator_driver __initdata = {
+ 	.probe		= dummy_regulator_probe,
+ 	.driver		= {
+ 		.name		= "reg-dummy",
+diff --git a/drivers/tty/serial/msm_serial_hs.c b/drivers/tty/serial/msm_serial_hs.c
+index fc665ed..2914e51 100644
+--- a/drivers/tty/serial/msm_serial_hs.c
++++ b/drivers/tty/serial/msm_serial_hs.c
+@@ -2122,7 +2122,7 @@ static const struct dev_pm_ops msm_hs_dev_pm_ops = {
+ 	.runtime_idle    = msm_hs_runtime_idle,
+ };
+ 
+-static struct platform_driver msm_serial_hs_platform_driver = {
++static struct platform_driver msm_serial_hs_platform_driver __refdata = {
+ 	.probe	= msm_hs_probe,
+ 	.remove = __devexit_p(msm_hs_remove),
+ 	.driver = {
+diff --git a/sound/soc/soc-utils.c b/sound/soc/soc-utils.c
+index cd987de..c681b56 100644
+--- a/sound/soc/soc-utils.c
++++ b/sound/soc/soc-utils.c
+@@ -100,7 +100,7 @@ static __devexit int snd_soc_dummy_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver soc_dummy_driver = {
++static struct platform_driver soc_dummy_driver __refdata = {
+ 	.driver = {
+ 		.name = "snd-soc-dummy",
+ 		.owner = THIS_MODULE,
 
