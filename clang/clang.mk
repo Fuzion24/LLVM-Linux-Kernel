@@ -54,11 +54,18 @@ ${LLVMSTATE}/clang-fetch:
 	@mkdir -p ${LLVMSTATE}
 	@touch $@
 
+clang-patch: ${LLVMSTATE}/clang-patch
+${LLVMSTATE}/clang-patch: ${LLVMSTATE}/clang-fetch
+	(cd ${LLVMDIR} && patch -p1 -i ${LLVMTOP}/inline-64-bit-asm.patch)
+	(cd ${LLVMDIR}/tools/clang && patch -p1 -i ${LLVMTOP}/64-bit-ABI.patch)
+	@mkdir -p ${LLVMSTATE}
+	@touch $@
+
 clang-configure: ${LLVMSTATE}/clang-configure
-${LLVMSTATE}/clang-configure: ${LLVMSTATE}/clang-fetch
+${LLVMSTATE}/clang-configure: ${LLVMSTATE}/clang-patch
 	@mkdir -p ${LLVMBUILDDIR}
 	(cd ${LLVMBUILDDIR} && CC=gcc CXX=g++ ${LLVMDIR}/configure \
-		--enable-targets=arm,hexagon,mips --disable-shared \
+		--enable-targets=arm,mips,x86_64 --disable-shared \
 		--enable-languages=c,c++ --enable-bindings=none \
 		--prefix=${LLVMINSTALLDIR})
 	@mkdir -p ${LLVMSTATE}
@@ -74,6 +81,8 @@ ${LLVMSTATE}/clang-build: ${LLVMSTATE}/clang-configure
 	@touch $@
 
 clang-clean:
+	(cd ${LLVMDIR}/tools/clang && git reset --hard HEAD)
+	(cd ${LLVMDIR} && git reset --hard HEAD)
 	@rm -rf ${LLVMINSTALLDIR} ${LLVMBUILDDIR}
 	@rm -f ${LLVMSTATE}/clang-configure ${LLVMSTATE}/clang-build
 
