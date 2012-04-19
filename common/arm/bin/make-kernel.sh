@@ -25,21 +25,23 @@ if [ "x${USECLANG}" = "x" ]; then
 # Use clang by default
 USECLANG=1
 fi
-if [ "x${GCCVERSION}" = "x" ]; then
-# Use arm-2011.03 by default
-GCCVERSION=2011.03
-fi
 
 if [ "x${GCCHOME}" = "x" ]; then
 GCCHOME=/opt
 fi
 
-#PARALLEL="-j8"
+if [ "x${CSVERSION}" = "x" ]; then
+# Use Code Sourcery arm-2011.03 by default
+CSVERSION=2011.03
+GCCVERSION=4.5.2
+fi
+
 JOBS=`getconf _NPROCESSORS_ONLN`
 if [ "x${JOBS}" != "x" ]; then
   JOBS=2
 fi
-PARALLEL="-j${JOBS}"
+#PARALLEL="-j${JOBS}"
+PARALLEL="-j8"
 
 export INSTALLDIR=$1
 EXTRAFLAGS=$2 $3 $4 $5 $6 $7 $8 $9
@@ -48,21 +50,21 @@ export LANG=C
 export LC_ALL=C
 
 if [ ${USECLANG} -eq "1" ]; then
-export CC_FOR_BUILD="${INSTALLDIR}/bin/clang -ccc-host-triple armv7 -mfloat-abi=softfp -mfpu=neon \
+export CC_FOR_BUILD="${INSTALLDIR}/bin/clang -ccc-host-triple arm-none-gnueabi -march=armv7-a -mfloat-abi=softfp -mfpu=neon \
 	-ccc-gcc-name arm-none-linux-gnueabi-gcc -fno-builtin ${EXTRAFLAGS}"
 
-export PATH=${GCCHOME}/arm-2011.03/bin:${INSTALLDIR}/bin:$PATH
+export PATH=${GCCHOME}/arm-${CSVERSION}/bin:${INSTALLDIR}/bin:$PATH
 export CROSS_COMPILE=arm-none-linux-gnueabi-
 
 else
 
-if [ -d ${GCCHOME}/arm-${GCCVERSION} ]; then
-export CC_FOR_BUILD=${GCCHOME}/arm-${GCCVERSION}/bin/arm-none-linux-gnueabi-gcc
+if [ -d ${GCCHOME}/arm-${CSVERSION} ]; then
+export CC_FOR_BUILD=${GCCHOME}/arm-${CSVERSION}/bin/arm-none-linux-gnueabi-gcc
 export CROSS_COMPILE=arm-none-linux-gnueabi-
-export COMPILER_PATH=${GCCHOME}/arm-${GCCVERSION}
-#export PATH=${GCCHOME}/arm-${GCCVERSION}/bin:$PATH
+export COMPILER_PATH=${GCCHOME}/arm-${CSVERSION}
+#export PATH=${GCCHOME}/arm-${CSVERSION}/bin:$PATH
 else
-echo "Compiler not found: ${GCCHOME}/arm-${GCCVERSION}"
+echo "Compiler not found: ${GCCHOME}/arm-${CSVERSION}"
 exit 1
 fi
 
@@ -71,7 +73,7 @@ fi
 export HOSTCC_FOR_BUILD="gcc"
 export MAKE="make V=1"
 
-export LD=${CROSS_COMPILE}ld
+export LD=${CROSS_COMPILE}ld -L ${GCCHOME}/arm-${CSVERSION}/lib/gcc/arm-none-linux-gnueabi/${GCCVERSION} -lgcc
 
 $MAKE CONFIG_DEBUG_SECTION_MISMATCH=y ARCH=arm CONFIG_DEBUG_INFO=1 \
 	CC="$CC_FOR_BUILD" HOSTCC=$HOSTCC_FOR_BUILD ${PARALLEL}

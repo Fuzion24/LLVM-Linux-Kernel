@@ -84,7 +84,7 @@ clang-clean:
 	(cd ${LLVMDIR}/tools/clang && git reset --hard HEAD)
 	(cd ${LLVMDIR} && git reset --hard HEAD)
 	@rm -rf ${LLVMINSTALLDIR} ${LLVMBUILDDIR}
-	@rm -f ${LLVMSTATE}/clang-configure ${LLVMSTATE}/clang-build
+	@rm -f ${LLVMSTATE}/clang-configure ${LLVMSTATE}/clang-patch ${LLVMSTATE}/clang-build
 
 clang-sync: ${LLVMSTATE}/clang-fetch clang-clean
 	(cd ${LLVMSRCDIR}/llvm && git checkout ${LLVM_BRANCH} && git pull)
