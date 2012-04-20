@@ -1,4 +1,3 @@
-#!/bin/bash
 ##############################################################################
 # Copyright (c) 2012 Mark Charlebois
 # 
@@ -21,31 +20,7 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
-USECLANG=1
-PARALLEL="-j8"
-#PARALLEL=
-
-export INSTALLDIR=$1
-
-export LANG=C
-export LC_ALL=C
-
-if [ ${USECLANG} -eq "1" ]; then
-export CC_FOR_BUILD="${INSTALLDIR}/bin/clang -g \
-	-mfloat-abi=softfp \
-	-ccc-gcc-name none-linux-gnueabi-gcc \
-	-I ${INSTALLDIR}/lib/clang/3.1/include"
-export PATH=${INSTALLDIR}/bin:$PATH
-
-else
-
-export CC_FOR_BUILD=gcc
-
-fi
-
-export HOSTCC_FOR_BUILD="gcc"
-export MAKE="make V=1"
-
-$MAKE CONFIG_DEBUG_SECTION_MISMATCH=y CONFIG_DEBUG_INFO=1 \
-	CC="$CC_FOR_BUILD" HOSTCC=$HOSTCC_FOR_BUILD ${PARALLEL}
-
+#PATCH_FILES+=${COMMON}/mips/common-mips.patch ${COMMON}/mips/fix-warnings-mips.patch \
+#	${COMMON}/mips/fix-warnings-mips-unused.patch
+MAKE_FLAGS=
+MAKE_KERNEL=${COMMON}/x86_64/make-kernel.sh ${LLVMINSTALLDIR} ${EXTRAFLAGS}
