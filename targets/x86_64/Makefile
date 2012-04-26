@@ -23,7 +23,7 @@
 
 TOPDIR=${CWD}/../..
 CWD=${CURDIR}
-KERNEL_CFG=${CWD}/config_x86
+KERNEL_CFG=${CWD}/config_x86_64
 KERNEL_GIT=git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
 KERNELDIR=${SRCDIR}/linux
 KERNELCOPY=${SRCDIR}/linux-copy
@@ -39,7 +39,7 @@ all: prep kernel-build qemu-build fetch-initrd
 
 include ${TOPDIR}/common/common.mk
 include ${TOPDIR}/qemu/qemu.mk
-include ${TOPDIR}/common/x86/common-x86.mk
+include ${TOPDIR}/common/x86_64/common-x86_64.mk
 include ${TOPDIR}/initramfs/initramfs.mk
 
 TARGETS+= clean mrproper test test2

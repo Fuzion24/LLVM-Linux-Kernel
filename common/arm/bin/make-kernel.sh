@@ -73,7 +73,7 @@ fi
 export HOSTCC_FOR_BUILD="gcc"
 export MAKE="make V=1"
 
-export LD=${CROSS_COMPILE}ld -L ${GCCHOME}/arm-${CSVERSION}/lib/gcc/arm-none-linux-gnueabi/${GCCVERSION} -lgcc
+export LD=${CROSS_COMPILE}ld 
 
 $MAKE CONFIG_DEBUG_SECTION_MISMATCH=y ARCH=arm CONFIG_DEBUG_INFO=1 \
 	CC="$CC_FOR_BUILD" HOSTCC=$HOSTCC_FOR_BUILD ${PARALLEL}

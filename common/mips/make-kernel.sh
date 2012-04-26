@@ -36,7 +36,7 @@ if [ ${USECLANG} -eq "1" ]; then
 export CC_FOR_BUILD="${INSTALLDIR}/bin/clang -g \
 	-ccc-host-triple mips -mfloat-abi=softfp \
 	-ccc-gcc-name none-linux-gnueabi-gcc \
-	-I ${INSTALLDIR}/lib/clang/3.0/include"
+	-I ${INSTALLDIR}/lib/clang/3.1/include"
 export CROSS_COMPILE=mips-none-linux-gnueabi-
 export PATH=${GCCHOME}/tbd/bin:${INSTALLDIR}/bin:$PATH
 

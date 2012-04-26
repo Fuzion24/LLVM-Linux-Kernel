@@ -31,7 +31,7 @@ export LANG=C
 export LC_ALL=C
 
 if [ ${USECLANG} -eq "1" ]; then
-export CC_FOR_BUILD="${INSTALLDIR}/bin/clang -g -arch x86_64 \
+export CC_FOR_BUILD="${INSTALLDIR}/bin/clang -ccc-host-triple x86_64-pc-linux-gnu \
 	-ccc-gcc-name none-linux-gnueabi-gcc \
 	-I ${INSTALLDIR}/lib/clang/3.1/include"
 export PATH=${INSTALLDIR}/bin:$PATH

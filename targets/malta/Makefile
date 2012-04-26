@@ -23,7 +23,7 @@
 
 CWD=${CURDIR}
 TOPDIR=${CWD}/../..
-KERNEL_CFG=${CWD}/config_ar7
+KERNEL_CFG=${CWD}/config_malta
 KERNEL_GIT=git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
 KERNELDIR=${SRCDIR}/linux
 

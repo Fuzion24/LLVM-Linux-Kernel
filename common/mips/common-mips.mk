@@ -23,4 +23,4 @@
 #PATCH_FILES+=${COMMON}/mips/common-mips.patch ${COMMON}/mips/fix-warnings-mips.patch \
 #	${COMMON}/mips/fix-warnings-mips-unused.patch
 MAKE_FLAGS=ARCH=mips
-MAKE_KERNEL=${COMMON}/mips/make-kernel.sh
+MAKE_KERNEL=${COMMON}/mips/make-kernel.sh ${LLVMINSTALLDIR} ${EXTRAFLAGS}
