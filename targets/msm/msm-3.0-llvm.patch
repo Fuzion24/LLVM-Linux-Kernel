@@ -2297,4 +2297,17 @@ index 01fad9b..077873d 100644
 +    (void)memset(s, c, n);
 +}
 +EXPORT_SYMBOL(__aeabi_memset);
+diff --git a/arch/arm/mach-msm/sysmon.c b/arch/arm/mach-msm/sysmon.c
+index ddb8502..2ac4958 100644
+--- a/arch/arm/mach-msm/sysmon.c
++++ b/arch/arm/mach-msm/sysmon.c
+@@ -212,7 +212,7 @@ static int __devexit sysmon_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver sysmon_driver = {
++static struct platform_driver sysmon_driver __refdata = {
+ 	.probe		= sysmon_probe,
+ 	.remove		= __devexit_p(sysmon_remove),
+ 	.driver		= {
 
