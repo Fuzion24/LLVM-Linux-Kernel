@@ -11,28 +11,6 @@ index a4688e8..119488c 100644
  	.driver		= {
  		.name	= "cpu-arm-pmu",
  	},
-diff --git a/arch/arm/mach-msm/board-msm8x60.c b/arch/arm/mach-msm/board-msm8x60.c
-index ba7e658..1248188 100644
---- a/arch/arm/mach-msm/board-msm8x60.c
-+++ b/arch/arm/mach-msm/board-msm8x60.c
-@@ -7134,7 +7134,7 @@ static struct i2c_registry msm8x60_i2c_devices[] __initdata = {
- };
- #endif /* CONFIG_I2C */
- 
--static void fixup_i2c_configs(void)
-+static void __init fixup_i2c_configs(void)
- {
- #ifdef CONFIG_I2C
- #if defined(CONFIG_GPIO_SX150X) || defined(CONFIG_GPIO_SX150X_MODULE)
-@@ -7152,7 +7152,7 @@ static void fixup_i2c_configs(void)
- #endif
- }
- 
--static void register_i2c_devices(void)
-+static void __init register_i2c_devices(void)
- {
- #ifdef CONFIG_I2C
- 	u8 mach_mask = 0;
 diff --git a/arch/arm/mach-msm/cpufreq.c b/arch/arm/mach-msm/cpufreq.c
 index 2477221..8bcd2f8 100644
 --- a/arch/arm/mach-msm/cpufreq.c
