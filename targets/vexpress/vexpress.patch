@@ -10,16 +10,3 @@ index b4a28ca..c7e1ae8 100644
 +static struct sys_timer v2m_timer __initdata = {
  	.init	= v2m_timer_init,
  };
-diff --git a/security/commoncap.c b/security/commoncap.c
-index 0ecf4ba..3b90896 100644
---- a/security/commoncap.c
-+++ b/security/commoncap.c
-@@ -29,6 +29,7 @@
- #include <linux/securebits.h>
- #include <linux/user_namespace.h>
- #include <linux/binfmts.h>
-+#include <linux/personality.h>
- 
- /*
-  * If a non-root user executes a setuid-root binary in
- 
