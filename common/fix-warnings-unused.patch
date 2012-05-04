@@ -1289,122 +1289,6 @@ index 7360568..93d3ea5 100644
  
  			retval = uinput_ff_upload_to_user(p, &ff_up);
  			break;
-diff --git a/drivers/input/mouse/alps.c b/drivers/input/mouse/alps.c
-index bd87380..cd32a08 100644
---- a/drivers/input/mouse/alps.c
-+++ b/drivers/input/mouse/alps.c
-@@ -397,7 +397,7 @@ static void alps_process_trackstick_packet_v3(struct psmouse *psmouse)
- 
- 	/* Sanity check packet */
- 	if (!(packet[0] & 0x40)) {
--		psmouse_dbg(psmouse, "Bad trackstick packet, discarding\n");
-+		(void)psmouse_dbg(psmouse, "Bad trackstick packet, discarding\n");
- 		return;
- 	}
- 
-@@ -705,7 +705,7 @@ static psmouse_ret_t alps_handle_interleaved_ps2(struct psmouse *psmouse)
- 		      psmouse->packet[4] |
- 		      psmouse->packet[5]) & 0x80) ||
- 		    (!alps_is_valid_first_byte(priv->i, psmouse->packet[6]))) {
--			psmouse_dbg(psmouse,
-+			(void)psmouse_dbg(psmouse,
- 				    "refusing packet %x %x %x %x (suspected interleaved ps/2)\n",
- 				    psmouse->packet[3], psmouse->packet[4],
- 				    psmouse->packet[5], psmouse->packet[6]);
-@@ -769,7 +769,7 @@ static void alps_flush_packet(unsigned long data)
- 		if ((psmouse->packet[3] |
- 		     psmouse->packet[4] |
- 		     psmouse->packet[5]) & 0x80) {
--			psmouse_dbg(psmouse,
-+			(void)psmouse_dbg(psmouse,
- 				    "refusing packet %x %x %x (suspected interleaved ps/2)\n",
- 				    psmouse->packet[3], psmouse->packet[4],
- 				    psmouse->packet[5]);
-@@ -804,7 +804,7 @@ static psmouse_ret_t alps_process_byte(struct psmouse *psmouse)
- 	}
- 
- 	if (!alps_is_valid_first_byte(model, psmouse->packet[0])) {
--		psmouse_dbg(psmouse,
-+		(void)psmouse_dbg(psmouse,
- 			    "refusing packet[0] = %x (mask0 = %x, byte0 = %x)\n",
- 			    psmouse->packet[0], model->mask0, model->byte0);
- 		return PSMOUSE_BAD_DATA;
-@@ -813,7 +813,7 @@ static psmouse_ret_t alps_process_byte(struct psmouse *psmouse)
- 	/* Bytes 2 - pktsize should have 0 in the highest bit */
- 	if (psmouse->pktcnt >= 2 && psmouse->pktcnt <= psmouse->pktsize &&
- 	    (psmouse->packet[psmouse->pktcnt - 1] & 0x80)) {
--		psmouse_dbg(psmouse, "refusing packet[%i] = %x\n",
-+		(void)psmouse_dbg(psmouse, "refusing packet[%i] = %x\n",
- 			    psmouse->pktcnt - 1,
- 			    psmouse->packet[psmouse->pktcnt - 1]);
- 		return PSMOUSE_BAD_DATA;
-@@ -923,7 +923,7 @@ static int alps_enter_command_mode(struct psmouse *psmouse,
- 	}
- 
- 	if (param[0] != 0x88 && param[1] != 0x07) {
--		psmouse_dbg(psmouse,
-+		(void)psmouse_dbg(psmouse,
- 			    "unknown response while entering command mode: %2.2x %2.2x %2.2x\n",
- 			    param[0], param[1], param[2]);
- 		return -1;
-@@ -965,7 +965,7 @@ static const struct alps_model_info *alps_get_model(struct psmouse *psmouse, int
- 	if (ps2_command(ps2dev, param, PSMOUSE_CMD_GETINFO))
- 		return NULL;
- 
--	psmouse_dbg(psmouse, "E6 report: %2.2x %2.2x %2.2x",
-+	(void)psmouse_dbg(psmouse, "E6 report: %2.2x %2.2x %2.2x",
- 		    param[0], param[1], param[2]);
- 
- 	if (param[0] != 0 || param[1] != 0 || (param[2] != 10 && param[2] != 100))
-@@ -986,7 +986,7 @@ static const struct alps_model_info *alps_get_model(struct psmouse *psmouse, int
- 	if (ps2_command(ps2dev, param, PSMOUSE_CMD_GETINFO))
- 		return NULL;
- 
--	psmouse_dbg(psmouse, "E7 report: %2.2x %2.2x %2.2x",
-+	(void)psmouse_dbg(psmouse, "E7 report: %2.2x %2.2x %2.2x",
- 		    param[0], param[1], param[2]);
- 
- 	if (version) {
-@@ -1023,7 +1023,7 @@ static const struct alps_model_info *alps_get_model(struct psmouse *psmouse, int
- 			alps_exit_command_mode(psmouse);
- 
- 			if (!model)
--				psmouse_dbg(psmouse,
-+				(void)psmouse_dbg(psmouse,
- 					    "Unknown command mode response %2.2x\n",
- 					    param[0]);
- 		}
-@@ -1084,7 +1084,7 @@ static int alps_get_status(struct psmouse *psmouse, char *param)
- 	    ps2_command(ps2dev, param, PSMOUSE_CMD_GETINFO))
- 		return -1;
- 
--	psmouse_dbg(psmouse, "Status: %2.2x %2.2x %2.2x",
-+	(void)psmouse_dbg(psmouse, "Status: %2.2x %2.2x %2.2x",
- 		    param[0], param[1], param[2]);
- 
- 	return 0;
-@@ -1264,7 +1264,7 @@ static int alps_hw_init_v3(struct psmouse *psmouse)
- 		    ps2_command(ps2dev, param, PSMOUSE_CMD_GETINFO)) {
- 			psmouse_warn(psmouse, "trackstick E7 report failed\n");
- 		} else {
--			psmouse_dbg(psmouse,
-+			(void)psmouse_dbg(psmouse,
- 				    "trackstick E7 report: %2.2x %2.2x %2.2x\n",
- 				    param[0], param[1], param[2]);
- 
-diff --git a/drivers/input/mouse/logips2pp.c b/drivers/input/mouse/logips2pp.c
-index 84de2fc..28211fc 100644
---- a/drivers/input/mouse/logips2pp.c
-+++ b/drivers/input/mouse/logips2pp.c
-@@ -83,7 +83,7 @@ static psmouse_ret_t ps2pp_process_byte(struct psmouse *psmouse)
- 			break;
- 
- 		default:
--			psmouse_dbg(psmouse,
-+			(void)psmouse_dbg(psmouse,
- 				    "Received PS2++ packet #%x, but don't know how to handle.\n",
- 				    (packet[1] >> 4) | (packet[0] & 0x30));
- 			break;
 diff --git a/drivers/input/mouse/psmouse-base.c b/drivers/input/mouse/psmouse-base.c
 index e6c9931..6798a18 100644
 --- a/drivers/input/mouse/psmouse-base.c
@@ -1435,15 +1319,6 @@ index e6c9931..6798a18 100644
  	return &psmouse_protocols[0];
  }
  
-@@ -1472,7 +1472,7 @@ static int psmouse_reconnect(struct serio *serio)
- 	int rc = -1;
- 
- 	if (!drv || !psmouse) {
--		psmouse_dbg(psmouse,
-+		(void)psmouse_dbg(psmouse,
- 			    "reconnect request, but serio is disconnected, ignoring...\n");
- 		return -1;
- 	}
 diff --git a/drivers/input/mouse/synaptics.c b/drivers/input/mouse/synaptics.c
 index 8081a0a..36ae8eb 100644
 --- a/drivers/input/mouse/synaptics.c
@@ -1457,15 +1332,6 @@ index 8081a0a..36ae8eb 100644
  
  	if (SYN_MODEL_NEWABS(priv->model_id)) {
  		hw->w = (((buf[0] & 0x30) >> 2) |
-@@ -1306,7 +1306,7 @@ static int synaptics_reconnect(struct psmouse *psmouse)
- 		return -1;
- 
- 	if (retry > 1)
--		psmouse_dbg(psmouse, "reconnected after %d tries\n", retry);
-+		(void)psmouse_dbg(psmouse, "reconnected after %d tries\n", retry);
- 
- 	if (synaptics_query_hardware(psmouse)) {
- 		psmouse_err(psmouse, "Unable to query device.\n");
 diff --git a/drivers/input/mousedev.c b/drivers/input/mousedev.c
 index 0110b5a..e71937d 100644
 --- a/drivers/input/mousedev.c
