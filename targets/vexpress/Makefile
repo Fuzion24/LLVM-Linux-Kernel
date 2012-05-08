@@ -29,8 +29,8 @@ KERNELDIR=${SRCDIR}/linux
 KERNELCOPY=${SRCDIR}/linux-copy
 PATCH_FILES=${CWD}/workaround.patch ${CWD}/vexpress.patch
 
-GDB_OPTS=-gdb tcp::1234 -s -S
-#GDB_OPTS=
+#GDB_OPTS=-gdb tcp::1234 -s -S
+GDB_OPTS=
 
 # initramfs.mk settings
 BUILDDIR=${CWD}/tmp
