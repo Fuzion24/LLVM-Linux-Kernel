@@ -71,17 +71,17 @@ state/fetch-initrd:
 	@mkdir -p state
 	@touch $@
   
-test: ${QEMUSTATE}/qemu-build state/fetch-initrd state/kernel-build
+test: state/prep ${QEMUSTATE}/qemu-build state/fetch-initrd state/kernel-build
 	@${INSTALLDIR}/bin/qemu-system-arm -kernel ${KERNELDIR}/arch/arm/boot/zImage \
 		-initrd arm-test/arm_root.img -M vexpress-a9 -append 'console=earlycon \
 		console=ttyAMA0,38400n8 earlyprintk root=/dev/ram0 rdinit=/bin/sh init=/bin/sh' -nographic -net none ${GDB_OPTS}
 
-test-kill: ${QEMUSTATE}/qemu-build state/fetch-initrd state/kernel-build
+test-kill: state/prep ${QEMUSTATE}/qemu-build state/fetch-initrd state/kernel-build
 	( ${INSTALLDIR}/bin/qemu-system-arm -kernel ${KERNELDIR}/arch/arm/boot/zImage -initrd arm-test/arm_root.img -M vexpress-a9 -append 'console=earlycon console=ttyAMA0,38400n8 earlyprintk root=/dev/ram0 rdinit=/bin/sh init=/bin/sh' -nographic -net none ${GDB_OPTS} & )
 	( ( sleep 35 && killall -s 9 qemu-system-arm ) || exit 0 )
 
 
-test2: ${QEMUSTATE}/qemu-build initramfs state/kernel-build
+test2: state/prep ${QEMUSTATE}/qemu-build initramfs state/kernel-build
 	@${INSTALLDIR}/bin/qemu-system-arm -kernel ${KERNELDIR}/arch/arm/boot/zImage \
 		-initrd initramfs.img.gz -M vexpress-a9 -append \
 		'console=earlycon console=ttyAMA0,38400n8 earlyprintk init=/init' -nographic ${GDB_OPTS}
