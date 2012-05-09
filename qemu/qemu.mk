@@ -65,10 +65,10 @@ ${QEMUSTATE}/qemu-build: ${QEMUSTATE}/qemu-configure
 	@mkdir -p ${QEMUSTATE}
 	@touch $@
 	
-qemu-clean:
+qemu-clean: ${QEMUSTATE}/qemu-fetch
 	rm -rf ${QEMUBUILDDIR} 
 	rm -f ${QEMUSTATE}/qemu-configure ${QEMUSTATE}/qemu-build
 	
-qemu-sync:
+qemu-sync: ${QEMUSTATE}/qemu-fetch
 	@make qemu-clean
 	(cd ${QEMUSRCDIR}/qemu && git checkout ${QEMU_BRANCH} && git pull)
