@@ -81,7 +81,7 @@ test-kill: state/prep state/kernel-build ${QEMUSTATE}/qemu-build state/fetch-ini
 	( ( sleep 35 && killall -s 9 qemu-system-arm ) || exit 0 )
 
 
-test2: state/prep ${QEMUSTATE}/qemu-build initramfs state/kernel-build
+test2: state/prep ${QEMUSTATE}/qemu-build state/kernel-build initramfs
 	@${INSTALLDIR}/bin/qemu-system-arm -kernel ${KERNELDIR}/arch/arm/boot/zImage \
 		-initrd initramfs.img.gz -M vexpress-a9 -append \
 		'console=earlycon console=ttyAMA0,38400n8 earlyprintk init=/init' -nographic ${GDB_OPTS}
