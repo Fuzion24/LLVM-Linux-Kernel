@@ -37,6 +37,11 @@ help:
 	@echo "       "
 	@echo "       Cleanup with:"
 	@echo "         make mrproper "
+	@echo ""
+	@echo "       Options:  make <option> [target]"
+	@echo "       * BUILDMODE=[DEFAULT*|BOT]"
+	@echo "         (for buildbot)
+	@echo "       * GDBON=[0*|1]  - enable GDB on qemu-system-arm
 	@exit 0
 
 
