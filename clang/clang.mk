@@ -45,6 +45,10 @@ LLVM_GIT="http://llvm.org/git/llvm.git"
 CLANG_GIT="http://llvm.org/git/clang.git"
 #LLVM_BRANCH="release_30"
 LLVM_BRANCH="master"
+# The buildbot takes quite long to build the debug-version of clang (debug+asserts).
+# Introducing this option to switch between debug and optimized. 
+#LLVM_OPTIMIZED=""
+LLVM_OPTIMIZED=--enable-optimized --enable-assertions
 
 clang-fetch: ${LLVMSTATE}/clang-fetch ${LLVMSTATE}/clang-fetch 
 ${LLVMSTATE}/clang-fetch:
@@ -67,7 +71,7 @@ ${LLVMSTATE}/clang-configure: ${LLVMSTATE}/clang-patch
 	(cd ${LLVMBUILDDIR} && CC=gcc CXX=g++ ${LLVMDIR}/configure \
 		--enable-targets=arm,mips,x86_64 --disable-shared \
 		--enable-languages=c,c++ --enable-bindings=none \
-		--prefix=${LLVMINSTALLDIR})
+		${LLVM_OPTIMIZED} --prefix=${LLVMINSTALLDIR} ) 
 	@mkdir -p ${LLVMSTATE}
 	@touch $@
 
