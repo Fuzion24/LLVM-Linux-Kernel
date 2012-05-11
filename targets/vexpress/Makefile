@@ -48,7 +48,7 @@ include ${TOPDIR}/common/arm/common-arm.mk
 include ${TOPDIR}/initramfs/initramfs.mk
 
 TARGETS+= clean mrproper test test2
-.PHONY: test test2 fetch-initrd prep clean mrproper
+.PHONY: test test2 prep clean mrproper
 
 prep: state/prep
 state/prep:
@@ -63,27 +63,32 @@ clean: qemu-clean kernel-clean clang-clean initramfs-clean
 # do a real wipe
 mrproper: clean
 	rm -rRf arm-test-0.2.tar.gz arm-test
-	rm -f state/fetch-initrd
+#	rm -f state/fetch-initrd
 	rm -f tmp/*
 	rm -f log/*
 	( cd ${KERNELDIR} && make mrproper )
 
-fetch-initrd: state/fetch-initrd
-state/fetch-initrd:
-	rm -f arm-test-0.2.tar.gz
-	wget -nd -c "http://wiki.qemu.org/download/arm-test-0.2.tar.gz"
-	tar -xzvf arm-test-0.2.tar.gz
-	@mkdir -p state
-	@touch $@
-  
-test: state/prep ${QEMUSTATE}/qemu-build state/fetch-initrd state/kernel-build
-	@${INSTALLDIR}/bin/qemu-system-arm -kernel ${KERNELDIR}/arch/arm/boot/zImage \
-		-initrd arm-test/arm_root.img -M vexpress-a9 -append 'console=earlycon \
-		console=ttyAMA0,38400n8 earlyprintk root=/dev/ram0 rdinit=/bin/sh init=/bin/sh' -nographic -net none ${GDB_OPTS}
+#fetch-initrd: state/fetch-initrd
+#state/fetch-initrd:
+#	rm -f arm-test-0.2.tar.gz
+#	wget -nd -c "http://wiki.qemu.org/download/arm-test-0.2.tar.gz"
+#	tar -xzvf arm-test-0.2.tar.gz
+#	@mkdir -p state
+#	@touch $@
 
-test-kill: state/prep state/kernel-build ${QEMUSTATE}/qemu-build state/fetch-initrd
-	( ${INSTALLDIR}/bin/qemu-system-arm -kernel ${KERNELDIR}/arch/arm/boot/zImage -initrd arm-test/arm_root.img -M vexpress-a9 -append 'console=earlycon console=ttyAMA0,38400n8 earlyprintk root=/dev/ram0 rdinit=/bin/sh init=/bin/sh' -nographic -net none ${GDB_OPTS} & )
-	( ( sleep 35 && killall -s 9 qemu-system-arm ) || exit 0 )
+# state/fetch-initrd
+test: state/prep ${QEMUSTATE}/qemu-build state/kernel-build
+	@${INSTALLDIR}/bin/qemu-system-arm -kernel ${KERNELDIR}/arch/arm/boot/zImage -initrd reference/initramfs.img -m 256 -M vexpress-a9 -append 'mem=256M ramdisk_size=65536 rw console=earlycon console=ttyAMA0,38400n8 earlyprintk root=/dev/ram0' -nographic -net none ${GDB_OPTS}
+
+#	${INSTALLDIR}/bin/qemu-system-arm -kernel ${KERNELDIR}/arch/arm/boot/zImage \
+#		-initrd arm-test/arm_root.img -M vexpress-a9 -append 'console=earlycon \
+#		console=ttyAMA0,38400n8 earlyprintk root=/dev/ram0 rdinit=/bin/sh init=/bin/sh' -nographic -net none ${GDB_OPTS}
+
+# state/fetch-initrd
+test-kill: state/prep state/kernel-build ${QEMUSTATE}/qemu-build
+	( ( ${INSTALLDIR}/bin/qemu-system-arm -kernel ${KERNELDIR}/arch/arm/boot/zImage -initrd reference/initramfs.img -m 256 -M vexpress-a9 -append 'mem=256M ramdisk_size=65536 rw console=earlycon console=ttyAMA0,38400n8 earlyprintk root=/dev/ram0 POWEROFF' -nographic -net none ${GDB_OPTS} | tee qemu_log ) & )
+	( ( sleep 10 && killall -s 9 qemu-system-arm ) || exit 0 )
+	@grep -a "SUCCESS" qemu_log 
 
 
 test2: state/prep ${QEMUSTATE}/qemu-build state/kernel-build initramfs
