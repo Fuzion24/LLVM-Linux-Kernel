@@ -1,3 +1,42 @@
+diff --git a/arch/arm/mach-msm/pm-boot.c b/arch/arm/mach-msm/pm-boot.c
+index f6105af1..1804cd9 100644
+--- a/arch/arm/mach-msm/pm-boot.c
++++ b/arch/arm/mach-msm/pm-boot.c
+@@ -256,7 +256,7 @@ static struct of_device_id msm_pm_match_table[] = {
+ 	{},
+ };
+ 
+-static struct platform_driver msm_pm_boot_driver = {
++static struct platform_driver msm_pm_boot_driver __devinitdata = {
+ 	.probe = msm_pm_boot_probe,
+ 	.driver = {
+ 		.name = "pm-boot",
+diff --git a/arch/arm/mach-msm/sysmon.c b/arch/arm/mach-msm/sysmon.c
+index ddb8502..2ac4958 100644
+--- a/arch/arm/mach-msm/sysmon.c
++++ b/arch/arm/mach-msm/sysmon.c
+@@ -212,7 +212,7 @@ static int __devexit sysmon_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver sysmon_driver = {
++static struct platform_driver sysmon_driver __refdata = {
+ 	.probe		= sysmon_probe,
+ 	.remove		= __devexit_p(sysmon_remove),
+ 	.driver		= {
+diff --git a/arch/arm/oprofile/common.c b/arch/arm/oprofile/common.c
+index 338e8c2..dfa583f 100644
+--- a/arch/arm/oprofile/common.c
++++ b/arch/arm/oprofile/common.c
+@@ -116,7 +116,7 @@ static void arm_backtrace(struct pt_regs * const regs, unsigned int depth)
+ 		tail = user_backtrace(tail);
+ }
+ 
+-int __init oprofile_arch_init(struct oprofile_operations *ops)
++int oprofile_arch_init(struct oprofile_operations *ops)
+ {
+ 	/* provide backtrace support also in timer mode: */
+ 	ops->backtrace		= arm_backtrace;
 diff --git a/crypto/hmac.c b/crypto/hmac.c
 index 8d9544c..281a65d 100644
 --- a/crypto/hmac.c
@@ -457,6 +496,19 @@ index 053863a..3ee4490 100644
  	.probe		 = smc911x_drv_probe,
  	.remove	 = __devexit_p(smc911x_drv_remove),
  	.suspend	 = smc911x_drv_suspend,
+diff --git a/drivers/net/smc91x.c b/drivers/net/smc91x.c
+index f628574..33f1e36 100644
+--- a/drivers/net/smc91x.c
++++ b/drivers/net/smc91x.c
+@@ -2411,7 +2411,7 @@ static struct dev_pm_ops smc_drv_pm_ops = {
+ 	.resume		= smc_drv_resume,
+ };
+ 
+-static struct platform_driver smc_driver = {
++static struct platform_driver smc_driver __refdata = {
+ 	.probe		= smc_drv_probe,
+ 	.remove		= __devexit_p(smc_drv_remove),
+ 	.driver		= {
 diff --git a/drivers/net/smsc911x.c b/drivers/net/smsc911x.c
 index a3c32b9..07ed9b4 100644
 --- a/drivers/net/smsc911x.c
@@ -470,6 +522,26 @@ index a3c32b9..07ed9b4 100644
  	.probe = smsc911x_drv_probe,
  	.remove = __devexit_p(smsc911x_drv_remove),
  	.driver = {
+diff --git a/drivers/oprofile/oprofilefs.c b/drivers/oprofile/oprofilefs.c
+index 1c0b799..5582ad7 100644
+--- a/drivers/oprofile/oprofilefs.c
++++ b/drivers/oprofile/oprofilefs.c
+@@ -281,13 +281,13 @@ static struct file_system_type oprofilefs_type = {
+ };
+ 
+ 
+-int __init oprofilefs_register(void)
++int oprofilefs_register(void)
+ {
+ 	return register_filesystem(&oprofilefs_type);
+ }
+ 
+ 
+-void __exit oprofilefs_unregister(void)
++void oprofilefs_unregister(void)
+ {
+ 	unregister_filesystem(&oprofilefs_type);
+ }
 diff --git a/drivers/platform/msm/ssbi.c b/drivers/platform/msm/ssbi.c
 index 8a6dbf7..d6bfd21 100644
 --- a/drivers/platform/msm/ssbi.c
@@ -548,6 +620,19 @@ index 7ff8e28..0770e05 100644
  	.driver = {
  		   .name = "smb137b",
  		   .owner = THIS_MODULE,
+diff --git a/drivers/regulator/dummy.c b/drivers/regulator/dummy.c
+index 910583f..65362f2 100644
+--- a/drivers/regulator/dummy.c
++++ b/drivers/regulator/dummy.c
+@@ -51,7 +51,7 @@ static int __devinit dummy_regulator_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver dummy_regulator_driver = {
++static struct platform_driver dummy_regulator_driver __initdata = {
+ 	.probe		= dummy_regulator_probe,
+ 	.driver		= {
+ 		.name		= "reg-dummy",
 diff --git a/drivers/regulator/gpio-regulator.c b/drivers/regulator/gpio-regulator.c
 index b91e32f..95c913b 100644
 --- a/drivers/regulator/gpio-regulator.c
@@ -626,6 +711,19 @@ index c174306..ee6c97c 100644
  	.driver = {
  		.name =		"spidev",
  		.owner =	THIS_MODULE,
+diff --git a/drivers/staging/android/ram_console.c b/drivers/staging/android/ram_console.c
+index 93730ae..9cb526b 100644
+--- a/drivers/staging/android/ram_console.c
++++ b/drivers/staging/android/ram_console.c
+@@ -367,7 +367,7 @@ static int __devinit ram_console_driver_probe(struct platform_device *pdev)
+ 	return ram_console_init(buffer, buffer_size, bootinfo, NULL/* allocate */);
+ }
+ 
+-static struct platform_driver ram_console_driver = {
++static struct platform_driver ram_console_driver __initdata = {
+ 	.probe = ram_console_driver_probe,
+ 	.driver		= {
+ 		.name	= "ram_console",
 diff --git a/drivers/thermal/msm_tsens.c b/drivers/thermal/msm_tsens.c
 index d9a6efc..51f1d07 100644
 --- a/drivers/thermal/msm_tsens.c
@@ -656,15 +754,15 @@ diff --git a/drivers/tty/serial/msm_serial_hs.c b/drivers/tty/serial/msm_serial_
 index 84cb3f5..6011423 100644
 --- a/drivers/tty/serial/msm_serial_hs.c
 +++ b/drivers/tty/serial/msm_serial_hs.c
-@@ -2081,7 +2081,7 @@ static const struct dev_pm_ops msm_hs_dev_pm_ops = {
+@@ -2122,7 +2122,7 @@ static const struct dev_pm_ops msm_hs_dev_pm_ops = {
  	.runtime_idle    = msm_hs_runtime_idle,
  };
  
 -static struct platform_driver msm_serial_hs_platform_driver = {
-+static struct platform_driver msm_serial_hs_platform_driver __devexitdata = {
- 	.remove = msm_hs_remove,
++static struct platform_driver msm_serial_hs_platform_driver __refdata = {
+ 	.probe	= msm_hs_probe,
+ 	.remove = __devexit_p(msm_hs_remove),
  	.driver = {
- 		.name = "msm_serial_hs",
 diff --git a/drivers/tty/serial/msm_serial_hs_lite.c b/drivers/tty/serial/msm_serial_hs_lite.c
 index 9ba7d2f..bdad486 100644
 --- a/drivers/tty/serial/msm_serial_hs_lite.c
@@ -687,6 +785,19 @@ index 9ba7d2f..bdad486 100644
  	.probe = msm_serial_hsl_probe,
  	.remove = __devexit_p(msm_serial_hsl_remove),
  	.driver = {
+diff --git a/drivers/usb/gadget/msm72k_udc.c b/drivers/usb/gadget/msm72k_udc.c
+index 28e217b..276acae 100644
+--- a/drivers/usb/gadget/msm72k_udc.c
++++ b/drivers/usb/gadget/msm72k_udc.c
+@@ -2800,7 +2800,7 @@ static int __exit msm72k_remove(struct platform_device *pdev)
+ 	return usb_free(ui, 0);
+ }
+ 
+-static struct platform_driver usb_driver = {
++static struct platform_driver usb_driver __refdata = {
+ 	.probe = msm72k_probe,
+ 	.remove = msm72k_remove,
+ 	.driver = { .name = "msm_hsusb",
 diff --git a/drivers/usb/host/ehci-msm.c b/drivers/usb/host/ehci-msm.c
 index f45f257..20a9d18 100644
 --- a/drivers/usb/host/ehci-msm.c
@@ -699,6 +810,19 @@ index f45f257..20a9d18 100644
 +static struct platform_driver ehci_msm_driver __refdata = {
  	.probe	= ehci_msm_probe,
  	.remove	= __devexit_p(ehci_msm_remove),
+ 	.driver = {
+diff --git a/drivers/usb/host/ehci-msm2.c b/drivers/usb/host/ehci-msm2.c
+index 4f6fe3e..05d816d 100644
+--- a/drivers/usb/host/ehci-msm2.c
++++ b/drivers/usb/host/ehci-msm2.c
+@@ -991,7 +991,7 @@ static const struct dev_pm_ops ehci_msm2_dev_pm_ops = {
+ };
+ #endif
+ 
+-static struct platform_driver ehci_msm2_driver = {
++static struct platform_driver ehci_msm2_driver __refdata = {
+ 	.probe	= ehci_msm2_probe,
+ 	.remove	= __devexit_p(ehci_msm2_remove),
  	.driver = {
 diff --git a/drivers/usb/host/ehci-msm72k.c b/drivers/usb/host/ehci-msm72k.c
 index e550e2b..da79b87 100644
@@ -1147,6 +1271,19 @@ index be8d39d..c3bfbe9 100644
  	.probe = mdp_lcdc_probe,
  	.remove = mdp_lcdc_remove,
  	.driver = {
+diff --git a/drivers/video/msm/mipi_NT35510.c b/drivers/video/msm/mipi_NT35510.c
+index 930b4e9..3c4bd26 100644
+--- a/drivers/video/msm/mipi_NT35510.c
++++ b/drivers/video/msm/mipi_NT35510.c
+@@ -514,7 +514,7 @@ static int __devinit mipi_nt35510_lcd_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver this_driver = {
++static struct platform_driver this_driver __initdata = {
+ 	.probe  = mipi_nt35510_lcd_probe,
+ 	.driver = {
+ 		.name   = "mipi_NT35510",
 diff --git a/drivers/video/msm/mipi_dsi.c b/drivers/video/msm/mipi_dsi.c
 index aa210f1..4a0f841 100644
 --- a/drivers/video/msm/mipi_dsi.c
@@ -1243,10 +1380,23 @@ index a2060f0..be3638b 100644
  }
  
 -static struct platform_driver this_driver = {
-+static struct platform_driver this_driver __devinitdata = {
++static struct platform_driver this_driver __initdata = {
  	.probe  = mipi_truly_lcd_probe,
  	.driver = {
  		.name   = "mipi_truly",
+diff --git a/drivers/video/msm/mipi_truly_tft540960_1_e.c b/drivers/video/msm/mipi_truly_tft540960_1_e.c
+index 937a598..732c494 100644
+--- a/drivers/video/msm/mipi_truly_tft540960_1_e.c
++++ b/drivers/video/msm/mipi_truly_tft540960_1_e.c
+@@ -734,7 +734,7 @@ static int __devinit mipi_truly_lcd_probe(struct platform_device *pdev)
+ 	return rc;
+ }
+ 
+-static struct platform_driver this_driver = {
++static struct platform_driver this_driver __initdata = {
+ 	.probe  = mipi_truly_lcd_probe,
+ 	.driver = {
+ 		.name   = "mipi_truly_tft540960_1_e",
 diff --git a/drivers/video/msm/msm_fb.c b/drivers/video/msm/msm_fb.c
 index 10e4156..24e07f3 100644
 --- a/drivers/video/msm/msm_fb.c
@@ -1334,6 +1484,27 @@ index 244f548..6a1d998 100644
  	desc.shash.tfm = tfm;
  	desc.shash.flags = 0;
  	*(u32 *)desc.ctx = crc;
+diff --git a/lib/string.c b/lib/string.c
+index 01fad9b..077873d 100644
+--- a/lib/string.c
++++ b/lib/string.c
+@@ -756,3 +756,15 @@ void *memchr(const void *s, int c, size_t n)
+ }
+ EXPORT_SYMBOL(memchr);
+ #endif
++
++void __aeabi_memcpy (void *dest, const void *src, size_t n) 
++{
++    (void)memcpy(dest, src, n);
++}
++EXPORT_SYMBOL(__aeabi_memcpy);
++
++void __aeabi_memset(void *s, int c, size_t n) 
++{
++    (void)memset(s, c, n);
++}
++EXPORT_SYMBOL(__aeabi_memset);
+
 diff --git a/net/core/fib_rules.c b/net/core/fib_rules.c
 index f39ef5c..75691a7 100644
 --- a/net/core/fib_rules.c
@@ -2121,110 +2292,6 @@ index 521c5e5..74507ec 100644
  	.probe = asoc_mvs_cpu_probe,
  	.remove = __devexit_p(asoc_mvs_cpu_remove),
  	.driver = {
-diff --git a/drivers/net/smc91x.c b/drivers/net/smc91x.c
-index f628574..33f1e36 100644
---- a/drivers/net/smc91x.c
-+++ b/drivers/net/smc91x.c
-@@ -2411,7 +2411,7 @@ static struct dev_pm_ops smc_drv_pm_ops = {
- 	.resume		= smc_drv_resume,
- };
- 
--static struct platform_driver smc_driver = {
-+static struct platform_driver smc_driver __refdata = {
- 	.probe		= smc_drv_probe,
- 	.remove		= __devexit_p(smc_drv_remove),
- 	.driver		= {
-diff --git a/drivers/usb/host/ehci-msm2.c b/drivers/usb/host/ehci-msm2.c
-index 4f6fe3e..05d816d 100644
---- a/drivers/usb/host/ehci-msm2.c
-+++ b/drivers/usb/host/ehci-msm2.c
-@@ -991,7 +991,7 @@ static const struct dev_pm_ops ehci_msm2_dev_pm_ops = {
- };
- #endif
- 
--static struct platform_driver ehci_msm2_driver = {
-+static struct platform_driver ehci_msm2_driver __refdata = {
- 	.probe	= ehci_msm2_probe,
- 	.remove	= __devexit_p(ehci_msm2_remove),
- 	.driver = {
-diff --git a/drivers/video/msm/mipi_NT35510.c b/drivers/video/msm/mipi_NT35510.c
-index 930b4e9..3c4bd26 100644
---- a/drivers/video/msm/mipi_NT35510.c
-+++ b/drivers/video/msm/mipi_NT35510.c
-@@ -514,7 +514,7 @@ static int __devinit mipi_nt35510_lcd_probe(struct platform_device *pdev)
- 	return 0;
- }
- 
--static struct platform_driver this_driver = {
-+static struct platform_driver this_driver __initdata = {
- 	.probe  = mipi_nt35510_lcd_probe,
- 	.driver = {
- 		.name   = "mipi_NT35510",
-diff --git a/drivers/staging/android/ram_console.c b/drivers/staging/android/ram_console.c
-index 93730ae..9cb526b 100644
---- a/drivers/staging/android/ram_console.c
-+++ b/drivers/staging/android/ram_console.c
-@@ -367,7 +367,7 @@ static int __devinit ram_console_driver_probe(struct platform_device *pdev)
- 	return ram_console_init(buffer, buffer_size, bootinfo, NULL/* allocate */);
- }
- 
--static struct platform_driver ram_console_driver = {
-+static struct platform_driver ram_console_driver __initdata = {
- 	.probe = ram_console_driver_probe,
- 	.driver		= {
- 		.name	= "ram_console",
-diff --git a/drivers/usb/gadget/msm72k_udc.c b/drivers/usb/gadget/msm72k_udc.c
-index 28e217b..276acae 100644
---- a/drivers/usb/gadget/msm72k_udc.c
-+++ b/drivers/usb/gadget/msm72k_udc.c
-@@ -2800,7 +2800,7 @@ static int __exit msm72k_remove(struct platform_device *pdev)
- 	return usb_free(ui, 0);
- }
- 
--static struct platform_driver usb_driver = {
-+static struct platform_driver usb_driver __exitdata = {
- 	.probe = msm72k_probe,
- 	.remove = msm72k_remove,
- 	.driver = { .name = "msm_hsusb",
-diff --git a/drivers/video/msm/mipi_truly_tft540960_1_e.c b/drivers/video/msm/mipi_truly_tft540960_1_e.c
-index 937a598..732c494 100644
---- a/drivers/video/msm/mipi_truly_tft540960_1_e.c
-+++ b/drivers/video/msm/mipi_truly_tft540960_1_e.c
-@@ -734,7 +734,7 @@ static int __devinit mipi_truly_lcd_probe(struct platform_device *pdev)
- 	return rc;
- }
- 
--static struct platform_driver this_driver = {
-+static struct platform_driver this_driver __initdata = {
- 	.probe  = mipi_truly_lcd_probe,
- 	.driver = {
- 		.name   = "mipi_truly_tft540960_1_e",
-diff --git a/drivers/usb/gadget/msm72k_udc.c b/drivers/usb/gadget/msm72k_udc.c
-index 28e217b..33f79f8 100644
---- a/drivers/usb/gadget/msm72k_udc.c
-+++ b/drivers/usb/gadget/msm72k_udc.c
-@@ -2800,7 +2800,7 @@ static int __exit msm72k_remove(struct platform_device *pdev)
- 	return usb_free(ui, 0);
- }
- 
--static struct platform_driver usb_driver = {
-+static struct platform_driver usb_driver __refdata = {
- 	.probe = msm72k_probe,
- 	.remove = msm72k_remove,
- 	.driver = { .name = "msm_hsusb",
-diff --git a/drivers/video/msm/mipi_truly.c b/drivers/video/msm/mipi_truly.c
-index a2060f0..2624389 100644
---- a/drivers/video/msm/mipi_truly.c
-+++ b/drivers/video/msm/mipi_truly.c
-@@ -194,7 +194,7 @@ static int __devinit mipi_truly_lcd_probe(struct platform_device *pdev)
- 	return 0;
- }
- 
--static struct platform_driver this_driver = {
-+static struct platform_driver this_driver __initdata = {
- 	.probe  = mipi_truly_lcd_probe,
- 	.driver = {
- 		.name   = "mipi_truly",
 diff --git a/sound/soc/soc-utils.c b/sound/soc/soc-utils.c
 index cd987de..c681b56 100644
 --- a/sound/soc/soc-utils.c
@@ -2238,122 +2305,3 @@ index cd987de..c681b56 100644
  	.driver = {
  		.name = "snd-soc-dummy",
  		.owner = THIS_MODULE,
-diff --git a/drivers/regulator/dummy.c b/drivers/regulator/dummy.c
-index 910583f..65362f2 100644
---- a/drivers/regulator/dummy.c
-+++ b/drivers/regulator/dummy.c
-@@ -51,7 +51,7 @@ static int __devinit dummy_regulator_probe(struct platform_device *pdev)
- 	return 0;
- }
- 
--static struct platform_driver dummy_regulator_driver = {
-+static struct platform_driver dummy_regulator_driver __initdata = {
- 	.probe		= dummy_regulator_probe,
- 	.driver		= {
- 		.name		= "reg-dummy",
-diff --git a/drivers/tty/serial/msm_serial_hs.c b/drivers/tty/serial/msm_serial_hs.c
-index fc665ed..2914e51 100644
---- a/drivers/tty/serial/msm_serial_hs.c
-+++ b/drivers/tty/serial/msm_serial_hs.c
-@@ -2122,7 +2122,7 @@ static const struct dev_pm_ops msm_hs_dev_pm_ops = {
- 	.runtime_idle    = msm_hs_runtime_idle,
- };
- 
--static struct platform_driver msm_serial_hs_platform_driver = {
-+static struct platform_driver msm_serial_hs_platform_driver __refdata = {
- 	.probe	= msm_hs_probe,
- 	.remove = __devexit_p(msm_hs_remove),
- 	.driver = {
-diff --git a/sound/soc/soc-utils.c b/sound/soc/soc-utils.c
-index cd987de..c681b56 100644
---- a/sound/soc/soc-utils.c
-+++ b/sound/soc/soc-utils.c
-@@ -100,7 +100,7 @@ static __devexit int snd_soc_dummy_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
--static struct platform_driver soc_dummy_driver = {
-+static struct platform_driver soc_dummy_driver __refdata = {
- 	.driver = {
- 		.name = "snd-soc-dummy",
- 		.owner = THIS_MODULE,
-diff --git a/lib/string.c b/lib/string.c
-index 01fad9b..077873d 100644
---- a/lib/string.c
-+++ b/lib/string.c
-@@ -756,3 +756,15 @@ void *memchr(const void *s, int c, size_t n)
- }
- EXPORT_SYMBOL(memchr);
- #endif
-+
-+void __aeabi_memcpy (void *dest, const void *src, size_t n) 
-+{
-+    (void)memcpy(dest, src, n);
-+}
-+EXPORT_SYMBOL(__aeabi_memcpy);
-+
-+void __aeabi_memset(void *s, int c, size_t n) 
-+{
-+    (void)memset(s, c, n);
-+}
-+EXPORT_SYMBOL(__aeabi_memset);
-diff --git a/arch/arm/mach-msm/sysmon.c b/arch/arm/mach-msm/sysmon.c
-index ddb8502..2ac4958 100644
---- a/arch/arm/mach-msm/sysmon.c
-+++ b/arch/arm/mach-msm/sysmon.c
-@@ -212,7 +212,7 @@ static int __devexit sysmon_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
--static struct platform_driver sysmon_driver = {
-+static struct platform_driver sysmon_driver __refdata = {
- 	.probe		= sysmon_probe,
- 	.remove		= __devexit_p(sysmon_remove),
- 	.driver		= {
-diff --git a/arch/arm/mach-msm/pm-boot.c b/arch/arm/mach-msm/pm-boot.c
-index f6105af1..1804cd9 100644
---- a/arch/arm/mach-msm/pm-boot.c
-+++ b/arch/arm/mach-msm/pm-boot.c
-@@ -256,7 +256,7 @@ static struct of_device_id msm_pm_match_table[] = {
- 	{},
- };
- 
--static struct platform_driver msm_pm_boot_driver = {
-+static struct platform_driver msm_pm_boot_driver __devinitdata = {
- 	.probe = msm_pm_boot_probe,
- 	.driver = {
- 		.name = "pm-boot",
-diff --git a/drivers/oprofile/oprofilefs.c b/drivers/oprofile/oprofilefs.c
-index 1c0b799..5582ad7 100644
---- a/drivers/oprofile/oprofilefs.c
-+++ b/drivers/oprofile/oprofilefs.c
-@@ -281,13 +281,13 @@ static struct file_system_type oprofilefs_type = {
- };
- 
- 
--int __init oprofilefs_register(void)
-+int oprofilefs_register(void)
- {
- 	return register_filesystem(&oprofilefs_type);
- }
- 
- 
--void __exit oprofilefs_unregister(void)
-+void oprofilefs_unregister(void)
- {
- 	unregister_filesystem(&oprofilefs_type);
- }
-diff --git a/arch/arm/oprofile/common.c b/arch/arm/oprofile/common.c
-index 338e8c2..dfa583f 100644
---- a/arch/arm/oprofile/common.c
-+++ b/arch/arm/oprofile/common.c
-@@ -116,7 +116,7 @@ static void arm_backtrace(struct pt_regs * const regs, unsigned int depth)
- 		tail = user_backtrace(tail);
- }
- 
--int __init oprofile_arch_init(struct oprofile_operations *ops)
-+int oprofile_arch_init(struct oprofile_operations *ops)
- {
- 	/* provide backtrace support also in timer mode: */
- 	ops->backtrace		= arm_backtrace;
-
