@@ -7580,15 +7580,6 @@ index f0c849c..7f2a6ad 100644
  out:
  	if (page)
  		__free_page(page);
-@@ -2458,7 +2458,7 @@ static int _nfs4_proc_lookup(struct rpc_clnt *clnt, struct inode *dir,
- 
- void nfs_fixup_secinfo_attributes(struct nfs_fattr *fattr, struct nfs_fh *fh)
- {
--	memset(fh, 0, sizeof(struct nfs_fh));
-+	(void)memset(fh, 0, sizeof(struct nfs_fh));
- 	fattr->fsid.major = 1;
- 	fattr->valid |= NFS_ATTR_FATTR_TYPE | NFS_ATTR_FATTR_MODE |
- 		NFS_ATTR_FATTR_NLINK | NFS_ATTR_FATTR_FSID | NFS_ATTR_FATTR_MOUNTPOINT;
 @@ -3173,7 +3173,7 @@ static int _nfs4_proc_pathconf(struct nfs_server *server, struct nfs_fh *fhandle
  
  	/* None of the pathconf attributes are mandatory to implement */
@@ -8271,46 +8262,6 @@ index 7ad6345..ad78dba 100644
 -		memcpy(dst, src, len);
 +		(void)memcpy(dst, src, len);
  	}
- }
- 
-diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index 6c6a1f0..d69f132 100644
---- a/include/linux/blkdev.h
-+++ b/include/linux/blkdev.h
-@@ -448,7 +448,7 @@ static inline void queue_flag_set_unlocked(unsigned int flag,
- static inline int queue_flag_test_and_clear(unsigned int flag,
- 					    struct request_queue *q)
- {
--	WARN_ON_ONCE(!queue_is_locked(q));
-+	(void)WARN_ON_ONCE(!queue_is_locked(q));
- 
- 	if (test_bit(flag, &q->queue_flags)) {
- 		__clear_bit(flag, &q->queue_flags);
-@@ -461,7 +461,7 @@ static inline int queue_flag_test_and_clear(unsigned int flag,
- static inline int queue_flag_test_and_set(unsigned int flag,
- 					  struct request_queue *q)
- {
--	WARN_ON_ONCE(!queue_is_locked(q));
-+	(void)WARN_ON_ONCE(!queue_is_locked(q));
- 
- 	if (!test_bit(flag, &q->queue_flags)) {
- 		__set_bit(flag, &q->queue_flags);
-@@ -473,7 +473,7 @@ static inline int queue_flag_test_and_set(unsigned int flag,
- 
- static inline void queue_flag_set(unsigned int flag, struct request_queue *q)
- {
--	WARN_ON_ONCE(!queue_is_locked(q));
-+	(void)WARN_ON_ONCE(!queue_is_locked(q));
- 	__set_bit(flag, &q->queue_flags);
- }
- 
-@@ -490,7 +490,7 @@ static inline int queue_in_flight(struct request_queue *q)
- 
- static inline void queue_flag_clear(unsigned int flag, struct request_queue *q)
- {
--	WARN_ON_ONCE(!queue_is_locked(q));
-+	(void)WARN_ON_ONCE(!queue_is_locked(q));
- 	__clear_bit(flag, &q->queue_flags);
  }
  
 diff --git a/include/linux/clockchips.h b/include/linux/clockchips.h
@@ -9794,19 +9745,6 @@ index 4bd4faa..c2d34d3 100644
  	sprintf(name, "%u", irq);
  	remove_proc_entry(name, root_irq_dir);
  }
-diff --git a/kernel/itimer.c b/kernel/itimer.c
-index 22000c3..f531700 100644
---- a/kernel/itimer.c
-+++ b/kernel/itimer.c
-@@ -285,7 +285,7 @@ SYSCALL_DEFINE3(setitimer, int, which, struct itimerval __user *, value,
- 		if(copy_from_user(&set_buffer, value, sizeof(set_buffer)))
- 			return -EFAULT;
- 	} else
--		memset((char *) &set_buffer, 0, sizeof(set_buffer));
-+		(void)memset((char *) &set_buffer, 0, sizeof(set_buffer));
- 
- 	error = do_setitimer(which, &set_buffer, ovalue ? &get_buffer : NULL);
- 	if (error || !ovalue)
 diff --git a/kernel/kprobes.c b/kernel/kprobes.c
 index 29f5b65..7f683e6 100644
 --- a/kernel/kprobes.c
