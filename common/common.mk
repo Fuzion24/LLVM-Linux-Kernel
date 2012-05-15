@@ -117,7 +117,7 @@ kernel-build: state/kernel-build
 state/kernel-build: ${LLVMSTATE}/clang-build state/kernel-configure
 	@test -n "${MAKE_KERNEL}" || (echo "Error: MAKE_KERNEL undefined" && false)
 	@${TOOLSDIR}/banner.sh "Building kernel..."
-	(cd ${KERNELDIR} && (${MAKE_KERNEL} ${LOG_OUTPUT} || cat ${LOG_OUTPUT}))
+	(cd ${KERNELDIR} && ${MAKE_KERNEL} ${LOG_OUTPUT} )
 	@mkdir -p state
 	@touch $@
 

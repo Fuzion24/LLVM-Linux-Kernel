@@ -2310,4 +2310,50 @@ index ddb8502..2ac4958 100644
  	.probe		= sysmon_probe,
  	.remove		= __devexit_p(sysmon_remove),
  	.driver		= {
+diff --git a/arch/arm/mach-msm/pm-boot.c b/arch/arm/mach-msm/pm-boot.c
+index f6105af1..1804cd9 100644
+--- a/arch/arm/mach-msm/pm-boot.c
++++ b/arch/arm/mach-msm/pm-boot.c
+@@ -256,7 +256,7 @@ static struct of_device_id msm_pm_match_table[] = {
+ 	{},
+ };
+ 
+-static struct platform_driver msm_pm_boot_driver = {
++static struct platform_driver msm_pm_boot_driver __devinitdata = {
+ 	.probe = msm_pm_boot_probe,
+ 	.driver = {
+ 		.name = "pm-boot",
+diff --git a/drivers/oprofile/oprofilefs.c b/drivers/oprofile/oprofilefs.c
+index 1c0b799..5582ad7 100644
+--- a/drivers/oprofile/oprofilefs.c
++++ b/drivers/oprofile/oprofilefs.c
+@@ -281,13 +281,13 @@ static struct file_system_type oprofilefs_type = {
+ };
+ 
+ 
+-int __init oprofilefs_register(void)
++int oprofilefs_register(void)
+ {
+ 	return register_filesystem(&oprofilefs_type);
+ }
+ 
+ 
+-void __exit oprofilefs_unregister(void)
++void oprofilefs_unregister(void)
+ {
+ 	unregister_filesystem(&oprofilefs_type);
+ }
+diff --git a/arch/arm/oprofile/common.c b/arch/arm/oprofile/common.c
+index 338e8c2..dfa583f 100644
+--- a/arch/arm/oprofile/common.c
++++ b/arch/arm/oprofile/common.c
+@@ -116,7 +116,7 @@ static void arm_backtrace(struct pt_regs * const regs, unsigned int depth)
+ 		tail = user_backtrace(tail);
+ }
+ 
+-int __init oprofile_arch_init(struct oprofile_operations *ops)
++int oprofile_arch_init(struct oprofile_operations *ops)
+ {
+ 	/* provide backtrace support also in timer mode: */
+ 	ops->backtrace		= arm_backtrace;
 
