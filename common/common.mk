@@ -117,6 +117,9 @@ kernel-clean-noreset: state/kernel-fetch
 	@rm -f ${LOGDIR}/*.log
 	@rm -f ${TMPDIR}/*.patch
 
+kernel-reset: state/kernel-fetch
+	(cd ${KERNELDIR} && git reset --hard HEAD)
+
 kernel-configure: state/kernel-configure
 state/kernel-configure: state/kernel-patch
 	@cp ${KERNEL_CFG} ${KERNELDIR}/.config
