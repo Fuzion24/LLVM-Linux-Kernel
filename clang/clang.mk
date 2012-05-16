@@ -90,6 +90,10 @@ clang-clean:
 	@rm -rf ${LLVMINSTALLDIR} ${LLVMBUILDDIR}
 	@rm -f ${LLVMSTATE}/clang-configure ${LLVMSTATE}/clang-patch ${LLVMSTATE}/clang-build
 
+clang-clean-noreset:
+	@rm -rf ${LLVMINSTALLDIR} ${LLVMBUILDDIR}
+	@rm -f ${LLVMSTATE}/clang-configure ${LLVMSTATE}/clang-patch ${LLVMSTATE}/clang-build
+
 clang-sync: ${LLVMSTATE}/clang-fetch clang-clean
 	(cd ${LLVMSRCDIR}/llvm && git checkout ${LLVM_BRANCH} && git pull)
 	(cd ${LLVMSRCDIR}/llvm/tools/clang && git checkout ${LLVM_BRANCH} && git pull)
