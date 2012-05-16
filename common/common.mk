@@ -106,6 +106,17 @@ kernel-clean:
 	@rm -f ${LOGDIR}/*.log
 	@rm -f ${TMPDIR}/*.patch
 
+kernel-clean-noreset:
+	(cd ${KERNELDIR} && make mrproper)
+	@rm -f ${CWD}/state/kernel-patch
+	@rm -f ${CWD}/state/kernel-configure
+	@rm -f ${CWD}/state/kernel-build
+	@rm -f ${FILTERFILE}
+	@rm -f ${TMPFILTERFILE}-1
+	@rm -f ${TMPFILTERFILE}-2
+	@rm -f ${LOGDIR}/*.log
+	@rm -f ${TMPDIR}/*.patch
+
 kernel-configure: state/kernel-configure
 state/kernel-configure: state/kernel-patch
 	@cp ${KERNEL_CFG} ${KERNELDIR}/.config
