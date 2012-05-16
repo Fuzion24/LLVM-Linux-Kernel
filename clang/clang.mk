@@ -84,7 +84,7 @@ ${LLVMSTATE}/clang-build: ${LLVMSTATE}/clang-configure
 	@mkdir -p ${LLVMSTATE}
 	@touch $@
 
-clang-clean:
+clang-clean: ${LLVMSTATE}/clang-fetch
 	(cd ${LLVMDIR}/tools/clang && git reset --hard HEAD)
 	(cd ${LLVMDIR} && git reset --hard HEAD)
 	@rm -rf ${LLVMINSTALLDIR} ${LLVMBUILDDIR}
@@ -94,7 +94,7 @@ clang-clean-noreset:
 	@rm -rf ${LLVMINSTALLDIR} ${LLVMBUILDDIR}
 	@rm -f ${LLVMSTATE}/clang-configure ${LLVMSTATE}/clang-patch ${LLVMSTATE}/clang-build
 
-clang-reset:
+clang-reset: ${LLVMSTATE}/clang-fetch
 	(cd ${LLVMDIR}/tools/clang && git reset --hard HEAD)
 	(cd ${LLVMDIR} && git reset --hard HEAD)
 
