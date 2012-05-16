@@ -95,7 +95,7 @@ patch-dry-run2:
 	@rm -f ${LOGDIR}/filteredpatch.log
 	(cd ${KERNELDIR} && patch --dry-run -p1 -i ${TMPDIR}/filtered.patch > ${LOGDIR}/filteredpatch.log)
 
-kernel-clean: 
+kernel-clean: state/kernel-fetch
 	(cd ${KERNELDIR} && git reset --hard HEAD)
 	@rm -f ${CWD}/state/kernel-patch
 	@rm -f ${CWD}/state/kernel-configure
@@ -106,7 +106,7 @@ kernel-clean:
 	@rm -f ${LOGDIR}/*.log
 	@rm -f ${TMPDIR}/*.patch
 
-kernel-clean-noreset:
+kernel-clean-noreset: state/kernel-fetch
 	(cd ${KERNELDIR} && make mrproper)
 	@rm -f ${CWD}/state/kernel-patch
 	@rm -f ${CWD}/state/kernel-configure
