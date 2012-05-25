@@ -40,8 +40,8 @@ help:
 	@echo ""
 	@echo "       Options:  make <option> [target]"
 	@echo "       * BUILDMODE=[DEFAULT*|BOT]"
-	@echo "         (for buildbot)
-	@echo "       * GDBON=[0*|1]  - enable GDB on qemu-system-arm
+	@echo "         (for buildbot)"
+	@echo "       * GDBON=[0*|1]  - enable GDB on qemu-system-arm"
 	@exit 0
 
 

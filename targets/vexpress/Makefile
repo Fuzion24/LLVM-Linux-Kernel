@@ -40,7 +40,7 @@ endif
 # initramfs.mk settings
 BUILDDIR=${CWD}/tmp
 
-all: prep kernel-build qemu-build fetch-initrd
+all: prep kernel-build qemu-build
 
 include ${TOPDIR}/common/common.mk
 include ${TOPDIR}/qemu/qemu.mk
@@ -64,8 +64,8 @@ clean: qemu-clean kernel-clean clang-clean initramfs-clean
 mrproper: clean
 	rm -rRf arm-test-0.2.tar.gz arm-test
 #	rm -f state/fetch-initrd
-	rm -f tmp/*
-	rm -f log/*
+	rm -rRf tmp/*
+	rm -rRf log/*
 	( cd ${KERNELDIR} && make mrproper )
 
 #fetch-initrd: state/fetch-initrd
