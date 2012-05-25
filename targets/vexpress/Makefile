@@ -78,7 +78,7 @@ mrproper: clean
 
 # state/fetch-initrd
 test: state/prep ${QEMUSTATE}/qemu-build state/kernel-build
-	@${INSTALLDIR}/bin/qemu-system-arm -kernel ${KERNELDIR}/arch/arm/boot/zImage -initrd reference/initramfs.img -m 256 -M vexpress-a9 -append 'mem=256M ramdisk_size=65536 rw console=earlycon console=ttyAMA0,38400n8 earlyprintk root=/dev/ram0' -nographic -net none ${GDB_OPTS}
+	@${INSTALLDIR}/bin/qemu-system-arm -kernel ${KERNELDIR}/arch/arm/boot/zImage -initrd reference/initramfs.img -m 256 -M vexpress-a9 -append 'mem=256M ramdisk_size=65536 rw console=earlycon console=ttyAMA0,38400n8 earlyprintk root=/dev/ram0' -nographic ${GDB_OPTS}
 
 #	${INSTALLDIR}/bin/qemu-system-arm -kernel ${KERNELDIR}/arch/arm/boot/zImage \
 #		-initrd arm-test/arm_root.img -M vexpress-a9 -append 'console=earlycon \
@@ -95,6 +95,9 @@ test2: state/prep ${QEMUSTATE}/qemu-build state/kernel-build initramfs
 	@${INSTALLDIR}/bin/qemu-system-arm -kernel ${KERNELDIR}/arch/arm/boot/zImage \
 		-initrd initramfs.img.gz -M vexpress-a9 -append \
 		'console=earlycon console=ttyAMA0,38400n8 earlyprintk init=/init' -nographic ${GDB_OPTS}
+
+# The following options cause the kernel to hang
+#		'root=/dev/mmcblk0p2 console=earlycon console=ttyAMA0,38400n8 earlyprintk init=/init' -sd vexpress.img -nographic ${GDB_OPTS}
 
 patch-update: state/kernel-patch
 	@${TOPDIR}/tools/applyfilter.py ${TOPDIR}/common/common.patch ${TMPDIR}/common.patch ${CWD}/kernel-filter
