@@ -78,7 +78,11 @@ mrproper: clean
 
 # state/fetch-initrd
 test: state/prep ${QEMUSTATE}/qemu-build state/kernel-build
-	@${INSTALLDIR}/bin/qemu-system-arm -kernel ${KERNELDIR}/arch/arm/boot/zImage -initrd reference/initramfs.img -m 256 -M vexpress-a9 -append 'mem=256M ramdisk_size=65536 rw console=earlycon console=ttyAMA0,38400n8 earlyprintk root=/dev/ram0' -nographic ${GDB_OPTS}
+	@${INSTALLDIR}/bin/qemu-system-arm -kernel ${KERNELDIR}/arch/arm/boot/zImage -initrd reference/initramfs.img -m 768 -M vexpress-a9 -append 'mem=768M ramdisk_size=65536 rw console=earlycon console=ttyAMA0,38400n8 earlyprintk root=/dev/ram0' -nographic -net none ${GDB_OPTS}
+
+test-ltp: state/prep ${QEMUSTATE}/qemu-build state/kernel-build
+	@echo "${INSTALLDIR}/bin/qemu-system-arm -kernel ${KERNELDIR}/arch/arm/boot/zImage -initrd reference/initramfs-ltp.img -m 768 -M vexpress-a9 -cpu cortex-a9 -append 'mem=768M ramdisk_size=327680 rw console=earlycon console=ttyAMA0,38400n8 earlyprintk root=/dev/ram0 rdinit=/bin/sh' -nographic -net none ${GDB_OPTS}"
+
 
 #	${INSTALLDIR}/bin/qemu-system-arm -kernel ${KERNELDIR}/arch/arm/boot/zImage \
 #		-initrd arm-test/arm_root.img -M vexpress-a9 -append 'console=earlycon \
