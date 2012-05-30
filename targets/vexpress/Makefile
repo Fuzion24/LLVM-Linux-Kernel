@@ -32,7 +32,7 @@ PATCH_FILES=${CWD}/workaround.patch ${CWD}/vexpress.patch
 BUILDMODE:=DEFAULT
 
 ifeq ('${GDBON}','1')
-GDB_OPTS=-gdb tcp::1234 -s -S
+GDB_OPTS=-gdb tcp::4321 -S
 else
 GDB_OPTS=
 endif
@@ -94,10 +94,17 @@ test-kill: state/prep state/kernel-build ${QEMUSTATE}/qemu-build
 test2: state/prep ${QEMUSTATE}/qemu-build state/kernel-build initramfs
 	@${INSTALLDIR}/bin/qemu-system-arm -kernel ${KERNELDIR}/arch/arm/boot/zImage \
 		-initrd initramfs.img.gz -M vexpress-a9 -append \
-		'console=earlycon console=ttyAMA0,38400n8 earlyprintk init=/init' -nographic ${GDB_OPTS}
+		'console=earlycon console=ttyAMA0,38400n8 earlyprintk init=/bin/init' -nographic ${GDB_OPTS}
 
-# The following options cause the kernel to hang
-#		'root=/dev/mmcblk0p2 console=earlycon console=ttyAMA0,38400n8 earlyprintk init=/init' -sd vexpress.img -nographic ${GDB_OPTS}
+vexpress.img: 
+	(cd ${TMPDIR} && wget -nd -c http://releases.linaro.org/images/12.03/oneiric/nano/vexpress-a9-nano.img.gz)
+	(cd ${TMPDIR} && gzip -d vexpress-a9-nano.img.gz)
+	mv ${TMPDIR}/vexpress-a9-nano.img $@
+
+test3: state/prep ${QEMUSTATE}/qemu-build state/kernel-build vexpress.img
+	@${INSTALLDIR}/bin/qemu-system-arm -kernel ${KERNELDIR}/arch/arm/boot/zImage \
+		-m 256 -M vexpress-a9 -append \
+		'root=/dev/mmcblk0p2 console=earlycon console=ttyAMA0,38400n8 earlyprintk rootfstype=ext4 init=/bin/bash' -sd vexpress.img -nographic ${GDB_OPTS}
 
 patch-update: state/kernel-patch
 	@${TOPDIR}/tools/applyfilter.py ${TOPDIR}/common/common.patch ${TMPDIR}/common.patch ${CWD}/kernel-filter
