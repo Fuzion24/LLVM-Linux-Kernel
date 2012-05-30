@@ -55,6 +55,7 @@ ${LLVMSTATE}/clang-fetch:
 	@mkdir -p ${LLVMSRCDIR}
 	(cd ${LLVMSRCDIR} && git clone ${LLVM_GIT} -b ${LLVM_BRANCH} ${LLVMSRC})
 	(cd ${LLVMDIR}/tools && git clone ${CLANG_GIT} -b ${LLVM_BRANCH})
+	(cd ${LLVMDIR}/projects && git clone http://llvm.org/git/compiler-rt.git)
 	@mkdir -p ${LLVMSTATE}
 	@touch $@
 
@@ -87,6 +88,7 @@ ${LLVMSTATE}/clang-build: ${LLVMSTATE}/clang-configure
 clang-clean: ${LLVMSTATE}/clang-fetch
 	(cd ${LLVMDIR}/tools/clang && git reset --hard HEAD)
 	(cd ${LLVMDIR} && git reset --hard HEAD)
+	(cd ${LLVMSRCDIR}/llvm/projects/compiler-rt && git reset --hard HEAD)
 	@rm -rf ${LLVMINSTALLDIR} ${LLVMBUILDDIR}
 	@rm -f ${LLVMSTATE}/clang-configure ${LLVMSTATE}/clang-patch ${LLVMSTATE}/clang-build
 
@@ -96,10 +98,12 @@ clang-clean-noreset:
 
 clang-reset: ${LLVMSTATE}/clang-fetch
 	(cd ${LLVMDIR}/tools/clang && git reset --hard HEAD)
+	(cd ${LLVMSRCDIR}/llvm/projects/compiler-rt && git reset --hard HEAD)
 	(cd ${LLVMDIR} && git reset --hard HEAD)
 
 clang-sync: ${LLVMSTATE}/clang-fetch clang-clean
 	(cd ${LLVMSRCDIR}/llvm && git checkout ${LLVM_BRANCH} && git pull)
 	(cd ${LLVMSRCDIR}/llvm/tools/clang && git checkout ${LLVM_BRANCH} && git pull)
+	(cd ${LLVMSRCDIR}/llvm/projects/compiler-rt && git checkout ${LLVM_BRANCH} && git pull)
 
 clang-update-all: ${LLVMSTATE}/clang-fetch clang-clean clang-sync clang-build
