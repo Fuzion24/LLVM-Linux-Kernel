@@ -50,20 +50,24 @@ LLVM_BRANCH="master"
 #LLVM_OPTIMIZED=""
 LLVM_OPTIMIZED=--enable-optimized --enable-assertions
 
-clang-fetch: ${LLVMSTATE}/clang-fetch ${LLVMSTATE}/clang-fetch 
+clang-fetch: ${LLVMSTATE}/clang-fetch  
 ${LLVMSTATE}/clang-fetch:
 	@mkdir -p ${LLVMSRCDIR}
 	(cd ${LLVMSRCDIR} && git clone ${LLVM_GIT} -b ${LLVM_BRANCH} ${LLVMSRC})
 	(cd ${LLVMDIR}/tools && git clone ${CLANG_GIT} -b ${LLVM_BRANCH})
-	(cd ${LLVMDIR}/projects && git clone http://llvm.org/git/compiler-rt.git)
 	@mkdir -p ${LLVMSTATE}
 	@touch $@
 
+compilerrt-fetch: ${LLVMSTATE}/compilerrt-fetch
+${LLVMSTATE}/compilerrt-fetch: ${LLVMSTATE}/clang-fetch
+	(cd ${LLVMDIR}/projects && git clone http://llvm.org/git/compiler-rt.git)
+	@touch $@
+
 clang-patch: ${LLVMSTATE}/clang-patch
-${LLVMSTATE}/clang-patch: ${LLVMSTATE}/clang-fetch
+${LLVMSTATE}/clang-patch: ${LLVMSTATE}/clang-fetch ${LLVMSTATE}/compilerrt-fetch
 	(cd ${LLVMDIR} && patch -p1 -i ${LLVMTOP}/inline-64-bit-asm.patch)
 	(cd ${LLVMDIR}/tools/clang && patch -p1 -i ${LLVMTOP}/64-bit-ABI.patch)
-	@mkdir -p ${LLVMSTATE}
+	(cd ${LLVMDIR}/tools/clang && patch -p1 -i ${LLVMTOP}/return-unused.patch)
 	@touch $@
 
 clang-configure: ${LLVMSTATE}/clang-configure
@@ -73,21 +77,20 @@ ${LLVMSTATE}/clang-configure: ${LLVMSTATE}/clang-patch
 		--enable-targets=arm,mips,x86_64 --disable-shared \
 		--enable-languages=c,c++ --enable-bindings=none \
 		${LLVM_OPTIMIZED} --prefix=${LLVMINSTALLDIR} ) 
-	@mkdir -p ${LLVMSTATE}
 	@touch $@
 
 clang-build:  ${LLVMSTATE}/clang-build
 ${LLVMSTATE}/clang-build: ${LLVMSTATE}/clang-configure
 	@mkdir -p ${LLVMINSTALLDIR}
 	(cd ${LLVMBUILDDIR} && make -j${JOBS} install)
+	rm -f ${LLVMINSTALLDIR}/bin/scan-build ${LLVMINSTALLDIR}/bin/scan-view
 	ln -s ${LLVMSRCDIR}/llvm/tools/clang/tools/scan-build/scan-build ${LLVMINSTALLDIR}/bin/scan-build
 	ln -s ${LLVMSRCDIR}/llvm/tools/clang/tools/scan-view/scan-view ${LLVMINSTALLDIR}/bin/scan-view
-	@mkdir -p ${LLVMSTATE}
 	@touch $@
 
 clang-clean: ${LLVMSTATE}/clang-fetch
-	(cd ${LLVMDIR}/tools/clang && git reset --hard HEAD)
 	(cd ${LLVMDIR} && git reset --hard HEAD)
+	(cd ${LLVMDIR}/tools/clang && git reset --hard HEAD)
 	(cd ${LLVMSRCDIR}/llvm/projects/compiler-rt && git reset --hard HEAD)
 	@rm -rf ${LLVMINSTALLDIR} ${LLVMBUILDDIR}
 	@rm -f ${LLVMSTATE}/clang-configure ${LLVMSTATE}/clang-patch ${LLVMSTATE}/clang-build
@@ -101,9 +104,9 @@ clang-reset: ${LLVMSTATE}/clang-fetch
 	(cd ${LLVMSRCDIR}/llvm/projects/compiler-rt && git reset --hard HEAD)
 	(cd ${LLVMDIR} && git reset --hard HEAD)
 
-clang-sync: ${LLVMSTATE}/clang-fetch clang-clean
+clang-sync: clang-clean
 	(cd ${LLVMSRCDIR}/llvm && git checkout ${LLVM_BRANCH} && git pull)
 	(cd ${LLVMSRCDIR}/llvm/tools/clang && git checkout ${LLVM_BRANCH} && git pull)
 	(cd ${LLVMSRCDIR}/llvm/projects/compiler-rt && git checkout ${LLVM_BRANCH} && git pull)
 
-clang-update-all: ${LLVMSTATE}/clang-fetch clang-clean clang-sync clang-build
+clang-update-all: clang-sync clang-build

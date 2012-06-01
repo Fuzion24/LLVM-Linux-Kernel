@@ -22,8 +22,7 @@
 
 # Note: This file must be included after ${TOPDIR}/makefiles/common.mk
 
-PATCH_FILES+=${COMMON}/arm/common-arm.patch ${COMMON}/arm/fix-warnings-arm.patch \
-	${COMMON}/arm/fix-warnings-arm-unused.patch
+PATCH_FILES+=${COMMON}/arm/common-arm.patch 
 MAKE_FLAGS=ARCH=arm
 MAKE_KERNEL=${COMMON}/arm/bin/make-kernel.sh ${LLVMINSTALLDIR} ${EXTRAFLAGS}
 HOST=arm-none-linux-gnueabi

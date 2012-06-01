@@ -239,3 +239,16 @@ index d897278..f09c26d 100644
  
  # cc-ifversion
  # Usage:  EXTRA_CFLAGS += $(call cc-ifversion, -lt, 0402, -O1)
+diff --git a/Makefile b/Makefile
+index dda21c3..a3471ed 100644
+--- a/Makefile
++++ b/Makefile
+@@ -584,7 +584,7 @@ endif
+ 
+ # This warning generated too much noise in a regular build.
+ # Use make W=1 to enable this warning (see scripts/Makefile.build)
+-KBUILD_CFLAGS += $(call cc-disable-warning, unused-but-set-variable)
++KBUILD_CFLAGS += $(call cc-disable-warning, unused-value)
+ 
+ ifdef CONFIG_FRAME_POINTER
+ KBUILD_CFLAGS	+= -fno-omit-frame-pointer -fno-optimize-sibling-calls
