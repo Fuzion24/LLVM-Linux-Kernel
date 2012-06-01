@@ -1,0 +1,13 @@
+diff --git a/lib/Sema/SemaStmt.cpp b/lib/Sema/SemaStmt.cpp
+index a342cbd..89140d3 100644
+--- a/lib/Sema/SemaStmt.cpp
++++ b/lib/Sema/SemaStmt.cpp
+@@ -181,7 +181,7 @@ void Sema::DiagnoseUnusedExprResult(const Stmt *S) {
+     // a more specific message to make it clear what is happening.
+     if (const Decl *FD = CE->getCalleeDecl()) {
+       if (FD->getAttr<WarnUnusedResultAttr>()) {
+-        Diag(Loc, diag::warn_unused_result) << R1 << R2;
++        //Diag(Loc, diag::warn_unused_result) << R1 << R2;
+         return;
+       }
+       if (FD->getAttr<PureAttr>()) {
