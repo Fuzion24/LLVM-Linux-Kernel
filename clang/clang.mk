@@ -88,7 +88,7 @@ ${LLVMSTATE}/clang-build: ${LLVMSTATE}/clang-configure
 	ln -s ${LLVMSRCDIR}/llvm/tools/clang/tools/scan-view/scan-view ${LLVMINSTALLDIR}/bin/scan-view
 	@touch $@
 
-clang-clean: ${LLVMSTATE}/clang-fetch
+clang-clean: ${LLVMSTATE}/clang-fetch ${LLVMSTATE}/compilerrt-fetch
 	(cd ${LLVMDIR} && git reset --hard HEAD)
 	(cd ${LLVMDIR}/tools/clang && git reset --hard HEAD)
 	(cd ${LLVMSRCDIR}/llvm/projects/compiler-rt && git reset --hard HEAD)
@@ -99,10 +99,10 @@ clang-clean-noreset:
 	@rm -rf ${LLVMINSTALLDIR} ${LLVMBUILDDIR}
 	@rm -f ${LLVMSTATE}/clang-configure ${LLVMSTATE}/clang-patch ${LLVMSTATE}/clang-build
 
-clang-reset: ${LLVMSTATE}/clang-fetch
+clang-reset: ${LLVMSTATE}/clang-fetch ${LLVMSTATE}/compilerrt-fetch
+	(cd ${LLVMDIR} && git reset --hard HEAD)
 	(cd ${LLVMDIR}/tools/clang && git reset --hard HEAD)
 	(cd ${LLVMSRCDIR}/llvm/projects/compiler-rt && git reset --hard HEAD)
-	(cd ${LLVMDIR} && git reset --hard HEAD)
 
 clang-sync: clang-clean
 	(cd ${LLVMSRCDIR}/llvm && git checkout ${LLVM_BRANCH} && git pull)
