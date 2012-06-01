@@ -252,3 +252,15 @@ index dda21c3..a3471ed 100644
  
  ifdef CONFIG_FRAME_POINTER
  KBUILD_CFLAGS	+= -fno-omit-frame-pointer -fno-optimize-sibling-calls
+diff --git a/scripts/Makefile.build b/scripts/Makefile.build
+index ff1720d..84f2ce8 100644
+--- a/scripts/Makefile.build
++++ b/scripts/Makefile.build
+@@ -69,6 +69,7 @@ warning-1 += -Wmissing-prototypes
+ warning-1 += -Wold-style-definition
+ warning-1 += $(call cc-option, -Wmissing-include-dirs)
+ warning-1 += $(call cc-option, -Wunused-but-set-variable)
++warning-1 += $(call cc-option, -Wunused-value)
+ warning-1 += $(call cc-disable-warning, missing-field-initializers)
+ 
+ warning-2 := -Waggregate-return

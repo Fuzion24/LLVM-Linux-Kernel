@@ -28,8 +28,7 @@ KERNEL_GIT=git://codeaurora.org/kernel/msm.git -b ${MSM_BRANCH}
 KERNELDIR=${SRCDIR}/msm
 KERNELCOPY=${SRCDIR}/msm-copy
 PATCH_FILES=${CWD}/msm-3.0-llvm.patch ${CWD}/msm-3.0-llvm-arm.patch \
-	${CWD}/fix-warnings.patch ${CWD}/fix-warnings-arm.patch \
-#	${CWD}/autopatch.patch
+	${CWD}/fix-warnings.patch 
 EXTRAFLAGS=
 #EXTRAFLAGS=-Iarch/arm/mach-msm
 
