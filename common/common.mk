@@ -122,7 +122,7 @@ kernel-reset: state/kernel-fetch
 kernel-configure: state/kernel-configure
 state/kernel-configure: state/kernel-patch
 	@cp ${KERNEL_CFG} ${KERNELDIR}/.config
-	(cd ${KERNELDIR} && make ${MAKE_FLAGS} oldconfig)
+	(cd ${KERNELDIR} && echo "" | make ${MAKE_FLAGS} oldconfig)
 	@mkdir -p state
 	@touch $@
 
