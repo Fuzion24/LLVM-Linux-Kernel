@@ -34,7 +34,7 @@ DASH=dash-${DASHVER}
 LTPVER=20120104
 LTP=ltp-full-${LTPVER}
 
-${BUILDDIR}/initramfs.cpio: initramfs-prep toybox dash ltp
+${BUILDDIR}/initramfs.cpio: initramfs-prep toybox dash 
 	@(cd ${BUILDDIR}/initramfs && mkdir -p bin sys dev proc tmp usr/bin)
 	@(cd ${BUILDDIR}/${TOYBOX} && PREFIX=${BUILDDIR}/initramfs make install)
 	@(cd ${BUILDDIR}/${DASH} && make install)
