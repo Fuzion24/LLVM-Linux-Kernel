@@ -67,7 +67,7 @@ clang-patch: ${LLVMSTATE}/clang-patch
 ${LLVMSTATE}/clang-patch: ${LLVMSTATE}/clang-fetch ${LLVMSTATE}/compilerrt-fetch
 	(cd ${LLVMDIR} && patch -p1 -i ${LLVMTOP}/inline-64-bit-asm.patch)
 	(cd ${LLVMDIR}/tools/clang && patch -p1 -i ${LLVMTOP}/64-bit-ABI.patch)
-	(cd ${LLVMDIR}/tools/clang && patch -p1 -i ${LLVMTOP}/return-unused.patch)
+	(cd ${LLVMDIR}/tools/clang && patch -p1 -i ${LLVMTOP}/pending.patch)
 	@touch $@
 
 clang-configure: ${LLVMSTATE}/clang-configure
