@@ -75,19 +75,6 @@ index fefb8fe..84a397c 100644
  		if (err) {
  			printk(KERN_ERR "alg: crc32c: Operation failed for "
  			       "%s: %d\n", driver, err);
-diff --git a/scripts/mkcompile_h b/scripts/mkcompile_h
-index 50ad317..80db190 100755
---- a/scripts/mkcompile_h
-+++ b/scripts/mkcompile_h
-@@ -78,7 +78,7 @@ UTS_TRUNCATE="cut -b -$UTS_LEN"
-     echo \#define LINUX_COMPILE_DOMAIN
-   fi
- 
--  echo \#define LINUX_COMPILER \"`$CC -v 2>&1 | tail -n 1`\"
-+  echo \#define LINUX_COMPILER \"`$CC -Wno-unused-arguments -v 2>&1 | tail -n 1`\"
- ) > .tmpcompile
- 
- # Only replace the real compile.h if the new one is different,
 diff --git a/drivers/usb/gadget/f_fs.c b/drivers/usb/gadget/f_fs.c
 index dcd1c7f..e48c3fc 100644
 --- a/drivers/usb/gadget/f_fs.c
