@@ -33,7 +33,8 @@ SRCDIR=${CWD}/src
 LOGDIR=${CWD}/log
 TMPDIR=${CWD}/tmp
 PATCH_FILES+=${COMMON}/common.patch ${COMMON}/fix-warnings.patch \
-    ${COMMON}/lll-project.patch 
+    ${COMMON}/lll-project.patch ${COMMON}/vlais.patch ${COMMON}/inline.patch \
+    ${COMMON}/refdata.patch
 FILTERFILE=${CWD}/kernel-filter
 TMPFILTERFILE=${CWD}/tmp/kernel-filter
 SYNC_TARGETS+=kernel-sync

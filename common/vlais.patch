@@ -1,0 +1,133 @@
+diff --git a/lib/libcrc32c.c b/lib/libcrc32c.c
+index 244f548..e7ae199 100644
+--- a/lib/libcrc32c.c
++++ b/lib/libcrc32c.c
+@@ -41,20 +41,23 @@ static struct crypto_shash *tfm;
+ 
+ u32 crc32c(u32 crc, const void *address, unsigned int length)
+ {
+-	struct {
++	char desc[sizeof(struct shash_desc) + 
++		crypto_shash_descsize(tfm) + 
++		CRYPTO_MINALIGN] CRYPTO_MINALIGN_ATTR;
++	struct __desc {
+ 		struct shash_desc shash;
+-		char ctx[crypto_shash_descsize(tfm)];
+-	} desc;
++		char ctx[sizeof(u32)];
++	} *pdesc = (struct __desc *)desc;
+ 	int err;
+ 
+-	desc.shash.tfm = tfm;
+-	desc.shash.flags = 0;
+-	*(u32 *)desc.ctx = crc;
++	pdesc->shash.tfm = tfm;
++	pdesc->shash.flags = 0;
++	*(u32 *)pdesc->ctx = crc;
+ 
+-	err = crypto_shash_update(&desc.shash, address, length);
++	err = crypto_shash_update(&pdesc->shash, address, length);
+ 	BUG_ON(err);
+ 
+-	return *(u32 *)desc.ctx;
++	return *(u32 *)pdesc->ctx;
+ }
+ 
+ EXPORT_SYMBOL(crc32c);
+diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
+index f334c7f..0cdaf2e 100644
+--- a/include/linux/jbd2.h
++++ b/include/linux/jbd2.h
+@@ -1305,20 +1305,23 @@ extern int jbd_blocks_per_page(struct inode *inode);
+ static inline u32 jbd2_chksum(journal_t *journal, u32 crc,
+ 			      const void *address, unsigned int length)
+ {
+-	struct {
++	char desc[sizeof(struct shash_desc) + 
++		crypto_shash_descsize(journal->j_chksum_driver) + 
++		CRYPTO_MINALIGN] CRYPTO_MINALIGN_ATTR;
++	struct __desc {
+ 		struct shash_desc shash;
+-		char ctx[crypto_shash_descsize(journal->j_chksum_driver)];
+-	} desc;
++		char ctx[sizeof(u32)];
++	} *pdesc = (struct __desc *)desc;
+ 	int err;
+ 
+-	desc.shash.tfm = journal->j_chksum_driver;
+-	desc.shash.flags = 0;
+-	*(u32 *)desc.ctx = crc;
++	pdesc->shash.tfm = journal->j_chksum_driver;
++	pdesc->shash.flags = 0;
++	*(u32 *)pdesc->ctx = crc;
+ 
+-	err = crypto_shash_update(&desc.shash, address, length);
++	err = crypto_shash_update(&pdesc->shash, address, length);
+ 	BUG_ON(err);
+ 
+-	return *(u32 *)desc.ctx;
++	return *(u32 *)pdesc->ctx;
+ }
+ 
+ #ifdef __KERNEL__
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index cfc4e01..8b979e2 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -1661,20 +1661,23 @@ static inline __le16 ext4_rec_len_to_disk(unsigned len, unsigned blocksize)
+ static inline u32 ext4_chksum(struct ext4_sb_info *sbi, u32 crc,
+ 			      const void *address, unsigned int length)
+ {
+-	struct {
++	char desc[sizeof(struct shash_desc) + 
++		crypto_shash_descsize(sbi->s_chksum_driver) + 
++		CRYPTO_MINALIGN] CRYPTO_MINALIGN_ATTR;
++	struct __desc {
+ 		struct shash_desc shash;
+-		char ctx[crypto_shash_descsize(sbi->s_chksum_driver)];
+-	} desc;
++		char ctx[sizeof(u32)];
++	} *pdesc = (struct __desc *)desc;
+ 	int err;
+ 
+-	desc.shash.tfm = sbi->s_chksum_driver;
+-	desc.shash.flags = 0;
+-	*(u32 *)desc.ctx = crc;
++	pdesc->shash.tfm = sbi->s_chksum_driver;
++	pdesc->shash.flags = 0;
++	*(u32 *)pdesc->ctx = crc;
+ 
+-	err = crypto_shash_update(&desc.shash, address, length);
++	err = crypto_shash_update(&pdesc->shash, address, length);
+ 	BUG_ON(err);
+ 
+-	return *(u32 *)desc.ctx;
++	return *(u32 *)pdesc->ctx;
+ }
+ 
+ #ifdef __KERNEL__
+diff --git a/net/netfilter/xt_repldata.h b/net/netfilter/xt_repldata.h
+index 6efe4e5..868174d 100644
+--- a/net/netfilter/xt_repldata.h
++++ b/net/netfilter/xt_repldata.h
+@@ -3,6 +3,8 @@
+  *
+  * 'entries' and 'term' are never anywhere referenced by word in code. In fact,
+  * they serve as the hanging-off data accessed through repl.data[].
++ * The order or the elements in the struct can be changed because only the
++ * size matters and the struct members appear to be word aligned or packed
+  */
+ 
+ #define xt_alloc_initial_table(type, typ2) ({ \
+@@ -11,9 +13,9 @@
+ 	unsigned int bytes = 0, hooknum = 0, i = 0; \
+ 	struct { \
+ 		struct type##_replace repl; \
+-		struct type##_standard entries[nhooks]; \
+ 		struct type##_error term; \
+-	} *tbl = kzalloc(sizeof(*tbl), GFP_KERNEL); \
++		struct type##_standard entries[0]; \
++	} *tbl = kzalloc(sizeof(*tbl)+nhooks*sizeof(struct type##_standard), GFP_KERNEL); \
+ 	if (tbl == NULL) \
+ 		return NULL; \
+ 	strncpy(tbl->repl.name, info->name, sizeof(tbl->repl.name)); \
