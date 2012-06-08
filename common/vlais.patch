@@ -114,8 +114,8 @@ index 6efe4e5..868174d 100644
   *
   * 'entries' and 'term' are never anywhere referenced by word in code. In fact,
   * they serve as the hanging-off data accessed through repl.data[].
-+ * The order or the elements in the struct can be changed because only the
-+ * size matters and the struct members appear to be word aligned or packed
++ * The order or the last two elements in the struct can be changed because only
++ * the size matters since the structure members are not referenced. 
   */
  
  #define xt_alloc_initial_table(type, typ2) ({ \
