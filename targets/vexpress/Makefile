@@ -44,6 +44,7 @@ all: prep kernel-build qemu-build
 
 include ${TOPDIR}/common/common.mk
 include ${TOPDIR}/qemu/qemu.mk
+include ${TOPDIR}/test/ltp/ltp.mk
 include ${TOPDIR}/common/arm/common-arm.mk
 include ${TOPDIR}/initramfs/initramfs.mk
 
@@ -100,15 +101,57 @@ test2: state/prep ${QEMUSTATE}/qemu-build state/kernel-build initramfs
 		-initrd initramfs.img.gz -M vexpress-a9 -append \
 		'console=earlycon console=ttyAMA0,38400n8 earlyprintk init=/bin/init' -nographic ${GDB_OPTS}
 
-vexpress.img: 
-	(cd ${TMPDIR} && wget -nd -c http://releases.linaro.org/images/12.03/oneiric/nano/vexpress-a9-nano.img.gz)
-	(cd ${TMPDIR} && gzip -d vexpress-a9-nano.img.gz)
-	mv ${TMPDIR}/vexpress-a9-nano.img $@
+LINARORELEASEURL=http://releases.linaro.org/images/12.03/oneiric/nano
+LINAROBOARD=vexpress-a9
+NANOBOARD=${LINAROBOARD}-nano
+NANOIMG=${LINAROBOARD}.img
+
+# Get prebuilt vexpress image
+${TMPDIR}/${NANOBOARD}.img.gz:
+	wget -P $(dir $@) -c ${LINARORELEASEURL}/$(notdir $@)
+
+vexpress.img: ${TMPDIR}/${NANOBOARD}.img.gz
+	gzip -dc $< > $@
+
+# Build vexpress image
+${TMPDIR}/sources.txt:
+	wget --quiet $(LINARORELEASEURL)/sources.txt -O $@
+
+${TMPDIR}/get-sources.sh: ${TMPDIR}/sources.txt
+	perl -ne 'if(/^${NANOBOARD}:/){$$f=1} elsif($$f && m|(http://\S+)|){print "wget -c -P ${TMPDIR} $$1/"} elsif($$f && /(\S*\.tar\..*): md5sum/){print "$$1\n"} elsif(/^\s+:/) {$$f=0}' $< >$@
+	sh $@
+
+${TMPDIR}/board-sources.txt: ${TMPDIR}/sources.txt
+	perl -ne 'if(/^${NANOBOARD}:/){$$f=1} elsif($$f && m|(http://\S+)|){print "$$1/"} elsif($$f && /(\S*\.tar\..*): md5sum/){print "$$1\n"} elsif(/^\s+:/) {$$f=0}' $< >$@
+	wget -c -P ${TMPDIR} `cat $@`
+
+${TMPDIR}/${NANOIMG}: ${TMPDIR}/board-sources.txt
+	(cd ${TMPDIR} && echo sudo linaro-media-create --dev ${LINAROBOARD} --rootfs ext4 \
+		`sed 's|.*nano.*/|--binary |; s|.*hwpack.*/|--hwpack |' $(notdir $<)` \
+		--image-file $@ \
+	)
+
+# Build ltp image into vexpress image
+vexpress-ltp.img: ${TMPDIR}/${NANOBOARD}.img.gz ${LTPSTATE}/ltp-build ${LTPSTATE}/ltp-scripts
+	gzip -dc $< > $@
+	${TOOLSDIR}/partcopy.sh $@ rootfs ${LTPINSTALLDIR}/ /opt/ltp/ || (rm $@ && echo "E: $@ error" && false)
+	${TOOLSDIR}/partcopy.sh $@ rootfs ${TOPLTPDIR}/scripts/ /opt/ || (rm $@ && echo "E: $@ error" && false)
+vexpress-ltp-clean:
+	rm -f vexpress-ltp.img
+vexpress-ltp-force: vexpress-ltp-clean vexpress-ltp.img
 
 test3: state/prep ${QEMUSTATE}/qemu-build state/kernel-build vexpress.img
 	@${INSTALLDIR}/bin/qemu-system-arm -kernel ${KERNELDIR}/arch/arm/boot/zImage \
-		-m 256 -M vexpress-a9 -append \
-		'root=/dev/mmcblk0p2 console=earlycon console=ttyAMA0,38400n8 earlyprintk rootfstype=ext4 init=/bin/bash' -sd vexpress.img -nographic ${GDB_OPTS}
+		-m 256 -M vexpress-a9 -nographic ${GDB_OPTS} \
+		-append 'root=/dev/mmcblk0p2 console=earlycon console=ttyAMA0,38400n8 earlyprintk rootfstype=ext4 init=/bin/bash' \
+		-sd vexpress.img
+
+test3-ltp: state/prep ${QEMUSTATE}/qemu-build state/kernel-build vexpress-ltp.img
+	${INSTALLDIR}/bin/qemu-system-arm -kernel ${KERNELDIR}/arch/arm/boot/zImage \
+		-m 256 -M vexpress-a9 -nographic ${GDB_OPTS} \
+		-append 'root=/dev/mmcblk0p2 console=earlycon console=ttyAMA0,38400n8 earlyprintk rootfstype=ext4 rw init=/bin/bash' \
+		-net nic,macaddr=52:54:00:12:34:57 \
+		-sd vexpress-ltp.img
 
 patch-update: state/kernel-patch
 	@${TOPDIR}/tools/applyfilter.py ${TOPDIR}/common/common.patch ${TMPDIR}/common.patch ${CWD}/kernel-filter
@@ -131,4 +174,3 @@ kernel-autopatch: kernel-build state/kernel-copy
 	(cd ${KERNELCOPY} && git diff > ${TMPDIR}/autopatch.patch)
 	@${TOOLSDIR}/splitarch.py ${TMPDIR}/autopatch.patch ${CWD} autopatch
 	@touch $@
-
