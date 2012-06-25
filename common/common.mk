@@ -28,6 +28,7 @@ include ${TOPDIR}/clang/clang.mk
 
 TOOLSDIR=${TOPDIR}/tools
 COMMON=${TOPDIR}/common
+TOPTMPDIR=${TOPDIR}/tmp
 
 SRCDIR=${CWD}/src
 LOGDIR=${CWD}/log
@@ -39,6 +40,12 @@ FILTERFILE=${CWD}/kernel-filter
 TMPFILTERFILE=${CWD}/tmp/kernel-filter
 SYNC_TARGETS+=kernel-sync
 LOG_OUTPUT= > ${LOGDIR}/build.log 2>&1
+
+${TOPTMPDIR}:
+	@mkdir -p $@
+
+tmp-clean:
+	rm -rf ${TOPTMPDIR}
 
 # The ARCH makefile must provide the following:
 #   - PATCH_FILES+=... Additional arch specific patch file(s)
