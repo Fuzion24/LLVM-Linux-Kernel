@@ -107,35 +107,35 @@ NANOBOARD=${LINAROBOARD}-nano
 NANOIMG=${LINAROBOARD}.img
 
 # Get prebuilt vexpress image
-${TMPDIR}/${NANOBOARD}.img.gz:
+${TOPTMPDIR}/${NANOBOARD}.img.gz:
 	wget -P $(dir $@) -c ${LINARORELEASEURL}/$(notdir $@)
 
-vexpress.img: ${TMPDIR}/${NANOBOARD}.img.gz
+vexpress.img: ${TOPTMPDIR}/${NANOBOARD}.img.gz
 	gzip -dc $< > $@
 
 # Build vexpress image
-${TMPDIR}/sources.txt:
+${TOPTMPDIR}/sources.txt:
 	wget --quiet $(LINARORELEASEURL)/sources.txt -O $@
 
-${TMPDIR}/get-sources.sh: ${TMPDIR}/sources.txt
-	perl -ne 'if(/^${NANOBOARD}:/){$$f=1} elsif($$f && m|(http://\S+)|){print "wget -c -P ${TMPDIR} $$1/"} elsif($$f && /(\S*\.tar\..*): md5sum/){print "$$1\n"} elsif(/^\s+:/) {$$f=0}' $< >$@
+${TOPTMPDIR}/get-sources.sh: ${TOPTMPDIR}/sources.txt
+	perl -ne 'if(/^${NANOBOARD}:/){$$f=1} elsif($$f && m|(http://\S+)|){print "wget -c -P ${TOPTMPDIR} $$1/"} elsif($$f && /(\S*\.tar\..*): md5sum/){print "$$1\n"} elsif(/^\s+:/) {$$f=0}' $< >$@
 	sh $@
 
-${TMPDIR}/board-sources.txt: ${TMPDIR}/sources.txt
+${TOPTMPDIR}/board-sources.txt: ${TOPTMPDIR}/sources.txt
 	perl -ne 'if(/^${NANOBOARD}:/){$$f=1} elsif($$f && m|(http://\S+)|){print "$$1/"} elsif($$f && /(\S*\.tar\..*): md5sum/){print "$$1\n"} elsif(/^\s+:/) {$$f=0}' $< >$@
-	wget -c -P ${TMPDIR} `cat $@`
+	wget -c -P ${TOPTMPDIR} `cat $@`
 
-${TMPDIR}/${NANOIMG}: ${TMPDIR}/board-sources.txt
-	(cd ${TMPDIR} && echo sudo linaro-media-create --dev ${LINAROBOARD} --rootfs ext4 \
+${TOPTMPDIR}/${NANOIMG}: ${TOPTMPDIR}/board-sources.txt
+	(cd ${TOPTMPDIR} && echo sudo linaro-media-create --dev ${LINAROBOARD} --rootfs ext4 \
 		`sed 's|.*nano.*/|--binary |; s|.*hwpack.*/|--hwpack |' $(notdir $<)` \
 		--image-file $@ \
 	)
 
 # Build ltp image into vexpress image
-vexpress-ltp.img: ${TMPDIR}/${NANOBOARD}.img.gz ${LTPSTATE}/ltp-build ${LTPSTATE}/ltp-scripts
+vexpress-ltp.img: ${TOPTMPDIR}/${NANOBOARD}.img.gz ${LTPSTATE}/ltp-build ${LTPSTATE}/ltp-scripts
 	gzip -dc $< > $@
 	${TOOLSDIR}/partcopy.sh $@ rootfs ${LTPINSTALLDIR}/ /opt/ltp/ || (rm $@ && echo "E: $@ error" && false)
-	${TOOLSDIR}/partcopy.sh $@ rootfs ${TOPLTPDIR}/scripts/ /opt/ || (rm $@ && echo "E: $@ error" && false)
+
 vexpress-ltp-clean:
 	rm -f vexpress-ltp.img
 vexpress-ltp-force: vexpress-ltp-clean vexpress-ltp.img
