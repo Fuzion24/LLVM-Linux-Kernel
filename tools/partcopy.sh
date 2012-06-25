@@ -37,6 +37,11 @@ ENDHELP
 	exit -1
 }
 
+error() {
+	echo "E: $*"
+	return 1
+}
+
 while [ $# -gt 0 ] ; do
 	case "$1" in
 	-d*|--delete) DELETE=--delete;;
@@ -54,18 +59,21 @@ PARTNAME=$2
 FROM=$3
 TO=${4:-/}
 
+KPARTX=/sbin/kpartx
+[ -x $KPARTX ] || error "$KPARTX not found (you may need to install the package)"
+
 # Clean up mount and looped partitions
 end() {
 	FILENAME=`basename "$SDCARD"`
 	DEV=`sudo losetup -a | grep "($FILENAME)" | sed -e 's|^/dev/||; s|:.*$||'`
 	MP=`mount | awk '/'$DEV'/ {print $3}'`
 	[ -n "$MP" ] && sudo umount "$MP" && rmdir "$MP"
-	sudo kpartx -d $SDCARD >/dev/null
+	sudo $KPARTX -d $SDCARD >/dev/null
 	exit 0
 }
 trap end INT
 
-MAPPED=`sudo kpartx -av $SDCARD | awk '{print $3}'`
+MAPPED=`sudo $KPARTX -av $SDCARD | awk '{print $3}'`
 for DEV in $MAPPED ; do
 	DEV=/dev/mapper/$DEV
 	[ -n "$VERBOSE" ] && echo $DEV
