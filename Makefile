@@ -44,7 +44,6 @@ help:
 	@echo "       * GDBON=[0*|1]  - enable GDB on qemu-system-arm"
 	@exit 0
 
-
 mrproper:
 	( cd targets/vexpress ; make mrproper )
 	( cd targets/msm ; make mrproper )
@@ -53,3 +52,16 @@ mrproper:
 
 include clang/clang.mk
 include qemu/qemu.mk
+include test/ltp/ltp.mk
+
+DEBDEP = kpartx linaro-image-tools zlib1g-dev
+RPMDEP = kpartx zlib-devel
+build-dep:
+	@if [ -f /etc/debian_version ] ; then \
+		dpkg -l $(DEBDEP) >/dev/null 2>&1 || ( echo "apt-get install $(DEBDEP)"; false ) \
+	else \
+		rpm -q $(DEPENDENCIES) >/dev/null 2>&1 || ( echo "apt-get install $(DEPENDENCIES)"; false ) \
+	fi
+	@/opt/arm-2011.03/bin/arm-none-linux-gnueabi-gcc -v >/dev/null 2>&1 \
+		|| ( echo "Can't find working Codesourcery 2011.03 arm cross-compiler"; false )
+	@echo "All build dependencies were found"
