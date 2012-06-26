@@ -13,4 +13,5 @@ targets/*/tmp
 initramfs.img.gz
 rootfs_custom.img.xz
 qemu_log
+tmp
 .*.swp
