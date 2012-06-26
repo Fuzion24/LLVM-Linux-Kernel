@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 ##############################################################################
 # Copyright (c) 2012 Behan Webster
 #
@@ -21,7 +21,6 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
-
 usage() {
 	cat <<ENDHELP
 Usage: `basename $0` [options] <sd-card-image> <partition-name> <from-path> <to-path>
@@ -31,6 +30,8 @@ Usage: `basename $0` [options] <sd-card-image> <partition-name> <from-path> <to-
     <to-path>         The path to which to copy files in the named partition on the SD card image
 
     --delete          Means delete what was at the to-path previously
+    --shell           Drop to a shell after the file copy, before unmounting the image (for debugging)
+    --verbose         Show more output
 
     This utility can be used to copy files into an existing SD card image.
 ENDHELP
@@ -60,19 +61,26 @@ FROM=$3
 TO=${4:-/}
 
 KPARTX=/sbin/kpartx
+LOSETUP=/sbin/losetup
+RSYNC=/usr/bin/rsync
+
 [ -x $KPARTX ] || error "$KPARTX not found (you may need to install the package)"
+[ -x $LOSETUP ] || error "$LOSETUP not found (you may need to install the package)"
+[ -x $RSYNC ] || error "$RSYNC not found (you may need to install the package)"
 
 # Clean up mount and looped partitions
-end() {
+finshup() {
+	set +e
 	FILENAME=`basename "$SDCARD"`
-	DEV=`sudo losetup -a | grep "($FILENAME)" | sed -e 's|^/dev/||; s|:.*$||'`
+	DEV=`sudo $LOSETUP -a | grep "($FILENAME)" | sed -e 's|^/dev/||; s|:.*$||'`
 	MP=`mount | awk '/'$DEV'/ {print $3}'`
 	[ -n "$MP" ] && sudo umount "$MP" && rmdir "$MP"
 	sudo $KPARTX -d $SDCARD >/dev/null
 	exit 0
 }
-trap end INT
+trap finshup INT
 
+set -e
 MAPPED=`sudo $KPARTX -av $SDCARD | awk '{print $3}'`
 for DEV in $MAPPED ; do
 	DEV=/dev/mapper/$DEV
@@ -81,8 +89,8 @@ for DEV in $MAPPED ; do
 		MP=`mktemp -d`
 		sudo mount $DEV $MP
 		sudo mkdir -p $MP/$TO
-		sudo rsync -a $VERBOSE $DELETE $FROM/ $MP/$TO
+		sudo $RSYNC -a $VERBOSE $DELETE $FROM/ $MP/$TO/
 		[ -n "$DROPTOSHELL" ] && echo $MP && sh
 	fi
 done
-end
+finshup
