@@ -54,14 +54,14 @@ include clang/clang.mk
 include qemu/qemu.mk
 include test/ltp/ltp.mk
 
-DEBDEP = kpartx linaro-image-tools zlib1g-dev
-RPMDEP = kpartx zlib-devel
+DEBDEP = build-essential kpartx linaro-image-tools rsync zlib1g-dev
+RPMDEP = gcc kpartx rsync zlib-devel
 build-dep:
 	@if [ -f /etc/debian_version ] ; then \
 		dpkg -l $(DEBDEP) >/dev/null 2>&1 || ( echo "apt-get install $(DEBDEP)"; false ) \
 	else \
 		rpm -q $(DEPENDENCIES) >/dev/null 2>&1 || ( echo "apt-get install $(DEPENDENCIES)"; false ) \
 	fi
-	@/opt/arm-2011.03/bin/arm-none-linux-gnueabi-gcc -v >/dev/null 2>&1 \
-		|| ( echo "Can't find working Codesourcery 2011.03 arm cross-compiler"; false )
+	@/opt/arm-2011.09/bin/arm-none-linux-gnueabi-gcc -v >/dev/null 2>&1 \
+		|| ( echo "Can't find working Codesourcery 2011.09 arm cross-compiler"; false )
 	@echo "All build dependencies were found"
