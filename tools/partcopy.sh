@@ -21,6 +21,8 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
+export LANG=C
+
 usage() {
 	cat <<ENDHELP
 Usage: `basename $0` [options] <sd-card-image> <partition-name> <from-path> <to-path>
