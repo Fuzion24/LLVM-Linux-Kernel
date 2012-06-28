@@ -50,9 +50,16 @@ mrproper:
 	( cd targets/hexagon ; make mrproper )
 	( cd targets/ar71xx ; make mrproper )
 
-include clang/clang.mk
+include common/common.mk
 include qemu/qemu.mk
 include test/ltp/ltp.mk
+
+CSCC_URL = https://sourcery.mentor.com/sgpp/lite/arm/portal/package9728/public/arm-none-linux-gnueabi/arm-2011.09-70-arm-none-linux-gnueabi-i686-pc-linux-gnu.tar.bz2
+CSCC_VER = arm-2011.09
+
+codesourcery: $(TOPTMPDIR)
+	wget -c -P $< "$(CSCC_URL)"
+	sudo tar -x -j -C /opt -f $</$(notdir $(CSCC_URL))
 
 DEBDEP = build-essential kpartx linaro-image-tools rsync zlib1g-dev
 RPMDEP = gcc kpartx rsync zlib-devel
@@ -60,8 +67,19 @@ build-dep:
 	@if [ -f /etc/debian_version ] ; then \
 		dpkg -l $(DEBDEP) >/dev/null 2>&1 || ( echo "apt-get install $(DEBDEP)"; false ) \
 	else \
-		rpm -q $(DEPENDENCIES) >/dev/null 2>&1 || ( echo "apt-get install $(DEPENDENCIES)"; false ) \
+		rpm -q $(RPMDEP) >/dev/null 2>&1 || ( echo "yum install $(RPMDEP)"; false ) \
 	fi
-	@/opt/arm-2011.09/bin/arm-none-linux-gnueabi-gcc -v >/dev/null 2>&1 \
-		|| ( echo "Can't find working Codesourcery 2011.09 arm cross-compiler"; false )
+	@/opt/$(CSCC_VER)/bin/arm-none-linux-gnueabi-gcc -v >/dev/null 2>&1 \
+		|| ( echo "Can't find working Codesourcery $(CSCC_VER) cross-compiler"; false )
 	@echo "All build dependencies were found"
+
+install-build-dep:
+	@if [ -f /etc/debian_version ] ; then \
+		sudo apt-get install $(DEBDEP); \
+	else \
+		sudo yum install $(RPMDEP)"; \
+	fi
+	@/opt/$(CSCC_VER)/bin/arm-none-linux-gnueabi-gcc -v >/dev/null 2>&1 \
+		|| ( echo "Can't find working Codesourcery $(CSCC_VER) cross-compiler"; false )
+	@echo "All build dependencies were found"
+
