@@ -56,7 +56,7 @@ while [ $# -gt 0 ] ; do
 done
 [ $# -lt 3 ] && usage
 SDCARD=$1
-PARTNAME=$2
+LABEL=$2
 FROM=$3
 TO=${4:-/}
 
@@ -85,7 +85,7 @@ MAPPED=`sudo $KPARTX -av $SDCARD | awk '{print $3}'`
 for DEV in $MAPPED ; do
 	DEV=/dev/mapper/$DEV
 	[ -n "$VERBOSE" ] && echo $DEV
-	if [ `file -sL $DEV | grep -c $PARTNAME` -gt 0 ] ; then
+	if [ `findfs LABEL=$LABEL | grep -c $DEV` -gt 0 ] ; then
 		MP=`mktemp -d`
 		sudo mount $DEV $MP
 		sudo mkdir -p $MP/$TO
