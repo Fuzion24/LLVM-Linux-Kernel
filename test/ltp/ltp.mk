@@ -70,7 +70,7 @@ ltp-cvs:
 
 ltp-sync: ${LTPSTATE}/ltp-fetch
 	@make ltp-clean
-	(cd ${LTPSRCDIR}/ltp && cvs update)
+	(( test -e ${LTPTMPDIR}/${LTPSF_TAR} && echo "Skipping cvs up (tarball present)" )|| ( cd ${LTPSRCDIR}/ltp && cvs update ))
 
 ltp-configure: ${LTPSTATE}/ltp-configure
 ${LTPSTATE}/ltp-configure: ${LTPSTATE}/ltp-fetch
