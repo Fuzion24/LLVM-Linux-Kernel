@@ -70,29 +70,36 @@ RSYNC=/usr/bin/rsync
 [ -x $LOSETUP ] || error "$LOSETUP not found (you may need to install the package)"
 [ -x $RSYNC ] || error "$RSYNC not found (you may need to install the package)"
 
-# Clean up mount and looped partitions
-finshup() {
+cleanup() {
 	set +e
 	FILENAME=`basename "$SDCARD"`
-	DEV=`sudo $LOSETUP -a | grep "($FILENAME)" | sed -e 's|^/dev/||; s|:.*$||'`
-	MP=`mount | awk '/'$DEV'/ {print $3}'`
+	[ -n "$FILENAME" ] && DEV=`sudo $LOSETUP -a | grep "($FILENAME)" | sed -e 's|^/dev/||; s|:.*$||'`
+	[ -n "$DEV" ] && MP=`mount | awk '/'$DEV'/ {print $3}'`
 	[ -n "$MP" ] && sudo umount "$MP" && rmdir "$MP"
-	sudo $KPARTX -d $SDCARD >/dev/null
+	[ -n "$SDCARD" ] && sudo $KPARTX -d "$SDCARD" >/dev/null
+}
+
+# Clean up mount and looped partitions
+finshup() {
+	cleanup
 	exit 0
 }
 trap finshup INT
 
+# Get rid of any mess from a failed attempt before
+cleanup
+
 set -e
-MAPPED=`sudo $KPARTX -av $SDCARD | awk '{print $3}'`
+MAPPED=`sudo $KPARTX -av "$SDCARD" | awk '{print $3}'`
 for DEV in $MAPPED ; do
 	DEV=/dev/mapper/$DEV
 	[ -n "$VERBOSE" ] && echo $DEV
-	if [ `findfs LABEL=$LABEL | grep -c $DEV` -gt 0 ] ; then
+	if [ `findfs "LABEL=$LABEL" | grep -c $DEV` -gt 0 ] ; then
 		MP=`mktemp -d`
 		sudo mount $DEV $MP
 		sudo mkdir -p $MP/$TO
 		sudo $RSYNC -a $VERBOSE $DELETE $FROM/ $MP/$TO/
-		[ -n "$DROPTOSHELL" ] && echo $MP && sh
+		[ -n "$DROPTOSHELL" ] && (echo $MP && cd $MP && sh)
 	fi
 done
 finshup
