@@ -106,7 +106,7 @@ test2: state/prep ${QEMUSTATE}/qemu-build state/kernel-build initramfs
 LINARORELEASEURL=http://releases.linaro.org/images/12.03/oneiric/nano
 LINAROBOARD=vexpress-a9
 NANOBOARD=${LINAROBOARD}-nano
-NANOIMG=${LINAROBOARD}.img
+NANOIMG=${NANOBOARD}.img
 
 # Get prebuilt vexpress image
 ${TOPTMPDIR}/${NANOBOARD}.img.gz:
@@ -127,10 +127,11 @@ ${TOPTMPDIR}/board-sources.txt: ${TOPTMPDIR}/sources.txt
 	perl -ne 'if(/^${NANOBOARD}:/){$$f=1} elsif($$f && m|(http://\S+)|){print "$$1/"} elsif($$f && /(\S*\.tar\..*): md5sum/){print "$$1\n"} elsif(/^\s+:/) {$$f=0}' $< >$@
 	wget -c -P ${TOPTMPDIR} `cat $@`
 
+${NANOIMG}: ${TOPTMPDIR}/${NANOIMG}
 ${TOPTMPDIR}/${NANOIMG}: ${TOPTMPDIR}/board-sources.txt
-	(cd ${TOPTMPDIR} && echo sudo linaro-media-create --dev ${LINAROBOARD} --rootfs ext4 \
+	(cd ${TOPTMPDIR} && sudo linaro-media-create --dev ${LINAROBOARD} --rootfs ext4 \
 		`sed 's|.*nano.*/|--binary |; s|.*hwpack.*/|--hwpack |' $(notdir $<)` \
-		--image-file $@ \
+		--hwpack-force-yes --image-size 1G --image-file $@ \
 	)
 
 # Build ltp image into vexpress image
