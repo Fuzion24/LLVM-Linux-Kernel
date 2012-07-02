@@ -13,7 +13,7 @@ mount /sys
 cd /opt/ltp
 
 # Remove past test results
-rm -f results/*.log output/*.failed 2>/dev/null
+rm -f results/*.log output/*.failed testcases/bin/large_file 2>/dev/null
 
 # Timing before
 BEFORE=`date +%s`
@@ -24,12 +24,20 @@ date --date "@$BEFORE"
 
 # Timing after
 AFTER=`date +%s`
-DIFF=$(($AFTER - $BEFORE))
+DIFF=$(( $AFTER - $BEFORE ))
+
+PASSED=`grep -c PASS results/*.log`
+FAILED=`grep -c FAIL results/*.log`
+NUMBER=$(( $PASSED + $FAILED ))
 
 # Display test results
 echo "--- Results --------------------------------------------------------------------"
 cat results/*.log
 echo "--- End Results ----------------------------------------------------------------"
+echo
+echo "Number of Tests:  $NUMBER"
+echo "Number of Passed: $PASSED"
+echo "Number of Failed: $FAILED"
 echo
 echo "Start:  `date --date @$BEFORE` ($BEFORE)"
 echo "Finish: `date --date @$AFTER` ($AFTER)"
