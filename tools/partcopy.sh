@@ -65,10 +65,12 @@ TO=${4:-/}
 KPARTX=/sbin/kpartx
 LOSETUP=/sbin/losetup
 RSYNC=/usr/bin/rsync
+FINDFS=/sbin/findfs
 
 [ -x $KPARTX ] || error "$KPARTX not found (you may need to install the package)"
 [ -x $LOSETUP ] || error "$LOSETUP not found (you may need to install the package)"
 [ -x $RSYNC ] || error "$RSYNC not found (you may need to install the package)"
+[ -x $FINDFS ] || error "$FINDFS not found (you may need to install the package)"
 
 cleanup() {
 	set +e
@@ -94,7 +96,7 @@ MAPPED=`sudo $KPARTX -av "$SDCARD" | awk '{print $3}'`
 for DEV in $MAPPED ; do
 	DEV=/dev/mapper/$DEV
 	[ -n "$VERBOSE" ] && echo $DEV
-	if [ `findfs "LABEL=$LABEL" | grep -c $DEV` -gt 0 ] ; then
+	if [ `$FINDFS "LABEL=$LABEL" | grep -c $DEV` -gt 0 ] ; then
 		MP=`mktemp -d`
 		sudo mount $DEV $MP
 		sudo mkdir -p $MP/$TO
