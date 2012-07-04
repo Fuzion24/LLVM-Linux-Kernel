@@ -37,7 +37,7 @@ ifeq "${KERNEL_GIT}" ""
 KERNEL_GIT	= ${MAINLINEURI}
 endif
 ifeq "${KERNEL_BRANCH}" ""
-KERNEL_GIT	= master
+KERNEL_BRANCH	= master
 endif
 ifeq "${KERNELDIR}" ""
 KERNELDIR	= ${SRCDIR}/linux
