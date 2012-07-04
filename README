@@ -57,3 +57,6 @@ Platform specific patches are in llvm-setup/targets/<targetname>/*.patch
 Patches are further separated into those for unused return value warnings, general
 warnings, and error fixes.
 
+##############################################################################
+
+The directory structure is

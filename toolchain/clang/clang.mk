@@ -1,6 +1,7 @@
 ##############################################################################
 # Copyright (c) 2012 Mark Charlebois
 #               2012 Jan-Simon Möller
+#               2012 Behan Webster
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to 
@@ -21,21 +22,15 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
-# NOTE: TOPDIR must be defined by the calling Makefile
-
-LLVMTOP=${TOPDIR}/clang
+# Assumes has been included from ../toolchain.mk
 
 LLVMSRCDIR=${LLVMTOP}/src
 LLVMDIR=${LLVMSRCDIR}/llvm
 LLVMINSTALLDIR=${LLVMTOP}/install
 LLVMBUILDDIR=${LLVMTOP}/build/llvm
 LLVMSTATE=${LLVMTOP}/state
+LLVMPATCHES=${LLVMTOP}/patches
 SYNC_TARGETS=clang-sync
-
-JOBS:=${shell getconf _NPROCESSORS_ONLN}
-ifeq "${JOBS}" ""
-JOBS:=2
-endif
 
 TARGETS+= clang-fetch clang-configure clang-build clang-clean clang-sync clang-update-all
 
@@ -55,20 +50,19 @@ ${LLVMSTATE}/clang-fetch:
 	@mkdir -p ${LLVMSRCDIR}
 	(cd ${LLVMSRCDIR} && git clone ${LLVM_GIT} -b ${LLVM_BRANCH} ${LLVMSRC})
 	(cd ${LLVMDIR}/tools && git clone ${CLANG_GIT} -b ${LLVM_BRANCH})
-	@mkdir -p ${LLVMSTATE}
-	@touch $@
+	$(call state, $@)
 
 compilerrt-fetch: ${LLVMSTATE}/compilerrt-fetch
 ${LLVMSTATE}/compilerrt-fetch: ${LLVMSTATE}/clang-fetch
 	(cd ${LLVMDIR}/projects && git clone http://llvm.org/git/compiler-rt.git)
-	@touch $@
+	$(call state, $@)
 
 clang-patch: ${LLVMSTATE}/clang-patch
 ${LLVMSTATE}/clang-patch: ${LLVMSTATE}/clang-fetch ${LLVMSTATE}/compilerrt-fetch
-	(cd ${LLVMDIR} && patch -p1 -i ${LLVMTOP}/inline-64-bit-asm.patch)
-	(cd ${LLVMDIR}/tools/clang && patch -p1 -i ${LLVMTOP}/64-bit-ABI.patch)
-	(cd ${LLVMDIR}/tools/clang && patch -p1 -i ${LLVMTOP}/pending.patch)
-	@touch $@
+	(cd ${LLVMDIR} && patch -p1 -i ${LLVMPATCHES}/inline-64-bit-asm.patch)
+	(cd ${LLVMDIR}/tools/clang && patch -p1 -i ${LLVMPATCHES}/64-bit-ABI.patch)
+	(cd ${LLVMDIR}/tools/clang && patch -p1 -i ${LLVMPATCHES}/pending.patch)
+	$(call state, $@)
 
 clang-configure: ${LLVMSTATE}/clang-configure
 ${LLVMSTATE}/clang-configure: ${LLVMSTATE}/clang-patch
@@ -77,7 +71,7 @@ ${LLVMSTATE}/clang-configure: ${LLVMSTATE}/clang-patch
 		--enable-targets=arm,mips,x86_64 --disable-shared \
 		--enable-languages=c,c++ --enable-bindings=none \
 		${LLVM_OPTIMIZED} --prefix=${LLVMINSTALLDIR} ) 
-	@touch $@
+	$(call state, $@)
 
 clang-build:  ${LLVMSTATE}/clang-build
 ${LLVMSTATE}/clang-build: ${LLVMSTATE}/clang-configure
@@ -86,7 +80,7 @@ ${LLVMSTATE}/clang-build: ${LLVMSTATE}/clang-configure
 	rm -f ${LLVMINSTALLDIR}/bin/scan-build ${LLVMINSTALLDIR}/bin/scan-view
 	ln -s ${LLVMSRCDIR}/llvm/tools/clang/tools/scan-build/scan-build ${LLVMINSTALLDIR}/bin/scan-build
 	ln -s ${LLVMSRCDIR}/llvm/tools/clang/tools/scan-view/scan-view ${LLVMINSTALLDIR}/bin/scan-view
-	@touch $@
+	$(call state, $@)
 
 clang-clean: ${LLVMSTATE}/clang-fetch ${LLVMSTATE}/compilerrt-fetch
 	(cd ${LLVMDIR} && git reset --hard HEAD)

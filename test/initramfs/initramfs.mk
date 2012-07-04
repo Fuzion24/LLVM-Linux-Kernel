@@ -21,11 +21,13 @@
 ##############################################################################
 
 # NOTE: CROSS_COMPILE, HOST and CC must be defined by common-<arch>.mk
-# NOTE: TOPDIR and BUILDDIR must be defined by the calling Makefile
+# NOTE: TOPDIR must be defined by the calling Makefile
 
-TARGETS+= initramfs initramfs-clean
+TARGETS	+= initramfs initramfs-clean
 
 .PHONY: initramfs-prep initramfs initramfs-clean ltp dash
+
+BUILDDIR = ${TMPDIR}
 
 TOYBOXVER=0.2.1
 TOYBOX=toybox-${TOYBOXVER}

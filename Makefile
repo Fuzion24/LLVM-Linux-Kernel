@@ -1,6 +1,7 @@
 ##############################################################################
 # Copyright (c) 2012 Mark Charlebois
 #               2012 Jan-Simon Möller
+#               2012 Behan Webster
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to 
@@ -50,9 +51,7 @@ mrproper:
 	( cd targets/hexagon ; make mrproper )
 	( cd targets/ar71xx ; make mrproper )
 
-include common/common.mk
-include qemu/qemu.mk
-include test/ltp/ltp.mk
+include common.mk
 
 CSCC_URL = https://sourcery.mentor.com/sgpp/lite/arm/portal/package9728/public/arm-none-linux-gnueabi/arm-2011.09-70-arm-none-linux-gnueabi-i686-pc-linux-gnu.tar.bz2
 CSCC_VER = arm-2011.09
@@ -61,8 +60,9 @@ codesourcery: $(TOPTMPDIR)
 	wget -c -P $< "$(CSCC_URL)"
 	sudo tar -x -j -C /opt -f $</$(notdir $(CSCC_URL))
 
-DEBDEP = build-essential kpartx linaro-image-tools rsync zlib1g-dev
-RPMDEP = gcc kpartx rsync zlib-devel
+DEBDEP = build-essential cmake git kpartx linaro-image-tools patch rsync subversion zlib1g-dev
+RPMDEP = cmake gcc git kpartx patch rsync subversion zlib-devel
+
 build-dep:
 	@if [ -f /etc/debian_version ] ; then \
 		dpkg -l $(DEBDEP) >/dev/null 2>&1 || ( echo "apt-get install $(DEBDEP)"; false ) \

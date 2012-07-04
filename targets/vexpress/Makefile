@@ -1,6 +1,7 @@
 ##############################################################################
 # Copyright (c) 2012 Mark Charlebois
-#                    Jan-Simon Möller
+#               2012 Jan-Simon Möller
+#               2012 Behan Webster
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to 
@@ -21,15 +22,14 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
-TOPDIR=${CWD}/../..
-CWD=${CURDIR}
-KERNEL_CFG=${CWD}/config_vexpress
-KERNEL_GIT=git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-KERNELDIR=${SRCDIR}/linux
-KERNELCOPY=${SRCDIR}/linux-copy
-PATCH_FILES=${CWD}/workaround.patch ${CWD}/vexpress.patch
+TARGETDIR	= ${CURDIR}
+TOPDIR		= $(realpath ${TARGETDIR}/../..)
 
-BUILDMODE:=DEFAULT
+KERNEL_CFG	= ${TARGETDIR}/config_vexpress
+
+KERNEL_PATCHES	+= $(call add_patches,${TARGETDIR}/patches)
+
+BUILDMODE	:= DEFAULT
 
 ifeq ('${GDBON}','1')
 GDB_OPTS=-gdb tcp::4321 -S
@@ -37,38 +37,28 @@ else
 GDB_OPTS=
 endif
 
-# initramfs.mk settings
-BUILDDIR=${CWD}/tmp
-
 TESTRESULTS = test-results
 
 all: prep kernel-build qemu-build
 
-include ${TOPDIR}/common/common.mk
-include ${TOPDIR}/qemu/qemu.mk
-include ${TOPDIR}/test/ltp/ltp.mk
-include ${TOPDIR}/common/arm/common-arm.mk
-include ${TOPDIR}/initramfs/initramfs.mk
+include ${TOPDIR}/common.mk
+include ${ARCHDIR}/arm/arm.mk
 
 TARGETS+= clean mrproper test test2
 .PHONY: test test2 prep clean mrproper
 
 prep: state/prep
 state/prep:
-	@mkdir -p tmp
-	@mkdir -p log
-	@mkdir -p state
-	@touch $@
-
+	@mkdir -p ${LOGDIR} ${TMPDIR}
+	$(call state,$@)
 
 clean: qemu-clean kernel-clean clang-clean initramfs-clean
 
 # do a real wipe
-mrproper: clean
-	rm -rRf arm-test-0.2.tar.gz arm-test
+mrproper: clean ltp-mrproper tmp-mrproper
+	rm -rf arm-test-0.2.tar.gz arm-test
 #	rm -f state/fetch-initrd
-	rm -rRf tmp/*
-	rm -rRf log/*
+	@rm -rf ${LOGDIR}/*
 	( cd ${KERNELDIR} && make mrproper )
 
 #fetch-initrd: state/fetch-initrd
@@ -76,8 +66,7 @@ mrproper: clean
 #	rm -f arm-test-0.2.tar.gz
 #	wget -nd -c "http://wiki.qemu.org/download/arm-test-0.2.tar.gz"
 #	tar -xzvf arm-test-0.2.tar.gz
-#	@mkdir -p state
-#	@touch $@
+#	$(call state,$@)
 
 # state/fetch-initrd
 test: state/prep ${QEMUSTATE}/qemu-build state/kernel-build
@@ -162,23 +151,10 @@ test3-ltp: state/prep ${QEMUSTATE}/qemu-build state/kernel-build vexpress-ltp.im
 	done
 
 patch-update: state/kernel-patch
-	@${TOPDIR}/tools/applyfilter.py ${TOPDIR}/common/common.patch ${TMPDIR}/common.patch ${CWD}/kernel-filter
-	@${TOPDIR}/tools/applyfilter.py ${TOPDIR}/common/fix-warnings.patch ${TMPDIR}/fix-warnings.patch ${CWD}/kernel-filter
-	@${TOPDIR}/tools/applyfilter.py ${TOPDIR}/common/fix-warnings-unused.patch ${TMPDIR}/fix-warnings-unused.patch ${CWD}/kernel-filter
-	@${TOPDIR}/tools/applyfilter.py ${TOPDIR}/common/arm/common-arm.patch ${TMPDIR}/common-arm.patch ${CWD}/kernel-filter
-	@${TOPDIR}/tools/applyfilter.py ${TOPDIR}/common/arm/fix-warnings-arm.patch ${TMPDIR}/fix-warnings-arm.patch ${CWD}/kernel-filter
-	@${TOPDIR}/tools/applyfilter.py ${TOPDIR}/common/arm/fix-warnings-arm-unused.patch ${TMPDIR}/fix-warnings-arm-unused.patch ${CWD}/kernel-filter
+	@${TOOLSDIR}/applyfilter.py ${ARCHALLPATCHES}/common.patch ${TMPDIR}/common.patch ${FILTERFILE}
+	@${TOOLSDIR}/applyfilter.py ${ARCHALLPATCHES}/fix-warnings.patch ${TMPDIR}/fix-warnings.patch ${FILTERFILE}
+	@${TOOLSDIR}/applyfilter.py ${ARCHALLPATCHES}/fix-warnings-unused.patch ${TMPDIR}/fix-warnings-unused.patch ${FILTERFILE}
+	@${TOOLSDIR}/applyfilter.py ${ARCHARMPATCHES}/common-arm.patch ${TMPDIR}/common-arm.patch ${FILTERFILE}
+	@${TOOLSDIR}/applyfilter.py ${ARCHARMPATCHES}/fix-warnings-arm.patch ${TMPDIR}/fix-warnings-arm.patch ${FILTERFILE}
+	@${TOOLSDIR}/applyfilter.py ${ARCHARMPATCHES}/fix-warnings-arm-unused.patch ${TMPDIR}/fix-warnings-arm-unused.patch ${FILTERFILE}
 
-kernel-copy: state/kernel-copy
-state/kernel-copy: kernel-fetch
-	(cd ${SRCDIR} && git clone ${KERNELDIR} linux-copy)
-	@touch $@
-
-kernel-autopatch: kernel-build state/kernel-copy
-	(cd ${KERNELCOPY} && git reset --hard HEAD && git pull)
-	(cd ${KERNELCOPY} &&  patch -p1 -i ${TMPDIR}/final.patch >> ${LOGDIR}/patchcopy.log)
-	@${TOOLSDIR}/unusedfix.py ${LOGDIR}/build.log ${KERNELCOPY} 
-	(cd ${KERNELCOPY} &&  patch -R -p1 -i ${TMPDIR}/final.patch >> ${LOGDIR}/patchcopy.log)
-	(cd ${KERNELCOPY} && git diff > ${TMPDIR}/autopatch.patch)
-	@${TOOLSDIR}/splitarch.py ${TMPDIR}/autopatch.patch ${CWD} autopatch
-	@touch $@

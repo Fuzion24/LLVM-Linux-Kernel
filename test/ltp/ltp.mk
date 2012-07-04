@@ -1,7 +1,5 @@
 ##############################################################################
-# Copyright (c) 2012 Mark Charlebois
-#               2012 Jan-Simon Möller
-#               2012 Behan Webster
+# Copyright (c) 2012 Behan Webster
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to 
@@ -22,25 +20,20 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
-# NOTE: TOPLTPDIR must be defined by the calling Makefile
+# Assumes has been included from ../test.mk
 
-TOPTESTDIR=${TOPDIR}/test
-TOPLTPDIR=${TOPTESTDIR}/ltp
-LTPTMPDIR=${TOPLTPDIR}/tmp
-LTPSRCDIR=${TOPLTPDIR}/src
-TOPLTPINSTALLDIR=${TOPLTPDIR}/install
+LTPTMPDIR=${LTPDIR}/tmp
+LTPSRCDIR=${LTPDIR}/src
+TOPLTPINSTALLDIR=${LTPDIR}/install
 LTPINSTALLDIR=${TOPLTPINSTALLDIR}/opt/ltp
-#LTPBUILDDIR=${TOPLTPDIR}/build/ltp
+#LTPBUILDDIR=${LTPDIR}/build/ltp
 LTPBUILDDIR=${LTPSRCDIR}/ltp
-LTPSTATE=${TOPLTPDIR}/state
+LTPSTATE=${LTPDIR}/state
+LTPSCRIPTS=${LTPDIR}/scripts
 SYNC_TARGETS+=ltp-sync
-JOBS:=${shell getconf _NPROCESSORS_ONLN}
-ifeq "${JOBS}" ""
-JOBS:=1
-endif
 
-TARGETS+= ltp-fetch ltp-configure ltp-build ltp-clean ltp-sync
-.PHONY: ltp-fetch ltp-configure ltp-build 
+TARGETS+= ltp-fetch ltp-configure ltp-build ltp-clean ltp-sync ltp-mrproper
+.PHONY: ltp-fetch ltp-configure ltp-build ltp-clean ltp-sync ltp-mrproper
 
 LTPCVS=":pserver:anonymous@ltp.cvs.sourceforge.net:/cvsroot/ltp"
 LTPBRANCH="stable-1.0"
@@ -96,7 +89,7 @@ ${LTPSTATE}/ltp-build: ${LTPSTATE}/ltp-configure
 	
 ltp-scripts: ${LTPSTATE}/ltp-scripts
 ${LTPSTATE}/ltp-scripts: ${LTPSTATE}/ltp-build
-	cp -rv ${TOPLTPDIR}/scripts/* ${LTPINSTALLDIR}/
+	cp -rv ${LTPSCRIPTS}/* ${LTPINSTALLDIR}/
 	@$(call ltpstate,$@)
 
 ltp-clean:

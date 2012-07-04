@@ -1,6 +1,8 @@
 ##############################################################################
 # Copyright (c) 2012 Mark Charlebois
-#                    Jan-Simon Möller
+#               2012 Jan-Simon Möller
+#               2012 Behan Webster
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to 
 # deal in the Software without restriction, including without limitation the 
@@ -20,56 +22,40 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
-CWD=${CURDIR}
-TOPDIR=${CWD}/../..
-KERNEL_CFG=${CWD}/config_msm
-MSM_BRANCH=msm-3.0
-KERNEL_GIT=git://codeaurora.org/kernel/msm.git -b ${MSM_BRANCH}
-KERNELDIR=${SRCDIR}/msm
-KERNELCOPY=${SRCDIR}/msm-copy
-PATCH_FILES=${CWD}/msm-3.0-llvm.patch ${CWD}/msm-3.0-llvm-arm.patch \
-	${CWD}/fix-warnings.patch 
-EXTRAFLAGS=
-#EXTRAFLAGS=-Iarch/arm/mach-msm
+TARGETDIR	= ${CURDIR}
+TOPDIR		= $(realpath ${TARGETDIR}/../..)
+
+KERNEL_CFG	= ${TARGETDIR}/config_msm
+KERNEL_BRANCH	= msm-3.0
+KERNEL_GIT	= git://codeaurora.org/kernel/msm.git
+KERNELDIR	= ${SRCDIR}/msm
+
+KERNEL_PATCHES	+= $(call add_patches,${TARGETDIR}/patches)
+
+EXTRAFLAGS	= 
+#EXTRAFLAGS	= -Iarch/arm/mach-msm
 
 all: prep kernel-build
 
-include ../../common/common.mk
-include ../../common/arm/common-arm.mk
+include ${TOPDIR}/common.mk
+include ${ARCHDIR}/arm/arm.mk
 
 TARGETS+= check-dups kernel-autopatch clean mrproper
 .PHONY: kernel-copy clean mrproper
 
 prep: state/prep
 state/prep:
-	@mkdir -p tmp
-	@mkdir -p log
-	@mkdir -p state
-	@touch $@
-
-kernel-copy: state/kernel-copy
-state/kernel-copy: kernel-fetch
-	(cd ${SRCDIR} && git clone ${KERNELDIR} -b ${MSM_BRANCH} msm-copy)
-	@touch $@
-
-kernel-autopatch: kernel-build state/kernel-copy
-	(cd ${KERNELCOPY} && git reset --hard HEAD && git pull)
-	(cd ${KERNELCOPY} &&  patch -p1 -i ${TMPDIR}/final.patch >> ${LOGDIR}/patchcopy.log)
-	@${TOOLSDIR}/unusedfix.py ${LOGDIR}/build.log ${KERNELCOPY} 
-	(cd ${KERNELCOPY} &&  patch -R -p1 -i ${TMPDIR}/final.patch >> ${LOGDIR}/patchcopy.log)
-	(cd ${KERNELCOPY} && git diff > ${TMPDIR}/autopatch.patch)
-	@${TOOLSDIR}/splitarch.py ${TMPDIR}/autopatch.patch ${CWD} autopatch
-	@touch $@
+	@mkdir -p ${LOGDIR} ${TMPDIR}
+	$(call state,$@)
 
 check-dups:
-	${TOOLSDIR}/checkduplicates.py ${PATCH_FILES}
+	${TOOLSDIR}/checkduplicates.py ${KERNEL_PATCHES}
 
 clean: 
 	( ( test -e ${KERNELDIR} && make kernel-clean ) || exit 0 )
 	@make clang-clean
 
 # do a real wipe
-mrproper: clean
+mrproper: clean tmp-mrproper
 	( ( test -e ${KERNELDIR} && cd ${KERNELDIR} && make mrproper ) || exit 0 )
-	@rm -rf tmp/*
-	@rm -rf log/*
+	@rm -rf ${LOGDIR}/*

@@ -22,33 +22,6 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
-TARGETDIR	= ${CURDIR}
-TOPDIR		= $(realpath ${TARGETDIR}/../..)
+# Assumes has been included from ../common.mk
 
-KERNEL_CFG	= ${TARGETDIR}/config_template
-
-KERNEL_PATCHES     += $(call add_patches,${TARGETDIR}/patches)
-
-all: bailout_remove prep kernel-build
-.PHONY: clean mrproper
-
-include ${TOPDIR}/common.mk
-#include ${ARCHDIR}/arm/arm.mk
-
-bailout_remove:
-	@exit 1
-
-prep: state/prep
-state/prep:
-	@mkdir -p ${LOGDIR} ${TMPDIR}
-	$(call state,$@)
-
-clean: tmp-clean
-	( ( test -e ${KERNELDIR} && make kernel-clean ) || exit 0 )
-	@make clang-clean
-
-# do a real wipe
-mrproper: clean
-	( ( test -e ${KERNELDIR} && cd ${KERNELDIR} && make mrproper ) || exit 0 )
-	@rm -rf ${LOGDIR}/* ${TMPDIR}/*
-
+PATH	+= :${TOOLSDIR}:

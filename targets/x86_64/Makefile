@@ -1,6 +1,7 @@
 ##############################################################################
 # Copyright (c) 2012 Mark Charlebois
-#                    Jan-Simon Möller
+#               2012 Jan-Simon Möller
+#               2012 Behan Webster
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to 
@@ -21,26 +22,19 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
-TOPDIR=${CWD}/../..
-CWD=${CURDIR}
-KERNEL_CFG=${CWD}/config_x86_64
-KERNEL_GIT=git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-KERNELDIR=${SRCDIR}/linux
-KERNELCOPY=${SRCDIR}/linux-copy
-PATCH_FILES=
+TARGETDIR	= ${CURDIR}
+TOPDIR		= $(realpath ${TARGETDIR}/../..)
 
-#GDB_OPTS=-gdb tcp::1234 -s -S
-GDB_OPTS=
+KERNEL_CFG	= ${TARGETDIR}/config_x86_64
+KERNEL_PATCHES	= 
 
-# initramfs.mk settings
-BUILDDIR=${CWD}/tmp
+#GDB_OPTS	= -gdb tcp::1234 -s -S
+GDB_OPTS	=
 
 all: prep kernel-build qemu-build fetch-initrd
 
-include ${TOPDIR}/common/common.mk
-include ${TOPDIR}/qemu/qemu.mk
-include ${TOPDIR}/common/x86_64/common-x86_64.mk
-include ${TOPDIR}/initramfs/initramfs.mk
+include ${TOPDIR}/common.mk
+include ${ARCHDIR}/x86_64/x86_64.mk
 
 TARGETS+= clean mrproper test test2
 .PHONY: test test2 fetch-initrd prep clean mrproper
@@ -50,33 +44,17 @@ state/prep:
 	@mkdir -p tmp
 	@mkdir -p log
 	@mkdir -p state
-	@touch $@
-
+	$(call state,$@)
 
 clean: qemu-clean kernel-clean clang-clean initramfs-clean
 
 # do a real wipe
-mrproper: clean
-	rm -f tmp/*
-	rm -f log/*
+mrproper: clean tmp-proper
+	@rm -rf ${LOGDIR}/*
 	( cd ${KERNELDIR} && make mrproper )
 
 test: ${QEMUSTATE}/qemu-build initramfs state/kernel-build
 	@${INSTALLDIR}/bin/qemu-system-i386 -kernel ${KERNELDIR}/arch/x86/boot/bzImage \
 		-initrd initramfs.img.gz -append \
 		'console=earlycon console=ttyAMA0,38400n8 earlyprintk init=/init' -nographic ${GDB_OPTS}
-
-kernel-copy: state/kernel-copy
-state/kernel-copy: kernel-fetch
-	(cd ${SRCDIR} && git clone ${KERNELDIR} linux-copy)
-	@touch $@
-
-kernel-autopatch: kernel-build state/kernel-copy
-	(cd ${KERNELCOPY} && git reset --hard HEAD && git pull)
-	(cd ${KERNELCOPY} &&  patch -p1 -i ${TMPDIR}/final.patch >> ${LOGDIR}/patchcopy.log)
-	@${TOOLSDIR}/unusedfix.py ${LOGDIR}/build.log ${KERNELCOPY} 
-	(cd ${KERNELCOPY} &&  patch -R -p1 -i ${TMPDIR}/final.patch >> ${LOGDIR}/patchcopy.log)
-	(cd ${KERNELCOPY} && git diff > ${TMPDIR}/autopatch.patch)
-	@${TOOLSDIR}/splitarch.py ${TMPDIR}/autopatch.patch ${CWD} autopatch
-	@touch $@
 
