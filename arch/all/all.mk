@@ -90,8 +90,8 @@ state/kernel-copy: kernel-fetch
 	git clone ${KERNELDIR} -b ${KERNEL_BRANCH} ${KERNELCOPY}
 	$(call state,$@)
 
-kernel-gcc: state/kernel-gcc
-state/kernel-gcc: kernel-fetch
+kernel-gcc: state/kernel-gcc-fetch
+state/kernel-gcc-fetch: kernel-fetch
 	git clone ${KERNELDIR} -b ${KERNEL_BRANCH} ${KERNELGCC}
 	$(call state,$@)
 
@@ -119,7 +119,7 @@ state/kernel-patch: state/kernel-fetch
 	$(call state,$@)
 
 kernel-gcc-patch: state/kernel-gcc-patch
-state/kernel-gcc-patch: state/kernel-patch
+state/kernel-gcc-patch: state/kernel-gcc-fetch state/kernel-patch
 	(cd ${KERNELGCC} && git reset --hard HEAD)
 	@${TOOLSDIR}/banner.sh "Patching kernel source (gcc): see patch-gcc.log"
 	(cd ${KERNELGCC} && patch -p1 -i ${TMPDIR}/final.patch > ${LOGDIR}/patch-gcc.log)
