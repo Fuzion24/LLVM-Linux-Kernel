@@ -142,30 +142,38 @@ patch-dry-run2:
 	@rm -f ${LOGDIR}/filteredpatch.log
 	(cd ${KERNELDIR} && patch --dry-run -p1 -i ${TMPDIR}/filtered.patch > ${LOGDIR}/filteredpatch.log)
 
-kernel-clean: state/kernel-fetch
-	(cd ${KERNELDIR} && git reset --hard HEAD)
-	@rm -f ${TARGETDIR}/state/kernel-patch
-	@rm -f ${TARGETDIR}/state/kernel-configure
-	@rm -f ${TARGETDIR}/state/kernel-build
-	@rm -f ${FILTERFILE}
-	@rm -f ${TMPFILTERFILE}-1
-	@rm -f ${TMPFILTERFILE}-2
-	@rm -f ${LOGDIR}/*.log
-	@rm -f ${TMPDIR}/*.patch
-
-kernel-clean-noreset: state/kernel-fetch
-	(cd ${KERNELDIR} && make mrproper)
-	@rm -f ${TARGETDIR}/state/kernel-patch
-	@rm -f ${TARGETDIR}/state/kernel-configure
-	@rm -f ${TARGETDIR}/state/kernel-build
-	@rm -f ${FILTERFILE}
-	@rm -f ${TMPFILTERFILE}-1
-	@rm -f ${TMPFILTERFILE}-2
-	@rm -f ${LOGDIR}/*.log
-	@rm -f ${TMPDIR}/*.patch
-
 kernel-reset: state/kernel-fetch
 	(cd ${KERNELDIR} && git reset --hard HEAD)
+
+kernel-gcc-reset: state/kernel-gcc-fetch
+	(cd ${KERNELGCC} && git reset --hard HEAD)
+
+kernel-mrproper: state/kernel-fetch
+	(cd ${KERNELDIR} && make mrproper)
+
+kernel-gcc-mrproper: state/kernel-gcc-fetch
+	(cd ${KERNELGCC} && make mrproper)
+
+kernel-clean-tmp:
+	@rm -f ${TARGETDIR}/state/kernel-patch
+	@rm -f ${TARGETDIR}/state/kernel-configure
+	@rm -f ${TARGETDIR}/state/kernel-build
+	@rm -f ${FILTERFILE}
+	@rm -f ${TMPFILTERFILE}-1
+	@rm -f ${TMPFILTERFILE}-2
+	@rm -f ${LOGDIR}/*.log
+	@rm -f ${TMPDIR}/*.patch
+
+kernel-gcc-clean-tmp:
+	@rm -f ${TARGETDIR}/state/kernel-gcc-patch
+	@rm -f ${TARGETDIR}/state/kernel-gcc-configure
+	@rm -f ${TARGETDIR}/state/kernel-gcc-build
+
+kernel-clean: kernel-reset kernel-clean-tmp
+kernel-clean-noreset: kernel-mrproper kernel-clean-tmp
+
+kernel-gcc-clean: kernel-gcc-reset kernel-gcc-clean-tmp
+kernel-gcc-clean-noreset: kernel-gcc-mrproper kernel-gcc-clean-tmp
 
 kernel-configure: state/kernel-configure
 state/kernel-configure: state/kernel-patch
