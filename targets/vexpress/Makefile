@@ -52,7 +52,7 @@ state/prep:
 	@mkdir -p ${LOGDIR} ${TMPDIR}
 	$(call state,$@)
 
-clean: qemu-clean kernel-clean clang-clean initramfs-clean
+clean: qemu-clean kernel-clean clang-clean llvm-clean initramfs-clean
 
 # do a real wipe
 mrproper: clean ltp-mrproper tmp-mrproper

@@ -53,7 +53,7 @@ check-dups:
 
 clean: 
 	( ( test -e ${KERNELDIR} && make kernel-clean ) || exit 0 )
-	@make clang-clean
+	@make llvm-clean clang-clean
 
 # do a real wipe
 mrproper: clean tmp-mrproper

@@ -45,7 +45,7 @@ state/prep:
 
 clean: tmp-clean
 	( ( test -e ${KERNELDIR} && make kernel-clean ) || exit 0 )
-	@make clang-clean
+	@make clang-clean llvm-clean
 
 # do a real wipe
 mrproper: clean
