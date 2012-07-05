@@ -59,18 +59,18 @@ LLVM_OPTIMIZED=--enable-optimized --enable-assertions
 llvm-fetch: ${LLVMSTATE}/llvm-fetch
 ${LLVMSTATE}/llvm-fetch:
 	@mkdir -p ${LLVMSRCDIR}
-	(cd ${LLVMSRCDIR} && git clone ${LLVM_GIT} -b ${LLVM_BRANCH})
+	( [ -d ${LLVMSRCDIR}/llvm/.git ] || (rm -rf ${LLVMDIR} && cd ${LLVMSRCDIR} && git clone ${LLVM_GIT} -b ${LLVM_BRANCH}))
 	$(call state, $@)
 
 clang-fetch: ${LLVMSTATE}/clang-fetch
 ${LLVMSTATE}/clang-fetch:
 	@mkdir -p ${LLVMSRCDIR}
-	(cd ${LLVMSRCDIR} && git clone ${CLANG_GIT} -b ${CLANG_BRANCH})
+	( [ -d ${LLVMSRCDIR}/clang/.git ] || (cd ${LLVMSRCDIR} && git clone ${CLANG_GIT} -b ${CLANG_BRANCH}))
 	$(call state, $@)
 
 compilerrt-fetch: ${LLVMSTATE}/compilerrt-fetch
 ${LLVMSTATE}/compilerrt-fetch: ${LLVMSTATE}/llvm-fetch
-	(cd ${LLVMDIR}/projects && git clone ${COMPILERRT_GIT} -b ${COMPILERRT_BRANCH})
+	( [ -d ${LLVMSRCDIR}/llvm/projects/compiler-rt/.git ] || (cd ${LLVMDIR}/projects && git clone ${COMPILERRT_GIT} -b ${COMPILERRT_BRANCH}))
 	$(call state, $@)
 
 llvm-patch: ${LLVMSTATE}/llvm-patch
