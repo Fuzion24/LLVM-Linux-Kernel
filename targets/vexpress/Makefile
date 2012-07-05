@@ -86,6 +86,10 @@ test-kill: state/prep state/kernel-build ${QEMUSTATE}/qemu-build
 	( ( sleep 10 && killall -s 9 qemu-system-arm ) || exit 0 )
 	@grep -a "SUCCESS" tmp/qemu_log 
 
+test-gcc-kill: state/prep state/kernel-gcc-build ${QEMUSTATE}/qemu-build
+	( ( ${INSTALLDIR}/bin/qemu-system-arm -kernel ${KERNELGCC}/arch/arm/boot/zImage -initrd reference/initramfs.img -m 256 -M vexpress-a9 -append 'mem=256M ramdisk_size=65536 rw console=earlycon console=ttyAMA0,38400n8 earlyprintk root=/dev/ram0 POWEROFF' -nographic -net none ${GDB_OPTS} | tee tmp/qemu_gcc_log ) & )
+	( ( sleep 10 && killall -s 9 qemu-system-arm ) || exit 0 )
+	@grep -a "SUCCESS" tmp/qemu_gcc_log 
 
 test2: state/prep ${QEMUSTATE}/qemu-build state/kernel-build initramfs
 	@${INSTALLDIR}/bin/qemu-system-arm -kernel ${KERNELDIR}/arch/arm/boot/zImage \

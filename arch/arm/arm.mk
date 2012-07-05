@@ -36,9 +36,12 @@ CROSS_COMPILE	= ${HOST}-
 CC		= clang-wrap.sh
 CPP		= ${CC} -E
 
-CSCC_URL	= https://sourcery.mentor.com/sgpp/lite/arm/portal/package9728/public/arm-none-linux-gnueabi/arm-2011.09-70-arm-none-linux-gnueabi-i686-pc-linux-gnu.tar.bz2
+CSCC_URL	= https://sourcery.mentor.com/GNUToolchain/package8734/public/arm-none-eabi/arm-2011.03-42-arm-none-eabi-i686-pc-linux-gnu.tar.bz2
+CSCC_DIR	= arm-2011.03
+#CSCC_URL	= https://sourcery.mentor.com/GNUToolchain/package9740/public/arm-none-eabi/arm-2011.09-69-arm-none-eabi-i686-pc-linux-gnu.tar.bz2
+#CSCC_DIR	= arm-2011.09
+
 CSCC_TAR	= ${notdir ${CSCC_URL}}
-CSCC_DIR	= arm-2011.09
 CSCC_BIN	= ${TOOLCHAIN}/${CSCC_DIR}/bin
 
 # Add path so that ${CROSS_COMPILE}${CC} is resolved
@@ -49,7 +52,8 @@ ${TOPTMPDIR}/${CSCC_TAR}:
 	@mkdir -p ${TOPTMPDIR}
 	wget -c -P ${TOPTMPDIR} "${CSCC_URL}"
 
-arm-cc: ${CSCC_BIN}/${CROSS_COMPILE}-gcc
-${CSCC_BIN}/${CROSS_COMPILE}-gcc: ${TOPTMPDIR}/${CSCC_TAR}
+CROSS_GCC=${CSCC_BIN}/${CROSS_COMPILE}-gcc
+gcc arm-cc: ${CROSS_GCC}
+${CROSS_GCC}: ${TOPTMPDIR}/${CSCC_TAR}
 	tar -x -j -C ${TOOLCHAIN} -f $<
 	touch $@

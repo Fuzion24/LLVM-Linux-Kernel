@@ -45,6 +45,9 @@ endif
 ifeq "${KERNELCOPY}" ""
 KERNELCOPY	= ${KERNELDIR}-copy
 endif
+ifeq "${KERNELGCC}" ""
+KERNELGCC	= ${KERNELDIR}-gcc
+endif
 
 SRCDIR		= ${TARGETDIR}/src
 LOGDIR		= ${TARGETDIR}/log
@@ -87,6 +90,11 @@ state/kernel-copy: kernel-fetch
 	git clone ${KERNELDIR} -b ${KERNEL_BRANCH} ${KERNELCOPY}
 	$(call state,$@)
 
+kernel-gcc: state/kernel-gcc
+state/kernel-gcc: kernel-fetch
+	git clone ${KERNELDIR} -b ${KERNEL_BRANCH} ${KERNELGCC}
+	$(call state,$@)
+
 kernel-patch: state/kernel-patch
 state/kernel-patch: state/kernel-fetch
 	@mkdir -p ${LOGDIR} ${TMPDIR}
@@ -106,8 +114,15 @@ state/kernel-patch: state/kernel-fetch
 	@${TOOLSDIR}/banner.sh "Creating final patch: see ${LOGDIR}/filteredpatch.log"
 	@cat ${TMPFILTERFILE}-1 ${TMPFILTERFILE}-2 > ${FILTERFILE}
 	@${TOOLSDIR}/applyfilter.py ${TMPDIR}/test.patch ${TMPDIR}/final.patch ${FILTERFILE}
-	@${TOOLSDIR}/banner.sh "Patching source: see patch.log"
+	@${TOOLSDIR}/banner.sh "Patching kernel source: see patch.log"
 	(cd ${KERNELDIR} && patch -p1 -i ${TMPDIR}/final.patch > ${LOGDIR}/patch.log)
+	$(call state,$@)
+
+kernel-gcc-patch: state/kernel-gcc-patch
+state/kernel-gcc-patch: state/kernel-patch
+	(cd ${KERNELGCC} && git reset --hard HEAD)
+	@${TOOLSDIR}/banner.sh "Patching kernel source (gcc): see patch-gcc.log"
+	(cd ${KERNELGCC} && patch -p1 -i ${TMPDIR}/final.patch > ${LOGDIR}/patch-gcc.log)
 	$(call state,$@)
 
 kernel-autopatch: kernel-build state/kernel-copy
@@ -158,12 +173,30 @@ state/kernel-configure: state/kernel-patch
 	(cd ${KERNELDIR} && echo "" | make ${MAKE_FLAGS} oldconfig)
 	$(call state,$@)
 
+kernel-gcc-configure: state/kernel-gcc-configure
+state/kernel-gcc-configure: state/kernel-gcc-patch
+	@cp ${KERNEL_CFG} ${KERNELGCC}/.config
+	(cd ${KERNELGCC} && echo "" | make ${MAKE_FLAGS} oldconfig)
+	$(call state,$@)
+
 kernel-build: state/kernel-build
 state/kernel-build: ${LLVMSTATE}/clang-build state/kernel-configure
 	@test -n "${MAKE_KERNEL}" || (echo "Error: MAKE_KERNEL undefined" && false)
-	@${TOOLSDIR}/banner.sh "Building kernel..."
+	@${TOOLSDIR}/banner.sh "Building kernel with clang..."
 	(cd ${KERNELDIR} && ${MAKE_KERNEL} ${LOG_OUTPUT} )
 	$(call state,$@)
+
+kernel-gcc-build: ${CROSS_GCC} state/kernel-gcc-build
+state/kernel-gcc-build: ${CROSS_GCC} state/kernel-gcc-configure
+	@${TOOLSDIR}/banner.sh "Building kernel with gcc..."
+	(cd ${KERNELGCC} \
+		&& export PATH=$(shell echo "${PATH}" | sed -e 's/ ://g') \
+		&& (env | sort) \
+		&& make -j${JOBS} ${MAKE_FLAGS} CROSS_COMPILE=${CROSS_COMPILE} \
+	)
+	$(call state,$@)
+
+kernels: kernel-build kernel-gcc-build
 
 kernel-sync: state/kernel-fetch
 	@make kernel-clean
