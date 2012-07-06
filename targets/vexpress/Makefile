@@ -1,6 +1,7 @@
 ##############################################################################
 # Copyright (c) 2012 Mark Charlebois
-#                    Jan-Simon Möller
+#               2012 Jan-Simon Möller
+#               2012 Behan Webster
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to 
@@ -21,15 +22,14 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
-TOPDIR=${CWD}/../..
-CWD=${CURDIR}
-KERNEL_CFG=${CWD}/config_vexpress
-KERNEL_GIT=git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-KERNELDIR=${SRCDIR}/linux
-KERNELCOPY=${SRCDIR}/linux-copy
-PATCH_FILES=${CWD}/workaround.patch ${CWD}/vexpress.patch
+TARGETDIR	= ${CURDIR}
+TOPDIR		= $(realpath ${TARGETDIR}/../..)
 
-BUILDMODE:=DEFAULT
+KERNEL_CFG	= ${TARGETDIR}/config_vexpress
+
+KERNEL_PATCHES	+= $(call add_patches,${TARGETDIR}/patches)
+
+BUILDMODE	:= DEFAULT
 
 ifeq ('${GDBON}','1')
 GDB_OPTS=-gdb tcp::4321 -S
@@ -37,76 +37,90 @@ else
 GDB_OPTS=
 endif
 
-# initramfs.mk settings
-BUILDDIR=${CWD}/tmp
-
 TESTRESULTS = test-results
 
-all: prep kernel-build qemu-build
+all: all2
 
-include ${TOPDIR}/common/common.mk
-include ${TOPDIR}/qemu/qemu.mk
-include ${TOPDIR}/test/ltp/ltp.mk
-include ${TOPDIR}/common/arm/common-arm.mk
-include ${TOPDIR}/initramfs/initramfs.mk
+include ${TOPDIR}/common.mk
+include ${ARCHDIR}/arm/arm.mk
+
+LINARORELEASEURL=http://releases.linaro.org/images/12.03/oneiric/nano
+BOARD=vexpress-a9
+NANOBOARD=${BOARD}-nano
+NANOIMG=${NANOBOARD}.img
 
 TARGETS+= clean mrproper test test2
-.PHONY: test test2 prep clean mrproper
+.PHONY: help test test2 prep clean mrproper
+
+help:
+	@echo "targets/vexpress has these options:"
+	@echo ""
+	@echo "* make test          - simple boot to rootfs (make test-[gcc-]kill *1)"
+	@echo "* make test2         - bsd userspace with toybox"
+	@echo "* make test3         - linaro/ubuntu rootfs"
+	@echo "* make test3-ltp     - linaro/ubuntu rootfs starting LTP, kernel built with clang"
+	@echo "* make test3-gcc-ltp - linaro/ubuntu rootfs starting LTP, kernel built with gcc"
+	@echo ""
+	@echo "* make clean         - cleanup"
+	@echo "* make mrproper      - wipe all built files"
+	@echo "* make kernels       - build kernel with clang and gcc"
+	@echo "* make [llvm,clang,qemu,kernel]-build"
+	@echo "                     - build [llvm,clang,qemu,kernel]"
+	@echo "* make [llvm,clang,qemu,kernel]-sync"
+	@echo "                     - sync repos [llvm,clang,qemu,kernel]"
+	@echo "* make sync-all      - sync all repos"
+	@echo ""
+	@echo "* make patch-update"
+
+all2: help
+	@( echo "Continue to build the compiler and initramfs ? [nY]" ; read aw;  if [ x"$$aw" == x"n" ] || [ x"$$aw" == x"N" ] ; then exit 1 ; fi )
+	@make prep kernel-build qemu-build
+	@echo "To continue execute 'make test'."
 
 prep: state/prep
 state/prep:
-	@mkdir -p tmp
-	@mkdir -p log
-	@mkdir -p state
-	@touch $@
+	@mkdir -p ${LOGDIR} ${TMPDIR}
+	$(call state,$@)
 
-
-clean: qemu-clean kernel-clean clang-clean initramfs-clean
+clean: qemu-clean kernel-clean clang-clean llvm-clean initramfs-clean
 
 # do a real wipe
-mrproper: clean
-	rm -rRf arm-test-0.2.tar.gz arm-test
+mrproper: clean ltp-mrproper tmp-mrproper
+	-rm -rf arm-test-0.2.tar.gz arm-test
 #	rm -f state/fetch-initrd
-	rm -rRf tmp/*
-	rm -rRf log/*
+	@rm -rf ${LOGDIR}/*
 	( cd ${KERNELDIR} && make mrproper )
+	-( cd ${KERNELGCC} && make mrproper )
 
 #fetch-initrd: state/fetch-initrd
 #state/fetch-initrd:
 #	rm -f arm-test-0.2.tar.gz
 #	wget -nd -c "http://wiki.qemu.org/download/arm-test-0.2.tar.gz"
 #	tar -xzvf arm-test-0.2.tar.gz
-#	@mkdir -p state
-#	@touch $@
+#	$(call state,$@)
 
 # state/fetch-initrd
 test: state/prep ${QEMUSTATE}/qemu-build state/kernel-build
-	@${INSTALLDIR}/bin/qemu-system-arm -kernel ${KERNELDIR}/arch/arm/boot/zImage -initrd reference/initramfs.img -m 768 -M vexpress-a9 -append 'mem=768M ramdisk_size=65536 rw console=earlycon console=ttyAMA0,38400n8 earlyprintk root=/dev/ram0' -nographic -net none ${GDB_OPTS}
+	@$(call qemu,${BOARD},${KERNELDIR},768,/dev/ram0,ramdisk_size=65536 rw,-initrd reference/initramfs.img -net none)
 
 test-ltp: state/prep ${QEMUSTATE}/qemu-build state/kernel-build
-	@${INSTALLDIR}/bin/qemu-system-arm -kernel ${KERNELDIR}/arch/arm/boot/zImage -initrd reference/initramfs-ltp.img -m 768 -M vexpress-a9 -cpu cortex-a9 -append 'mem=768M ramdisk_size=327680 rw console=earlycon console=ttyAMA0,38400n8 earlyprintk root=/dev/ram0 rdinit=/bin/sh' -nographic -net none ${GDB_OPTS}
-
-
-#	${INSTALLDIR}/bin/qemu-system-arm -kernel ${KERNELDIR}/arch/arm/boot/zImage \
-#		-initrd arm-test/arm_root.img -M vexpress-a9 -append 'console=earlycon \
-#		console=ttyAMA0,38400n8 earlyprintk root=/dev/ram0 rdinit=/bin/sh init=/bin/sh' -nographic -net none ${GDB_OPTS}
+	@$(call qemu,${BOARD} -cpu cortex-a9,${KERNELDIR},768,/dev/ram0,ramdisk_size=327680 rw rdinit=/bin/sh,-initrd reference/initramfs.img -net none)
 
 # state/fetch-initrd
 test-kill: state/prep state/kernel-build ${QEMUSTATE}/qemu-build
-	( ( ${INSTALLDIR}/bin/qemu-system-arm -kernel ${KERNELDIR}/arch/arm/boot/zImage -initrd reference/initramfs.img -m 256 -M vexpress-a9 -append 'mem=256M ramdisk_size=65536 rw console=earlycon console=ttyAMA0,38400n8 earlyprintk root=/dev/ram0 POWEROFF' -nographic -net none ${GDB_OPTS} | tee tmp/qemu_log ) & )
-	( ( sleep 10 && killall -s 9 qemu-system-arm ) || exit 0 )
+	( $(call qemu,${BOARD},${KERNELDIR},256,/dev/ram0,ramdisk_size=65536 rw POWEROFF,-initrd reference/initramfs.img -net none) \
+		| tee tmp/qemu_log ) &
+	( sleep 10 && killall -s 9 qemu-system-arm ) || exit 0
 	@grep -a "SUCCESS" tmp/qemu_log 
 
+test-gcc-kill: state/prep state/kernel-gcc-build ${QEMUSTATE}/qemu-build
+	( $(call qemu,${BOARD},${KERNELGCC},256,/dev/ram0,ramdisk_size=65536 rw POWEROFF,-initrd reference/initramfs.img -net none) \
+		| tee tmp/qemu_gcc_log ) &
+	( sleep 10 && killall -s 9 qemu-system-arm ) || exit 0
+	@grep -a "SUCCESS" tmp/qemu_gcc_log 
 
 test2: state/prep ${QEMUSTATE}/qemu-build state/kernel-build initramfs
-	@${INSTALLDIR}/bin/qemu-system-arm -kernel ${KERNELDIR}/arch/arm/boot/zImage \
-		-initrd initramfs.img.gz -M vexpress-a9 -append \
-		'console=earlycon console=ttyAMA0,38400n8 earlyprintk init=/bin/init' -nographic ${GDB_OPTS}
-
-LINARORELEASEURL=http://releases.linaro.org/images/12.03/oneiric/nano
-LINAROBOARD=vexpress-a9
-NANOBOARD=${LINAROBOARD}-nano
-NANOIMG=${NANOBOARD}.img
+	@$(call qemu,${BOARD},${KERNELDIR},256,/dev/ram0,init=/bin/init,-initrd initramfs.img.gz)
 
 # Get prebuilt vexpress image
 ${TOPTMPDIR}/${NANOBOARD}.img.gz:
@@ -129,7 +143,7 @@ ${TOPTMPDIR}/board-sources.txt: ${TOPTMPDIR}/sources.txt
 
 ${NANOIMG}: ${TOPTMPDIR}/${NANOIMG}
 ${TOPTMPDIR}/${NANOIMG}: ${TOPTMPDIR}/board-sources.txt
-	(cd ${TOPTMPDIR} && sudo linaro-media-create --dev ${LINAROBOARD} --rootfs ext4 \
+	(cd ${TOPTMPDIR} && sudo linaro-media-create --dev ${BOARD} --rootfs ext4 \
 		`sed 's|.*nano.*/|--binary |; s|.*hwpack.*/|--hwpack |' $(notdir $<)` \
 		--hwpack-force-yes --image-size 1G --image-file $@ \
 	)
@@ -144,41 +158,36 @@ vexpress-ltp-clean:
 vexpress-ltp-force: vexpress-ltp-clean vexpress-ltp.img
 
 test3: state/prep ${QEMUSTATE}/qemu-build state/kernel-build vexpress.img
-	@${INSTALLDIR}/bin/qemu-system-arm -kernel ${KERNELDIR}/arch/arm/boot/zImage \
-		-m 256 -M vexpress-a9 -nographic ${GDB_OPTS} \
-		-append 'root=/dev/mmcblk0p2 console=earlycon console=ttyAMA0,38400n8 earlyprintk rootfstype=ext4 init=/bin/bash' \
-		-sd vexpress.img
+	@$(call qemu,${BOARD},${KERNELDIR},256,/dev/mmcblk0p2,rootfstype=ext4 init=/bin/bash)
 
-LTPTESTS = fcntl-locktests filecaps fs ipc mm pipes pty quickhit sched syscalls timers
+#LTPTESTS = fcntl-locktests filecaps fs ipc mm pipes pty quickhit sched syscalls timers
+LTPTESTS = ltplite
 test3-ltp: state/prep ${QEMUSTATE}/qemu-build state/kernel-build vexpress-ltp.img
 	mkdir -p ${TESTRESULTS}
 	for LTPTEST in ${LTPTESTS} ; do \
-	${INSTALLDIR}/bin/qemu-system-arm -kernel ${KERNELDIR}/arch/arm/boot/zImage \
+		$(call qemu,${BOARD},${KERNELDIR},256,/dev/mmcblk0p2,rootfstype=ext4 rw init=/opt/ltp/run-tests.sh ltptest=$$LTPTEST,-sd vexpress-ltp.img) -net nic,macaddr=52:54:00:12:34:57 | tee ${TESTRESULTS}/clang-`date +%Y-%m-%d_%H:%M:%S`_$$LTPTEST.log; \
+	done
+#	${INSTALLDIR}/bin/qemu-system-arm -kernel ${KERNELDIR}/arch/arm/boot/zImage \
 		-m 256 -M vexpress-a9 -nographic ${GDB_OPTS} \
 		-append 'root=/dev/mmcblk0p2 console=earlycon console=ttyAMA0,38400n8 earlyprintk rootfstype=ext4 rw init=/opt/ltp/run-tests.sh ltptest='$$LTPTEST \
 		-net nic,macaddr=52:54:00:12:34:57 \
 		-sd vexpress-ltp.img \
-		| tee ${TESTRESULTS}/`date +%Y-%m-%d_%H:%M:%S`_$$LTPTEST.log; \
+		| tee ${TESTRESULTS}/clang-`date +%Y-%m-%d_%H:%M:%S`_$$LTPTEST.log; \
 	done
 
+test3-gcc-ltp: state/prep ${QEMUSTATE}/qemu-build state/kernel-gcc-build vexpress-ltp.img
+	mkdir -p ${TESTRESULTS}
+	for LTPTEST in ${LTPTESTS} ; do \
+		$(call qemu,${BOARD},${KERNELDIR},256,/dev/mmcblk0p2,rootfstype=ext4 rw init=/opt/ltp/run-tests.sh ltptest=$$LTPTEST,-sd vexpress-ltp.img) -net nic,macaddr=52:54:00:12:34:57 | tee ${TESTRESULTS}/gcc-`date +%Y-%m-%d_%H:%M:%S`_$$LTPTEST.log; \
+	done
+
+test3-all-ltp: test3-ltp test3-gcc-ltp
+
 patch-update: state/kernel-patch
-	@${TOPDIR}/tools/applyfilter.py ${TOPDIR}/common/common.patch ${TMPDIR}/common.patch ${CWD}/kernel-filter
-	@${TOPDIR}/tools/applyfilter.py ${TOPDIR}/common/fix-warnings.patch ${TMPDIR}/fix-warnings.patch ${CWD}/kernel-filter
-	@${TOPDIR}/tools/applyfilter.py ${TOPDIR}/common/fix-warnings-unused.patch ${TMPDIR}/fix-warnings-unused.patch ${CWD}/kernel-filter
-	@${TOPDIR}/tools/applyfilter.py ${TOPDIR}/common/arm/common-arm.patch ${TMPDIR}/common-arm.patch ${CWD}/kernel-filter
-	@${TOPDIR}/tools/applyfilter.py ${TOPDIR}/common/arm/fix-warnings-arm.patch ${TMPDIR}/fix-warnings-arm.patch ${CWD}/kernel-filter
-	@${TOPDIR}/tools/applyfilter.py ${TOPDIR}/common/arm/fix-warnings-arm-unused.patch ${TMPDIR}/fix-warnings-arm-unused.patch ${CWD}/kernel-filter
+	@${TOOLSDIR}/applyfilter.py ${ARCHALLPATCHES}/common.patch ${TMPDIR}/common.patch ${FILTERFILE}
+	@${TOOLSDIR}/applyfilter.py ${ARCHALLPATCHES}/fix-warnings.patch ${TMPDIR}/fix-warnings.patch ${FILTERFILE}
+	@${TOOLSDIR}/applyfilter.py ${ARCHALLPATCHES}/fix-warnings-unused.patch ${TMPDIR}/fix-warnings-unused.patch ${FILTERFILE}
+	@${TOOLSDIR}/applyfilter.py ${ARCHARMPATCHES}/common-arm.patch ${TMPDIR}/common-arm.patch ${FILTERFILE}
+	@${TOOLSDIR}/applyfilter.py ${ARCHARMPATCHES}/fix-warnings-arm.patch ${TMPDIR}/fix-warnings-arm.patch ${FILTERFILE}
+	@${TOOLSDIR}/applyfilter.py ${ARCHARMPATCHES}/fix-warnings-arm-unused.patch ${TMPDIR}/fix-warnings-arm-unused.patch ${FILTERFILE}
 
-kernel-copy: state/kernel-copy
-state/kernel-copy: kernel-fetch
-	(cd ${SRCDIR} && git clone ${KERNELDIR} linux-copy)
-	@touch $@
-
-kernel-autopatch: kernel-build state/kernel-copy
-	(cd ${KERNELCOPY} && git reset --hard HEAD && git pull)
-	(cd ${KERNELCOPY} &&  patch -p1 -i ${TMPDIR}/final.patch >> ${LOGDIR}/patchcopy.log)
-	@${TOOLSDIR}/unusedfix.py ${LOGDIR}/build.log ${KERNELCOPY} 
-	(cd ${KERNELCOPY} &&  patch -R -p1 -i ${TMPDIR}/final.patch >> ${LOGDIR}/patchcopy.log)
-	(cd ${KERNELCOPY} && git diff > ${TMPDIR}/autopatch.patch)
-	@${TOOLSDIR}/splitarch.py ${TMPDIR}/autopatch.patch ${CWD} autopatch
-	@touch $@

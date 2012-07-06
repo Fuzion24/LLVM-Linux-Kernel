@@ -1,6 +1,7 @@
 ##############################################################################
 # Copyright (c) 2012 Mark Charlebois
-#                    Jan-Simon Möller
+#               2012 Jan-Simon Möller
+#               2012 Behan Webster
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to 
@@ -21,34 +22,33 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
-CWD=${CURDIR}
-TOPDIR=${CWD}/../..
-KERNEL_CFG=${CWD}/config_template
-KERNEL_GIT=git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-KERNELDIR=${SRCDIR}/linux
+TARGETDIR	= ${CURDIR}
+TOPDIR		= $(realpath ${TARGETDIR}/../..)
 
-include ../../common/common.mk
+KERNEL_CFG	= ${TARGETDIR}/config_template
+
+KERNEL_PATCHES     += $(call add_patches,${TARGETDIR}/patches)
 
 all: bailout_remove prep kernel-build
 .PHONY: clean mrproper
+
+include ${TOPDIR}/common.mk
+#include ${ARCHDIR}/arm/arm.mk
 
 bailout_remove:
 	@exit 1
 
 prep: state/prep
 state/prep:
-	@mkdir -p tmp
-	@mkdir -p log
-	@mkdir -p state
-	@touch $@
+	@mkdir -p ${LOGDIR} ${TMPDIR}
+	$(call state,$@)
 
-clean: 
+clean: tmp-clean
 	( ( test -e ${KERNELDIR} && make kernel-clean ) || exit 0 )
-	@make clang-clean
+	@make clang-clean llvm-clean
 
 # do a real wipe
 mrproper: clean
 	( ( test -e ${KERNELDIR} && cd ${KERNELDIR} && make mrproper ) || exit 0 )
-	@rm -rf log/*
-	@rm -rf tmp/*
+	@rm -rf ${LOGDIR}/* ${TMPDIR}/*
 

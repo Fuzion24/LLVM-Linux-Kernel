@@ -2,7 +2,7 @@
 # Copyright (c) 2012 Mark Charlebois
 #               2012 Jan-Simon Möller
 #               2012 Behan Webster
-#
+# 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to 
 # deal in the Software without restriction, including without limitation the 
@@ -22,40 +22,8 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
-TARGETDIR	= ${CURDIR}
-TOPDIR		= $(realpath ${TARGETDIR}/../..)
+# Assumes has been included from ../common.mk
 
-KERNEL_CFG	= ${TARGETDIR}/config_msm
-KERNEL_BRANCH	= msm-3.0
-KERNEL_GIT	= git://codeaurora.org/kernel/msm.git
-KERNELDIR	= ${SRCDIR}/msm
+LLVMTOP	= ${TOOLCHAIN}/clang
 
-KERNEL_PATCHES	+= $(call add_patches,${TARGETDIR}/patches)
-
-EXTRAFLAGS	= 
-#EXTRAFLAGS	= -Iarch/arm/mach-msm
-
-all: prep kernel-build
-
-include ${TOPDIR}/common.mk
-include ${ARCHDIR}/arm/arm.mk
-
-TARGETS+= check-dups kernel-autopatch clean mrproper
-.PHONY: kernel-copy clean mrproper
-
-prep: state/prep
-state/prep:
-	@mkdir -p ${LOGDIR} ${TMPDIR}
-	$(call state,$@)
-
-check-dups:
-	${TOOLSDIR}/checkduplicates.py ${KERNEL_PATCHES}
-
-clean: 
-	( ( test -e ${KERNELDIR} && make kernel-clean ) || exit 0 )
-	@make llvm-clean clang-clean
-
-# do a real wipe
-mrproper: clean tmp-mrproper
-	( ( test -e ${KERNELDIR} && cd ${KERNELDIR} && make mrproper ) || exit 0 )
-	@rm -rf ${LOGDIR}/*
+include ${LLVMTOP}/clang.mk

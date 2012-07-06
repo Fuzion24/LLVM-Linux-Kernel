@@ -40,8 +40,7 @@ JOBS=`getconf _NPROCESSORS_ONLN`
 if [ "x${JOBS}" != "x" ]; then
   JOBS=2
 fi
-#PARALLEL="-j${JOBS}"
-PARALLEL="-j8"
+PARALLEL="-j${JOBS}"
 
 export INSTALLDIR=$1
 EXTRAFLAGS=$2 $3 $4 $5 $6 $7 $8 $9

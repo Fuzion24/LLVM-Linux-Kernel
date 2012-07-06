@@ -1,5 +1,6 @@
 ##############################################################################
 # Copyright (c) 2012 Mark Charlebois
+#               2012 Behan Webster
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to 
@@ -20,7 +21,14 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
-#PATCH_FILES+=${COMMON}/mips/common-mips.patch ${COMMON}/mips/fix-warnings-mips.patch \
+ARCHMIPSDIR	= ${ARCHDIR}/mips
+ARCHMIPSBINDIR	= ${ARCHMIPSDIR}/bin
+ARCHMIPSPATCHES	= ${ARCHMIPSDIR}/patches
+
+#KERNEL_PATCHES	+= ${COMMON}/mips/common-mips.patch ${COMMON}/mips/fix-warnings-mips.patch \
 #	${COMMON}/mips/fix-warnings-mips-unused.patch
+KERNEL_PATCHES	+= $(call add_patches,${ARCHMIPSPATCHES})
+
 MAKE_FLAGS=ARCH=mips
 MAKE_KERNEL=${COMMON}/mips/make-kernel.sh ${LLVMINSTALLDIR} ${EXTRAFLAGS}
+

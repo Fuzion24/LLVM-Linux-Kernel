@@ -21,32 +21,27 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
-# NOTE: TOPQEMUDIR must be defined by the calling Makefile
+# Assumes has been included from ../test.mk
 
-TOPQEMUDIR=${TOPDIR}/qemu
-QEMUSRCDIR=${TOPQEMUDIR}/src
-INSTALLDIR=${TOPQEMUDIR}/install
-QEMUBUILDDIR=${TOPQEMUDIR}/build/qemu
-QEMUSTATE=${TOPQEMUDIR}/state
-SYNC_TARGETS+=qemu-sync
-JOBS:=${shell getconf _NPROCESSORS_ONLN}
-ifeq "${JOBS}" ""
-JOBS:=2
-endif
+QEMUSRCDIR	= ${QEMUDIR}/src
+INSTALLDIR	= ${QEMUDIR}/install
+QEMUBUILDDIR	= ${QEMUDIR}/build/qemu
+QEMUSTATE	= ${QEMUDIR}/state
+SYNC_TARGETS	+= qemu-sync
 
+QEMUBINDIR	= ${INSTALLDIR}/bin
 
-TARGETS+= qemu-fetch qemu-configure qemu-build qemu-clean qemu-sync
-.PHONY: qemu-fetch qemu-configure qemu-build 
+TARGETS		+= qemu-fetch qemu-configure qemu-build qemu-clean qemu-sync
+.PHONY: qemu-fetch qemu-configure qemu-build qemu-clean qemu-sync
 
-QEMU_GIT="git://git.qemu.org/qemu.git"
-QEMU_BRANCH="stable-1.0"
+QEMU_GIT	= "git://git.qemu.org/qemu.git"
+QEMU_BRANCH	= "stable-1.0"
 
 qemu-fetch: ${QEMUSTATE}/qemu-fetch
 ${QEMUSTATE}/qemu-fetch:
 	@mkdir -p ${QEMUSRCDIR}
 	(cd ${QEMUSRCDIR} && git clone ${QEMU_GIT} -b ${QEMU_BRANCH})
-	@mkdir -p ${QEMUSTATE}
-	@touch $@
+	$(call state,$@)
 
 qemu-configure: ${QEMUSTATE}/qemu-configure
 ${QEMUSTATE}/qemu-configure: ${QEMUSTATE}/qemu-fetch
@@ -55,15 +50,13 @@ ${QEMUSTATE}/qemu-configure: ${QEMUSTATE}/qemu-fetch
 		--target-list=arm-softmmu,mips-softmmu,i386-softmmu,x86_64-softmmu --disable-kvm \
 		--disable-sdl --audio-drv-list="" --audio-card-list="" \
 		--disable-docs --prefix=${INSTALLDIR})
-	@mkdir -p ${QEMUSTATE}
-	@touch $@
+	$(call state,$@)
 
 qemu-build: ${QEMUSTATE}/qemu-build
 ${QEMUSTATE}/qemu-build: ${QEMUSTATE}/qemu-configure
 	@mkdir -p ${INSTALLDIR}
 	(cd ${QEMUBUILDDIR} && make -j${JOBS} install)
-	@mkdir -p ${QEMUSTATE}
-	@touch $@
+	$(call state,$@)
 	
 qemu-clean: ${QEMUSTATE}/qemu-fetch
 	rm -rf ${QEMUBUILDDIR} 

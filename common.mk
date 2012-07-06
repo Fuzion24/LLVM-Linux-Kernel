@@ -1,5 +1,7 @@
 ##############################################################################
 # Copyright (c) 2012 Mark Charlebois
+#               2012 Jan-Simon Möller
+#               2012 Behan Webster
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to 
@@ -20,15 +22,32 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
-# Note: This file must be included after ${TOPDIR}/makefiles/common.mk
+TOOLCHAIN	= ${TOPDIR}/toolchain
+TOOLSDIR	= ${TOPDIR}/tools
+ARCHDIR		= ${TOPDIR}/arch
+TESTDIR		= ${TOPDIR}/test
+TOPTMPDIR	= ${TOPDIR}/tmp
 
-PATCH_FILES+=${COMMON}/arm/common-arm.patch 
-MAKE_FLAGS=ARCH=arm
-MAKE_KERNEL=${COMMON}/arm/bin/make-kernel.sh ${LLVMINSTALLDIR} ${EXTRAFLAGS}
-HOST=arm-none-linux-gnueabi
-CROSS_COMPILE=arm-none-linux-gnueabi-
-CC=clang-wrap.sh
-CPP=${CC} -E
+JOBS:=${shell getconf _NPROCESSORS_ONLN}
+ifeq "${JOBS}" ""
+JOBS:=2
+endif
+JOBS:=1
 
-# Add path so that ${CROSS_COMPILE}${CC} is resolved
-PATH+=:/opt/arm-2011.03/bin:${COMMON}/arm/bin
+# The order of these includes is important
+include ${TOOLCHAIN}/toolchain.mk
+include ${ARCHDIR}/all/all.mk
+include ${TESTDIR}/test.mk
+include ${TOOLSDIR}/tools.mk
+
+TARGETS	+= tmp-clean tmp-mrproper
+
+${TOPTMPDIR} ${TMPDIR}:
+	@mkdir -p $@
+
+tmp-clean:
+	rm -rf ${TMPDIR}/*
+
+tmp-mrproper: tmp-clean
+	rm -rf ${TOPTMPDIR}/*
+
