@@ -60,6 +60,7 @@ llvm-fetch: ${LLVMSTATE}/llvm-fetch
 ${LLVMSTATE}/llvm-fetch:
 	@mkdir -p ${LLVMSRCDIR}
 	@rm -f ${LLVMSTATE}/clang-fetch
+	@rm -rf ${LLVMSRCDIR}/clang
 	( [ -d ${LLVMSRCDIR}/llvm/.git ] || (rm -rf ${LLVMDIR} && cd ${LLVMSRCDIR} && git clone ${LLVM_GIT} -b ${LLVM_BRANCH}))
 	$(call state, $@)
 
