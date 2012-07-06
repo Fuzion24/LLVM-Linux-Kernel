@@ -45,8 +45,6 @@ LLVM_GIT="http://llvm.org/git/llvm.git"
 CLANG_GIT="http://llvm.org/git/clang.git"
 COMPILERRT_GIT="http://llvm.org/git/compiler-rt.git"
 
-JOBS=8
-
 #LLVM_BRANCH="release_30"
 LLVM_BRANCH="master"
 CLANG_BRANCH="master"
