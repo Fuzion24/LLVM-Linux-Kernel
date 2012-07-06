@@ -39,7 +39,7 @@ endif
 
 TESTRESULTS = test-results
 
-all: prep kernel-build qemu-build
+all: all2
 
 include ${TOPDIR}/common.mk
 include ${ARCHDIR}/arm/arm.mk
@@ -50,7 +50,32 @@ NANOBOARD=${BOARD}-nano
 NANOIMG=${NANOBOARD}.img
 
 TARGETS+= clean mrproper test test2
-.PHONY: test test2 prep clean mrproper
+.PHONY: help test test2 prep clean mrproper
+
+help:
+	@echo "targets/vexpress has these options:"
+	@echo ""
+	@echo "* make test          - simple boot to rootfs (make test-[gcc-]kill *1)"
+	@echo "* make test2         - bsd userspace with toybox"
+	@echo "* make test3         - linaro/ubuntu rootfs"
+	@echo "* make test3-ltp     - linaro/ubuntu rootfs starting LTP, kernel built with clang"
+	@echo "* make test3-gcc-ltp - linaro/ubuntu rootfs starting LTP, kernel built with gcc"
+	@echo ""
+	@echo "* make clean         - cleanup"
+	@echo "* make mrproper      - wipe all built files"
+	@echo "* make kernels       - build kernel with clang and gcc"
+	@echo "* make [llvm,clang,qemu,kernel]-build"
+	@echo "                     - build [llvm,clang,qemu,kernel]"
+	@echo "* make [llvm,clang,qemu,kernel]-sync"
+	@echo "                     - sync repos [llvm,clang,qemu,kernel]"
+	@echo "* make sync-all      - sync all repos"
+	@echo ""
+	@echo "* make patch-update"
+
+all2: help
+	@( echo "Continue to build the compiler and initramfs ? [nY]" ; read aw;  if [ x"$$aw" == x"n" ] || [ x"$$aw" == x"N" ] ; then exit 1 ; fi )
+	@make prep kernel-build qemu-build
+	@echo "To continue execute 'make test'."
 
 prep: state/prep
 state/prep:
@@ -61,7 +86,7 @@ clean: qemu-clean kernel-clean clang-clean llvm-clean initramfs-clean
 
 # do a real wipe
 mrproper: clean ltp-mrproper tmp-mrproper
-	rm -rf arm-test-0.2.tar.gz arm-test
+	-rm -rf arm-test-0.2.tar.gz arm-test
 #	rm -f state/fetch-initrd
 	@rm -rf ${LOGDIR}/*
 	( cd ${KERNELDIR} && make mrproper )
