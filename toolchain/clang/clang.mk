@@ -59,6 +59,7 @@ LLVM_OPTIMIZED=--enable-optimized --enable-assertions
 llvm-fetch: ${LLVMSTATE}/llvm-fetch
 ${LLVMSTATE}/llvm-fetch:
 	@mkdir -p ${LLVMSRCDIR}
+	@rm -f ${LLVMSTATE}/clang-fetch
 	( [ -d ${LLVMSRCDIR}/llvm/.git ] || (rm -rf ${LLVMDIR} && cd ${LLVMSRCDIR} && git clone ${LLVM_GIT} -b ${LLVM_BRANCH}))
 	$(call state, $@)
 
@@ -110,6 +111,7 @@ ${LLVMSTATE}/clang-configure: ${LLVMSTATE}/clang-patch
 llvm-build:  ${LLVMSTATE}/llvm-build
 ${LLVMSTATE}/llvm-build: ${LLVMSTATE}/llvm-configure
 	@mkdir -p ${LLVMINSTALLDIR}
+	@mkdir -p ${LLVMBUILDDIR}
 	(cd ${LLVMBUILDDIR} && make -j${JOBS} install)
 	rm -f ${LLVMINSTALLDIR}/bin/scan-build ${LLVMINSTALLDIR}/bin/scan-view
 	ln -s ${LLVMSRCDIR}/llvm/tools/clang/tools/scan-build/scan-build ${LLVMINSTALLDIR}/bin/scan-build
@@ -119,6 +121,7 @@ ${LLVMSTATE}/llvm-build: ${LLVMSTATE}/llvm-configure
 clang-build:  ${LLVMSTATE}/clang-build
 ${LLVMSTATE}/clang-build: ${LLVMSTATE}/llvm-build ${LLVMSTATE}/clang-configure
 	@mkdir -p ${LLVMINSTALLDIR}
+	@mkdir -p ${CLANGBUILDDIR}
 	(cd ${CLANGBUILDDIR} && make -j${JOBS} install)
 	$(call state, $@)
 
