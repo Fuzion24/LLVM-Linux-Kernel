@@ -65,9 +65,9 @@ RPMDEP = cmake gcc git kpartx patch rsync subversion zlib-devel
 
 build-dep:
 	@if [ -f /etc/debian_version ] ; then \
-		dpkg -l $(DEBDEP) >/dev/null 2>&1 || ( echo "apt-get install $(DEBDEP)"; false ) \
+		[ `dpkg -l $(DEBDEP) | grep -c '^[pu]'` -eq 0 ] || ( echo "sudo apt-get install $(DEBDEP)"; false ) \
 	else \
-		rpm -q $(RPMDEP) >/dev/null 2>&1 || ( echo "yum install $(RPMDEP)"; false ) \
+		rpm -q $(RPMDEP) >/dev/null 2>&1 || ( echo "sudo yum install $(RPMDEP)"; false ) \
 	fi
 	@/opt/$(CSCC_VER)/bin/arm-none-linux-gnueabi-gcc -v >/dev/null 2>&1 \
 		|| ( echo "Can't find working Codesourcery $(CSCC_VER) cross-compiler"; false )
@@ -77,7 +77,7 @@ install-build-dep:
 	@if [ -f /etc/debian_version ] ; then \
 		sudo apt-get install $(DEBDEP); \
 	else \
-		sudo yum install $(RPMDEP)"; \
+		sudo yum install $(RPMDEP); \
 	fi
 	@/opt/$(CSCC_VER)/bin/arm-none-linux-gnueabi-gcc -v >/dev/null 2>&1 \
 		|| ( echo "Can't find working Codesourcery $(CSCC_VER) cross-compiler"; false )
