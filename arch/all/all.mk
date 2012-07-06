@@ -52,6 +52,7 @@ endif
 SRCDIR		= ${TARGETDIR}/src
 LOGDIR		= ${TARGETDIR}/log
 TMPDIR		= ${TARGETDIR}/tmp
+STATEDIR	= ${TARGETDIR}/state
 
 add_patches	= $(addprefix ${1}/,$(shell [ -f ${1}/series ] && cat ${1}/series))
 KERNEL_PATCHES	+= $(call add_patches,${ARCHALLPATCHES})
@@ -71,8 +72,10 @@ LOG_OUTPUT	= 2>&1 | tee ${LOGDIR}/build.log
 #   - KERNEL_CFG
 
 TARGETS	+= kernel-fetch kernel-patch kernel-configure kernel-build kernel-sync
+TARGETS	+= kernel-gcc-fetch kernel-gcc-patch kernel-gcc-configure kernel-gcc-build kernel-gcc-sync
 
 .PHONY: kernel-fetch kernel-patch kernel-configure kernel-build
+.PHONY: kernel-gcc-fetch kernel-gcc-patch kernel-gcc-configure kernel-gcc-build
 
 state	= @mkdir -p $(dir ${1}) && touch ${1};
 
@@ -82,17 +85,17 @@ ${LOCALKERNEL}:
 kernel-fetch: state/kernel-fetch
 state/kernel-fetch: ${LOCALKERNEL}
 	@mkdir -p ${SRCDIR}
-	git clone --reference $< ${KERNEL_GIT} -b ${KERNEL_BRANCH} ${KERNELDIR}
+	[ -d ${KERNELDIR}/.git ] || git clone --reference $< ${KERNEL_GIT} -b ${KERNEL_BRANCH} ${KERNELDIR}
 	$(call state,$@)
 
 kernel-copy: state/kernel-copy
-state/kernel-copy: kernel-fetch
-	git clone ${KERNELDIR} -b ${KERNEL_BRANCH} ${KERNELCOPY}
+state/kernel-copy: state/kernel-fetch
+	[ -d ${KERNELCOPY}/.git ] || git clone ${KERNELDIR} -b ${KERNEL_BRANCH} ${KERNELCOPY}
 	$(call state,$@)
 
-kernel-gcc: state/kernel-gcc-fetch
-state/kernel-gcc-fetch: kernel-fetch
-	git clone ${KERNELDIR} -b ${KERNEL_BRANCH} ${KERNELGCC}
+kernel-gcc-fetch: state/kernel-gcc-fetch
+state/kernel-gcc-fetch: state/kernel-fetch
+	[ -d ${KERNELGCC}/.git ] || git clone ${KERNELDIR} -b ${KERNEL_BRANCH} ${KERNELGCC}
 	$(call state,$@)
 
 kernel-patch: state/kernel-patch
@@ -205,6 +208,7 @@ state/kernel-gcc-build: ${CROSS_GCC} state/kernel-gcc-configure
 	$(call state,$@)
 
 kernels: kernel-build kernel-gcc-build
+kernels-clean: kernel-clean kernel-gcc-clean
 
 kernel-sync: state/kernel-fetch
 	@make kernel-clean
