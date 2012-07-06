@@ -94,11 +94,13 @@ cleanup
 set -e
 MAPPED=`sudo $KPARTX -av "$SDCARD" | awk '{print $3}'`
 for DEV in $MAPPED ; do
-	DEV=/dev/mapper/$DEV
-	[ -n "$VERBOSE" ] && echo $DEV
-	if [ `$FINDFS "LABEL=$LABEL" | grep -c $DEV` -gt 0 ] ; then
+	DEV2=/dev/mapper/$DEV
+	[ -n "$VERBOSE" ] && echo $DEV2
+	sleep 2   # allow some time to settle device creation (!)
+	if [ `sudo $FINDFS LABEL=rootfs | grep -c $DEV2` -gt 0 ] ; then
+		echo "copy..."
 		MP=`mktemp -d`
-		sudo mount $DEV $MP
+		sudo mount $DEV2 $MP
 		sudo mkdir -p $MP/$TO
 		sudo $RSYNC -a $VERBOSE $DELETE $FROM/ $MP/$TO/
 		[ -n "$DROPTOSHELL" ] && (echo $MP && cd $MP && sh)
