@@ -23,6 +23,10 @@
 
 # Note: This file must be included after ${TOPDIR}/common.mk
 
+export CSCC_DIR
+export CSCC_BINDIR
+export HOSTTYPE=${HOST}
+
 ARCHARMDIR	= ${ARCHDIR}/arm
 ARCHARMBINDIR	= ${ARCHARMDIR}/bin
 ARCHARMPATCHES	= ${ARCHARMDIR}/patches
@@ -37,15 +41,16 @@ CC		= clang-wrap.sh
 CPP		= ${CC} -E
 
 CSCC_URL	= https://sourcery.mentor.com/GNUToolchain/package8734/public/arm-none-eabi/arm-2011.03-42-arm-none-eabi-i686-pc-linux-gnu.tar.bz2
-CSCC_DIR	= arm-2011.03
+CSCC_NAME	= arm-2011.03
 #CSCC_URL	= https://sourcery.mentor.com/GNUToolchain/package9740/public/arm-none-eabi/arm-2011.09-69-arm-none-eabi-i686-pc-linux-gnu.tar.bz2
-#CSCC_DIR	= arm-2011.09
+#CSCC_NAME	= arm-2011.09
 
 CSCC_TAR	= ${notdir ${CSCC_URL}}
-CSCC_BIN	= ${TOOLCHAIN}/${CSCC_DIR}/bin
+CSCC_DIR	= ${TOOLCHAIN}/${CSCC_NAME}
+CSCC_BINDIR	= ${CSCC_DIR}/bin
 
 # Add path so that ${CROSS_COMPILE}${CC} is resolved
-PATH		+= :${CSCC_BIN}:${ARCHARMBINDIR}:
+PATH		+= :${CSCC_BINDIR}:${ARCHARMBINDIR}:
 
 # Get arm cross compiler
 ${TOPTMPDIR}/${CSCC_TAR}:
