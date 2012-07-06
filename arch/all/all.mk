@@ -227,3 +227,6 @@ list-kernel-patches:
 
 list-path:
 	@echo ${PATH}
+	
+# ${1}=qemu_bin ${2}=Machine_type ${3}=kerneldir ${4}=RAM ${5}=rootfs ${6}=Kernel_opts ${7}=QEMU_opts
+runqemu = ${1} -kernel ${3}/arch/arm/boot/zImage -m ${4} -M ${2} -append "mem=${4}M root=${5} ${6}" ${7}

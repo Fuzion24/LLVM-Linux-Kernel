@@ -57,3 +57,11 @@ gcc arm-cc: ${CROSS_GCC}
 ${CROSS_GCC}: ${TOPTMPDIR}/${CSCC_TAR}
 	tar -x -j -C ${TOOLCHAIN} -f $<
 	touch $@
+
+KERNELOPTS	= console=earlycon console=ttyAMA0,38400n8 earlyprintk
+QEMUOPTS	= -nographic ${GDB_OPTS}
+
+# ${1}=Machine_type ${2}=kerneldir ${3}=RAM ${4}=rootfs ${5}=Kernel_opts ${6}=QEMU_opts
+qemu = $(call runqemu,${QEMUBINDIR}/qemu-system-arm,${1},${2},${3},${4},${KERNELOPTS} ${5},${QEMUOPTS} ${6})
+#armqemu = ${QEMUBINDIR}/qemu-system-arm -kernel ${2}/arch/arm/boot/zImage -m ${3} -M ${1} \
+       -append 'mem=${3}M ${KERNELOPTS} root=${4} ${5}' ${QEMUOPTS} ${6}

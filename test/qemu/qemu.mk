@@ -23,17 +23,19 @@
 
 # Assumes has been included from ../test.mk
 
-QEMUSRCDIR=${QEMUDIR}/src
-INSTALLDIR=${QEMUDIR}/install
-QEMUBUILDDIR=${QEMUDIR}/build/qemu
-QEMUSTATE=${QEMUDIR}/state
-SYNC_TARGETS+=qemu-sync
+QEMUSRCDIR	= ${QEMUDIR}/src
+INSTALLDIR	= ${QEMUDIR}/install
+QEMUBUILDDIR	= ${QEMUDIR}/build/qemu
+QEMUSTATE	= ${QEMUDIR}/state
+SYNC_TARGETS	+= qemu-sync
 
-TARGETS+= qemu-fetch qemu-configure qemu-build qemu-clean qemu-sync
+QEMUBINDIR	= ${INSTALLDIR}/bin
+
+TARGETS		+= qemu-fetch qemu-configure qemu-build qemu-clean qemu-sync
 .PHONY: qemu-fetch qemu-configure qemu-build qemu-clean qemu-sync
 
-QEMU_GIT="git://git.qemu.org/qemu.git"
-QEMU_BRANCH="stable-1.0"
+QEMU_GIT	= "git://git.qemu.org/qemu.git"
+QEMU_BRANCH	= "stable-1.0"
 
 qemu-fetch: ${QEMUSTATE}/qemu-fetch
 ${QEMUSTATE}/qemu-fetch:
