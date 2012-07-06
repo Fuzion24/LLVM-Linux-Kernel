@@ -39,7 +39,8 @@ endif
 
 TESTRESULTS = test-results
 
-all: all2
+#all: all2
+all: prep kernel-build qemu-build
 
 include ${TOPDIR}/common.mk
 include ${ARCHDIR}/arm/arm.mk
