@@ -1,15 +1,16 @@
 #!/bin/bash
 
-TOPDIR=`dirname $0`/../../..
+# PATH, LLVMINSTALLDIR, CSCC_DIR, CSCC_BINDIR, and HOSTTYPE are exported from the Makefile
 
-CLANG_INSTALL_DIR=${TOPDIR}/clang/install
-export PATH=/opt/arm-2011.03/bin:$PATH
-export COMPILER_PATH=/opt/arm-2011.03
+export PATH=`echo $PATH | sed -E 's/(.*?) :(.*)/\2\1/g; s/(.*?) :(.*)/\2\1/g; s/(.*?) :(.*)/\2\1/g'`
+
 ARMGCC=`which arm-none-linux-gnueabi-gcc`
-export ARMGCCDIR=`dirname $ARMGCC`
-export ARMGCCINCLUDE="$ARMGCCDIR"/../arm-none-linux-gnueabi/libc/usr/include
-if [ ! x"$ARMGCCDIR" == x"" ] ; then export COMPILER_PATH="$ARMGCCDIR/../" ; fi
+export ARMGCCDIR=${CSCC_BINDIR:-`dirname $ARMCC`}
+export COMPILER_PATH=${CSCC_DIR:-`dirname $ARMGCCDIR`}
+export ARMGCCSYSROOT="$COMPILER_PATH/$HOSTTYPE/libc"
+export ARMGCCINCLUDE="$ARMGCCSYSROOT/usr/include"
+export HOSTTYPE=${HOSTTYPE:-arm-none-linux-gnueabi}
 
-CC="${CLANG_INSTALL_DIR}/bin/clang -ccc-host-triple arm-none-linux-gnueabi -ccc-gcc-name arm-none-linux-gnueabi-gcc --sysroot=${COMPILER_PATH}/arm-none-linux-gnueabi/libc -march=armv7-a -mfloat-abi=softfp -mfpu=neon"
+CC="$LLVMINSTALLDIR/bin/clang -ccc-host-triple $HOSTTYPE -ccc-gcc-name $HOSTTYPE-gcc --sysroot=${ARMGCCSYSROOT} -march=armv7-a -mfloat-abi=softfp -mfpu=neon"
 
 ${CC} $*
