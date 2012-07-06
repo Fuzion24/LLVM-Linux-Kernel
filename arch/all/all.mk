@@ -214,6 +214,7 @@ kernel-sync: state/kernel-fetch
 	@make kernel-clean
 	@[ -d ${LOCALKERNEL} ] && (cd ${LOCALKERNEL} && git pull)
 	(cd ${KERNELDIR} && git pull)
+	-(cd ${KERNELGCC} && git pull)
 
 sync-all:
 	@for t in ${SYNC_TARGETS}; do make $$t; done
