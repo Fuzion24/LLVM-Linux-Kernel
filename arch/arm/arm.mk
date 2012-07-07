@@ -57,7 +57,7 @@ ${TOPTMPDIR}/${CSCC_TAR}:
 	@mkdir -p ${TOPTMPDIR}
 	wget -c -P ${TOPTMPDIR} "${CSCC_URL}"
 
-CROSS_GCC=${CSCC_BIN}/${CROSS_COMPILE}-gcc
+CROSS_GCC=${CSCC_BINDIR}/${CROSS_COMPILE}gcc
 gcc arm-cc: ${CROSS_GCC}
 ${CROSS_GCC}: ${TOPTMPDIR}/${CSCC_TAR}
 	tar -x -j -C ${TOOLCHAIN} -f $<
