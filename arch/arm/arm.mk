@@ -40,7 +40,7 @@ CROSS_COMPILE	= ${HOST}-
 CC		= clang-wrap.sh
 CPP		= ${CC} -E
 
-CSCC_URL	= https://sourcery.mentor.com/GNUToolchain/package8734/public/arm-none-eabi/arm-2011.03-42-arm-none-eabi-i686-pc-linux-gnu.tar.bz2
+CSCC_URL       = https://sourcery.mentor.com/GNUToolchain/package8739/public/arm-none-linux-gnueabi/arm-2011.03-41-arm-none-linux-gnueabi-i6
 CSCC_NAME	= arm-2011.03
 #CSCC_URL	= https://sourcery.mentor.com/GNUToolchain/package9740/public/arm-none-eabi/arm-2011.09-69-arm-none-eabi-i686-pc-linux-gnu.tar.bz2
 #CSCC_NAME	= arm-2011.09
