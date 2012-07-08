@@ -187,6 +187,7 @@ state/kernel-configure: state/kernel-patch
 kernel-gcc-configure: state/kernel-gcc-configure
 state/kernel-gcc-configure: state/kernel-gcc-patch
 	@cp ${KERNEL_CFG} ${KERNELGCC}/.config
+	@echo "CONFIG_ARM_UNWIND=y" >> ${KERNELGCC}/.config
 	(cd ${KERNELGCC} && echo "" | make ${MAKE_FLAGS} oldconfig)
 	$(call state,$@)
 
