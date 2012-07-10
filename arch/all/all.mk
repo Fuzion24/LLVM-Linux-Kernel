@@ -49,6 +49,8 @@ ifeq "${KERNELGCC}" ""
 KERNELGCC	= ${KERNELDIR}-gcc
 endif
 
+TOPLOGDIR	= ${TOPDIR}/log
+
 SRCDIR		= ${TARGETDIR}/src
 LOGDIR		= ${TARGETDIR}/log
 TMPDIR		= ${TARGETDIR}/tmp
@@ -61,6 +63,14 @@ FILTERFILE	= ${TARGETDIR}/kernel-filter
 TMPFILTERFILE	= ${TARGETDIR}/tmp/kernel-filter
 SYNC_TARGETS	+= kernel-sync
 LOG_OUTPUT	= 2>&1 | tee ${LOGDIR}/build.log
+
+KERNEL_SIZE_ARTIFACTS	= arch/arm/boot/zImage vmlinux*
+
+# ${1}=logdir ${2}=toolchain ${3}=testname
+sizelog	= ${1}/${2}-${ARCH}-`date +%Y-%m-%d_%H:%M:%S`-kernel-size.log
+
+KERNEL_SIZE_CLANG_LOG	= clang-`date +%Y-%m-%d_%H:%M:%S`-kernel-size.log
+KERNEL_SIZE_GCC_LOG	= gcc-`date +%Y-%m-%d_%H:%M:%S`-kernel-size.log
 
 # The ARCH makefile must provide the following:
 #   - KERNEL_PATCHES+=... Additional arch specific patch file(s)
@@ -196,16 +206,23 @@ state/kernel-build: ${LLVMSTATE}/clang-build state/kernel-configure
 	@test -n "${MAKE_KERNEL}" || (echo "Error: MAKE_KERNEL undefined" && false)
 	@${TOOLSDIR}/banner.sh "Building kernel with clang..."
 	(cd ${KERNELDIR} && ${MAKE_KERNEL} ${LOG_OUTPUT} )
+	@mkdir -p ${TOPLOGDIR}
+	( ${CLANG} --version | head -1 ; \
+		cd ${KERNELDIR} && wc -c ${KERNEL_SIZE_ARTIFACTS}) \
+		| tee $(call sizelog,${TOPLOGDIR},clang)
 	$(call state,$@)
 
-kernel-gcc-build: ${CROSS_GCC} state/kernel-gcc-build
+kernel-gcc-build: state/cross-gcc state/kernel-gcc-build
 state/kernel-gcc-build: ${CROSS_GCC} state/kernel-gcc-configure
 	@${TOOLSDIR}/banner.sh "Building kernel with gcc..."
 	(cd ${KERNELGCC} \
 		&& export PATH=$(shell echo "${PATH}" | sed -e 's/ ://g') \
-		&& (env | sort) \
 		&& make -j${JOBS} ${MAKE_FLAGS} CROSS_COMPILE=${CROSS_COMPILE} \
 	)
+	@mkdir -p ${TOPLOGDIR}
+	( ${CROSS_GCC} --version | head -1 ; \
+		cd ${KERNELGCC} && wc -c ${KERNEL_SIZE_ARTIFACTS}) \
+		| tee $(call sizelog,${TOPLOGDIR},gcc)
 	$(call state,$@)
 
 kernels: kernel-build kernel-gcc-build
@@ -231,4 +248,4 @@ list-path:
 	@echo ${PATH}
 	
 # ${1}=qemu_bin ${2}=Machine_type ${3}=kerneldir ${4}=RAM ${5}=rootfs ${6}=Kernel_opts ${7}=QEMU_opts
-runqemu = ${1} -kernel ${3}/arch/arm/boot/zImage -m ${4} -M ${2} -append "mem=${4}M root=${5} ${6}" ${7}
+runqemu = ${1} -M ${2} -kernel ${3}/arch/arm/boot/zImage -m ${4} -append "mem=${4}M root=${5} ${6}" ${7}
