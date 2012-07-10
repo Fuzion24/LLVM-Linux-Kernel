@@ -1,6 +1,7 @@
 #!/bin/bash
 ##############################################################################
 # Copyright (c) 2012 Mark Charlebois
+# Copyright (c) 2012 Behan Webster
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to 
@@ -21,59 +22,60 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
-if [ "x${USECLANG}" = "x" ]; then
 # Use clang by default
-USECLANG=1
+USECLANG=${USECLANG:-1}
+
+if [ -z "$GCCHOME" ]; then
+	GCCHOME=${CSCC_DIR:-/opt}
 fi
 
-if [ "x${GCCHOME}" = "x" ]; then
-GCCHOME=/opt
+if [ -z "$CSVERSION" ]; then
+	# Use Code Sourcery arm-2011.03 by default
+	CSVERSION=2011.03
+	GCCVERSION=4.5.2
 fi
 
-if [ "x${CSVERSION}" = "x" ]; then
-# Use Code Sourcery arm-2011.03 by default
-CSVERSION=2011.03
-GCCVERSION=4.5.2
-fi
+export CSCC_DIR=${CSCC_DIR:-$GCCHOME/arm-$CSVERSION}
+export CSCC_BINDIR=${CSCC_BINDIR:-$CSCC_DIR/bin}
+export PATH=`echo $PATH | sed -E 's/(.*?) :(.*)/\2\1/g; s/(.*?) :(.*)/\2\1/g; s/(.*?) :(.*)/\2\1/g'`
+export HOSTTYPE=${HOSTTYPE:-arm-none-linux-gnueabi}
+export HOSTTRIPLE=${HOSTTRIPLE:-arm-none-gnueabi}
 
-JOBS=`getconf _NPROCESSORS_ONLN`
-if [ "x${JOBS}" != "x" ]; then
+JOBS=${JOBS:-`getconf _NPROCESSORS_ONLN`}
+if [ -z "$JOBS" ]; then
   JOBS=2
 fi
-PARALLEL="-j${JOBS}"
+PARALLEL="-j$JOBS"
 
-export INSTALLDIR=$1
-EXTRAFLAGS=$2 $3 $4 $5 $6 $7 $8 $9
+export INSTALLDIR=$1 ; shift
+EXTRAFLAGS=$*
 
 export LANG=C
 export LC_ALL=C
 
-if [ ${USECLANG} -eq "1" ]; then
-export CC_FOR_BUILD="${INSTALLDIR}/bin/clang -ccc-host-triple arm-none-gnueabi -march=armv7-a -mfloat-abi=softfp -mfpu=neon \
-	-ccc-gcc-name arm-none-linux-gnueabi-gcc -fno-builtin ${EXTRAFLAGS}"
+if [ $USECLANG -eq "1" ]; then
+	export PATH="$INSTALLDIR/bin:$PATH"
+	export CROSS_COMPILE=$HOSTTYPE-
 
-export PATH=${GCCHOME}/arm-${CSVERSION}/bin:${INSTALLDIR}/bin:$PATH
-export CROSS_COMPILE=arm-none-linux-gnueabi-
-
+	#export CLANGFLAGS="-march=armv7-a -mfloat-abi=softfp -mfpu=neon -fcatch-undefined-behavior -fno-builtin $EXTRAFLAGS"
+	export CLANGFLAGS="-march=armv7-a -mfloat-abi=softfp -mfpu=neon -fno-builtin $EXTRAFLAGS"
+	export CC_FOR_BUILD="$INSTALLDIR/bin/clang -ccc-host-triple $HOSTTRIPLE -ccc-gcc-name $HOSTTYPE-gcc $CLANGFLAGS"
 else
+	if [ ! -d $CSCC_DIR ]; then
+		echo "Compiler not found: $CSCC_DIR"
+		exit 1
+	fi
 
-if [ -d ${GCCHOME}/arm-${CSVERSION} ]; then
-export CC_FOR_BUILD=${GCCHOME}/arm-${CSVERSION}/bin/arm-none-linux-gnueabi-gcc
-export CROSS_COMPILE=arm-none-linux-gnueabi-
-export COMPILER_PATH=${GCCHOME}/arm-${CSVERSION}
-#export PATH=${GCCHOME}/arm-${CSVERSION}/bin:$PATH
-else
-echo "Compiler not found: ${GCCHOME}/arm-${CSVERSION}"
-exit 1
-fi
-
+	#export PATH="$CSCC_BINDIR:$PATH"
+	export COMPILER_PATH=$CSCC_DIR
+	export CROSS_COMPILE=$HOSTTYPE-
+	export CC_FOR_BUILD=$CSCC_BINDIR/$HOSTTYPE-gcc
 fi
 
 export HOSTCC_FOR_BUILD="gcc"
 export MAKE="make V=1"
-
-export LD=${CROSS_COMPILE}ld 
+export LD=${CROSS_COMPILE}ld
 
 $MAKE KALLSYMS_EXTRA_PASS=1 CONFIG_DEBUG_SECTION_MISMATCH=y ARCH=arm CONFIG_DEBUG_INFO=1 \
-	CC="$CC_FOR_BUILD" HOSTCC=$HOSTCC_FOR_BUILD ${PARALLEL}
+	CC="$CC_FOR_BUILD" HOSTCC=$HOSTCC_FOR_BUILD $PARALLEL
 

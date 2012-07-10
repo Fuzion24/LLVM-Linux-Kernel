@@ -35,8 +35,8 @@ KERNEL_PATCHES		+= $(call add_patches,${ARCHX86_64PATCHES})
 ARCH		= x86_64
 MAKE_FLAGS	= ARCH=${ARCH}
 MAKE_KERNEL	= ${ARCHX86_64BINDIR}/make-kernel.sh ${LLVMINSTALLDIR} ${EXTRAFLAGS}
-HOST		= arm-none-linux-x86_64
-HOSTTRIPLE	= arm-none-x86_64
+HOST		= x86_64-none-linux-gnu
+HOSTTRIPLE	= x86_64-pc-linux-gnu
 CROSS_COMPILE	= ${HOST}-
 CC		= clang-wrap.sh
 CPP		= ${CC} -E

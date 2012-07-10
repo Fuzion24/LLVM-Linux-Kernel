@@ -35,12 +35,12 @@ KERNEL_PATCHES	+= $(call add_patches,${ARCHMIPSPATCHES})
 ARCH		= mips
 MAKE_FLAGS	= ARCH=${ARCH}
 MAKE_KERNEL	= ${ARCHMIPSBINDIR}/make-kernel.sh ${LLVMINSTALLDIR} ${EXTRAFLAGS}
-HOST		= arm-none-linux-mips
-HOSTTRIPLE	= arm-none-mips
+HOST		= mips-none-eabi
+HOSTTRIPLE	= mips
 CROSS_COMPILE	= ${HOST}-
 CC		= clang-wrap.sh
 CPP		= ${CC} -E
 
 # Add path so that ${CROSS_COMPILE}${CC} is resolved
-PATH		+= :${ARCHARMBINDIR}:
+PATH		+= :${ARCHMIPSBINDIR}:
 

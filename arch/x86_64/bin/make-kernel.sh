@@ -21,30 +21,38 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
-USECLANG=1
-PARALLEL="-j8"
-#PARALLEL=
+# Use clang by default
+USECLANG=${USECLANG:-1}
 
-export INSTALLDIR=$1
+export PATH=`echo $PATH | sed -E 's/(.*?) :(.*)/\2\1/g; s/(.*?) :(.*)/\2\1/g; s/(.*?) :(.*)/\2\1/g'`
+export HOSTTYPE=${HOSTTYPE:-none-linux-gnueabi}
+export HOSTTRIPLE=${HOSTTRIPLE:-x86_64-pc-linux-gnu}
+
+JOBS=${JOBS:-`getconf _NPROCESSORS_ONLN`}
+if [ -z "$JOBS" ]; then
+  JOBS=2
+fi
+PARALLEL="-j$JOBS"
+
+export INSTALLDIR=$1 ; shift
+EXTRAFLAGS=$*
 
 export LANG=C
 export LC_ALL=C
 
-if [ ${USECLANG} -eq "1" ]; then
-export CC_FOR_BUILD="${INSTALLDIR}/bin/clang -ccc-host-triple x86_64-pc-linux-gnu \
-	-ccc-gcc-name none-linux-gnueabi-gcc \
-	-I ${INSTALLDIR}/lib/clang/3.1/include"
-export PATH=${INSTALLDIR}/bin:$PATH
+if [ $USECLANG -eq "1" ]; then
+	export PATH="$INSTALLDIR/bin:$PATH"
+
+	#export CLANGFLAGS="-I ${INSTALLDIR}/lib/clang/*/include"
+	export CC_FOR_BUILD="$INSTALLDIR/bin/clang -ccc-host-triple $HOSTTRIPLE -ccc-gcc-name $HOSTTYPE-gcc $CLANGFLAGS"
 
 else
-
-export CC_FOR_BUILD=gcc
-
+	export CC_FOR_BUILD=gcc
 fi
 
 export HOSTCC_FOR_BUILD="gcc"
 export MAKE="make V=1"
 
 $MAKE CONFIG_DEBUG_SECTION_MISMATCH=y CONFIG_DEBUG_INFO=1 \
-	CC="$CC_FOR_BUILD" HOSTCC=$HOSTCC_FOR_BUILD ${PARALLEL}
+	CC="$CC_FOR_BUILD" HOSTCC=$HOSTCC_FOR_BUILD $PARALLEL
 
