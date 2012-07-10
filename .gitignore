@@ -5,6 +5,7 @@ build/
 build.log
 initramfs.img.gz
 install/
+log
 patch.log
 *.pyc
 qemu_log
