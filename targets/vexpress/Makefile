@@ -166,20 +166,14 @@ LTPTESTS = ltplite
 test3-ltp: state/prep ${QEMUSTATE}/qemu-build state/kernel-build vexpress-ltp.img
 	mkdir -p ${TESTRESULTS}
 	for LTPTEST in ${LTPTESTS} ; do \
-		$(call qemu,${BOARD},${KERNELDIR},256,/dev/mmcblk0p2,rootfstype=ext4 rw init=/opt/ltp/run-tests.sh ltptest=$$LTPTEST,-sd vexpress-ltp.img) -net nic,macaddr=52:54:00:12:34:57 | tee ${TESTRESULTS}/clang-`date +%Y-%m-%d_%H:%M:%S`_$$LTPTEST.log; \
+		$(call qemu,${BOARD},${KERNELDIR},256,/dev/mmcblk0p2,rootfstype=ext4 rw init=/opt/ltp/run-tests.sh ltptest=$$LTPTEST,-sd vexpress-ltp.img) -net nic,macaddr=52:54:00:12:34:57 | tee $(call ltplog,${TESTRESULTS},clang,$$LTPTEST); \
 	done
-#	${INSTALLDIR}/bin/qemu-system-arm -kernel ${KERNELDIR}/arch/arm/boot/zImage \
-		-m 256 -M vexpress-a9 -nographic ${GDB_OPTS} \
-		-append 'root=/dev/mmcblk0p2 console=earlycon console=ttyAMA0,38400n8 earlyprintk rootfstype=ext4 rw init=/opt/ltp/run-tests.sh ltptest='$$LTPTEST \
-		-net nic,macaddr=52:54:00:12:34:57 \
-		-sd vexpress-ltp.img \
-		| tee ${TESTRESULTS}/clang-`date +%Y-%m-%d_%H:%M:%S`_$$LTPTEST.log; \
-	done
+	#${TESTRESULTS}/clang-${ARCH}-`date +%Y-%m-%d_%H:%M:%S`_$$LTPTEST.log;
 
 test3-gcc-ltp: state/prep ${QEMUSTATE}/qemu-build state/kernel-gcc-build vexpress-ltp.img
 	mkdir -p ${TESTRESULTS}
 	for LTPTEST in ${LTPTESTS} ; do \
-		$(call qemu,${BOARD},${KERNELDIR},256,/dev/mmcblk0p2,rootfstype=ext4 rw init=/opt/ltp/run-tests.sh ltptest=$$LTPTEST,-sd vexpress-ltp.img) -net nic,macaddr=52:54:00:12:34:57 | tee ${TESTRESULTS}/gcc-`date +%Y-%m-%d_%H:%M:%S`_$$LTPTEST.log; \
+		$(call qemu,${BOARD},${KERNELDIR},256,/dev/mmcblk0p2,rootfstype=ext4 rw init=/opt/ltp/run-tests.sh ltptest=$$LTPTEST,-sd vexpress-ltp.img) -net nic,macaddr=52:54:00:12:34:57 | tee $(call ltplog,${TESTRESULTS},gcc,$$LTPTEST; \
 	done
 
 test3-all-ltp: test3-ltp test3-gcc-ltp

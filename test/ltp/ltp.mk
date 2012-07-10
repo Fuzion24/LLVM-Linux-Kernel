@@ -99,3 +99,6 @@ ltp-clean:
 
 ltp-mrproper:
 	rm -rf ${LTPSTATE} ${LTPTMPDIR} ${LTPSRCDIR} ${TOPLTPINSTALLDIR}
+
+# ${1}=logdir ${2}=toolchain ${3}=testname
+ltplog	= ${1}/${2}-${ARCH}-`date +%Y-%m-%d_%H:%M:%S`-${3}.log
