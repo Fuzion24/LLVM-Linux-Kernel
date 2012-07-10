@@ -10,7 +10,10 @@ export COMPILER_PATH=${CSCC_DIR:-`dirname $ARMGCCDIR`}
 export ARMGCCSYSROOT="$COMPILER_PATH/$HOSTTYPE/libc"
 export ARMGCCINCLUDE="$ARMGCCSYSROOT/usr/include"
 export HOSTTYPE=${HOSTTYPE:-arm-none-linux-gnueabi}
+export HOSTRIPLE=${HOSTRIPLE:-arm-none-gnueabi}
 
-CC="$LLVMINSTALLDIR/bin/clang -ccc-host-triple $HOSTTYPE -ccc-gcc-name $HOSTTYPE-gcc --sysroot=${ARMGCCSYSROOT} -march=armv7-a -mfloat-abi=softfp -mfpu=neon"
+CLANGFLAGS="-march=armv7-a -mfloat-abi=softfp -mfpu=neon -fcatch-undefined-behavior"
+
+CC="$LLVMINSTALLDIR/bin/clang -ccc-host-triple $HOSTTYPE -ccc-gcc-name $HOSTTYPE-gcc --sysroot=${ARMGCCSYSROOT} ${CLANGFLAGS}"
 
 ${CC} $*
