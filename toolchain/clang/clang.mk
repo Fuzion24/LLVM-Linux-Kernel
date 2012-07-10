@@ -26,35 +26,37 @@
 
 export LLVMINSTALLDIR
 
-LLVMSRCDIR=${LLVMTOP}/src
-LLVMINSTALLDIR=${LLVMTOP}/install
-LLVMSTATE=${LLVMTOP}/state
-LLVMPATCHES=${LLVMTOP}/patches
+LLVMSRCDIR	= ${LLVMTOP}/src
+LLVMINSTALLDIR	= ${LLVMTOP}/install
+LLVMSTATE	= ${LLVMTOP}/state
+LLVMPATCHES	= ${LLVMTOP}/patches
 
-LLVMDIR=${LLVMSRCDIR}/llvm
-CLANGDIR=${LLVMSRCDIR}/clang
+CLANG		= ${LLVMINSTALLDIR}/bin/clang
 
-LLVMBUILDDIR=${LLVMTOP}/build/llvm
-CLANGBUILDDIR=${LLVMTOP}/build/clang
+LLVMDIR		= ${LLVMSRCDIR}/llvm
+CLANGDIR	= ${LLVMSRCDIR}/clang
 
-SYNC_TARGETS=llvm-sync clang-sync
+LLVMBUILDDIR	= ${LLVMTOP}/build/llvm
+CLANGBUILDDIR	= ${LLVMTOP}/build/clang
 
-TARGETS+= llvm-fetch clang-fetch llvm-configure clang-configure llvm-build clang-build llvm-clean clang-clean llvm-sync clang-sync clang-update-all
+SYNC_TARGETS	= llvm-sync clang-sync
+
+TARGETS		+= llvm-fetch clang-fetch llvm-configure clang-configure llvm-build clang-build llvm-clean clang-clean llvm-sync clang-sync clang-update-all
 
 .PHONY: llvm-fetch clang-fetch llvm-configure clang-configure llvm-build clang-build llvm-clean clang-clean clang-sync clang-update-all
 
-LLVM_GIT="http://llvm.org/git/llvm.git"
-CLANG_GIT="http://llvm.org/git/clang.git"
-COMPILERRT_GIT="http://llvm.org/git/compiler-rt.git"
+LLVM_GIT	= "http://llvm.org/git/llvm.git"
+CLANG_GIT	= "http://llvm.org/git/clang.git"
+COMPILERRT_GIT	= "http://llvm.org/git/compiler-rt.git"
 
-#LLVM_BRANCH="release_30"
-LLVM_BRANCH="master"
-CLANG_BRANCH="master"
-COMPILERRT_BRANCH="master"
+#LLVM_BRANCH	= "release_30"
+LLVM_BRANCH	= "master"
+CLANG_BRANCH	= "master"
+COMPILERRT_BRANCH = "master"
 # The buildbot takes quite long to build the debug-version of clang (debug+asserts).
 # Introducing this option to switch between debug and optimized. 
-#LLVM_OPTIMIZED=""
-LLVM_OPTIMIZED=--enable-optimized --enable-assertions
+#LLVM_OPTIMIZED	= ""
+LLVM_OPTIMIZED	= --enable-optimized --enable-assertions
 
 llvm-fetch: ${LLVMSTATE}/llvm-fetch
 ${LLVMSTATE}/llvm-fetch:
@@ -114,9 +116,8 @@ ${LLVMSTATE}/llvm-build: ${LLVMSTATE}/llvm-configure
 	@mkdir -p ${LLVMINSTALLDIR}
 	@mkdir -p ${LLVMBUILDDIR}
 	(cd ${LLVMBUILDDIR} && make -j${JOBS} install)
-	rm -f ${LLVMINSTALLDIR}/bin/scan-build ${LLVMINSTALLDIR}/bin/scan-view
-	ln -s ${LLVMSRCDIR}/llvm/tools/clang/tools/scan-build/scan-build ${LLVMINSTALLDIR}/bin/scan-build
-	ln -s ${LLVMSRCDIR}/llvm/tools/clang/tools/scan-view/scan-view ${LLVMINSTALLDIR}/bin/scan-view
+	cp -a ${LLVMSRCDIR}/clang/tools/scan-view/* ${LLVMINSTALLDIR}/bin
+	cp -a ${LLVMSRCDIR}/clang/tools/scan-build/* ${LLVMINSTALLDIR}/bin
 	$(call state, $@)
 
 clang-build:  ${LLVMSTATE}/clang-build
