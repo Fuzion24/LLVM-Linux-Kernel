@@ -25,7 +25,9 @@
 
 export CSCC_DIR
 export CSCC_BINDIR
+export COMPILER_PATH=${CSCC_DIR}
 export HOSTTYPE=${HOST}
+export HOSTTRIPLE
 
 ARCHARMDIR	= ${ARCHDIR}/arm
 ARCHARMBINDIR	= ${ARCHARMDIR}/bin
@@ -33,9 +35,11 @@ ARCHARMPATCHES	= ${ARCHARMDIR}/patches
 
 KERNEL_PATCHES	+= $(call add_patches,${ARCHARMPATCHES})
 
-MAKE_FLAGS	= ARCH=arm
+ARCH		= arm
+MAKE_FLAGS	= ARCH=${ARCH}
 MAKE_KERNEL	= ${ARCHARMBINDIR}/make-kernel.sh ${LLVMINSTALLDIR} ${EXTRAFLAGS}
 HOST		= arm-none-linux-gnueabi
+HOSTTRIPLE	= arm-none-gnueabi
 CROSS_COMPILE	= ${HOST}-
 CC		= clang-wrap.sh
 CPP		= ${CC} -E

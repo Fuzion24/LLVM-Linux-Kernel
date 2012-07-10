@@ -21,6 +21,9 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
+export HOSTTYPE=${HOST}
+export HOSTTRIPLE
+
 ARCHX86_64DIR		= ${ARCHDIR}/x86_64
 ARCHX86_64BINDIR	= ${ARCHX86_64DIR}/bin
 ARCHX86_64PATCHES	= ${ARCHX86_64DIR}/patches
@@ -29,5 +32,15 @@ ARCHX86_64PATCHES	= ${ARCHX86_64DIR}/patches
 #	${COMMON}/x86_64/fix-warnings-x86_64-unused.patch
 KERNEL_PATCHES		+= $(call add_patches,${ARCHX86_64PATCHES})
 
-MAKE_FLAGS=
-MAKE_KERNEL=${COMMON}/x86_64/make-kernel.sh ${LLVMINSTALLDIR} ${EXTRAFLAGS}
+ARCH		= x86_64
+MAKE_FLAGS	= ARCH=${ARCH}
+MAKE_KERNEL	= ${ARCHX86_64BINDIR}/make-kernel.sh ${LLVMINSTALLDIR} ${EXTRAFLAGS}
+HOST		= arm-none-linux-x86_64
+HOSTTRIPLE	= arm-none-x86_64
+CROSS_COMPILE	= ${HOST}-
+CC		= clang-wrap.sh
+CPP		= ${CC} -E
+
+# Add path so that ${CROSS_COMPILE}${CC} is resolved
+PATH		+= :${ARCHX86_64BINDIR}:
+

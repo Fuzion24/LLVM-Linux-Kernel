@@ -22,17 +22,22 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
+export JOBS
+
 TOOLCHAIN	= ${TOPDIR}/toolchain
 TOOLSDIR	= ${TOPDIR}/tools
 ARCHDIR		= ${TOPDIR}/arch
 TESTDIR		= ${TOPDIR}/test
 TOPTMPDIR	= ${TOPDIR}/tmp
 
-JOBS:=${shell getconf _NPROCESSORS_ONLN}
+# Default jobs is number of processors + 1 for disk I/O
+JOBS:=${shell expr `getconf _NPROCESSORS_ONLN` + 1}
 ifeq "${JOBS}" ""
 JOBS:=2
 endif
-JOBS:=1
+
+list-jobs:
+	@echo "-j${JOBS}"
 
 # The order of these includes is important
 include ${TOOLCHAIN}/toolchain.mk

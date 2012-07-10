@@ -21,6 +21,9 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
+export HOSTTYPE=${HOST}
+export HOSTTRIPLE
+
 ARCHMIPSDIR	= ${ARCHDIR}/mips
 ARCHMIPSBINDIR	= ${ARCHMIPSDIR}/bin
 ARCHMIPSPATCHES	= ${ARCHMIPSDIR}/patches
@@ -29,6 +32,15 @@ ARCHMIPSPATCHES	= ${ARCHMIPSDIR}/patches
 #	${COMMON}/mips/fix-warnings-mips-unused.patch
 KERNEL_PATCHES	+= $(call add_patches,${ARCHMIPSPATCHES})
 
-MAKE_FLAGS=ARCH=mips
-MAKE_KERNEL=${COMMON}/mips/make-kernel.sh ${LLVMINSTALLDIR} ${EXTRAFLAGS}
+ARCH		= mips
+MAKE_FLAGS	= ARCH=${ARCH}
+MAKE_KERNEL	= ${ARCHMIPSBINDIR}/make-kernel.sh ${LLVMINSTALLDIR} ${EXTRAFLAGS}
+HOST		= arm-none-linux-mips
+HOSTTRIPLE	= arm-none-mips
+CROSS_COMPILE	= ${HOST}-
+CC		= clang-wrap.sh
+CPP		= ${CC} -E
+
+# Add path so that ${CROSS_COMPILE}${CC} is resolved
+PATH		+= :${ARCHARMBINDIR}:
 
