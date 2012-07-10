@@ -40,9 +40,9 @@ CROSS_COMPILE	= ${HOST}-
 CC		= clang-wrap.sh
 CPP		= ${CC} -E
 
-CSCC_URL       = https://sourcery.mentor.com/GNUToolchain/package8739/public/arm-none-linux-gnueabi/arm-2011.03-41-arm-none-linux-gnueabi-i686-pc-linux-gnu.tar.bz2
+CSCC_URL	= https://sourcery.mentor.com/GNUToolchain/package8739/public/arm-none-linux-gnueabi/arm-2011.03-41-arm-none-linux-gnueabi-i686-pc-linux-gnu.tar.bz2
 CSCC_NAME	= arm-2011.03
-#CSCC_URL	= https://sourcery.mentor.com/GNUToolchain/package9740/public/arm-none-eabi/arm-2011.09-69-arm-none-eabi-i686-pc-linux-gnu.tar.bz2
+#CSCC_URL	= https://sourcery.mentor.com/sgpp/lite/arm/portal/package9728/public/arm-none-linux-gnueabi/arm-2011.09-70-arm-none-linux-gnueabi-i686-pc-linux-gnu.tar.bz2"
 #CSCC_NAME	= arm-2011.09
 
 CSCC_TAR	= ${notdir ${CSCC_URL}}
@@ -55,13 +55,13 @@ PATH		+= :${CSCC_BINDIR}:${ARCHARMBINDIR}:
 # Get arm cross compiler
 ${TOPTMPDIR}/${CSCC_TAR}:
 	@mkdir -p ${TOPTMPDIR}
-	wget -c -P ${TOPTMPDIR} "${CSCC_URL}"
+	[ -d ${CSCC_DIR} ] || wget -c -P ${TOPTMPDIR} "${CSCC_URL}"
 
 CROSS_GCC=${CSCC_BINDIR}/${CROSS_COMPILE}gcc
-gcc arm-cc: ${CROSS_GCC}
-${CROSS_GCC}: ${TOPTMPDIR}/${CSCC_TAR}
-	tar -x -j -C ${TOOLCHAIN} -f $<
-	touch $@
+gcc arm-cc: state/cross-gcc
+state/cross-gcc: ${TOPTMPDIR}/${CSCC_TAR}
+	[ -d ${CSCC_DIR} ] || tar -x -j -C ${TOOLCHAIN} -f $<
+	$(call state,$@)
 
 KERNELOPTS	= console=earlycon console=ttyAMA0,38400n8 earlyprintk
 QEMUOPTS	= -nographic ${GDB_OPTS}
