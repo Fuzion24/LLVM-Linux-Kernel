@@ -79,13 +79,13 @@ ${LLVMSTATE}/compilerrt-fetch: ${LLVMSTATE}/llvm-fetch
 
 llvm-patch: ${LLVMSTATE}/llvm-patch
 ${LLVMSTATE}/llvm-patch: ${LLVMSTATE}/llvm-fetch ${LLVMSTATE}/compilerrt-fetch
-	(cd ${LLVMDIR} && patch -p1 -i ${LLVMPATCHES}/inline-64-bit-asm.patch)
+	(cd ${LLVMDIR} && patch -p1 -i ${LLVMPATCHES}/llvm/arm/inline-64-bit-asm.patch)
+	(cd ${LLVMDIR} && for i in $$(cat ${LLVMPATCHES}/llvm/x86/series); do echo "Using patch $$i";  patch -p1 -i ${LLVMPATCHES}/llvm/x86/$$i; done )
 	$(call state, $@)
 
 clang-patch: ${LLVMSTATE}/clang-patch
 ${LLVMSTATE}/clang-patch: ${LLVMSTATE}/clang-fetch
-	(cd ${CLANGDIR} && patch -p1 -i ${LLVMPATCHES}/64-bit-ABI.patch)
-	(cd ${CLANGDIR} && patch -p1 -i ${LLVMPATCHES}/pending.patch)
+	(cd ${CLANGDIR} && for i in $$(cat ${LLVMPATCHES}/clang/arm/series); do echo "Using patch $$i"; patch -p1 -i ${LLVMPATCHES}/clang/arm/$$i; done )
 	$(call state, $@)
 
 llvm-configure: ${LLVMSTATE}/llvm-configure
