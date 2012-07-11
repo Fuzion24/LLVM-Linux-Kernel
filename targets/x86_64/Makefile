@@ -27,11 +27,13 @@ TOPDIR		= $(realpath ${TARGETDIR}/../..)
 
 KERNEL_CFG	= ${TARGETDIR}/config_x86_64
 KERNEL_PATCHES	= 
+# override KERNEL_BRANCH to v3.3
+KERNEL_TAG = v3.3
 
 #GDB_OPTS	= -gdb tcp::1234 -s -S
 GDB_OPTS	=
 
-all: prep kernel-build qemu-build fetch-initrd
+all: prep kernel-localpatch kernel-localscripts kernel-build
 
 include ${TOPDIR}/common.mk
 include ${ARCHDIR}/x86_64/x86_64.mk
@@ -49,12 +51,25 @@ state/prep:
 clean: qemu-clean kernel-clean clang-clean llvm-clean initramfs-clean
 
 # do a real wipe
-mrproper: clean tmp-proper
+mrproper: clean
 	@rm -rf ${LOGDIR}/*
 	( cd ${KERNELDIR} && make mrproper )
+	rm state/kernel-localpatch state/kernel-build state/kernel-configure
 
 test: ${QEMUSTATE}/qemu-build initramfs state/kernel-build
 	@${INSTALLDIR}/bin/qemu-system-i386 -kernel ${KERNELDIR}/arch/x86/boot/bzImage \
 		-initrd initramfs.img.gz -append \
 		'console=earlycon console=ttyAMA0,38400n8 earlyprintk init=/init' -nographic ${GDB_OPTS}
 
+
+# workarounds
+kernel-localpatch: state/kernel-fetch state/kernel-patch state/kernel-localpatch
+state/kernel-localpatch:
+	( cd ${KERNELDIR} && patch -p1 -F10 -l -i ${TARGETDIR}/patches/2.patch )
+	$(call state,$@)
+
+kernel-localpatch-clean:
+	rm state/kernel-localpatch
+
+kernel-localscripts: state/kernel-fetch
+	@(cd ${KERNELDIR} && make defconfig scripts)
