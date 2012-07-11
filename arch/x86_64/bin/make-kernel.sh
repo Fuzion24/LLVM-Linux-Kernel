@@ -44,7 +44,7 @@ if [ $USECLANG -eq "1" ]; then
 	export PATH="$INSTALLDIR/bin:$PATH"
 
 	#export CLANGFLAGS="-I ${INSTALLDIR}/lib/clang/*/include"
-	export CC_FOR_BUILD="$INSTALLDIR/bin/clang -ccc-host-triple $HOSTTRIPLE -ccc-gcc-name $HOSTTYPE-gcc $CLANGFLAGS"
+	export CC_FOR_BUILD="$INSTALLDIR/bin/clang $CLANGFLAGS"
 
 else
 	export CC_FOR_BUILD=gcc
@@ -55,4 +55,9 @@ export MAKE="make V=1"
 
 $MAKE CONFIG_DEBUG_SECTION_MISMATCH=y CONFIG_DEBUG_INFO=1 \
 	CC="$CC_FOR_BUILD" HOSTCC=$HOSTCC_FOR_BUILD $PARALLEL
+echo "##############################################"
+# 2nd run w/o parallel (easy to see error)
+$MAKE CONFIG_DEBUG_SECTION_MISMATCH=y CONFIG_DEBUG_INFO=1 \
+       CC="$CC_FOR_BUILD" HOSTCC=$HOSTCC_FOR_BUILD
 
+exit $?

@@ -37,9 +37,9 @@ MAKE_FLAGS	= ARCH=${ARCH}
 MAKE_KERNEL	= ${ARCHX86_64BINDIR}/make-kernel.sh ${LLVMINSTALLDIR} ${EXTRAFLAGS}
 HOST		= x86_64-none-linux-gnu
 HOSTTRIPLE	= x86_64-pc-linux-gnu
-CROSS_COMPILE	= ${HOST}-
-CC		= clang-wrap.sh
-CPP		= ${CC} -E
+CROSS_COMPILE	=
+#CC		= clang-wrap.sh
+#CPP		= ${CC} -E
 
 # Add path so that ${CROSS_COMPILE}${CC} is resolved
 PATH		+= :${ARCHX86_64BINDIR}:
