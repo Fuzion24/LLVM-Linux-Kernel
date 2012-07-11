@@ -96,6 +96,9 @@ kernel-fetch: state/kernel-fetch
 state/kernel-fetch: ${LOCALKERNEL}
 	@mkdir -p ${SRCDIR}
 	[ -d ${KERNELDIR}/.git ] || git clone --reference $< ${KERNEL_GIT} -b ${KERNEL_BRANCH} ${KERNELDIR}
+ifneq "${KERNEL_TAG}" ""
+	( cd ${KERNELDIR} && git checkout -b ${KERNEL_TAG} -t ${KERNEL_TAG} )
+endif
 	$(call state,$@)
 
 kernel-copy: state/kernel-copy
