@@ -25,6 +25,8 @@ import os, sys
 
 class Patch:
 	def __init__(self, patchdata):
+		patchdata = patchdata.replace("--- /dev/null", "--- a/dev/null")
+#		replace "/dev/null" "a/dev/null"
 		tmp=patchdata.split("--- a/")[1]
 		self.filename=tmp.split("\n")[0]
 		hunks=patchdata.split("\n@@ -")
@@ -159,14 +161,29 @@ class PatchFile(PatchDict):
 		# Strip ending newline
 		if patchdata.endswith("\n"):
 			patchdata=patchdata[:-1]
-		patches=patchdata.split("\ndiff")
-		for p in patches:
-			# add back the "diff"
-			if p[0:4] !="diff":
-				p="diff"+p+"\n"
-			else:
-				p+="\n"
-			newpatch=Patch(p)
-			PatchDict.add(self, newpatch)
+
+		# diff --git  vs. plaint diff
+		if "diff --git" in patchdata:
+			# get rid of the header
+			patches=patchdata.split("\ndiff --git")[1:]
+			for p in patches:
+				# add back the "diff"
+				if p[0:10] !="diff --git":
+					p="diff --git"+p+"\n"
+				else:
+					p+="\n"
+				newpatch=Patch(p)
+				PatchDict.add(self, newpatch)
+		else:
+			# plain diff format
+			patches=patchdata.split("\ndiff")
+			for p in patches:
+				# add back the "diff"
+				if p[0:4] !="diff":
+					p="diff"+p+"\n"
+				else:
+					p+="\n"
+				newpatch=Patch(p)
+				PatchDict.add(self, newpatch)
 
 
