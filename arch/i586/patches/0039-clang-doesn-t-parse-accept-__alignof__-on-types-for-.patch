@@ -1,0 +1,27 @@
+From 714b747c7e531ed6e40d2546abfa99ddb618a96e Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
+Date: Mon, 2 Jul 2012 15:17:34 +0200
+Subject: [PATCH 39/48] clang doesn't parse/accept __alignof__ on types, for now at least.
+ http://llvm.org/bugs/show_bug.cgi?id=11071
+
+Patch from series at http://lists.cs.uiuc.edu/pipermail/llvm-commits/Week-of-Mon-20120507/142707.html by PaX Team.
+---
+ crypto/shash.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/crypto/shash.c b/crypto/shash.c
+index 9100912..bc5962a 100644
+--- a/crypto/shash.c
++++ b/crypto/shash.c
+@@ -67,7 +67,7 @@ EXPORT_SYMBOL_GPL(crypto_shash_setkey);
+ static inline unsigned int shash_align_buffer_size(unsigned len,
+ 						   unsigned long mask)
+ {
+-	return len + (mask & ~(__alignof__(u8 __attribute__ ((aligned))) - 1));
++	return len + mask;
+ }
+ 
+ static int shash_update_unaligned(struct shash_desc *desc, const u8 *data,
+-- 
+1.7.3.4
+
