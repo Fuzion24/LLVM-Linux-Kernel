@@ -49,10 +49,10 @@ state/prep:
 clean: qemu-clean kernel-clean clang-clean llvm-clean initramfs-clean
 
 # do a real wipe
-mrproper: clean
+mrproper: clean kernel-clean kernel-localpatch-clean
 	@rm -rf ${LOGDIR}/*
 	( cd ${KERNELDIR} && make mrproper )
-	rm state/kernel-localpatch state/kernel-build state/kernel-configure
+	rm -f state/kernel-localpatch state/kernel-build state/kernel-configure
 
 test: ${QEMUSTATE}/qemu-build initramfs state/kernel-build
 	@$(call qemu,${BOARD},${KERNELDIR},768,/dev/ram0,init=/init,-initrd initramfs.img)
@@ -61,10 +61,12 @@ test: ${QEMUSTATE}/qemu-build initramfs state/kernel-build
 kernel-localpatch: state/kernel-fetch state/kernel-patch state/kernel-localpatch
 state/kernel-localpatch:
 	( cd ${KERNELDIR} && patch -p1 -F10 -l -i ${TARGETDIR}/patches/2.patch )
+	( cp ${TARGETDIR}/patches/dragux.ppm ${KERNELDIR}/drivers/video/logo/logo_linux_clut224.ppm )
 	$(call state,$@)
 
 kernel-localpatch-clean:
-	rm state/kernel-localpatch
+	rm -f state/kernel-localpatch
 
 kernel-localscripts: state/kernel-fetch
 	@(cd ${KERNELDIR} && make defconfig scripts)
+

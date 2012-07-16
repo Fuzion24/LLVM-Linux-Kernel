@@ -133,7 +133,7 @@ llvm-clean: ${LLVMSTATE}/llvm-fetch ${LLVMSTATE}/compilerrt-fetch clang-clean
 	@rm -rf ${LLVMINSTALLDIR} ${LLVMBUILDDIR}
 	@rm -f ${LLVMSTATE}/llvm-configure ${LLVMSTATE}/llvm-patch ${LLVMSTATE}/llvm-build
 
-clang-clean: ${LLVMSTATE}/clang-fetch kernel-clean
+clang-clean: ${LLVMSTATE}/clang-fetch 
 	(cd ${CLANGDIR} && git reset --hard HEAD)
 	@rm -rf ${LLVMINSTALLDIR} ${CLANGBUILDDIR}
 	@rm -f ${LLVMSTATE}/clang-configure ${LLVMSTATE}/clang-patch ${LLVMSTATE}/clang-build ${LLVMSTATE}/llvm-build
