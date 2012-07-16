@@ -33,14 +33,24 @@ ARCHX86_64PATCHES	= ${ARCHX86_64DIR}/patches
 KERNEL_PATCHES		+= $(call add_patches,${ARCHX86_64PATCHES})
 
 ARCH		= x86_64
-MAKE_FLAGS	= ARCH=${ARCH}
+#MAKE_FLAGS	= ARCH=${ARCH}
 MAKE_KERNEL	= ${ARCHX86_64BINDIR}/make-kernel.sh ${LLVMINSTALLDIR} ${EXTRAFLAGS}
-HOST		= x86_64-none-linux-gnu
-HOSTTRIPLE	= x86_64-pc-linux-gnu
+#HOST		= x86_64-none-linux-gnu
+#HOSTTRIPLE	= x86_64-pc-linux-gnu
 CROSS_COMPILE	=
 #CC		= clang-wrap.sh
 #CPP		= ${CC} -E
 
+KERNEL_SIZE_ARTIFACTS	= arch/x86/boot/bzImage vmlinux*
+
 # Add path so that ${CROSS_COMPILE}${CC} is resolved
 PATH		+= :${ARCHX86_64BINDIR}:
 
+gcc x86_64-cc: state/cross-gcc
+state/cross-gcc:
+	$(call state,$@)
+
+BOARD	= pc
+
+# ${1}=Machine_type ${2}=kerneldir ${3}=RAM ${4}=rootfs ${5}=Kernel_opts ${6}=QEMU_opts
+qemu = $(call runqemu,${QEMUBINDIR}/qemu-system-i386,${1},${2}/arch/x86/boot/bzImage,${3},${4},${KERNELOPTS} ${5},${QEMUOPTS} ${6})

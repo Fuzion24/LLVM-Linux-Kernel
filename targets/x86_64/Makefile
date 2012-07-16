@@ -43,9 +43,7 @@ TARGETS+= clean mrproper test test2
 
 prep: state/prep
 state/prep:
-	@mkdir -p tmp
-	@mkdir -p log
-	@mkdir -p state
+	@mkdir -p ${LOGDIR} ${TMPDIR}
 	$(call state,$@)
 
 clean: qemu-clean kernel-clean clang-clean llvm-clean initramfs-clean
@@ -57,10 +55,7 @@ mrproper: clean
 	rm state/kernel-localpatch state/kernel-build state/kernel-configure
 
 test: ${QEMUSTATE}/qemu-build initramfs state/kernel-build
-	@${INSTALLDIR}/bin/qemu-system-i386 -kernel ${KERNELDIR}/arch/x86/boot/bzImage \
-		-initrd initramfs.img.gz -append \
-		'console=earlycon console=ttyAMA0,38400n8 earlyprintk init=/init' -nographic ${GDB_OPTS}
-
+	@$(call qemu,${BOARD},${KERNELDIR},768,/dev/ram0,init=/init,-initrd initramfs.img)
 
 # workarounds
 kernel-localpatch: state/kernel-fetch state/kernel-patch state/kernel-localpatch
