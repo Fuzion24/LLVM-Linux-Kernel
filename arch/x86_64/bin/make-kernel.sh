@@ -1,6 +1,7 @@
 #!/bin/bash
 ##############################################################################
 # Copyright (c) 2012 Mark Charlebois
+# Copyright (c) 2012 Behan Webster
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to 
@@ -23,10 +24,9 @@
 
 # Use clang by default
 USECLANG=${USECLANG:-1}
-
+DRYRUN=${DRYRUN:+echo}
+V=${V:+V=1}
 export PATH=`echo $PATH | sed -E 's/(.*?) :(.*)/\2\1/g; s/(.*?) :(.*)/\2\1/g; s/(.*?) :(.*)/\2\1/g'`
-export HOSTTYPE=${HOSTTYPE:-none-linux-gnueabi}
-export HOSTTRIPLE=${HOSTTRIPLE:-x86_64-pc-linux-gnu}
 
 JOBS=${JOBS:-`getconf _NPROCESSORS_ONLN`}
 if [ -z "$JOBS" ]; then
@@ -39,25 +39,30 @@ EXTRAFLAGS=$*
 
 export LANG=C
 export LC_ALL=C
+export HOSTCC_FOR_BUILD="gcc"
 
 if [ $USECLANG -eq "1" ]; then
 	export PATH="$INSTALLDIR/bin:$PATH"
 
 	#export CLANGFLAGS="-I ${INSTALLDIR}/lib/clang/*/include"
 	export CC_FOR_BUILD="$INSTALLDIR/bin/clang $CLANGFLAGS"
-
 else
 	export CC_FOR_BUILD=gcc
 fi
 
-export HOSTCC_FOR_BUILD="gcc"
-export MAKE="make V=1"
+if [ -n "$CHECKERDIR" ] ; then
+	mkdir -p "$CHECKERDIR"
+	CHECKER='scan-build -v -o "'$CHECKERDIR'" --use-cc="'${CC_FOR_BUILD/ */}'"'
+	V="V=1"
+fi
 
-$MAKE CONFIG_DEBUG_SECTION_MISMATCH=y CONFIG_DEBUG_INFO=1 \
-	CC="$CC_FOR_BUILD" HOSTCC=$HOSTCC_FOR_BUILD $PARALLEL
-echo "##############################################"
-# 2nd run w/o parallel (easy to see error)
-$MAKE CONFIG_DEBUG_SECTION_MISMATCH=y CONFIG_DEBUG_INFO=1 \
-       CC="$CC_FOR_BUILD" HOSTCC=$HOSTCC_FOR_BUILD
+RUNMAKE="make \
+	CONFIG_DEBUG_SECTION_MISMATCH=y CONFIG_DEBUG_INFO=1 HOSTCC=$HOSTCC_FOR_BUILD"
 
-exit $?
+set -e
+echo "export PATH=$PATH"
+[ -n "$DRYRUN" ] || set -x
+$DRYRUN $CHECKER $RUNMAKE $V CC="$CC_FOR_BUILD" $PARALLEL \
+	|| ( echo "********************************************************************************" \
+	&& $RUNMAKE V=1 CC="$CC_FOR_BUILD" )
+[ -z "$DRYRUN" ] || exit 1
