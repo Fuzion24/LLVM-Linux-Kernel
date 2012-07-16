@@ -41,7 +41,9 @@ list-jobs:
 
 # The order of these includes is important
 include ${TOOLCHAIN}/toolchain.mk
+ifneq "${TARGETDIR}" ""
 include ${ARCHDIR}/all/all.mk
+endif
 include ${TESTDIR}/test.mk
 include ${TOOLSDIR}/tools.mk
 
@@ -55,4 +57,3 @@ tmp-clean:
 
 tmp-mrproper: tmp-clean
 	rm -rf ${TOPTMPDIR}/*
-
