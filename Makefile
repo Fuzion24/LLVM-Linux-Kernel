@@ -56,15 +56,8 @@ mrproper:
 
 include common.mk
 
-CSCC_URL = https://sourcery.mentor.com/sgpp/lite/arm/portal/package9728/public/arm-none-linux-gnueabi/arm-2011.09-70-arm-none-linux-gnueabi-i686-pc-linux-gnu.tar.bz2
-CSCC_VER = arm-2011.09
-
-codesourcery: $(TOPTMPDIR)
-	wget -c -P $< "$(CSCC_URL)"
-	sudo tar -x -j -C /opt -f $</$(notdir $(CSCC_URL))
-
-DEBDEP = build-essential cmake git kpartx linaro-image-tools patch rsync subversion zlib1g-dev
-RPMDEP = cmake gcc git kpartx patch rsync subversion zlib-devel
+DEBDEP = build-essential cmake git kpartx linaro-image-tools patch quilt rsync subversion zlib1g-dev
+RPMDEP = cmake gcc git kpartx patch quilt rsync subversion zlib-devel
 
 build-dep:
 	@if [ -f /etc/debian_version ] ; then \
@@ -72,8 +65,6 @@ build-dep:
 	else \
 		rpm -q $(RPMDEP) >/dev/null 2>&1 || ( echo "sudo yum install $(RPMDEP)"; false ) \
 	fi
-	@/opt/$(CSCC_VER)/bin/arm-none-linux-gnueabi-gcc -v >/dev/null 2>&1 \
-		|| ( echo "Can't find working Codesourcery $(CSCC_VER) cross-compiler"; false )
 	@echo "All build dependencies were found"
 
 install-build-dep:
@@ -82,7 +73,5 @@ install-build-dep:
 	else \
 		sudo yum install $(RPMDEP); \
 	fi
-	@/opt/$(CSCC_VER)/bin/arm-none-linux-gnueabi-gcc -v >/dev/null 2>&1 \
-		|| ( echo "Can't find working Codesourcery $(CSCC_VER) cross-compiler"; false )
 	@echo "All build dependencies were found"
 
