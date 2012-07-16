@@ -241,15 +241,8 @@ kernel-sync: state/kernel-fetch
 sync-all:
 	@for t in ${SYNC_TARGETS}; do make $$t; done
 
-list-targets:
-	@echo "List of available make targets:"
-	@(for t in ${TARGETS}; do echo $$t; done)
-
 list-kernel-patches:
 	@echo ${KERNEL_PATCHES} | sed 's/ /\n/g'
 
-list-path:
-	@echo ${PATH}
-	
 # ${1}=qemu_bin ${2}=Machine_type ${3}=kerneldir ${4}=RAM ${5}=rootfs ${6}=Kernel_opts ${7}=QEMU_opts
 runqemu = ${1} -M ${2} -kernel ${3}/arch/arm/boot/zImage -m ${4} -append "mem=${4}M root=${5} ${6}" ${7}

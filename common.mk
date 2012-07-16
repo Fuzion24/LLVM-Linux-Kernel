@@ -49,6 +49,13 @@ include ${TOOLSDIR}/tools.mk
 
 TARGETS	+= tmp-clean tmp-mrproper
 
+list-targets:
+	@echo "List of available make targets:"
+	@(for t in ${TARGETS}; do echo $$t; done)
+
+list-path:
+	@echo ${PATH}
+	
 ${TOPTMPDIR} ${TMPDIR}:
 	@mkdir -p $@
 
