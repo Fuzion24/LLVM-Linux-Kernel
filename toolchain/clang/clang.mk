@@ -116,8 +116,6 @@ ${LLVMSTATE}/llvm-build: ${LLVMSTATE}/llvm-configure
 	@mkdir -p ${LLVMINSTALLDIR}
 	@mkdir -p ${LLVMBUILDDIR}
 	(cd ${LLVMBUILDDIR} && make -j${JOBS} install)
-	cp -a ${LLVMSRCDIR}/clang/tools/scan-view/* ${LLVMINSTALLDIR}/bin
-	cp -a ${LLVMSRCDIR}/clang/tools/scan-build/* ${LLVMINSTALLDIR}/bin
 	$(call state, $@)
 
 clang-build:  ${LLVMSTATE}/clang-build
@@ -125,6 +123,8 @@ ${LLVMSTATE}/clang-build: ${LLVMSTATE}/llvm-build ${LLVMSTATE}/clang-configure
 	@mkdir -p ${LLVMINSTALLDIR}
 	@mkdir -p ${CLANGBUILDDIR}
 	(cd ${CLANGBUILDDIR} && make -j${JOBS} install)
+	cp -a ${LLVMSRCDIR}/clang/tools/scan-view/* ${LLVMINSTALLDIR}/bin
+	cp -a ${LLVMSRCDIR}/clang/tools/scan-build/* ${LLVMINSTALLDIR}/bin
 	$(call state, $@)
 
 llvm-clean: ${LLVMSTATE}/llvm-fetch ${LLVMSTATE}/compilerrt-fetch clang-clean
