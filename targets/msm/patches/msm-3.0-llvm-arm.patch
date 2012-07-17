@@ -180,3 +180,44 @@ index e794801..d6c60bd 100644
  	.probe = msm_smd_probe,
  	.driver = {
  		.name = MODULE_NAME,
+diff --git a/arch/arm/mach-msm/vreg.c b/arch/arm/mach-msm/vreg.c
+index 271da86..2abbad1 100644
+--- a/arch/arm/mach-msm/vreg.c
++++ b/arch/arm/mach-msm/vreg.c
+@@ -299,7 +299,7 @@ static void __devexit vreg_debug_exit(void)
+ }
+ #else
+ static inline int __init vreg_debug_init(void) { return 0; }
+-static inline void __exit vreg_debug_exit(void) { return 0; }
++static inline void __exit vreg_debug_exit(void) { return; }
+ #endif
+ 
+ static int __init vreg_init(void)
+diff --git a/arch/arm/mach-msm/perf_event_msm_krait_l2.c b/arch/arm/mach-msm/perf_event_msm_krait_l2.c
+index 3635572..11b723b 100644
+--- a/arch/arm/mach-msm/perf_event_msm_krait_l2.c
++++ b/arch/arm/mach-msm/perf_event_msm_krait_l2.c
+@@ -18,6 +18,10 @@
+ 
+ #include <mach/msm-krait-l2-accessors.h>
+ 
++#ifndef CONFIG_HW_PERF_EVENTS
++#error "CONFIG_HW_PERF_EVENTS is undefined but is required"
++#endif
++
+ #define MAX_L2_PERIOD	((1ULL << 32) - 1)
+ #define MAX_KRAIT_L2_CTRS 10
+ 
+diff --git a/arch/arm/mach-msm/peripheral-loader.c b/arch/arm/mach-msm/peripheral-loader.c
+index 3f6eb95..7816eee 100644
+--- a/arch/arm/mach-msm/peripheral-loader.c
++++ b/arch/arm/mach-msm/peripheral-loader.c
+@@ -560,7 +560,7 @@ static void msm_pil_debugfs_remove(struct pil_device *pil)
+ }
+ #else
+ static int __init msm_pil_debugfs_init(void) { return 0; };
+-static void __exit msm_pil_debugfs_exit(void) { return 0; };
++static void __exit msm_pil_debugfs_exit(void) { return; };
+ static int msm_pil_debugfs_add(struct pil_device *pil) { return 0; }
+ static void msm_pil_debugfs_remove(struct pil_device *pil) { }
+ #endif
