@@ -24,6 +24,9 @@
 # NOTE: MAKE_KERNEL and/or MAKE_DEVKERNEL must also be defined in the calling 
 #       Makefile
 
+export V
+export CHECKERDIR
+
 ARCHALLDIR	= ${ARCHDIR}/all
 ARCHALLBINDIR	= ${ARCHALLDIR}/bin
 ARCHALLPATCHES	= ${ARCHALLDIR}/patches
@@ -55,6 +58,7 @@ SRCDIR		= ${TARGETDIR}/src
 LOGDIR		= ${TARGETDIR}/log
 TMPDIR		= ${TARGETDIR}/tmp
 STATEDIR	= ${TARGETDIR}/state
+CHECKERDIR	= ${TARGETDIR}/checker
 
 add_patches	= $(addprefix ${1}/,$(shell [ -f ${1}/series ] && cat ${1}/series))
 KERNEL_PATCHES	+= $(call add_patches,${ARCHALLPATCHES})
@@ -62,9 +66,6 @@ KERNEL_PATCHES	+= $(call add_patches,${ARCHALLPATCHES})
 FILTERFILE	= ${TARGETDIR}/kernel-filter
 TMPFILTERFILE	= ${TARGETDIR}/tmp/kernel-filter
 SYNC_TARGETS	+= kernel-sync
-LOG_OUTPUT	= 2>&1 | tee ${LOGDIR}/build.log
-
-KERNEL_SIZE_ARTIFACTS	= arch/arm/boot/zImage vmlinux*
 
 # ${1}=logdir ${2}=toolchain ${3}=testname
 sizelog	= ${1}/${2}-${ARCH}-`date +%Y-%m-%d_%H:%M:%S`-kernel-size.log
@@ -87,7 +88,14 @@ TARGETS	+= kernel-gcc-fetch kernel-gcc-patch kernel-gcc-configure kernel-gcc-bui
 .PHONY: kernel-fetch kernel-patch kernel-configure kernel-build
 .PHONY: kernel-gcc-fetch kernel-gcc-patch kernel-gcc-configure kernel-gcc-build
 
-state	= @mkdir -p $(dir ${1}) && touch ${1};
+seperator = "---------------------------------------------------------------------"
+banner	= ( echo ${seperator}; echo ${1}; echo ${seperator} )
+state	= @mkdir -p $(dir ${1}) && touch ${1} \
+	  && $(call banner,"Finished state $(notdir ${1})") \
+	  && ( [ -d $(dir ${1})${2} ] || rm -f $(dir ${3})${2} )
+error1	= ( echo Error: ${1}; false )
+assert	= [ ${1} ] || $(call error1,${2})
+#assert	= echo "${1} --> ${2}"
 
 ${LOCALKERNEL}:
 	git clone ${MAINLINEURI} $@
@@ -97,50 +105,60 @@ state/kernel-fetch: ${LOCALKERNEL}
 	@mkdir -p ${SRCDIR}
 	[ -d ${KERNELDIR}/.git ] || git clone --reference $< ${KERNEL_GIT} -b ${KERNEL_BRANCH} ${KERNELDIR}
 ifneq "${KERNEL_TAG}" ""
-	( cd ${KERNELDIR} && ( [ -f ${KERNELDIR}/.git/refs/heads/${KERNEL_TAG} ] || git checkout -b ${KERNEL_TAG} -t ${KERNEL_TAG} ))
+	( cd ${KERNELDIR} && ( [ -f ${KERNELDIR}/.git/refs/heads/${KERNEL_TAG} ] || git checkout -b ${KERNEL_TAG} ${KERNEL_TAG} ))
 	( cd ${KERNELDIR} && git checkout -f ${KERNEL_TAG} )
 endif
-	$(call state,$@)
+	$(call state,$@,kernel-patch)
 
 kernel-copy: state/kernel-copy
 state/kernel-copy: state/kernel-fetch
+	@$(call banner, "Copying kernel...")
 	[ -d ${KERNELCOPY}/.git ] || git clone ${KERNELDIR} -b ${KERNEL_BRANCH} ${KERNELCOPY}
+ifneq "${KERNEL_TAG}" ""
+	( cd ${KERNELDIR} && git checkout ${KERNEL_TAG} )
+endif
 	$(call state,$@)
 
 kernel-gcc-fetch: state/kernel-gcc-fetch
 state/kernel-gcc-fetch: state/kernel-fetch
+	@$(call banner, "Fetching kernel...")
 	[ -d ${KERNELGCC}/.git ] || git clone ${KERNELDIR} -b ${KERNEL_BRANCH} ${KERNELGCC}
-	$(call state,$@)
+ifneq "${KERNEL_TAG}" ""
+	( cd ${KERNELDIR} && git checkout ${KERNEL_TAG} )
+endif
+	$(call state,$@,kernel-gcc-patch)
 
 kernel-patch: state/kernel-patch
 state/kernel-patch: state/kernel-fetch
+	@$(call banner, "Patching kernel...")
 	@mkdir -p ${LOGDIR} ${TMPDIR}
-	@${TOOLSDIR}/banner.sh "Checking for duplicated patches:"
+	@$(call banner, "Checking for duplicated patches:")
 	@${TOOLSDIR}/checkduplicates.py ${KERNEL_PATCHES}
 	@echo "Testing upstream patches: see ${LOGDIR}/testpatch.log"
 	@rm -f ${TMPDIR}/test.patch ${TMPFILTERFILE}-1 ${TMPFILTERFILE}-2 ${FILTERFILE}
 	@for patch in ${KERNEL_PATCHES}; do cat $$patch >> ${TMPDIR}/test.patch; done
 	(cd ${KERNELDIR} && git reset --hard HEAD)
 	@make -i patch-dry-run1
-	@${TOOLSDIR}/banner.sh "Creating patch filter: see ${LOGDIR}/filteredpatch.log"
+	@$(call banner, "Creating patch filter: see ${LOGDIR}/filteredpatch.log")
 	@${TOOLSDIR}/genfilter.py ${LOGDIR}/testpatch.log ${TMPFILTERFILE}-1
 	@${TOOLSDIR}/applyfilter.py ${TMPDIR}/test.patch ${TMPDIR}/filtered.patch ${TMPFILTERFILE}-1
-	@${TOOLSDIR}/banner.sh "Testing for missed, unapplied patches: see ${LOGDIR}/filteredpatch.log"
+	@$(call banner,"Testing for missed and unapplied patches: see ${LOGDIR}/filteredpatch.log")
 	@make -i patch-dry-run2
 	@${TOOLSDIR}/genfilter.py ${LOGDIR}/filteredpatch.log ${TMPFILTERFILE}-2
-	@${TOOLSDIR}/banner.sh "Creating final patch: see ${LOGDIR}/filteredpatch.log"
+	@$(call banner, "Creating final patch: see ${LOGDIR}/filteredpatch.log")
 	@cat ${TMPFILTERFILE}-1 ${TMPFILTERFILE}-2 > ${FILTERFILE}
 	@${TOOLSDIR}/applyfilter.py ${TMPDIR}/test.patch ${TMPDIR}/final.patch ${FILTERFILE}
-	@${TOOLSDIR}/banner.sh "Patching kernel source: see patch.log"
+	@$(call banner, "Patching kernel source: see patch.log")
 	(cd ${KERNELDIR} && patch -p1 -i ${TMPDIR}/final.patch > ${LOGDIR}/patch.log)
-	$(call state,$@)
+	$(call state,$@,kernel-configure)
 
 kernel-gcc-patch: state/kernel-gcc-patch
 state/kernel-gcc-patch: state/kernel-gcc-fetch state/kernel-patch
+	@$(call banner, "Fetching kernel (for gcc build)...")
 	(cd ${KERNELGCC} && git reset --hard HEAD)
-	@${TOOLSDIR}/banner.sh "Patching kernel source (gcc): see patch-gcc.log"
+	@$(call banner, "Patching kernel source (gcc): see patch-gcc.log")
 	(cd ${KERNELGCC} && patch -p1 -i ${TMPDIR}/final.patch > ${LOGDIR}/patch-gcc.log)
-	$(call state,$@)
+	$(call state,$@,kernel-gcc-configure)
 
 kernel-autopatch: kernel-build state/kernel-copy
 	(cd ${KERNELCOPY} && git reset --hard HEAD && git pull)
@@ -172,19 +190,15 @@ kernel-gcc-mrproper: state/kernel-gcc-fetch
 	(cd ${KERNELGCC} && make mrproper)
 
 kernel-clean-tmp:
-	@rm -f ${TARGETDIR}/state/kernel-patch
-	@rm -f ${TARGETDIR}/state/kernel-configure
-	@rm -f ${TARGETDIR}/state/kernel-build
-	@rm -f ${FILTERFILE}
-	@rm -f ${TMPFILTERFILE}-1
-	@rm -f ${TMPFILTERFILE}-2
+	@rm -f $(addprefix ${TARGETDIR}/state/,kernel-patch kernel-configure kernel-build)
+	@rm -f ${FILTERFILE} ${TMPFILTERFILE}-[12]
 	@rm -f ${LOGDIR}/*.log
 	@rm -f ${TMPDIR}/*.patch
+	@$(call banner,"Clang compiled Kernel is now clean")
 
 kernel-gcc-clean-tmp:
-	@rm -f ${TARGETDIR}/state/kernel-gcc-patch
-	@rm -f ${TARGETDIR}/state/kernel-gcc-configure
-	@rm -f ${TARGETDIR}/state/kernel-gcc-build
+	@rm -f $(addprefix ${TARGETDIR}/state/,kernel-gcc-patch kernel-gcc-configure kernel-gcc-build)
+	@$(call banner,"Gcc compiled Kernel is now clean")
 
 kernel-clean: kernel-reset kernel-clean-tmp
 kernel-clean-noreset: kernel-mrproper kernel-clean-tmp
@@ -194,31 +208,34 @@ kernel-gcc-clean-noreset: kernel-gcc-mrproper kernel-gcc-clean-tmp
 
 kernel-configure: state/kernel-configure
 state/kernel-configure: state/kernel-patch
+	@$(call banner, "Configuring kernel...")
 	@cp ${KERNEL_CFG} ${KERNELDIR}/.config
 	(cd ${KERNELDIR} && echo "" | make ${MAKE_FLAGS} oldconfig)
-	$(call state,$@)
+	$(call state,$@,kernel-build)
 
 kernel-gcc-configure: state/kernel-gcc-configure
 state/kernel-gcc-configure: state/kernel-gcc-patch
+	@$(call banner, "Configuring kernel (for gcc build)...")
 	@cp ${KERNEL_CFG} ${KERNELGCC}/.config
 	@echo "CONFIG_ARM_UNWIND=y" >> ${KERNELGCC}/.config
 	(cd ${KERNELGCC} && echo "" | make ${MAKE_FLAGS} oldconfig)
-	$(call state,$@)
+	$(call state,$@,kernel-gcc-build)
 
 kernel-build: state/kernel-build
 state/kernel-build: ${LLVMSTATE}/clang-build state/kernel-configure
-	@test -n "${MAKE_KERNEL}" || (echo "Error: MAKE_KERNEL undefined" && false)
-	@${TOOLSDIR}/banner.sh "Building kernel with clang..."
-	(cd ${KERNELDIR} && ${MAKE_KERNEL} ${LOG_OUTPUT} )
+	$(call assert,-n "${MAKE_KERNEL}",MAKE_KERNEL undefined)
+	@$(call banner,"Building kernel with clang...")
+	(cd ${KERNELDIR} && ${MAKE_KERNEL})
+	@$(call banner,"Successfully Built kernel with clang!")
 	@mkdir -p ${TOPLOGDIR}
-	( ${CLANG} --version | head -1 ; \
-		cd ${KERNELDIR} && wc -c ${KERNEL_SIZE_ARTIFACTS}) \
+	@( ${CLANG} --version | head -1 ; \
+		cd ${KERNELDIR} && wc -c ${KERNEL_SIZE_ARTIFACTS} ) \
 		| tee $(call sizelog,${TOPLOGDIR},clang)
-	$(call state,$@)
+	$(call state,$@,done)
 
 kernel-gcc-build: state/cross-gcc state/kernel-gcc-build
 state/kernel-gcc-build: ${CROSS_GCC} state/kernel-gcc-configure
-	@${TOOLSDIR}/banner.sh "Building kernel with gcc..."
+	@$(call banner, "Building kernel with gcc...")
 	(cd ${KERNELGCC} \
 		&& export PATH=$(shell echo "${PATH}" | sed -e 's/ ://g') \
 		&& make -j${JOBS} ${MAKE_FLAGS} CROSS_COMPILE=${CROSS_COMPILE} \
@@ -227,13 +244,14 @@ state/kernel-gcc-build: ${CROSS_GCC} state/kernel-gcc-configure
 	( ${CROSS_GCC} --version | head -1 ; \
 		cd ${KERNELGCC} && wc -c ${KERNEL_SIZE_ARTIFACTS}) \
 		| tee $(call sizelog,${TOPLOGDIR},gcc)
-	$(call state,$@)
+	$(call state,$@,done)
 
 kernels: kernel-build kernel-gcc-build
 kernels-clean: kernel-clean kernel-gcc-clean
 
-kernel-sync: state/kernel-fetch
+kernel-sync: state/kernel-fetch state/kernel-gcc-fetch
 	@make kernel-clean
+	@$(call banner, "Syncing kernel...")
 	@[ -d ${LOCALKERNEL} ] && (cd ${LOCALKERNEL} && git pull)
 	(cd ${KERNELDIR} && git pull)
 	-(cd ${KERNELGCC} && git pull)
@@ -241,15 +259,11 @@ kernel-sync: state/kernel-fetch
 sync-all:
 	@for t in ${SYNC_TARGETS}; do make $$t; done
 
-list-targets:
-	@echo "List of available make targets:"
-	@(for t in ${TARGETS}; do echo $$t; done)
-
 list-kernel-patches:
 	@echo ${KERNEL_PATCHES} | sed 's/ /\n/g'
 
-list-path:
-	@echo ${PATH}
-	
-# ${1}=qemu_bin ${2}=Machine_type ${3}=kerneldir ${4}=RAM ${5}=rootfs ${6}=Kernel_opts ${7}=QEMU_opts
-runqemu = ${1} -M ${2} -kernel ${3}/arch/arm/boot/zImage -m ${4} -append "mem=${4}M root=${5} ${6}" ${7}
+KERNELOPTS	= console=earlycon console=ttyAMA0,38400n8 earlyprintk
+QEMUOPTS	= -nographic ${GDB_OPTS}
+
+# ${1}=qemu_bin ${2}=Machine_type ${3}=kernel ${4}=RAM ${5}=rootfs ${6}=Kernel_opts ${7}=QEMU_opts
+runqemu = ${1} -M ${2} -kernel ${3} -m ${4} -append "mem=${4}M root=${5} ${6}" ${7}

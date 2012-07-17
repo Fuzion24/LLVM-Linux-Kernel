@@ -24,6 +24,9 @@
 
 # Use clang by default
 USECLANG=${USECLANG:-1}
+DRYRUN=${DRYRUN:+echo}
+V=${V:+V=1}
+export PATH=`echo $PATH | sed -E 's/(.*?) :(.*)/\2\1/g; s/(.*?) :(.*)/\2\1/g; s/(.*?) :(.*)/\2\1/g'`
 
 if [ -z "$GCCHOME" ]; then
 	GCCHOME=${CSCC_DIR:-/opt}
@@ -37,7 +40,6 @@ fi
 
 export CSCC_DIR=${CSCC_DIR:-$GCCHOME/arm-$CSVERSION}
 export CSCC_BINDIR=${CSCC_BINDIR:-$CSCC_DIR/bin}
-export PATH=`echo $PATH | sed -E 's/(.*?) :(.*)/\2\1/g; s/(.*?) :(.*)/\2\1/g; s/(.*?) :(.*)/\2\1/g'`
 export HOSTTYPE=${HOSTTYPE:-arm-none-linux-gnueabi}
 export HOSTTRIPLE=${HOSTTRIPLE:-arm-none-gnueabi}
 
@@ -52,12 +54,13 @@ EXTRAFLAGS=$*
 
 export LANG=C
 export LC_ALL=C
+export HOSTCC_FOR_BUILD="gcc"
+export LD=${CROSS_COMPILE}ld
 
 if [ $USECLANG -eq "1" ]; then
 	export PATH="$INSTALLDIR/bin:$PATH"
 	export CROSS_COMPILE=$HOSTTYPE-
 
-	#export CLANGFLAGS="-march=armv7-a -mfloat-abi=softfp -mfpu=neon -fcatch-undefined-behavior -fno-builtin $EXTRAFLAGS"
 	export CLANGFLAGS="-march=armv7-a -mfloat-abi=softfp -mfpu=neon -fno-builtin $EXTRAFLAGS"
 	export CC_FOR_BUILD="$INSTALLDIR/bin/clang -ccc-host-triple $HOSTTRIPLE -ccc-gcc-name $HOSTTYPE-gcc $CLANGFLAGS"
 else
@@ -66,16 +69,24 @@ else
 		exit 1
 	fi
 
-	#export PATH="$CSCC_BINDIR:$PATH"
 	export COMPILER_PATH=$CSCC_DIR
 	export CROSS_COMPILE=$HOSTTYPE-
 	export CC_FOR_BUILD=$CSCC_BINDIR/$HOSTTYPE-gcc
 fi
 
-export HOSTCC_FOR_BUILD="gcc"
-export MAKE="make V=1"
-export LD=${CROSS_COMPILE}ld
+if [ -n "$CHECKERDIR" ] ; then
+	mkdir -p "$CHECKERDIR"
+	CHECKER='scan-build -v -o "'$CHECKERDIR'" --use-cc="'${CC_FOR_BUILD/ */}'"'
+	V="V=1"
+fi
 
-$MAKE KALLSYMS_EXTRA_PASS=1 CONFIG_DEBUG_SECTION_MISMATCH=y ARCH=arm CONFIG_DEBUG_INFO=1 \
-	CC="$CC_FOR_BUILD" HOSTCC=$HOSTCC_FOR_BUILD $PARALLEL
+RUNMAKE="make ARCH=arm KALLSYMS_EXTRA_PASS=1 \
+	CONFIG_DEBUG_SECTION_MISMATCH=y CONFIG_DEBUG_INFO=1 HOSTCC=$HOSTCC_FOR_BUILD"
 
+set -e
+echo "export PATH=$PATH"
+[ -n "$DRYRUN" ] || set -x
+$DRYRUN $CHECKER $RUNMAKE $V CC="$CC_FOR_BUILD" $PARALLEL \
+	|| ( echo "********************************************************************************" \
+	&& $RUNMAKE V=1 CC="$CC_FOR_BUILD" )
+[ -z "$DRYRUN" ] || exit 1

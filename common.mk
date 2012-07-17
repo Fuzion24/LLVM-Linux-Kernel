@@ -41,12 +41,21 @@ list-jobs:
 
 # The order of these includes is important
 include ${TOOLCHAIN}/toolchain.mk
+ifneq "${TARGETDIR}" ""
 include ${ARCHDIR}/all/all.mk
+endif
 include ${TESTDIR}/test.mk
 include ${TOOLSDIR}/tools.mk
 
 TARGETS	+= tmp-clean tmp-mrproper
 
+list-targets:
+	@echo "List of available make targets:"
+	@(for t in ${TARGETS}; do echo $$t; done)
+
+list-path:
+	@echo ${PATH}
+	
 ${TOPTMPDIR} ${TMPDIR}:
 	@mkdir -p $@
 
@@ -55,4 +64,3 @@ tmp-clean:
 
 tmp-mrproper: tmp-clean
 	rm -rf ${TOPTMPDIR}/*
-

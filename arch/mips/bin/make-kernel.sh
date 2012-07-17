@@ -24,6 +24,9 @@
 
 # Use clang by default
 USECLANG=${USECLANG:-1}
+DRYRUN=${DRYRUN:+echo}
+V=${V:+V=1}
+export PATH=`echo $PATH | sed -E 's/(.*?) :(.*)/\2\1/g; s/(.*?) :(.*)/\2\1/g; s/(.*?) :(.*)/\2\1/g'`
 
 if [ -z "$GCCHOME" ]; then
 	GCCHOME=${MIPSCC_DIR:-/opt}
@@ -37,7 +40,6 @@ fi
 
 export MIPSCC_DIR=${MIPSCC_DIR:-$GCCHOME/mips-$CSVERSION}
 export MIPSCC_BINDIR=${MIPSCC_BINDIR:-$MIPSCC_DIR/bin}
-export PATH=`echo $PATH | sed -E 's/(.*?) :(.*)/\2\1/g; s/(.*?) :(.*)/\2\1/g; s/(.*?) :(.*)/\2\1/g'`
 export HOSTTYPE=${HOSTTYPE:-mips-none-eabi}
 export HOSTTRIPLE=${HOSTTRIPLE:-mips}
 
@@ -52,6 +54,8 @@ EXTRAFLAGS=$*
 
 export LANG=C
 export LC_ALL=C
+export HOSTCC_FOR_BUILD="gcc"
+export LD=${CROSS_COMPILE}ld
 
 if [ $USECLANG -eq "1" ]; then
 	export PATH="$INSTALLDIR/bin:$PATH"
@@ -59,20 +63,26 @@ if [ $USECLANG -eq "1" ]; then
 	#export CLANGFLAGS="-g -mfloat-abi=softfp -I ${INSTALLDIR}/lib/clang/*/include $EXTRAFLAGS"
 	export CLANGFLAGS="-g -mfloat-abi=softfp $EXTRAFLAGS"
 	export CC_FOR_BUILD="$INSTALLDIR/bin/clang -ccc-host-triple $HOSTTRIPLE -ccc-gcc-name $HOSTTYPE-gcc $CLANGFLAGS"
-
 else
 
-
-	#export PATH="$MIPSCC_BINDIR:$PATH"
 	export COMPILER_PATH=$MIPSCC_DIR
 	export CROSS_COMPILE=$HOSTTYPE-
 	export CC_FOR_BUILD=$MIPSCC_BINDIR/$HOSTTYPE-gcc
 fi
 
-export HOSTCC_FOR_BUILD="gcc"
-export MAKE="make V=1"
-export LD=${CROSS_COMPILE}ld
+if [ -n "$CHECKERDIR" ] ; then
+	mkdir -p "$CHECKERDIR"
+	CHECKER='scan-build -v -o "'$CHECKERDIR'" --use-cc="'${CC_FOR_BUILD/ */}'"'
+	V="V=1"
+fi
 
-$MAKE CONFIG_DEBUG_SECTION_MISMATCH=y ARCH=mips CONFIG_DEBUG_INFO=1 \
-	CC="$CC_FOR_BUILD" HOSTCC=$HOSTCC_FOR_BUILD ${PARALLEL}
+RUNMAKE="make ARCH=mips \
+	CONFIG_DEBUG_SECTION_MISMATCH=y CONFIG_DEBUG_INFO=1 HOSTCC=$HOSTCC_FOR_BUILD"
 
+set -e
+echo "export PATH=$PATH"
+[ -n "$DRYRUN" ] || set -x
+$DRYRUN $CHECKER $RUNMAKE $V CC="$CC_FOR_BUILD" $PARALLEL \
+	|| ( echo "********************************************************************************" \
+	&& $RUNMAKE V=1 CC="$CC_FOR_BUILD" )
+[ -z "$DRYRUN" ] || exit 1

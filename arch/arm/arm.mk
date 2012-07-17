@@ -53,6 +53,8 @@ CSCC_TAR	= ${notdir ${CSCC_URL}}
 CSCC_DIR	= ${TOOLCHAIN}/${CSCC_NAME}
 CSCC_BINDIR	= ${CSCC_DIR}/bin
 
+KERNEL_SIZE_ARTIFACTS	= arch/arm/boot/zImage vmlinux*
+
 # Add path so that ${CROSS_COMPILE}${CC} is resolved
 PATH		+= :${CSCC_BINDIR}:${ARCHARMBINDIR}:
 
@@ -67,10 +69,5 @@ state/cross-gcc: ${TOPTMPDIR}/${CSCC_TAR}
 	[ -d ${CSCC_DIR} ] || tar -x -j -C ${TOOLCHAIN} -f $<
 	$(call state,$@)
 
-KERNELOPTS	= console=earlycon console=ttyAMA0,38400n8 earlyprintk
-QEMUOPTS	= -nographic ${GDB_OPTS}
-
 # ${1}=Machine_type ${2}=kerneldir ${3}=RAM ${4}=rootfs ${5}=Kernel_opts ${6}=QEMU_opts
-qemu = $(call runqemu,${QEMUBINDIR}/qemu-system-arm,${1},${2},${3},${4},${KERNELOPTS} ${5},${QEMUOPTS} ${6})
-#armqemu = ${QEMUBINDIR}/qemu-system-arm -kernel ${2}/arch/arm/boot/zImage -m ${3} -M ${1} \
-       -append 'mem=${3}M ${KERNELOPTS} root=${4} ${5}' ${QEMUOPTS} ${6}
+qemu = $(call runqemu,${QEMUBINDIR}/qemu-system-arm,${1},${2}/arch/arm/boot/zImage,${3},${4},${KERNELOPTS} ${5},${QEMUOPTS} ${6})

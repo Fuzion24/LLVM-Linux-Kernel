@@ -45,12 +45,14 @@ all: prep kernel-build qemu-build
 include ${TOPDIR}/common.mk
 include ${ARCHDIR}/arm/arm.mk
 
-LINARORELEASEURL=http://releases.linaro.org/images/12.03/oneiric/nano
-BOARD=vexpress-a9
-NANOBOARD=${BOARD}-nano
-NANOIMG=${NANOBOARD}.img
+LINARORELEASEURL	= http://releases.linaro.org/images/12.03/oneiric/nano
+BOARD			= vexpress-a9
+NANOBOARD		= ${BOARD}-nano
+NANOIMG			= ${NANOBOARD}.img
 
-TARGETS+= clean mrproper test test2
+BUILDBOT_PREBUILT_URL	= http://buildbot.llvm.linuxfoundation.org/prebuilt
+
+TARGETS			+= clean mrproper test test2 test3 test3-ltp
 .PHONY: help test test2 prep clean mrproper
 
 help:
@@ -124,11 +126,15 @@ test2: state/prep ${QEMUSTATE}/qemu-build state/kernel-build initramfs
 	@$(call qemu,${BOARD},${KERNELDIR},256,/dev/ram0,init=/bin/init,-initrd initramfs.img.gz)
 
 # Get prebuilt vexpress image
-${TOPTMPDIR}/${NANOBOARD}.img.gz:
+${TOPTMPDIR}/${NANOIMG}.gz:
 	wget -P $(dir $@) -c ${LINARORELEASEURL}/$(notdir $@)
 
 vexpress.img: ${TOPTMPDIR}/${NANOBOARD}.img.gz
 	gzip -dc $< > $@
+
+# Get prebuilt vexpress-ltp image
+${TOPTMPDIR}/vexpress-ltp.img.bz2:
+	wget -P $(dir $@) -c ${BUILDBOT_PREBUILT_URL}/$(notdir $@)
 
 # Build vexpress image
 ${TOPTMPDIR}/sources.txt:
@@ -150,9 +156,15 @@ ${TOPTMPDIR}/${NANOIMG}: ${TOPTMPDIR}/board-sources.txt
 	)
 
 # Build ltp image into vexpress image
-vexpress-ltp.img: ${TOPTMPDIR}/${NANOBOARD}.img.gz ${LTPSTATE}/ltp-build ${LTPSTATE}/ltp-scripts
-	gzip -dc $< > $@
+#vexpress-ltp.img: ${TOPTMPDIR}/${NANOIMG}.gz ${LTPSTATE}/ltp-build ${LTPSTATE}/ltp-scripts
+#	gzip -dc $< > $@
+vexpress-ltp.img.bz2: ${TOPTMPDIR}/${NANOIMG} ${LTPSTATE}/ltp-build ${LTPSTATE}/ltp-scripts
+	@cp -v $< $@
 	${TOOLSDIR}/partcopy.sh $@ rootfs ${LTPINSTALLDIR}/ /opt/ltp/ || (rm $@ && echo "E: $@ error" && false)
+	bzip2 -9c $< > $@
+
+vexpress-ltp.img: ${TOPTMPDIR}/vexpress-ltp.img.bz2
+	bunzip2 -9c $< > $@
 
 vexpress-ltp-clean:
 	rm -f vexpress-ltp.img
