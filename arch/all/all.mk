@@ -92,7 +92,7 @@ seperator = "-------------------------------------------------------------------
 banner	= ( echo ${seperator}; echo ${1}; echo ${seperator} )
 state	= @mkdir -p $(dir ${1}) && touch ${1} \
 	  && $(call banner,"Finished state $(notdir ${1})") \
-	  && rm -f $(dir ${1})${2}
+	  && ( [ -d $(dir ${1})${2} ] || rm -f $(dir ${3})${2} )
 error1	= ( echo Error: ${1}; false )
 assert	= [ ${1} ] || $(call error1,${2})
 #assert	= echo "${1} --> ${2}"
@@ -249,7 +249,7 @@ state/kernel-gcc-build: ${CROSS_GCC} state/kernel-gcc-configure
 kernels: kernel-build kernel-gcc-build
 kernels-clean: kernel-clean kernel-gcc-clean
 
-kernel-sync: state/kernel-fetch
+kernel-sync: state/kernel-fetch state/kernel-gcc-fetch
 	@make kernel-clean
 	@$(call banner, "Syncing kernel...")
 	@[ -d ${LOCALKERNEL} ] && (cd ${LOCALKERNEL} && git pull)
