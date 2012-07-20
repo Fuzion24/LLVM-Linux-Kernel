@@ -21,36 +21,35 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
-export HOSTTYPE=${HOST}
-export HOSTTRIPLE
+export HOST_TYPE=${HOST}
+export HOST_TRIPLE
 
-ARCHX86_64DIR		= ${ARCHDIR}/x86_64
-ARCHX86_64BINDIR	= ${ARCHX86_64DIR}/bin
-ARCHX86_64PATCHES	= ${ARCHX86_64DIR}/patches
+ARCH_X86_64_DIR		= ${ARCHDIR}/x86_64
+ARCH_X86_64_BINDIR	= ${ARCH_X86_64_DIR}/bin
+ARCH_X86_64_PATCHES	= ${ARCH_X86_64_DIR}/patches
 
 #KERNEL_PATCHES		+= ${COMMON}/x86_64/common-x86_64.patch ${COMMON}/x86_64/fix-warnings-x86_64.patch \
 #	${COMMON}/x86_64/fix-warnings-x86_64-unused.patch
-KERNEL_PATCHES		+= $(call add_patches,${ARCHX86_64PATCHES})
+KERNEL_PATCHES		+= $(call add_patches,${ARCH_X86_64_PATCHES})
 
 ARCH		= x86_64
 #MAKE_FLAGS	= ARCH=${ARCH}
-MAKE_KERNEL	= ${ARCHX86_64BINDIR}/make-kernel.sh ${LLVMINSTALLDIR} ${EXTRAFLAGS}
+MAKE_KERNEL	= ${ARCH_X86_64_BINDIR}/make-kernel.sh ${LLVMINSTALLDIR} ${EXTRAFLAGS}
 #HOST		= x86_64-none-linux-gnu
-#HOSTTRIPLE	= x86_64-pc-linux-gnu
+#HOST_TRIPLE	= x86_64-pc-linux-gnu
 CROSS_COMPILE	=
 #CC		= clang-wrap.sh
 #CPP		= ${CC} -E
 
 KERNEL_SIZE_ARTIFACTS	= arch/x86/boot/bzImage vmlinux*
+BOARD		= pc
 
 # Add path so that ${CROSS_COMPILE}${CC} is resolved
-PATH		+= :${ARCHX86_64BINDIR}:
+PATH		+= :${ARCH_X86_64_BINDIR}:
 
 gcc x86_64-cc: state/cross-gcc
 state/cross-gcc:
 	$(call state,$@)
-
-BOARD	= pc
 
 # ${1}=Machine_type ${2}=kerneldir ${3}=RAM ${4}=rootfs ${5}=Kernel_opts ${6}=QEMU_opts
 qemu = $(call runqemu,${QEMUBINDIR}/qemu-system-i386,${1},${2}/arch/x86/boot/bzImage,${3},${4},${KERNELOPTS} ${5},${QEMUOPTS} ${6})

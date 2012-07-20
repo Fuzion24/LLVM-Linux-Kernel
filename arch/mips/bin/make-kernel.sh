@@ -40,8 +40,8 @@ fi
 
 export MIPSCC_DIR=${MIPSCC_DIR:-$GCCHOME/mips-$CSVERSION}
 export MIPSCC_BINDIR=${MIPSCC_BINDIR:-$MIPSCC_DIR/bin}
-export HOSTTYPE=${HOSTTYPE:-mips-none-eabi}
-export HOSTTRIPLE=${HOSTTRIPLE:-mips}
+export HOST_TYPE=${HOST_TYPE:-mips-none-eabi}
+export HOST_TRIPLE=${HOST_TRIPLE:-mips}
 
 JOBS=${JOBS:-`getconf _NPROCESSORS_ONLN`}
 if [ -z "$JOBS" ]; then
@@ -59,15 +59,15 @@ export LD=${CROSS_COMPILE}ld
 
 if [ $USECLANG -eq "1" ]; then
 	export PATH="$INSTALLDIR/bin:$PATH"
-	export CROSS_COMPILE=$HOSTTYPE-
+	export CROSS_COMPILE=$HOST_TYPE-
 	#export CLANGFLAGS="-g -mfloat-abi=softfp -I ${INSTALLDIR}/lib/clang/*/include $EXTRAFLAGS"
 	export CLANGFLAGS="-g -mfloat-abi=softfp $EXTRAFLAGS"
-	export CC_FOR_BUILD="$INSTALLDIR/bin/clang -ccc-host-triple $HOSTTRIPLE -ccc-gcc-name $HOSTTYPE-gcc $CLANGFLAGS"
+	export CC_FOR_BUILD="$INSTALLDIR/bin/clang -ccc-host-triple $HOST_TRIPLE -ccc-gcc-name $HOST_TYPE-gcc $CLANGFLAGS"
 else
 
 	export COMPILER_PATH=$MIPSCC_DIR
-	export CROSS_COMPILE=$HOSTTYPE-
-	export CC_FOR_BUILD=$MIPSCC_BINDIR/$HOSTTYPE-gcc
+	export CROSS_COMPILE=$HOST_TYPE-
+	export CC_FOR_BUILD=$MIPSCC_BINDIR/$HOST_TYPE-gcc
 fi
 
 if [ -n "$CHECKERDIR" ] ; then

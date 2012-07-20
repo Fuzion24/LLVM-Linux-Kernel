@@ -40,8 +40,8 @@ fi
 
 export CSCC_DIR=${CSCC_DIR:-$GCCHOME/arm-$CSVERSION}
 export CSCC_BINDIR=${CSCC_BINDIR:-$CSCC_DIR/bin}
-export HOSTTYPE=${HOSTTYPE:-arm-none-linux-gnueabi}
-export HOSTTRIPLE=${HOSTTRIPLE:-arm-none-gnueabi}
+export HOST_TYPE=${HOST_TYPE:-arm-none-linux-gnueabi}
+export HOST_TRIPLE=${HOST_TRIPLE:-arm-none-gnueabi}
 
 JOBS=${JOBS:-`getconf _NPROCESSORS_ONLN`}
 if [ -z "$JOBS" ]; then
@@ -59,10 +59,10 @@ export LD=${CROSS_COMPILE}ld
 
 if [ $USECLANG -eq "1" ]; then
 	export PATH="$INSTALLDIR/bin:$PATH"
-	export CROSS_COMPILE=$HOSTTYPE-
+	export CROSS_COMPILE=$HOST_TYPE-
 
 	export CLANGFLAGS="-march=armv7-a -mfloat-abi=softfp -mfpu=neon -fno-builtin $EXTRAFLAGS"
-	export CC_FOR_BUILD="$INSTALLDIR/bin/clang -ccc-host-triple $HOSTTRIPLE -ccc-gcc-name $HOSTTYPE-gcc $CLANGFLAGS"
+	export CC_FOR_BUILD="$INSTALLDIR/bin/clang -ccc-host-triple $HOST_TRIPLE -ccc-gcc-name $HOST_TYPE-gcc $CLANGFLAGS"
 else
 	if [ ! -d $CSCC_DIR ]; then
 		echo "Compiler not found: $CSCC_DIR"
@@ -70,13 +70,14 @@ else
 	fi
 
 	export COMPILER_PATH=$CSCC_DIR
-	export CROSS_COMPILE=$HOSTTYPE-
-	export CC_FOR_BUILD=$CSCC_BINDIR/$HOSTTYPE-gcc
+	export CROSS_COMPILE=$HOST_TYPE-
+	export CC_FOR_BUILD=$CSCC_BINDIR/$HOST_TYPE-gcc
 fi
 
 if [ -n "$CHECKERDIR" ] ; then
 	mkdir -p "$CHECKERDIR"
-	CHECKER='scan-build -v -o "'$CHECKERDIR'" --use-cc="'${CC_FOR_BUILD/ */}'"'
+	#CHECKER='scan-build -v -o "'$CHECKERDIR'" --use-cc="'${CC_FOR_BUILD/ */}'"'
+	CHECKER='scan-build -v -o "'$CHECKERDIR'" --use-cc="clang"'
 	V="V=1"
 fi
 

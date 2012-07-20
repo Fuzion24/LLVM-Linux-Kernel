@@ -191,10 +191,10 @@ test3-gcc-ltp: state/prep ${QEMUSTATE}/qemu-build state/kernel-gcc-build vexpres
 test3-all-ltp: test3-ltp test3-gcc-ltp
 
 patch-update: state/kernel-patch
-	@${TOOLSDIR}/applyfilter.py ${ARCHALLPATCHES}/common.patch ${TMPDIR}/common.patch ${FILTERFILE}
-	@${TOOLSDIR}/applyfilter.py ${ARCHALLPATCHES}/fix-warnings.patch ${TMPDIR}/fix-warnings.patch ${FILTERFILE}
-	@${TOOLSDIR}/applyfilter.py ${ARCHALLPATCHES}/fix-warnings-unused.patch ${TMPDIR}/fix-warnings-unused.patch ${FILTERFILE}
-	@${TOOLSDIR}/applyfilter.py ${ARCHARMPATCHES}/common-arm.patch ${TMPDIR}/common-arm.patch ${FILTERFILE}
-	@${TOOLSDIR}/applyfilter.py ${ARCHARMPATCHES}/fix-warnings-arm.patch ${TMPDIR}/fix-warnings-arm.patch ${FILTERFILE}
-	@${TOOLSDIR}/applyfilter.py ${ARCHARMPATCHES}/fix-warnings-arm-unused.patch ${TMPDIR}/fix-warnings-arm-unused.patch ${FILTERFILE}
+	@${TOOLSDIR}/applyfilter.py ${ARCH_ALL_PATCHES}/common.patch ${TMPDIR}/common.patch ${FILTERFILE}
+	@${TOOLSDIR}/applyfilter.py ${ARCH_ALL_PATCHES}/fix-warnings.patch ${TMPDIR}/fix-warnings.patch ${FILTERFILE}
+	@${TOOLSDIR}/applyfilter.py ${ARCH_ALL_PATCHES}/fix-warnings-unused.patch ${TMPDIR}/fix-warnings-unused.patch ${FILTERFILE}
+	@${TOOLSDIR}/applyfilter.py ${ARCH_ARM_PATCHES}/common-arm.patch ${TMPDIR}/common-arm.patch ${FILTERFILE}
+	@${TOOLSDIR}/applyfilter.py ${ARCH_ARM_PATCHES}/fix-warnings-arm.patch ${TMPDIR}/fix-warnings-arm.patch ${FILTERFILE}
+	@${TOOLSDIR}/applyfilter.py ${ARCH_ARM_PATCHES}/fix-warnings-arm-unused.patch ${TMPDIR}/fix-warnings-arm-unused.patch ${FILTERFILE}
 

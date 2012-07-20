@@ -27,14 +27,14 @@
 export V
 export CHECKERDIR
 
-ARCHALLDIR	= ${ARCHDIR}/all
-ARCHALLBINDIR	= ${ARCHALLDIR}/bin
-ARCHALLPATCHES	= ${ARCHALLDIR}/patches
+ARCH_ALL_DIR	= ${ARCHDIR}/all
+ARCH_ALL_BINDIR	= ${ARCH_ALL_DIR}/bin
+ARCH_ALL_PATCHES= ${ARCH_ALL_DIR}/patches
 
-PATH		+= :${ARCHALLBINDIR}:
+PATH		+= :${ARCH_ALL_BINDIR}:
 
 MAINLINEURI	= git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-LOCALKERNEL	= ${ARCHALLDIR}/kernel
+LOCALKERNEL	= ${ARCH_ALL_DIR}/kernel
 
 ifeq "${KERNEL_GIT}" ""
 KERNEL_GIT	= ${MAINLINEURI}
@@ -61,7 +61,7 @@ STATEDIR	= ${TARGETDIR}/state
 CHECKERDIR	= ${TARGETDIR}/checker
 
 add_patches	= $(addprefix ${1}/,$(shell [ -f ${1}/series ] && cat ${1}/series))
-KERNEL_PATCHES	+= $(call add_patches,${ARCHALLPATCHES})
+KERNEL_PATCHES	+= $(call add_patches,${ARCH_ALL_PATCHES})
 
 FILTERFILE	= ${TARGETDIR}/kernel-filter
 TMPFILTERFILE	= ${TARGETDIR}/tmp/kernel-filter

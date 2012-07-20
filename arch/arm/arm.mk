@@ -26,20 +26,20 @@
 export CSCC_DIR
 export CSCC_BINDIR
 export COMPILER_PATH=${CSCC_DIR}
-export HOSTTYPE=${HOST}
-export HOSTTRIPLE
+export HOST_TYPE=${HOST}
+export HOST_TRIPLE
 
-ARCHARMDIR	= ${ARCHDIR}/arm
-ARCHARMBINDIR	= ${ARCHARMDIR}/bin
-ARCHARMPATCHES	= ${ARCHARMDIR}/patches
+ARCH_ARM_DIR	= ${ARCHDIR}/arm
+ARCH_ARM_BINDIR	= ${ARCH_ARM_DIR}/bin
+ARCH_ARM_PATCHES= ${ARCH_ARM_DIR}/patches
 
-KERNEL_PATCHES	+= $(call add_patches,${ARCHARMPATCHES})
+KERNEL_PATCHES	+= $(call add_patches,${ARCH_ARM_PATCHES})
 
 ARCH		= arm
 MAKE_FLAGS	= ARCH=${ARCH}
-MAKE_KERNEL	= ${ARCHARMBINDIR}/make-kernel.sh ${LLVMINSTALLDIR} ${EXTRAFLAGS}
+MAKE_KERNEL	= ${ARCH_ARM_BINDIR}/make-kernel.sh ${LLVMINSTALLDIR} ${EXTRAFLAGS}
 HOST		= arm-none-linux-gnueabi
-HOSTTRIPLE	= arm-none-gnueabi
+HOST_TRIPLE	= arm-none-gnueabi
 CROSS_COMPILE	= ${HOST}-
 CC		= clang-wrap.sh
 CPP		= ${CC} -E
@@ -56,7 +56,7 @@ CSCC_BINDIR	= ${CSCC_DIR}/bin
 KERNEL_SIZE_ARTIFACTS	= arch/arm/boot/zImage vmlinux*
 
 # Add path so that ${CROSS_COMPILE}${CC} is resolved
-PATH		+= :${CSCC_BINDIR}:${ARCHARMBINDIR}:
+PATH		+= :${CSCC_BINDIR}:${ARCH_ARM_BINDIR}:
 
 # Get arm cross compiler
 ${TOPTMPDIR}/${CSCC_TAR}:

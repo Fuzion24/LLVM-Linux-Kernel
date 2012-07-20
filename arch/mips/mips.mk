@@ -21,22 +21,22 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
-export HOSTTYPE=${HOST}
-export HOSTTRIPLE
+export HOST_TYPE=${HOST}
+export HOST_TRIPLE
 
-ARCHMIPSDIR	= ${ARCHDIR}/mips
-ARCHMIPSBINDIR	= ${ARCHMIPSDIR}/bin
-ARCHMIPSPATCHES	= ${ARCHMIPSDIR}/patches
+ARCH_MIPS_DIR		= ${ARCHDIR}/mips
+ARCH_MIPS_BINDIR	= ${ARCH_MIPS_DIR}/bin
+ARCH_MIPS_PATCHES	= ${ARCH_MIPS_DIR}/patches
 
 #KERNEL_PATCHES	+= ${COMMON}/mips/common-mips.patch ${COMMON}/mips/fix-warnings-mips.patch \
 #	${COMMON}/mips/fix-warnings-mips-unused.patch
-KERNEL_PATCHES	+= $(call add_patches,${ARCHMIPSPATCHES})
+KERNEL_PATCHES	+= $(call add_patches,${ARCH_MIPS_PATCHES})
 
 ARCH		= mips
 MAKE_FLAGS	= ARCH=${ARCH}
-MAKE_KERNEL	= ${ARCHMIPSBINDIR}/make-kernel.sh ${LLVMINSTALLDIR} ${EXTRAFLAGS}
+MAKE_KERNEL	= ${ARCH_MIPS_BINDIR}/make-kernel.sh ${LLVMINSTALLDIR} ${EXTRAFLAGS}
 HOST		= mips-none-eabi
-HOSTTRIPLE	= mips
+HOST_TRIPLE	= mips
 CROSS_COMPILE	= ${HOST}-
 CC		= clang-wrap.sh
 CPP		= ${CC} -E
@@ -44,7 +44,7 @@ CPP		= ${CC} -E
 KERNEL_SIZE_ARTIFACTS	= arch/arm/boot/zImage vmlinux*
 
 # Add path so that ${CROSS_COMPILE}${CC} is resolved
-PATH		+= :${ARCHMIPSBINDIR}:
+PATH		+= :${ARCH_MIPS_BINDIR}:
 
 # ${1}=Machine_type ${2}=kerneldir ${3}=RAM ${4}=rootfs ${5}=Kernel_opts ${6}=QEMU_opts
 qemu = $(call runqemu,${QEMUBINDIR}/qemu-system-mips,${1},${2}/arch/mips/boot/zImage,${3},${4},${KERNELOPTS} ${5},${QEMUOPTS} ${6})
