@@ -1,6 +1,7 @@
 ##############################################################################
 # Copyright (c) 2012 Mark Charlebois
 #               2012 Jan-Simon Möller
+#               2012 Behan Webster
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to 
@@ -23,45 +24,58 @@
 
 # Assumes has been included from ../test.mk
 
-QEMUSRCDIR	= ${QEMUDIR}/src
+QEMUSRCDIR	= ${QEMUDIR}/src/qemu
 INSTALLDIR	= ${QEMUDIR}/install
 QEMUBUILDDIR	= ${QEMUDIR}/build/qemu
 QEMUSTATE	= ${QEMUDIR}/state
-SYNC_TARGETS	+= qemu-sync
+QEMUPATCHES	= ${QEMUDIR}/patches
 
 QEMUBINDIR	= ${INSTALLDIR}/bin
 
-TARGETS		+= qemu-fetch qemu-configure qemu-build qemu-clean qemu-sync
-.PHONY: qemu-fetch qemu-configure qemu-build qemu-clean qemu-sync
+QEMU_TARGETS	= qemu qemu-fetch qemu-configure qemu-build qemu-clean qemu-sync
+
+SYNC_TARGETS	+= qemu-sync
+TARGETS		+= ${QEMU_TARGETS}
+.PHONY:		${QEMU_TARGETS}
 
 QEMU_GIT	= "git://git.qemu.org/qemu.git"
 QEMU_BRANCH	= "stable-1.0"
 
 qemu-fetch: ${QEMUSTATE}/qemu-fetch
 ${QEMUSTATE}/qemu-fetch:
+	@$(call banner, "Fetching QEMU...")
 	@mkdir -p ${QEMUSRCDIR}
-	(cd ${QEMUSRCDIR} && git clone ${QEMU_GIT} -b ${QEMU_BRANCH})
-	$(call state,$@)
+	[ -d ${QEMUSRCDIR}/.git ] || (rm -rf ${QEMUSRCDIR} && git clone ${QEMU_GIT} -b ${QEMU_BRANCH} ${QEMUSRCDIR})
+	$(call state,$@,qemu-patch)
+
+qemu-patch: ${QEMUSTATE}/qemu-patch
+${QEMUSTATE}/qemu-patch: ${QEMUSTATE}/qemu-fetch
+	@$(call banner, "Patching QEMU...")
+	@ln -sf ${QEMUPATCHES} ${QEMUSRCDIR}
+	(cd ${QEMUSRCDIR} && quilt push -a)
+	$(call state,$@,qemu-configure)
 
 qemu-configure: ${QEMUSTATE}/qemu-configure
 ${QEMUSTATE}/qemu-configure: ${QEMUSTATE}/qemu-fetch
+	@$(call banner, "Configure QEMU...")
 	@mkdir -p ${QEMUBUILDDIR}
-	(cd ${QEMUBUILDDIR} && ${QEMUSRCDIR}/qemu/configure \
+	(cd ${QEMUBUILDDIR} && ${QEMUSRCDIR}/configure \
 		--target-list=arm-softmmu,mips-softmmu,i386-softmmu,x86_64-softmmu --disable-kvm \
 		--disable-sdl --audio-drv-list="" --audio-card-list="" \
 		--disable-docs --prefix=${INSTALLDIR})
-	$(call state,$@)
+	$(call state,$@,qemu-build)
 
-qemu-build: ${QEMUSTATE}/qemu-build
+qemu qemu-build: ${QEMUSTATE}/qemu-build
 ${QEMUSTATE}/qemu-build: ${QEMUSTATE}/qemu-configure
+	@$(call banner, "Building QEMU...")
 	@mkdir -p ${INSTALLDIR}
 	(cd ${QEMUBUILDDIR} && make -j${JOBS} install)
 	$(call state,$@)
 	
 qemu-clean: ${QEMUSTATE}/qemu-fetch
 	rm -rf ${QEMUBUILDDIR} 
-	rm -f ${QEMUSTATE}/qemu-configure ${QEMUSTATE}/qemu-build
+	rm -f $(addprefix ${QEMUSTATE}/,qemu-configure,qemu-build)
 	
 qemu-sync: ${QEMUSTATE}/qemu-fetch
 	@make qemu-clean
-	(cd ${QEMUSRCDIR}/qemu && git checkout ${QEMU_BRANCH} && git pull)
+	(cd ${QEMUSRCDIR} && git checkout ${QEMU_BRANCH} && git pull)
