@@ -134,14 +134,14 @@ ${LLVMSTATE}/clang-build: ${LLVMSTATE}/llvm-build ${LLVMSTATE}/clang-configure
 	$(call state,$@)
 
 llvm-clean: ${LLVMSTATE}/llvm-fetch ${LLVMSTATE}/compilerrt-fetch clang-clean
-	-(cd ${LLVMDIR} && quilt pop -a)
+	-(cd ${LLVMDIR} && [ ! -e patches ] || quilt pop -a)
 	(cd ${LLVMDIR} && git reset --hard HEAD)
 	(cd ${LLVMSRCDIR}/llvm/projects/compiler-rt && git reset --hard HEAD)
 	@rm -rf ${LLVMINSTALLDIR} ${LLVMBUILDDIR}
 	@rm -f $(addprefix ${LLVMSTATE}/,llvm-patch,llvm-configure,llvm-build)
 
 clang-clean: ${LLVMSTATE}/clang-fetch 
-	(cd ${LLVMDIR} && quilt pop -a)
+	-(cd ${LLVMDIR} && [ ! -e patches ] || quilt pop -a)
 	(cd ${CLANGDIR} && git reset --hard HEAD)
 	@rm -rf ${LLVMINSTALLDIR} ${CLANGBUILDDIR}
 	@rm -f $(addprefix ${LLVMSTATE}/,clang-patch,clang-configure,clang-build,llvm-build)
