@@ -134,7 +134,7 @@ ${LLVMSTATE}/clang-build: ${LLVMSTATE}/llvm-build ${LLVMSTATE}/clang-configure
 	$(call state,$@)
 
 llvm-clean: ${LLVMSTATE}/llvm-fetch ${LLVMSTATE}/compilerrt-fetch clang-clean
-	(cd ${LLVMDIR} && quilt pop -a)
+	-(cd ${LLVMDIR} && quilt pop -a)
 	(cd ${LLVMDIR} && git reset --hard HEAD)
 	(cd ${LLVMSRCDIR}/llvm/projects/compiler-rt && git reset --hard HEAD)
 	@rm -rf ${LLVMINSTALLDIR} ${LLVMBUILDDIR}
