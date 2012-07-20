@@ -74,7 +74,7 @@ ${QEMUSTATE}/qemu-build: ${QEMUSTATE}/qemu-configure
 	
 qemu-clean: ${QEMUSTATE}/qemu-fetch
 	rm -rf ${QEMUBUILDDIR} 
-	rm -f $(addprefix ${QEMUSTATE}/,qemu-configure,qemu-build)
+	rm -f $(addprefix ${QEMUSTATE}/,qemu-configure qemu-build)
 	
 qemu-sync: ${QEMUSTATE}/qemu-fetch
 	@make qemu-clean

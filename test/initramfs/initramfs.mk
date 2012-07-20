@@ -45,7 +45,7 @@ GCC		= gcc
 
 ${CPIO}: toybox dash 
 	@rm -rf ${BUILDFSDIR}
-	@mkdir -p $(addprefix ${BUILDFSDIR},bin,sys,dev,proc,tmp,usr/bin)
+	@mkdir -p $(addprefix ${BUILDFSDIR}/,bin sys dev proc tmp usr/bin)
 	@PREFIX=${BUILDFSDIR} make -C ${BUILDDIR}/${TOYBOX} install
 	@make -C ${BUILDDIR}/${DASH} install
 	@ln -sf bin/dash ${BUILDFSDIR}/init
@@ -60,7 +60,7 @@ ${TARGET}: ${CPIO}
 	@echo "Created $@: Done."
 
 initramfs-clean:
-	rm -rf initramfs.img.gz $(addprefix ${BUILDDIR},initramfs,initramfs-build,${DASH}*,${TOYBOX}*,${LTP}*)
+	rm -rf initramfs.img.gz $(addprefix ${BUILDDIR}/,initramfs initramfs-build ${DASH}* ${TOYBOX}* ${LTP}*)
 
 initramfs-mrproper:
 	rm -rf ${BUILDDIR}

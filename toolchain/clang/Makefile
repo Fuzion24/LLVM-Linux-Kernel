@@ -22,8 +22,8 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
-LLVMTOP	= ${CURDIR}
-TOPDIR	= $(realpath ${LLVMTOP}/../..)
+#LLVMTOP	= ${CURDIR}
+TOPDIR	= $(realpath ${CURDIR}/../..)
 
 # This Makefile is for convenience only.
 # Normally the toolchain would be built from one of the target directories
@@ -38,5 +38,6 @@ ifeq "${JOBS}" ""
 JOBS:=2
 endif
 
+include ${TOPDIR}/common.mk
 include ${TOPDIR}/arch/all/all.mk
 include clang.mk
