@@ -28,7 +28,6 @@ TOOLCHAIN	= ${TOPDIR}/toolchain
 TOOLSDIR	= ${TOPDIR}/tools
 ARCHDIR		= ${TOPDIR}/arch
 TESTDIR		= ${TOPDIR}/test
-TOPTMPDIR	= ${TOPDIR}/tmp
 
 # Default jobs is number of processors + 1 for disk I/O
 JOBS:=${shell expr `getconf _NPROCESSORS_ONLN` + 1}
@@ -41,13 +40,11 @@ list-jobs:
 
 # The order of these includes is important
 include ${TOOLCHAIN}/toolchain.mk
-ifneq "${TARGETDIR}" ""
-include ${ARCHDIR}/all/all.mk
-endif
-include ${TESTDIR}/test.mk
-include ${TOOLSDIR}/tools.mk
 
-TARGETS	+= tmp-clean tmp-mrproper
+TARGETS	+= tmp-mrproper list-path
+
+tmp-mrproper:
+	@(for t in ${TMPDIRS}; do rm -rf $$t/*; done)
 
 list-targets:
 	@echo "List of available make targets:"
@@ -55,12 +52,4 @@ list-targets:
 
 list-path:
 	@echo ${PATH}
-	
-${TOPTMPDIR} ${TMPDIR}:
-	@mkdir -p $@
 
-tmp-clean:
-	rm -rf ${TMPDIR}/*
-
-tmp-mrproper: tmp-clean
-	rm -rf ${TOPTMPDIR}/*

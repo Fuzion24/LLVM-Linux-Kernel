@@ -21,8 +21,7 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
-# NOTE: MAKE_KERNEL and/or MAKE_DEVKERNEL must also be defined in the calling 
-#       Makefile
+# NOTE: MAKE_KERNEL must also be defined in the calling Makefile
 
 export V
 export CHECKERDIR
@@ -60,6 +59,8 @@ TMPDIR		= ${TARGETDIR}/tmp
 STATEDIR	= ${TARGETDIR}/state
 CHECKERDIR	= ${TARGETDIR}/checker
 
+TMPDIRS		+= ${TMPDIR}
+
 add_patches	= $(addprefix ${1}/,$(shell [ -f ${1}/series ] && cat ${1}/series))
 KERNEL_PATCHES	+= $(call add_patches,${ARCH_ALL_PATCHES})
 
@@ -84,6 +85,7 @@ KERNEL_SIZE_GCC_LOG	= gcc-`date +%Y-%m-%d_%H:%M:%S`-kernel-size.log
 
 TARGETS	+= kernel-fetch kernel-patch kernel-configure kernel-build kernel-sync
 TARGETS	+= kernel-gcc-fetch kernel-gcc-patch kernel-gcc-configure kernel-gcc-build kernel-gcc-sync
+TARGETS += tmp-clean
 
 .PHONY: kernel-fetch kernel-patch kernel-configure kernel-build
 .PHONY: kernel-gcc-fetch kernel-gcc-patch kernel-gcc-configure kernel-gcc-build
@@ -262,8 +264,18 @@ sync-all:
 list-kernel-patches:
 	@echo ${KERNEL_PATCHES} | sed 's/ /\n/g'
 
+${TMPDIR}:
+	@mkdir -p $@
+
+tmp-clean:
+	rm -rf ${TMPDIR}/*
+
 KERNELOPTS	= console=earlycon console=ttyAMA0,38400n8 earlyprintk
 QEMUOPTS	= -nographic ${GDB_OPTS}
 
 # ${1}=qemu_bin ${2}=Machine_type ${3}=kernel ${4}=RAM ${5}=rootfs ${6}=Kernel_opts ${7}=QEMU_opts
 runqemu = ${1} -M ${2} -kernel ${3} -m ${4} -append "mem=${4}M root=${5} ${6}" ${7}
+
+# The order of these includes is important
+include ${TESTDIR}/test.mk
+include ${TOOLSDIR}/tools.mk

@@ -23,6 +23,8 @@
 
 # Note: This file must be included after ${TOPDIR}/common.mk
 
+include ${ARCHDIR}/all/all.mk
+
 export CSCC_DIR
 export CSCC_BINDIR
 export COMPILER_PATH=${CSCC_DIR}
@@ -32,6 +34,8 @@ export HOST_TRIPLE
 ARCH_ARM_DIR	= ${ARCHDIR}/arm
 ARCH_ARM_BINDIR	= ${ARCH_ARM_DIR}/bin
 ARCH_ARM_PATCHES= ${ARCH_ARM_DIR}/patches
+ARCH_ARM_TMPDIR	= ${ARCH_ARM_DIR}/tmp
+TMPDIRS		+= ${ARCH_ARM_TMPDIR}
 
 KERNEL_PATCHES	+= $(call add_patches,${ARCH_ARM_PATCHES})
 
@@ -59,15 +63,18 @@ KERNEL_SIZE_ARTIFACTS	= arch/arm/boot/zImage vmlinux*
 PATH		+= :${CSCC_BINDIR}:${ARCH_ARM_BINDIR}:
 
 # Get arm cross compiler
-${TOPTMPDIR}/${CSCC_TAR}:
-	@mkdir -p ${TOPTMPDIR}
-	[ -d ${CSCC_DIR} ] || wget -c -P ${TOPTMPDIR} "${CSCC_URL}"
+${ARCH_ARM_TMPDIR}/${CSCC_TAR}:
+	@mkdir -p ${ARCH_ARM_TMPDIR}
+	[ -d ${CSCC_DIR} ] || wget -c -P ${ARCH_ARM_TMPDIR} "${CSCC_URL}"
 
 CROSS_GCC=${CSCC_BINDIR}/${CROSS_COMPILE}gcc
 gcc arm-cc: state/cross-gcc
-state/cross-gcc: ${TOPTMPDIR}/${CSCC_TAR}
+state/cross-gcc: ${ARCH_ARM_TMPDIR}/${CSCC_TAR}
 	[ -d ${CSCC_DIR} ] || tar -x -j -C ${TOOLCHAIN} -f $<
 	$(call state,$@)
+
+${ARCH_ARM_TMPDIR}:
+	@mkdir -p $@
 
 # ${1}=Machine_type ${2}=kerneldir ${3}=RAM ${4}=rootfs ${5}=Kernel_opts ${6}=QEMU_opts
 qemu = $(call runqemu,${QEMUBINDIR}/qemu-system-arm,${1},${2}/arch/arm/boot/zImage,${3},${4},${KERNELOPTS} ${5},${QEMUOPTS} ${6})

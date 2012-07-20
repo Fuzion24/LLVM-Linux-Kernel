@@ -21,6 +21,8 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
+include ${ARCHDIR}/all/all.mk
+
 export HOST_TYPE=${HOST}
 export HOST_TRIPLE
 
