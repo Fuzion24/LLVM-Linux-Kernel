@@ -2235,3 +2235,54 @@ index cd987de..c681b56 100644
  	.driver = {
  		.name = "snd-soc-dummy",
  		.owner = THIS_MODULE,
+diff --git a/drivers/media/video/msm/Makefile b/drivers/media/video/msm/Makefile
+index eb45271..1391170 100644
+--- a/drivers/media/video/msm/Makefile
++++ b/drivers/media/video/msm/Makefile
+@@ -4,6 +4,7 @@ CFLAGS_REMOVE_msm_vfe8x.o = -Wframe-larger-than=1024
+ endif
+ 
+ EXTRA_CFLAGS += -Idrivers/media/video/msm/io
++EXTRA_CFLAGS += -Idrivers/media/video/msm
+ obj-$(CONFIG_MSM_CAMERA) += io/
+ ifeq ($(CONFIG_MSM_CAMERA_V4L2),y)
+   EXTRA_CFLAGS += -Idrivers/media/video/msm/csi
+diff --git a/net/netfilter/nf_conntrack_netlink.c b/net/netfilter/nf_conntrack_netlink.c
+index ca7e835..65be412 100644
+--- a/net/netfilter/nf_conntrack_netlink.c
++++ b/net/netfilter/nf_conntrack_netlink.c
+@@ -2375,7 +2375,7 @@ static void __net_exit ctnetlink_net_exit_batch(struct list_head *net_exit_list)
+ 		ctnetlink_net_exit(net);
+ }
+ 
+-static struct pernet_operations ctnetlink_net_ops = {
++static struct pernet_operations ctnetlink_net_ops __refdata = {
+ 	.init		= ctnetlink_net_init,
+ 	.exit_batch	= ctnetlink_net_exit_batch,
+ };
+diff --git a/net/sunrpc/auth_gss/auth_gss.c b/net/sunrpc/auth_gss/auth_gss.c
+index d3ad81f..a184b3e 100644
+--- a/net/sunrpc/auth_gss/auth_gss.c
++++ b/net/sunrpc/auth_gss/auth_gss.c
+@@ -1672,7 +1672,7 @@ static __net_exit void rpcsec_gss_exit_net(struct net *net)
+ 	gss_svc_shutdown_net(net);
+ }
+ 
+-static struct pernet_operations rpcsec_gss_net_ops = {
++static struct pernet_operations rpcsec_gss_net_ops __refdata = {
+ 	.init = rpcsec_gss_init_net,
+ 	.exit = rpcsec_gss_exit_net,
+ };
+diff --git a/sound/soc/msm/msm-pcm-hostless.c b/sound/soc/msm/msm-pcm-hostless.c
+index c9b23d0..fb9b1e6 100644
+--- a/sound/soc/msm/msm-pcm-hostless.c
++++ b/sound/soc/msm/msm-pcm-hostless.c
+@@ -45,7 +45,7 @@ static const struct of_device_id msm_pcm_hostless_dt_match[] = {
+ 	{}
+ };
+ 
+-static struct platform_driver msm_pcm_hostless_driver = {
++static struct platform_driver msm_pcm_hostless_driver __devinitdata = {
+ 	.driver = {
+ 		.name = "msm-pcm-hostless",
+ 		.owner = THIS_MODULE,
