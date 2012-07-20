@@ -39,11 +39,12 @@ CLANGDIR	= ${LLVMSRCDIR}/clang
 LLVMBUILDDIR	= ${LLVMTOP}/build/llvm
 CLANGBUILDDIR	= ${LLVMTOP}/build/clang
 
-SYNC_TARGETS	= llvm-sync clang-sync
+LLVM_TARGETS 	= llvm llvm-fetch llvm-patch llvm-configure llvm-build llvm-clean llvm-sync
+CLANG_TARGETS 	= clang clang-fetch clang-patch clang-configure clang-build clang-clean clang-sync clang-update-all
 
-TARGETS		+= llvm-fetch clang-fetch llvm-configure clang-configure llvm-build clang-build llvm-clean clang-clean llvm-sync clang-sync clang-update-all
-
-.PHONY: llvm-fetch clang-fetch llvm-configure clang-configure llvm-build clang-build llvm-clean clang-clean clang-sync clang-update-all
+SYNC_TARGETS	+= llvm-sync clang-sync
+TARGETS		+= ${LLVM_TARGETS} ${CLANG_TARGETS}
+.PHONY:		${LLVM_TARGETS} ${CLANG_TARGETS}
 
 LLVM_GIT	= "http://llvm.org/git/llvm.git"
 CLANG_GIT	= "http://llvm.org/git/clang.git"
@@ -60,39 +61,44 @@ LLVM_OPTIMIZED	= --enable-optimized --enable-assertions
 
 llvm-fetch: ${LLVMSTATE}/llvm-fetch
 ${LLVMSTATE}/llvm-fetch:
-	@mkdir -p ${LLVMSRCDIR}
-	@rm -f ${LLVMSTATE}/clang-fetch
-	@rm -rf ${LLVMSRCDIR}/clang
-	( [ -d ${LLVMSRCDIR}/llvm/.git ] || (rm -rf ${LLVMDIR} && cd ${LLVMSRCDIR} && git clone ${LLVM_GIT} -b ${LLVM_BRANCH}))
-	$(call state, $@)
-
-clang-fetch: ${LLVMSTATE}/clang-fetch
-${LLVMSTATE}/clang-fetch:
-	@mkdir -p ${LLVMSRCDIR}
-	( [ -d ${LLVMSRCDIR}/clang/.git ] || (cd ${LLVMSRCDIR} && git clone ${CLANG_GIT} -b ${CLANG_BRANCH}))
-	$(call state, $@)
+	@$(call banner, "Fetching LLVM...")
+	@mkdir -p $(dir ${LLVMDIR})
+	[ -d ${LLVMDIR}/.git ] || (rm -rf ${LLVMDIR} && git clone ${LLVM_GIT} -b ${LLVM_BRANCH} ${LLVMDIR})
+	$(call state,$@,llvm-patch)
 
 compilerrt-fetch: ${LLVMSTATE}/compilerrt-fetch
 ${LLVMSTATE}/compilerrt-fetch: ${LLVMSTATE}/llvm-fetch
+	@$(call banner, "Fetching Compilerrt...")
 	( [ -d ${LLVMSRCDIR}/llvm/projects/compiler-rt/.git ] || (cd ${LLVMDIR}/projects && git clone ${COMPILERRT_GIT} -b ${COMPILERRT_BRANCH}))
-	$(call state, $@)
+	$(call state,$@)
+
+clang-fetch: ${LLVMSTATE}/clang-fetch
+${LLVMSTATE}/clang-fetch:
+	@$(call banner, "Fetching Clang...")
+	@mkdir -p ${LLVMSRCDIR}
+	( [ -d ${LLVMSRCDIR}/clang/.git ] || (cd ${LLVMSRCDIR} && git clone ${CLANG_GIT} -b ${CLANG_BRANCH}))
+	$(call state,$@,clang-patch)
 
 llvm-patch: ${LLVMSTATE}/llvm-patch
 ${LLVMSTATE}/llvm-patch: ${LLVMSTATE}/llvm-fetch ${LLVMSTATE}/compilerrt-fetch
-	(cd ${LLVMDIR} && patch -p1 -i ${LLVMPATCHES}/llvm/arm/inline-64-bit-asm.patch)
-	(cd ${LLVMDIR} && for i in $$(cat ${LLVMPATCHES}/llvm/x86/series); do echo "Using patch $$i";  patch -p1 -i ${LLVMPATCHES}/llvm/x86/$$i; done )
-	$(call state, $@)
+	@$(call banner, "Patching LLVM...")
+	@ln -sf ${LLVMPATCHES}/llvm ${LLVMDIR}/patches
+	(cd ${LLVMDIR} && quilt push -a)
+	$(call state,$@,llvm-configure)
 
 clang-patch: ${LLVMSTATE}/clang-patch
 ${LLVMSTATE}/clang-patch: ${LLVMSTATE}/clang-fetch
-	(cd ${CLANGDIR} && for i in $$(cat ${LLVMPATCHES}/clang/arm/series); do echo "Using patch $$i"; patch -p1 -i ${LLVMPATCHES}/clang/arm/$$i; done )
-	$(call state, $@)
+	@$(call banner, "Patching Clang...")
+	@ln -sf ${LLVMPATCHES}/clang ${CLANGDIR}/patches
+	(cd ${CLANGDIR} && quilt push -a)
+	$(call state,$@,clang-configure)
 
 llvm-configure: ${LLVMSTATE}/llvm-configure
 ${LLVMSTATE}/llvm-configure: ${LLVMSTATE}/llvm-patch
+	@$(call banner, "Configure LLVM...")
 	@mkdir -p ${LLVMBUILDDIR}
 	(cd ${LLVMBUILDDIR} && cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${LLVMINSTALLDIR} ${LLVMDIR})
-	$(call state, $@)
+	$(call state,$@,llvm-build)
 
 #	(cd ${LLVMBUILDDIR} && CC=gcc CXX=g++ ${LLVMDIR}/configure \
 #		--enable-targets=arm,mips,x86_64 --disable-shared \
@@ -102,49 +108,51 @@ ${LLVMSTATE}/llvm-configure: ${LLVMSTATE}/llvm-patch
 
 clang-configure: ${LLVMSTATE}/clang-configure
 ${LLVMSTATE}/clang-configure: ${LLVMSTATE}/clang-patch
+	@$(call banner, "Configure Clang...")
 	@mkdir -p ${CLANGBUILDDIR}
 	(cd ${CLANGBUILDDIR} && cmake -DCMAKE_BUILD_TYPE=Release  -DCMAKE_INSTALL_PREFIX=${LLVMINSTALLDIR} -DCLANG_PATH_TO_LLVM_SOURCE=${LLVMDIR}   -DCLANG_PATH_TO_LLVM_BUILD=${LLVMBUILDDIR}   ${CLANGDIR} )
-	$(call state, $@)
+	$(call state,$@,clang-build)
 
 #	(cd ${CLANGBUILDDIR} && CC=gcc CXX=g++ ${LLVMDIR}/configure \
 #		--enable-targets=arm,mips,x86_64 --disable-shared \
 #		--enable-languages=c,c++ --enable-bindings=none \
 #		${LLVM_OPTIMIZED} --prefix=${LLVMINSTALLDIR} ) 
 
-llvm-build:  ${LLVMSTATE}/llvm-build
+llvm llvm-build: ${LLVMSTATE}/llvm-build
 ${LLVMSTATE}/llvm-build: ${LLVMSTATE}/llvm-configure
-	@mkdir -p ${LLVMINSTALLDIR}
-	@mkdir -p ${LLVMBUILDDIR}
+	@$(call banner, "Building LLVM...")
+	@mkdir -p ${LLVMINSTALLDIR} ${LLVMBUILDDIR}
 	(cd ${LLVMBUILDDIR} && make -j${JOBS} install)
-	$(call state, $@)
+	$(call state,$@,clang-build)
 
-clang-build:  ${LLVMSTATE}/clang-build
+clang clang-build:  ${LLVMSTATE}/clang-build
 ${LLVMSTATE}/clang-build: ${LLVMSTATE}/llvm-build ${LLVMSTATE}/clang-configure
-	@mkdir -p ${LLVMINSTALLDIR}
-	@mkdir -p ${CLANGBUILDDIR}
+	@$(call banner, "Building Clang...")
+	@mkdir -p ${LLVMINSTALLDIR} ${CLANGBUILDDIR}
 	(cd ${CLANGBUILDDIR} && make -j${JOBS} install)
-	cp -a ${LLVMSRCDIR}/clang/tools/scan-view/* ${LLVMINSTALLDIR}/bin
-	cp -a ${LLVMSRCDIR}/clang/tools/scan-build/* ${LLVMINSTALLDIR}/bin
-	$(call state, $@)
+	cp -a ${CLANGDIR}/tools/scan-{build,view}/* ${LLVMINSTALLDIR}/bin
+	$(call state,$@)
 
 llvm-clean: ${LLVMSTATE}/llvm-fetch ${LLVMSTATE}/compilerrt-fetch clang-clean
+	(cd ${LLVMDIR} && quilt pop -a)
 	(cd ${LLVMDIR} && git reset --hard HEAD)
 	(cd ${LLVMSRCDIR}/llvm/projects/compiler-rt && git reset --hard HEAD)
 	@rm -rf ${LLVMINSTALLDIR} ${LLVMBUILDDIR}
-	@rm -f ${LLVMSTATE}/llvm-configure ${LLVMSTATE}/llvm-patch ${LLVMSTATE}/llvm-build
+	@rm -f $(addprefix ${LLVMSTATE}/,llvm-patch,llvm-configure,llvm-build)
 
 clang-clean: ${LLVMSTATE}/clang-fetch 
+	(cd ${LLVMDIR} && quilt pop -a)
 	(cd ${CLANGDIR} && git reset --hard HEAD)
 	@rm -rf ${LLVMINSTALLDIR} ${CLANGBUILDDIR}
-	@rm -f ${LLVMSTATE}/clang-configure ${LLVMSTATE}/clang-patch ${LLVMSTATE}/clang-build ${LLVMSTATE}/llvm-build
+	@rm -f $(addprefix ${LLVMSTATE}/,clang-patch,clang-configure,clang-build,llvm-build)
 
 llvm-clean-noreset:
 	@rm -rf ${LLVMINSTALLDIR} ${LLVMBUILDDIR}
-	@rm -f ${LLVMSTATE}/llvm-configure ${LLVMSTATE}/llvm-build
+	@rm -f $(addprefix ${LLVMSTATE}/,llvm-configure,llvm-build)
 
 clang-clean-noreset:
 	@rm -rf ${LLVMINSTALLDIR} ${LLVMBUILDDIR}
-	@rm -f ${LLVMSTATE}/clang-configure ${LLVMSTATE}/clang-build
+	@rm -f $(addprefix ${LLVMSTATE}/,clang-configure,clang-build)
 
 llvm-reset: ${LLVMSTATE}/clang-fetch ${LLVMSTATE}/compilerrt-fetch
 	(cd ${LLVMDIR} && git reset --hard HEAD)
@@ -152,7 +160,6 @@ llvm-reset: ${LLVMSTATE}/clang-fetch ${LLVMSTATE}/compilerrt-fetch
 
 clang-reset: ${LLVMSTATE}/clang-fetch ${LLVMSTATE}/compilerrt-fetch
 	(cd ${CLANGDIR} && git reset --hard HEAD)
-
 
 llvm-sync: llvm-clean
 	(cd ${LLVMDIR} && git checkout ${LLVM_BRANCH} && git pull)
