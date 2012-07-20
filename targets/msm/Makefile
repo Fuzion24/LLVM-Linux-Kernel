@@ -26,7 +26,7 @@ TARGETDIR	= ${CURDIR}
 TOPDIR		= $(realpath ${TARGETDIR}/../..)
 
 KERNEL_CFG	= ${TARGETDIR}/config_msm
-KERNEL_BRANCH	= msm-3.0
+KERNEL_BRANCH	= msm-3.4
 KERNEL_GIT	= git://codeaurora.org/kernel/msm.git
 KERNELDIR	= ${SRCDIR}/msm
 
