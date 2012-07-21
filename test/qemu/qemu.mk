@@ -56,7 +56,7 @@ ${QEMUSTATE}/qemu-patch: ${QEMUSTATE}/qemu-fetch
 	$(call state,$@,qemu-configure)
 
 qemu-configure: ${QEMUSTATE}/qemu-configure
-${QEMUSTATE}/qemu-configure: ${QEMUSTATE}/qemu-fetch
+${QEMUSTATE}/qemu-configure: ${QEMUSTATE}/qemu-patch
 	@$(call banner, "Configure QEMU...")
 	@mkdir -p ${QEMUBUILDDIR}
 	(cd ${QEMUBUILDDIR} && ${QEMUSRCDIR}/configure \
@@ -73,8 +73,10 @@ ${QEMUSTATE}/qemu-build: ${QEMUSTATE}/qemu-configure
 	$(call state,$@)
 	
 qemu-clean: ${QEMUSTATE}/qemu-fetch
+	-(cd ${QEMUSRCDIR} && [ ! -e patches ] || quilt pop -af)
+	(cd ${QEMUSRCDIR} && git reset --hard HEAD)
 	rm -rf ${QEMUBUILDDIR} 
-	rm -f $(addprefix ${QEMUSTATE}/,qemu-configure qemu-build)
+	rm -f $(addprefix ${QEMUSTATE}/,qemu-patch qemu-configure qemu-build)
 	
 qemu-sync: ${QEMUSTATE}/qemu-fetch
 	@make qemu-clean

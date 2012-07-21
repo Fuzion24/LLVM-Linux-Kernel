@@ -32,12 +32,6 @@ all: warning clang-build
 warning:
 	@$(call banner,Convenience Makefile. Normally this is run from one of the target directories)
 
-# Default jobs is number of processors + 1 for disk I/O
-JOBS:=${shell expr `getconf _NPROCESSORS_ONLN` + 1}
-ifeq "${JOBS}" ""
-JOBS:=2
-endif
-
 include ${TOPDIR}/common.mk
 include ${TOPDIR}/arch/all/all.mk
 include clang.mk
