@@ -1,3 +1,4 @@
 msm-3.0-llvm.patch
 msm-3.0-llvm-arm.patch
 fix-warnings.patch
+msm-3.4-llvm-mg.patch
