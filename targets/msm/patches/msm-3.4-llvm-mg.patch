@@ -986,3 +986,243 @@ index 630405a..cb3749c 100644
  	.driver = {
  		.name = "msm-voip-dsp",
  		.owner = THIS_MODULE,
+diff --git a/drivers/hwmon/pm8xxx-adc.c b/drivers/hwmon/pm8xxx-adc.c
+index aa9acf7..0e774f7 100644
+--- a/drivers/hwmon/pm8xxx-adc.c
++++ b/drivers/hwmon/pm8xxx-adc.c
+@@ -1264,7 +1264,7 @@ static int __devinit pm8xxx_adc_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver pm8xxx_adc_driver = {
++static struct platform_driver pm8xxx_adc_driver __refdata = {
+ 	.probe	= pm8xxx_adc_probe,
+ 	.remove	= __devexit_p(pm8xxx_adc_teardown),
+ 	.driver	= {
+diff --git a/drivers/input/touchscreen/cyttsp_i2c.c b/drivers/input/touchscreen/cyttsp_i2c.c
+index 2af1d0c..93cf35b 100644
+--- a/drivers/input/touchscreen/cyttsp_i2c.c
++++ b/drivers/input/touchscreen/cyttsp_i2c.c
+@@ -117,7 +117,7 @@ static const struct i2c_device_id cyttsp_i2c_id[] = {
+ };
+ MODULE_DEVICE_TABLE(i2c, cyttsp_i2c_id);
+ 
+-static struct i2c_driver cyttsp_i2c_driver = {
++static struct i2c_driver cyttsp_i2c_driver __refdata = {
+ 	.driver = {
+ 		.name	= CY_I2C_NAME,
+ 		.owner	= THIS_MODULE,
+diff --git a/drivers/mfd/wcd9xxx-core.c b/drivers/mfd/wcd9xxx-core.c
+index 2256f67..d30caa5 100644
+--- a/drivers/mfd/wcd9xxx-core.c
++++ b/drivers/mfd/wcd9xxx-core.c
+@@ -1104,7 +1104,7 @@ static struct i2c_device_id tabla_id_table[] = {
+ };
+ MODULE_DEVICE_TABLE(i2c, tabla_id_table);
+ 
+-static struct i2c_driver tabla_i2c_driver = {
++static struct i2c_driver tabla_i2c_driver __refdata = {
+ 	.driver                 = {
+ 		.owner          =       THIS_MODULE,
+ 		.name           =       "tabla-i2c-core",
+diff --git a/drivers/net/wireless/wcnss/wcnss_wlan.c b/drivers/net/wireless/wcnss/wcnss_wlan.c
+index ad9dc7d..c5d1048 100644
+--- a/drivers/net/wireless/wcnss/wcnss_wlan.c
++++ b/drivers/net/wireless/wcnss/wcnss_wlan.c
+@@ -196,7 +196,7 @@ wcnss_wlan_ctrl_remove(struct platform_device *pdev)
+ }
+ 
+ 
+-static struct platform_driver wcnss_wlan_ctrl_driver = {
++static struct platform_driver wcnss_wlan_ctrl_driver __refdata = {
+ 	.driver = {
+ 		.name	= "WLAN_CTRL",
+ 		.owner	= THIS_MODULE,
+@@ -491,7 +491,7 @@ static const struct dev_pm_ops wcnss_wlan_pm_ops = {
+ 	.resume		= wcnss_wlan_resume,
+ };
+ 
+-static struct platform_driver wcnss_wlan_driver = {
++static struct platform_driver wcnss_wlan_driver __refdata = {
+ 	.driver = {
+ 		.name	= DEVICE,
+ 		.owner	= THIS_MODULE,
+diff --git a/drivers/power/smb349.c b/drivers/power/smb349.c
+index ffc92d5..1ae2bbe 100644
+--- a/drivers/power/smb349.c
++++ b/drivers/power/smb349.c
+@@ -676,7 +676,7 @@ static const struct i2c_device_id smb349_id[] = {
+ };
+ MODULE_DEVICE_TABLE(i2c, smb349_id);
+ 
+-static struct i2c_driver smb349_driver = {
++static struct i2c_driver smb349_driver __refdata = {
+ 	.driver	= {
+ 		   .name	= SMB349_NAME,
+ 		   .owner	= THIS_MODULE,
+diff --git a/drivers/usb/misc/mdm_data_bridge.c b/drivers/usb/misc/mdm_data_bridge.c
+index 1c9de07..79a455e 100644
+--- a/drivers/usb/misc/mdm_data_bridge.c
++++ b/drivers/usb/misc/mdm_data_bridge.c
+@@ -1036,7 +1036,7 @@ static const struct usb_device_id bridge_ids[] = {
+ };
+ MODULE_DEVICE_TABLE(usb, bridge_ids);
+ 
+-static struct usb_driver bridge_driver = {
++static struct usb_driver bridge_driver __devinitdata = {
+ 	.name =			"mdm_bridge",
+ 	.probe =		bridge_probe,
+ 	.disconnect =		bridge_disconnect,
+diff --git a/drivers/video/msm/mipi_tc358764_dsi2lvds.c b/drivers/video/msm/mipi_tc358764_dsi2lvds.c
+index 2e65c34..a5f6e06 100644
+--- a/drivers/video/msm/mipi_tc358764_dsi2lvds.c
++++ b/drivers/video/msm/mipi_tc358764_dsi2lvds.c
+@@ -714,7 +714,7 @@ static const struct i2c_device_id d2l_i2c_id[] = {
+ 	{}
+ };
+ 
+-static struct i2c_driver d2l_i2c_slave_driver = {
++static struct i2c_driver d2l_i2c_slave_driver __refdata = {
+ 	.driver = {
+ 		.name = "tc358764-i2c",
+ 		.owner = THIS_MODULE
+diff --git a/sound/soc/codecs/cs8427.c b/sound/soc/codecs/cs8427.c
+index e406a32..20eba87 100644
+--- a/sound/soc/codecs/cs8427.c
++++ b/sound/soc/codecs/cs8427.c
+@@ -873,7 +873,7 @@ static struct i2c_device_id cs8427_id_table[] = {
+ };
+ MODULE_DEVICE_TABLE(i2c, cs8427_id_table);
+ 
+-static struct i2c_driver cs8427_i2c_driver = {
++static struct i2c_driver cs8427_i2c_driver __refdata = {
+ 	.driver                 = {
+ 		.owner          =       THIS_MODULE,
+ 		.name           =       "cs8427-spdif",
+diff --git a/sound/soc/codecs/wcd9310.c b/sound/soc/codecs/wcd9310.c
+index 3164a9b..6fa69aa 100644
+--- a/sound/soc/codecs/wcd9310.c
++++ b/sound/soc/codecs/wcd9310.c
+@@ -8124,7 +8124,7 @@ static int __devexit tabla_remove(struct platform_device *pdev)
+ 	snd_soc_unregister_codec(&pdev->dev);
+ 	return 0;
+ }
+-static struct platform_driver tabla_codec_driver = {
++static struct platform_driver tabla_codec_driver __refdata = {
+ 	.probe = tabla_probe,
+ 	.remove = tabla_remove,
+ 	.driver = {
+diff --git a/sound/soc/msm/msm-dai-q6.c b/sound/soc/msm/msm-dai-q6.c
+index fb74c0a..fedb6db 100644
+--- a/sound/soc/msm/msm-dai-q6.c
++++ b/sound/soc/msm/msm-dai-q6.c
+@@ -1966,7 +1966,7 @@ static __devexit int msm_dai_q6_mi2s_dev_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver msm_dai_q6_driver = {
++static struct platform_driver msm_dai_q6_driver __refdata = {
+ 	.probe  = msm_dai_q6_dev_probe,
+ 	.remove = msm_dai_q6_dev_remove,
+ 	.driver = {
+@@ -1975,7 +1975,7 @@ static struct platform_driver msm_dai_q6_driver = {
+ 	},
+ };
+ 
+-static struct platform_driver msm_dai_q6_mi2s_driver = {
++static struct platform_driver msm_dai_q6_mi2s_driver __refdata = {
+ 	.probe  = msm_dai_q6_mi2s_dev_probe,
+ 	.remove = msm_dai_q6_mi2s_dev_remove,
+ 	.driver = {
+diff --git a/drivers/input/touchscreen/cyttsp-i2c-qc.c b/drivers/input/touchscreen/cyttsp-i2c-qc.c
+index d8881a4..944d504 100644
+--- a/drivers/input/touchscreen/cyttsp-i2c-qc.c
++++ b/drivers/input/touchscreen/cyttsp-i2c-qc.c
+@@ -161,7 +161,7 @@ static const struct dev_pm_ops cyttsp_pm_ops = {
+ };
+ #endif
+ 
+-static struct i2c_driver cyttsp_driver = {
++static struct i2c_driver cyttsp_driver __refdata = {
+ 	.driver = {
+ 		.name = CY_I2C_NAME,
+ 		.owner = THIS_MODULE,
+diff --git a/drivers/video/msm/mipi_tc358764_dsi2lvds.c b/drivers/video/msm/mipi_tc358764_dsi2lvds.c
+index 2e65c34..6c208ee 100644
+--- a/drivers/video/msm/mipi_tc358764_dsi2lvds.c
++++ b/drivers/video/msm/mipi_tc358764_dsi2lvds.c
+@@ -714,7 +714,7 @@ static const struct i2c_device_id d2l_i2c_id[] = {
+ 	{}
+ };
+ 
+-static struct i2c_driver d2l_i2c_slave_driver = {
++static struct i2c_driver d2l_i2c_slave_driver __refdata = {
+ 	.driver = {
+ 		.name = "tc358764-i2c",
+ 		.owner = THIS_MODULE
+@@ -973,7 +973,7 @@ err_device_put:
+ 	return ret;
+ }
+ 
+-static struct platform_driver d2l_driver = {
++static struct platform_driver d2l_driver __refdata = {
+ 	.probe  = mipi_d2l_probe,
+ 	.remove = __devexit_p(mipi_d2l_remove),
+ 	.driver = {
+diff --git a/sound/soc/codecs/wcd9310.c b/sound/soc/codecs/wcd9310.c
+index 3164a9b..f0a71b7 100644
+--- a/sound/soc/codecs/wcd9310.c
++++ b/sound/soc/codecs/wcd9310.c
+@@ -8136,7 +8136,7 @@ static struct platform_driver tabla_codec_driver = {
+ 	},
+ };
+ 
+-static struct platform_driver tabla1x_codec_driver = {
++static struct platform_driver tabla1x_codec_driver __refdata = {
+ 	.probe = tabla_probe,
+ 	.remove = tabla_remove,
+ 	.driver = {
+diff --git a/drivers/video/msm/mipi_tc358764_dsi2lvds.c b/drivers/video/msm/mipi_tc358764_dsi2lvds.c
+index 2e65c34..aeadb6f 100644
+--- a/drivers/video/msm/mipi_tc358764_dsi2lvds.c
++++ b/drivers/video/msm/mipi_tc358764_dsi2lvds.c
+@@ -224,7 +224,7 @@ static u32 d2l_3d_gpio_enable;
+ static u32 d2l_3d_gpio_mode;
+ static int d2l_enable_3d;
+ static struct i2c_client *d2l_i2c_client;
+-static struct i2c_driver d2l_i2c_slave_driver;
++static struct i2c_driver d2l_i2c_slave_driver __refdata;
+ 
+ static int mipi_d2l_init(void);
+ static int mipi_d2l_enable_3d(struct msm_fb_data_type *mfd,
+@@ -714,7 +714,7 @@ static const struct i2c_device_id d2l_i2c_id[] = {
+ 	{}
+ };
+ 
+-static struct i2c_driver d2l_i2c_slave_driver = {
++static struct i2c_driver d2l_i2c_slave_driver __refdata = {
+ 	.driver = {
+ 		.name = "tc358764-i2c",
+ 		.owner = THIS_MODULE
+@@ -973,7 +973,7 @@ err_device_put:
+ 	return ret;
+ }
+ 
+-static struct platform_driver d2l_driver = {
++static struct platform_driver d2l_driver __refdata = {
+ 	.probe  = mipi_d2l_probe,
+ 	.remove = __devexit_p(mipi_d2l_remove),
+ 	.driver = {
+diff --git a/include/linux/oprofile.h b/include/linux/oprofile.h
+index a4c5624..805857b 100644
+--- a/include/linux/oprofile.h
++++ b/include/linux/oprofile.h
+@@ -84,7 +84,7 @@ struct oprofile_operations {
+  *
+  * If an error occurs, the fields should be left untouched.
+  */
+-int oprofile_arch_init(struct oprofile_operations * ops);
++int __init oprofile_arch_init(struct oprofile_operations * ops);
+  
+ /**
+  * One-time exit/cleanup for the arch.
