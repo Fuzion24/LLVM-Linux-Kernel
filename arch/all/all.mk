@@ -33,7 +33,7 @@ ARCH_ALL_PATCHES= ${ARCH_ALL_DIR}/patches
 PATH		+= :${ARCH_ALL_BINDIR}:
 
 MAINLINEURI	= git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-LOCALKERNEL	= ${ARCH_ALL_DIR}/kernel
+SHARED_KERNEL	= ${ARCH_ALL_DIR}/kernel.git
 
 ifeq "${KERNEL_GIT}" ""
 KERNEL_GIT	= ${MAINLINEURI}
@@ -85,7 +85,7 @@ KERNEL_SIZE_GCC_LOG	= gcc-`date +%Y-%m-%d_%H:%M:%S`-kernel-size.log
 
 TARGETS	+= kernel-fetch kernel-patch kernel-configure kernel-build kernel-sync
 TARGETS	+= kernel-gcc-fetch kernel-gcc-patch kernel-gcc-configure kernel-gcc-build kernel-gcc-sync
-TARGETS += tmp-clean
+TARGETS += kernel-gcc-sync kernel-gcc-clean tmp-clean
 
 .PHONY: kernel-fetch kernel-patch kernel-configure kernel-build
 .PHONY: kernel-gcc-fetch kernel-gcc-patch kernel-gcc-configure kernel-gcc-build
@@ -99,11 +99,13 @@ error1	= ( echo Error: ${1}; false )
 assert	= [ ${1} ] || $(call error1,${2})
 #assert	= echo "${1} --> ${2}"
 
-${LOCALKERNEL}:
-	git clone ${MAINLINEURI} $@
+# The shared kernel is a bare repository of Linus' kernel.org kernel
+# It serves as a git alternate for all the other target specific kernels
+${SHARED_KERNEL}:
+	git clone --bare ${MAINLINEURI} $@
 
 kernel-fetch: state/kernel-fetch
-state/kernel-fetch: ${LOCALKERNEL}
+state/kernel-fetch: ${SHARED_KERNEL}
 	@mkdir -p ${SRCDIR}
 	[ -d ${KERNELDIR}/.git ] || git clone --reference $< ${KERNEL_GIT} -b ${KERNEL_BRANCH} ${KERNELDIR}
 ifneq "${KERNEL_TAG}" ""
@@ -249,14 +251,23 @@ state/kernel-gcc-build: ${CROSS_GCC} state/kernel-gcc-configure
 	$(call state,$@,done)
 
 kernels: kernel-build kernel-gcc-build
+kernels-sync: kernel-gcc-sync
 kernels-clean: kernel-clean kernel-gcc-clean
 
+kernel-shared-sync:
+	@$(call banner, "Syncing shared kernel.org kernel...")
+	(cd ${SHARED_KERNEL} && git fetch origin +refs/heads/*:refs/heads/*)
+
 kernel-sync: state/kernel-fetch state/kernel-gcc-fetch
+	@make kernel-shared-sync
 	@make kernel-clean
 	@$(call banner, "Syncing kernel...")
-	@[ -d ${LOCALKERNEL} ] && (cd ${LOCALKERNEL} && git pull)
 	(cd ${KERNELDIR} && git pull)
-	-(cd ${KERNELGCC} && git pull)
+
+kernel-gcc-sync: kernel-sync
+	@make kernel-gcc-reset
+	@$(call banner, "Syncing gcc kernel...")
+	@(cd ${KERNELGCC} && git pull)
 
 sync-all:
 	@for t in ${SYNC_TARGETS}; do make $$t; done
