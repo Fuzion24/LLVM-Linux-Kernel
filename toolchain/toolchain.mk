@@ -30,8 +30,11 @@ include ${LLVMTOP}/clang.mk
 
 TARGETS		+= gcc-android-fetch
 
+${TOOLCHAIN}/android:
+	@mkdir -p ${TOOLCHAIN}/android
+
 gcc-android-fetch: ${TOOLCHAIN}/status/gcc-android-fetch
-${TOOLCHAIN}/status/gcc-android-fetch:
+${TOOLCHAIN}/status/gcc-android-fetch: ${TOOLCHAIN}/android
 	@mkdir -p ${TOOLCHAIN}/status
-	(cd ${TOOLCHAIN} && git clone git://codeaurora.org/platform/prebuilt.git -b aosp-new/jb-release)
+	(cd ${TOOLCHAIN}/android && git clone git://codeaurora.org/platform/prebuilt.git -b aosp-new/jb-release)
 	@touch $@
