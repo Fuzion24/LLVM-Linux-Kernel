@@ -27,3 +27,11 @@
 LLVMTOP	= ${TOOLCHAIN}/clang
 
 include ${LLVMTOP}/clang.mk
+
+TARGETS		+= gcc-android-fetch
+
+gcc-android-fetch: ${TOOLCHAIN}/status/gcc-android-fetch
+${TOOLCHAIN}/status/gcc-android-fetch:
+	@mkdir -p ${TOOLCHAIN}/status
+	(cd ${TOOLCHAIN} && git clone git://codeaurora.org/platform/prebuilt.git -b aosp-new/jb-release)
+	@touch $@
