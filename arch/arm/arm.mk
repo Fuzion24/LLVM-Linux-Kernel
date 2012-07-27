@@ -39,6 +39,8 @@ TMPDIRS		+= ${ARCH_ARM_TMPDIR}
 
 KERNEL_PATCHES	+= $(call add_patches,${ARCH_ARM_PATCHES})
 
+VERSION_TARGETS	+= arm-cc-version
+
 ARCH		= arm
 MAKE_FLAGS	= ARCH=${ARCH}
 MAKE_KERNEL	= ${ARCH_ARM_BINDIR}/make-kernel.sh ${LLVMINSTALLDIR} ${EXTRAFLAGS}
@@ -65,13 +67,16 @@ PATH		+= :${CSCC_BINDIR}:${ARCH_ARM_BINDIR}:
 # Get arm cross compiler
 ${ARCH_ARM_TMPDIR}/${CSCC_TAR}:
 	@mkdir -p ${ARCH_ARM_TMPDIR}
-	[ -d ${CSCC_DIR} ] || wget -c -P ${ARCH_ARM_TMPDIR} "${CSCC_URL}"
+	wget -c -P ${ARCH_ARM_TMPDIR} "${CSCC_URL}"
 
 CROSS_GCC=${CSCC_BINDIR}/${CROSS_COMPILE}gcc
 gcc arm-cc: state/cross-gcc
 state/cross-gcc: ${ARCH_ARM_TMPDIR}/${CSCC_TAR}
 	[ -d ${CSCC_DIR} ] || tar -x -j -C ${TOOLCHAIN} -f $<
 	$(call state,$@)
+
+arm-cc-version: state/cross-gcc
+	@${CROSS_GCC} --version | head -1
 
 ${ARCH_ARM_TMPDIR}:
 	@mkdir -p $@

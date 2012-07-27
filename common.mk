@@ -56,6 +56,13 @@ list-patch-applied:
 list-path:
 	@echo ${PATH}
 
+list-versions:
+	@cmake --version
+	@git --version
+	@make --version | head -1
+	@echo "quilt version `quilt --version`"
+	@${MAKE} ${VERSION_TARGETS} | grep -v ^make
+
 clean-all:
 	${MAKE} ${CLEAN_TARGETS}
 

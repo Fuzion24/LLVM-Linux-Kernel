@@ -42,14 +42,16 @@ CLANGBUILDDIR	= ${LLVMTOP}/build/clang
 LLVM_TARGETS 		= llvm llvm-fetch llvm-patch llvm-configure llvm-build
 CLANG_TARGETS 		= clang clang-fetch clang-patch clang-configure clang-build clang-update-all
 LLVM_TARGETS_APPLIED	= llvm-patch-applied clang-patch-applied
-LLVM_SYNC_TARGETS	= llvm-sync clang-sync
 LLVM_CLEAN_TARGETS	= llvm-clean clang-clean
+LLVM_SYNC_TARGETS	= llvm-sync clang-sync
+LLVM_VERSION_TARGETS	= llvm-version clang-version
 
 TARGETS			+= ${LLVM_TARGETS} ${CLANG_TARGETS} ${LLVM_SYNC_TARGETS} ${LLVM_CLEAN_TARGETS}
 SYNC_TARGETS		+= ${LLVM_SYNC_TARGETS}
 CLEAN_TARGETS		+= ${LLVM_CLEAN_TARGETS}
 PATCH_APPLIED_TARGETS	+= ${LLVM_TARGETS_APPLIED}
-.PHONY:			${LLVM_TARGETS} ${CLANG_TARGETS} ${LLVM_SYNC_TARGETS} ${LLVM_CLEAN_TARGETS} ${LLVM_TARGETS_APPLIED}
+VERSION_TARGETS		+= ${LLVM_VERSION_TARGETS}
+.PHONY:			${LLVM_TARGETS} ${CLANG_TARGETS} ${LLVM_SYNC_TARGETS} ${LLVM_CLEAN_TARGETS} ${LLVM_TARGETS_APPLIED} ${LLVM_VERSION_TARGETS}
 
 LLVM_GIT	= "http://llvm.org/git/llvm.git"
 CLANG_GIT	= "http://llvm.org/git/clang.git"
@@ -176,5 +178,10 @@ llvm-sync: llvm-clean
 
 clang-sync: clang-clean
 	(cd ${CLANGDIR} && git checkout ${CLANG_BRANCH} && git pull)
+
+llvm-version:
+	@(cd ${LLVMDIR}/$* && echo "`${LLVMINSTALLDIR}/bin/llc --version | grep version | xargs echo` commit `git rev-parse HEAD`")
+clang-version:
+	@(cd ${CLANGDIR}/$* && echo "`${CLANG} --version | grep version | xargs echo` commit `git rev-parse HEAD`")
 
 clang-update-all: llvm-sync clang-sync llvm-build clang-build

@@ -32,12 +32,13 @@ QEMUPATCHES	= ${QEMUDIR}/patches
 
 QEMUBINDIR	= ${INSTALLDIR}/bin
 
-QEMU_TARGETS	= qemu qemu-fetch qemu-configure qemu-build qemu-clean qemu-sync qemu-patch-applied
+QEMU_TARGETS	= qemu qemu-fetch qemu-configure qemu-build qemu-clean qemu-sync qemu-patch-applied qemu-version
 
 TARGETS			+= ${QEMU_TARGETS}
 SYNC_TARGETS		+= qemu-sync
 CLEAN_TARGETS		+= qemu-clean
 PATCH_APPLIED_TARGETS	+= qemu-patch-applied
+VERSION_TARGETS		+= qemu-version
 .PHONY:		${QEMU_TARGETS}
 
 QEMU_GIT	= "git://git.qemu.org/qemu.git"
@@ -87,3 +88,7 @@ qemu-clean: ${QEMUSTATE}/qemu-fetch
 qemu-sync: ${QEMUSTATE}/qemu-fetch
 	@make qemu-clean
 	(cd ${QEMUSRCDIR} && git checkout ${QEMU_BRANCH} && git pull)
+
+qemu-version: ${QEMUSTATE}/qemu-fetch
+	@(cd ${QEMUSRCDIR} && echo "QEMU version `cat VERSION` commit `git rev-parse HEAD`")
+

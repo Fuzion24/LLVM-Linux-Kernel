@@ -34,8 +34,9 @@ SYNC_TARGETS	+= ltp-sync
 
 LTP_TARGETS	= ltp-fetch ltp-configure ltp-build ltp-clean ltp-sync ltp-mrproper ltp-clean
 TARGETS		+= ${LTP_TARGETS}
-SYNC_TARGETS	+= ltp-sync
 CLEAN_TARGETS	+= ltp-clean
+SYNC_TARGETS	+= ltp-sync
+VERSION_TARGETS	+= ltp-version
 .PHONY:		${LTP_TARGETS}
 
 LTPCVS=":pserver:anonymous@ltp.cvs.sourceforge.net:/cvsroot/ltp"
@@ -102,6 +103,9 @@ ltp-clean:
 
 ltp-mrproper:
 	rm -rf ${LTPSTATE} ${LTPTMPDIR} ${LTPSRCDIR} ${TOPLTPINSTALLDIR}
+
+ltp-version:
+	@echo "LTP version ${LTPSF_RELEASE} (from sourceforge)"
 
 # ${1}=logdir ${2}=toolchain ${3}=testname
 ltplog	= ${1}/${2}-${ARCH}-`date +%Y-%m-%d_%H:%M:%S`-${3}.log

@@ -86,13 +86,15 @@ KERNEL_TARGETS_CLANG	= kernel-fetch kernel-patch kernel-configure kernel-build k
 KERNEL_TARGETS_GCC	= kernel-gcc-fetch kernel-gcc-patch kernel-gcc-configure kernel-gcc-build kernel-gcc-sync
 KERNEL_TARGETS_APPLIED	= kernel-patch-applied kernel-gcc-patch-applied
 KERNEL_TARGETS_CLEAN	= kernel-clean kernel-gcc-clean tmp-clean
+KERNEL_TARGETS_VERSION	= kernel-version kernel-gcc-version
 
 TARGETS			+= ${KERNEL_TARGETS_CLANG} ${KERNEL_TARGETS_GCC} ${KERNEL_TARGETS_APPLIED} ${KERNEL_TARGETS_CLEAN}
 SYNC_TARGETS		+= kernels-sync
 PATCH_APPLIED_TARGETS	+= ${KERNEL_TARGETS_APPLIED}
 CLEAN_TARGETS		+= ${KERNEL_TARGETS_CLEAN}
+VERSION_TARGETS		+= ${KERNEL_TARGETS_VERSION}
 
-.PHONY:			${KERNEL_TARGETS_CLANG} ${KERNEL_TARGETS_GCC} ${KERNEL_TARGETS_APPLIED} ${KERNEL_TARGETS_CLEAN}
+.PHONY:			${KERNEL_TARGETS_CLANG} ${KERNEL_TARGETS_GCC} ${KERNEL_TARGETS_APPLIED} ${KERNEL_TARGETS_CLEAN} ${KERNEL_TARGETS_VERSION}
 
 seperator = "---------------------------------------------------------------------"
 banner	= ( echo ${seperator}; echo ${1}; echo ${seperator} )
@@ -273,6 +275,14 @@ kernel-sync: state/kernel-fetch kernel-shared-sync kernel-clean
 kernel-gcc-sync: state/kernel-gcc-fetch kernel-shared-sync kernel-gcc-clean
 	@$(call banner, "Syncing gcc kernel...")
 	@(cd ${KERNELGCC} && git pull)
+
+get-kernel-version = [ ! -d ${1} ] || (cd ${1} && echo "src/$(notdir ${1}) version `make kernelversion | grep -v ^make` commit `git rev-parse HEAD`")
+
+kernel-version:
+	@$(call get-kernel-version,${KERNELDIR})
+
+kernel-gcc-version:
+	@$(call get-kernel-version,${KERNELGCC})
 
 list-kernel-patches:
 	@echo ${KERNEL_PATCHES} | sed 's/ /\n/g'
