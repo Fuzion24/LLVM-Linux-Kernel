@@ -19,3 +19,6 @@ targets/*/test-results/
 targets/*/tmp
 tmp
 toolchain/arm-20*
+toolchain/android/
+toolchain/status/
+arch/all/kernel.git/
