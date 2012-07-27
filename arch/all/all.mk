@@ -237,7 +237,7 @@ kernel-build: state/kernel-build
 state/kernel-build: ${LLVMSTATE}/clang-build state/kernel-configure
 	$(call assert,-n "${MAKE_KERNEL}",MAKE_KERNEL undefined)
 	@$(call banner,"Building kernel with clang...")
-	(cd ${KERNELDIR} && ${MAKE_KERNEL})
+	(cd ${KERNELDIR} && time ${MAKE_KERNEL})
 	@$(call banner,"Successfully Built kernel with clang!")
 	@mkdir -p ${TOPLOGDIR}
 	@( ${CLANG} --version | head -1 ; \
@@ -250,7 +250,7 @@ state/kernel-gcc-build: ${CROSS_GCC} state/kernel-gcc-configure
 	@$(call banner, "Building kernel with gcc...")
 	(cd ${KERNELGCC} \
 		&& export PATH=$(shell echo "${PATH}" | sed -e 's/ ://g') \
-		&& make -j${JOBS} ${MAKE_FLAGS} CROSS_COMPILE=${CROSS_COMPILE} \
+		&& time make -j${JOBS} ${MAKE_FLAGS} CROSS_COMPILE=${CROSS_COMPILE} \
 	)
 	@mkdir -p ${TOPLOGDIR}
 	( ${CROSS_GCC} --version | head -1 ; \
