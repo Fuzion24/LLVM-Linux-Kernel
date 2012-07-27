@@ -106,9 +106,21 @@ assert	= [ ${1} ] || $(call error1,${2})
 #assert	= echo "${1} --> ${2}"
 
 # The shared kernel is a bare repository of Linus' kernel.org kernel
-# It serves as a git alternate for all the other target specific kernels
+# It serves as a git alternate for all the other target specific kernels.
+# This is purely meant as a disk space saving effort.
+kernel-shared: ${SHARED_KERNEL}
 ${SHARED_KERNEL}:
-	git clone --bare ${MAINLINEURI} $@
+	@$(call banner, "Cloning shared kernel repo...")
+	@[ -d ${@:.git=} ] && ( \
+		$(call banner, "Moving kernel/.git to kernel.git"); \
+		mv ${@:.git=}/.git $@; \
+		echo -e "[core]\n\trepositoryformatversion = 0\n\tfilemode = true\n\tbare = true" > $@/config; \
+		echo -e "[remote \"origin\"]\n\turl = ${MAINLINEURI}" >> $@/config; \
+		rm -rf ${@:.git=} & \
+		${MAKE} kernel-shared-sync; \
+	) || git clone --bare ${MAINLINEURI} $@
+	@grep -q '\[remote "origin"\]' $@/config \
+		|| echo -e "[remote \"origin\"]\n\turl = ${MAINLINEURI}" >> $@/config;
 
 kernel-fetch: state/kernel-fetch
 state/kernel-fetch: ${SHARED_KERNEL}
