@@ -44,12 +44,21 @@ include ${TOOLCHAIN}/toolchain.mk
 TARGETS	+= tmp-mrproper list-path
 
 tmp-mrproper:
-	@(for t in ${TMPDIRS}; do rm -rf $$t/*; done)
+	@for t in ${TMPDIRS}; do rm -rf $$t/*; done
 
 list-targets:
 	@echo "List of available make targets:"
-	@(for t in ${TARGETS}; do echo $$t; done)
+	@for t in ${TARGETS}; do echo $$t; done
+
+list-patch-applied:
+	${MAKE} ${PATCH_APPLIED_TARGETS}
 
 list-path:
 	@echo ${PATH}
+
+clean-all:
+	${MAKE} ${CLEAN_TARGETS}
+
+sync-all:
+	${MAKE} ${SYNC_TARGETS}
 

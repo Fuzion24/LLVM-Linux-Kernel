@@ -22,18 +22,21 @@
 
 # Assumes has been included from ../test.mk
 
-LTPTMPDIR=${LTPDIR}/tmp
-LTPSRCDIR=${LTPDIR}/src
-TOPLTPINSTALLDIR=${LTPDIR}/install
-LTPINSTALLDIR=${TOPLTPINSTALLDIR}/opt/ltp
-#LTPBUILDDIR=${LTPDIR}/build/ltp
-LTPBUILDDIR=${LTPSRCDIR}/ltp
-LTPSTATE=${LTPDIR}/state
-LTPSCRIPTS=${LTPDIR}/scripts
-SYNC_TARGETS+=ltp-sync
+LTPTMPDIR	= ${LTPDIR}/tmp
+LTPSRCDIR	= ${LTPDIR}/src
+TOPLTPINSTALLDIR= ${LTPDIR}/install
+LTPINSTALLDIR	= ${TOPLTPINSTALLDIR}/opt/ltp
+#LTPBUILDDIR	= ${LTPDIR}/build/ltp
+LTPBUILDDIR	= ${LTPSRCDIR}/ltp
+LTPSTATE	= ${LTPDIR}/state
+LTPSCRIPTS	= ${LTPDIR}/scripts
+SYNC_TARGETS	+= ltp-sync
 
-TARGETS+= ltp-fetch ltp-configure ltp-build ltp-clean ltp-sync ltp-mrproper
-.PHONY: ltp-fetch ltp-configure ltp-build ltp-clean ltp-sync ltp-mrproper
+LTP_TARGETS	= ltp-fetch ltp-configure ltp-build ltp-clean ltp-sync ltp-mrproper ltp-clean
+TARGETS		+= ${LTP_TARGETS}
+SYNC_TARGETS	+= ltp-sync
+CLEAN_TARGETS	+= ltp-clean
+.PHONY:		${LTP_TARGETS}
 
 LTPCVS=":pserver:anonymous@ltp.cvs.sourceforge.net:/cvsroot/ltp"
 LTPBRANCH="stable-1.0"

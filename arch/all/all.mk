@@ -66,7 +66,6 @@ KERNEL_PATCHES	+= $(call add_patches,${ARCH_ALL_PATCHES})
 
 FILTERFILE	= ${TARGETDIR}/kernel-filter
 TMPFILTERFILE	= ${TARGETDIR}/tmp/kernel-filter
-SYNC_TARGETS	+= kernel-sync
 
 # ${1}=logdir ${2}=toolchain ${3}=testname
 sizelog	= ${1}/${2}-${ARCH}-`date +%Y-%m-%d_%H:%M:%S`-kernel-size.log
@@ -83,12 +82,17 @@ KERNEL_SIZE_GCC_LOG	= gcc-`date +%Y-%m-%d_%H:%M:%S`-kernel-size.log
 #   - KERNEL_PATCHES+=... Additional target specific patch file(s)
 #   - KERNEL_CFG
 
-TARGETS	+= kernel-fetch kernel-patch kernel-configure kernel-build kernel-sync
-TARGETS	+= kernel-gcc-fetch kernel-gcc-patch kernel-gcc-configure kernel-gcc-build kernel-gcc-sync
-TARGETS += kernel-gcc-sync kernel-gcc-clean tmp-clean
+KERNEL_TARGETS_CLANG	= kernel-fetch kernel-patch kernel-configure kernel-build kernel-sync
+KERNEL_TARGETS_GCC	= kernel-gcc-fetch kernel-gcc-patch kernel-gcc-configure kernel-gcc-build kernel-gcc-sync
+KERNEL_TARGETS_APPLIED	= kernel-patch-applied kernel-gcc-patch-applied
+KERNEL_TARGETS_CLEAN	= kernel-clean kernel-gcc-clean tmp-clean
 
-.PHONY: kernel-fetch kernel-patch kernel-configure kernel-build
-.PHONY: kernel-gcc-fetch kernel-gcc-patch kernel-gcc-configure kernel-gcc-build
+TARGETS			+= ${KERNEL_TARGETS_CLANG} ${KERNEL_TARGETS_GCC} ${KERNEL_TARGETS_APPLIED} ${KERNEL_TARGETS_CLEAN}
+SYNC_TARGETS		+= kernels-sync
+PATCH_APPLIED_TARGETS	+= ${KERNEL_TARGETS_APPLIED}
+CLEAN_TARGETS		+= ${KERNEL_TARGETS_CLEAN}
+
+.PHONY:			${KERNEL_TARGETS_CLANG} ${KERNEL_TARGETS_GCC} ${KERNEL_TARGETS_APPLIED} ${KERNEL_TARGETS_CLEAN}
 
 seperator = "---------------------------------------------------------------------"
 banner	= ( echo ${seperator}; echo ${1}; echo ${seperator} )
@@ -163,6 +167,10 @@ state/kernel-gcc-patch: state/kernel-gcc-fetch state/kernel-patch
 	@$(call banner, "Patching kernel source (gcc): see patch-gcc.log")
 	(cd ${KERNELGCC} && patch -p1 -i ${TMPDIR}/final.patch > ${LOGDIR}/patch-gcc.log)
 	$(call state,$@,kernel-gcc-configure)
+
+${KERNEL_TARGETS_APPLIED}: %-patch-applied:
+	@$(call banner,"Patches applied for $*")
+	@( [ -d ${SRCDIR}/$* ] && cd ${SRCDIR}/$* && git status || echo "No patches applied" )
 
 kernel-autopatch: kernel-build state/kernel-copy
 	(cd ${KERNELCOPY} && git reset --hard HEAD && git pull)
@@ -251,26 +259,20 @@ state/kernel-gcc-build: ${CROSS_GCC} state/kernel-gcc-configure
 	$(call state,$@,done)
 
 kernels: kernel-build kernel-gcc-build
-kernels-sync: kernel-gcc-sync
+kernels-sync: kernel-sync kernel-gcc-sync
 kernels-clean: kernel-clean kernel-gcc-clean
 
 kernel-shared-sync:
 	@$(call banner, "Syncing shared kernel.org kernel...")
 	(cd ${SHARED_KERNEL} && git fetch origin +refs/heads/*:refs/heads/*)
 
-kernel-sync: state/kernel-fetch state/kernel-gcc-fetch
-	@make kernel-shared-sync
-	@make kernel-clean
+kernel-sync: state/kernel-fetch kernel-shared-sync kernel-clean
 	@$(call banner, "Syncing kernel...")
 	(cd ${KERNELDIR} && git pull)
 
-kernel-gcc-sync: kernel-sync
-	@make kernel-gcc-reset
+kernel-gcc-sync: state/kernel-gcc-fetch kernel-shared-sync kernel-gcc-clean
 	@$(call banner, "Syncing gcc kernel...")
 	@(cd ${KERNELGCC} && git pull)
-
-sync-all:
-	@for t in ${SYNC_TARGETS}; do make $$t; done
 
 list-kernel-patches:
 	@echo ${KERNEL_PATCHES} | sed 's/ /\n/g'

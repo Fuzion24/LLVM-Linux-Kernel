@@ -32,10 +32,12 @@ QEMUPATCHES	= ${QEMUDIR}/patches
 
 QEMUBINDIR	= ${INSTALLDIR}/bin
 
-QEMU_TARGETS	= qemu qemu-fetch qemu-configure qemu-build qemu-clean qemu-sync
+QEMU_TARGETS	= qemu qemu-fetch qemu-configure qemu-build qemu-clean qemu-sync qemu-patch-applied
 
-SYNC_TARGETS	+= qemu-sync
-TARGETS		+= ${QEMU_TARGETS}
+TARGETS			+= ${QEMU_TARGETS}
+SYNC_TARGETS		+= qemu-sync
+CLEAN_TARGETS		+= qemu-clean
+PATCH_APPLIED_TARGETS	+= qemu-patch-applied
 .PHONY:		${QEMU_TARGETS}
 
 QEMU_GIT	= "git://git.qemu.org/qemu.git"
@@ -54,6 +56,10 @@ ${QEMUSTATE}/qemu-patch: ${QEMUSTATE}/qemu-fetch
 	@ln -sf ${QEMUPATCHES} ${QEMUSRCDIR}
 	(cd ${QEMUSRCDIR} && quilt push -a)
 	$(call state,$@,qemu-configure)
+
+qemu-patch-applied: %-patch-applied:
+	@$(call banner,"Patches applied for $*")
+	@(cd ${QEMUSRCDIR} && quilt applied || echo "No patches applied" )
 
 qemu-configure: ${QEMUSTATE}/qemu-configure
 ${QEMUSTATE}/qemu-configure: ${QEMUSTATE}/qemu-patch

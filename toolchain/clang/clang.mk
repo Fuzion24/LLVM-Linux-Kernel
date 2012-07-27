@@ -39,12 +39,17 @@ CLANGDIR	= ${LLVMSRCDIR}/clang
 LLVMBUILDDIR	= ${LLVMTOP}/build/llvm
 CLANGBUILDDIR	= ${LLVMTOP}/build/clang
 
-LLVM_TARGETS 	= llvm llvm-fetch llvm-patch llvm-configure llvm-build llvm-clean llvm-sync
-CLANG_TARGETS 	= clang clang-fetch clang-patch clang-configure clang-build clang-clean clang-sync clang-update-all
+LLVM_TARGETS 		= llvm llvm-fetch llvm-patch llvm-configure llvm-build
+CLANG_TARGETS 		= clang clang-fetch clang-patch clang-configure clang-build clang-update-all
+LLVM_TARGETS_APPLIED	= llvm-patch-applied clang-patch-applied
+LLVM_SYNC_TARGETS	= llvm-sync clang-sync
+LLVM_CLEAN_TARGETS	= llvm-clean clang-clean
 
-SYNC_TARGETS	+= llvm-sync clang-sync
-TARGETS		+= ${LLVM_TARGETS} ${CLANG_TARGETS}
-.PHONY:		${LLVM_TARGETS} ${CLANG_TARGETS}
+TARGETS			+= ${LLVM_TARGETS} ${CLANG_TARGETS} ${LLVM_SYNC_TARGETS} ${LLVM_CLEAN_TARGETS}
+SYNC_TARGETS		+= ${LLVM_SYNC_TARGETS}
+CLEAN_TARGETS		+= ${LLVM_CLEAN_TARGETS}
+PATCH_APPLIED_TARGETS	+= ${LLVM_TARGETS_APPLIED}
+.PHONY:			${LLVM_TARGETS} ${CLANG_TARGETS} ${LLVM_SYNC_TARGETS} ${LLVM_CLEAN_TARGETS} ${LLVM_TARGETS_APPLIED}
 
 LLVM_GIT	= "http://llvm.org/git/llvm.git"
 CLANG_GIT	= "http://llvm.org/git/clang.git"
@@ -92,6 +97,10 @@ ${LLVMSTATE}/clang-patch: ${LLVMSTATE}/clang-fetch
 	@ln -sf ${LLVMPATCHES}/clang ${CLANGDIR}/patches
 	(cd ${CLANGDIR} && quilt push -a)
 	$(call state,$@,clang-configure)
+
+${LLVM_TARGETS_APPLIED}: %-patch-applied:
+	@$(call banner,"Patches applied for $*")
+	@(cd ${LLVMSRCDIR}/$* && quilt applied || echo "No patches applied" )
 
 llvm-configure: ${LLVMSTATE}/llvm-configure
 ${LLVMSTATE}/llvm-configure: ${LLVMSTATE}/llvm-patch
