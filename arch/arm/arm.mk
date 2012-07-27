@@ -26,13 +26,13 @@
 include ${ARCHDIR}/all/all.mk
 
 # Configure the requested ARM cross compiler
-# Sets CROSS_GCC, PATH, and COMPILER_DEPS, HOST, HOST_TRIPLE
+# Sets CROSS_GCC, PATH, HOST, HOST_TRIPLE
 # 
 ifeq ($(CROSS_GCC),)
 ifeq ($(CROSS_ARM_VERSION),android)
-include ${ARCHDIR}/arm/android.mk
+include ${ARCHDIR}/arm/toolchain-cfg/android.mk
 else
-include ${ARCHDIR}/arm/codesourcery.mk
+include ${ARCHDIR}/arm/toolchain-cfg/codesourcery.mk
 endif
 endif
 
