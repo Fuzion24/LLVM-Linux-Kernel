@@ -48,7 +48,7 @@ PATH		+= :${CSCC_BINDIR}:${ARCH_ARM_BINDIR}:
 # Get arm cross compiler
 ${ARCH_ARM_TMPDIR}/${CSCC_TAR}:
 	@mkdir -p ${ARCH_ARM_TMPDIR}
-	[ -d ${CSCC_DIR} ] || wget -c -P ${ARCH_ARM_TMPDIR} "${CSCC_URL}"
+	wget -c -P ${ARCH_ARM_TMPDIR} "${CSCC_URL}"
 
 CROSS_GCC=${CSCC_BINDIR}/${CROSS_COMPILE}gcc
 gcc arm-cc: state/cross-gcc

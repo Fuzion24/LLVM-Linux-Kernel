@@ -288,7 +288,7 @@ kernel-gcc-sync: state/kernel-gcc-fetch kernel-shared-sync kernel-gcc-clean
 	@$(call banner, "Syncing gcc kernel...")
 	@(cd ${KERNELGCC} && git pull)
 
-get-kernel-version = [ ! -d ${1} ] || (cd ${1} && echo "src/$(notdir ${1}) version `make kernelversion | grep -v ^make` commit `git rev-parse HEAD`")
+get-kernel-version = [ ! -d ${1} ] || (cd ${1} && echo "src/$(notdir ${1}) version `make kernelversion 2>/dev/null | grep -v ^make` commit `git rev-parse HEAD`")
 
 kernel-version:
 	@$(call get-kernel-version,${KERNELDIR})

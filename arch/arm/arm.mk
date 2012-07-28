@@ -25,6 +25,12 @@
 
 include ${ARCHDIR}/all/all.mk
 
+ARCH_ARM_DIR	= ${ARCHDIR}/arm
+ARCH_ARM_BINDIR	= ${ARCH_ARM_DIR}/bin
+ARCH_ARM_PATCHES= ${ARCH_ARM_DIR}/patches
+ARCH_ARM_TMPDIR	= ${ARCH_ARM_DIR}/tmp
+TMPDIRS		+= ${ARCH_ARM_TMPDIR}
+
 # Configure the requested ARM cross compiler
 # Sets CROSS_GCC, PATH, HOST, HOST_TRIPLE
 # 
@@ -35,12 +41,6 @@ else
 include ${ARCHDIR}/arm/toolchain-cfg/codesourcery.mk
 endif
 endif
-
-ARCH_ARM_DIR	= ${ARCHDIR}/arm
-ARCH_ARM_BINDIR	= ${ARCH_ARM_DIR}/bin
-ARCH_ARM_PATCHES= ${ARCH_ARM_DIR}/patches
-ARCH_ARM_TMPDIR	= ${ARCH_ARM_DIR}/tmp
-TMPDIRS		+= ${ARCH_ARM_TMPDIR}
 
 KERNEL_PATCHES	+= $(call add_patches,${ARCH_ARM_PATCHES})
 
@@ -54,6 +54,8 @@ CC		= clang-wrap.sh
 CPP		= ${CC} -E
 
 KERNEL_SIZE_ARTIFACTS	= arch/arm/boot/zImage vmlinux*
+
+KERNELOPTS	= console=earlycon console=ttyAMA0,38400n8 earlyprintk
 
 # ${1}=Machine_type ${2}=kerneldir ${3}=RAM ${4}=rootfs ${5}=Kernel_opts ${6}=QEMU_opts
 qemu = $(call runqemu,${QEMUBINDIR}/qemu-system-arm,${1},${2}/arch/arm/boot/zImage,${3},${4},${KERNELOPTS} ${5},${QEMUOPTS} ${6})
