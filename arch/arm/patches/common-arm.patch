@@ -132,3 +132,16 @@ index e5878de..ea7105e 100644
 +    (void)memset(s, c, n);
 +}
 +EXPORT_SYMBOL(__aeabi_memset);
+diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+index eb06e58..7f0a168 100644
+--- a/include/linux/netdevice.h
++++ b/include/linux/netdevice.h
+@@ -1265,7 +1265,7 @@ struct net_device {
+ 	enum {
+ 		RTNL_LINK_INITIALIZED,
+ 		RTNL_LINK_INITIALIZING,
+-	} rtnl_link_state:16;
++	} rtnl_link_state;
+ 
+ 	/* Called from unregister, can be used to call free_netdev */
+ 	void (*destructor)(struct net_device *dev);
