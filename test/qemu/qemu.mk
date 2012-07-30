@@ -32,10 +32,13 @@ QEMUPATCHES	= ${QEMUDIR}/patches
 
 QEMUBINDIR	= ${INSTALLDIR}/bin
 
-QEMU_TARGETS	= qemu qemu-fetch qemu-configure qemu-build qemu-clean qemu-sync
+QEMU_TARGETS	= qemu qemu-fetch qemu-configure qemu-build qemu-clean qemu-sync qemu-patch-applied qemu-version
 
-SYNC_TARGETS	+= qemu-sync
-TARGETS		+= ${QEMU_TARGETS}
+TARGETS			+= ${QEMU_TARGETS}
+SYNC_TARGETS		+= qemu-sync
+CLEAN_TARGETS		+= qemu-clean
+PATCH_APPLIED_TARGETS	+= qemu-patch-applied
+VERSION_TARGETS		+= qemu-version
 .PHONY:		${QEMU_TARGETS}
 
 QEMU_GIT	= "git://git.qemu.org/qemu.git"
@@ -54,6 +57,10 @@ ${QEMUSTATE}/qemu-patch: ${QEMUSTATE}/qemu-fetch
 	@ln -sf ${QEMUPATCHES} ${QEMUSRCDIR}
 	(cd ${QEMUSRCDIR} && quilt push -a)
 	$(call state,$@,qemu-configure)
+
+qemu-patch-applied: %-patch-applied:
+	@$(call banner,"Patches applied for $*")
+	@(cd ${QEMUSRCDIR} && quilt applied || echo "No patches applied" )
 
 qemu-configure: ${QEMUSTATE}/qemu-configure
 ${QEMUSTATE}/qemu-configure: ${QEMUSTATE}/qemu-patch
@@ -81,3 +88,12 @@ qemu-clean: ${QEMUSTATE}/qemu-fetch
 qemu-sync: ${QEMUSTATE}/qemu-fetch
 	@make qemu-clean
 	(cd ${QEMUSRCDIR} && git checkout ${QEMU_BRANCH} && git pull)
+
+qemu-version: ${QEMUSTATE}/qemu-fetch
+	@(cd ${QEMUSRCDIR} && echo "QEMU version `cat VERSION` commit `git rev-parse HEAD`")
+
+QEMUOPTS	= -nographic ${GDB_OPTS}
+
+# ${1}=qemu_bin ${2}=Machine_type ${3}=kernel ${4}=RAM ${5}=rootfs ${6}=Kernel_opts ${7}=QEMU_opts
+runqemu = ${DRYRUN} ${1} -M ${2} -kernel ${3} -m ${4} -append "mem=${4}M root=${5} ${6}" ${7}
+

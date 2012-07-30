@@ -55,5 +55,8 @@ state/cross-gcc: ${ARCH_ARM_TMPDIR}/${LINARO_CC_TAR}
 	mv ${TOOLCHAIN}/${LINARO_CC_NAME} ${LINARO_CC_DIR}
 	$(call state,$@)
 
+arm-cc-version: state/cross-gcc
+	@${CROSS_GCC} --version | head -1
+
 ${ARCH_ARM_TMPDIR}:
 	@mkdir -p $@

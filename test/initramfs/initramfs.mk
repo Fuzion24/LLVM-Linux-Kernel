@@ -22,7 +22,8 @@
 
 # NOTE: CROSS_COMPILE, HOST and CC must be defined by <arch>.mk
 
-TARGETS	+= initramfs initramfs-clean
+TARGETS		+= initramfs initramfs-clean
+CLEAN_TARGETS	+= initramfs-clean
 
 .PHONY: initramfs-prep initramfs initramfs-clean ltp dash
 

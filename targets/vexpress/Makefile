@@ -127,44 +127,44 @@ test2: state/prep ${QEMUSTATE}/qemu-build state/kernel-build initramfs
 	@$(call qemu,${BOARD},${KERNELDIR},256,/dev/ram0,init=/bin/init,-initrd initramfs.img.gz)
 
 # Get prebuilt vexpress image
-${TOPTMPDIR}/${NANOIMG}.gz:
+${TMPDIR}/${NANOIMG}.gz:
 	wget -P $(dir $@) -c ${LINARORELEASEURL}/$(notdir $@)
 
-vexpress.img: ${TOPTMPDIR}/${NANOBOARD}.img.gz
+vexpress.img: ${TMPDIR}/${NANOBOARD}.img.gz
 	gzip -dc $< > $@
 
 # Get prebuilt vexpress-ltp image
-${TOPTMPDIR}/vexpress-ltp.img.bz2:
+${TMPDIR}/vexpress-ltp.img.bz2:
 	wget -P $(dir $@) -c ${BUILDBOT_PREBUILT_URL}/$(notdir $@)
 
 # Build vexpress image
-${TOPTMPDIR}/sources.txt:
+${TMPDIR}/sources.txt:
 	wget --quiet $(LINARORELEASEURL)/sources.txt -O $@
 
-${TOPTMPDIR}/get-sources.sh: ${TOPTMPDIR}/sources.txt
-	perl -ne 'if(/^${NANOBOARD}:/){$$f=1} elsif($$f && m|(http://\S+)|){print "wget -c -P ${TOPTMPDIR} $$1/"} elsif($$f && /(\S*\.tar\..*): md5sum/){print "$$1\n"} elsif(/^\s+:/) {$$f=0}' $< >$@
+${TMPDIR}/get-sources.sh: ${TMPDIR}/sources.txt
+	perl -ne 'if(/^${NANOBOARD}:/){$$f=1} elsif($$f && m|(http://\S+)|){print "wget -c -P ${TMPDIR} $$1/"} elsif($$f && /(\S*\.tar\..*): md5sum/){print "$$1\n"} elsif(/^\s+:/) {$$f=0}' $< >$@
 	sh $@
 
-${TOPTMPDIR}/board-sources.txt: ${TOPTMPDIR}/sources.txt
+${TMPDIR}/board-sources.txt: ${TMPDIR}/sources.txt
 	perl -ne 'if(/^${NANOBOARD}:/){$$f=1} elsif($$f && m|(http://\S+)|){print "$$1/"} elsif($$f && /(\S*\.tar\..*): md5sum/){print "$$1\n"} elsif(/^\s+:/) {$$f=0}' $< >$@
-	wget -c -P ${TOPTMPDIR} `cat $@`
+	wget -c -P ${TMPDIR} `cat $@`
 
-${NANOIMG}: ${TOPTMPDIR}/${NANOIMG}
-${TOPTMPDIR}/${NANOIMG}: ${TOPTMPDIR}/board-sources.txt
-	(cd ${TOPTMPDIR} && sudo linaro-media-create --dev ${BOARD} --rootfs ext4 \
+${NANOIMG}: ${TMPDIR}/${NANOIMG}
+${TMPDIR}/${NANOIMG}: ${TMPDIR}/board-sources.txt
+	(cd ${TMPDIR} && sudo linaro-media-create --dev ${BOARD} --rootfs ext4 \
 		`sed 's|.*nano.*/|--binary |; s|.*hwpack.*/|--hwpack |' $(notdir $<)` \
 		--hwpack-force-yes --image-size 1G --image-file $@ \
 	)
 
 # Build ltp image into vexpress image
-#vexpress-ltp.img: ${TOPTMPDIR}/${NANOIMG}.gz ${LTPSTATE}/ltp-build ${LTPSTATE}/ltp-scripts
+#vexpress-ltp.img: ${TMPDIR}/${NANOIMG}.gz ${LTPSTATE}/ltp-build ${LTPSTATE}/ltp-scripts
 #	gzip -dc $< > $@
-vexpress-ltp.img.bz2: ${TOPTMPDIR}/${NANOIMG} ${LTPSTATE}/ltp-build ${LTPSTATE}/ltp-scripts
+vexpress-ltp.img.bz2: ${TMPDIR}/${NANOIMG} ${LTPSTATE}/ltp-build ${LTPSTATE}/ltp-scripts
 	@cp -v $< $@
 	${TOOLSDIR}/partcopy.sh $@ rootfs ${LTPINSTALLDIR}/ /opt/ltp/ || (rm $@ && echo "E: $@ error" && false)
 	bzip2 -9c $< > $@
 
-vexpress-ltp.img: ${TOPTMPDIR}/vexpress-ltp.img.bz2
+vexpress-ltp.img: ${TMPDIR}/vexpress-ltp.img.bz2
 	bunzip2 -9c $< > $@
 
 vexpress-ltp-clean:
