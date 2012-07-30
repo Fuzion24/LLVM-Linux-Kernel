@@ -48,6 +48,7 @@ export LD=${CROSS_COMPILE}ld
 if [ $USECLANG -eq "1" ]; then
 	export INSTALLDIR=$1 ; shift
 	export EXTRAFLAGS=$*
+        env
         . $TOPDIR/arch/arm/toolchain-cfg/clang_cfg
 else
         . $TOPDIR/arch/arm/toolchain-cfg/codesourcery_cfg

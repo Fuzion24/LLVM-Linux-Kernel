@@ -27,7 +27,8 @@ include ${ARCHDIR}/all/all.mk
 
 # Configure the requested ARM cross compiler
 # Sets CROSS_GCC, PATH, HOST, HOST_TRIPLE
-# 
+# This is required whether or not clang is the
+# compiler being used.
 ifeq ($(CROSS_GCC),)
 ifeq ($(CROSS_ARM_VERSION),android)
 include ${ARCHDIR}/arm/toolchain-cfg/android.mk
@@ -49,6 +50,7 @@ MAKE_FLAGS	= ARCH=${ARCH}
 MAKE_KERNEL	= ${ARCH_ARM_BINDIR}/make-kernel.sh ${LLVMINSTALLDIR} ${EXTRAFLAGS}
 CROSS_COMPILE	= ${HOST}-
 CC		= clang-wrap.sh
+GCC_CC		= ${HOST}-gcc
 CPP		= ${CC} -E
 
 KERNEL_SIZE_ARTIFACTS	= arch/arm/boot/zImage vmlinux*

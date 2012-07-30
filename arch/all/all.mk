@@ -242,7 +242,7 @@ state/kernel-gcc-build: ${CROSS_GCC} state/kernel-gcc-configure
 	@$(call banner, "Building kernel with gcc...")
 	(cd ${KERNELGCC} \
 		&& export PATH=$(shell echo "${PATH}" | sed -e 's/ ://g') \
-		&& time make -j${JOBS} ${MAKE_FLAGS} CROSS_COMPILE=${CROSS_COMPILE} \
+		&& time make -j${JOBS} ${MAKE_FLAGS} CROSS_COMPILE=${CROSS_COMPILE} CC=${GCC_CC} \
 	)
 	@mkdir -p ${TOPLOGDIR}
 	( ${CROSS_GCC} --version | head -1 ; \

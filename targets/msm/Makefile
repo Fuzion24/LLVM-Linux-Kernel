@@ -24,6 +24,7 @@
 
 TARGETDIR	= ${CURDIR}
 TOPDIR		= $(realpath ${TARGETDIR}/../..)
+CROSS_ARM_VERSION = android
 
 KERNEL_CFG	= ${TARGETDIR}/config_msm
 KERNEL_BRANCH	= msm-3.4

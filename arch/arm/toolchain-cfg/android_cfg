@@ -1,7 +1,7 @@
+#!/bin/bash
 ##############################################################################
 # Copyright (c) 2012 Mark Charlebois
-#               2012 Jan-Simon Möller
-#               2012 Behan Webster
+# Copyright (c) 2012 Behan Webster
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to 
@@ -22,25 +22,8 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
-# Assumes has been included from ../common.mk
+export HOST_TYPE=${HOST_TYPE:-arm-eabi}
+export HOST_TRIPLE=${HOST_TRIPLE:-arm-eabi}
 
-LLVMTOP	= ${TOOLCHAIN}/clang
-
-include ${LLVMTOP}/clang.mk
-
-TARGETS		+= gcc-android-fetch
-
-ANDROID_SDK_BRANCH = aosp-new/ics-factoryrom-2-release
-ANDROID_SDK_GIT = git://codeaurora.org/platform/prebuilt.git
-
-${TOOLCHAIN}/android:
-	@mkdir -p ${TOOLCHAIN}/android
-
-gcc-android-fetch: ${TOOLCHAIN}/status/gcc-android-fetch
-${TOOLCHAIN}/status/gcc-android-fetch: ${TOOLCHAIN}/android
-	@mkdir -p ${TOOLCHAIN}/status
-	(cd ${TOOLCHAIN}/android && git clone ${ANDROID_SDK_GIT} -b ${ANDROID_SDK_BRANCH})
-	@touch $@
-
-gcc-android-sync: ${TOOLCHAIN}/status/gcc-android-fetch
-	(cd ${TOOLCHAIN}/android/prebuilt && git pull && git checkout ${ANDROID_SDK_BRANCH})
+export CROSS_COMPILE=$HOST_TYPE-
+export CC_FOR_BUILD=$ANDROID_GCC_DIR/$HOST_TYPE-gcc

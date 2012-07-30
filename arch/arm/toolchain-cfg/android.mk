@@ -1,10 +1,9 @@
 ##############################################################################
-# Copyright (c) 2012 Mark Charlebois
-#               2012 Jan-Simon Möller
+# Copyright {c} 2012 Mark Charlebois
 #               2012 Behan Webster
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to 
+# of this software and associated documentation files {the "Software"}, to 
 # deal in the Software without restriction, including without limitation the 
 # rights to use, copy, modify, merge, publish, distribute, sublicense, and/or 
 # sell copies of the Software, and to permit persons to whom the Software is 
@@ -22,25 +21,25 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
-# Assumes has been included from ../common.mk
+# Note: use CROSS_ARM_VERSION=android to include this file
 
-LLVMTOP	= ${TOOLCHAIN}/clang
+export COMPILER_PATH=${CSCC_DIR}
+export HOST_TYPE=${HOST}
+export HOST_TRIPLE
 
-include ${LLVMTOP}/clang.mk
+HOST		= arm-linux-androideabi
+HOST_TRIPLE	= arm-linux-androideabi
+CROSS_COMPILE	= ${HOST}-
+CC		= gcc
 
-TARGETS		+= gcc-android-fetch
+ANDROID_GCC	= arm-linux-androideabi-4.4.x
 
-ANDROID_SDK_BRANCH = aosp-new/ics-factoryrom-2-release
-ANDROID_SDK_GIT = git://codeaurora.org/platform/prebuilt.git
+ANDROID_GCC_BINDIR=${TOOLCHAIN}/android/prebuilt/linux-x86/toolchain/${ANDROID_GCC}/bin
 
-${TOOLCHAIN}/android:
-	@mkdir -p ${TOOLCHAIN}/android
+# Add path so that ${CROSS_COMPILE}${CC} is resolved
+PATH		+= :${TOOLCHAIN}/android/prebuilt/linux-x86/toolchain/${ANDROID_GCC}/bin:
 
-gcc-android-fetch: ${TOOLCHAIN}/status/gcc-android-fetch
-${TOOLCHAIN}/status/gcc-android-fetch: ${TOOLCHAIN}/android
-	@mkdir -p ${TOOLCHAIN}/status
-	(cd ${TOOLCHAIN}/android && git clone ${ANDROID_SDK_GIT} -b ${ANDROID_SDK_BRANCH})
-	@touch $@
+CROSS_GCC=${ANDROID_GCC_BINDIR}/${CROSS_COMPILE}gcc
+gcc arm-cc: state/android-gcc
+state/android-gcc: ${TOOLCHAIN}/status/gcc-android-fetch
 
-gcc-android-sync: ${TOOLCHAIN}/status/gcc-android-fetch
-	(cd ${TOOLCHAIN}/android/prebuilt && git pull && git checkout ${ANDROID_SDK_BRANCH})
