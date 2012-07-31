@@ -2286,3 +2286,15 @@ index c9b23d0..fb9b1e6 100644
  	.driver = {
  		.name = "msm-pcm-hostless",
  		.owner = THIS_MODULE,
+diff --git a/drivers/media/video/msm/Makefile b/drivers/media/video/msm/Makefile
+index e22c9b2..23ce0e5 100644
+--- a/drivers/media/video/msm/Makefile
++++ b/drivers/media/video/msm/Makefile
+@@ -3,6 +3,7 @@ GCC_VERSION      := $(shell $(CONFIG_SHELL) $(PWD)/scripts/gcc-version.sh $(CROS
+ ccflags-y += -Idrivers/media/video/msm/io
+ ccflags-y += -Idrivers/media/video/msm/vfe
+ obj-$(CONFIG_MSM_CAMERA) += io/
++EXTRA_CFLAGS += -Idrivers/media/video/msm
+ ifeq ($(CONFIG_MSM_CAMERA_V4L2),y)
+   EXTRA_CFLAGS += -Idrivers/media/video/msm/csi
+   EXTRA_CFLAGS += -Idrivers/media/video/msm/eeprom
