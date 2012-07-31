@@ -23,6 +23,8 @@
 
 # Note: use CROSS_ARM_VERSION=linaro to include this file
 
+TARGETS		+= linaro-gcc
+
 export LINARO_CC_DIR
 export LINARO_CC_BINDIR
 export COMPILER_PATH=${LINARO_CC_DIR}
@@ -46,10 +48,10 @@ PATH		+= :${LINARO_CC_BINDIR}:${ARCH_ARM_BINDIR}:
 # Get arm cross compiler
 ${ARCH_ARM_TMPDIR}/${LINARO_CC_TAR}:
 	@mkdir -p ${ARCH_ARM_TMPDIR}
-	[ -d ${LINARO_CC_DIR} ] || wget -c -P ${ARCH_ARM_TMPDIR} "${LINARO_CC_URL}"
+	wget -c -P ${ARCH_ARM_TMPDIR} "${LINARO_CC_URL}"
 
 CROSS_GCC=${LINARO_CC_BINDIR}/${CROSS_COMPILE}gcc
-gcc arm-cc: state/cross-gcc
+linaro-gcc: state/cross-gcc
 state/cross-gcc: ${ARCH_ARM_TMPDIR}/${LINARO_CC_TAR}
 	[ -d ${LINARO_CC_DIR} ] || tar -x -j -C ${TOOLCHAIN} -f $<
 	mv ${TOOLCHAIN}/${LINARO_CC_NAME} ${LINARO_CC_DIR}

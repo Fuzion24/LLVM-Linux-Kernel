@@ -1,7 +1,7 @@
+#!/bin/bash
 ##############################################################################
 # Copyright (c) 2012 Mark Charlebois
-#               2012 Jan-Simon Möller
-#               2012 Behan Webster
+# Copyright (c) 2012 Behan Webster
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to 
@@ -22,27 +22,20 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
-# Assumes has been included from ../common.mk
+if [ -z "$GCCHOME" ]; then
+	GCCHOME=${LINARO_CC_DIR:-/opt}
+fi
 
-LLVMTOP	= ${TOOLCHAIN}/clang
+export LINARO_CC_DIR=${TOOLCHAIN}/linaro-20120720
+export LINARO_CC_BINDIR=$LINARO_CC_DIR/bin
+export HOST_TYPE=${HOST_TYPE:-arm-linux-gnueabihf}
+export HOST_TRIPLE=${HOST_TRIPLE:-arm-none-gnueabi}
 
-include ${LLVMTOP}/clang.mk
+if [ ! -d $LINARO_CC_DIR ]; then
+		echo "Compiler not found: $LINARO_CC_DIR"
+		exit 1
+fi
 
-TARGETS		+= gcc-android-fetch
-
-ANDROID_SDK_BRANCH = aosp-new/ics-factoryrom-2-release
-ANDROID_SDK_GIT = git://codeaurora.org/platform/prebuilt.git
-
-# The Android toolchain supports both x86 and ARM
-# This is why it is here instead of under arch/arm/... and/or arch/x86/...
-${TOOLCHAIN}/android:
-	@mkdir -p ${TOOLCHAIN}/android
-
-gcc-android-fetch: ${TOOLCHAIN}/status/gcc-android-fetch
-${TOOLCHAIN}/status/gcc-android-fetch: ${TOOLCHAIN}/android
-	@mkdir -p ${TOOLCHAIN}/status
-	(cd ${TOOLCHAIN}/android && git clone ${ANDROID_SDK_GIT} -b ${ANDROID_SDK_BRANCH})
-	@touch $@
-
-gcc-android-sync: ${TOOLCHAIN}/status/gcc-android-fetch
-	(cd ${TOOLCHAIN}/android/prebuilt && git pull && git checkout ${ANDROID_SDK_BRANCH})
+export COMPILER_PATH=$LINARO_CC_DIR
+export CROSS_COMPILE=$HOST_TYPE-
+export CC_FOR_BUILD=$LINARO_CC_BINDIR/$HOST_TYPE-gcc

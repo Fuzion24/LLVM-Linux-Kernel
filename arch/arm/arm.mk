@@ -39,7 +39,11 @@ ifeq ($(CROSS_GCC),)
 ifeq ($(CROSS_ARM_VERSION),android)
 include ${ARCHDIR}/arm/toolchain-cfg/android.mk
 else
+ifeq ($(CROSS_ARM_VERSION),linaro)
+include ${ARCHDIR}/arm/toolchain-cfg/linaro.mk
+else
 include ${ARCHDIR}/arm/toolchain-cfg/codesourcery.mk
+endif
 endif
 endif
 
