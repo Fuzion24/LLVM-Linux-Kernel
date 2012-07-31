@@ -4,4 +4,3 @@ inline-64-bit-asm.patch
 0003-pax-linux-llvm-x86_integrated-as-octa.patch
 0004-pax-linux-llvm-x86_integrated-as-single-quoted-strin.patch
 0005-pax-linux-llvm-x86_kernel-riprel.patch
-0006-pax-linux-llvm-x86_integrated-as-macro.patch
