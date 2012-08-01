@@ -51,6 +51,7 @@ ${ARCH_ARM_TMPDIR}/${LINARO_CC_TAR}:
 	wget -c -P ${ARCH_ARM_TMPDIR} "${LINARO_CC_URL}"
 
 CROSS_GCC=${LINARO_CC_BINDIR}/${CROSS_COMPILE}gcc
+arm-cc: state/linaro-gcc
 linaro-gcc: state/linaro-gcc
 state/linaro-gcc: ${ARCH_ARM_TMPDIR}/${LINARO_CC_TAR}
 	rm -rf ${TOOLCHAIN}/${LINARO_CC_NAME} ${LINARO_CC_DIR}
