@@ -44,4 +44,4 @@ arm-cc: state/android-gcc
 state/android-gcc: ${TOOLCHAIN}/status/gcc-android-fetch
 
 arm-cc-version: state/android-gcc
-	@${CROSS_GCC} --version | head -1
+	@${ANDROID_GCC} --version | head -1

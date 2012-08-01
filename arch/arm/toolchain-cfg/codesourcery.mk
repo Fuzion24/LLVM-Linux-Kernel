@@ -53,7 +53,7 @@ ${ARCH_ARM_TMPDIR}/${CSCC_TAR}:
 CROSS_GCC=${CSCC_BINDIR}/${CROSS_COMPILE}gcc
 arm-cc: state/codesourcery-gcc
 state/codesourcery-gcc: ${ARCH_ARM_TMPDIR}/${CSCC_TAR}
-	[ -d ${CSCC_DIR} ] || tar -x -j -C ${TOOLCHAIN} -f $<
+	tar -x -j -C ${TOOLCHAIN} -f $<
 	$(call state,$@)
 
 arm-cc-version: state/codesourcery-gcc
