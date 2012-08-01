@@ -36,11 +36,17 @@ TMPDIRS		+= ${ARCH_ARM_TMPDIR}
 # This is required whether or not clang is the
 # compiler being used.
 ifeq ($(CROSS_GCC),)
-ifeq ($(CROSS_ARM_VERSION),android)
+ifeq ($(CROSS_ARM_TOOLCHAIN),android)
 include ${ARCHDIR}/arm/toolchain-cfg/android.mk
+
+arm-cc: android-fetch
+
 else
-ifeq ($(CROSS_ARM_VERSION),linaro)
+ifeq ($(CROSS_ARM_TOOLCHAIN),linaro)
 include ${ARCHDIR}/arm/toolchain-cfg/linaro.mk
+
+arm-cc: linaro-gcc
+
 else
 include ${ARCHDIR}/arm/toolchain-cfg/codesourcery.mk
 endif

@@ -21,7 +21,7 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
-# Note: use CROSS_ARM_VERSION=android to include this file
+# Note: use CROSS_ARM_TOOLCHAIN=android to include this file
 
 export COMPILER_PATH=${CSCC_DIR}
 export HOST_TYPE=${HOST}
@@ -40,6 +40,8 @@ ANDROID_GCC_BINDIR=${TOOLCHAIN}/android/prebuilt/linux-x86/toolchain/${ANDROID_G
 PATH		+= :${TOOLCHAIN}/android/prebuilt/linux-x86/toolchain/${ANDROID_GCC}/bin:
 
 CROSS_GCC=${ANDROID_GCC_BINDIR}/${CROSS_COMPILE}gcc
-gcc arm-cc: state/android-gcc
+arm-cc: state/android-gcc
 state/android-gcc: ${TOOLCHAIN}/status/gcc-android-fetch
 
+arm-cc-version: state/android-gcc
+	@${CROSS_GCC} --version | head -1

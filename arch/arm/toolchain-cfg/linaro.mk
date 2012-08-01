@@ -21,7 +21,7 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
-# Note: use CROSS_ARM_VERSION=linaro to include this file
+# Note: use CROSS_ARM_TOOLCHAIN=linaro to include this file
 
 TARGETS		+= linaro-gcc
 
@@ -51,13 +51,14 @@ ${ARCH_ARM_TMPDIR}/${LINARO_CC_TAR}:
 	wget -c -P ${ARCH_ARM_TMPDIR} "${LINARO_CC_URL}"
 
 CROSS_GCC=${LINARO_CC_BINDIR}/${CROSS_COMPILE}gcc
-linaro-gcc: state/cross-gcc
-state/cross-gcc: ${ARCH_ARM_TMPDIR}/${LINARO_CC_TAR}
-	[ -d ${LINARO_CC_DIR} ] || tar -x -j -C ${TOOLCHAIN} -f $<
+linaro-gcc: state/linaro-gcc
+state/linaro-gcc: ${ARCH_ARM_TMPDIR}/${LINARO_CC_TAR}
+	rm -rf ${TOOLCHAIN}/${LINARO_CC_NAME} ${LINARO_CC_DIR}
+	tar -x -j -C ${TOOLCHAIN} -f $<
 	mv ${TOOLCHAIN}/${LINARO_CC_NAME} ${LINARO_CC_DIR}
 	$(call state,$@)
 
-arm-cc-version: state/cross-gcc
+arm-cc-version: state/linaro-gcc
 	@${CROSS_GCC} --version | head -1
 
 ${ARCH_ARM_TMPDIR}:

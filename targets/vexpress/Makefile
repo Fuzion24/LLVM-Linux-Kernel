@@ -24,7 +24,7 @@
 
 TARGETDIR	= ${CURDIR}
 TOPDIR		= $(realpath ${TARGETDIR}/../..)
-#CROSS_ARM_VERSION = android
+#CROSS_ARM_TOOLCHAIN = linaro
 
 KERNEL_CFG	= ${TARGETDIR}/config_vexpress
 
