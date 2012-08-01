@@ -34,19 +34,14 @@ TMPDIRS		+= ${ARCH_ARM_TMPDIR}
 # Configure the requested ARM cross compiler
 # Sets CROSS_GCC, PATH, HOST, HOST_TRIPLE
 # This is required whether or not clang is the
-# compiler being used.
+# compiler being used. These files must define
+# arm-cc which will be a build dep for ARM
 ifeq ($(CROSS_GCC),)
 ifeq ($(CROSS_ARM_TOOLCHAIN),android)
 include ${ARCHDIR}/arm/toolchain-cfg/android.mk
-
-arm-cc: android-fetch
-
 else
 ifeq ($(CROSS_ARM_TOOLCHAIN),linaro)
 include ${ARCHDIR}/arm/toolchain-cfg/linaro.mk
-
-arm-cc: linaro-gcc
-
 else
 include ${ARCHDIR}/arm/toolchain-cfg/codesourcery.mk
 endif
