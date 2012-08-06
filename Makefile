@@ -54,6 +54,7 @@ mrproper:
 	( cd targets/hexagon ; make mrproper )
 	( cd targets/ar71xx ; make mrproper )
 
+TARGETS += build-dep install-build-dep
 include common.mk
 
 DEBDEP = build-essential cmake git kpartx linaro-image-tools patch quilt rsync subversion zlib1g-dev
