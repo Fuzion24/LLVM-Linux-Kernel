@@ -96,15 +96,6 @@ VERSION_TARGETS		+= ${KERNEL_TARGETS_VERSION}
 
 .PHONY:			${KERNEL_TARGETS_CLANG} ${KERNEL_TARGETS_GCC} ${KERNEL_TARGETS_APPLIED} ${KERNEL_TARGETS_CLEAN} ${KERNEL_TARGETS_VERSION}
 
-seperator = "---------------------------------------------------------------------"
-banner	= ( echo ${seperator}; echo ${1}; echo ${seperator} )
-state	= @mkdir -p $(dir ${1}) && touch ${1} \
-	  && $(call banner,"Finished state $(notdir ${1})") \
-	  && ( [ -d $(dir ${1})${2} ] || rm -f $(dir ${3})${2} )
-error1	= ( echo Error: ${1}; false )
-assert	= [ ${1} ] || $(call error1,${2})
-#assert	= echo "${1} --> ${2}"
-
 # The shared kernel is a bare repository of Linus' kernel.org kernel
 # It serves as a git alternate for all the other target specific kernels.
 # This is purely meant as a disk space saving effort.

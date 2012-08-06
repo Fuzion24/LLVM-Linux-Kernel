@@ -29,6 +29,15 @@ TOOLSDIR	= ${TOPDIR}/tools
 ARCHDIR		= ${TOPDIR}/arch
 TESTDIR		= ${TOPDIR}/test
 
+seperator = "---------------------------------------------------------------------"
+banner	= ( echo ${seperator}; echo ${1}; echo ${seperator} )
+state	= @mkdir -p $(dir ${1}) && touch ${1} \
+	  && $(call banner,"Finished state $(notdir ${1})") \
+	  && ( [ -d $(dir ${1})${2} ] || rm -f $(dir ${3})${2} )
+error1	= ( echo Error: ${1}; false )
+assert	= [ ${1} ] || $(call error1,${2})
+#assert	= echo "${1} --> ${2}"
+
 # Default jobs is number of processors + 1 for disk I/O
 JOBS:=${shell expr `getconf _NPROCESSORS_ONLN` + 1}
 ifeq "${JOBS}" ""
