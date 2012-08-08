@@ -141,7 +141,8 @@ ${LLVMSTATE}/clang-build: ${LLVMSTATE}/llvm-build ${LLVMSTATE}/clang-configure
 	@$(call banner, "Building Clang...")
 	@mkdir -p ${LLVMINSTALLDIR} ${CLANGBUILDDIR}
 	(cd ${CLANGBUILDDIR} && make -j${JOBS} install)
-	cp -a ${CLANGDIR}/tools/scan-{build,view}/* ${LLVMINSTALLDIR}/bin
+	cp -a ${CLANGDIR}/tools/scan-build/* ${LLVMINSTALLDIR}/bin
+	cp -a ${CLANGDIR}/tools/scan-view/* ${LLVMINSTALLDIR}/bin
 	$(call state,$@)
 
 llvm-clean: ${LLVMSTATE}/llvm-fetch ${LLVMSTATE}/compilerrt-fetch clang-clean
