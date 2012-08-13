@@ -28,21 +28,3 @@ LLVMTOP	= ${TOOLCHAIN}/clang
 
 include ${LLVMTOP}/clang.mk
 
-TARGETS		+= gcc-android-fetch
-
-ANDROID_SDK_BRANCH = aosp-new/ics-factoryrom-2-release
-ANDROID_SDK_GIT = git://codeaurora.org/platform/prebuilt.git
-
-# The Android toolchain supports both x86 and ARM
-# This is why it is here instead of under arch/arm/... and/or arch/x86/...
-${TOOLCHAIN}/android:
-	@mkdir -p ${TOOLCHAIN}/android
-
-gcc-android-fetch: ${TOOLCHAIN}/status/gcc-android-fetch
-${TOOLCHAIN}/status/gcc-android-fetch: ${TOOLCHAIN}/android
-	@mkdir -p ${TOOLCHAIN}/status
-	(cd ${TOOLCHAIN}/android && git clone ${ANDROID_SDK_GIT} -b ${ANDROID_SDK_BRANCH})
-	@touch $@
-
-gcc-android-sync: ${TOOLCHAIN}/status/gcc-android-fetch
-	(cd ${TOOLCHAIN}/android/prebuilt && git pull && git checkout ${ANDROID_SDK_BRANCH})

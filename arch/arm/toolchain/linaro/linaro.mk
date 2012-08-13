@@ -34,7 +34,6 @@ LINARO_TMPDIR		= ${ARCH_ARM_DIR}/toolchain/linaro/tmp
 LINARO_CC_TAR		= ${notdir ${LINARO_CC_URL}}
 LINARO_CC_DIR		= ${ARCH_ARM_DIR}/toolchain/linaro/${LINARO_CC_NAME}
 LINARO_CC_BINDIR	= ${LINARO_CC_DIR}/bin
-COMPILER_PATH		= ${LINARO_CC_DIR}
 
 # Add path so that ${CROSS_COMPILE}${CC} is resolved
 PATH			:= ${LINARO_CC_BINDIR}:${ARCH_ARM_BINDIR}:${PATH}
@@ -44,6 +43,8 @@ HOST_TRIPLE		= arm-none-gnueabi
 COMPILER_PATH		= ${LINARO_CC_DIR}
 LINARO_GCC		= ${LINARO_CC_BINDIR}/${CROSS_COMPILE}gcc
 CC_FOR_BUILD		= ${LINARO_GCC}
+
+# The following exports are required for make_kernel.sh
 export HOST HOST_TRIPLE
 
 # Get Linaro cross compiler

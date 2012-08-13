@@ -23,26 +23,43 @@
 
 # Note: use CROSS_ARM_TOOLCHAIN=android to include this file
 
-export COMPILER_PATH=${CSCC_DIR}
-export HOST_TYPE=${HOST}
-export HOST_TRIPLE
-export GCC_TOOLCHAIN_CFG=${ARCH_ARM_DIR}/toolchain/android.cfg
+TARGETS		+= android-gcc
+
+ANDROID_SDK_BRANCH = aosp-new/jb-release
+ANDROID_SDK_GIT = git://codeaurora.org/platform/prebuilts/gcc/linux-x86/arm/${ANDROID_CC_VERSION}.git
+
+ANDROID_CC_VERSION	= arm-linux-androideabi-4.6
+ANDROID_CC_DIR=${ARCH_ARM_DIR}/toolchain/android/${ANDROID_CC_VERSION}
+ANDROID_CC_BINDIR=${ANDROID_CC_DIR}/bin
+
+# Add path so that ${CROSS_COMPILE}${CC} is resolved
+PATH		:= ${ANDROID_CC_BINDIR}:${PATH}
 
 HOST		= arm-linux-androideabi
 HOST_TRIPLE	= arm-linux-androideabi
-CROSS_COMPILE	= ${HOST}-
-CC		= gcc
+COMPILER_PATH	= ${ANDROID_CC_DIR}
+ANDROID_GCC	= ${ANDROID_CC_BINDIR}/${CROSS_COMPILE}gcc
+CC_FOR_BUILD	= ${ANDROID_GCC}
 
-ANDROID_GCC	= arm-linux-androideabi-4.4.x
+# The following exports are required for make_kernel.sh
+export HOST HOST_TRIPLE
 
-ANDROID_GCC_BINDIR=${TOOLCHAIN}/android/prebuilt/linux-x86/toolchain/${ANDROID_GCC}/bin
+# The Android toolchain supports only ARM cross compilation
+${ARCH_ARM_DIR}/toolchain/android:
+	@mkdir -p $@
 
-# Add path so that ${CROSS_COMPILE}${CC} is resolved
-PATH		+= :${TOOLCHAIN}/android/prebuilt/linux-x86/toolchain/${ANDROID_GCC}/bin:
+arm-cc: ${ARCH_ARM_DIR}/toolchain/state/android-gcc
+android-gcc: ${ARCH_ARM_DIR}/toolchain/state/android-gcc
+${ARCH_ARM_DIR}/toolchain/state/android-gcc: ${ARCH_ARM_DIR}/toolchain/android
+	(cd ${ARCH_ARM_DIR}/toolchain/android && git clone ${ANDROID_SDK_GIT} -b ${ANDROID_SDK_BRANCH})
+	$(call state,$@)
 
-CROSS_GCC=${ANDROID_GCC_BINDIR}/${CROSS_COMPILE}gcc
-arm-cc: state/android-gcc
-state/android-gcc: ${TOOLCHAIN}/status/gcc-android-fetch
+android-gcc-sync: ${ARCH_ARM_DIR}/toolchain/state/android-gcc
+	(cd ${ARCH_ARM_DIR}/toolchain/android/platform/prebuilts/gcc/linux-x86/arm/${ANDROID_CC_VERSION} && git pull && git checkout ${ANDROID_SDK_BRANCH})
 
-arm-cc-version: state/android-gcc
+state/cross-gcc: ${ARCH_ARM_DIR}/toolchain/state/android-gcc
+	$(call state,$@)
+
+arm-cc-version: ${ARCH_ARM_DIR}/toolchain/state/android-gcc
 	@${ANDROID_GCC} --version | head -1
+

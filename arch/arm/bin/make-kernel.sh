@@ -39,17 +39,21 @@ PARALLEL="-j$JOBS"
 export LANG=C
 export LC_ALL=C
 export HOSTCC_FOR_BUILD="gcc"
-export LD=${CROSS_COMPILE}ld
-
 
 # The gcc toolchain for assembler and linker must be defined
 # even if Clang is being used until LLVM has its own linker
 if [ $USECLANG -eq "1" ]; then
 	export INSTALLDIR=$1 ; shift
 	export EXTRAFLAGS=$*
-        env
-        . $TOPDIR/arch/arm/toolchain/clang_cfg
+
+	export PATH="${INSTALLDIR}/bin:${PATH}"
+	export CROSS_COMPILE=${HOST}-
+
+	export CLANGFLAGS="-march=armv7-a -mfloat-abi=softfp -mfpu=neon -fno-builtin ${EXTRAFLAGS}"
+	export CC_FOR_BUILD="${INSTALLDIR}/bin/clang -ccc-host-triple ${HOST_TRIPLE} -ccc-gcc-name ${HOST}-gcc ${CLANGFLAGS}"
 fi
+
+export LD=${CROSS_COMPILE}ld
 
 #if [ -n "$CHECKERDIR" ] ; then
 #	mkdir -p "$CHECKERDIR"
