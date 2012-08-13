@@ -25,55 +25,44 @@
 
 TARGETS		+= linaro-gcc
 
-export LINARO_CC_DIR
-export LINARO_CC_BINDIR
-export COMPILER_PATH=${LINARO_CC_DIR}
-export HOST_TYPE=${HOST}
-export HOST_TRIPLE
-#export GCC_TOOLCHAIN_CFG=${ARCH_ARM_DIR}/toolchain/config/linaro.cfg
+LINARO_VER_MONTH	= 2012.07
+LINARO_VERSION		= ${LINARO_VER_MONTH}-20120720
+LINARO_CC_URL		=  https://launchpad.net/linaro-toolchain-binaries/trunk/${LINARO_VER_MONTH}/+download/gcc-linaro-arm-linux-gnueabihf-${LINARO_VERSION}_linux.tar.bz2
+LINARO_CC_NAME		=  gcc-linaro-arm-linux-gnueabihf-${LINARO_VERSION}_linux
+LINARO_TMPDIR		= ${ARCH_ARM_DIR}/toolchain/linaro/tmp
 
-HOST		= arm-linux-gnueabihf
-HOST_TRIPLE	= arm-none-gnueabi
-CROSS_COMPILE	= ${HOST}-
-
-LINARO_VER_MONTH=2012.07
-LINARO_VERSION=${LINARO_VER_MONTH}-20120720
-LINARO_CC_URL	= https://launchpad.net/linaro-toolchain-binaries/trunk/${LINARO_VER_MONTH}/+download/gcc-linaro-arm-linux-gnueabihf-${LINARO_VERSION}_linux.tar.bz2
-LINARO_CC_NAME	= gcc-linaro-arm-linux-gnueabihf-${LINARO_VERSION}_linux
-
-LINARO_CC_TAR	= ${notdir ${LINARO_CC_URL}}
-export LINARO_CC_DIR=${ARCH_ARM_DIR}/toolchain/${LINARO_CC_NAME}
-export LINARO_CC_BINDIR= ${LINARO_CC_DIR}/bin
+LINARO_CC_TAR		= ${notdir ${LINARO_CC_URL}}
+LINARO_CC_DIR		= ${ARCH_ARM_DIR}/toolchain/linaro/${LINARO_CC_NAME}
+LINARO_CC_BINDIR	= ${LINARO_CC_DIR}/bin
+COMPILER_PATH		= ${LINARO_CC_DIR}
 
 # Add path so that ${CROSS_COMPILE}${CC} is resolved
-PATH:=${LINARO_CC_BINDIR}:${ARCH_ARM_BINDIR}:${PATH}
+PATH			:= ${LINARO_CC_BINDIR}:${ARCH_ARM_BINDIR}:${PATH}
 
-export HOST_TYPE=arm-linux-gnueabihf
-export HOST_TRIPLE=arm-none-gnueabi
-export COMPILER_PATH=${LINARO_CC_DIR}
-export CROSS_COMPILE=${HOST_TYPE}-
-export CC_FOR_BUILD=${LINARO_CC_BINDIR}/${HOST_TYPE-gcc}
+HOST			= arm-linux-gnueabihf
+HOST_TRIPLE		= arm-none-gnueabi
+COMPILER_PATH		= ${LINARO_CC_DIR}
+LINARO_GCC		= ${LINARO_CC_BINDIR}/${CROSS_COMPILE}gcc
+CC_FOR_BUILD		= ${LINARO_GCC}
+export HOST HOST_TRIPLE
 
-# Get arm cross compiler
-${ARCH_ARM_TMPDIR}/${LINARO_CC_TAR}:
-	@mkdir -p ${ARCH_ARM_TMPDIR}
-	wget -c -P ${ARCH_ARM_TMPDIR} "${LINARO_CC_URL}"
+# Get Linaro cross compiler
+${LINARO_TMPDIR}/${LINARO_CC_TAR}:
+	@mkdir -p ${LINARO_TMPDIR}
+	wget -c -P ${LINARO_TMPDIR} "${LINARO_CC_URL}"
 
-LINARO_GCC=${LINARO_CC_BINDIR}/${CROSS_COMPILE}gcc
-CC_FOR_BUILD	= ${LINARO_GCC}
 
 arm-cc: ${ARCH_ARM_DIR}/toolchain/state/linaro-gcc
 linaro-gcc: ${ARCH_ARM_DIR}/toolchain/state/linaro-gcc
-${ARCH_ARM_DIR}/toolchain/state/linaro-gcc: ${ARCH_ARM_TMPDIR}/${LINARO_CC_TAR}
+${ARCH_ARM_DIR}/toolchain/state/linaro-gcc: ${LINARO_TMPDIR}/${LINARO_CC_TAR}
 	rm -rf ${LINARO_CC_DIR}
-	tar -x -j -C ${ARCH_ARM_DIR}/toolchain -f $<
+	tar -x -j -C ${ARCH_ARM_DIR}/toolchain/linaro -f $<
 	$(call state,$@)
 
 state/cross-gcc: ${ARCH_ARM_DIR}/toolchain/state/linaro-gcc
 	$(call state,$@)
 
 arm-cc-version: ${ARCH_ARM_DIR}/toolchain/state/linaro-gcc
+	env
 	@${LINARO_GCC} --version | head -1
 
-${ARCH_ARM_TMPDIR}:
-	@mkdir -p $@

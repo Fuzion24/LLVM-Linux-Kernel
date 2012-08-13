@@ -238,7 +238,7 @@ state/kernel-gcc-configure: state/kernel-gcc-patch
 	(cd ${KERNELGCC} && echo "" | make ${MAKE_FLAGS} oldconfig)
 	$(call state,$@,kernel-gcc-build)
 
-kernel-build: state/kernel-build
+kernel-build: ${STATE_TOOLCHAIN} state/kernel-build
 state/kernel-build: ${LLVMSTATE}/clang-build state/kernel-configure
 	$(call assert,-n "${MAKE_KERNEL}",MAKE_KERNEL undefined)
 	@$(call banner,"Building kernel with clang...")
@@ -250,7 +250,7 @@ state/kernel-build: ${LLVMSTATE}/clang-build state/kernel-configure
 		| tee $(call sizelog,${TOPLOGDIR},clang)
 	$(call state,$@,done)
 
-kernel-gcc-build: state/cross-gcc state/kernel-gcc-build
+kernel-gcc-build: ${STATE_TOOLCHAIN} state/kernel-gcc-build
 state/kernel-gcc-build: ${CROSS_GCC} state/kernel-gcc-configure
 	@$(call banner, "Building kernel with gcc...")
 	(cd ${KERNELGCC} \

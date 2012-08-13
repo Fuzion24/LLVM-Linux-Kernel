@@ -24,8 +24,6 @@
 
 # Assumes has been included from ../toolchain.mk
 
-export LLVMINSTALLDIR
-
 LLVMSRCDIR	= ${LLVMTOP}/src
 LLVMINSTALLDIR	= ${LLVMTOP}/install
 LLVMSTATE	= ${LLVMTOP}/state

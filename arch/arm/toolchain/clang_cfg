@@ -22,8 +22,8 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
-export PATH="$INSTALLDIR/bin:$PATH"
-export CROSS_COMPILE=$HOST_TYPE-
+export PATH="${INSTALLDIR}/bin:${PATH}"
+export CROSS_COMPILE=${HOST}-
 
-export CLANGFLAGS="-march=armv7-a -mfloat-abi=softfp -mfpu=neon -fno-builtin $EXTRAFLAGS"
-export CC_FOR_BUILD="$INSTALLDIR/bin/clang -ccc-host-triple $HOST_TRIPLE -ccc-gcc-name $HOST_TYPE-gcc $CLANGFLAGS"
+export CLANGFLAGS="-march=armv7-a -mfloat-abi=softfp -mfpu=neon -fno-builtin ${EXTRAFLAGS}"
+export CC_FOR_BUILD="${INSTALLDIR}/bin/clang -ccc-host-triple ${HOST_TRIPLE} -ccc-gcc-name ${HOST}-gcc ${CLANGFLAGS}"

@@ -58,8 +58,11 @@ export HOSTCC_FOR_BUILD="gcc"
 export LD=${CROSS_COMPILE}ld
 
 if [ $USECLANG -eq "1" ]; then
+	echo "TEST W"
+	env
+	echo "TEST V"
 	export PATH="$INSTALLDIR/bin:$PATH"
-	export CROSS_COMPILE=$HOST_TYPE-
+	#export CROSS_COMPILE=$HOST_TYPE-
 	#export CLANGFLAGS="-g -mfloat-abi=softfp -I ${INSTALLDIR}/lib/clang/*/include $EXTRAFLAGS"
 	export CLANGFLAGS="-g -mfloat-abi=softfp $EXTRAFLAGS"
 	export CC_FOR_BUILD="$INSTALLDIR/bin/clang -ccc-host-triple $HOST_TRIPLE -ccc-gcc-name $HOST_TYPE-gcc $CLANGFLAGS"

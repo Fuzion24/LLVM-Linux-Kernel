@@ -44,16 +44,12 @@ export LD=${CROSS_COMPILE}ld
 
 # The gcc toolchain for assembler and linker must be defined
 # even if Clang is being used until LLVM has its own linker
-. ${GCC_TOOLCHAIN_CFG}
-
 if [ $USECLANG -eq "1" ]; then
 	export INSTALLDIR=$1 ; shift
 	export EXTRAFLAGS=$*
         env
-        . $TOPDIR/arch/arm/toolchain-cfg/clang_cfg
+        . $TOPDIR/arch/arm/toolchain/clang_cfg
 fi
-
-echo "Test1"
 
 #if [ -n "$CHECKERDIR" ] ; then
 #	mkdir -p "$CHECKERDIR"
@@ -66,7 +62,6 @@ echo "Test1"
 #	CONFIG_DEBUG_SECTION_MISMATCH=y CONFIG_DEBUG_INFO=1 HOSTCC=${HOSTCC_FOR_BUILD}"
 
 set -e
-echo "Test2"
 echo "export PATH=$PATH"
 env
 #[ -n "$DRYRUN" ] || set -x

@@ -23,6 +23,8 @@
 
 # Note: This file must be included after ${TOPDIR}/common.mk
 
+STATE_TOOLCHAIN=state/cross_gcc
+
 include ${ARCHDIR}/all/all.mk
 
 ARCH_ARM_DIR	= ${ARCHDIR}/arm
@@ -38,13 +40,12 @@ TMPDIRS		+= ${ARCH_ARM_TMPDIR}
 # arm-cc which will be a build dep for ARM
 ifeq ($(CROSS_GCC),)
 ifeq ($(CROSS_ARM_TOOLCHAIN),android)
-include ${ARCHDIR}/arm/toolchain/android.mk
+include ${ARCHDIR}/arm/toolchain/android/android.mk
 else
 ifeq ($(CROSS_ARM_TOOLCHAIN),linaro)
-include ${ARCHDIR}/arm/toolchain/linaro.mk
+include ${ARCHDIR}/arm/toolchain/linaro/linaro.mk
 else
-include ${ARCHDIR}/arm/toolchain/codesourcery.mk
-error
+include ${ARCHDIR}/arm/toolchain/codesourcery/codesourcery.mk
 endif
 endif
 endif
@@ -64,6 +65,7 @@ CPP		= ${CC} -E
 KERNEL_SIZE_ARTIFACTS	= arch/arm/boot/zImage vmlinux*
 
 KERNELOPTS	= console=earlycon console=ttyAMA0,38400n8 earlyprintk
+
 
 # ${1}=Machine_type ${2}=kerneldir ${3}=RAM ${4}=rootfs ${5}=Kernel_opts ${6}=QEMU_opts
 qemu = $(call runqemu,${QEMUBINDIR}/qemu-system-arm,${1},${2}/arch/arm/boot/zImage,${3},${4},${KERNELOPTS} ${5},${QEMUOPTS} ${6})

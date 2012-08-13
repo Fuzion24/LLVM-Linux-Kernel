@@ -24,7 +24,7 @@
 
 TARGETDIR	= ${CURDIR}
 TOPDIR		= $(realpath ${TARGETDIR}/../..)
-CROSS_ARM_TOOLCHAIN = linaro
+CROSS_ARM_TOOLCHAIN = codesourcery
 
 KERNEL_CFG	= ${TARGETDIR}/config_vexpress
 

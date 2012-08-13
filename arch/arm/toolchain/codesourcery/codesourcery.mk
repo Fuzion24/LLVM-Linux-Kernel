@@ -23,40 +23,38 @@
 
 # Note: use CROSS_ARM_TOOLCHAIN=codesourcery to include this file
 
-export CSCC_DIR
-export CSCC_BINDIR
-export COMPILER_PATH=${CSCC_DIR}
-export HOST_TYPE=${HOST}
-export HOST_TRIPLE
-
-HOST		= arm-none-linux-gnueabi
-HOST_TRIPLE	= arm-none-gnueabi
-CROSS_COMPILE	= ${HOST}-
-
 CSCC_URL	= https://sourcery.mentor.com/GNUToolchain/package8739/public/arm-none-linux-gnueabi/arm-2011.03-41-arm-none-linux-gnueabi-i686-pc-linux-gnu.tar.bz2
 CSCC_NAME	= arm-2011.03
-#CSCC_URL	= https://sourcery.mentor.com/sgpp/lite/arm/portal/package9728/public/arm-none-linux-gnueabi/arm-2011.09-70-arm-none-linux-gnueabi-i686-pc-linux-gnu.tar.bz2"
-#CSCC_NAME	= arm-2011.09
-
 CSCC_TAR	= ${notdir ${CSCC_URL}}
-CSCC_DIR	= ${TOOLCHAIN}/${CSCC_NAME}
+CSCC_TMPDIR	= ${ARCH_ARM_DIR}/toolchain/codesourcery/tmp
+
+HOST		= arm-none-linux-gnueabi
+CSCC_DIR	= ${ARCH_ARM_DIR}/toolchain/codesourcery/${CSCC_NAME}
 CSCC_BINDIR	= ${CSCC_DIR}/bin
+HOST_TRIPLE	= arm-none-gnueabi
+COMPILER_PATH	= ${CSCC_DIR}
+CC_FOR_BUILD	= ${CSCC_BINDIR}/${HOST}-gcc
+export HOST HOST_TRIPLE
 
 # Add path so that ${CROSS_COMPILE}${CC} is resolved
-PATH		+= :${CSCC_BINDIR}:${ARCH_ARM_BINDIR}:
+PATH		:= ${CSCC_BINDIR}:${ARCH_ARM_BINDIR}:${PATH}
 
-# Get arm cross compiler
-${ARCH_ARM_TMPDIR}/${CSCC_TAR}:
-	@mkdir -p ${ARCH_ARM_TMPDIR}
-	wget -c -P ${ARCH_ARM_TMPDIR} "${CSCC_URL}"
+# Get ARM cross compiler
+${CSCC_TMPDIR}/${CSCC_TAR}:
+	@mkdir -p ${CSCC_TMPDIR}
+	wget -c -P ${CSCC_TMPDIR} "${CSCC_URL}"
 
 CROSS_GCC=${CSCC_BINDIR}/${CROSS_COMPILE}gcc
-arm-cc: state/codesourcery-gcc
-state/codesourcery-gcc: ${ARCH_ARM_TMPDIR}/${CSCC_TAR}
-	tar -x -j -C ${TOOLCHAIN} -f $<
+arm-cc: ${ARCH_ARM_DIR}/toolchain/state/codesourcery-gcc
+${ARCH_ARM_DIR}/toolchain/state/codesourcery-gcc: ${CSCC_TMPDIR}/${CSCC_TAR}
+	tar -x -j -C ${ARCH_ARM_DIR}/toolchain/codesourcery -f $<
 	$(call state,$@)
 
-arm-cc-version: state/codesourcery-gcc
+state/cross_gcc: ${ARCH_ARM_DIR}/toolchain/state/codesourcery-gcc
+	$(call state,$@)
+	
+
+arm-cc-version: ${ARCH_ARM_DIR}/toolchain/state/codesourcery-gcc
 	@${CROSS_GCC} --version | head -1
 
 ${ARCH_ARM_TMPDIR}:
