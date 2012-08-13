@@ -28,7 +28,7 @@ include ${ARCHDIR}/all/all.mk
 ARCH_ARM_DIR	= ${ARCHDIR}/arm
 ARCH_ARM_BINDIR	= ${ARCH_ARM_DIR}/bin
 ARCH_ARM_PATCHES= ${ARCH_ARM_DIR}/patches
-ARCH_ARM_TMPDIR	= ${ARCH_ARM_DIR}/tmp
+ARCH_ARM_TMPDIR	= ${ARCH_ARM_DIR}/toolchain/tmp
 TMPDIRS		+= ${ARCH_ARM_TMPDIR}
 
 # Configure the requested ARM cross compiler
@@ -38,12 +38,13 @@ TMPDIRS		+= ${ARCH_ARM_TMPDIR}
 # arm-cc which will be a build dep for ARM
 ifeq ($(CROSS_GCC),)
 ifeq ($(CROSS_ARM_TOOLCHAIN),android)
-include ${ARCHDIR}/arm/toolchain-cfg/android.mk
+include ${ARCHDIR}/arm/toolchain/android.mk
 else
 ifeq ($(CROSS_ARM_TOOLCHAIN),linaro)
-include ${ARCHDIR}/arm/toolchain-cfg/linaro.mk
+include ${ARCHDIR}/arm/toolchain/linaro.mk
 else
-include ${ARCHDIR}/arm/toolchain-cfg/codesourcery.mk
+include ${ARCHDIR}/arm/toolchain/codesourcery.mk
+error
 endif
 endif
 endif

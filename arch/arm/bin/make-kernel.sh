@@ -30,10 +30,6 @@ DRYRUN=${DRYRUN:+echo}
 V=${V:+V=1}
 export PATH=`echo $PATH | sed -E 's/(.*?) :(.*)/\2\1/g; s/(.*?) :(.*)/\2\1/g; s/(.*?) :(.*)/\2\1/g'`
 
-if [ -z "$GCCHOME" ]; then
-	GCCHOME=${CSCC_DIR:-/opt}
-fi
-
 JOBS=${JOBS:-`getconf _NPROCESSORS_ONLN`}
 if [ -z "$JOBS" ]; then
   JOBS=2
@@ -45,29 +41,40 @@ export LC_ALL=C
 export HOSTCC_FOR_BUILD="gcc"
 export LD=${CROSS_COMPILE}ld
 
+
+# The gcc toolchain for assembler and linker must be defined
+# even if Clang is being used until LLVM has its own linker
+. ${GCC_TOOLCHAIN_CFG}
+
 if [ $USECLANG -eq "1" ]; then
 	export INSTALLDIR=$1 ; shift
 	export EXTRAFLAGS=$*
         env
         . $TOPDIR/arch/arm/toolchain-cfg/clang_cfg
-else
-        . $TOPDIR/arch/arm/toolchain-cfg/codesourcery_cfg
 fi
 
-if [ -n "$CHECKERDIR" ] ; then
-	mkdir -p "$CHECKERDIR"
-	#CHECKER='scan-build -v -o "'$CHECKERDIR'" --use-cc="'${CC_FOR_BUILD/ */}'"'
-	CHECKER='scan-build -v -o "'$CHECKERDIR'" --use-cc="clang"'
-	V="V=1"
-fi
+echo "Test1"
 
-RUNMAKE="make ARCH=arm KALLSYMS_EXTRA_PASS=1 \
-	CONFIG_DEBUG_SECTION_MISMATCH=y CONFIG_DEBUG_INFO=1 HOSTCC=$HOSTCC_FOR_BUILD"
+#if [ -n "$CHECKERDIR" ] ; then
+#	mkdir -p "$CHECKERDIR"
+#	#CHECKER='scan-build -v -o "'$CHECKERDIR'" --use-cc="'${CC_FOR_BUILD/ */}'"'
+#	CHECKER='scan-build -v -o "'$CHECKERDIR'" --use-cc="clang"'
+#	V="V=1"
+#fi
+
+#RUNMAKE="make ARCH=arm KALLSYMS_EXTRA_PASS=1 \
+#	CONFIG_DEBUG_SECTION_MISMATCH=y CONFIG_DEBUG_INFO=1 HOSTCC=${HOSTCC_FOR_BUILD}"
 
 set -e
+echo "Test2"
 echo "export PATH=$PATH"
-[ -n "$DRYRUN" ] || set -x
-$DRYRUN $CHECKER $RUNMAKE $V CC="$CC_FOR_BUILD" $PARALLEL \
-	|| ( echo "********************************************************************************" \
-	&& $RUNMAKE V=1 CC="$CC_FOR_BUILD" )
-[ -z "$DRYRUN" ] || exit 1
+env
+#[ -n "$DRYRUN" ] || set -x
+#$DRYRUN $CHECKER $RUNMAKE $V CC="$CC_FOR_BUILD" $PARALLEL \
+#	|| ( echo "********************************************************************************" \
+#	&& $RUNMAKE V=1 CC="${CC_FOR_BUILD}" )
+#[ -z "$DRYRUN" ] || exit 1
+
+make KALLSYMS_EXTRA_PASS=1 CONFIG_DEBUG_SECTION_MISMATCH=y ARCH=arm CONFIG_DEBUG_INFO=1 \
+	CC="${CC_FOR_BUILD}" HOSTCC=${HOSTCC_FOR_BUILD} ${PARALLEL}
+

@@ -26,6 +26,7 @@
 export COMPILER_PATH=${CSCC_DIR}
 export HOST_TYPE=${HOST}
 export HOST_TRIPLE
+export GCC_TOOLCHAIN_CFG=${ARCH_ARM_DIR}/toolchain/android.cfg
 
 HOST		= arm-linux-androideabi
 HOST_TRIPLE	= arm-linux-androideabi
