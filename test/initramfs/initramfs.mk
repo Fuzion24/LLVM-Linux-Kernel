@@ -32,7 +32,7 @@ BUILDDIR	= ${TARGETDIR}/initramfs
 BUILDFSDIR	= ${BUILDDIR}/initramfs
 CPIO		= ${BUILDFSDIR}.cpio
 
-TOYBOXVER	= 0.2.1
+TOYBOXVER	= 0.4.0
 TOYBOX		= toybox-${TOYBOXVER}
 TOYBOXURL	= http://landley.net/toybox/downloads/${TOYBOX}.tar.bz2
 DASHVER		= 0.5.7
@@ -71,17 +71,18 @@ ${BUILDDIR}/${TOYBOX}/toybox:
 	@wget -P ${BUILDDIR} -c ${TOYBOXURL}
 	@rm -rf ${BUILDDIR}/${TOYBOX}
 	(cd ${BUILDDIR} && tar xjf ${TOYBOX}.tar.bz2)
-	(cd ${BUILDDIR}/${TOYBOX} && CFLAGS="--static" CC=${GCC} CROSS_COMPILE=${CROSS_COMPILE} PREFIX=${BUILDFSDIR} make allyesconfig toybox)
+	(cd ${BUILDDIR}/${TOYBOX} && CFLAGS="--static" CC=${GCC} CROSS_COMPILE=${CROSS_COMPILE} PREFIX=${BUILDFSDIR} make defconfig toybox)
 
 # && cd ${TOYBOX} && patch -p1 < ${INITRAMFSDIR}/patches/toybox.patch)
 
 dash: ${BUILDDIR}/${DASH}/src/dash
 ${BUILDDIR}/${DASH}/src/dash:
+	env
 	@wget -P ${BUILDDIR} -c ${DASHURL}
 	@rm -rf ${BUILDDIR}/${DASH}
 	(cd ${BUILDDIR} && tar xzf ${DASH}.tar.gz)
-	(cd ${BUILDDIR}/${DASH} && CFLAGS="--static" CC=${GCC} CPP="${CPP}" ./configure --prefix=${BUILDFSDIR} --host=${HOST})
-	(cd ${BUILDDIR}/${DASH} && make)
+	(cd ${BUILDDIR}/${DASH} && ./configure --prefix=${BUILDFSDIR} --host=${HOST})
+	(cd ${BUILDDIR}/${DASH} && make CFLAGS="-static")
 
 ltp: ${BUILDDIR}/${LTP}/Version
 ${BUILDDIR}/${LTP}/Version:
