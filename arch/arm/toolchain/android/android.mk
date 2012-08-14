@@ -25,12 +25,12 @@
 
 TARGETS		+= android-gcc
 
-ANDROID_SDK_BRANCH = aosp-new/jb-release
-ANDROID_SDK_GIT = git://codeaurora.org/platform/prebuilts/gcc/linux-x86/arm/${ANDROID_CC_VERSION}.git
+ANDROID_SDK_BRANCH 	= aosp-new/jb-release
+ANDROID_SDK_GIT 	= git://codeaurora.org/platform/prebuilts/gcc/linux-x86/arm/${ANDROID_CC_VERSION}.git
 
 ANDROID_CC_VERSION	= arm-linux-androideabi-4.6
-ANDROID_CC_DIR=${ARCH_ARM_DIR}/toolchain/android/${ANDROID_CC_VERSION}
-ANDROID_CC_BINDIR=${ANDROID_CC_DIR}/bin
+ANDROID_CC_DIR		= ${ARCH_ARM_DIR}/toolchain/android/${ANDROID_CC_VERSION}
+ANDROID_CC_BINDIR	= ${ANDROID_CC_DIR}/bin
 
 # Add path so that ${CROSS_COMPILE}${CC} is resolved
 PATH		:= ${ANDROID_CC_BINDIR}:${PATH}
@@ -51,13 +51,14 @@ ${ARCH_ARM_DIR}/toolchain/android:
 arm-cc: ${ARCH_ARM_DIR}/toolchain/state/android-gcc
 android-gcc: ${ARCH_ARM_DIR}/toolchain/state/android-gcc
 ${ARCH_ARM_DIR}/toolchain/state/android-gcc: ${ARCH_ARM_DIR}/toolchain/android
+	(rm -rf ${ANDROID_CC_DIR})
 	(cd ${ARCH_ARM_DIR}/toolchain/android && git clone ${ANDROID_SDK_GIT} -b ${ANDROID_SDK_BRANCH})
 	$(call state,$@)
 
 android-gcc-sync: ${ARCH_ARM_DIR}/toolchain/state/android-gcc
-	(cd ${ARCH_ARM_DIR}/toolchain/android/platform/prebuilts/gcc/linux-x86/arm/${ANDROID_CC_VERSION} && git pull && git checkout ${ANDROID_SDK_BRANCH})
+	(cd ${ANDROID_CC_DIR} && git pull && git checkout ${ANDROID_SDK_BRANCH})
 
-state/cross-gcc: ${ARCH_ARM_DIR}/toolchain/state/android-gcc
+state/arm-cc: ${ARCH_ARM_DIR}/toolchain/state/android-gcc
 	$(call state,$@)
 
 arm-cc-version: ${ARCH_ARM_DIR}/toolchain/state/android-gcc

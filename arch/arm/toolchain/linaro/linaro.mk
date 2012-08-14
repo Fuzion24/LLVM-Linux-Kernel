@@ -60,7 +60,7 @@ ${ARCH_ARM_DIR}/toolchain/state/linaro-gcc: ${LINARO_TMPDIR}/${LINARO_CC_TAR}
 	tar -x -j -C ${ARCH_ARM_DIR}/toolchain/linaro -f $<
 	$(call state,$@)
 
-state/cross-gcc: ${ARCH_ARM_DIR}/toolchain/state/linaro-gcc
+state/arm-cc: ${ARCH_ARM_DIR}/toolchain/state/linaro-gcc
 	$(call state,$@)
 
 arm-cc-version: ${ARCH_ARM_DIR}/toolchain/state/linaro-gcc

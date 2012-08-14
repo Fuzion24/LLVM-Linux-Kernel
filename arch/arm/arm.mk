@@ -23,7 +23,7 @@
 
 # Note: This file must be included after ${TOPDIR}/common.mk
 
-STATE_TOOLCHAIN=state/cross-gcc
+STATE_TOOLCHAIN=state/arm-cc
 
 include ${ARCHDIR}/all/all.mk
 

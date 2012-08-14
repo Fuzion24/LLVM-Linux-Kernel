@@ -50,7 +50,7 @@ ${ARCH_ARM_DIR}/toolchain/state/codesourcery-gcc: ${CSCC_TMPDIR}/${CSCC_TAR}
 	tar -x -j -C ${ARCH_ARM_DIR}/toolchain/codesourcery -f $<
 	$(call state,$@)
 
-state/cross_gcc: ${ARCH_ARM_DIR}/toolchain/state/codesourcery-gcc
+state/arm-cc: ${ARCH_ARM_DIR}/toolchain/state/codesourcery-gcc
 	$(call state,$@)
 	
 
