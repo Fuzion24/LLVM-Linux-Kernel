@@ -25,9 +25,12 @@
 # Assumes has been included from ../toolchain.mk
 
 LLVMSRCDIR	= ${LLVMTOP}/src
-LLVMINSTALLDIR	= ${LLVMTOP}/install
+LLVMINSTALLDIR	:= ${LLVMTOP}/install
 LLVMSTATE	= ${LLVMTOP}/state
 LLVMPATCHES	= ${LLVMTOP}/patches
+
+# The following export is needed by clang_wrap.sh
+export LLVMINSTALLDIR
 
 CLANG		= ${LLVMINSTALLDIR}/bin/clang
 
