@@ -188,7 +188,7 @@ test3-ltp: state/prep ${QEMUSTATE}/qemu-build state/kernel-build vexpress-ltp.im
 test3-gcc-ltp: state/prep ${QEMUSTATE}/qemu-build state/kernel-gcc-build vexpress-ltp.img
 	mkdir -p ${TESTRESULTS}
 	for LTPTEST in ${LTPTESTS} ; do \
-		$(call qemu,${BOARD},${KERNELDIR},256,/dev/mmcblk0p2,rootfstype=ext4 rw init=/opt/ltp/run-tests.sh ltptest=$$LTPTEST,-sd vexpress-ltp.img) -net nic,macaddr=52:54:00:12:34:57 | tee $(call ltplog,${TESTRESULTS},gcc,$$LTPTEST; \
+		$(call qemu,${BOARD},${KERNELDIR},256,/dev/mmcblk0p2,rootfstype=ext4 rw init=/opt/ltp/run-tests.sh ltptest=$$LTPTEST,-sd vexpress-ltp.img) -net nic,macaddr=52:54:00:12:34:57 | tee $(call ltplog,${TESTRESULTS},gcc,$$LTPTEST); \
 	done
 
 test3-all-ltp: test3-ltp test3-gcc-ltp
