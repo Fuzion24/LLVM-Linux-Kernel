@@ -103,22 +103,27 @@ mrproper: clean ltp-mrproper tmp-mrproper
 #	tar -xzvf arm-test-0.2.tar.gz
 #	$(call state,$@)
 
-# state/fetch-initrd
-test: state/prep ${QEMUSTATE}/qemu-build state/kernel-build
-	@$(call qemu,${BOARD},${KERNELDIR},768,/dev/ram0,ramdisk_size=65536 rw,-initrd reference/initramfs.img -net none)
-
-test-ltp: state/prep ${QEMUSTATE}/qemu-build state/kernel-build
-	@$(call qemu,${BOARD} -cpu cortex-a9,${KERNELDIR},768,/dev/ram0,ramdisk_size=327680 rw rdinit=/bin/sh,-initrd reference/initramfs.img -net none)
+INITRAMFS	= ${TMPDIR}/initramfs.img
+# Get prebuilt initramfs or vexpress-ltp image
+${INITRAMFS} ${TMPDIR}/vexpress-ltp.img.bz2:
+	wget -P $(dir $@) -c ${BUILDBOT_PREBUILT_URL}/$(notdir $@)
 
 # state/fetch-initrd
-test-kill: state/prep state/kernel-build ${QEMUSTATE}/qemu-build
-	( $(call qemu,${BOARD},${KERNELDIR},256,/dev/ram0,ramdisk_size=65536 rw POWEROFF,-initrd reference/initramfs.img -net none) \
+test: state/prep ${QEMUSTATE}/qemu-build state/kernel-build ${INITRAMFS}
+	@$(call qemu,${BOARD},${KERNELDIR},768,/dev/ram0,ramdisk_size=65536 rw,-initrd ${INITRAMFS} -net none)
+
+test-ltp: state/prep ${QEMUSTATE}/qemu-build state/kernel-build ${INITRAMFS}
+	@$(call qemu,${BOARD} -cpu cortex-a9,${KERNELDIR},768,/dev/ram0,ramdisk_size=327680 rw rdinit=/bin/sh,-initrd ${INITRAMFS} -net none)
+
+# state/fetch-initrd
+test-kill: state/prep state/kernel-build ${QEMUSTATE}/qemu-build ${INITRAMFS}
+	( $(call qemu,${BOARD},${KERNELDIR},256,/dev/ram0,ramdisk_size=65536 rw POWEROFF,-initrd ${INITRAMFS} -net none) \
 		| tee tmp/qemu_log ) &
 	( sleep 10 && killall -s 9 qemu-system-arm ) || exit 0
 	@grep -a "SUCCESS" tmp/qemu_log 
 
-test-gcc-kill: state/prep state/kernel-gcc-build ${QEMUSTATE}/qemu-build
-	( $(call qemu,${BOARD},${KERNELGCC},256,/dev/ram0,ramdisk_size=65536 rw POWEROFF,-initrd reference/initramfs.img -net none) \
+test-gcc-kill: state/prep state/kernel-gcc-build ${QEMUSTATE}/qemu-build ${INITRAMFS}
+	( $(call qemu,${BOARD},${KERNELGCC},256,/dev/ram0,ramdisk_size=65536 rw POWEROFF,-initrd ${INITRAMFS} -net none) \
 		| tee tmp/qemu_gcc_log ) &
 	( sleep 10 && killall -s 9 qemu-system-arm ) || exit 0
 	@grep -a "SUCCESS" tmp/qemu_gcc_log 
@@ -132,10 +137,6 @@ ${TMPDIR}/${NANOIMG}.gz:
 
 vexpress.img: ${TMPDIR}/${NANOBOARD}.img.gz
 	gzip -dc $< > $@
-
-# Get prebuilt vexpress-ltp image
-${TMPDIR}/vexpress-ltp.img.bz2:
-	wget -P $(dir $@) -c ${BUILDBOT_PREBUILT_URL}/$(notdir $@)
 
 # Build vexpress image
 ${TMPDIR}/sources.txt:
