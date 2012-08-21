@@ -23,7 +23,7 @@
 
 # Note: This file must be included after ${TOPDIR}/common.mk
 
-STATE_TOOLCHAIN=state/arm-cc
+STATE_TOOLCHAIN	= state/arm-cc
 
 include ${ARCHDIR}/all/all.mk
 
@@ -35,18 +35,17 @@ TMPDIRS		+= ${ARCH_ARM_TMPDIR}
 
 # Configure the requested ARM cross compiler
 # Sets CROSS_GCC, PATH, HOST, HOST_TRIPLE
+# and state/arm-cc
 # This is required whether or not clang is the
 # compiler being used. These files must define
 # arm-cc which will be a build dep for ARM
-ifeq ($(CROSS_GCC),)
-ifeq ($(CROSS_ARM_TOOLCHAIN),android)
+ifeq (${CROSS_ARM_TOOLCHAIN},android)
 include ${ARCHDIR}/arm/toolchain/android/android.mk
 else
-ifeq ($(CROSS_ARM_TOOLCHAIN),linaro)
+ifeq (${CROSS_ARM_TOOLCHAIN},linaro)
 include ${ARCHDIR}/arm/toolchain/linaro/linaro.mk
 else
 include ${ARCHDIR}/arm/toolchain/codesourcery/codesourcery.mk
-endif
 endif
 endif
 

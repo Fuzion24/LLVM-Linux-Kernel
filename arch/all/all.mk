@@ -238,8 +238,8 @@ state/kernel-gcc-configure: state/kernel-gcc-patch
 	(cd ${KERNELGCC} && echo "" | make ${MAKE_FLAGS} oldconfig)
 	$(call state,$@,kernel-gcc-build)
 
-kernel-build: ${STATE_TOOLCHAIN} state/kernel-build
-state/kernel-build: ${LLVMSTATE}/clang-build state/kernel-configure
+kernel-build: state/kernel-build
+state/kernel-build: ${LLVMSTATE}/clang-build ${STATE_TOOLCHAIN} state/kernel-configure
 	$(call assert,-n "${MAKE_KERNEL}",MAKE_KERNEL undefined)
 	@$(call banner,"Building kernel with clang...")
 	(cd ${KERNELDIR} && time ${MAKE_KERNEL})
