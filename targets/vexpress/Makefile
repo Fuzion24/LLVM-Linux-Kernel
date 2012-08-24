@@ -53,7 +53,7 @@ NANOIMG			= ${NANOBOARD}.img
 
 BUILDBOT_PREBUILT_URL	= http://buildbot.llvm.linuxfoundation.org/prebuilt
 
-TARGETS			+= clean mrproper test test2 test3 test3-ltp
+TARGETS			+= clean mrproper test test-boot-poweroff test2 test3 test3-ltp
 .PHONY: help test test2 prep clean mrproper
 
 help:
@@ -116,7 +116,8 @@ test-ltp: state/prep ${QEMUSTATE}/qemu-build state/kernel-build ${INITRAMFS}
 	@$(call qemu,${BOARD} -cpu cortex-a9,${KERNELDIR},768,/dev/ram0,ramdisk_size=327680 rw rdinit=/bin/sh,-initrd ${INITRAMFS} -net none)
 
 # state/fetch-initrd
-test-kill: state/prep state/kernel-build ${QEMUSTATE}/qemu-build ${INITRAMFS}
+test-kill: test-boot-poweroff
+test-boot-poweroff: state/prep state/kernel-build ${QEMUSTATE}/qemu-build ${INITRAMFS}
 	( $(call qemu,${BOARD},${KERNELDIR},256,/dev/ram0,ramdisk_size=65536 rw POWEROFF,-initrd ${INITRAMFS} -net none) \
 		| tee tmp/qemu_log ) &
 	( sleep 10 && killall -s 9 qemu-system-arm ) || exit 0
