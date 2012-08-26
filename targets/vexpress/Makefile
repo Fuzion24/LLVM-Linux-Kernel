@@ -38,35 +38,40 @@ else
 GDB_OPTS=
 endif
 
-TESTRESULTS = test-results
+all: prep kernel-build test-boot-poweroff
 
-#all: all2
-all: prep kernel-build qemu-build
+NAME	= vexpress
+BOARD	= ${NAME}-a9
+
+NET	= -net nic,macaddr=52:54:00:12:34:57
 
 include ${TOPDIR}/common.mk
 include ${ARCHDIR}/arm/arm.mk
+include ${TARGETDIR}/vexpress-linaro.mk
+include ${TARGETDIR}/vexpress-ltp.mk
 
-LINARORELEASEURL	= http://releases.linaro.org/images/12.03/oneiric/nano
-BOARD			= vexpress-a9
-NANOBOARD		= ${BOARD}-nano
-NANOIMG			= ${NANOBOARD}.img
+BUILDBOT_PREBUILT_URL	= http://buildbot.llvm.linuxfoundation.org/prebuilt/arm/${NAME}
+get_prebuilt		= mkdir -p $(dir ${1}) && wget -P $(dir ${1}) -c ${BUILDBOT_PREBUILT_URL}/$(notdir ${1})
 
-BUILDBOT_PREBUILT_URL	= http://buildbot.llvm.linuxfoundation.org/prebuilt
+VEXPRESS_TARGETS	= test test2 test3 \
+			test-boot-poweroff test-gcc-boot-poweroff \
+			clean mrproper
+TARGETS			+= ${VEXPRESS_TARGETS}
+.PHONY:			${VEXPRESS_TARGETS}
 
-TARGETS			+= clean mrproper test test-boot-poweroff test2 test3 test3-ltp
-.PHONY: help test test2 prep clean mrproper
-
-help:
+help-vexpress:
 	@echo "targets/vexpress has these options:"
 	@echo ""
-	@echo "* make test          - simple boot to rootfs (make test-[gcc-]kill *1)"
+	@echo "* make test          - simple boot to rootfs (make test-[gcc-]boot-poweroff *1)"
 	@echo "* make test2         - bsd userspace with toybox"
 	@echo "* make test3         - linaro/ubuntu rootfs"
-	@echo "* make test3-ltp     - linaro/ubuntu rootfs starting LTP, kernel built with clang"
-	@echo "* make test3-gcc-ltp - linaro/ubuntu rootfs starting LTP, kernel built with gcc"
 	@echo ""
-	@echo "* make clean         - cleanup"
-	@echo "* make mrproper      - wipe all built files"
+	@echo " Note: You currently have to do a 'killall qemu-system-arm' from another terminal"
+	@echo "       to exit from the above tests."
+	@echo ""
+	@echo "* make test-boot-poweroff      - test boot clang built kernel, then power off after init runs"
+	@echo "* make test-gcc-boot-poweroff  - test boot gcc built kernel, then power off after init runs"
+	@echo ""
 	@echo "* make kernels       - build kernel with clang and gcc"
 	@echo "* make [llvm,clang,qemu,kernel]-build"
 	@echo "                     - build [llvm,clang,qemu,kernel]"
@@ -75,26 +80,16 @@ help:
 	@echo "* make sync-all      - sync all repos"
 	@echo ""
 	@echo "* make patch-update"
+	@echo ""
+	@echo "* make clean         - Remove most built files"
+	@echo "* make mrproper      - Remove all downloaded and built files"
 
-all2: help
-	@( echo "Continue to build the compiler and initramfs ? [nY]" ; read aw;  if [ x"$$aw" == x"n" ] || [ x"$$aw" == x"N" ] ; then exit 1 ; fi )
-	@make prep kernel-build qemu-build
-	@echo "To continue execute 'make test'."
+help: help-vexpress help-vexpress-linaro help-vexpress-ltp
 
 prep: state/prep
 state/prep:
 	@mkdir -p ${LOGDIR} ${TMPDIR}
 	$(call state,$@)
-
-clean: qemu-clean kernel-clean clang-clean llvm-clean initramfs-clean
-
-# do a real wipe
-mrproper: clean ltp-mrproper tmp-mrproper
-	-rm -rf arm-test-0.2.tar.gz arm-test
-#	rm -f state/fetch-initrd
-	@rm -rf ${LOGDIR}/*
-	( cd ${KERNELDIR} && make mrproper )
-	-( cd ${KERNELGCC} && make mrproper )
 
 #fetch-initrd: state/fetch-initrd
 #state/fetch-initrd:
@@ -104,16 +99,12 @@ mrproper: clean ltp-mrproper tmp-mrproper
 #	$(call state,$@)
 
 INITRAMFS	= ${TMPDIR}/initramfs.img
-# Get prebuilt initramfs or vexpress-ltp image
-${INITRAMFS} ${TMPDIR}/vexpress-ltp.img.bz2:
-	wget -P $(dir $@) -c ${BUILDBOT_PREBUILT_URL}/$(notdir $@)
+${INITRAMFS}:
+	$(call get_prebuilt, $@)
 
 # state/fetch-initrd
 test: state/prep ${QEMUSTATE}/qemu-build state/kernel-build ${INITRAMFS}
 	@$(call qemu,${BOARD},${KERNELDIR},768,/dev/ram0,ramdisk_size=65536 rw,-initrd ${INITRAMFS} -net none)
-
-test-ltp: state/prep ${QEMUSTATE}/qemu-build state/kernel-build ${INITRAMFS}
-	@$(call qemu,${BOARD} -cpu cortex-a9,${KERNELDIR},768,/dev/ram0,ramdisk_size=327680 rw rdinit=/bin/sh,-initrd ${INITRAMFS} -net none)
 
 # state/fetch-initrd
 test-kill: test-boot-poweroff
@@ -123,7 +114,8 @@ test-boot-poweroff: state/prep state/kernel-build ${QEMUSTATE}/qemu-build ${INIT
 	( sleep 10 && killall -s 9 qemu-system-arm ) || exit 0
 	@grep -a "SUCCESS" tmp/qemu_log 
 
-test-gcc-kill: state/prep state/kernel-gcc-build ${QEMUSTATE}/qemu-build ${INITRAMFS}
+test-gcc-kill: test-gcc-boot-poweroff
+test-gcc-boot-poweroff: state/prep state/kernel-gcc-build ${QEMUSTATE}/qemu-build ${INITRAMFS}
 	( $(call qemu,${BOARD},${KERNELGCC},256,/dev/ram0,ramdisk_size=65536 rw POWEROFF,-initrd ${INITRAMFS} -net none) \
 		| tee tmp/qemu_gcc_log ) &
 	( sleep 10 && killall -s 9 qemu-system-arm ) || exit 0
@@ -134,66 +126,14 @@ test2: state/prep ${QEMUSTATE}/qemu-build state/kernel-build initramfs
 
 # Get prebuilt vexpress image
 ${TMPDIR}/${NANOIMG}.gz:
-	wget -P $(dir $@) -c ${LINARORELEASEURL}/$(notdir $@)
+	$(call get_linaro_prebuilt,$@)
 
-vexpress.img: ${TMPDIR}/${NANOBOARD}.img.gz
+VEXPRESS_IMG	= ${TMPDIR}/vexpress.img
+${VEXPRESS_IMG}: ${TMPDIR}/${NANOIMG}.gz
 	gzip -dc $< > $@
 
-# Build vexpress image
-${TMPDIR}/sources.txt:
-	wget --quiet $(LINARORELEASEURL)/sources.txt -O $@
-
-${TMPDIR}/get-sources.sh: ${TMPDIR}/sources.txt
-	perl -ne 'if(/^${NANOBOARD}:/){$$f=1} elsif($$f && m|(http://\S+)|){print "wget -c -P ${TMPDIR} $$1/"} elsif($$f && /(\S*\.tar\..*): md5sum/){print "$$1\n"} elsif(/^\s+:/) {$$f=0}' $< >$@
-	sh $@
-
-${TMPDIR}/board-sources.txt: ${TMPDIR}/sources.txt
-	perl -ne 'if(/^${NANOBOARD}:/){$$f=1} elsif($$f && m|(http://\S+)|){print "$$1/"} elsif($$f && /(\S*\.tar\..*): md5sum/){print "$$1\n"} elsif(/^\s+:/) {$$f=0}' $< >$@
-	wget -c -P ${TMPDIR} `cat $@`
-
-${NANOIMG}: ${TMPDIR}/${NANOIMG}
-${TMPDIR}/${NANOIMG}: ${TMPDIR}/board-sources.txt
-	(cd ${TMPDIR} && sudo linaro-media-create --dev ${BOARD} --rootfs ext4 \
-		`sed 's|.*nano.*/|--binary |; s|.*hwpack.*/|--hwpack |' $(notdir $<)` \
-		--hwpack-force-yes --image-size 1G --image-file $@ \
-	)
-
-# Build ltp image into vexpress image
-#vexpress-ltp.img: ${TMPDIR}/${NANOIMG}.gz ${LTPSTATE}/ltp-build ${LTPSTATE}/ltp-scripts
-#	gzip -dc $< > $@
-vexpress-ltp.img.bz2: ${TMPDIR}/${NANOIMG} ${LTPSTATE}/ltp-build ${LTPSTATE}/ltp-scripts
-	@cp -v $< $@
-	${TOOLSDIR}/partcopy.sh $@ rootfs ${LTPINSTALLDIR}/ /opt/ltp/ || (rm $@ && echo "E: $@ error" && false)
-	bzip2 -9c $< > $@
-
-vexpress-ltp.img: ${TMPDIR}/vexpress-ltp.img.bz2
-	bunzip2 -9c $< > $@
-
-vexpress-ltp-clean:
-	rm -f vexpress-ltp.img
-vexpress-ltp-force: vexpress-ltp-clean vexpress-ltp.img
-
-NET	= -net nic,macaddr=52:54:00:12:34:57
-
-test3: state/prep ${QEMUSTATE}/qemu-build state/kernel-build vexpress.img
-	@$(call qemu,${BOARD},${KERNELDIR},256,/dev/mmcblk0p2,rootfstype=ext4 init=/bin/bash,-sd vexpress.img) ${NET}
-
-#LTPTESTS = fcntl-locktests filecaps fs ipc mm pipes pty quickhit sched syscalls timers
-LTPTESTS = ltplite
-test3-ltp: state/prep ${QEMUSTATE}/qemu-build state/kernel-build vexpress-ltp.img
-	mkdir -p ${TESTRESULTS}
-	for LTPTEST in ${LTPTESTS} ; do \
-		$(call qemu,${BOARD},${KERNELDIR},256,/dev/mmcblk0p2,rootfstype=ext4 rw init=/opt/ltp/run-tests.sh ltptest=$$LTPTEST,-sd vexpress-ltp.img) ${NET} | tee $(call ltplog,${TESTRESULTS},clang,$$LTPTEST); \
-	done
-	#${TESTRESULTS}/clang-${ARCH}-`date +%Y-%m-%d_%H:%M:%S`_$$LTPTEST.log;
-
-test3-gcc-ltp: state/prep ${QEMUSTATE}/qemu-build state/kernel-gcc-build vexpress-ltp.img
-	mkdir -p ${TESTRESULTS}
-	for LTPTEST in ${LTPTESTS} ; do \
-		$(call qemu,${BOARD},${KERNELDIR},256,/dev/mmcblk0p2,rootfstype=ext4 rw init=/opt/ltp/run-tests.sh ltptest=$$LTPTEST,-sd vexpress-ltp.img) -net nic,macaddr=52:54:00:12:34:57 | tee $(call ltplog,${TESTRESULTS},gcc,$$LTPTEST); \
-	done
-
-test3-all-ltp: test3-ltp test3-gcc-ltp
+test3: state/prep ${QEMUSTATE}/qemu-build state/kernel-build ${VEXPRESS_IMG}
+	@$(call qemu,${BOARD},${KERNELDIR},256,/dev/mmcblk0p2,rootfstype=ext4 init=/bin/bash,-sd ${VEXPRESS_IMG}) ${NET}
 
 patch-update: state/kernel-patch
 	@${TOOLSDIR}/applyfilter.py ${ARCH_ALL_PATCHES}/common.patch ${TMPDIR}/common.patch ${FILTERFILE}
@@ -202,4 +142,21 @@ patch-update: state/kernel-patch
 	@${TOOLSDIR}/applyfilter.py ${ARCH_ARM_PATCHES}/common-arm.patch ${TMPDIR}/common-arm.patch ${FILTERFILE}
 	@${TOOLSDIR}/applyfilter.py ${ARCH_ARM_PATCHES}/fix-warnings-arm.patch ${TMPDIR}/fix-warnings-arm.patch ${FILTERFILE}
 	@${TOOLSDIR}/applyfilter.py ${ARCH_ARM_PATCHES}/fix-warnings-arm-unused.patch ${TMPDIR}/fix-warnings-arm-unused.patch ${FILTERFILE}
+
+clean-vexpress:
+	rm -f ${VEXPRESS_IMG}
+	rm -f state/kernel-patch
+
+mrproper-vexpress:
+	rm -f ${TMPDIR}/${NANOIMG}.gz
+	-rm -rf arm-test-0.2.tar.gz arm-test
+	@rm -rf ${LOGDIR}/*
+	( cd ${KERNELDIR} && make mrproper )
+	-( cd ${KERNELGCC} && make mrproper )
+
+clean: clean-vexpress clean-vexpress-linaro clean-vexpress-ltp \
+	qemu-clean kernel-clean clang-clean llvm-clean initramfs-clean
+
+mrproper: clean mrproper-vexpress mrproper-vexpress-linaro mrproper-vexpress-ltp \
+	ltp-mrproper tmp-mrproper
 
