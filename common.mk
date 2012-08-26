@@ -29,6 +29,10 @@ TOOLSDIR	= ${TOPDIR}/tools
 ARCHDIR		= ${TOPDIR}/arch
 TESTDIR		= ${TOPDIR}/test
 
+COMMON_TARGETS	= list-jobs list-targets list-patch-applied list-path list-versions clean-all sync-all tmp-mrproper
+TARGETS		+= ${COMMON_TARGETS}
+.PHONY:		${COMMON_TARGETS}
+
 seperator = "---------------------------------------------------------------------"
 banner	= ( echo ${seperator}; echo ${1}; echo ${seperator} )
 state	= @mkdir -p $(dir ${1}) && touch ${1} \
@@ -50,14 +54,12 @@ list-jobs:
 # The order of these includes is important
 include ${TOOLCHAIN}/toolchain.mk
 
-TARGETS	+= tmp-mrproper list-path
-
 tmp-mrproper:
 	@for t in ${TMPDIRS}; do rm -rf $$t/*; done
 
 list-targets:
 	@echo "List of available make targets:"
-	@for t in ${TARGETS}; do echo $$t; done
+	@for t in ${TARGETS}; do echo $$t; done | sort -u
 
 list-patch-applied:
 	${MAKE} ${PATCH_APPLIED_TARGETS}
