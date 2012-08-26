@@ -99,6 +99,8 @@ clean-vexpress-ltp-bz:
 clean-vexpress-ltp-img:
 	rm -f ${VEXPRESS_LTP_IMG_TMP}
 
-mrproper-vexpress-ltp: clean-vexpress-ltp-bz clean-vexpress-ltp-img ltp-mrproper
+clean-vexpress-ltp: clean-vexpress-ltp-bz clean-vexpress-ltp-img
+
+mrproper-vexpress-ltp: clean-vexpress-ltp ltp-mrproper
 	rm -f ${VEXPRESS_LTP_BZ_TMP}
 
