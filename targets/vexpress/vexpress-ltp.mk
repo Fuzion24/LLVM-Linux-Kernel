@@ -41,6 +41,7 @@ LTPTESTS = ltplite
 VEXPRESS_LTP_IMG	= vexpress-ltp.img
 VEXPRESS_LTP_BZ		= ${VEXPRESS_LTP_IMG}.bz2
 VEXPRESS_LTP_IMG_TMP	= ${TMPDIR}/${VEXPRESS_LTP_IMG}
+VEXPRESS_LTP_GCCIMG_TMP	= ${TMPDIR}/vexpress-ltp-gcc.img
 VEXPRESS_LTP_BZ_TMP	= ${VEXPRESS_LTP_IMG_TMP}.bz2
 LTP_RESULTS_DIR		= test-results
 
@@ -59,27 +60,21 @@ ${VEXPRESS_LTP_BZ_TMP}:
 	$(call get_prebuilt, $@)
 
 # Uncompress LTP image from prebuilt LTP image
-${VEXPRESS_LTP_IMG_TMP}: ${VEXPRESS_LTP_BZ_TMP}
+.PHONY: ${VEXPRESS_LTP_IMG_TMP} ${VEXPRESS_LTP_GCCIMG_TMP}
+${VEXPRESS_LTP_IMG_TMP} ${VEXPRESS_LTP_GCCIMG_TMP}: ${VEXPRESS_LTP_BZ_TMP}
 	bunzip2 -9c $< > $@
 
 fresh-vexpress-ltp-img: clean-vexpress-ltp-img ${VEXPRESS_LTP_IMG_TMP}
-
-# Allow the user to keep the existing vexpress LTP image for all runs of LTP
-# The default is make a new one for each run of LTP
-ifeq "KEEPLTPIMG" "1"
-refresh_vexpress_ltp_img = $(MAKE) ${VEXPRESS_LTP_IMG_TMP}
-else
-refresh_vexpress_ltp_img = $(MAKE) fresh-vexpress-ltp-img
-endif
+fresh-vexpress-ltp-gcc-img: clean-vexpress-ltp-gccimg ${VEXPRESS_LTP_GCCIMG_TMP}
 
 # Command to run the LTP on a built kernel
-vexpress_run_ltp	= $(call refresh_vexpress_ltp_img) && $(call qemu,${BOARD},${1},256,/dev/mmcblk0p2,rootfstype=ext4 rw init=/opt/ltp/run-tests.sh ltptest=${2},-sd ${VEXPRESS_LTP_IMG_TMP}) ${NET}
+vexpress_run_ltp	= $(MAKE) "${2}" && $(call qemu,${BOARD},${1},256,/dev/mmcblk0p2,rootfstype=ext4 rw init=/opt/ltp/run-tests.sh ltptest=${3},-sd ${2}) ${NET}
 
 # Run LTP tests on clang built kernel
 test3-ltp: state/prep ${QEMUSTATE}/qemu-build state/kernel-build ${VEXPRESS_LTP_BZ_TMP}
 	mkdir -p ${LTP_RESULTS_DIR}
 	for LTPTEST in ${LTPTESTS} ; do \
-		$(call vexpress_run_ltp,${KERNELDIR},$$LTPTEST) \
+		$(call vexpress_run_ltp,${KERNELDIR},${VEXPRESS_LTP_IMG_TMP},$$LTPTEST) \
 		| tee $(call ltplog,${LTP_RESULTS_DIR},clang,$$LTPTEST); \
 	done
 
@@ -87,7 +82,7 @@ test3-ltp: state/prep ${QEMUSTATE}/qemu-build state/kernel-build ${VEXPRESS_LTP_
 test3-gcc-ltp: state/prep ${QEMUSTATE}/qemu-build state/kernel-gcc-build ${VEXPRESS_LTP_BZ_TMP}
 	mkdir -p ${LTP_RESULTS_DIR}
 	for LTPTEST in ${LTPTESTS} ; do \
-		$(call vexpress_run_ltp,${KERNELGCC},$$LTPTEST) \
+		$(call vexpress_run_ltp,${KERNELGCC},${VEXPRESS_LTP_GCCIMG_TMP},$$LTPTEST) \
 		| tee $(call ltplog,${LTP_RESULTS_DIR},gcc,$$LTPTEST); \
 	done
 
@@ -99,7 +94,10 @@ clean-vexpress-ltp-bz:
 clean-vexpress-ltp-img:
 	rm -f ${VEXPRESS_LTP_IMG_TMP}
 
-clean-vexpress-ltp: clean-vexpress-ltp-bz clean-vexpress-ltp-img
+clean-vexpress-ltp-gccimg:
+	rm -f ${VEXPRESS_LTP_GCCIMG_TMP}
+
+clean-vexpress-ltp: clean-vexpress-ltp-bz clean-vexpress-ltp-img clean-vexpress-ltp-gccimg
 
 mrproper-vexpress-ltp: clean-vexpress-ltp ltp-mrproper
 	rm -f ${VEXPRESS_LTP_BZ_TMP}
