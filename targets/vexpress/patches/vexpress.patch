@@ -10,3 +10,4 @@ index b4a28ca..c7e1ae8 100644
 +static struct sys_timer v2m_timer __initdata = {
  	.init	= v2m_timer_init,
  };
+
