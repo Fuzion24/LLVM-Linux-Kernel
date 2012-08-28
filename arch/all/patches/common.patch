@@ -1,3 +1,4 @@
+Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 diff --git a/crypto/shash.c b/crypto/shash.c
 index 9100912..5ec0ebd 100644
 --- a/crypto/shash.c

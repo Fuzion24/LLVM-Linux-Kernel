@@ -1,3 +1,4 @@
+Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 diff --git a/drivers/input/serio/ambakmi.c b/drivers/input/serio/ambakmi.c
 index 8407d5b..e60eaa9 100644
 --- a/drivers/input/serio/ambakmi.c

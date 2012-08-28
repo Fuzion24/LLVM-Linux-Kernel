@@ -1,3 +1,4 @@
+Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 diff --git a/fs/bio.c b/fs/bio.c
 index b1fe82c..152fa2a 100644
 --- a/fs/bio.c

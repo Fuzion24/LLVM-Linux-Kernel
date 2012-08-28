@@ -149,7 +149,7 @@ state/kernel-patch: state/kernel-fetch
 	@${TOOLSDIR}/checkduplicates.py ${KERNEL_PATCHES}
 	@echo "Testing upstream patches: see ${LOGDIR}/testpatch.log"
 	@rm -f ${TMPDIR}/test.patch ${TMPFILTERFILE}-1 ${TMPFILTERFILE}-2 ${FILTERFILE}
-	@for patch in ${KERNEL_PATCHES}; do cat $$patch >> ${TMPDIR}/test.patch; done
+	@for patch in ${KERNEL_PATCHES}; do cat $$patch | grep -v "^Signed-off-by:" >> ${TMPDIR}/test.patch; done
 	(cd ${KERNELDIR} && git reset --hard HEAD)
 	@make -i patch-dry-run1
 	@$(call banner, "Creating patch filter: see ${LOGDIR}/filteredpatch.log")
