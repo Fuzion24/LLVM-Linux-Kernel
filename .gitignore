@@ -18,7 +18,7 @@ targets/*/log
 targets/*/test-results/
 targets/*/tmp
 tmp
-toolchain/arm-20*
-toolchain/android/
-toolchain/status/
+arch/arm/toolchain/codesourcery/arm-20*
+arch/arm/toolchain/android/arm-linux-androideabi-*
+/arch/arm/toolchain/linaro/gcc-linaro-arm-linux-gnueabihf-*
 arch/all/kernel.git/
