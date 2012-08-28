@@ -195,10 +195,10 @@ patch-dry-run2:
 	(cd ${KERNELDIR} && patch --dry-run -p1 -i ${TMPDIR}/filtered.patch > ${LOGDIR}/filteredpatch.log)
 
 kernel-reset: state/kernel-fetch
-	(cd ${KERNELDIR} && git reset --hard HEAD && git status --porcelain | grep "^\?\?" | cut -f2 -d' ' | xargs rm)
+	(cd ${KERNELDIR} && git reset --hard HEAD && git status --porcelain | grep "^\?\?" | cut -f2 -d' ' | xargs rm -f)
 
 kernel-gcc-reset: state/kernel-gcc-fetch
-	(cd ${KERNELGCC} && git reset --hard HEAD && git status --porcelain | grep "^\?\?" | cut -f2 -d' ' | xargs rm)
+	(cd ${KERNELGCC} && git reset --hard HEAD && git status --porcelain | grep "^\?\?" | cut -f2 -d' ' | xargs rm -f)
 
 kernel-mrproper: state/kernel-fetch
 	(cd ${KERNELDIR} && make mrproper)
