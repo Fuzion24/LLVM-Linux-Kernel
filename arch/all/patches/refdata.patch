@@ -94,19 +94,6 @@ index b37b702a..c16beea 100644
  	.drv		= {
  		.name	= DRIVER_NAME,
  	},
-diff --git a/drivers/net/ethernet/smsc/smc91x.c b/drivers/net/ethernet/smsc/smc91x.c
-index fee4493..352ed31 100644
---- a/drivers/net/ethernet/smsc/smc91x.c
-+++ b/drivers/net/ethernet/smsc/smc91x.c
-@@ -2405,7 +2405,7 @@ static struct dev_pm_ops smc_drv_pm_ops = {
- 	.resume		= smc_drv_resume,
- };
- 
--static struct platform_driver smc_driver = {
-+static struct platform_driver smc_driver __refdata = {
- 	.probe		= smc_drv_probe,
- 	.remove		= __devexit_p(smc_drv_remove),
- 	.driver		= {
 diff --git a/drivers/net/ethernet/smsc/smsc911x.c b/drivers/net/ethernet/smsc/smsc911x.c
 index 1466e5d..2eabcd8 100644
 --- a/drivers/net/ethernet/smsc/smsc911x.c

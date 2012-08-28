@@ -13,19 +13,6 @@ index 9100912..5ec0ebd 100644
  }
  
  static int shash_update_unaligned(struct shash_desc *desc, const u8 *data,
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index 81c04f4..4bbda3c 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -836,7 +836,7 @@ void __kfree_rcu(struct rcu_head *head, unsigned long offset)
- {
- 	typedef void (*rcu_callback)(struct rcu_head *);
- 
--	BUILD_BUG_ON(!__builtin_constant_p(offset));
-+	// FIXME - BUILD_BUG_ON(!__builtin_constant_p(offset));
- 
- 	/* See the kfree_rcu() header comment. */
- 	BUILD_BUG_ON(!__is_kfree_rcu_offset(offset));
 diff --git a/mm/slab.c b/mm/slab.c
 index f0bd785..1b55992 100644
 --- a/mm/slab.c
