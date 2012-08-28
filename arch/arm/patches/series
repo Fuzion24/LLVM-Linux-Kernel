@@ -1,1 +1,3 @@
 common-arm.patch
+compiler-rt.patch
+register-var.patch

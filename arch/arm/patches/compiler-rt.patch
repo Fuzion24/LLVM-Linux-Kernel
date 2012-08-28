@@ -1,0 +1,21 @@
+diff --git a/lib/string.c b/lib/string.c
+index e5878de..ea7105e 100644
+--- a/lib/string.c
++++ b/lib/string.c
+@@ -824,3 +824,15 @@ void *memchr_inv(const void *start, int c, size_t bytes)
+ 	return check_bytes8(start, value, bytes % 8);
+ }
+ EXPORT_SYMBOL(memchr_inv);
++
++void __aeabi_memcpy (void *dest, const void *src, size_t n) 
++{
++    (void)memcpy(dest, src, n);
++}
++EXPORT_SYMBOL(__aeabi_memcpy);
++
++void __aeabi_memset(void *s, size_t n, int c) 
++{
++    (void)memset(s, c, n);
++}
++EXPORT_SYMBOL(__aeabi_memset);
+
