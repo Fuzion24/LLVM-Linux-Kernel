@@ -26,7 +26,7 @@ TARGETDIR	= ${CURDIR}
 TOPDIR		= $(realpath ${TARGETDIR}/../..)
 CROSS_ARM_TOOLCHAIN = android
 
-KERNEL_CFG	= ${TARGETDIR}/config_msm
+KERNEL_CFG	= ${SRCDIR}/msm/arch/arm/configs/msm8960_defconfig
 KERNEL_BRANCH	= msm-3.4
 KERNEL_GIT	= git://codeaurora.org/kernel/msm.git
 KERNELDIR	= ${SRCDIR}/msm
