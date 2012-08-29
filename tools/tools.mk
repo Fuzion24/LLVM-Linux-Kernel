@@ -24,4 +24,4 @@
 
 # Assumes has been included from ../common.mk
 
-PATH	+= :${TOOLSDIR}:
+PATH	:= ${PATH}:${TOOLSDIR}
