@@ -36,7 +36,7 @@ index d897278..f09c26d 100644
  	/bin/echo -e "$(1)" | $(CC) $(KBUILD_AFLAGS) -c -xassembler -o "$$TMP" -,$(2),$(3))
  
 +# Test for clang
-+ifeq ($(shell $(CC) -v | grep "clang version" | wc -l), 1)
++ifeq ($(shell $(CC) --version | grep "clang version" | wc -l), 1)
 +
  # cc-option
  # Usage: cflags-y += $(call cc-option,-march=winchip-c6,-march=i586)
@@ -85,10 +85,20 @@ index d897278..f09c26d 100644
  # cc-ifversion
  # Usage:  EXTRA_CFLAGS += $(call cc-ifversion, -lt, 0402, -O1)
 diff --git a/Makefile b/Makefile
-index dda21c3..a3471ed 100644
+index 1932984..6e6ade9 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -584,7 +584,7 @@ endif
+@@ -371,7 +371,7 @@ KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
+ 		   -fno-delete-null-pointer-checks
+ KBUILD_AFLAGS_KERNEL :=
+ KBUILD_CFLAGS_KERNEL :=
+-KBUILD_AFLAGS   := -D__ASSEMBLY__
++KBUILD_AFLAGS   := -D__ASSEMBLY__ -no-integrated-as
+ KBUILD_AFLAGS_MODULE  := -DMODULE
+ KBUILD_CFLAGS_MODULE  := -DMODULE
+ KBUILD_LDFLAGS_MODULE := -T $(srctree)/scripts/module-common.lds
+
+@@ -577,7 +577,7 @@ endif
  
  # This warning generated too much noise in a regular build.
  # Use make W=1 to enable this warning (see scripts/Makefile.build)
@@ -96,9 +106,9 @@ index dda21c3..a3471ed 100644
 +KBUILD_CFLAGS += $(call cc-disable-warning, unused-value)
  
  ifdef CONFIG_FRAME_POINTER
- KBUILD_CFLAGS	+= -fno-omit-frame-pointer -fno-optimize-sibling-calls
+ KBUILD_CFLAGS  += -fno-omit-frame-pointer -fno-optimize-sibling-calls
 diff --git a/scripts/Makefile.build b/scripts/Makefile.build
-index ff1720d..84f2ce8 100644
+index d2b366c..039e0b4 100644
 --- a/scripts/Makefile.build
 +++ b/scripts/Makefile.build
 @@ -69,6 +69,7 @@ warning-1 += -Wmissing-prototypes
@@ -106,7 +116,6 @@ index ff1720d..84f2ce8 100644
  warning-1 += $(call cc-option, -Wmissing-include-dirs)
  warning-1 += $(call cc-option, -Wunused-but-set-variable)
 +warning-1 += $(call cc-option, -Wunused-value)
- warning-1 += $(call cc-disable-warning, missing-field-initializers)
  
  warning-2 := -Waggregate-return
 diff --git a/include/asm-generic/cmpxchg-local.h b/include/asm-generic/cmpxchg-local.h
