@@ -12,8 +12,6 @@
 0012-Add-noinline_for_stack-to-drivers-block-loop.c-.-Pat.patch
 0013-Fix-VLAIS-usage-in-drivers-md-dm-crypt.c-.-Patch-fro.patch
 0014-Fix-VLAIS-usage-in-fs-cifs-cifsglob.h-.-Patch-from-s.patch
-0015-Disable-clang-s-integrated-as-for-some-vdso-targets-.patch
-0016-Disable-clang-s-integrated-as-for-arch-x86-core-kern.patch
 0017-ACPI-realmode-code-needs-no-integrated-as-.-Patch-fr.patch
 0018-Fix-assembly.-btr-btrl-.-Patch-from-series-at-http-l.patch
 0019-Various-modifications-in-arch-x86-kernel-.-Patch-fro.patch
@@ -46,4 +44,6 @@
 0046-clang-can-t-parse-the-construct-used-in-that-macro.-.patch
 0047-Can-t-compare-arrays-in-C-you-have-to-take-the-addre.patch
 0048-Unnecessary-double-brace.-Patch-from-series-at-http-.patch
-fixup.patch
+0049-ICE-in-dmcrypt.patch
+0050-Ambigious-inline-assembly.patch
+0051-Remove-extern-static.patch
