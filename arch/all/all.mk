@@ -30,7 +30,7 @@ ARCH_ALL_DIR	= ${ARCHDIR}/all
 ARCH_ALL_BINDIR	= ${ARCH_ALL_DIR}/bin
 ARCH_ALL_PATCHES= ${ARCH_ALL_DIR}/patches
 
-PATH		+= :${ARCH_ALL_BINDIR}:
+PATH		:= ${PATH}:${ARCH_ALL_BINDIR}
 
 MAINLINEURI	= git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
 SHARED_KERNEL	= ${ARCH_ALL_DIR}/kernel.git

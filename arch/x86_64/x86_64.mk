@@ -43,15 +43,15 @@ CROSS_COMPILE	=
 #CC		= clang-wrap.sh
 #CPP		= ${CC} -E
 
-KERNEL_SIZE_ARTIFACTS	= arch/x86/boot/bzImage vmlinux*
+KERNEL_SIZE_ARTIFACTS	= arch/x86_64/boot/bzImage vmlinux*
 BOARD		= pc
 
 # Add path so that ${CROSS_COMPILE}${CC} is resolved
-PATH		+= :${ARCH_X86_64_BINDIR}:
+PATH		:= ${PATH}:${ARCH_X86_64_BINDIR}
 
 gcc x86_64-cc: state/cross-gcc
 state/cross-gcc:
 	$(call state,$@)
 
 # ${1}=Machine_type ${2}=kerneldir ${3}=RAM ${4}=rootfs ${5}=Kernel_opts ${6}=QEMU_opts
-qemu = $(call runqemu,${QEMUBINDIR}/qemu-system-i386,${1},${2}/arch/x86/boot/bzImage,${3},${4},${KERNELOPTS} ${5},${QEMUOPTS} ${6})
+qemu = $(call runqemu,${QEMUBINDIR}/qemu-system-x86_64,${1},${2}/arch/x86_64/boot/bzImage,${3},${4},${KERNELOPTS} ${5},${QEMUOPTS} ${6})

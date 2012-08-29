@@ -47,7 +47,7 @@ KERNEL_SIZE_ARTIFACTS	= arch/x86/boot/bzImage vmlinux*
 BOARD	= pc
 
 # Add path so that ${CROSS_COMPILE}${CC} is resolved
-PATH		+= :${ARCH_X86_32_BINDIR}:
+PATH		:= ${ARCH_X86_32_BINDIR}:${PATH}
 
 gcc x86_64-cc: state/cross-gcc
 state/cross-gcc:
