@@ -45,24 +45,29 @@ if [ $USECLANG -eq "1" ]; then
 	export PATH="$INSTALLDIR/bin:$PATH"
 
 	#export CLANGFLAGS="-I ${INSTALLDIR}/lib/clang/*/include"
-	export CC_FOR_BUILD="$INSTALLDIR/bin/clang $CLANGFLAGS"
+	export CC_FOR_BUILD="$INSTALLDIR/bin/clang $EXTRAFLAGS $CLANGFLAGS"
 else
 	export CC_FOR_BUILD=gcc
 fi
 
-if [ -n "$CHECKERDIR" ] ; then
-	mkdir -p "$CHECKERDIR"
-	CHECKER='scan-build -v -o "'$CHECKERDIR'" --use-cc="'${CC_FOR_BUILD/ */}'"'
-	V="V=1"
-fi
+#if [ -n "$CHECKERDIR" ] ; then
+#	mkdir -p "$CHECKERDIR"
+#	CHECKER='scan-build -v -o "'$CHECKERDIR'" --use-cc="'${CC_FOR_BUILD/ */}'"'
+#	V="V=1"
+#fi
 
-RUNMAKE="make \
-	CONFIG_DEBUG_SECTION_MISMATCH=y CONFIG_DEBUG_INFO=1 HOSTCC=$HOSTCC_FOR_BUILD"
+#RUNMAKE="make \
+#	CONFIG_DEBUG_SECTION_MISMATCH=y CONFIG_DEBUG_INFO=1 HOSTCC=$HOSTCC_FOR_BUILD"
 
 set -e
 echo "export PATH=$PATH"
-[ -n "$DRYRUN" ] || set -x
-$DRYRUN $CHECKER $RUNMAKE $V CC="$CC_FOR_BUILD" $PARALLEL \
-	|| ( echo "********************************************************************************" \
-	&& $RUNMAKE V=1 CC="$CC_FOR_BUILD" )
-[ -z "$DRYRUN" ] || exit 1
+env
+#[ -n "$DRYRUN" ] || set -x
+#$DRYRUN $CHECKER $RUNMAKE $V CC="$CC_FOR_BUILD" $PARALLEL \
+#	|| ( echo "********************************************************************************" \
+#	&& $RUNMAKE V=1 CC="$CC_FOR_BUILD" )
+#[ -z "$DRYRUN" ] || exit 1
+
+make CONFIG_DEBUG_SECTION_MISMATCH=y CONFIG_DEBUG_INFO=1 \
+    CC="${CC_FOR_BUILD}" HOSTCC="${HOSTCC_FOR_BUILD}" ${PARALLEL}
+
