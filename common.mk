@@ -43,9 +43,11 @@ assert	= [ ${1} ] || $(call error1,${2})
 #assert	= echo "${1} --> ${2}"
 
 # Default jobs is number of processors + 1 for disk I/O
-JOBS:=${shell expr `getconf _NPROCESSORS_ONLN` + 1}
 ifeq "${JOBS}" ""
-JOBS:=2
+  JOBS:=${shell expr `getconf _NPROCESSORS_ONLN` + 1}
+  ifeq "${JOBS}" ""
+  JOBS:=2
+  endif
 endif
 
 list-jobs:
