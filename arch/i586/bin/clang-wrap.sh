@@ -4,7 +4,7 @@
 
 export PATH=`echo $PATH | sed -E 's/(.*?) :(.*)/\2\1/g; s/(.*?) :(.*)/\2\1/g; s/(.*?) :(.*)/\2\1/g'`
 
-CLANGFLAGS="-march=i586 -fcatch-undefined-behavior"
+CLANGFLAGS="-march=x86_64 -fcatch-undefined-behavior -Qunused-arguments"
 
 CC="$LLVMINSTALLDIR/bin/clang ${CLANGFLAGS}"
 

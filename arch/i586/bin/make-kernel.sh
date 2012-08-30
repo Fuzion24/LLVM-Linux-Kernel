@@ -45,7 +45,7 @@ if [ $USECLANG -eq "1" ]; then
 	export PATH="$INSTALLDIR/bin:$PATH"
 
 	#export CLANGFLAGS="-I ${INSTALLDIR}/lib/clang/*/include"
-	export CC_FOR_BUILD="$INSTALLDIR/bin/clang $CLANGFLAGS"
+	export CC_FOR_BUILD="$INSTALLDIR/bin/clang $EXTRAFLAGS $CLANGFLAGS -Qunused-arguments"
 else
 	export CC_FOR_BUILD=gcc
 fi
