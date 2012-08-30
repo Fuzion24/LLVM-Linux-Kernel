@@ -89,12 +89,20 @@ KERNEL_TARGETS_CLEAN	= kernel-clean kernel-gcc-clean tmp-clean
 KERNEL_TARGETS_VERSION	= kernel-version kernel-gcc-version
 
 TARGETS			+= ${KERNEL_TARGETS_CLANG} ${KERNEL_TARGETS_GCC} ${KERNEL_TARGETS_APPLIED} ${KERNEL_TARGETS_CLEAN}
+SETTINGS_TARGETS	+= kernel-settings
 SYNC_TARGETS		+= kernels-sync
 PATCH_APPLIED_TARGETS	+= ${KERNEL_TARGETS_APPLIED}
 CLEAN_TARGETS		+= ${KERNEL_TARGETS_CLEAN}
 VERSION_TARGETS		+= ${KERNEL_TARGETS_VERSION}
 
 .PHONY:			${KERNEL_TARGETS_CLANG} ${KERNEL_TARGETS_GCC} ${KERNEL_TARGETS_APPLIED} ${KERNEL_TARGETS_CLEAN} ${KERNEL_TARGETS_VERSION}
+
+kernel-settings:
+	@echo "# Kernel settings"
+	@echo "KERNEL_GIT		= ${KERNEL_GIT}"
+	@echo "KERNEL_BRANCH		= ${KERNEL_BRANCH}"
+	@echo "KERNELDIR		= ${KERNELDIR}"
+	@echo "KERNELGCC		= ${KERNELGCC}"
 
 # The shared kernel is a bare repository of Linus' kernel.org kernel
 # It serves as a git alternate for all the other target specific kernels.

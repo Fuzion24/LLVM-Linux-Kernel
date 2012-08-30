@@ -69,6 +69,9 @@ list-patch-applied:
 list-path:
 	@echo ${PATH}
 
+list-settings:
+	@${MAKE} --silent ${SETTINGS_TARGETS}
+
 list-versions:
 	@cmake --version
 	@git --version

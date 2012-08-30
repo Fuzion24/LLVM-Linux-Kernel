@@ -35,6 +35,7 @@ SYNC_TARGETS	+= ltp-sync
 LTP_TARGETS	= ltp-fetch ltp-configure ltp-build ltp-clean ltp-sync ltp-mrproper ltp-clean
 TARGETS		+= ${LTP_TARGETS}
 CLEAN_TARGETS	+= ltp-clean
+SETTINGS_TARGETS+= ltp-settings
 SYNC_TARGETS	+= ltp-sync
 VERSION_TARGETS	+= ltp-version
 .PHONY:		${LTP_TARGETS}
@@ -51,6 +52,12 @@ ltpstate=mkdir -p ${LTPSTATE}; touch $(1); echo "Entering state $(notdir $(1))";
 ${LTPTMPDIR}/${LTPSF_TAR}:
 	@mkdir -p $(dir $@)
 	wget -nd -P $(dir $@) -c ${LTPSF_URI}
+
+ltp-settings:
+	@echo "# LTP settings"
+	@echo "LTPSF_RELEASE		= ${LTPSF_RELEASE}"
+	@echo "LTPSF_TAR		= ${LTPSF_TAR}"
+	@echo "LTPSF_URI		= ${LTPSF_URI}"
 
 ltp-fetch: ltp-sf
 ltp-sf: ${LTPSTATE}/ltp-fetch

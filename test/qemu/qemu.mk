@@ -35,6 +35,7 @@ QEMUBINDIR	= ${INSTALLDIR}/bin
 QEMU_TARGETS	= qemu qemu-fetch qemu-configure qemu-build qemu-clean qemu-sync qemu-patch-applied qemu-version
 
 TARGETS			+= ${QEMU_TARGETS}
+SETTINGS_TARGETS	+= qemu-settings
 SYNC_TARGETS		+= qemu-sync
 CLEAN_TARGETS		+= qemu-clean
 PATCH_APPLIED_TARGETS	+= qemu-patch-applied
@@ -43,6 +44,11 @@ VERSION_TARGETS		+= qemu-version
 
 QEMU_GIT	= "git://git.qemu.org/qemu.git"
 QEMU_BRANCH	= "stable-1.0"
+
+qemu-settings:
+	@echo "# QEMU settings"
+	@echo "QEMU_BRANCH		= ${QEMU_BRANCH}"
+	@echo "QEMU_GIT		= ${QEMU_GIT}"
 
 qemu-fetch: ${QEMUSTATE}/qemu-fetch
 ${QEMUSTATE}/qemu-fetch:

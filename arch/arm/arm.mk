@@ -49,6 +49,12 @@ include ${ARCHDIR}/arm/toolchain/codesourcery/codesourcery.mk
 endif
 endif
 
+SETTINGS_TARGETS	+= arm-settings
+
+arm-settings:
+	@echo "# ARM settings"
+	@echo "CROSS_ARM_TOOLCHAIN	= ${CROSS_ARM_TOOLCHAIN}"
+
 KERNEL_PATCHES	+= $(call add_patches,${ARCH_ARM_PATCHES})
 
 VERSION_TARGETS	+= arm-cc-version

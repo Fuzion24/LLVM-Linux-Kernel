@@ -1,5 +1,6 @@
 ##############################################################################
 # Copyright (c) 2012 Mark Charlebois
+# Copyright (c) 2012 Behan Webster
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to 
@@ -27,7 +28,7 @@ CLEAN_TARGETS	+= initramfs-clean
 
 .PHONY: initramfs-prep initramfs initramfs-clean ltp dash
 
-TARGET		= initramfs.img.gz
+INITRAMFS	= initramfs.img.gz
 BUILDDIR	= ${TARGETDIR}/initramfs
 BUILDFSDIR	= ${BUILDDIR}/initramfs
 CPIO		= ${BUILDFSDIR}.cpio
@@ -44,6 +45,20 @@ LTPURL		= http://prdownloads.sourceforge.net/ltp/${LTP}.bz2?download
 
 GCC		= gcc
 
+SETTINGS_TARGETS+= initramfs-settings
+
+initramfs-settings:
+	@echo "# initramfs settings"
+	@echo "TOYBOXVER		= ${TOYBOXVER}"
+	@echo "TOYBOX			= ${TOYBOX}"
+	@echo "TOYBOXURL		= ${TOYBOXURL}"
+	@echo "DASHVER			= ${DASHVER}"
+	@echo "DASH			= ${DASH}"
+	@echo "DASHURL			= ${DASHURL}"
+#	@echo "LTPVER			= ${LTPVER}"
+#	@echo "LTP			= ${LTP}"
+#	@echo "LTPURL			= ${LTPURL}"
+
 ${CPIO}: toybox dash 
 	@rm -rf ${BUILDFSDIR}
 	@mkdir -p $(addprefix ${BUILDFSDIR}/,bin sys dev proc tmp usr/bin)
@@ -55,8 +70,8 @@ ${CPIO}: toybox dash
 #	@(cd ${BUILDDIR}/${LTP} && make install)
 
 
-initramfs: ${TARGET}
-${TARGET}: ${CPIO}
+initramfs: ${INITRAMFS}
+${INITRAMFS}: ${CPIO}
 	@cat $< | gzip -9c > $@
 	@echo "Created $@: Done."
 

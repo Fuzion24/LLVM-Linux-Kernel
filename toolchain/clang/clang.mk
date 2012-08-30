@@ -67,6 +67,19 @@ COMPILERRT_BRANCH = "master"
 #LLVM_OPTIMIZED	= ""
 LLVM_OPTIMIZED	= --enable-optimized --enable-assertions
 
+SETTINGS_TARGETS+= llvm-settings
+
+llvm-settings:
+	@echo "# LLVM settings"
+	@echo "LLVM_GIT		= ${LLVM_GIT}"
+	@echo "LLVM_BRANCH		= ${LLVM_BRANCH}"
+	@echo "LLVM_OPTIMIZED		= ${LLVM_OPTIMIZED}"
+	@echo "# Clang settings"
+	@echo "CLANG_GIT		= ${CLANG_GIT}"
+	@echo "CLANG_BRANCH		= ${CLANG_BRANCH}"
+	@echo "COMPILERRT_GIT		= ${COMPILERRT_GIT}"
+	@echo "COMPILERRT_BRANCH	= ${COMPILERRT_BRANCH}"
+
 llvm-fetch: ${LLVMSTATE}/llvm-fetch
 ${LLVMSTATE}/llvm-fetch:
 	@$(call banner, "Fetching LLVM...")
