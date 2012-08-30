@@ -32,6 +32,8 @@ toplevel-help:
 	@echo "Usage: Go into target directory ( cd targets/<target> ) and execute make there."
 	@echo
 	@for DIR in targets/*; do echo "* cd $$DIR;	make help" ; done
+	@echo
+	@echo "* make build-dep	- Make sure packaged build-dependencies are installed"
 
 mrproper:
 	( cd targets/vexpress ; make mrproper )
@@ -43,12 +45,18 @@ TARGETS		+= build-dep install-build-dep
 HELP_TARGETS	+= toplevel-help
 include common.mk
 
-DEBDEP = build-essential cmake git kpartx linaro-image-tools patch quilt rsync subversion zlib1g-dev
-RPMDEP = cmake gcc git kpartx patch quilt rsync subversion zlib-devel
+DEBDEP		= build-essential cmake git kpartx libglib2.0-dev patch quilt rsync subversion zlib1g-dev
+DEBDEP_32	= libc6:i386 libncurses5:i386
+DEBDEP_EXTRAS	= linaro-image-tools
+debdep		= [ `dpkg -l $(1) | grep -c '^[pu]'` -eq 0 ] || ( echo "$(2)"; echo "  sudo apt-get install $(1)"; false )
+
+RPMDEP		= cmake gcc git kpartx patch quilt rsync subversion zlib-devel
 
 build-dep:
 	@if [ -f /etc/debian_version ] ; then \
-		[ `dpkg -l $(DEBDEP) | grep -c '^[pu]'` -eq 0 ] || ( echo "sudo apt-get install $(DEBDEP)"; false ) \
+		$(call debdep,${DEBDEP},You must install...) ; \
+		[ `uname -p | grep -c 64` -eq 0 ] || $(call debdep,${DEBDEP_32},You likely need to install...) ; \
+		$(call debdep,${DEBDEP_EXTRAS},Not necessary, but you may want...) || true ; \
 	else \
 		rpm -q $(RPMDEP) >/dev/null 2>&1 || ( echo "sudo yum install $(RPMDEP)"; false ) \
 	fi
