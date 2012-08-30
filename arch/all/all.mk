@@ -196,15 +196,19 @@ patch-dry-run2:
 
 kernel-reset: state/kernel-fetch
 	(cd ${KERNELDIR} && git reset --hard HEAD && git clean -d -f)
+	@rm -f $(addprefix ${TARGETDIR}/state/,kernel-configure kernel-patch kernel-build )
 
 kernel-gcc-reset: state/kernel-gcc-fetch
 	(cd ${KERNELGCC} && git reset --hard HEAD && git clean -d -f)
+	@rm -f $(addprefix ${TARGETDIR}/state/,kernel-gcc-configure kernel-gcc-patch kernel-gcc-build)
 
 kernel-mrproper: state/kernel-fetch
 	(cd ${KERNELDIR} && make mrproper)
+	@rm -f $(addprefix ${TARGETDIR}/state/,kernel-build)
 
 kernel-gcc-mrproper: state/kernel-gcc-fetch
 	(cd ${KERNELGCC} && make mrproper)
+	@rm -f $(addprefix ${TARGETDIR}/state/,kernel-gcc-build)
 
 kernel-clean-tmp:
 	@rm -f $(addprefix ${TARGETDIR}/state/,kernel-patch kernel-configure kernel-build)
