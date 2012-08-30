@@ -74,6 +74,7 @@ list-settings:
 
 list-versions:
 	@cmake --version
+	@gcc --version | head -1
 	@git --version
 	@make --version | head -1
 	@echo "quilt version `quilt --version`"
