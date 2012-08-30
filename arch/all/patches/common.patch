@@ -36,7 +36,7 @@ index d897278..f09c26d 100644
  	/bin/echo -e "$(1)" | $(CC) $(KBUILD_AFLAGS) -c -xassembler -o "$$TMP" -,$(2),$(3))
  
 +# Test for clang
-+ifeq ($(shell $(CC) --version | grep "clang version" | wc -l), 1)
++ifeq ($(shell $(CC) -v 2>/dev/null | grep "clang version" | wc -l), 1)
 +
  # cc-option
  # Usage: cflags-y += $(call cc-option,-march=winchip-c6,-march=i586)
