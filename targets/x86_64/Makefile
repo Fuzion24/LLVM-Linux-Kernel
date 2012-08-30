@@ -33,7 +33,7 @@ KERNEL_TAG = v3.3
 #GDB_OPTS	= -gdb tcp::1234 -s -S
 GDB_OPTS	=
 
-all: prep kernel-localpatch kernel-localscripts kernel-build
+all: prep kernel-build
 
 include ${TOPDIR}/common.mk
 include ${ARCHDIR}/x86_64/x86_64.mk
@@ -49,24 +49,11 @@ state/prep:
 clean: qemu-clean kernel-clean clang-clean llvm-clean initramfs-clean
 
 # do a real wipe
-mrproper: clean kernel-clean kernel-localpatch-clean
+mrproper: clean kernel-clean
 	@rm -rf ${LOGDIR}/*
 	( cd ${KERNELDIR} && make mrproper )
-	rm -f state/kernel-localpatch state/kernel-build state/kernel-configure
+	rm -f state/kernel-build state/kernel-configure
 
 test: ${QEMUSTATE}/qemu-build initramfs state/kernel-build
 	@$(call qemu,${BOARD},${KERNELDIR},768,/dev/ram0,init=/init,-initrd initramfs.img)
-
-# workarounds
-kernel-localpatch: state/kernel-fetch state/kernel-patch state/kernel-localpatch
-state/kernel-localpatch:
-	( cd ${KERNELDIR} && patch -p1 -F10 -l -i ${TARGETDIR}/patches/2.patch )
-	( cp ${TARGETDIR}/patches/dragux.ppm ${KERNELDIR}/drivers/video/logo/logo_linux_clut224.ppm )
-	$(call state,$@)
-
-kernel-localpatch-clean:
-	rm -f state/kernel-localpatch
-
-kernel-localscripts: state/kernel-fetch
-	@(cd ${KERNELDIR} && make defconfig scripts)
 
