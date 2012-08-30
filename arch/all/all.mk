@@ -126,18 +126,24 @@ endif
 kernel-copy: state/kernel-copy
 state/kernel-copy: state/kernel-fetch
 	@$(call banner, "Copying kernel...")
-	[ -d ${KERNELCOPY}/.git ] || git clone ${KERNELDIR} -b ${KERNEL_BRANCH} ${KERNELCOPY}
+	[ -d ${KERNELCOPY}/.git ] || git clone ${KERNELDIR} ${KERNELCOPY}
 ifneq "${KERNEL_TAG}" ""
 	( cd ${KERNELDIR} && git checkout ${KERNEL_TAG} )
+endif
+ifneq "${KERNEL_BRANCH}" ""
+	( cd ${KERNELDIR} && git checkout -B ${KERNEL_BRANCH} )
 endif
 	$(call state,$@)
 
 kernel-gcc-fetch: state/kernel-gcc-fetch
 state/kernel-gcc-fetch: state/kernel-fetch
 	@$(call banner, "Fetching kernel...")
-	[ -d ${KERNELGCC}/.git ] || git clone ${KERNELDIR} -b ${KERNEL_BRANCH} ${KERNELGCC}
+	[ -d ${KERNELGCC}/.git ] || git clone ${KERNELDIR} ${KERNELGCC}
 ifneq "${KERNEL_TAG}" ""
 	( cd ${KERNELDIR} && git checkout ${KERNEL_TAG} )
+endif
+ifneq "${KERNEL_BRANCH}" ""
+	( cd ${KERNELDIR} && git checkout -B ${KERNEL_BRANCH} )
 endif
 	$(call state,$@,kernel-gcc-patch)
 
