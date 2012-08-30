@@ -36,6 +36,7 @@ QEMU_TARGETS	= qemu qemu-fetch qemu-configure qemu-build qemu-clean qemu-sync qe
 
 TARGETS			+= ${QEMU_TARGETS}
 SETTINGS_TARGETS	+= qemu-settings
+FETCH_TARGETS		+= qemu-fetch
 SYNC_TARGETS		+= qemu-sync
 CLEAN_TARGETS		+= qemu-clean
 PATCH_APPLIED_TARGETS	+= qemu-patch-applied

@@ -33,6 +33,8 @@ ARCH_ARM_PATCHES= ${ARCH_ARM_DIR}/patches
 ARCH_ARM_TMPDIR	= ${ARCH_ARM_DIR}/toolchain/tmp
 TMPDIRS		+= ${ARCH_ARM_TMPDIR}
 
+FETCH_TARGETS	+= arm-cc
+
 # Configure the requested ARM cross compiler
 # Sets CROSS_GCC, PATH, HOST, HOST_TRIPLE
 # and state/arm-cc

@@ -30,6 +30,7 @@ LTPINSTALLDIR	= ${TOPLTPINSTALLDIR}/opt/ltp
 LTPBUILDDIR	= ${LTPSRCDIR}/ltp
 LTPSTATE	= ${LTPDIR}/state
 LTPSCRIPTS	= ${LTPDIR}/scripts
+FETCH_TARGETS	+= ltp-fetch
 SYNC_TARGETS	+= ltp-sync
 
 LTP_TARGETS	= ltp-fetch ltp-configure ltp-build ltp-clean ltp-sync ltp-mrproper ltp-clean

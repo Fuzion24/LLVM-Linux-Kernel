@@ -29,7 +29,8 @@ TOOLSDIR	= ${TOPDIR}/tools
 ARCHDIR		= ${TOPDIR}/arch
 TESTDIR		= ${TOPDIR}/test
 
-COMMON_TARGETS	= list-jobs list-targets list-patch-applied list-path list-versions clean-all sync-all tmp-mrproper
+COMMON_TARGETS	= list-jobs list-targets list-patch-applied list-path list-versions \
+			clean-all fetch-all sync-all tmp-mrproper
 TARGETS		+= ${COMMON_TARGETS}
 .PHONY:		${COMMON_TARGETS}
 
@@ -82,6 +83,9 @@ list-versions:
 
 clean-all:
 	${MAKE} ${CLEAN_TARGETS}
+
+fetch-all:
+	${MAKE} ${FETCH_TARGETS}
 
 sync-all:
 	${MAKE} ${SYNC_TARGETS}
