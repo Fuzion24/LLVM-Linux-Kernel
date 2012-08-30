@@ -25,7 +25,7 @@
 # Use clang by default
 USECLANG=${USECLANG:-1}
 DRYRUN=${DRYRUN:+echo}
-V=${V:+V=1}
+#V=${V:+V=1}
 export PATH=`echo $PATH | sed -E 's/(.*?) :(.*)/\2\1/g; s/(.*?) :(.*)/\2\1/g; s/(.*?) :(.*)/\2\1/g'`
 
 JOBS=${JOBS:-`getconf _NPROCESSORS_ONLN`}
@@ -53,7 +53,7 @@ fi
 if [ -n "$CHECKERDIR" ] ; then
 	mkdir -p "$CHECKERDIR"
 	CHECKER='scan-build -v -o "'$CHECKERDIR'" --use-cc="'${CC_FOR_BUILD/ */}'"'
-	V="V=1"
+#	V="V=1"
 fi
 
 RUNMAKE="make \
@@ -64,5 +64,5 @@ echo "export PATH=$PATH"
 [ -n "$DRYRUN" ] || set -x
 $DRYRUN $CHECKER $RUNMAKE $V CC="$CC_FOR_BUILD" $PARALLEL \
 	|| ( echo "********************************************************************************" \
-	&& $RUNMAKE V=1 CC="$CC_FOR_BUILD" )
+	&& $RUNMAKE CC="$CC_FOR_BUILD" )
 [ -z "$DRYRUN" ] || exit 1
