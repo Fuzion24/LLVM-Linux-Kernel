@@ -34,6 +34,7 @@ all: bailout_remove prep kernel-build
 
 include ${TOPDIR}/common.mk
 #include ${ARCHDIR}/arm/arm.mk
+include ${CONFIG}
 
 bailout_remove:
 	@exit 1

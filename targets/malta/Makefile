@@ -32,6 +32,7 @@ all: prep kernel-build
 
 include ${TOPDIR}/common.mk
 include ${ARCHDIR}/mips/mips.mk
+include ${CONFIG}
 
 prep: state/prep
 state/prep:

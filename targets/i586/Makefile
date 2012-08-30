@@ -37,6 +37,7 @@ all: prep kernel-build
 
 include ${TOPDIR}/common.mk
 include ${ARCHDIR}/i586/i586.mk
+include ${CONFIG}
 
 TARGETS+= clean mrproper test test2
 .PHONY: test test2 fetch-initrd prep clean mrproper

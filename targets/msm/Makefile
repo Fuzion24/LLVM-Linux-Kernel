@@ -40,6 +40,7 @@ all: prep kernel-build
 
 include ${TOPDIR}/common.mk
 include ${ARCHDIR}/arm/arm.mk
+include ${CONFIG}
 
 TARGETS+= check-dups kernel-autopatch clean mrproper
 .PHONY: kernel-copy clean mrproper
