@@ -49,7 +49,7 @@ if [ $USECLANG -eq "1" ]; then
 	export PATH="${INSTALLDIR}/bin:${PATH}"
 	export CROSS_COMPILE=${HOST}-
 
-	export CLANGFLAGS="-march=armv7-a -mfloat-abi=softfp -mfpu=neon -fno-builtin ${EXTRAFLAGS}"
+	export CLANGFLAGS="-march=armv7-a -mfloat-abi=softfp -mfpu=neon -fno-builtin -Qunused-arguments ${EXTRAFLAGS}"
 	export CC_FOR_BUILD="${INSTALLDIR}/bin/clang -ccc-host-triple ${HOST_TRIPLE} -ccc-gcc-name ${HOST}-gcc ${CLANGFLAGS}"
 fi
 
