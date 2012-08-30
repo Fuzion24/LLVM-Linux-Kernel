@@ -118,6 +118,7 @@ index d2b366c..039e0b4 100644
 +warning-1 += $(call cc-option, -Wunused-value)
  
  warning-2 := -Waggregate-return
+
 diff --git a/include/asm-generic/cmpxchg-local.h b/include/asm-generic/cmpxchg-local.h
 index 2533fdd..caea127 100644
 --- a/include/asm-generic/cmpxchg-local.h
