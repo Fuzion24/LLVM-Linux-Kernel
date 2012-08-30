@@ -31,7 +31,7 @@ clean: toplevel-help
 toplevel-help:
 	@echo "Usage: Go into target directory ( cd targets/<target> ) and execute make there."
 	@echo
-	@for DIR in targets/*; do echo "* cd targets/$$DIR;	make help" ; done
+	@for DIR in targets/*; do echo "* cd $$DIR;	make help" ; done
 
 mrproper:
 	( cd targets/vexpress ; make mrproper )
