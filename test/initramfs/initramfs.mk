@@ -45,7 +45,12 @@ LTPURL		= http://prdownloads.sourceforge.net/ltp/${LTP}.bz2?download
 
 GCC		= gcc
 
+HELP_TARGETS	+= initramfs-help
 SETTINGS_TARGETS+= initramfs-settings
+
+initramfs-help:
+	@echo
+	@echo "* make initramfs-[build,clean]"
 
 initramfs-settings:
 	@echo "# initramfs settings"
@@ -70,7 +75,7 @@ ${CPIO}: toybox dash
 #	@(cd ${BUILDDIR}/${LTP} && make install)
 
 
-initramfs: ${INITRAMFS}
+initramfs initramfs-build: ${INITRAMFS}
 ${INITRAMFS}: ${CPIO}
 	@cat $< | gzip -9c > $@
 	@echo "Created $@: Done."

@@ -45,12 +45,6 @@ BOARD	= ${NAME}-a9
 
 NET	= -net nic,macaddr=52:54:00:12:34:57
 
-include ${TOPDIR}/common.mk
-include ${ARCHDIR}/arm/arm.mk
-include ${TARGETDIR}/vexpress-linaro.mk
-include ${TARGETDIR}/vexpress-ltp.mk
-include ${CONFIG}
-
 BUILDBOT_PREBUILT_URL	= http://buildbot.llvm.linuxfoundation.org/prebuilt/arm/${NAME}
 get_prebuilt		= mkdir -p $(dir ${1}) && wget -P $(dir ${1}) -c ${BUILDBOT_PREBUILT_URL}/$(notdir ${1})
 
@@ -58,34 +52,32 @@ VEXPRESS_TARGETS	= test test2 test3 \
 			test-boot-poweroff test-gcc-boot-poweroff \
 			clean mrproper
 TARGETS			+= ${VEXPRESS_TARGETS}
+HELP_TARGETS		+= vexpress-help
 .PHONY:			${VEXPRESS_TARGETS}
 
-help-vexpress:
+include ${TARGETDIR}/vexpress-linaro.mk
+include ${TARGETDIR}/vexpress-ltp.mk
+include ${TOPDIR}/common.mk
+include ${ARCHDIR}/arm/arm.mk
+include ${CONFIG}
+
+vexpress-help:
 	@echo "targets/vexpress has these options:"
-	@echo ""
-	@echo "* make test          - simple boot to rootfs (make test-[gcc-]boot-poweroff *1)"
-	@echo "* make test2         - bsd userspace with toybox"
-	@echo "* make test3         - linaro/ubuntu rootfs"
-	@echo ""
+	@echo
+	@echo "* make test-boot-poweroff	- test boot clang built kernel, then power off after init runs"
+	@echo "* make test-gcc-boot-poweroff	- test boot gcc built kernel, then power off after init runs"
+	@echo
+	@echo "* make test		- simple boot to rootfs (make test-[gcc-]boot-poweroff *1)"
+	@echo "* make test2		- bsd userspace with toybox"
+	@echo "* make test3		- linaro/ubuntu rootfs"
+	@echo
 	@echo " Note: You currently have to do a 'killall qemu-system-arm' from another terminal"
 	@echo "       to exit from the above tests."
-	@echo ""
-	@echo "* make test-boot-poweroff      - test boot clang built kernel, then power off after init runs"
-	@echo "* make test-gcc-boot-poweroff  - test boot gcc built kernel, then power off after init runs"
-	@echo ""
-	@echo "* make kernels       - build kernel with clang and gcc"
-	@echo "* make [llvm,clang,qemu,kernel]-build"
-	@echo "                     - build [llvm,clang,qemu,kernel]"
-	@echo "* make [llvm,clang,qemu,kernel]-sync"
-	@echo "                     - sync repos [llvm,clang,qemu,kernel]"
-	@echo "* make sync-all      - sync all repos"
-	@echo ""
+	@echo
 	@echo "* make patch-update"
-	@echo ""
-	@echo "* make clean         - Remove most built files"
-	@echo "* make mrproper      - Remove all downloaded and built files"
-
-help: help-vexpress help-vexpress-linaro help-vexpress-ltp
+	@echo
+	@echo "* make clean		- Remove most built files"
+	@echo "* make mrproper		- Remove all downloaded and built files"
 
 prep: state/prep
 state/prep:

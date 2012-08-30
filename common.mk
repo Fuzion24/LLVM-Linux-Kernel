@@ -29,9 +29,10 @@ TOOLSDIR	= ${TOPDIR}/tools
 ARCHDIR		= ${TOPDIR}/arch
 TESTDIR		= ${TOPDIR}/test
 
-COMMON_TARGETS	= list-jobs list-targets list-patch-applied list-path list-versions \
+COMMON_TARGETS	= list-config list-jobs list-targets list-patch-applied list-path list-versions \
 			clean-all fetch-all sync-all tmp-mrproper
 TARGETS		+= ${COMMON_TARGETS}
+HELP_TARGETS	+= common-help
 .PHONY:		${COMMON_TARGETS}
 
 seperator = "---------------------------------------------------------------------"
@@ -51,6 +52,21 @@ ifeq "${JOBS}" ""
   endif
 endif
 
+common-help:
+	@echo
+	@echo "* make clean-all	- clean all code"
+	@echo "* make fetch-all	- fetch all repos"
+	@echo "* make sync-all		- sync all repos"
+	@echo
+	@echo "* make list-config	- List make variables you can specify in the CONFIG files"
+	@echo "* make list-jobs	- List number of parallel build jobs"
+	@echo "* make list-targets	- List all build targets"
+	@echo "* make list-patch-applied - List all applied patches"
+	@echo "* make list-path	- List the search path used by the Makefiles"
+	@echo "* make list-versions	- List the version of all relevant software"
+	@echo
+	@echo "* make CONFIG=<file> ... - Choose configuration file(s) to use"
+
 list-jobs:
 	@echo "-j${JOBS}"
 
@@ -59,6 +75,9 @@ include ${TOOLCHAIN}/toolchain.mk
 
 tmp-mrproper:
 	@for t in ${TMPDIRS}; do rm -rf $$t/*; done
+
+help:
+	@${MAKE} --silent ${HELP_TARGETS}
 
 list-targets:
 	@echo "List of available make targets:"
@@ -70,7 +89,7 @@ list-patch-applied:
 list-path:
 	@echo ${PATH}
 
-list-settings:
+list-settings list-config:
 	@${MAKE} --silent ${SETTINGS_TARGETS}
 
 list-versions:

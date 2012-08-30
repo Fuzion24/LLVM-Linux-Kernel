@@ -27,13 +27,14 @@
 
 VEXPRESS_LTP_TARGETS	= test3-ltp test3-gcc-ltp test3-all-ltp
 TARGETS			+= ${VEXPRESS_LTP_TARGETS}
+HELP_TARGETS		+= vexpress-ltp-help
 .PHONY:			${VEXPRESS_LTP_TARGETS}
 
-help-vexpress-ltp:
+vexpress-ltp-help:
 	@echo ""
-	@echo "* make test3-ltp     - linaro/ubuntu rootfs starting LTP, kernel built with clang"
-	@echo "* make test3-gcc-ltp - linaro/ubuntu rootfs starting LTP, kernel built with gcc"
-	@echo "* make test3-all-ltp - linaro/ubuntu rootfs starting LTP, for all built kernels"
+	@echo "* make test3-ltp	- linaro/ubuntu rootfs starting LTP, kernel built with clang"
+	@echo "* make test3-gcc-ltp	- linaro/ubuntu rootfs starting LTP, kernel built with gcc"
+	@echo "* make test3-all-ltp	- linaro/ubuntu rootfs starting LTP, for all built kernels"
 
 #LTPTESTS = fcntl-locktests filecaps fs ipc mm pipes pty quickhit sched syscalls timers
 LTPTESTS = ltplite

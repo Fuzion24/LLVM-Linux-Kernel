@@ -27,26 +27,11 @@ TOPDIR=${CURDIR}
 all: help
 .PHONY: mrproper
 
-clean: help
-help:
+clean: toplevel-help
+toplevel-help:
 	@echo "Usage: Go into target directory ( cd targets/<target> ) and execute make there."
-	@echo "       Valid targets:"
-	@echo "       * vexpress  (make <all|test|test2|test3|clean|mrproper>)"
-	@echo "       * msm       (make <all|clean|mrproper>)"
-	@echo "       * hexagon   (make <all|clean|mrproper>)"
-	@echo "       * ar71xx    (make <all|clean|mrproper>)"
-	@echo ""
-	@echo "       E.g.: cd targets/vexpress ; make help"
-	@echo ""
-	@echo "       "
-	@echo "       Cleanup with:"
-	@echo "         make mrproper "
-	@echo ""
-	@echo "       Options:  make <option> [target]"
-	@echo "       * BUILDMODE=[DEFAULT*|BOT]"
-	@echo "         (for buildbot)"
-	@echo "       * GDBON=[0*|1]  - enable GDB on qemu-system-arm"
-	@exit 0
+	@echo
+	@for DIR in targets/*; do echo "* cd targets/$$DIR;	make help" ; done
 
 mrproper:
 	( cd targets/vexpress ; make mrproper )
@@ -54,7 +39,8 @@ mrproper:
 	( cd targets/hexagon ; make mrproper )
 	( cd targets/ar71xx ; make mrproper )
 
-TARGETS += build-dep install-build-dep
+TARGETS		+= build-dep install-build-dep
+HELP_TARGETS	+= toplevel-help
 include common.mk
 
 DEBDEP = build-essential cmake git kpartx linaro-image-tools patch quilt rsync subversion zlib1g-dev

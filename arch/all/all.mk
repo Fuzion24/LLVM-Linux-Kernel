@@ -89,14 +89,21 @@ KERNEL_TARGETS_CLEAN	= kernel-clean kernel-gcc-clean tmp-clean
 KERNEL_TARGETS_VERSION	= kernel-version kernel-gcc-version
 
 TARGETS			+= ${KERNEL_TARGETS_CLANG} ${KERNEL_TARGETS_GCC} ${KERNEL_TARGETS_APPLIED} ${KERNEL_TARGETS_CLEAN}
+CLEAN_TARGETS		+= ${KERNEL_TARGETS_CLEAN}
 FETCH_TARGETS		+= kernel-fetch kernel-gcc-fetch
+HELP_TARGETS		+= kernel-help
+PATCH_APPLIED_TARGETS	+= ${KERNEL_TARGETS_APPLIED}
 SETTINGS_TARGETS	+= kernel-settings
 SYNC_TARGETS		+= kernels-sync
-PATCH_APPLIED_TARGETS	+= ${KERNEL_TARGETS_APPLIED}
-CLEAN_TARGETS		+= ${KERNEL_TARGETS_CLEAN}
 VERSION_TARGETS		+= ${KERNEL_TARGETS_VERSION}
 
 .PHONY:			${KERNEL_TARGETS_CLANG} ${KERNEL_TARGETS_GCC} ${KERNEL_TARGETS_APPLIED} ${KERNEL_TARGETS_CLEAN} ${KERNEL_TARGETS_VERSION}
+
+kernel-help:
+	@echo
+	@echo "* make kernel-[fetch,patch,configure,build,sync,clean]"
+	@echo "* make kernel-gcc-[fetch,patch,configure,build,sync,clean]"
+	@echo "* make kernels		- build kernel with both clang and gcc"
 
 kernel-settings:
 	@echo "# Kernel settings"

@@ -51,14 +51,11 @@ include ${ARCHDIR}/arm/toolchain/codesourcery/codesourcery.mk
 endif
 endif
 
-SETTINGS_TARGETS	+= arm-settings
-
-arm-settings:
-	@echo "# ARM settings"
-	@echo "CROSS_ARM_TOOLCHAIN	= ${CROSS_ARM_TOOLCHAIN}"
 
 KERNEL_PATCHES	+= $(call add_patches,${ARCH_ARM_PATCHES})
 
+HELP_TARGETS	+= arm-help
+SETTINGS_TARGETS+= arm-settings
 VERSION_TARGETS	+= arm-cc-version
 
 ARCH		= arm
@@ -73,6 +70,15 @@ KERNEL_SIZE_ARTIFACTS	= arch/arm/boot/zImage vmlinux*
 
 KERNELOPTS	= console=earlycon console=ttyAMA0,38400n8 earlyprintk
 
-
 # ${1}=Machine_type ${2}=kerneldir ${3}=RAM ${4}=rootfs ${5}=Kernel_opts ${6}=QEMU_opts
 qemu = $(call runqemu,${QEMUBINDIR}/qemu-system-arm,${1},${2}/arch/arm/boot/zImage,${3},${4},${KERNELOPTS} ${5},${QEMUOPTS} ${6})
+
+arm-help:
+	@echo
+	@echo "* make CROSS_ARM_TOOLCHAIN=[codesourcery,linaro,android] ..."
+	@echo "			- Choose the gcc cross toolchain you want to use"
+
+arm-settings:
+	@echo "# ARM settings"
+	@echo "CROSS_ARM_TOOLCHAIN	= ${CROSS_ARM_TOOLCHAIN}"
+

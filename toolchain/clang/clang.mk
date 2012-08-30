@@ -68,7 +68,13 @@ COMPILERRT_BRANCH = "master"
 #LLVM_OPTIMIZED	= ""
 LLVM_OPTIMIZED	= --enable-optimized --enable-assertions
 
+HELP_TARGETS	+= llvm-help
 SETTINGS_TARGETS+= llvm-settings
+
+llvm-help:
+	@echo
+	@echo "* make llvm-[fetch,configure,build,sync,clean]"
+	@echo "* make clang-[fetch,configure,build,sync,clean]"
 
 llvm-settings:
 	@echo "# LLVM settings"

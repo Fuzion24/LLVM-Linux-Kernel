@@ -33,8 +33,6 @@ get_linaro_prebuilt	= mkdir -p $(dir ${1}) && wget -P $(dir ${1}) -c ${LINAROREL
 TARGETS			+= 
 .PHONY:			
 
-help-vexpress-linaro:
-
 # Build vexpress image
 ${TMPDIR}/sources.txt:
 	wget --quiet $(LINARORELEASEURL)/sources.txt -O $@

@@ -36,9 +36,11 @@ SYNC_TARGETS	+= ltp-sync
 LTP_TARGETS	= ltp-fetch ltp-configure ltp-build ltp-clean ltp-sync ltp-mrproper ltp-clean
 TARGETS		+= ${LTP_TARGETS}
 CLEAN_TARGETS	+= ltp-clean
+HELP_TARGETS	+= ltp-help
 SETTINGS_TARGETS+= ltp-settings
 SYNC_TARGETS	+= ltp-sync
 VERSION_TARGETS	+= ltp-version
+
 .PHONY:		${LTP_TARGETS}
 
 LTPCVS=":pserver:anonymous@ltp.cvs.sourceforge.net:/cvsroot/ltp"
@@ -50,15 +52,19 @@ LTPSF_URI=http://downloads.sourceforge.net/project/ltp/LTP%20Source/ltp-${LTPSF_
 
 ltpstate=mkdir -p ${LTPSTATE}; touch $(1); echo "Entering state $(notdir $(1))"; rm -f ${LTPSTATE}/ltp-$(2)
 
-${LTPTMPDIR}/${LTPSF_TAR}:
-	@mkdir -p $(dir $@)
-	wget -nd -P $(dir $@) -c ${LTPSF_URI}
+ltp-help:
+	@echo
+	@echo "* make ltp-[fetch,configure,build,sync,clean]"
 
 ltp-settings:
 	@echo "# LTP settings"
 	@echo "LTPSF_RELEASE		= ${LTPSF_RELEASE}"
 	@echo "LTPSF_TAR		= ${LTPSF_TAR}"
 	@echo "LTPSF_URI		= ${LTPSF_URI}"
+
+${LTPTMPDIR}/${LTPSF_TAR}:
+	@mkdir -p $(dir $@)
+	wget -nd -P $(dir $@) -c ${LTPSF_URI}
 
 ltp-fetch: ltp-sf
 ltp-sf: ${LTPSTATE}/ltp-fetch
