@@ -33,6 +33,9 @@ ARCH_ARM_PATCHES= ${ARCH_ARM_DIR}/patches
 ARCH_ARM_TMPDIR	= ${ARCH_ARM_DIR}/toolchain/tmp
 TMPDIRS		+= ${ARCH_ARM_TMPDIR}
 
+ARCH_ARM_TOOLCHAIN = ${ARCH_ARM_DIR}/toolchain
+ARCH_ARM_TOOLCHAIN_STATE = ${ARCH_ARM_TOOLCHAIN}/state
+
 FETCH_TARGETS	+= arm-cc
 
 # Configure the requested ARM cross compiler
@@ -42,15 +45,14 @@ FETCH_TARGETS	+= arm-cc
 # compiler being used. These files must define
 # arm-cc which will be a build dep for ARM
 ifeq (${CROSS_ARM_TOOLCHAIN},android)
-include ${ARCHDIR}/arm/toolchain/android/android.mk
+include ${ARCH_ARM_TOOLCHAIN}/android/android.mk
 else
 ifeq (${CROSS_ARM_TOOLCHAIN},linaro)
-include ${ARCHDIR}/arm/toolchain/linaro/linaro.mk
+include ${ARCH_ARM_TOOLCHAIN}/linaro/linaro.mk
 else
-include ${ARCHDIR}/arm/toolchain/codesourcery/codesourcery.mk
+include ${ARCH_ARM_TOOLCHAIN}/codesourcery/codesourcery.mk
 endif
 endif
-
 
 KERNEL_PATCHES	+= $(call add_patches,${ARCH_ARM_PATCHES})
 

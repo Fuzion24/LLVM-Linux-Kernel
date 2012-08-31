@@ -29,10 +29,11 @@ LINARO_VER_MONTH	= 2012.07
 LINARO_VERSION		= ${LINARO_VER_MONTH}-20120720
 LINARO_CC_URL		=  https://launchpad.net/linaro-toolchain-binaries/trunk/${LINARO_VER_MONTH}/+download/gcc-linaro-arm-linux-gnueabihf-${LINARO_VERSION}_linux.tar.bz2
 LINARO_CC_NAME		=  gcc-linaro-arm-linux-gnueabihf-${LINARO_VERSION}_linux
-LINARO_TMPDIR		= ${ARCH_ARM_DIR}/toolchain/linaro/tmp
+LINARO_DIR		= ${ARCH_ARM_TOOLCHAIN}/linaro
+LINARO_TMPDIR		= ${LINARO_DIR}/tmp
 
 LINARO_CC_TAR		= ${notdir ${LINARO_CC_URL}}
-LINARO_CC_DIR		= ${ARCH_ARM_DIR}/toolchain/linaro/${LINARO_CC_NAME}
+LINARO_CC_DIR		= ${LINARO_DIR}/${LINARO_CC_NAME}
 LINARO_CC_BINDIR	= ${LINARO_CC_DIR}/bin
 
 # Add path so that ${CROSS_COMPILE}${CC} is resolved
@@ -53,17 +54,16 @@ ${LINARO_TMPDIR}/${LINARO_CC_TAR}:
 	wget -c -P ${LINARO_TMPDIR} "${LINARO_CC_URL}"
 
 
-arm-cc: ${ARCH_ARM_DIR}/toolchain/state/linaro-gcc
-linaro-gcc: ${ARCH_ARM_DIR}/toolchain/state/linaro-gcc
-${ARCH_ARM_DIR}/toolchain/state/linaro-gcc: ${LINARO_TMPDIR}/${LINARO_CC_TAR}
+linaro-gcc arm-cc: ${ARCH_ARM_TOOLCHAIN_STATE}/linaro-gcc
+${ARCH_ARM_TOOLCHAIN_STATE}/linaro-gcc: ${LINARO_TMPDIR}/${LINARO_CC_TAR}
 	rm -rf ${LINARO_CC_DIR}
-	tar -x -j -C ${ARCH_ARM_DIR}/toolchain/linaro -f $<
+	tar -x -j -C ${LINARO_DIR} -f $<
 	$(call state,$@)
 
-state/arm-cc: ${ARCH_ARM_DIR}/toolchain/state/linaro-gcc
+state/arm-cc: ${ARCH_ARM_TOOLCHAIN_STATE}/linaro-gcc
 	$(call state,$@)
 
-arm-cc-version: ${ARCH_ARM_DIR}/toolchain/state/linaro-gcc
+arm-cc-version: ${ARCH_ARM_TOOLCHAIN_STATE}/linaro-gcc
 	env
 	@${LINARO_GCC} --version | head -1
 

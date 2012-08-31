@@ -26,10 +26,11 @@
 CSCC_URL	= https://sourcery.mentor.com/GNUToolchain/package8739/public/arm-none-linux-gnueabi/arm-2011.03-41-arm-none-linux-gnueabi-i686-pc-linux-gnu.tar.bz2
 CSCC_NAME	= arm-2011.03
 CSCC_TAR	= ${notdir ${CSCC_URL}}
-CSCC_TMPDIR	= ${ARCH_ARM_DIR}/toolchain/codesourcery/tmp
+CSCC_TOPDIR	= ${ARCH_ARM_DIR}/toolchain/codesourcery
+CSCC_TMPDIR	= ${CSCC_TOPDIR}/tmp
 
 HOST		= arm-none-linux-gnueabi
-CSCC_DIR	= ${ARCH_ARM_DIR}/toolchain/codesourcery/${CSCC_NAME}
+CSCC_DIR	= ${CSCC_TOPDIR}/${CSCC_NAME}
 CSCC_BINDIR	= ${CSCC_DIR}/bin
 HOST_TRIPLE	= arm-none-gnueabi
 COMPILER_PATH	= ${CSCC_DIR}
@@ -45,16 +46,15 @@ ${CSCC_TMPDIR}/${CSCC_TAR}:
 	wget -c -P ${CSCC_TMPDIR} "${CSCC_URL}"
 
 CROSS_GCC=${CSCC_BINDIR}/${CROSS_COMPILE}gcc
-arm-cc: ${ARCH_ARM_DIR}/toolchain/state/codesourcery-gcc
-${ARCH_ARM_DIR}/toolchain/state/codesourcery-gcc: ${CSCC_TMPDIR}/${CSCC_TAR}
-	tar -x -j -C ${ARCH_ARM_DIR}/toolchain/codesourcery -f $<
+codesourcery-gcc arm-cc: ${ARCH_ARM_TOOLCHAIN_STATE}/codesourcery-gcc
+${ARCH_ARM_TOOLCHAIN_STATE}/codesourcery-gcc: ${CSCC_TMPDIR}/${CSCC_TAR}
+	tar -x -j -C ${CSCC_TOPDIR} -f $<
 	$(call state,$@)
 
-state/arm-cc: ${ARCH_ARM_DIR}/toolchain/state/codesourcery-gcc
+state/arm-cc: ${ARCH_ARM_TOOLCHAIN_STATE}/codesourcery-gcc
 	$(call state,$@)
 	
-
-arm-cc-version: ${ARCH_ARM_DIR}/toolchain/state/codesourcery-gcc
+arm-cc-version: ${ARCH_ARM_TOOLCHAIN_STATE}/codesourcery-gcc
 	@${CROSS_GCC} --version | head -1
 
 ${ARCH_ARM_TMPDIR}:
