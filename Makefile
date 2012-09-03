@@ -36,10 +36,7 @@ toplevel-help:
 	@echo "* make build-dep	- Make sure packaged build-dependencies are installed"
 
 mrproper:
-	( cd targets/vexpress ; make mrproper )
-	( cd targets/msm ; make mrproper )
-	( cd targets/hexagon ; make mrproper )
-	( cd targets/ar71xx ; make mrproper )
+	@for DIR in targets/*; do make mrproper || true; done
 
 TARGETS		+= build-dep install-build-dep
 HELP_TARGETS	+= toplevel-help
