@@ -56,9 +56,9 @@ HELP_TARGETS		+= vexpress-help
 .PHONY:			${VEXPRESS_TARGETS}
 
 include ${TARGETDIR}/vexpress-linaro.mk
-include ${TARGETDIR}/vexpress-ltp.mk
 include ${TOPDIR}/common.mk
 include ${ARCHDIR}/arm/arm.mk
+include ${TARGETDIR}/vexpress-ltp.mk
 include ${CONFIG}
 
 vexpress-help:
