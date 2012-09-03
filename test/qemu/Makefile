@@ -34,4 +34,3 @@ warning:
 
 include ${TOPDIR}/common.mk
 include ${TOPDIR}/arch/all/all.mk
-include qemu.mk
