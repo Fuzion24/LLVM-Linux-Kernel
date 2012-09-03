@@ -29,8 +29,8 @@ TOOLSDIR	= ${TOPDIR}/tools
 ARCHDIR		= ${TOPDIR}/arch
 TESTDIR		= ${TOPDIR}/test
 
-COMMON_TARGETS	= list-config list-jobs list-targets list-patch-applied list-path list-versions \
-			clean-all fetch-all sync-all tmp-mrproper
+COMMON_TARGETS	= list-config list-jobs list-targets list-fetch-all list-patch-applied list-path list-versions \
+			clean-all fetch-all mrproper-all raze-all sync-all tmp-mrproper
 TARGETS		+= ${COMMON_TARGETS}
 HELP_TARGETS	+= common-help
 .PHONY:		${COMMON_TARGETS}
@@ -55,12 +55,15 @@ endif
 common-help:
 	@echo
 	@echo "* make clean-all	- clean all code"
-	@echo "* make fetch-all	- fetch all repos"
+	@echo "* make fetch-all	- fetch all repos and external files"
+	@echo "* make mproper-all	- scrub all code (cleaner than clean)"
+	@echo "* make raze-all		- Remove most things not in the llvmlinux repo"
 	@echo "* make sync-all		- sync all repos"
 	@echo
 	@echo "* make list-config	- List make variables you can specify in the CONFIG files"
 	@echo "* make list-jobs	- List number of parallel build jobs"
 	@echo "* make list-targets	- List all build targets"
+	@echo "* make list-fetch-all	- List all things to be downloaded"
 	@echo "* make list-patch-applied - List all applied patches"
 	@echo "* make list-path	- List the search path used by the Makefiles"
 	@echo "* make list-versions	- List the version of all relevant software"
@@ -73,15 +76,15 @@ list-jobs:
 # The order of these includes is important
 include ${TOOLCHAIN}/toolchain.mk
 
-tmp-mrproper:
-	@for t in ${TMPDIRS}; do rm -rf $$t/*; done
-
 help:
 	@${MAKE} --silent ${HELP_TARGETS}
 
 list-targets:
 	@echo "List of available make targets:"
 	@for t in ${TARGETS}; do echo $$t; done | sort -u
+
+list-fetch-all:
+	@for t in ${FETCH_TARGETS}; do echo $$t | sed -e "s|^`pwd`/||"; done
 
 list-patch-applied:
 	${MAKE} ${PATCH_APPLIED_TARGETS}
@@ -101,11 +104,26 @@ list-versions:
 	@${MAKE} ${VERSION_TARGETS} | grep -v ^make
 
 clean-all:
+	@$(call banner,Cleaning everything...)
 	${MAKE} ${CLEAN_TARGETS}
 
 fetch-all:
+	@$(call banner,Fetching external repos...)
 	${MAKE} ${FETCH_TARGETS}
 
+mrproper-all: tmp-mrproper
+	@$(call banner,Scrubbing everything...)
+	${MAKE} ${MRPROPER_TARGETS}
+
+raze-all: tmp-mrproper
+	@$(call banner,Removing everything...)
+	${MAKE} ${RAZE_TARGETS}
+
 sync-all:
+	@$(call banner,Syncing everything...)
 	${MAKE} ${SYNC_TARGETS}
+
+tmp-mrproper:
+	@$(call banner,Scrubbing tmp dirs...)
+	rm -rf $(addsuffix /*,${TMPDIRS})
 

@@ -25,12 +25,12 @@
 # Assumes has been included from ../test.mk
 
 QEMUSRCDIR	= ${QEMUDIR}/src/qemu
-INSTALLDIR	= ${QEMUDIR}/install
+QEMUINSTALLDIR	= ${QEMUDIR}/install
 QEMUBUILDDIR	= ${QEMUDIR}/build/qemu
 QEMUSTATE	= ${QEMUDIR}/state
 QEMUPATCHES	= ${QEMUDIR}/patches
 
-QEMUBINDIR	= ${INSTALLDIR}/bin
+QEMUBINDIR	= ${QEMUINSTALLDIR}/bin
 
 QEMU_TARGETS	= qemu qemu-fetch qemu-configure qemu-build qemu-clean qemu-sync qemu-patch-applied qemu-version
 
@@ -38,7 +38,9 @@ TARGETS			+= ${QEMU_TARGETS}
 CLEAN_TARGETS		+= qemu-clean
 FETCH_TARGETS		+= qemu-fetch
 HELP_TARGETS		+= qemu-help
+MRPROPER_TARGETS	+= qemu-mrproper
 PATCH_APPLIED_TARGETS	+= qemu-patch-applied
+RAZE_TARGETS		+= qemu-raze
 SETTINGS_TARGETS	+= qemu-settings
 SYNC_TARGETS		+= qemu-sync
 VERSION_TARGETS		+= qemu-version
@@ -82,24 +84,30 @@ ${QEMUSTATE}/qemu-configure: ${QEMUSTATE}/qemu-patch
 	(cd ${QEMUBUILDDIR} && ${QEMUSRCDIR}/configure \
 		--target-list=arm-softmmu,mips-softmmu,i386-softmmu,x86_64-softmmu --disable-kvm \
 		--disable-sdl --audio-drv-list="" --audio-card-list="" \
-		--disable-docs --prefix=${INSTALLDIR})
+		--disable-docs --prefix=${QEMUINSTALLDIR})
 	$(call state,$@,qemu-build)
 
 qemu qemu-build: ${QEMUSTATE}/qemu-build
 ${QEMUSTATE}/qemu-build: ${QEMUSTATE}/qemu-configure
 	@$(call banner, "Building QEMU...")
-	@mkdir -p ${INSTALLDIR}
-	(cd ${QEMUBUILDDIR} && make -j${JOBS} install)
+	@mkdir -p ${QEMUINSTALLDIR}
+	make -C ${QEMUBUILDDIR} -j${JOBS} install
 	$(call state,$@)
 	
-qemu-clean: ${QEMUSTATE}/qemu-fetch
+qemu-clean-all:
+	rm -rf ${QEMUBUILDDIR} ${QEMUINSTALLDIR} 
+	rm -f $(addprefix ${QEMUSTATE}/,qemu-patch qemu-configure qemu-build)
+
+qemu-clean qemu-mrproper: qemu-clean-all ${QEMUSTATE}/qemu-fetch
 	-(cd ${QEMUSRCDIR} && [ ! -e patches ] || quilt pop -af)
 	(cd ${QEMUSRCDIR} && git reset --hard HEAD)
-	rm -rf ${QEMUBUILDDIR} 
-	rm -f $(addprefix ${QEMUSTATE}/,qemu-patch qemu-configure qemu-build)
+	
+qemu-raze: qemu-clean-all
+	rm -rf ${QEMUSRCDIR}
+	rm -f ${QEMUSTATE}/qemu-*
 	
 qemu-sync: ${QEMUSTATE}/qemu-fetch
-	@make qemu-clean
+	@${MAKE} qemu-clean
 	(cd ${QEMUSRCDIR} && git checkout ${QEMU_BRANCH} && git pull)
 
 qemu-version: ${QEMUSTATE}/qemu-fetch

@@ -31,6 +31,9 @@ NANOIMG			= ${NANOBOARD}.img
 get_linaro_prebuilt	= mkdir -p $(dir ${1}) && wget -P $(dir ${1}) -c ${LINARORELEASEURL}/$(notdir ${1})
 
 TARGETS			+= 
+CLEAN_TARGETS		+= vexpress-linaro-clean
+MRPROPER_TARGETS	+= vexpress-linaro-mrproper
+RAZE_TARGETS		+= vexpress-linaro-mrproper
 .PHONY:			
 
 # Build vexpress image
@@ -51,10 +54,10 @@ ${NANOIMG}: ${TMPDIR}/board-sources.txt
 		--hwpack-force-yes --image-size 1G --image-file $@ \
 	)
 
-clean-vexpress-linaro:
+vexpress-linaro-clean:
 	rm -f ${NANOIMG}
 
 # do a real wipe
-mrproper-vexpress-linaro: clean-vexpress-linaro
+vexpress-linaro-mrproper: vexpress-linaro-clean
 	rm -f ${TMPDIR}/sources.txt ${TMPDIR}/get-sources.sh ${TMPDIR}/board-sources.txt
 

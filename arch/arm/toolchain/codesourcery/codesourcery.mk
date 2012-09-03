@@ -26,7 +26,7 @@
 CSCC_URL	= https://sourcery.mentor.com/GNUToolchain/package8739/public/arm-none-linux-gnueabi/arm-2011.03-41-arm-none-linux-gnueabi-i686-pc-linux-gnu.tar.bz2
 CSCC_NAME	= arm-2011.03
 CSCC_TAR	= ${notdir ${CSCC_URL}}
-CSCC_TOPDIR	= ${ARCH_ARM_DIR}/toolchain/codesourcery
+CSCC_TOPDIR	= ${ARCH_ARM_TOOLCHAIN}/codesourcery
 CSCC_TMPDIR	= ${CSCC_TOPDIR}/tmp
 
 HOST		= arm-none-linux-gnueabi
@@ -54,6 +54,11 @@ ${ARCH_ARM_TOOLCHAIN_STATE}/codesourcery-gcc: ${CSCC_TMPDIR}/${CSCC_TAR}
 state/arm-cc: ${ARCH_ARM_TOOLCHAIN_STATE}/codesourcery-gcc
 	$(call state,$@)
 	
+codesourcery-gcc-clean arm-cc-clean:
+	@$(call banner,Removing Codesourcery compiler...)
+	@rm -f state/arm-cc ${ARCH_ARM_TOOLCHAIN_STATE}/codesourcery-gcc
+	@rm -rf ${CSCC_DIR} ${CSCC_TMPDIR}
+
 arm-cc-version: ${ARCH_ARM_TOOLCHAIN_STATE}/codesourcery-gcc
 	@${CROSS_GCC} --version | head -1
 

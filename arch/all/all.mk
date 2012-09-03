@@ -92,7 +92,9 @@ TARGETS			+= ${KERNEL_TARGETS_CLANG} ${KERNEL_TARGETS_GCC} ${KERNEL_TARGETS_APPL
 CLEAN_TARGETS		+= ${KERNEL_TARGETS_CLEAN}
 FETCH_TARGETS		+= kernel-fetch kernel-gcc-fetch
 HELP_TARGETS		+= kernel-help
+MRPROPER_TARGETS	+= kernel-clean-noreset kernel-gcc-clean-noreset
 PATCH_APPLIED_TARGETS	+= ${KERNEL_TARGETS_APPLIED}
+RAZE_TARGETS		+= kernel-raze
 SETTINGS_TARGETS	+= kernel-settings
 SYNC_TARGETS		+= kernels-sync
 VERSION_TARGETS		+= ${KERNEL_TARGETS_VERSION}
@@ -128,6 +130,11 @@ ${SHARED_KERNEL}:
 	) || git clone --bare ${MAINLINEURI} $@
 	@grep -q '\[remote "origin"\]' $@/config \
 		|| echo -e "[remote \"origin\"]\n\turl = ${MAINLINEURI}" >> $@/config;
+
+kernel-raze:
+	@$(call banner,Razing kernel)
+	@rm -rf ${SHARED_KERNEL} ${KERNELDIR} ${KERNELCOPY} ${KERNELGCC}
+	@rm -f $(addsuffix /*,${LOGDIR} state ${TMPDIR})
 
 kernel-fetch: state/kernel-fetch
 state/kernel-fetch: ${SHARED_KERNEL}

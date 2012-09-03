@@ -63,6 +63,11 @@ ${ARCH_ARM_TOOLCHAIN_STATE}/linaro-gcc: ${LINARO_TMPDIR}/${LINARO_CC_TAR}
 state/arm-cc: ${ARCH_ARM_TOOLCHAIN_STATE}/linaro-gcc
 	$(call state,$@)
 
+linaro-gcc-clean arm-cc-clean:
+	@$(call banner,Removing Linaro compiler...)
+	@rm -f state/arm-cc ${ARCH_ARM_TOOLCHAIN_STATE}/linaro-gcc
+	@rm -rf ${LINARO_CC_DIR}
+
 arm-cc-version: ${ARCH_ARM_TOOLCHAIN_STATE}/linaro-gcc
 	env
 	@${LINARO_GCC} --version | head -1

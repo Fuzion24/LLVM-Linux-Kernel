@@ -37,6 +37,7 @@ ARCH_ARM_TOOLCHAIN = ${ARCH_ARM_DIR}/toolchain
 ARCH_ARM_TOOLCHAIN_STATE = ${ARCH_ARM_TOOLCHAIN}/state
 
 FETCH_TARGETS	+= arm-cc
+RAZE_TARGETS	+= arm-cc-clean
 
 # Configure the requested ARM cross compiler
 # Sets CROSS_GCC, PATH, HOST, HOST_TRIPLE

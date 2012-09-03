@@ -61,6 +61,11 @@ android-gcc-sync: ${ANDROID_DIR}-gcc
 state/arm-cc: ${ANDROID_DIR}-gcc
 	$(call state,$@)
 
+android-gcc-clean arm-cc-clean:
+	@$(call banner,Removing Android compiler...)
+	@rm -f state/arm-cc ${ARCH_ARM_TOOLCHAIN_STATE}/android-gcc
+	@rm -rf ${LINARO_CC_DIR}
+
 arm-cc-version: ${ANDROID_DIR}-gcc
 	@${ANDROID_GCC} --version | head -1
 

@@ -25,13 +25,15 @@
 
 TARGETS		+= initramfs initramfs-clean
 CLEAN_TARGETS	+= initramfs-clean
+MRPROPER_TARGETS+= initramfs-mrproper
+RAZE_TARGETS	+= initramfs-raze
 
 .PHONY: initramfs-prep initramfs initramfs-clean ltp dash
 
 INITRAMFS	= initramfs.img.gz
-BUILDDIR	= ${TARGETDIR}/initramfs
-BUILDFSDIR	= ${BUILDDIR}/initramfs
-CPIO		= ${BUILDFSDIR}.cpio
+INITBUILDDIR	= ${TARGETDIR}/initramfs
+INITBUILDFSDIR	= ${INITBUILDDIR}/initramfs
+INITCPIO	= ${INITBUILDFSDIR}.cpio
 
 TOYBOXVER	= 0.4.0
 TOYBOX		= toybox-${TOYBOXVER}
@@ -64,50 +66,53 @@ initramfs-settings:
 #	@echo "LTP			= ${LTP}"
 #	@echo "LTPURL			= ${LTPURL}"
 
-${CPIO}: toybox dash 
-	@rm -rf ${BUILDFSDIR}
-	@mkdir -p $(addprefix ${BUILDFSDIR}/,bin sys dev proc tmp usr/bin)
-	@PREFIX=${BUILDFSDIR} make -C ${BUILDDIR}/${TOYBOX} install
-	@make -C ${BUILDDIR}/${DASH} install
-	@ln -sf bin/dash ${BUILDFSDIR}/init
-	@(cd ${BUILDFSDIR} && find . | cpio -H newc -o > ${CPIO})
-#	@cp ${INITRAMFSDIR}/bin/ls ${BUILDFSDIR}/usr/bin
-#	@(cd ${BUILDDIR}/${LTP} && make install)
+${INITCPIO}: toybox dash 
+	@rm -rf ${INITBUILDFSDIR}
+	@mkdir -p $(addprefix ${INITBUILDFSDIR}/,bin sys dev proc tmp usr/bin)
+	@PREFIX=${INITBUILDFSDIR} make -C ${INITBUILDDIR}/${TOYBOX} install
+	@make -C ${INITBUILDDIR}/${DASH} install
+	@ln -sf bin/dash ${INITBUILDFSDIR}/init
+	@(cd ${INITBUILDFSDIR} && find . | cpio -H newc -o > ${INITCPIO})
+#	@cp ${INITRAMFSDIR}/bin/ls ${INITBUILDFSDIR}/usr/bin
+#	@(cd ${INITBUILDDIR}/${LTP} && make install)
 
 
 initramfs initramfs-build: ${INITRAMFS}
-${INITRAMFS}: ${CPIO}
+${INITRAMFS}: ${INITCPIO}
 	@cat $< | gzip -9c > $@
 	@echo "Created $@: Done."
 
 initramfs-clean:
-	rm -rf initramfs.img.gz $(addprefix ${BUILDDIR}/,initramfs initramfs-build ${DASH}* ${TOYBOX}* ${LTP}*)
+	@$(call banner,Clean initramfs...)
+	rm -rf ${INITRAMFS} $(addprefix ${INITBUILDDIR}/,initramfs initramfs-build ${DASH}* ${TOYBOX}* ${LTP}*)
 
-initramfs-mrproper:
-	rm -rf ${BUILDDIR}
+initramfs-mrproper initramfs-raze:
+	@$(call banner,Scrub initramfs...)
+	rm -f ${INITRAMFS}
+	rm -rf ${INITBUILDDIR}
 
-toybox: ${BUILDDIR}/${TOYBOX}/toybox
-${BUILDDIR}/${TOYBOX}/toybox:
-	@wget -P ${BUILDDIR} -c ${TOYBOXURL}
-	@rm -rf ${BUILDDIR}/${TOYBOX}
-	(cd ${BUILDDIR} && tar xjf ${TOYBOX}.tar.bz2)
-	(cd ${BUILDDIR}/${TOYBOX} && CFLAGS="--static" CC=${GCC} CROSS_COMPILE=${CROSS_COMPILE} PREFIX=${BUILDFSDIR} make defconfig toybox)
+toybox: ${INITBUILDDIR}/${TOYBOX}/toybox
+${INITBUILDDIR}/${TOYBOX}/toybox:
+	@wget -P ${INITBUILDDIR} -c ${TOYBOXURL}
+	@rm -rf ${INITBUILDDIR}/${TOYBOX}
+	(cd ${INITBUILDDIR} && tar xjf ${TOYBOX}.tar.bz2)
+	(cd ${INITBUILDDIR}/${TOYBOX} && CFLAGS="--static" CC=${GCC} CROSS_COMPILE=${CROSS_COMPILE} PREFIX=${INITBUILDFSDIR} make defconfig toybox)
 
 # && cd ${TOYBOX} && patch -p1 < ${INITRAMFSDIR}/patches/toybox.patch)
 
-dash: ${BUILDDIR}/${DASH}/src/dash
-${BUILDDIR}/${DASH}/src/dash:
+dash: ${INITBUILDDIR}/${DASH}/src/dash
+${INITBUILDDIR}/${DASH}/src/dash:
 	env
-	@wget -P ${BUILDDIR} -c ${DASHURL}
-	@rm -rf ${BUILDDIR}/${DASH}
-	(cd ${BUILDDIR} && tar xzf ${DASH}.tar.gz)
-	(cd ${BUILDDIR}/${DASH} && ./configure --prefix=${BUILDFSDIR} --host=${HOST})
-	(cd ${BUILDDIR}/${DASH} && make CFLAGS="-static")
+	@wget -P ${INITBUILDDIR} -c ${DASHURL}
+	@rm -rf ${INITBUILDDIR}/${DASH}
+	(cd ${INITBUILDDIR} && tar xzf ${DASH}.tar.gz)
+	(cd ${INITBUILDDIR}/${DASH} && ./configure --prefix=${INITBUILDFSDIR} --host=${HOST})
+	(cd ${INITBUILDDIR}/${DASH} && make CFLAGS="-static")
 
-ltp: ${BUILDDIR}/${LTP}/Version
-${BUILDDIR}/${LTP}/Version:
-	@wget -P ${BUILDDIR} -c ${LTPURL}
-	@rm -rf ${BUILDDIR}/${LTP}
-	(cd ${BUILDDIR} && tar xjf ${LTP}.bz2 && cd ${LTP} && patch -p1 < ${INITRAMFSDIR}/patches/ltp.patch)
-	(cd ${BUILDDIR}/${LTP} && CFLAGS="-D_GNU_SOURCE=1 -std=gnu89" CC=${GCC} CPP="${CPP}" ./configure --prefix=${BUILDFSDIR} --without-expect --without-perl --without-python --host=${HOST})
-	(cd ${BUILDDIR}/${LTP} && make)
+ltp: ${INITBUILDDIR}/${LTP}/Version
+${INITBUILDDIR}/${LTP}/Version:
+	@wget -P ${INITBUILDDIR} -c ${LTPURL}
+	@rm -rf ${INITBUILDDIR}/${LTP}
+	(cd ${INITBUILDDIR} && tar xjf ${LTP}.bz2 && cd ${LTP} && patch -p1 < ${INITRAMFSDIR}/patches/ltp.patch)
+	(cd ${INITBUILDDIR}/${LTP} && CFLAGS="-D_GNU_SOURCE=1 -std=gnu89" CC=${GCC} CPP="${CPP}" ./configure --prefix=${INITBUILDFSDIR} --without-expect --without-perl --without-python --host=${HOST})
+	(cd ${INITBUILDDIR}/${LTP} && make)

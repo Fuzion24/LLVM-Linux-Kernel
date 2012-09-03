@@ -52,7 +52,11 @@ VEXPRESS_TARGETS	= test test2 test3 \
 			test-boot-poweroff test-gcc-boot-poweroff \
 			clean mrproper
 TARGETS			+= ${VEXPRESS_TARGETS}
+CLEAN_TARGETS		+= vexpress-clean
 HELP_TARGETS		+= vexpress-help
+FETCH_TARGETS		+= ${INITRAMIMG} ${VEXPRESS_IMG_GZ}
+MRPROPER_TARGETS	+= vexpress-mrproper
+RAZE_TARGETS		+= vexpress-raze
 .PHONY:			${VEXPRESS_TARGETS}
 
 include ${TARGETDIR}/vexpress-linaro.mk
@@ -91,25 +95,25 @@ state/prep:
 #	tar -xzvf arm-test-0.2.tar.gz
 #	$(call state,$@)
 
-INITRAMFS	= ${TMPDIR}/initramfs.img
-${INITRAMFS}:
+INITRAMIMG	= ${TMPDIR}/initramfs.img
+${INITRAMIMG}:
 	$(call get_prebuilt, $@)
 
 # state/fetch-initrd
-test: state/prep ${QEMUSTATE}/qemu-build state/kernel-build ${INITRAMFS}
-	@$(call qemu,${BOARD},${KERNELDIR},768,/dev/ram0,ramdisk_size=65536 rw,-initrd ${INITRAMFS} -net none)
+test: state/prep ${QEMUSTATE}/qemu-build state/kernel-build ${INITRAMIMG}
+	@$(call qemu,${BOARD},${KERNELDIR},768,/dev/ram0,ramdisk_size=65536 rw,-initrd ${INITRAMIMG} -net none)
 
 # state/fetch-initrd
 test-kill: test-boot-poweroff
-test-boot-poweroff: state/prep state/kernel-build ${QEMUSTATE}/qemu-build ${INITRAMFS}
-	( $(call qemu,${BOARD},${KERNELDIR},256,/dev/ram0,ramdisk_size=65536 rw POWEROFF,-initrd ${INITRAMFS} -net none) \
+test-boot-poweroff: state/prep state/kernel-build ${QEMUSTATE}/qemu-build ${INITRAMIMG}
+	( $(call qemu,${BOARD},${KERNELDIR},256,/dev/ram0,ramdisk_size=65536 rw POWEROFF,-initrd ${INITRAMIMG} -net none) \
 		| tee tmp/qemu_log ) &
 	( sleep 10 && killall -s 9 qemu-system-arm ) || exit 0
 	@grep -a "SUCCESS" tmp/qemu_log 
 
 test-gcc-kill: test-gcc-boot-poweroff
-test-gcc-boot-poweroff: state/prep state/kernel-gcc-build ${QEMUSTATE}/qemu-build ${INITRAMFS}
-	( $(call qemu,${BOARD},${KERNELGCC},256,/dev/ram0,ramdisk_size=65536 rw POWEROFF,-initrd ${INITRAMFS} -net none) \
+test-gcc-boot-poweroff: state/prep state/kernel-gcc-build ${QEMUSTATE}/qemu-build ${INITRAMIMG}
+	( $(call qemu,${BOARD},${KERNELGCC},256,/dev/ram0,ramdisk_size=65536 rw POWEROFF,-initrd ${INITRAMIMG} -net none) \
 		| tee tmp/qemu_gcc_log ) &
 	( sleep 10 && killall -s 9 qemu-system-arm ) || exit 0
 	@grep -a "SUCCESS" tmp/qemu_gcc_log 
@@ -118,11 +122,12 @@ test2: state/prep ${QEMUSTATE}/qemu-build state/kernel-build initramfs
 	@$(call qemu,${BOARD},${KERNELDIR},256,/dev/ram0,init=/bin/init,-initrd initramfs.img.gz)
 
 # Get prebuilt vexpress image
-${TMPDIR}/${NANOIMG}.gz:
+VEXPRESS_IMG_GZ	= ${TMPDIR}/${NANOIMG}.gz
+${VEXPRESS_IMG_GZ}:
 	$(call get_linaro_prebuilt,$@)
 
 VEXPRESS_IMG	= ${TMPDIR}/vexpress.img
-${VEXPRESS_IMG}: ${TMPDIR}/${NANOIMG}.gz
+${VEXPRESS_IMG}: ${VEXPRESS_IMG_GZ}
 	gzip -dc $< > $@
 
 test3: state/prep ${QEMUSTATE}/qemu-build state/kernel-build ${VEXPRESS_IMG}
@@ -136,20 +141,22 @@ patch-update: state/kernel-patch
 	@${TOOLSDIR}/applyfilter.py ${ARCH_ARM_PATCHES}/fix-warnings-arm.patch ${TMPDIR}/fix-warnings-arm.patch ${FILTERFILE}
 	@${TOOLSDIR}/applyfilter.py ${ARCH_ARM_PATCHES}/fix-warnings-arm-unused.patch ${TMPDIR}/fix-warnings-arm-unused.patch ${FILTERFILE}
 
-clean-vexpress:
+vexpress-clean: kernel-clean kernel-gcc-clean
+	@$(call banner,Cleaning Vexpress)
 	rm -f ${VEXPRESS_IMG}
-	rm -f state/kernel-patch
 
-mrproper-vexpress:
-	rm -f ${TMPDIR}/${NANOIMG}.gz
-	-rm -rf arm-test-0.2.tar.gz arm-test
+vexpress-mrproper: vexpress-clean kernel-mrproper kernel-gcc-mrproper
+	@$(call banner,Scrubbing Vexpress)
+	rm -f ${VEXPRESS_IMG} ${VEXPRESS_IMG_GZ}
+#	-rm -rf arm-test-0.2.tar.gz arm-test
 	@rm -rf ${LOGDIR}/*
-	( cd ${KERNELDIR} && make mrproper )
-	-( cd ${KERNELGCC} && make mrproper )
 
-clean: clean-vexpress clean-vexpress-linaro clean-vexpress-ltp \
-	qemu-clean kernel-clean clang-clean llvm-clean initramfs-clean
+vexpress-raze raze: kernel-raze
+	@$(call banner,Razed Vexpress)
 
-mrproper: clean mrproper-vexpress mrproper-vexpress-linaro mrproper-vexpress-ltp \
-	ltp-mrproper tmp-mrproper
+clean: vexpress-clean vexpress-linaro-clean vexpress-ltp-clean kernel-clean
+	@$(call banner,Clean)
+
+mrproper: clean vexpress-mrproper vexpress-linaro-mrproper vexpress-ltp-mrproper kernel-mrproper tmp-mrproper
+	@$(call banner,Very Clean)
 

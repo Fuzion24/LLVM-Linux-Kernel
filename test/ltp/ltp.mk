@@ -22,12 +22,18 @@
 
 # Assumes has been included from ../test.mk
 
+LTPCVS=":pserver:anonymous@ltp.cvs.sourceforge.net:/cvsroot/ltp"
+LTPBRANCH="stable-1.0"
+
+LTPSF_RELEASE=20120614
+LTPSF_TAR=ltp-full-${LTPSF_RELEASE}.bz2
+LTPSF_URI=http://downloads.sourceforge.net/project/ltp/LTP%20Source/ltp-${LTPSF_RELEASE}/${LTPSF_TAR}
+
 LTPTMPDIR	= ${LTPDIR}/tmp
 LTPSRCDIR	= ${LTPDIR}/src
 TOPLTPINSTALLDIR= ${LTPDIR}/install
 LTPINSTALLDIR	= ${TOPLTPINSTALLDIR}/opt/ltp
-#LTPBUILDDIR	= ${LTPDIR}/build/ltp
-LTPBUILDDIR	= ${LTPSRCDIR}/ltp
+LTPBUILDDIR	= ${LTPSRCDIR}/$(basename $(notdir ${LTPSF_TAR}))
 LTPSTATE	= ${LTPDIR}/state
 LTPSCRIPTS	= ${LTPDIR}/scripts
 FETCH_TARGETS	+= ltp-fetch
@@ -37,18 +43,13 @@ LTP_TARGETS	= ltp-fetch ltp-configure ltp-build ltp-clean ltp-sync ltp-mrproper 
 TARGETS		+= ${LTP_TARGETS}
 CLEAN_TARGETS	+= ltp-clean
 HELP_TARGETS	+= ltp-help
+MRPROPER_TARGETS+= ltp-mrproper
+RAZE_TARGETS	+= ltp-raze
 SETTINGS_TARGETS+= ltp-settings
 SYNC_TARGETS	+= ltp-sync
 VERSION_TARGETS	+= ltp-version
 
 .PHONY:		${LTP_TARGETS}
-
-LTPCVS=":pserver:anonymous@ltp.cvs.sourceforge.net:/cvsroot/ltp"
-LTPBRANCH="stable-1.0"
-
-LTPSF_RELEASE=20120614
-LTPSF_TAR=ltp-full-${LTPSF_RELEASE}.bz2
-LTPSF_URI=http://downloads.sourceforge.net/project/ltp/LTP%20Source/ltp-${LTPSF_RELEASE}/${LTPSF_TAR}
 
 ltpstate=mkdir -p ${LTPSTATE}; touch $(1); echo "Entering state $(notdir $(1))"; rm -f ${LTPSTATE}/ltp-$(2)
 
@@ -70,9 +71,8 @@ ltp-fetch: ltp-sf
 ltp-sf: ${LTPSTATE}/ltp-fetch
 ${LTPSTATE}/ltp-fetch: ${LTPTMPDIR}/${LTPSF_TAR}
 	@mkdir -p ${LTPSRCDIR}
-	@rm -rf ${LTPSRCDIR}/ltp
+	@rm -rf ${LTPBUILDDIR}
 	tar -x -C ${LTPSRCDIR} -f $<
-	ln -fs $(basename $(notdir ${LTPSF_TAR})) ${LTPSRCDIR}/ltp
 	@$(call ltpstate,$@,configure)
 
 ltp-cvs:
@@ -81,7 +81,7 @@ ltp-cvs:
 
 ltp-sync: ${LTPSTATE}/ltp-fetch
 	@make ltp-clean
-	(( test -e ${LTPTMPDIR}/${LTPSF_TAR} && echo "Skipping cvs up (tarball present)" )|| ( cd ${LTPSRCDIR}/ltp && cvs update ))
+	(( test -e ${LTPTMPDIR}/${LTPSF_TAR} && echo "Skipping cvs up (tarball present)" )|| ( cd ${LTPBUILDDIR} && cvs update ))
 
 ltp-configure: ${LTPSTATE}/ltp-configure
 ${LTPSTATE}/ltp-configure: ${LTPSTATE}/ltp-fetch
@@ -110,13 +110,19 @@ ${LTPSTATE}/ltp-scripts: ${LTPSTATE}/ltp-build
 	cp -rv ${LTPSCRIPTS}/* ${LTPINSTALLDIR}/
 	@$(call ltpstate,$@)
 
-ltp-clean:
-	rm -rf ${LTPSTATE}/ltp-{configure,build} ${TOPLTPINSTALLDIR}
-	make -C ${LTPBUILDDIR} clean
-#	rm -rf ${LTPBUILDDIR}
+ltp-clean-all:
+	rm -f $(addprefix ${LTPSTATE}/ltp-,configure build)
+	rm -rf ${TOPLTPINSTALLDIR}
 
-ltp-mrproper:
-	rm -rf ${LTPSTATE} ${LTPTMPDIR} ${LTPSRCDIR} ${TOPLTPINSTALLDIR}
+ltp-clean: ltp-clean-all
+	[ -d ${LTPBUILDDIR} ] && make -C ${LTPBUILDDIR} clean
+
+ltp-mrproper: ltp-clean-all
+	rm ${LTPSTATE}/ltp-*
+	rm -rf ${LTPBUILDDIR}
+
+ltp-raze: ltp-mrproper
+	rm -rf ${LTPSTATE} ${LTPTMPDIR} ${LTPSRCDIR}
 
 ltp-version:
 	@echo "LTP version ${LTPSF_RELEASE} (from sourceforge)"

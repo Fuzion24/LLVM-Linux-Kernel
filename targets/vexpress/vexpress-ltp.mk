@@ -27,7 +27,11 @@
 
 VEXPRESS_LTP_TARGETS	= test3-ltp test3-gcc-ltp test3-all-ltp
 TARGETS			+= ${VEXPRESS_LTP_TARGETS}
+CLEAN_TARGETS		+= vexpress-ltp-clean
 HELP_TARGETS		+= vexpress-ltp-help
+FETCH_TARGETS		+= ${VEXPRESS_LTP_BZ_TMP}
+MRPROPER_TARGETS	+= vexpress-ltp-mrproper
+RAZE_TARGETS		+= vexpress-ltp-mrproper
 .PHONY:			${VEXPRESS_LTP_TARGETS}
 
 vexpress-ltp-help:
@@ -65,8 +69,8 @@ ${VEXPRESS_LTP_BZ_TMP}:
 ${VEXPRESS_LTP_IMG_TMP} ${VEXPRESS_LTP_GCCIMG_TMP}: ${VEXPRESS_LTP_BZ_TMP}
 	bunzip2 -9c $< > $@
 
-fresh-vexpress-ltp-img: clean-vexpress-ltp-img ${VEXPRESS_LTP_IMG_TMP}
-fresh-vexpress-ltp-gcc-img: clean-vexpress-ltp-gccimg ${VEXPRESS_LTP_GCCIMG_TMP}
+fresh-vexpress-ltp-img: vexpress-ltp-img-clean ${VEXPRESS_LTP_IMG_TMP}
+fresh-vexpress-ltp-gcc-img: vexpress-ltp-gccimg-clean ${VEXPRESS_LTP_GCCIMG_TMP}
 
 # Command to run the LTP on a built kernel
 vexpress_run_ltp	= $(MAKE) "${2}" && $(call qemu,${BOARD},${1},256,/dev/mmcblk0p2,rootfstype=ext4 rw init=/opt/ltp/run-tests.sh ltptest=${3},-sd ${2}) ${NET}
@@ -89,17 +93,17 @@ test3-gcc-ltp: state/prep ${QEMUSTATE}/qemu-build state/kernel-gcc-build ${VEXPR
 
 test3-all-ltp: test3-ltp test3-gcc-ltp
 
-clean-vexpress-ltp-bz:
+vexpress-ltp-bz-clean:
 	rm -f ${VEXPRESS_LTP_BZ}
 
-clean-vexpress-ltp-img:
+vexpress-ltp-img-clean:
 	rm -f ${VEXPRESS_LTP_IMG_TMP}
 
-clean-vexpress-ltp-gccimg:
+vexpress-ltp-gccimg-clean:
 	rm -f ${VEXPRESS_LTP_GCCIMG_TMP}
 
-clean-vexpress-ltp: clean-vexpress-ltp-bz clean-vexpress-ltp-img clean-vexpress-ltp-gccimg
+vexpress-ltp-clean: vexpress-ltp-bz-clean vexpress-ltp-img-clean vexpress-ltp-gccimg-clean
 
-mrproper-vexpress-ltp: clean-vexpress-ltp ltp-mrproper
+vexpress-ltp-mrproper: vexpress-ltp-clean ltp-mrproper
 	rm -f ${VEXPRESS_LTP_BZ_TMP}
 

@@ -32,6 +32,13 @@ KERNEL_PATCHES     += $(call add_patches,${TARGETDIR}/patches)
 all: bailout_remove prep kernel-build
 .PHONY: clean mrproper
 
+TARGETS			+=
+CLEAN_TARGETS		+=
+HELP_TARGETS		+=
+FETCH_TARGETS		+=
+MRPROPER_TARGETS	+=
+RAZE_TARGETS		+=
+
 include ${TOPDIR}/common.mk
 #include ${ARCHDIR}/arm/arm.mk
 include ${CONFIG}
