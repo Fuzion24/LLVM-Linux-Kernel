@@ -30,8 +30,6 @@ ARCH_MIPS_DIR		= ${ARCHDIR}/mips
 ARCH_MIPS_BINDIR	= ${ARCH_MIPS_DIR}/bin
 ARCH_MIPS_PATCHES	= ${ARCH_MIPS_DIR}/patches
 
-#KERNEL_PATCHES	+= ${COMMON}/mips/common-mips.patch ${COMMON}/mips/fix-warnings-mips.patch \
-#	${COMMON}/mips/fix-warnings-mips-unused.patch
 KERNEL_PATCHES	+= $(call add_patches,${ARCH_MIPS_PATCHES})
 
 ARCH		= mips

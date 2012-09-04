@@ -30,8 +30,6 @@ ARCH_X86_32_DIR		= ${ARCHDIR}/i586
 ARCH_X86_32_BINDIR	= ${ARCH_X86_32_DIR}/bin
 ARCH_X86_32_PATCHES	= ${ARCH_X86_32_DIR}/patches
 
-#KERNEL_PATCHES		+= ${COMMON}/x86_64/common-x86_64.patch ${COMMON}/x86_64/fix-warnings-x86_64.patch \
-#	${COMMON}/x86_64/fix-warnings-x86_64-unused.patch
 KERNEL_PATCHES		+= $(call add_patches,${ARCH_X86_32_PATCHES})
 
 #ARCH		= i386

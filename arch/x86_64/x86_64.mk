@@ -30,8 +30,6 @@ ARCH_X86_64_DIR		= ${ARCHDIR}/x86_64
 ARCH_X86_64_BINDIR	= ${ARCH_X86_64_DIR}/bin
 ARCH_X86_64_PATCHES	= ${ARCH_X86_64_DIR}/patches
 
-#KERNEL_PATCHES		+= ${COMMON}/x86_64/common-x86_64.patch ${COMMON}/x86_64/fix-warnings-x86_64.patch \
-#	${COMMON}/x86_64/fix-warnings-x86_64-unused.patch
 KERNEL_PATCHES		+= $(call add_patches,${ARCH_X86_64_PATCHES})
 
 ARCH		= x86_64
