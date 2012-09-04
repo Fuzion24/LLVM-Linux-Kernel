@@ -169,12 +169,14 @@ ${LLVMSTATE}/clang-build: ${LLVMSTATE}/llvm-build ${LLVMSTATE}/clang-configure
 	$(call state,$@)
 
 llvm-reset: ${LLVMSTATE}/clang-fetch ${LLVMSTATE}/compilerrt-fetch
+	$(call banner,Removing LLVM patches...)
 	-(cd ${LLVMDIR} && [ ! -e patches ] || quilt pop -af)
 	(cd ${LLVMDIR} && git reset --hard HEAD)
 	(cd ${LLVMDIR}/projects/compiler-rt && git reset --hard HEAD)
 	@rm -f $(addprefix ${LLVMSTATE}/,llvm-patch llvm-configure llvm-build)
 
 llvm-clean-noreset:
+	$(call banner,Cleaning LLVM...)
 	@rm -rf ${LLVMINSTALLDIR} ${LLVMBUILDDIR}
 	@rm -f $(addprefix ${LLVMSTATE}/,llvm-configure llvm-build)
 
@@ -184,14 +186,17 @@ llvm-mrproper: llvm-clean clang-mrproper
 	(cd ${LLVMDIR} && git clean -f)
 
 llvm-raze: llvm-clean-noreset clang-raze
+	$(call banner,Razing LLVM...)
 	@rm -rf ${LLVMDIR} ${LLVMSTATE}/llvm-* ${LLVMSTATE}/compilerrt-*
 
 clang-reset: ${LLVMSTATE}/clang-fetch
+	$(call banner,Removing Clang patches...)
 	-(cd ${CLANGDIR} && [ ! -e patches ] || quilt pop -af)
 	(cd ${CLANGDIR} && git reset --hard HEAD)
 	@rm -f ${LLVMSTATE}/clang-patch
 
 clang-clean-noreset: llvm-clean-noreset
+	$(call banner,Cleaning Clang...)
 	@rm -rf ${LLVMINSTALLDIR}/clang ${CLANGBUILDDIR}
 
 clang-clean: clang-reset clang-clean-noreset
@@ -200,13 +205,16 @@ clang-mrproper: clang-clean
 	(cd ${CLANGDIR} && git clean -f)
 
 clang-raze: clang-clean-noreset
+	$(call banner,Razing Clang...)
 	@rm -rf ${CLANGDIR} ${LLVMSTATE}/clang-*
 
 llvm-sync: llvm-clean
+	$(call banner,Updating LLVM...)
 	(cd ${LLVMDIR} && git checkout ${LLVM_BRANCH} && git pull)
 	(cd ${LLVMDIR}/projects/compiler-rt && git checkout ${COMPILERRT_BRANCH} && git pull)
 
 clang-sync: clang-clean
+	$(call banner,Updating Clang...)
 	(cd ${CLANGDIR} && git checkout ${CLANG_BRANCH} && git pull)
 
 llvm-version:

@@ -51,11 +51,13 @@ ${ANDROID_DIR}:
 
 android-gcc arm-cc: ${ANDROID_DIR}-gcc
 ${ANDROID_DIR}-gcc: ${ANDROID_DIR}
+	@$(call banner,Installing Android compiler...)
 	(rm -rf ${ANDROID_CC_DIR})
 	(cd ${ANDROID_DIR} && git clone ${ANDROID_SDK_GIT} -b ${ANDROID_SDK_BRANCH})
 	$(call state,$@)
 
 android-gcc-sync: ${ANDROID_DIR}-gcc
+	@$(call banner,Updating Android compiler...)
 	(cd ${ANDROID_CC_DIR} && git pull && git checkout ${ANDROID_SDK_BRANCH})
 
 state/arm-cc: ${ANDROID_DIR}-gcc

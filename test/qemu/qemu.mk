@@ -95,6 +95,7 @@ ${QEMUSTATE}/qemu-build: ${QEMUSTATE}/qemu-configure
 	$(call state,$@)
 	
 qemu-clean-all:
+	@$(call banner, "Cleaning QEMU...")
 	rm -rf ${QEMUBUILDDIR} ${QEMUINSTALLDIR} 
 	rm -f $(addprefix ${QEMUSTATE}/,qemu-patch qemu-configure qemu-build)
 
@@ -103,10 +104,12 @@ qemu-clean qemu-mrproper: qemu-clean-all ${QEMUSTATE}/qemu-fetch
 	(cd ${QEMUSRCDIR} && git reset --hard HEAD)
 	
 qemu-raze: qemu-clean-all
+	@$(call banner, "Razing QEMU...")
 	rm -rf ${QEMUSRCDIR}
 	rm -f ${QEMUSTATE}/qemu-*
 	
 qemu-sync: ${QEMUSTATE}/qemu-fetch
+	@$(call banner, "Updating QEMU...")
 	@${MAKE} qemu-clean
 	(cd ${QEMUSRCDIR} && git checkout ${QEMU_BRANCH} && git pull)
 
