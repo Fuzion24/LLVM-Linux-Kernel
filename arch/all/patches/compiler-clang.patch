@@ -1,3 +1,10 @@
+Add support for clang to compiler.h
+
+---
+ compiler-clang.h |   12 ++++++++++++
+ compiler.h       |    7 +++++++
+ 2 files changed, 19 insertions(+)
+
 diff --git a/include/linux/compiler.h b/include/linux/compiler.h
 index 923d093..2cc6b5c 100644
 --- a/include/linux/compiler.h

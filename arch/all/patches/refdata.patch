@@ -1,4 +1,19 @@
+Add __refdata to fix section mismatches in arm drivers.
+
+Added to serio, mmc, smc91xx, and aaci drivers
+
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+---
+ drivers/input/serio/ambakmi.c        |    2 +-
+ drivers/mmc/host/mmci.c              |   10 ++++++++--
+ drivers/mmc/host/sdhci-pxav2.c       |    2 +-
+ drivers/mmc/host/sdhci-pxav3.c       |    2 +-
+ drivers/net/ethernet/smsc/smc911x.c  |    2 +-
+ drivers/net/ethernet/smsc/smc91x.c   |    2 +-
+ drivers/net/ethernet/smsc/smsc911x.c |    2 +-
+ sound/arm/aaci.c                     |    9 +++++++--
+ 8 files changed, 21 insertions(+), 10 deletions(-)
+
 diff --git a/drivers/input/serio/ambakmi.c b/drivers/input/serio/ambakmi.c
 index 8407d5b..e60eaa9 100644
 --- a/drivers/input/serio/ambakmi.c

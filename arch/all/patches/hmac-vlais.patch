@@ -1,3 +1,10 @@
+Remove variable length arrays in structs (VLAIS) from HMAC
+
+---
+ hmac.c    |   25 +++++++++++--------------
+ testmgr.c |   15 +++++++--------
+ 2 files changed, 18 insertions(+), 22 deletions(-)
+
 diff --git a/crypto/hmac.c b/crypto/hmac.c
 index 8d9544c..227a38b 100644
 --- a/crypto/hmac.c

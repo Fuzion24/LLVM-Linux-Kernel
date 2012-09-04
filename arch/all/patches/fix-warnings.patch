@@ -1,3 +1,9 @@
+Remove compile warning for clang
+
+---
+ mm.h |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
 --- a/include/linux/mm.h
 +++ b/include/linux/mm.h
 @@ -333,7 +333,8 @@ static inline void compound_unlock(struct page *page)

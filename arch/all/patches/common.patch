@@ -1,4 +1,16 @@
+Common issues patched to compile with clang
+
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+---
+ Makefile                            |    2 +-
+ crypto/shash.c                      |    3 ++-
+ include/asm-generic/cmpxchg-local.h |    1 +
+ include/linux/mm.h                  |    6 ++++--
+ mm/slab.c                           |    3 ++-
+ scripts/Kbuild.include              |   36 ++++++++++++++++++++++++++++++++++++
+ scripts/Makefile.build              |    1 +
+ 7 files changed, 47 insertions(+), 5 deletions(-)
+
 diff --git a/crypto/shash.c b/crypto/shash.c
 index 9100912..5ec0ebd 100644
 --- a/crypto/shash.c

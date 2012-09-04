@@ -1,6 +1,6 @@
-compiler.patch
+compiler-clang.patch
 common.patch
-lll-project.patch
-vlais.patch
+hmac-vlais.patch
+netfilter-vlais.patch
 inline.patch
 refdata.patch

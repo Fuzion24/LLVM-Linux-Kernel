@@ -1,4 +1,12 @@
+Remove variable length arrays in structures (VLAIS) from the netfilter code.
+
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+---
+ include/linux/jbd2.h        |    2 +-
+ lib/libcrc32c.c             |    2 +-
+ net/netfilter/xt_repldata.h |    6 ++++--
+ 3 files changed, 6 insertions(+), 4 deletions(-)
+
 diff --git a/net/netfilter/xt_repldata.h b/net/netfilter/xt_repldata.h
 index 6efe4e5..868174d 100644
 --- a/net/netfilter/xt_repldata.h
