@@ -1,13 +1,19 @@
-diff --git a/arch/arm/mach-vexpress/v2m.c b/arch/arm/mach-vexpress/v2m.c
-index b4a28ca..c7e1ae8 100644
---- a/arch/arm/mach-vexpress/v2m.c
-+++ b/arch/arm/mach-vexpress/v2m.c
-@@ -65,7 +65,7 @@ static void __init v2m_timer_init(void)
- 		"v2m-timer0");
+Add __initdata to v2m_time for mach-vexpress
+
+---
+ v2m.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+Index: linux/arch/arm/mach-vexpress/v2m.c
+===================================================================
+--- linux.orig/arch/arm/mach-vexpress/v2m.c	2012-09-05 12:03:39.813231260 -0400
++++ linux/arch/arm/mach-vexpress/v2m.c	2012-09-05 12:13:52.073534093 -0400
+@@ -443,7 +443,7 @@
+ 	v2m_sp804_init(ioremap(V2M_TIMER01, SZ_4K), IRQ_V2M_TIMER0);
  }
  
 -static struct sys_timer v2m_timer = {
 +static struct sys_timer v2m_timer __initdata = {
  	.init	= v2m_timer_init,
  };
-
+ 
