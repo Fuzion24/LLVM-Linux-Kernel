@@ -1,9 +1,9 @@
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
-diff --git a/arch/arm/Makefile b/arch/arm/Makefile
-index 1683bfb..f9d4ddc 100644
---- a/arch/arm/Makefile
-+++ b/arch/arm/Makefile
-@@ -46,7 +46,7 @@ KBUILD_CPPFLAGS	+= -mbig-endian
+Index: linux/arch/arm/Makefile
+===================================================================
+--- linux.orig/arch/arm/Makefile	2012-09-05 12:03:39.809231310 -0400
++++ linux/arch/arm/Makefile	2012-09-05 12:13:34.565754207 -0400
+@@ -49,7 +49,7 @@
  AS		+= -EB
  LD		+= -EB
  else
@@ -12,7 +12,7 @@ index 1683bfb..f9d4ddc 100644
  AS		+= -EL
  LD		+= -EL
  endif
-@@ -92,7 +92,7 @@ tune-$(CONFIG_CPU_V6)		:=$(call cc-option,-mtune=arm1136j-s,-mtune=strongarm)
+@@ -93,7 +93,7 @@
  tune-$(CONFIG_CPU_V6K)		:=$(call cc-option,-mtune=arm1136j-s,-mtune=strongarm)
  
  ifeq ($(CONFIG_AEABI),y)
@@ -21,7 +21,7 @@ index 1683bfb..f9d4ddc 100644
  else
  CFLAGS_ABI	:=$(call cc-option,-mapcs-32,-mabi=apcs-gnu) $(call cc-option,-mno-thumb-interwork,)
  endif
-@@ -113,7 +113,7 @@ endif
+@@ -114,7 +114,7 @@
  endif
  
  # Need -Uarm for gcc < 3.x
@@ -30,24 +30,24 @@ index 1683bfb..f9d4ddc 100644
  KBUILD_AFLAGS	+=$(CFLAGS_ABI) $(AFLAGS_THUMB2) $(arch-y) $(tune-y) -include asm/unified.h -msoft-float
  
  CHECKFLAGS	+= -D__arm__
-diff --git a/arch/arm/include/asm/ftrace.h b/arch/arm/include/asm/ftrace.h
-index f89515a..2bb8cac 100644
---- a/arch/arm/include/asm/ftrace.h
-+++ b/arch/arm/include/asm/ftrace.h
-@@ -45,7 +45,7 @@ void *return_address(unsigned int);
+Index: linux/arch/arm/include/asm/ftrace.h
+===================================================================
+--- linux.orig/arch/arm/include/asm/ftrace.h	2012-09-05 12:03:39.813231260 -0400
++++ linux/arch/arm/include/asm/ftrace.h	2012-09-05 12:13:34.569754156 -0400
+@@ -45,7 +45,7 @@
  
  #else
  
 -extern inline void *return_address(unsigned int level)
 +extern inline __attribute__((gnu_inline)) void *return_address(unsigned int level)
  {
-        return NULL;
+ 	return NULL;
  }
-diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-index eb06e58..7f0a168 100644
---- a/include/linux/netdevice.h
-+++ b/include/linux/netdevice.h
-@@ -1265,7 +1265,7 @@ struct net_device {
+Index: linux/include/linux/netdevice.h
+===================================================================
+--- linux.orig/include/linux/netdevice.h	2012-09-05 12:03:39.837230959 -0400
++++ linux/include/linux/netdevice.h	2012-09-05 12:13:34.569754156 -0400
+@@ -1266,7 +1266,7 @@
  	enum {
  		RTNL_LINK_INITIALIZED,
  		RTNL_LINK_INITIALIZING,

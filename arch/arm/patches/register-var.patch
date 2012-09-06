@@ -1,8 +1,8 @@
-diff --git a/arch/arm/include/asm/thread_info.h b/arch/arm/include/asm/thread_info.h
-index d4c24d4..01f7302 100644
---- a/arch/arm/include/asm/thread_info.h
-+++ b/arch/arm/include/asm/thread_info.h
-@@ -93,8 +93,7 @@ static inline struct thread_info *current_thread_info(void) __attribute_const__;
+Index: linux/arch/arm/include/asm/thread_info.h
+===================================================================
+--- linux.orig/arch/arm/include/asm/thread_info.h	2012-09-05 12:03:39.813231260 -0400
++++ linux/arch/arm/include/asm/thread_info.h	2012-09-05 12:13:43.297644753 -0400
+@@ -93,8 +93,7 @@
  
  static inline struct thread_info *current_thread_info(void)
  {
@@ -12,11 +12,11 @@ index d4c24d4..01f7302 100644
  }
  
  #define thread_saved_pc(tsk)	\
-diff --git a/arch/arm/kernel/return_address.c b/arch/arm/kernel/return_address.c
-index 8085417..17de3ed 100644
---- a/arch/arm/kernel/return_address.c
-+++ b/arch/arm/kernel/return_address.c
-@@ -39,12 +39,11 @@ void *return_address(unsigned int level)
+Index: linux/arch/arm/kernel/return_address.c
+===================================================================
+--- linux.orig/arch/arm/kernel/return_address.c	2012-09-05 12:03:39.813231260 -0400
++++ linux/arch/arm/kernel/return_address.c	2012-09-05 12:13:43.297644753 -0400
+@@ -39,12 +39,11 @@
  {
  	struct return_address_data data;
  	struct stackframe frame;
@@ -30,11 +30,11 @@ index 8085417..17de3ed 100644
  	frame.lr = (unsigned long)__builtin_return_address(0);
  	frame.pc = (unsigned long)return_address;
  
-diff --git a/arch/arm/kernel/stacktrace.c b/arch/arm/kernel/stacktrace.c
-index 381d23a..0d6d9de 100644
---- a/arch/arm/kernel/stacktrace.c
-+++ b/arch/arm/kernel/stacktrace.c
-@@ -109,11 +109,9 @@ void save_stack_trace_tsk(struct task_struct *tsk, struct stack_trace *trace)
+Index: linux/arch/arm/kernel/stacktrace.c
+===================================================================
+--- linux.orig/arch/arm/kernel/stacktrace.c	2012-09-05 12:03:39.813231260 -0400
++++ linux/arch/arm/kernel/stacktrace.c	2012-09-05 12:13:43.297644753 -0400
+@@ -109,11 +109,9 @@
  		frame.pc = thread_saved_pc(tsk);
  #endif
  	} else {
@@ -47,25 +47,24 @@ index 381d23a..0d6d9de 100644
  		frame.lr = (unsigned long)__builtin_return_address(0);
  		frame.pc = (unsigned long)save_stack_trace_tsk;
  	}
-diff --git a/arch/arm/kernel/unwind.c b/arch/arm/kernel/unwind.c
-index d2cb0b3..17cc494 100644
---- a/arch/arm/kernel/unwind.c
-+++ b/arch/arm/kernel/unwind.c
-@@ -352,7 +352,6 @@ int unwind_frame(struct stackframe *frame)
+Index: linux/arch/arm/kernel/unwind.c
+===================================================================
+--- linux.orig/arch/arm/kernel/unwind.c	2012-09-05 12:03:39.813231260 -0400
++++ linux/arch/arm/kernel/unwind.c	2012-09-05 12:13:43.297644753 -0400
+@@ -408,7 +408,6 @@
  void unwind_backtrace(struct pt_regs *regs, struct task_struct *tsk)
  {
-	struct stackframe frame;
+ 	struct stackframe frame;
 -	register unsigned long current_sp asm ("sp");
  
-	pr_debug("%s(regs = %p tsk = %p)\n", __func__, regs, tsk);
+ 	pr_debug("%s(regs = %p tsk = %p)\n", __func__, regs, tsk);
  
-@@ -368,7 +367,7 @@ void unwind_backtrace(struct pt_regs *regs, struct task_struct *tsk)
-			? regs->ARM_pc : regs->ARM_lr;
-	} else if (tsk == current) {
-		frame.fp = (unsigned long)__builtin_frame_address(0);
+@@ -424,7 +423,7 @@
+ 			 ? regs->ARM_pc : regs->ARM_lr;
+ 	} else if (tsk == current) {
+ 		frame.fp = (unsigned long)__builtin_frame_address(0);
 -		frame.sp = current_sp;
 +		asm ("mov %0, r13" : "=r" (frame.sp));
-		frame.lr = (unsigned long)__builtin_return_address(0);
-		frame.pc = (unsigned long)unwind_backtrace;
-        } else {
-
+ 		frame.lr = (unsigned long)__builtin_return_address(0);
+ 		frame.pc = (unsigned long)unwind_backtrace;
+ 	} else {
