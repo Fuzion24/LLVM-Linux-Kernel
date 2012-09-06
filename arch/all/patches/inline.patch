@@ -1,15 +1,17 @@
 Remove useless inline specifiers
 
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+Signed-off-by: Bryce Lelbach aka "wash" <blelbach@cct.lsu.edu>
 ---
- fs/bio.c             |    2 +-
- fs/block_dev.c       |    2 +-
- fs/buffer.c          |    2 +-
- kernel/time.c        |    4 ++--
- mm/filemap.c         |    2 +-
- net/core/dev.c       |    2 +-
- net/ipv4/ip_output.c |    2 +-
- 7 files changed, 8 insertions(+), 8 deletions(-)
+ drivers/gpu/drm/i915/i915_drv.h |    2 +-
+ fs/bio.c                        |    2 +-
+ fs/block_dev.c                  |    2 +-
+ fs/buffer.c                     |    2 +-
+ kernel/time.c                   |    4 ++--
+ mm/filemap.c                    |    2 +-
+ net/core/dev.c                  |    2 +-
+ net/ipv4/ip_output.c            |    2 +-
+ 8 files changed, 9 insertions(+), 9 deletions(-)
 
 diff --git a/fs/bio.c b/fs/bio.c
 index b1fe82c..152fa2a 100644
@@ -111,3 +113,16 @@ index ff302bd..c5cce53 100644
  {
  	iph->check = 0;
  	iph->check = ip_fast_csum((unsigned char *)iph, iph->ihl);
+diff --git a/drivers/gpu/drm/i915/i915_drv.h b/drivers/gpu/drm/i915/i915_drv.h
+index 9689ca3..1ad8809 100644
+--- a/drivers/gpu/drm/i915/i915_drv.h
++++ b/drivers/gpu/drm/i915/i915_drv.h
+@@ -1276,7 +1276,7 @@ extern int intel_setup_gmbus(struct drm_device *dev);
+ extern void intel_teardown_gmbus(struct drm_device *dev);
+ extern void intel_gmbus_set_speed(struct i2c_adapter *adapter, int speed);
+ extern void intel_gmbus_force_bit(struct i2c_adapter *adapter, bool force_bit);
+-inline bool intel_gmbus_is_forced_bit(struct i2c_adapter *adapter)
++extern bool intel_gmbus_is_forced_bit(struct i2c_adapter *adapter)
+ {
+    return container_of(adapter, struct intel_gmbus, adapter)->force_bit;
+ }
