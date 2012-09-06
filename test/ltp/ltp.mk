@@ -70,7 +70,7 @@ ${LTPTMPDIR}/${LTPSF_TAR}:
 ltp-fetch: ltp-sf
 ltp-sf: ${LTPSTATE}/ltp-fetch
 ${LTPSTATE}/ltp-fetch: ${LTPTMPDIR}/${LTPSF_TAR}
-	$(call banner,Fetching LTP...)
+	@$(call banner,Fetching LTP...)
 	@mkdir -p ${LTPSRCDIR}
 	@rm -rf ${LTPBUILDDIR}
 	tar -x -C ${LTPSRCDIR} -f $<
@@ -81,13 +81,13 @@ ltp-cvs:
 	(cd ${LTPSRCDIR} && cvs -z3 -d ${LTPCVS} co -P ltp)
 
 ltp-sync: ${LTPSTATE}/ltp-fetch
-	$(call banner,Updating LTP...)
+	@$(call banner,Updating LTP...)
 	@make ltp-clean
 	(( test -e ${LTPTMPDIR}/${LTPSF_TAR} && echo "Skipping cvs up (tarball present)" )|| ( cd ${LTPBUILDDIR} && cvs update ))
 
 ltp-configure: ${LTPSTATE}/ltp-configure
 ${LTPSTATE}/ltp-configure: ${LTPSTATE}/ltp-fetch
-	$(call banner,Configure LTP...)
+	@$(call banner,Configure LTP...)
 	@mkdir -p ${LTPBUILDDIR}
 	(cd ${LTPBUILDDIR} && ${LTPSRCDIR}/ltp/configure \
 		--host arm-none-linux-gnueabi \
@@ -97,7 +97,7 @@ ${LTPSTATE}/ltp-configure: ${LTPSTATE}/ltp-fetch
 
 ltp-build: ${LTPSTATE}/ltp-build
 ${LTPSTATE}/ltp-build: ${LTPSTATE}/ltp-configure
-	$(call banner,Build LTP...)
+	@$(call banner,Build LTP...)
 	make -C ${LTPBUILDDIR}
 #	make -C ${LTPBUILDDIR} top_builddir=${LTPBUILDDIR} \
 #		-f ${LTPSRCDIR}/ltp/Makefile top_srcdir=${LTPSRCDIR}/ltp
@@ -111,24 +111,24 @@ ${LTPSTATE}/ltp-build: ${LTPSTATE}/ltp-configure
 	
 ltp-scripts: ${LTPSTATE}/ltp-scripts
 ${LTPSTATE}/ltp-scripts: ${LTPSTATE}/ltp-build
-	$(call banner,Install LTP scripts...)
+	@$(call banner,Install LTP scripts...)
 	cp -rv ${LTPSCRIPTS}/* ${LTPINSTALLDIR}/
 	@$(call ltpstate,$@)
 
 ltp-clean-all:
-	$(call banner,Cleaning LTP...)
+	@$(call banner,Cleaning LTP...)
 	rm -f $(addprefix ${LTPSTATE}/ltp-,configure build)
 	rm -rf ${TOPLTPINSTALLDIR}
 
 ltp-clean: ltp-clean-all
-	[ -d ${LTPBUILDDIR} ] && make -C ${LTPBUILDDIR} clean
+	[ -d ${LTPBUILDDIR} ] && make -C ${LTPBUILDDIR} clean >/dev/null
 
 ltp-mrproper: ltp-clean-all
 	rm ${LTPSTATE}/ltp-*
 	rm -rf ${LTPBUILDDIR}
 
 ltp-raze: ltp-mrproper
-	$(call banner,Razing LTP...)
+	@$(call banner,Razing LTP...)
 	rm -rf ${LTPSTATE} ${LTPTMPDIR} ${LTPSRCDIR}
 
 ltp-version:

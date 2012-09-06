@@ -28,10 +28,6 @@ CROSS_ARM_TOOLCHAIN = codesourcery
 
 KERNEL_CFG	= ${TARGETDIR}/config_vexpress
 
-KERNEL_PATCHES	+= $(call add_patches,${TARGETDIR}/patches)
-
-BUILDMODE	:= DEFAULT
-
 ifeq ('${GDBON}','1')
 GDB_OPTS=-gdb tcp::4321 -S
 else
@@ -64,6 +60,8 @@ include ${TOPDIR}/common.mk
 include ${ARCHDIR}/arm/arm.mk
 include ${TARGETDIR}/vexpress-ltp.mk
 include ${CONFIG}
+
+KERNEL_PATCHES	+= $(call add_patches,${TARGETDIR}/patches)
 
 vexpress-help:
 	@echo "targets/vexpress has these options:"
@@ -154,9 +152,9 @@ vexpress-mrproper: vexpress-clean kernel-mrproper kernel-gcc-mrproper
 vexpress-raze raze: kernel-raze
 	@$(call banner,Razed Vexpress)
 
-clean: vexpress-clean vexpress-linaro-clean vexpress-ltp-clean kernel-clean
+clean: vexpress-clean vexpress-linaro-clean vexpress-ltp-clean
 	@$(call banner,Clean)
 
-mrproper: clean vexpress-mrproper vexpress-linaro-mrproper vexpress-ltp-mrproper kernel-mrproper tmp-mrproper
+mrproper: clean vexpress-mrproper vexpress-linaro-mrproper vexpress-ltp-mrproper tmp-mrproper
 	@$(call banner,Very Clean)
 

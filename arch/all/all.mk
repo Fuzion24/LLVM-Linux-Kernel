@@ -53,11 +53,12 @@ endif
 
 TOPLOGDIR	= ${TOPDIR}/log
 
-SRCDIR		= ${TARGETDIR}/src
-LOGDIR		= ${TARGETDIR}/log
-TMPDIR		= ${TARGETDIR}/tmp
-STATEDIR	= ${TARGETDIR}/state
 CHECKERDIR	= ${TARGETDIR}/checker
+LOGDIR		= ${TARGETDIR}/log
+PATCHDIR	= ${TARGETDIR}/patches
+SRCDIR		= ${TARGETDIR}/src
+STATEDIR	= ${TARGETDIR}/state
+TMPDIR		= ${TARGETDIR}/tmp
 
 TMPDIRS		+= ${TMPDIR}
 
@@ -65,7 +66,7 @@ add_patches	= $(addprefix ${1}/,$(shell [ -f ${1}/series ] && cat ${1}/series))
 KERNEL_PATCHES	+= $(call add_patches,${ARCH_ALL_PATCHES})
 
 FILTERFILE	= ${TARGETDIR}/kernel-filter
-TMPFILTERFILE	= ${TARGETDIR}/tmp/kernel-filter
+TMPFILTERFILE	= ${TMPDIR}/kernel-filter
 
 # ${1}=logdir ${2}=toolchain ${3}=testname
 sizelog	= ${1}/${2}-${ARCH}-`date +%Y-%m-%d_%H:%M:%S`-kernel-size.log
@@ -170,15 +171,17 @@ ifneq "${KERNEL_BRANCH}" ""
 endif
 	$(call state,$@,kernel-gcc-patch)
 
-kernel-patch: state/kernel-patch
-state/kernel-patch: state/kernel-fetch
+kernel-patch-old: state/kernel-patch-old
+state/kernel-patch-old: state/kernel-fetch
 	@$(call banner, "Patching kernel...")
 	@mkdir -p ${LOGDIR} ${TMPDIR}
 	@$(call banner, "Checking for duplicated patches:")
 	@${TOOLSDIR}/checkduplicates.py ${KERNEL_PATCHES}
 	@echo "Testing upstream patches: see ${LOGDIR}/testpatch.log"
 	@rm -f ${TMPDIR}/test.patch ${TMPFILTERFILE}-1 ${TMPFILTERFILE}-2 ${FILTERFILE}
-	@for patch in ${KERNEL_PATCHES}; do cat $$patch | grep -v "^Signed-off-by:" >> ${TMPDIR}/test.patch; done
+	for patch in ${KERNEL_PATCHES}; do \
+		perl -ne '$$notheader=1 if /^(diff|Index: )/; print if $$notheader;' $$patch >> ${TMPDIR}/test.patch ; \
+	done
 	(cd ${KERNELDIR} && git reset --hard HEAD)
 	@make -i patch-dry-run1
 	@$(call banner, "Creating patch filter: see ${LOGDIR}/filteredpatch.log")
@@ -194,17 +197,54 @@ state/kernel-patch: state/kernel-fetch
 	(cd ${KERNELDIR} && patch -p1 -i ${TMPDIR}/final.patch > ${LOGDIR}/patch.log)
 	$(call state,$@,kernel-configure)
 
-kernel-gcc-patch: state/kernel-gcc-patch
-state/kernel-gcc-patch: state/kernel-gcc-fetch state/kernel-patch
+kernel-gcc-patch-old: state/kernel-gcc-patch-old
+state/kernel-gcc-patch-old: state/kernel-gcc-fetch state/kernel-patch-old
 	@$(call banner, "Fetching kernel (for gcc build)...")
 	(cd ${KERNELGCC} && git reset --hard HEAD)
 	@$(call banner, "Patching kernel source (gcc): see patch-gcc.log")
 	(cd ${KERNELGCC} && patch -p1 -i ${TMPDIR}/final.patch > ${LOGDIR}/patch-gcc.log)
 	$(call state,$@,kernel-gcc-configure)
 
-${KERNEL_TARGETS_APPLIED}: %-patch-applied:
-	@$(call banner,"Patches applied for $*")
-	@( [ -d ${SRCDIR}/$* ] && cd ${SRCDIR}/$* && git status || echo "No patches applied" )
+kernel-quilt: state/kernel-quilt
+state/kernel-quilt:
+	@$(call banner, "Quilting kernel...")
+	@[ -e ${PATCHDIR}/series.target ] || mv ${PATCHDIR}/series ${PATCHDIR}/series.target
+	@( for PATCH in ${KERNEL_PATCHES} ; do \
+		PATCHLINK="${PATCHDIR}/`basename $$PATCH`" ; \
+		[ -f $$PATCHLINK ] && mv "$$PATCHLINK" "$$PATCH" ; \
+		[ -e $$PATCHLINK ] || ln -s "$$PATCH" "$$PATCHLINK" ; \
+		dirname $$PATCH ; \
+	done | grep -v ${PATCHDIR} | uniq | xargs printf "%s/series\n" | xargs cat; \
+	@[ -e ${PATCHDIR}/series ] || cat ${PATCHDIR}/series.target ) > ${PATCHDIR}/series
+	@[ -e ${KERNELDIR}/patches ] || ln -s ${PATCHDIR} ${KERNELDIR}/patches
+	$(call state,$@,kernel-configure)
+
+kernel-patch: state/kernel-patch
+state/kernel-patch: state/kernel-fetch
+	${MAKE} state/kernel-quilt
+	@[ -e ${KERNELDIR}/patches ] || ln -s ${PATCHDIR} ${KERNELDIR}/patches
+	@$(call banner, "Patching kernel...")
+#	(cd ${KERNELDIR} && quilt unapplied && quilt push -a)
+	@$(call patch,${KERNELDIR})
+	$(call state,$@,kernel-configure)
+
+kernel-gcc-patch: state/kernel-gcc-patch
+state/kernel-gcc-patch: state/kernel-gcc-fetch
+	${MAKE} state/kernel-quilt
+	@[ -e ${KERNELGCC}/patches ] || ln -s ${PATCHDIR} ${KERNELGCC}/patches
+	@$(call banner, "Patching gcc kernel...")
+#	(cd ${KERNELGCC} && quilt unapplied && quilt push -a)
+	@$(call patch,${KERNELGCC})
+	$(call state,$@,kernel-gcc-configure)
+
+kernel-patch-applied:
+	@$(call banner,"Patches applied for Clang kernel")
+#	@( [ -d ${KERNELDIR} ] && cd ${KERNELDIR} && git status || echo "No patches applied" )
+	@( [ -d ${KERNELDIR} ] && cd ${KERNELDIR} && quilt applied || true )
+
+kernel-gcc-patch-applied:
+	@$(call banner,"Patches applied for gcc kernel")
+	@( [ -d ${KERNELGCC} ] && cd ${KERNELGCC} && quilt applied || true )
 
 kernel-autopatch: kernel-build state/kernel-copy
 	(cd ${KERNELCOPY} && git reset --hard HEAD && git pull)
@@ -224,30 +264,34 @@ patch-dry-run2:
 	(cd ${KERNELDIR} && patch --dry-run -p1 -i ${TMPDIR}/filtered.patch > ${LOGDIR}/filteredpatch.log)
 
 kernel-reset: state/kernel-fetch
-	(cd ${KERNELDIR} && git reset --hard HEAD && git clean -d -f)
-	@rm -f $(addprefix ${TARGETDIR}/state/,kernel-configure kernel-patch kernel-build )
+#	(cd ${KERNELDIR} && git reset --hard HEAD && git clean -d -f)
+	${MAKE} -C ${KERNELDIR} clean
+	@$(call unpatch,${KERNELDIR})
+	@rm -f $(addprefix ${STATEDIR}/,kernel-patch kernel-quilt kernel-configure kernel-build )
 
 kernel-gcc-reset: state/kernel-gcc-fetch
-	(cd ${KERNELGCC} && git reset --hard HEAD && git clean -d -f)
-	@rm -f $(addprefix ${TARGETDIR}/state/,kernel-gcc-configure kernel-gcc-patch kernel-gcc-build)
+#	(cd ${KERNELGCC} && git reset --hard HEAD && git clean -d -f)
+	${MAKE} -C ${KERNELGCC} clean
+	@$(call unpatch,${KERNELGCC})
+	@rm -f $(addprefix ${STATEDIR}/,kernel-gcc-configure kernel-gcc-patch kernel-gcc-build)
 
 kernel-mrproper: state/kernel-fetch
 	(cd ${KERNELDIR} && make mrproper)
-	@rm -f $(addprefix ${TARGETDIR}/state/,kernel-build)
+	@rm -f $(addprefix ${STATEDIR}/,kernel-build)
 
 kernel-gcc-mrproper: state/kernel-gcc-fetch
 	(cd ${KERNELGCC} && make mrproper)
-	@rm -f $(addprefix ${TARGETDIR}/state/,kernel-gcc-build)
+	@rm -f $(addprefix ${STATEDIR}/,kernel-gcc-build)
 
 kernel-clean-tmp:
-	@rm -f $(addprefix ${TARGETDIR}/state/,kernel-patch kernel-configure kernel-build)
+	@rm -f $(addprefix ${STATEDIR}/,kernel-quilt kernel-patch kernel-configure kernel-build)
 	@rm -f ${FILTERFILE} ${TMPFILTERFILE}-[12]
 	@rm -f ${LOGDIR}/*.log
 	@rm -f ${TMPDIR}/*.patch
 	@$(call banner,"Clang compiled Kernel is now clean")
 
 kernel-gcc-clean-tmp:
-	@rm -f $(addprefix ${TARGETDIR}/state/,kernel-gcc-patch kernel-gcc-configure kernel-gcc-build)
+	@rm -f $(addprefix ${STATEDIR}/,kernel-gcc-patch kernel-gcc-configure kernel-gcc-build)
 	@$(call banner,"Gcc compiled Kernel is now clean")
 
 kernel-clean: kernel-reset kernel-clean-tmp
