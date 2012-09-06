@@ -45,8 +45,8 @@ assert	= [ ${1} ] || $(call error1,${2})
 #assert	= echo "${1} --> ${2}"
 
 applied	= ( [ -d ${1} ] && cd ${1} && quilt applied || true )
-patch	= [ ! -d ${1} ] || (cd ${1} && [ ! -e patches ] || [ ! `quilt unapplied` ] || quilt push -a)
-unpatch	= [ ! -d ${1} ] || (cd ${1} && [ ! -e patches ] || [ ! `quilt applied` ] || quilt pop -af)
+patch	= [ ! -d ${1} ] || (cd ${1} && if [ -e patches ] && quilt unapplied ; then quilt push -a ; else >/dev/null ; fi)
+unpatch	= [ ! -d ${1} ] || (cd ${1} && if [ -e patches ] && quilt applied ; then quilt pop -af ; else >/dev/null ; fi)
 
 # Default jobs is number of processors + 1 for disk I/O
 ifeq "${JOBS}" ""

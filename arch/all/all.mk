@@ -214,6 +214,8 @@ state/kernel-gcc-patch-old: state/kernel-gcc-fetch state/kernel-patch-old
 kernel-quilt: state/kernel-quilt
 state/kernel-quilt: state/kernel-fetch
 	@$(call banner, "Quilting kernel...")
+	@mkdir -p ${PATCHDIR}
+	@[ -f ${PATCHDIR}/series ] || touch ${PATCHDIR}/series
 	@[ -e ${PATCHDIR}/series.target ] || mv ${PATCHDIR}/series ${PATCHDIR}/series.target
 	@( for PATCH in ${KERNEL_PATCHES} ; do \
 		PATCHLINK="${PATCHDIR}/`basename $$PATCH`" ; \
@@ -270,15 +272,15 @@ patch-dry-run2:
 	(cd ${KERNELDIR} && patch --dry-run -p1 -i ${TMPDIR}/filtered.patch > ${LOGDIR}/filteredpatch.log)
 
 kernel-reset: state/kernel-fetch
-#	(cd ${KERNELDIR} && git reset --hard HEAD && git clean -d -f)
 	${MAKE} -C ${KERNELDIR} clean
 	@$(call unpatch,${KERNELDIR})
+	@(cd ${KERNELDIR} && [ ! -d patches ] && git reset --hard HEAD && git clean -d -f) || true
 	@rm -f $(addprefix ${STATEDIR}/,kernel-patch kernel-quilt kernel-configure kernel-build )
 
 kernel-gcc-reset: state/kernel-gcc-fetch
-#	(cd ${KERNELGCC} && git reset --hard HEAD && git clean -d -f)
 	${MAKE} -C ${KERNELGCC} clean
 	@$(call unpatch,${KERNELGCC})
+	@(cd ${KERNELGCC} && [ ! -d patches ] && git reset --hard HEAD && git clean -d -f) || true
 	@rm -f $(addprefix ${STATEDIR}/,kernel-gcc-configure kernel-gcc-patch kernel-gcc-build)
 
 kernel-mrproper: state/kernel-fetch
