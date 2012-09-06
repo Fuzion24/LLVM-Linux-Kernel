@@ -11,11 +11,11 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
  net/ipv4/ip_output.c |    2 +-
  7 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/fs/bio.c b/fs/bio.c
-index b1fe82c..152fa2a 100644
---- a/fs/bio.c
-+++ b/fs/bio.c
-@@ -424,7 +424,7 @@ void bio_put(struct bio *bio)
+Index: linux/fs/bio.c
+===================================================================
+--- linux.orig/fs/bio.c	2012-09-05 12:03:39.829231060 -0400
++++ linux/fs/bio.c	2012-09-05 12:10:33.644028910 -0400
+@@ -428,7 +428,7 @@
  }
  EXPORT_SYMBOL(bio_put);
  
@@ -24,11 +24,11 @@ index b1fe82c..152fa2a 100644
  {
  	if (unlikely(!bio_flagged(bio, BIO_SEG_VALID)))
  		blk_recount_segments(q, bio);
-diff --git a/fs/block_dev.c b/fs/block_dev.c
-index 0e575d1..ee252b0 100644
---- a/fs/block_dev.c
-+++ b/fs/block_dev.c
-@@ -41,7 +41,7 @@ static inline struct bdev_inode *BDEV_I(struct inode *inode)
+Index: linux/fs/block_dev.c
+===================================================================
+--- linux.orig/fs/block_dev.c	2012-09-05 12:03:39.833231010 -0400
++++ linux/fs/block_dev.c	2012-09-05 12:10:33.644028910 -0400
+@@ -42,7 +42,7 @@
  	return container_of(inode, struct bdev_inode, vfs_inode);
  }
  
@@ -37,11 +37,11 @@ index 0e575d1..ee252b0 100644
  {
  	return &BDEV_I(inode)->bdev;
  }
-diff --git a/fs/buffer.c b/fs/buffer.c
-index 1a30db7..adf9efb 100644
---- a/fs/buffer.c
-+++ b/fs/buffer.c
-@@ -46,7 +46,7 @@ static int fsync_buffers_list(spinlock_t *lock, struct list_head *list);
+Index: linux/fs/buffer.c
+===================================================================
+--- linux.orig/fs/buffer.c	2012-09-05 12:03:39.833231010 -0400
++++ linux/fs/buffer.c	2012-09-05 12:10:33.644028910 -0400
+@@ -46,7 +46,7 @@
  
  #define BH_ENTRY(list) list_entry((list), struct buffer_head, b_assoc_buffers)
  
@@ -50,11 +50,11 @@ index 1a30db7..adf9efb 100644
  init_buffer(struct buffer_head *bh, bh_end_io_t *handler, void *private)
  {
  	bh->b_end_io = handler;
-diff --git a/kernel/time.c b/kernel/time.c
-index 73e416d..5916c36 100644
---- a/kernel/time.c
-+++ b/kernel/time.c
-@@ -238,7 +238,7 @@ EXPORT_SYMBOL(current_fs_time);
+Index: linux/kernel/time.c
+===================================================================
+--- linux.orig/kernel/time.c	2012-09-05 12:03:39.841230908 -0400
++++ linux/kernel/time.c	2012-09-05 12:10:33.644028910 -0400
+@@ -232,7 +232,7 @@
   * Avoid unnecessary multiplications/divisions in the
   * two most common HZ cases:
   */
@@ -63,7 +63,7 @@ index 73e416d..5916c36 100644
  {
  #if HZ <= MSEC_PER_SEC && !(MSEC_PER_SEC % HZ)
  	return (MSEC_PER_SEC / HZ) * j;
-@@ -254,7 +254,7 @@ inline unsigned int jiffies_to_msecs(const unsigned long j)
+@@ -248,7 +248,7 @@
  }
  EXPORT_SYMBOL(jiffies_to_msecs);
  
@@ -72,11 +72,11 @@ index 73e416d..5916c36 100644
  {
  #if HZ <= USEC_PER_SEC && !(USEC_PER_SEC % HZ)
  	return (USEC_PER_SEC / HZ) * j;
-diff --git a/mm/filemap.c b/mm/filemap.c
-index 97f49ed..9878f2f 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -2162,7 +2162,7 @@ EXPORT_SYMBOL(iov_iter_single_seg_count);
+Index: linux/mm/filemap.c
+===================================================================
+--- linux.orig/mm/filemap.c	2012-09-05 12:03:39.845230857 -0400
++++ linux/mm/filemap.c	2012-09-05 12:10:33.644028910 -0400
+@@ -2073,7 +2073,7 @@
   * Returns appropriate error code that caller should return or
   * zero in case that write should be allowed.
   */
@@ -85,11 +85,11 @@ index 97f49ed..9878f2f 100644
  {
  	struct inode *inode = file->f_mapping->host;
  	unsigned long limit = rlimit(RLIMIT_FSIZE);
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 115dee1..7cd0a28 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -3389,7 +3389,7 @@ out:
+Index: linux/net/core/dev.c
+===================================================================
+--- linux.orig/net/core/dev.c	2012-09-05 12:03:39.849230806 -0400
++++ linux/net/core/dev.c	2012-09-05 12:10:33.648028840 -0400
+@@ -3444,7 +3444,7 @@
  	return netif_receive_skb(skb);
  }
  
@@ -98,11 +98,11 @@ index 115dee1..7cd0a28 100644
  {
  	struct sk_buff *skb, *next;
  
-diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
-index ff302bd..c5cce53 100644
---- a/net/ipv4/ip_output.c
-+++ b/net/ipv4/ip_output.c
-@@ -85,7 +85,7 @@ int sysctl_ip_default_ttl __read_mostly = IPDEFTTL;
+Index: linux/net/ipv4/ip_output.c
+===================================================================
+--- linux.orig/net/ipv4/ip_output.c	2012-09-05 12:03:39.849230806 -0400
++++ linux/net/ipv4/ip_output.c	2012-09-05 12:10:33.648028840 -0400
+@@ -84,7 +84,7 @@
  EXPORT_SYMBOL(sysctl_ip_default_ttl);
  
  /* Generate a checksum for an outgoing IP datagram. */

@@ -1,8 +1,14 @@
-diff --git a/drivers/usb/gadget/f_fs.c b/drivers/usb/gadget/f_fs.c
-index dcd1c7f..e48c3fc 100644
---- a/drivers/usb/gadget/f_fs.c
-+++ b/drivers/usb/gadget/f_fs.c
-@@ -1330,8 +1330,21 @@ static void ffs_data_clear(struct ffs_data *ffs)
+Remove variable length arrays in structs (VLAIS) from gadget code
+
+---
+ f_fs.c |  204 ++++++++++++++++++++++++++++++++++++++++++-----------------------
+ 1 file changed, 133 insertions(+), 71 deletions(-)
+
+Index: linux/drivers/usb/gadget/f_fs.c
+===================================================================
+--- linux.orig/drivers/usb/gadget/f_fs.c	2012-09-03 11:29:42.190578695 -0400
++++ linux/drivers/usb/gadget/f_fs.c	2012-09-05 12:14:02.473410498 -0400
+@@ -1331,8 +1331,21 @@
  	if (ffs->epfiles)
  		ffs_epfiles_destroy(ffs->epfiles, ffs->eps_count);
  
@@ -24,7 +30,7 @@ index dcd1c7f..e48c3fc 100644
  	kfree(ffs->stringtabs);
  }
  
-@@ -1503,7 +1516,16 @@ static void ffs_func_free(struct ffs_function *func)
+@@ -1504,7 +1517,16 @@
  
  	ENTER();
  
@@ -41,7 +47,7 @@ index dcd1c7f..e48c3fc 100644
  	spin_lock_irqsave(&func->ffs->eps_lock, flags);
  	do {
  		if (ep->ep && ep->req)
-@@ -1516,11 +1538,19 @@ static void ffs_func_free(struct ffs_function *func)
+@@ -1517,11 +1539,19 @@
  	ffs_data_put(func->ffs);
  
  	kfree(func->eps);
@@ -66,7 +72,7 @@ index dcd1c7f..e48c3fc 100644
  
  	kfree(func);
  }
-@@ -1859,9 +1889,11 @@ static int __ffs_data_got_strings(struct ffs_data *ffs,
+@@ -1866,9 +1896,11 @@
  				  char *const _data, size_t len)
  {
  	u32 str_count, needed_count, lang_count;
@@ -81,7 +87,7 @@ index dcd1c7f..e48c3fc 100644
  
  	ENTER();
  
-@@ -1889,35 +1921,43 @@ static int __ffs_data_got_strings(struct ffs_data *ffs,
+@@ -1896,35 +1928,43 @@
  		return 0;
  	}
  
@@ -151,7 +157,7 @@ index dcd1c7f..e48c3fc 100644
  	/* For each language */
  	data += 16;
  	len -= 16;
-@@ -1927,9 +1967,9 @@ static int __ffs_data_got_strings(struct ffs_data *ffs,
+@@ -1934,9 +1974,9 @@
  
  		if (unlikely(len < 3))
  			goto error_free;
@@ -164,7 +170,7 @@ index dcd1c7f..e48c3fc 100644
  
  		data += 2;
  		len -= 2;
-@@ -1952,18 +1992,18 @@ static int __ffs_data_got_strings(struct ffs_data *ffs,
+@@ -1959,18 +1999,18 @@
  				 * function to configuration so for
  				 * now just leave garbage here.
  				 */
@@ -188,7 +194,7 @@ index dcd1c7f..e48c3fc 100644
  
  	} while (--lang_count);
  
-@@ -1978,6 +2018,7 @@ static int __ffs_data_got_strings(struct ffs_data *ffs,
+@@ -1985,6 +2025,7 @@
  	return 0;
  
  error_free:
@@ -196,7 +202,7 @@ index dcd1c7f..e48c3fc 100644
  	kfree(stringtabs);
  error:
  	kfree(_data);
-@@ -2189,17 +2230,43 @@ static int ffs_func_bind(struct usb_configuration *c,
+@@ -2196,17 +2237,43 @@
  
  	int ret;
  
@@ -251,7 +257,7 @@ index dcd1c7f..e48c3fc 100644
  
  	ENTER();
  
-@@ -2207,21 +2274,16 @@ static int ffs_func_bind(struct usb_configuration *c,
+@@ -2214,21 +2281,16 @@
  	if (unlikely(!(full | high)))
  		return -ENOTSUPP;
  
@@ -279,7 +285,7 @@ index dcd1c7f..e48c3fc 100644
  
  	/*
  	 * Go through all the endpoint descriptors and allocate
-@@ -2229,10 +2291,10 @@ static int ffs_func_bind(struct usb_configuration *c,
+@@ -2236,10 +2298,10 @@
  	 * numbers without worrying that it may be described later on.
  	 */
  	if (likely(full)) {
@@ -293,7 +299,7 @@ index dcd1c7f..e48c3fc 100644
  				   __ffs_func_bind_do_descs, func);
  		if (unlikely(ret < 0))
  			goto error;
-@@ -2241,10 +2303,10 @@ static int ffs_func_bind(struct usb_configuration *c,
+@@ -2248,10 +2310,10 @@
  	}
  
  	if (likely(high)) {
@@ -307,7 +313,7 @@ index dcd1c7f..e48c3fc 100644
  				   __ffs_func_bind_do_descs, func);
  	}
  
-@@ -2255,7 +2317,7 @@ static int ffs_func_bind(struct usb_configuration *c,
+@@ -2262,7 +2324,7 @@
  	 */
  	ret = ffs_do_descs(ffs->fs_descs_count +
  			   (high ? ffs->hs_descs_count : 0),

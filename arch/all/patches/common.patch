@@ -11,11 +11,11 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
  scripts/Makefile.build              |    1 +
  7 files changed, 47 insertions(+), 5 deletions(-)
 
-diff --git a/crypto/shash.c b/crypto/shash.c
-index 9100912..5ec0ebd 100644
---- a/crypto/shash.c
-+++ b/crypto/shash.c
-@@ -67,7 +67,8 @@ EXPORT_SYMBOL_GPL(crypto_shash_setkey);
+Index: linux/crypto/shash.c
+===================================================================
+--- linux.orig/crypto/shash.c	2012-09-06 14:07:04.858905273 -0400
++++ linux/crypto/shash.c	2012-09-06 14:07:48.686354288 -0400
+@@ -67,7 +67,8 @@
  static inline unsigned int shash_align_buffer_size(unsigned len,
  						   unsigned long mask)
  {
@@ -25,11 +25,11 @@ index 9100912..5ec0ebd 100644
  }
  
  static int shash_update_unaligned(struct shash_desc *desc, const u8 *data,
-diff --git a/mm/slab.c b/mm/slab.c
-index f0bd785..1b55992 100644
---- a/mm/slab.c
-+++ b/mm/slab.c
-@@ -310,7 +310,8 @@ static __always_inline int index_of(const size_t size)
+Index: linux/mm/slab.c
+===================================================================
+--- linux.orig/mm/slab.c	2012-09-06 14:07:04.870905123 -0400
++++ linux/mm/slab.c	2012-09-06 14:07:48.686354288 -0400
+@@ -342,7 +342,8 @@
  {
  	extern void __bad_size(void);
  
@@ -38,37 +38,37 @@ index f0bd785..1b55992 100644
 +	if (1) {
  		int i = 0;
  
- #define CACHE(x) \diff --git a/drivers/mmc/host/mmci.c b/drivers/mmc/host/mmci.c
-diff --git a/scripts/Kbuild.include b/scripts/Kbuild.include
-index d897278..f09c26d 100644
---- a/scripts/Kbuild.include
-+++ b/scripts/Kbuild.include
-@@ -106,9 +106,44 @@ as-option = $(call try-run,\
+ #define CACHE(x) \
+Index: linux/scripts/Kbuild.include
+===================================================================
+--- linux.orig/scripts/Kbuild.include	2012-09-06 14:07:04.890904871 -0400
++++ linux/scripts/Kbuild.include	2012-09-06 14:09:05.741385626 -0400
+@@ -106,9 +106,44 @@
  as-instr = $(call try-run,\
- 	/bin/echo -e "$(1)" | $(CC) $(KBUILD_AFLAGS) -c -xassembler -o "$$TMP" -,$(2),$(3))
+ 	printf "%b\n" "$(1)" | $(CC) $(KBUILD_AFLAGS) -c -xassembler -o "$$TMP" -,$(2),$(3))
  
 +# Test for clang
-+ifeq ($(shell $(CC) -v 2>/dev/null | grep "clang version" | wc -l), 1)
++ifeq ($(shell $(CC) -v 2>/dev/null | grep -c "clang version"), 1)
 +
  # cc-option
  # Usage: cflags-y += $(call cc-option,-march=winchip-c6,-march=i586)
 +cc-option = $(call try-run,\
-+	$(CC) $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) $(1) -c -xc /dev/null -o "$$TMP" | grep "argument unused during compilation: '$(1)'" | xargs -I{} test -z "{}",$(1),$(2))
-+
++	$(CC) $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) $(1) -c -xc /dev/null -o "$$TMP" 2>&1 | grep -q "argument unused during compilation: '$(1)'",$(2),$(1))
+ 
 +# cc-option-yn
 +# Usage: flag := $(call cc-option-yn,-march=winchip-c6)
 +cc-option-yn = $(call try-run,\
-+	$(CC) $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) $(1) -c -xc /dev/null -o "$$TMP" | grep "argument unused during compilation: '$(1)'" | xargs -I{} test -z "{}",y,n)
++	$(CC) $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) $(1) -c -xc /dev/null -o "$$TMP" 2>&1 | grep -q "argument unused during compilation: '$(1)'",n,y)
 +
 +# cc-option-align
 +# Prefix align with either -falign or -malign
 +cc-option-align = $(subst -functions=0,,\
 +	$(call cc-option,-falign-functions=0,-malign-functions=0))
- 
++
 +# cc-disable-warning
 +# Usage: cflags-y += $(call cc-disable-warning,unused-but-set-variable)
 +cc-disable-warning = $(call try-run,\
-+	$(CC) $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) -W$(strip $(1)) -c -xc /dev/null -o "$$TMP" | grep "argument unused during compilation: '$(1)'" | xargs -I{} test -z "{}",-Wno-$(strip $(1)))
++	$(CC) $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) -W$(strip $(1)) -c -xc /dev/null -o "$$TMP" 2>&1 | grep -q "argument unused during compilation: '$(1)'",,-Wno-$(strip $(1)))
 +
 +# cc-version and cc-fullversion are not used in clang supported targets
 +
@@ -88,7 +88,7 @@ index d897278..f09c26d 100644
  cc-option = $(call try-run,\
  	$(CC) $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) $(1) -c -xc /dev/null -o "$$TMP",$(1),$(2))
  
-@@ -135,6 +170,7 @@ cc-version = $(shell $(CONFIG_SHELL) $(srctree)/scripts/gcc-version.sh $(CC))
+@@ -135,6 +170,7 @@
  # Usage gcc-ver := $(call cc-fullversion)
  cc-fullversion = $(shell $(CONFIG_SHELL) \
  	$(srctree)/scripts/gcc-version.sh -p $(CC))
@@ -96,11 +96,11 @@ index d897278..f09c26d 100644
  
  # cc-ifversion
  # Usage:  EXTRA_CFLAGS += $(call cc-ifversion, -lt, 0402, -O1)
-diff --git a/Makefile b/Makefile
-index 1932984..6e6ade9 100644
---- a/Makefile
-+++ b/Makefile
-@@ -371,7 +371,7 @@ KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
+Index: linux/Makefile
+===================================================================
+--- linux.orig/Makefile	2012-09-06 14:07:04.878905022 -0400
++++ linux/Makefile	2012-09-06 14:07:48.686354288 -0400
+@@ -366,7 +366,7 @@
  		   -fno-delete-null-pointer-checks
  KBUILD_AFLAGS_KERNEL :=
  KBUILD_CFLAGS_KERNEL :=
@@ -109,33 +109,23 @@ index 1932984..6e6ade9 100644
  KBUILD_AFLAGS_MODULE  := -DMODULE
  KBUILD_CFLAGS_MODULE  := -DMODULE
  KBUILD_LDFLAGS_MODULE := -T $(srctree)/scripts/module-common.lds
-
-@@ -577,7 +577,7 @@ endif
- 
- # This warning generated too much noise in a regular build.
- # Use make W=1 to enable this warning (see scripts/Makefile.build)
--KBUILD_CFLAGS += $(call cc-disable-warning, unused-but-set-variable)
-+KBUILD_CFLAGS += $(call cc-disable-warning, unused-value)
- 
- ifdef CONFIG_FRAME_POINTER
- KBUILD_CFLAGS  += -fno-omit-frame-pointer -fno-optimize-sibling-calls
-diff --git a/scripts/Makefile.build b/scripts/Makefile.build
-index d2b366c..039e0b4 100644
---- a/scripts/Makefile.build
-+++ b/scripts/Makefile.build
-@@ -69,6 +69,7 @@ warning-1 += -Wmissing-prototypes
+Index: linux/scripts/Makefile.build
+===================================================================
+--- linux.orig/scripts/Makefile.build	2012-09-06 14:07:04.902904721 -0400
++++ linux/scripts/Makefile.build	2012-09-06 14:07:48.686354288 -0400
+@@ -69,6 +69,7 @@
  warning-1 += -Wold-style-definition
  warning-1 += $(call cc-option, -Wmissing-include-dirs)
  warning-1 += $(call cc-option, -Wunused-but-set-variable)
 +warning-1 += $(call cc-option, -Wunused-value)
+ warning-1 += $(call cc-disable-warning, missing-field-initializers)
  
  warning-2 := -Waggregate-return
-
-diff --git a/include/asm-generic/cmpxchg-local.h b/include/asm-generic/cmpxchg-local.h
-index 2533fdd..caea127 100644
---- a/include/asm-generic/cmpxchg-local.h
-+++ b/include/asm-generic/cmpxchg-local.h
-@@ -41,6 +41,7 @@ static inline unsigned long __cmpxchg_local_generic(volatile void *ptr,
+Index: linux/include/asm-generic/cmpxchg-local.h
+===================================================================
+--- linux.orig/include/asm-generic/cmpxchg-local.h	2012-09-06 14:07:04.930904368 -0400
++++ linux/include/asm-generic/cmpxchg-local.h	2012-09-06 14:07:48.686354288 -0400
+@@ -41,6 +41,7 @@
  		break;
  	default:
  		wrong_size_cmpxchg(ptr);
@@ -143,11 +133,11 @@ index 2533fdd..caea127 100644
  	}
  	local_irq_restore(flags);
  	return prev;
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 311be90..544bc0e 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -336,12 +336,14 @@ static inline void compound_unlock(struct page *page)
+Index: linux/include/linux/mm.h
+===================================================================
+--- linux.orig/include/linux/mm.h	2012-09-06 14:07:04.914904568 -0400
++++ linux/include/linux/mm.h	2012-09-06 14:07:48.686354288 -0400
+@@ -336,12 +336,14 @@
  
  static inline unsigned long compound_lock_irqsave(struct page *page)
  {

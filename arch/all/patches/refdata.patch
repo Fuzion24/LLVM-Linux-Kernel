@@ -14,11 +14,11 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
  sound/arm/aaci.c                     |    9 +++++++--
  8 files changed, 21 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/input/serio/ambakmi.c b/drivers/input/serio/ambakmi.c
-index 8407d5b..e60eaa9 100644
---- a/drivers/input/serio/ambakmi.c
-+++ b/drivers/input/serio/ambakmi.c
-@@ -197,7 +197,7 @@ static struct amba_id amba_kmi_idtable[] = {
+Index: linux/drivers/input/serio/ambakmi.c
+===================================================================
+--- linux.orig/drivers/input/serio/ambakmi.c	2012-09-05 12:03:39.821231160 -0400
++++ linux/drivers/input/serio/ambakmi.c	2012-09-05 12:13:27.821838984 -0400
+@@ -197,7 +197,7 @@
  
  MODULE_DEVICE_TABLE(amba, amba_kmi_idtable);
  
@@ -27,11 +27,11 @@ index 8407d5b..e60eaa9 100644
  	.drv		= {
  		.name	= "kmi-pl050",
  		.owner	= THIS_MODULE,
-diff --git a/drivers/mmc/host/sdhci-pxav2.c b/drivers/mmc/host/sdhci-pxav2.c
-index dbb75bf..c3c4719 100644
---- a/drivers/mmc/host/sdhci-pxav2.c
-+++ b/drivers/mmc/host/sdhci-pxav2.c
-@@ -214,7 +214,7 @@ static int __devexit sdhci_pxav2_remove(struct platform_device *pdev)
+Index: linux/drivers/mmc/host/sdhci-pxav2.c
+===================================================================
+--- linux.orig/drivers/mmc/host/sdhci-pxav2.c	2012-09-05 12:03:39.825231110 -0400
++++ linux/drivers/mmc/host/sdhci-pxav2.c	2012-09-05 12:13:27.821838984 -0400
+@@ -265,7 +265,7 @@
  	return 0;
  }
  
@@ -40,11 +40,11 @@ index dbb75bf..c3c4719 100644
  	.driver		= {
  		.name	= "sdhci-pxav2",
  		.owner	= THIS_MODULE,
-diff --git a/drivers/mmc/host/sdhci-pxav3.c b/drivers/mmc/host/sdhci-pxav3.c
-index f296956..9e363bb 100644
---- a/drivers/mmc/host/sdhci-pxav3.c
-+++ b/drivers/mmc/host/sdhci-pxav3.c
-@@ -260,7 +260,7 @@ static int __devexit sdhci_pxav3_remove(struct platform_device *pdev)
+Index: linux/drivers/mmc/host/sdhci-pxav3.c
+===================================================================
+--- linux.orig/drivers/mmc/host/sdhci-pxav3.c	2012-09-05 12:03:39.825231110 -0400
++++ linux/drivers/mmc/host/sdhci-pxav3.c	2012-09-05 12:13:27.821838984 -0400
+@@ -309,7 +309,7 @@
  	return 0;
  }
  
@@ -52,12 +52,12 @@ index f296956..9e363bb 100644
 +static struct platform_driver sdhci_pxav3_driver __refdata = {
  	.driver		= {
  		.name	= "sdhci-pxav3",
- 		.owner	= THIS_MODULE,
-diff --git a/drivers/net/ethernet/smsc/smc91x.c b/drivers/net/ethernet/smsc/smc91x.c
-index 64ad3ed..459835a 100644
---- a/drivers/net/ethernet/smsc/smc91x.c
-+++ b/drivers/net/ethernet/smsc/smc91x.c
-@@ -2406,7 +2406,7 @@ static struct dev_pm_ops smc_drv_pm_ops = {
+ #ifdef CONFIG_OF
+Index: linux/drivers/net/ethernet/smsc/smc91x.c
+===================================================================
+--- linux.orig/drivers/net/ethernet/smsc/smc91x.c	2012-09-05 12:03:39.829231060 -0400
++++ linux/drivers/net/ethernet/smsc/smc91x.c	2012-09-05 12:13:27.821838984 -0400
+@@ -2405,7 +2405,7 @@
  	.resume		= smc_drv_resume,
  };
  
@@ -66,11 +66,11 @@ index 64ad3ed..459835a 100644
  	.probe		= smc_drv_probe,
  	.remove		= __devexit_p(smc_drv_remove),
  	.driver		= {
-diff --git a/drivers/mmc/host/mmci.c b/drivers/mmc/host/mmci.c
-index 0d955ff..667ce16 100644
---- a/drivers/mmc/host/mmci.c
-+++ b/drivers/mmc/host/mmci.c
-@@ -1506,9 +1506,15 @@ static struct amba_id mmci_ids[] = {
+Index: linux/drivers/mmc/host/mmci.c
+===================================================================
+--- linux.orig/drivers/mmc/host/mmci.c	2012-09-05 12:03:39.825231110 -0400
++++ linux/drivers/mmc/host/mmci.c	2012-09-05 12:13:27.821838984 -0400
+@@ -1668,9 +1668,15 @@
  	{ 0, 0 },
  };
  
@@ -87,12 +87,12 @@ index 0d955ff..667ce16 100644
 +static struct amba_driver mmci_driver __refdata = {
  	.drv		= {
  		.name	= DRIVER_NAME,
- 	},
-diff --git a/sound/arm/aaci.c b/sound/arm/aaci.c
-index b37b702a..c16beea 100644
---- a/sound/arm/aaci.c
-+++ b/sound/arm/aaci.c
-@@ -1097,9 +1097,14 @@ static struct amba_id aaci_ids[] = {
+ 		.pm	= &mmci_dev_pm_ops,
+Index: linux/sound/arm/aaci.c
+===================================================================
+--- linux.orig/sound/arm/aaci.c	2012-09-05 12:03:39.849230806 -0400
++++ linux/sound/arm/aaci.c	2012-09-05 12:13:27.821838984 -0400
+@@ -1097,9 +1097,14 @@
  	{ 0, 0 },
  };
  
@@ -109,11 +109,11 @@ index b37b702a..c16beea 100644
  	.drv		= {
  		.name	= DRIVER_NAME,
  	},
-diff --git a/drivers/net/ethernet/smsc/smsc911x.c b/drivers/net/ethernet/smsc/smsc911x.c
-index 1466e5d..2eabcd8 100644
---- a/drivers/net/ethernet/smsc/smsc911x.c
-+++ b/drivers/net/ethernet/smsc/smsc911x.c
-@@ -2571,7 +2571,7 @@ static const struct of_device_id smsc911x_dt_ids[] = {
+Index: linux/drivers/net/ethernet/smsc/smsc911x.c
+===================================================================
+--- linux.orig/drivers/net/ethernet/smsc/smsc911x.c	2012-09-05 12:03:39.829231060 -0400
++++ linux/drivers/net/ethernet/smsc/smsc911x.c	2012-09-05 12:13:27.825838937 -0400
+@@ -2574,7 +2574,7 @@
  };
  MODULE_DEVICE_TABLE(of, smsc911x_dt_ids);
  
@@ -122,11 +122,11 @@ index 1466e5d..2eabcd8 100644
  	.probe = smsc911x_drv_probe,
  	.remove = __devexit_p(smsc911x_drv_remove),
  	.driver = {
-diff --git a/drivers/net/ethernet/smsc/smc911x.c b/drivers/net/ethernet/smsc/smc911x.c
-index 8814b2f..f548c99 100644
---- a/drivers/net/ethernet/smsc/smc911x.c
-+++ b/drivers/net/ethernet/smsc/smc911x.c
-@@ -2184,7 +2184,7 @@ static int smc911x_drv_resume(struct platform_device *dev)
+Index: linux/drivers/net/ethernet/smsc/smc911x.c
+===================================================================
+--- linux.orig/drivers/net/ethernet/smsc/smc911x.c	2012-09-05 12:03:39.825231110 -0400
++++ linux/drivers/net/ethernet/smsc/smc911x.c	2012-09-05 12:13:27.825838937 -0400
+@@ -2184,7 +2184,7 @@
  	return 0;
  }
  
