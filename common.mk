@@ -44,6 +44,7 @@ error1	= ( echo Error: ${1}; false )
 assert	= [ ${1} ] || $(call error1,${2})
 #assert	= echo "${1} --> ${2}"
 
+applied	= ( [ -d ${1} ] && cd ${1} && quilt applied || true )
 patch	= [ ! -d ${1} ] || (cd ${1} && [ ! -e patches ] || [ ! `quilt unapplied` ] || quilt push -a)
 unpatch	= [ ! -d ${1} ] || (cd ${1} && [ ! -e patches ] || [ ! `quilt applied` ] || quilt pop -af)
 

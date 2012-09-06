@@ -125,7 +125,7 @@ ${LLVMSTATE}/clang-patch: ${LLVMSTATE}/clang-fetch
 
 ${LLVM_TARGETS_APPLIED}: %-patch-applied:
 	@$(call banner,"Patches applied for $*")
-	@(cd ${LLVMSRCDIR}/$* && quilt applied || echo "No patches applied" )
+	@$(call applied,${LLVMSRCDIR}/$*)
 
 llvm-configure: ${LLVMSTATE}/llvm-configure
 ${LLVMSTATE}/llvm-configure: ${LLVMSTATE}/llvm-patch
@@ -171,8 +171,8 @@ ${LLVMSTATE}/clang-build: ${LLVMSTATE}/llvm-build ${LLVMSTATE}/clang-configure
 llvm-reset: ${LLVMSTATE}/clang-fetch ${LLVMSTATE}/compilerrt-fetch
 	@$(call banner,Removing LLVM patches...)
 	@$(call unpatch,${LLVMDIR})
-	#(cd ${LLVMDIR} && git reset --hard HEAD)
-	#(cd ${LLVMDIR}/projects/compiler-rt && git reset --hard HEAD)
+#	(cd ${LLVMDIR} && git reset --hard HEAD)
+#	(cd ${LLVMDIR}/projects/compiler-rt && git reset --hard HEAD)
 	@rm -f $(addprefix ${LLVMSTATE}/,llvm-patch llvm-configure llvm-build)
 
 llvm-clean-noreset:
@@ -192,7 +192,7 @@ llvm-raze: llvm-clean-noreset clang-raze
 clang-reset: ${LLVMSTATE}/clang-fetch
 	@$(call banner,Removing Clang patches...)
 	@$(call unpatch,${CLANGDIR})
-	#(cd ${CLANGDIR} && git reset --hard HEAD)
+#	(cd ${CLANGDIR} && git reset --hard HEAD)
 	@rm -f $(addprefix ${LLVMSTATE}/,clang-patch clang-configure clang-build)
 
 clang-clean-noreset: llvm-clean-noreset

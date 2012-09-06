@@ -75,7 +75,7 @@ ${QEMUSTATE}/qemu-patch: ${QEMUSTATE}/qemu-fetch
 
 qemu-patch-applied: %-patch-applied:
 	@$(call banner,"Patches applied for $*")
-	@(cd ${QEMUSRCDIR} && quilt applied || echo "No patches applied" )
+	@$(call applied,${QEMUSRCDIR})
 
 qemu-configure: ${QEMUSTATE}/qemu-configure
 ${QEMUSTATE}/qemu-configure: ${QEMUSTATE}/qemu-patch

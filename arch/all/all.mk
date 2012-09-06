@@ -62,7 +62,8 @@ TMPDIR		= ${TARGETDIR}/tmp
 
 TMPDIRS		+= ${TMPDIR}
 
-add_patches	= $(addprefix ${1}/,$(shell [ -f ${1}/series ] && cat ${1}/series))
+catfile		= ([ -f ${1} ] && cat ${1})
+add_patches	= $(addprefix ${1}/,$(shell $(call catfile,${1}/series.target) || $(call catfile,${1}/series)))
 KERNEL_PATCHES	+= $(call add_patches,${ARCH_ALL_PATCHES})
 
 FILTERFILE	= ${TARGETDIR}/kernel-filter
@@ -88,8 +89,9 @@ KERNEL_TARGETS_GCC	= kernel-gcc-fetch kernel-gcc-patch kernel-gcc-configure kern
 KERNEL_TARGETS_APPLIED	= kernel-patch-applied kernel-gcc-patch-applied
 KERNEL_TARGETS_CLEAN	= kernel-clean kernel-gcc-clean tmp-clean
 KERNEL_TARGETS_VERSION	= kernel-version kernel-gcc-version
+KERNEL_TARGETS_LIST	= list-kernel-patches list-kernel-maintainer
 
-TARGETS			+= ${KERNEL_TARGETS_CLANG} ${KERNEL_TARGETS_GCC} ${KERNEL_TARGETS_APPLIED} ${KERNEL_TARGETS_CLEAN}
+TARGETS			+= ${KERNEL_TARGETS_CLANG} ${KERNEL_TARGETS_GCC} ${KERNEL_TARGETS_APPLIED} ${KERNEL_TARGETS_CLEAN} ${KERNEL_TARGETS_LIST}
 CLEAN_TARGETS		+= ${KERNEL_TARGETS_CLEAN}
 FETCH_TARGETS		+= kernel-fetch kernel-gcc-fetch
 HELP_TARGETS		+= kernel-help
@@ -107,6 +109,10 @@ kernel-help:
 	@echo "* make kernel-[fetch,patch,configure,build,sync,clean]"
 	@echo "* make kernel-gcc-[fetch,patch,configure,build,sync,clean]"
 	@echo "* make kernels		- build kernel with both clang and gcc"
+	@echo "* make list-kernel-patches"
+	@echo "			- List which kernel patches will be applied"
+	@echo "* make list-kernel-maintainer"
+	@echo "			- List which kernel maintainers should be contacted for each patch"
 
 kernel-settings:
 	@echo "# Kernel settings"
@@ -206,7 +212,7 @@ state/kernel-gcc-patch-old: state/kernel-gcc-fetch state/kernel-patch-old
 	$(call state,$@,kernel-gcc-configure)
 
 kernel-quilt: state/kernel-quilt
-state/kernel-quilt:
+state/kernel-quilt: state/kernel-fetch
 	@$(call banner, "Quilting kernel...")
 	@[ -e ${PATCHDIR}/series.target ] || mv ${PATCHDIR}/series ${PATCHDIR}/series.target
 	@( for PATCH in ${KERNEL_PATCHES} ; do \
@@ -239,12 +245,12 @@ state/kernel-gcc-patch: state/kernel-gcc-fetch
 
 kernel-patch-applied:
 	@$(call banner,"Patches applied for Clang kernel")
+	@$(call applied,${KERNELDIR})
 #	@( [ -d ${KERNELDIR} ] && cd ${KERNELDIR} && git status || echo "No patches applied" )
-	@( [ -d ${KERNELDIR} ] && cd ${KERNELDIR} && quilt applied || true )
 
 kernel-gcc-patch-applied:
 	@$(call banner,"Patches applied for gcc kernel")
-	@( [ -d ${KERNELGCC} ] && cd ${KERNELGCC} && quilt applied || true )
+	@$(call applied,${KERNELGCC})
 
 kernel-autopatch: kernel-build state/kernel-copy
 	(cd ${KERNELCOPY} && git reset --hard HEAD && git pull)
@@ -366,6 +372,13 @@ kernel-gcc-version:
 
 list-kernel-patches:
 	@echo ${KERNEL_PATCHES} | sed 's/ /\n/g'
+
+list-kernel-maintainer: state/kernel-quilt
+	@$(call banner,Finding maintainers for patches)
+	@(cd ${KERNELDIR} && for PATCH in ${KERNEL_PATCHES}; do \
+		$(call banner,$$PATCH) ; \
+		./scripts/get_maintainer.pl $$PATCH ; \
+	done)
 
 ${TMPDIR}:
 	@mkdir -p $@
