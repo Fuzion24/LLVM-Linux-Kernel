@@ -215,15 +215,29 @@ kernel-quilt: state/kernel-quilt
 state/kernel-quilt: state/kernel-fetch
 	@$(call banner, "Quilting kernel...")
 	@mkdir -p ${PATCHDIR}
-	@[ -f ${PATCHDIR}/series ] || touch ${PATCHDIR}/series
+# Update series file
 	@[ -e ${PATCHDIR}/series.target ] || mv ${PATCHDIR}/series ${PATCHDIR}/series.target
+	@[ -f ${PATCHDIR}/series ] || touch ${PATCHDIR}/series
+	@diff ${PATCHDIR}/series ${PATCHDIR}/series.target \
+		| perl -ne 'print "$$1\n" if $$hunk>1 && /^< (.*)$$/; $$hunk++ if /^[^<>]/' \
+		>> ${PATCHDIR}/series.target
+# Remove broken patches
+	@[ -d ${PATCHDIR} ] && file ${PATCHDIR}/* | awk -F: '/broken symbolic link to/ {print $$1}'| xargs --no-run-if-empty rm
+# Ignore extra patch files
+	@echo .gitignore > ${PATCHDIR}/.gitignore
+	@echo series >> ${PATCHDIR}/.gitignore
+# Collect patch files and build new series file. Move updated patches back to their proper place.
 	@( for PATCH in ${KERNEL_PATCHES} ; do \
-		PATCHLINK="${PATCHDIR}/`basename $$PATCH`" ; \
-		[ -f $$PATCHLINK ] && mv "$$PATCHLINK" "$$PATCH" ; \
+		PATCHNAME=`basename $$PATCH` ; \
+		echo $$PATCHNAME >> ${PATCHDIR}/.gitignore ; \
+		PATCHLINK="${PATCHDIR}/$$PATCHNAME" ; \
+		[ ! -L $$PATCHLINK ] && [ "$$PATCHLINK" != "$$PATCH" ] && mv "$$PATCHLINK" "$$PATCH" ; \
 		[ -e $$PATCHLINK ] || ln -s "$$PATCH" "$$PATCHLINK" ; \
 		dirname $$PATCH ; \
 	done | grep -v ${PATCHDIR} | uniq | xargs printf "%s/series\n" | xargs cat; \
-	@[ -e ${PATCHDIR}/series ] || cat ${PATCHDIR}/series.target ) > ${PATCHDIR}/series
+		[ -f ${PATCHDIR}/series.target ] && cat ${PATCHDIR}/series.target ) \
+		> ${PATCHDIR}/series
+# Add patches dir to kernel src
 	@[ -e ${KERNELDIR}/patches ] || ln -s ${PATCHDIR} ${KERNELDIR}/patches
 	$(call state,$@,kernel-configure)
 
