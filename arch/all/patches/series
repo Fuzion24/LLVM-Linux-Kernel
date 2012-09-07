@@ -1,5 +1,10 @@
 compiler-clang.patch
-common.patch
+aligned-attribute.patch
+cmpxchg-local-fix-uninitialized-return-code.patch
+disable-clang-integrated-as.patch
+kbuild-clang.patch
+mm-hugepage-return-value.patch
+slab-builtin_contant_p.patch
 vlais-hmac.patch
 vlais-netfilter.patch
 vlais-gadget.patch
