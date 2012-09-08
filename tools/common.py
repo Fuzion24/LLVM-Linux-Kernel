@@ -21,7 +21,7 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
-import os, sys
+import os, sys, re
 
 class Patch:
 	def __init__(self, patchdata):
@@ -29,6 +29,8 @@ class Patch:
 #		replace "/dev/null" "a/dev/null"
 		tmp=patchdata.split("--- a/")[1]
 		self.filename=tmp.split("\n")[0]
+		self.filename=re.sub('\t.*$', '', self.filename)
+		#print 'Filename: '+self.filename
 		hunks=patchdata.split("\n@@ -")
 		self.hunkinfo={}
 		self.header=hunks[0]
@@ -157,6 +159,7 @@ class PatchFile(PatchDict):
 	def __init__(self, patchfile):
 		PatchDict.__init__(self)
 		self.filename=patchfile
+		#print "Patch file: "+patchfile
 		patchdata=open(patchfile).read()
 		# Strip ending newline
 		if patchdata.endswith("\n"):
@@ -170,6 +173,24 @@ class PatchFile(PatchDict):
 				# add back the "diff"
 				if p[0:10] !="diff --git":
 					p="diff --git"+p+"\n"
+				else:
+					p+="\n"
+				newpatch=Patch(p)
+				PatchDict.add(self, newpatch)
+		elif "\nIndex: " in patchdata:
+			print "POSIX patch"
+			# Modify patch format to git style
+			patchdata=re.sub('--- [^/]+', '--- a', patchdata)
+			patchdata=re.sub('--- [^/]+', '--- a', patchdata)
+			patchdata=re.sub('\+\+\+ [^/]+', '+++ b', patchdata)
+			# get rid of the header
+			patches=patchdata.split("\nIndex: ")[1:]
+			for p in patches:
+				# add back the "Index"
+				p=re.sub('^[^/]+', '', p)
+				filename=p.split("\n")[0]
+				if p[0:7] !="Index: ":
+					p="diff a"+filename+" b"+p+"\n"
 				else:
 					p+="\n"
 				newpatch=Patch(p)
