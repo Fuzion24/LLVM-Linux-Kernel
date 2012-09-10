@@ -18,7 +18,7 @@ Index: linux/crypto/shash.c
  {
 -	return len + (mask & ~(__alignof__(u8 __attribute__ ((aligned))) - 1));
 +	typedef __attribute__ ((aligned)) u8 u8_aligned;
-+	return len + (mask & ~(__alignof__(u8_aligned - 1));
++	return len + (mask & ~(__alignof__(u8_aligned) - 1));
  }
  
  static int shash_update_unaligned(struct shash_desc *desc, const u8 *data,
