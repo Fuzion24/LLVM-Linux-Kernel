@@ -1,4 +1,4 @@
-Add __refdata to fix section mismatches in arm drivers.
+Add __refdata to fix section mismatches in drivers.
 
 Added to serio, mmc, smc91xx, and aaci drivers
 

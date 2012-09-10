@@ -1,6 +1,6 @@
 Add Clang support to Kbuild
 
-Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+Do not upstream this patch. Clang behavior is likely to change
 ---
  Kbuild.include |   36 ++++++++++++++++++++++++++++++++++++
  Makefile.build |    1 +

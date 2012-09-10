@@ -1,5 +1,6 @@
-Add support for clang to compiler.h
+Add support for clang to compiler.h and new compiler-clang.h
 
+Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 ---
  compiler-clang.h |   12 ++++++++++++
  compiler.h       |    7 +++++++

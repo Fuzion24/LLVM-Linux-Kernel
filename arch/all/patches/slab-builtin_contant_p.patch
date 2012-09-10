@@ -1,6 +1,6 @@
 Use of __builtin_constant_p(size) breaks Clang compile
 
-Do not upstream this patch
+Do not upstream this patch as is.
 ---
  slab.c |    3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
