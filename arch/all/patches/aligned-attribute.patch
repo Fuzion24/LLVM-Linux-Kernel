@@ -1,7 +1,7 @@
-Remove unessessary aligned attribute which breaks Clang
+__attribute((aligned)) can only be used in type definitions, but
+gcc allows it to be applied to a defined type.
 
 This patch fixes errors when compiling the Linux kernel with Clang
-This patch probably can't be sent upstream
 
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 ---
@@ -12,13 +12,13 @@ Index: linux/crypto/shash.c
 ===================================================================
 --- linux.orig/crypto/shash.c	2012-09-06 14:07:04.858905273 -0400
 +++ linux/crypto/shash.c	2012-09-06 14:07:48.686354288 -0400
-@@ -67,7 +67,8 @@
+@@ -67,7 +67,8 @@ 
  static inline unsigned int shash_align_buffer_size(unsigned len,
  						   unsigned long mask)
  {
 -	return len + (mask & ~(__alignof__(u8 __attribute__ ((aligned))) - 1));
-+	// FIXME (aligned not supported) - return len + (mask & ~(__alignof__(u8 __attribute__ ((aligned))) - 1));
-+	return len + (mask & ~(__alignof__(u8) - 1));
++	typedef __attribute__ ((aligned)) u8 u8_aligned;
++	return len + (mask & ~(__alignof__(u8_aligned - 1));
  }
  
  static int shash_update_unaligned(struct shash_desc *desc, const u8 *data,
