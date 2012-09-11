@@ -1,21 +1,10 @@
-include Kbuild.include
-
 CLANG=../../../toolchain/clang/install/bin/clang
+GCC=gcc
 
 all: test-gcc test-clang
 
 test-gcc:
-	@echo "** Testing for GCC **"
-	@echo "no-reorder-blocks: " $(call cc-option,-fno-reorder-blocks,)
-	@echo "unused-but-set-variable: " $(call cc-option,-Wno-unused-but-set-variable,)
-	@echo "foo: " $(call cc-option,-Wfoo,)
-	@echo "Disable unused-but-set-variable: " $(call cc-disable-warning, unused-but-set-variable)
-	@echo
+	@CC=${GCC} srctree=. make -f test.mk
 
 test-clang:
-	@echo "** Testing for Clang **"
-	@CC=${CLANG} echo "no-reorder-blocks: " $(call cc-option,-fno-reorder-blocks,)
-	@CC=${CLANG} echo "unused-but-set-variable: " $(call cc-option,-Wno-unused-but-set-variable,)
-	@CC=${CLANG} echo "foo: " $(call cc-option,-Wfoo,)
-	@CC=${CLANG} echo "Disable unused-but-set-variable: " $(call cc-disable-warning, unused-but-set-variable)
-	@echo
+	@CC=${CLANG} srctree=. make -f test.mk
