@@ -2,67 +2,53 @@ Add Clang support to Kbuild
 
 Do not upstream this patch. Clang behavior is likely to change
 ---
- Kbuild.include |   36 ++++++++++++++++++++++++++++++++++++
+ Kbuild.include |   23 +++++++++++++++++-----
  Makefile.build |    1 +
- 2 files changed, 37 insertions(+)
+ 2 files changed, 18 insertions(+), 5 deletions(-)
 
 Index: linux/scripts/Kbuild.include
 ===================================================================
 --- linux.orig/scripts/Kbuild.include	2012-09-06 14:07:04.890904871 -0400
 +++ linux/scripts/Kbuild.include	2012-09-06 14:09:05.741385626 -0400
-@@ -106,9 +106,44 @@
+@@ -106,9 +106,25 @@ as-option = $(call try-run,\
  as-instr = $(call try-run,\
  	printf "%b\n" "$(1)" | $(CC) $(KBUILD_AFLAGS) -c -xassembler -o "$$TMP" -,$(2),$(3))
  
 +# Test for clang
-+ifeq ($(shell $(CC) -v 2>/dev/null | grep -c "clang version"), 1)
-+
- # cc-option
- # Usage: cflags-y += $(call cc-option,-march=winchip-c6,-march=i586)
-+cc-option = $(call try-run,\
-+	$(CC) $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) $(1) -c -xc /dev/null -o "$$TMP" 2>&1 | grep -q "argument unused during compilation: '$(1)'",$(2),$(1))
- 
-+# cc-option-yn
-+# Usage: flag := $(call cc-option-yn,-march=winchip-c6)
-+cc-option-yn = $(call try-run,\
-+	$(CC) $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) $(1) -c -xc /dev/null -o "$$TMP" 2>&1 | grep -q "argument unused during compilation: '$(1)'",n,y)
-+
-+# cc-option-align
-+# Prefix align with either -falign or -malign
-+cc-option-align = $(subst -functions=0,,\
-+	$(call cc-option,-falign-functions=0,-malign-functions=0))
++ifeq ($(shell $(CC) -v 2>&1 | grep -c "clang version"), 1)
 +
 +# cc-disable-warning
 +# Usage: cflags-y += $(call cc-disable-warning,unused-but-set-variable)
 +cc-disable-warning = $(call try-run,\
-+	$(CC) $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) -W$(strip $(1)) -c -xc /dev/null -o "$$TMP" 2>&1 | grep -q "argument unused during compilation: '$(1)'",,-Wno-$(strip $(1)))
-+
-+# cc-version and cc-fullversion are not used in clang supported targets
-+
-+# cc-version
-+# Usage gcc-ver := $(call cc-version)
-+cc-version = 0
-+
-+# cc-fullversion
-+# Usage gcc-ver := $(call cc-fullversion)
-+cc-fullversion = 0
++	$(CC) $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) -W$(strip $(1)) -c -xc /dev/null -o "$$TMP" 2>&1 | grep -q "unknown warning option",,-Wno-$(strip $(1)))
 +
 +# Otherwise assume GCC or something compatible
 +else
 +
-+# cc-option
-+# Usage: cflags-y += $(call cc-option,-march=winchip-c6,-march=i586)
++# cc-disable-warning
++# Usage: cflags-y += $(call cc-disable-warning,unused-but-set-variable)
++cc-disable-warning = $(call try-run,\
++	$(CC) $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) -W$(strip $(1)) -c -xc /dev/null -o "$$TMP",-Wno-$(strip $(1)))
++
++endif
+ # cc-option
+ # Usage: cflags-y += $(call cc-option,-march=winchip-c6,-march=i586)
+-
  cc-option = $(call try-run,\
  	$(CC) $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) $(1) -c -xc /dev/null -o "$$TMP",$(1),$(2))
  
-@@ -135,6 +170,7 @@
- # Usage gcc-ver := $(call cc-fullversion)
- cc-fullversion = $(shell $(CONFIG_SHELL) \
- 	$(srctree)/scripts/gcc-version.sh -p $(CC))
-+endif
+@@ -122,11 +138,6 @@ cc-option-yn = $(call try-run,\
+ cc-option-align = $(subst -functions=0,,\
+ 	$(call cc-option,-falign-functions=0,-malign-functions=0))
  
- # cc-ifversion
- # Usage:  EXTRA_CFLAGS += $(call cc-ifversion, -lt, 0402, -O1)
+-# cc-disable-warning
+-# Usage: cflags-y += $(call cc-disable-warning,unused-but-set-variable)
+-cc-disable-warning = $(call try-run,\
+-	$(CC) $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) -W$(strip $(1)) -c -xc /dev/null -o "$$TMP",-Wno-$(strip $(1)))
+-
+ # cc-version
+ # Usage gcc-ver := $(call cc-version)
+ cc-version = $(shell $(CONFIG_SHELL) $(srctree)/scripts/gcc-version.sh $(CC))
 Index: linux/scripts/Makefile.build
 ===================================================================
 --- linux.orig/scripts/Makefile.build	2012-09-06 14:07:04.902904721 -0400
