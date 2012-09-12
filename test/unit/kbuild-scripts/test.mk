@@ -22,6 +22,5 @@ all:
 	@echo "conserve-stack:" $(call cc-option,-fconserve-stack,)
 	@echo "delete-null-pointer-checks:" $(call cc-option,-fdelete-null-pointer-checks,)
 	@echo "no-inline-functions-called-once:" $(call cc-option,-fno-inline-functions-called-once,)
-	@echo "no-inline-functions-called-once:" $(call cc-option,-fdelete-null-pointer-checks,)
 	@echo
 
