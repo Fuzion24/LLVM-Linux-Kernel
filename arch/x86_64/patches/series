@@ -2,7 +2,6 @@
 0002-Add-nobits-to-include-linux-linkage.h-.-Patch-from-s.patch
 0003-Change-section-from-__initdata-to-__init-of-include-.patch
 0004-Add-.gnu.linkonc.d.-to-include-asm-generic-vmlinux.l.patch
-0005-Don-t-use-VLAIS-in-lib-libcrc32c.c-.-Patch-from-seri.patch
 0006-Add-noinline_for_stack-to-sound-pci-ac97-ac97_codec..patch
 0007-Add-noinline_for_stack-to-not-core-ethtool.c-.-Patch.patch
 0008-Fix-VLAIS-usage-in-net-netfilter-xt_repldata.h-.-Pat.patch
