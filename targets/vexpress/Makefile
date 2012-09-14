@@ -62,6 +62,7 @@ include ${TARGETDIR}/vexpress-ltp.mk
 include ${CONFIG}
 
 KERNEL_PATCHES	+= $(call add_patches,${TARGETDIR}/patches)
+KERNEL_PATCH_DIR+= ${TARGETDIR}/patches
 
 vexpress-help:
 	@echo "targets/vexpress has these options:"

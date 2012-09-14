@@ -1,4 +1,4 @@
-##############################################################################
+#############################################################################
 # Copyright (c) 2012 Mark Charlebois
 #               2012 Behan Webster
 # 
@@ -41,6 +41,9 @@ endif
 ifeq "${KERNEL_BRANCH}" ""
 KERNEL_BRANCH	= master
 endif
+ifeq "${KERNEL_REPO_PATCHES}" ""
+KERNEL_REPO_PATCHES = ${KERNEL_BRANCH}
+endif
 ifeq "${KERNELDIR}" ""
 KERNELDIR	= ${SRCDIR}/linux
 endif
@@ -65,6 +68,7 @@ TMPDIRS		+= ${TMPDIR}
 catfile		= ([ -f ${1} ] && cat ${1})
 add_patches	= $(addprefix ${1}/,$(shell $(call catfile,${1}/series.target) || $(call catfile,${1}/series)))
 KERNEL_PATCHES	+= $(call add_patches,${ARCH_ALL_PATCHES})
+KERNEL_PATCH_DIR+= ${ARCH_ALL_PATCHES} ${ARCH_ALL_PATCHES}/${KERNEL_REPO_PATCHES}
 
 FILTERFILE	= ${TARGETDIR}/kernel-filter
 TMPFILTERFILE	= ${TMPDIR}/kernel-filter
@@ -218,40 +222,67 @@ state/kernel-quilt: state/kernel-fetch
 # Update series file
 	@[ -f ${PATCHDIR}/series ] || touch ${PATCHDIR}/series
 	@[ -e ${PATCHDIR}/series.target ] || mv ${PATCHDIR}/series ${PATCHDIR}/series.target
+# Append any new patches from the generated series file into series.target
 	@diff ${PATCHDIR}/series ${PATCHDIR}/series.target \
 		| perl -ne 'print "$$1\n" if $$hunk>1 && /^< (.*)$$/; $$hunk++ if /^[^<>]/' \
 		>> ${PATCHDIR}/series.target
-# Remove broken patches
-	@[ -d ${PATCHDIR} ] && file ${PATCHDIR}/* | awk -F: '/broken symbolic link to/ {print $$1}'| xargs --no-run-if-empty rm
-# Ignore extra patch files
+# Remove broken symbolic links to old patches
+	@[ -d ${PATCHDIR} ] && file ${PATCHDIR}/* | awk -F: '/broken symbolic link to/ {print $$1}' | xargs --no-run-if-empty rm
+# Have git ignore extra patch files
 	@echo .gitignore > ${PATCHDIR}/.gitignore
 	@echo series >> ${PATCHDIR}/.gitignore
-# Collect patch files and build new series file. Move updated patches back to their proper place.
-	@( for PATCH in ${KERNEL_PATCHES} ; do \
-		PATCHNAME=`basename $$PATCH` ; \
-		PATCHLINK="${PATCHDIR}/$$PATCHNAME" ; \
-		if [ "$$PATCHLINK" != "$$PATCH" ] ; then  \
-			echo $$PATCHNAME >> ${PATCHDIR}/.gitignore ; \
-			if [ -e "$$PATCHLINK" ] ; then \
-				[ ! -L $$PATCHLINK ] && mv "$$PATCHLINK" "$$PATCH" ; \
-			else \
-				ln -s "$$PATCH" "$$PATCHLINK" ; \
+# Collect patch files and build new series file
+	@for DIR in ${KERNEL_PATCH_DIR} ; do \
+		[ -f $$DIR/series.target ] && cat $$DIR/series.target \
+			|| [ ! -f $$DIR/series ] || cat $$DIR/series ; \
+	done > ${PATCHDIR}/series
+# Move updated patches back to their proper place, and link patch files into target patch dir
+	@REVDIRS=`for DIR in ${KERNEL_PATCH_DIR} ; do echo $$DIR; done | tac`; \
+	for PATCH in `cat ${PATCHDIR}/series` ; do \
+		egrep -q ^$$PATCH$$ ${PATCHDIR}/series.target && continue ; \
+		echo $$PATCH >> ${PATCHDIR}/.gitignore ; \
+		PATCHLINK="${PATCHDIR}/$$PATCH" ; \
+		for DIR in $$REVDIRS ; do \
+			if [ -f "$$DIR/$$PATCH" -a ! -L "$$DIR/$$PATCH" ] ; then \
+				if [ -f "$$PATCHLINK" -a ! -L "$$PATCHLINK" ] ; then \
+					mv -v "$$PATCHLINK" "$$DIR/$$PATCH" ; \
+				fi ; \
+				ln -fsv "$$DIR/$$PATCH" "$$PATCHLINK" ; \
+				break; \
 			fi ; \
-			dirname $$PATCH ; \
-		fi ; \
-	done | uniq | xargs printf "%s/series\n" | xargs cat; \
-		[ -f ${PATCHDIR}/series.target ] && cat ${PATCHDIR}/series.target ) \
-		> ${PATCHDIR}/series
+		done ; \
+	done | sed -e 's|${TARGETDIR}|.|g; s|${TOPDIR}|...|g'
 # Add patches dir to kernel src
 	@[ -e ${KERNELDIR}/patches ] || ln -s ${PATCHDIR} ${KERNELDIR}/patches
 	$(call state,$@,kernel-patch)
+
+list-kernel-patches: kernel-quilt
+	@REVDIRS=`for DIR in ${KERNEL_PATCH_DIR} ; do echo $$DIR; done | tac`; \
+	for PATCH in `cat ${PATCHDIR}/series` ; do \
+		for DIR in $$REVDIRS ; do \
+			if [ -f "$$DIR/$$PATCH" -a ! -L "$$DIR/$$PATCH" ] ; then \
+				echo "$$DIR/$$PATCH" ; \
+				break; \
+			fi ; \
+		done ; \
+	done
+
+kernel-quilt-clean:
+	@rm -f state/kernel-quilt
+	$(MAKE) kernel-quilt
+	@for FILE in ${PATCHDIR}/* ; do \
+		[ ! -L $$FILE ] || rm $$FILE; \
+	done
+	@[ ! -f ${PATCHDIR}/series.target ] || rm -f ${PATCHDIR}/series
+	@rm -f ${PATCHDIR}/.gitignore
+	@rm -f state/kernel-quilt
+	@$(call banner,Quilting cleaned)
 
 kernel-patch: state/kernel-patch
 state/kernel-patch: state/kernel-fetch
 	${MAKE} state/kernel-quilt
 	@[ -e ${KERNELDIR}/patches ] || ln -s ${PATCHDIR} ${KERNELDIR}/patches
 	@$(call banner, "Patching kernel...")
-#	(cd ${KERNELDIR} && quilt unapplied && quilt push -a)
 	@$(call patch,${KERNELDIR})
 	$(call state,$@,kernel-configure)
 
@@ -391,7 +422,7 @@ kernel-version:
 kernel-gcc-version:
 	@$(call get-kernel-version,${KERNELGCC})
 
-list-kernel-patches:
+list-kernel-patches-old:
 	@echo ${KERNEL_PATCHES} | sed 's/ /\n/g'
 
 list-kernel-maintainer: state/kernel-quilt

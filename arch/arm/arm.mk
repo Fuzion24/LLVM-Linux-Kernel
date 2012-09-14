@@ -56,6 +56,7 @@ endif
 endif
 
 KERNEL_PATCHES	+= $(call add_patches,${ARCH_ARM_PATCHES})
+KERNEL_PATCH_DIR+= ${ARCH_ARM_PATCHES} ${ARCH_ARM_PATCHES}/${KERNEL_REPO_PATCHES}
 
 HELP_TARGETS	+= arm-help
 SETTINGS_TARGETS+= arm-settings

@@ -32,6 +32,7 @@ KERNEL_GIT	= git://codeaurora.org/kernel/msm.git
 KERNELDIR	= ${SRCDIR}/msm
 
 KERNEL_PATCHES	+= $(call add_patches,${TARGETDIR}/patches)
+KERNEL_PATCH_DIR+= ${TARGETDIR}/patches
 
 EXTRAFLAGS	= 
 #EXTRAFLAGS	= -Iarch/arm/mach-msm

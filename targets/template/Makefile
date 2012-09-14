@@ -28,6 +28,7 @@ TOPDIR		= $(realpath ${TARGETDIR}/../..)
 KERNEL_CFG	= ${TARGETDIR}/config_template
 
 KERNEL_PATCHES     += $(call add_patches,${TARGETDIR}/patches)
+KERNEL_PATCH_DIR+= ${TARGETDIR}/patches
 
 all: bailout_remove prep kernel-build
 .PHONY: clean mrproper
