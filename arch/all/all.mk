@@ -324,7 +324,7 @@ patch-dry-run2:
 kernel-reset: state/kernel-fetch
 	${MAKE} -C ${KERNELDIR} clean
 	@$(call unpatch,${KERNELDIR})
-	@(cd ${KERNELDIR} && [ ! -d patches ] && git reset --hard HEAD && git clean -d -f) || true
+	@(cd ${KERNELDIR} && git reset --hard HEAD && git clean -d -f) || true
 	@rm -f $(addprefix ${STATEDIR}/,kernel-patch kernel-quilt kernel-configure kernel-build )
 
 kernel-gcc-reset: state/kernel-gcc-fetch
