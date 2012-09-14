@@ -31,9 +31,6 @@ KERNEL_BRANCH	= msm-3.4
 KERNEL_GIT	= git://codeaurora.org/kernel/msm.git
 KERNELDIR	= ${SRCDIR}/msm
 
-KERNEL_PATCHES	+= $(call add_patches,${TARGETDIR}/patches)
-KERNEL_PATCH_DIR+= ${TARGETDIR}/patches
-
 EXTRAFLAGS	= 
 #EXTRAFLAGS	= -Iarch/arm/mach-msm
 
@@ -42,6 +39,9 @@ all: prep kernel-build
 include ${TOPDIR}/common.mk
 include ${ARCHDIR}/arm/arm.mk
 include ${CONFIG}
+
+KERNEL_PATCHES	+= $(call add_patches,${TARGETDIR}/patches)
+KERNEL_PATCH_DIR+= ${TARGETDIR}/patches ${TARGETDIR}/patches/${KERNEL_REPO_PATCHES}
 
 TARGETS+= check-dups kernel-autopatch clean mrproper
 .PHONY: kernel-copy clean mrproper

@@ -1,8 +1,8 @@
-diff --git a/arch/arm/kernel/perf_event.c b/arch/arm/kernel/perf_event.c
-index 778128b..be419ea 100644
---- a/arch/arm/kernel/perf_event.c
-+++ b/arch/arm/kernel/perf_event.c
-@@ -677,7 +677,7 @@ static int __devinit armpmu_device_probe(struct platform_device *pdev)
+Index: msm/arch/arm/kernel/perf_event.c
+===================================================================
+--- msm.orig/arch/arm/kernel/perf_event.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/arch/arm/kernel/perf_event.c	2012-09-14 19:06:53.627212814 -0400
+@@ -696,7 +696,7 @@
  	return 0;
  }
  
@@ -11,11 +11,11 @@ index 778128b..be419ea 100644
  	.driver		= {
  		.name	= "cpu-arm-pmu",
  		.of_match_table = armpmu_of_device_ids,
-diff --git a/arch/arm/mach-msm/mdm2.c b/arch/arm/mach-msm/mdm2.c
-index 6e7086e..3e3e267 100644
---- a/arch/arm/mach-msm/mdm2.c
-+++ b/arch/arm/mach-msm/mdm2.c
-@@ -273,7 +273,7 @@ static void mdm_modem_shutdown(struct platform_device *pdev)
+Index: msm/arch/arm/mach-msm/mdm2.c
+===================================================================
+--- msm.orig/arch/arm/mach-msm/mdm2.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/arch/arm/mach-msm/mdm2.c	2012-09-14 19:06:53.627212814 -0400
+@@ -298,7 +298,7 @@
  	mdm_common_modem_shutdown(pdev);
  }
  
@@ -24,11 +24,11 @@ index 6e7086e..3e3e267 100644
  	.remove         = mdm_modem_remove,
  	.shutdown	= mdm_modem_shutdown,
  	.driver         = {
-diff --git a/arch/arm/mach-msm/perf_event_msm_krait_l2.c b/arch/arm/mach-msm/perf_event_msm_krait_l2.c
-index 3635572..97802e5 100644
---- a/arch/arm/mach-msm/perf_event_msm_krait_l2.c
-+++ b/arch/arm/mach-msm/perf_event_msm_krait_l2.c
-@@ -538,7 +538,7 @@ static int __devinit krait_l2_pmu_device_probe(struct platform_device *pdev)
+Index: msm/arch/arm/mach-msm/perf_event_msm_krait_l2.c
+===================================================================
+--- msm.orig/arch/arm/mach-msm/perf_event_msm_krait_l2.c	2012-09-14 19:06:46.000000000 -0400
++++ msm/arch/arm/mach-msm/perf_event_msm_krait_l2.c	2012-09-14 19:06:53.627212814 -0400
+@@ -542,7 +542,7 @@
  	return 0;
  }
  
@@ -37,11 +37,11 @@ index 3635572..97802e5 100644
  	.driver		= {
  		.name	= "l2-arm-pmu",
  	},
-diff --git a/arch/arm/mach-msm/pil-gss.c b/arch/arm/mach-msm/pil-gss.c
-index 73248db..c165c2d 100644
---- a/arch/arm/mach-msm/pil-gss.c
-+++ b/arch/arm/mach-msm/pil-gss.c
-@@ -373,7 +373,7 @@ static int __devexit pil_gss_remove(struct platform_device *pdev)
+Index: msm/arch/arm/mach-msm/pil-gss.c
+===================================================================
+--- msm.orig/arch/arm/mach-msm/pil-gss.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/arch/arm/mach-msm/pil-gss.c	2012-09-14 19:06:53.627212814 -0400
+@@ -373,7 +373,7 @@
  	return 0;
  }
  
@@ -50,11 +50,11 @@ index 73248db..c165c2d 100644
  	.probe = pil_gss_probe,
  	.remove = __devexit_p(pil_gss_remove),
  	.driver = {
-diff --git a/arch/arm/mach-msm/pil-q6v4.c b/arch/arm/mach-msm/pil-q6v4.c
-index 131a74b..89c8dee 100644
---- a/arch/arm/mach-msm/pil-q6v4.c
-+++ b/arch/arm/mach-msm/pil-q6v4.c
-@@ -441,7 +441,7 @@ static int __devexit pil_q6v4_driver_exit(struct platform_device *pdev)
+Index: msm/arch/arm/mach-msm/pil-q6v4.c
+===================================================================
+--- msm.orig/arch/arm/mach-msm/pil-q6v4.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/arch/arm/mach-msm/pil-q6v4.c	2012-09-14 19:06:53.627212814 -0400
+@@ -441,7 +441,7 @@
  	return 0;
  }
  
@@ -63,11 +63,11 @@ index 131a74b..89c8dee 100644
  	.probe = pil_q6v4_driver_probe,
  	.remove = __devexit_p(pil_q6v4_driver_exit),
  	.driver = {
-diff --git a/arch/arm/mach-msm/pil-riva.c b/arch/arm/mach-msm/pil-riva.c
-index 8a16b43..f363592 100644
---- a/arch/arm/mach-msm/pil-riva.c
-+++ b/arch/arm/mach-msm/pil-riva.c
-@@ -359,7 +359,7 @@ static int __devexit pil_riva_remove(struct platform_device *pdev)
+Index: msm/arch/arm/mach-msm/pil-riva.c
+===================================================================
+--- msm.orig/arch/arm/mach-msm/pil-riva.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/arch/arm/mach-msm/pil-riva.c	2012-09-14 19:06:53.627212814 -0400
+@@ -347,7 +347,7 @@
  	return 0;
  }
  
@@ -76,11 +76,11 @@ index 8a16b43..f363592 100644
  	.probe = pil_riva_probe,
  	.remove = __devexit_p(pil_riva_remove),
  	.driver = {
-diff --git a/arch/arm/mach-msm/pil-vidc.c b/arch/arm/mach-msm/pil-vidc.c
-index e4c6a2d..a4d4665 100644
---- a/arch/arm/mach-msm/pil-vidc.c
-+++ b/arch/arm/mach-msm/pil-vidc.c
-@@ -105,7 +105,7 @@ static int __devexit pil_vidc_driver_exit(struct platform_device *pdev)
+Index: msm/arch/arm/mach-msm/pil-vidc.c
+===================================================================
+--- msm.orig/arch/arm/mach-msm/pil-vidc.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/arch/arm/mach-msm/pil-vidc.c	2012-09-14 19:06:53.627212814 -0400
+@@ -105,7 +105,7 @@
  	return 0;
  }
  
@@ -89,24 +89,24 @@ index e4c6a2d..a4d4665 100644
  	.probe = pil_vidc_driver_probe,
  	.remove = __devexit_p(pil_vidc_driver_exit),
  	.driver = {
-diff --git a/arch/arm/mach-msm/pm-boot.c b/arch/arm/mach-msm/pm-boot.c
-index 079ed9c..f49d2f6 100644
---- a/arch/arm/mach-msm/pm-boot.c
-+++ b/arch/arm/mach-msm/pm-boot.c
-@@ -256,7 +256,7 @@ static struct of_device_id msm_pm_match_table[] = {
+Index: msm/arch/arm/mach-msm/pm-boot.c
+===================================================================
+--- msm.orig/arch/arm/mach-msm/pm-boot.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/arch/arm/mach-msm/pm-boot.c	2012-09-14 19:11:01.060102076 -0400
+@@ -256,7 +256,7 @@
  	{},
  };
  
 -static struct platform_driver msm_pm_boot_driver = {
-+static struct platform_driver msm_pm_boot_driver  __initdata =  {
++static struct platform_driver msm_pm_boot_driver  __devinitdata =  {
  	.probe = msm_pm_boot_probe,
  	.driver = {
  		.name = "pm-boot",
-diff --git a/arch/arm/mach-msm/spm_devices.c b/arch/arm/mach-msm/spm_devices.c
-index 9e9b661..50b7a7e 100644
---- a/arch/arm/mach-msm/spm_devices.c
-+++ b/arch/arm/mach-msm/spm_devices.c
-@@ -379,7 +379,7 @@ static struct of_device_id msm_spm_match_table[] = {
+Index: msm/arch/arm/mach-msm/spm_devices.c
+===================================================================
+--- msm.orig/arch/arm/mach-msm/spm_devices.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/arch/arm/mach-msm/spm_devices.c	2012-09-14 19:06:53.627212814 -0400
+@@ -379,7 +379,7 @@
  	{},
  };
  
@@ -115,11 +115,11 @@ index 9e9b661..50b7a7e 100644
  	.probe = msm_spm_dev_probe,
  	.driver = {
  		.name = "spm-v2",
-diff --git a/arch/arm/mach-msm/tz_log.c b/arch/arm/mach-msm/tz_log.c
-index db797cd..8498593 100644
---- a/arch/arm/mach-msm/tz_log.c
-+++ b/arch/arm/mach-msm/tz_log.c
-@@ -542,7 +542,7 @@ static struct of_device_id tzlog_match[] = {
+Index: msm/arch/arm/mach-msm/tz_log.c
+===================================================================
+--- msm.orig/arch/arm/mach-msm/tz_log.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/arch/arm/mach-msm/tz_log.c	2012-09-14 19:06:53.627212814 -0400
+@@ -542,7 +542,7 @@
  	{}
  };
  
@@ -128,11 +128,11 @@ index db797cd..8498593 100644
  	.probe		= tz_log_probe,
  	.remove		= __devexit_p(tz_log_remove),
  	.driver		= {
-diff --git a/drivers/coresight/coresight-etb.c b/drivers/coresight/coresight-etb.c
-index 2bffae5..5739992 100644
---- a/drivers/coresight/coresight-etb.c
-+++ b/drivers/coresight/coresight-etb.c
-@@ -425,7 +425,7 @@ static struct of_device_id etb_match[] = {
+Index: msm/drivers/coresight/coresight-etb.c
+===================================================================
+--- msm.orig/drivers/coresight/coresight-etb.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/coresight/coresight-etb.c	2012-09-14 19:06:53.631212714 -0400
+@@ -441,7 +441,7 @@
  	{}
  };
  
@@ -141,11 +141,11 @@ index 2bffae5..5739992 100644
  	.probe          = etb_probe,
  	.remove         = __devexit_p(etb_remove),
  	.driver         = {
-diff --git a/drivers/coresight/coresight-etm.c b/drivers/coresight/coresight-etm.c
-index b3d2a16..36e595b 100644
---- a/drivers/coresight/coresight-etm.c
-+++ b/drivers/coresight/coresight-etm.c
-@@ -1620,7 +1620,7 @@ static struct of_device_id etm_match[] = {
+Index: msm/drivers/coresight/coresight-etm.c
+===================================================================
+--- msm.orig/drivers/coresight/coresight-etm.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/coresight/coresight-etm.c	2012-09-14 19:06:53.631212714 -0400
+@@ -1631,7 +1631,7 @@
  	{}
  };
  
@@ -154,11 +154,11 @@ index b3d2a16..36e595b 100644
  	.probe          = etm_probe,
  	.remove         = __devexit_p(etm_remove),
  	.driver         = {
-diff --git a/drivers/coresight/coresight-funnel.c b/drivers/coresight/coresight-funnel.c
-index 79a27f4..ff5f64b 100644
---- a/drivers/coresight/coresight-funnel.c
-+++ b/drivers/coresight/coresight-funnel.c
-@@ -249,7 +249,7 @@ static struct of_device_id funnel_match[] = {
+Index: msm/drivers/coresight/coresight-funnel.c
+===================================================================
+--- msm.orig/drivers/coresight/coresight-funnel.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/coresight/coresight-funnel.c	2012-09-14 19:06:53.631212714 -0400
+@@ -234,7 +234,7 @@
  	{}
  };
  
@@ -167,11 +167,11 @@ index 79a27f4..ff5f64b 100644
  	.probe          = funnel_probe,
  	.remove         = __devexit_p(funnel_remove),
  	.driver         = {
-diff --git a/drivers/coresight/coresight-stm.c b/drivers/coresight/coresight-stm.c
-index 6387947..3e03310 100644
---- a/drivers/coresight/coresight-stm.c
-+++ b/drivers/coresight/coresight-stm.c
-@@ -611,7 +611,7 @@ static struct of_device_id stm_match[] = {
+Index: msm/drivers/coresight/coresight-stm.c
+===================================================================
+--- msm.orig/drivers/coresight/coresight-stm.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/coresight/coresight-stm.c	2012-09-14 19:06:53.631212714 -0400
+@@ -747,7 +747,7 @@
  	{}
  };
  
@@ -180,11 +180,11 @@ index 6387947..3e03310 100644
  	.probe          = stm_probe,
  	.remove         = __devexit_p(stm_remove),
  	.driver         = {
-diff --git a/drivers/coresight/coresight-tpiu.c b/drivers/coresight/coresight-tpiu.c
-index 4b52c4d..246cb90 100644
---- a/drivers/coresight/coresight-tpiu.c
-+++ b/drivers/coresight/coresight-tpiu.c
-@@ -150,7 +150,7 @@ static struct of_device_id tpiu_match[] = {
+Index: msm/drivers/coresight/coresight-tpiu.c
+===================================================================
+--- msm.orig/drivers/coresight/coresight-tpiu.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/coresight/coresight-tpiu.c	2012-09-14 19:06:53.631212714 -0400
+@@ -206,7 +206,7 @@
  	{}
  };
  
@@ -193,11 +193,11 @@ index 4b52c4d..246cb90 100644
  	.probe          = tpiu_probe,
  	.remove         = __devexit_p(tpiu_remove),
  	.driver         = {
-diff --git a/drivers/hwmon/epm_adc.c b/drivers/hwmon/epm_adc.c
-index fd4524e..83db32c 100644
---- a/drivers/hwmon/epm_adc.c
-+++ b/drivers/hwmon/epm_adc.c
-@@ -870,7 +870,7 @@ static int __devexit epm_adc_remove(struct platform_device *pdev)
+Index: msm/drivers/hwmon/epm_adc.c
+===================================================================
+--- msm.orig/drivers/hwmon/epm_adc.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/hwmon/epm_adc.c	2012-09-14 19:06:53.631212714 -0400
+@@ -1824,7 +1824,7 @@
  	return 0;
  }
  
@@ -206,24 +206,24 @@ index fd4524e..83db32c 100644
  	.probe = epm_adc_probe,
  	.remove = __devexit_p(epm_adc_remove),
  	.driver = {
-diff --git a/drivers/hwmon/pm8xxx-adc.c b/drivers/hwmon/pm8xxx-adc.c
-index aa9acf7..6e2328b 100644
---- a/drivers/hwmon/pm8xxx-adc.c
-+++ b/drivers/hwmon/pm8xxx-adc.c
-@@ -1264,7 +1264,7 @@ static int __devinit pm8xxx_adc_probe(struct platform_device *pdev)
+Index: msm/drivers/hwmon/pm8xxx-adc.c
+===================================================================
+--- msm.orig/drivers/hwmon/pm8xxx-adc.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/hwmon/pm8xxx-adc.c	2012-09-14 19:10:38.980379330 -0400
+@@ -1274,7 +1274,7 @@
  	return 0;
  }
  
 -static struct platform_driver pm8xxx_adc_driver = {
-+static struct platform_driver pm8xxx_adc_driver  __exitdata =  {
++static struct platform_driver pm8xxx_adc_driver  __refdata =  {
  	.probe	= pm8xxx_adc_probe,
  	.remove	= __devexit_p(pm8xxx_adc_teardown),
  	.driver	= {
-diff --git a/drivers/leds/leds-pm8xxx.c b/drivers/leds/leds-pm8xxx.c
-index 3261037..efd8c7e 100644
---- a/drivers/leds/leds-pm8xxx.c
-+++ b/drivers/leds/leds-pm8xxx.c
-@@ -942,7 +942,7 @@ static int __devexit pm8xxx_led_remove(struct platform_device *pdev)
+Index: msm/drivers/leds/leds-pm8xxx.c
+===================================================================
+--- msm.orig/drivers/leds/leds-pm8xxx.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/leds/leds-pm8xxx.c	2012-09-14 19:06:53.631212714 -0400
+@@ -982,7 +982,7 @@
  	return 0;
  }
  
@@ -232,11 +232,11 @@ index 3261037..efd8c7e 100644
  	.probe		= pm8xxx_led_probe,
  	.remove		= __devexit_p(pm8xxx_led_remove),
  	.driver		= {
-diff --git a/drivers/media/radio/radio-iris.c b/drivers/media/radio/radio-iris.c
-index 23d11c3..feebca7 100644
---- a/drivers/media/radio/radio-iris.c
-+++ b/drivers/media/radio/radio-iris.c
-@@ -3688,7 +3688,7 @@ static int __devexit iris_remove(struct platform_device *pdev)
+Index: msm/drivers/media/radio/radio-iris.c
+===================================================================
+--- msm.orig/drivers/media/radio/radio-iris.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/media/radio/radio-iris.c	2012-09-14 19:06:53.631212714 -0400
+@@ -3669,7 +3669,7 @@
  	return 0;
  }
  
@@ -245,50 +245,50 @@ index 23d11c3..feebca7 100644
  	.driver = {
  		.owner  = THIS_MODULE,
  		.name   = "iris_fm",
-diff --git a/drivers/media/video/msm/csi/msm_csid.c b/drivers/media/video/msm/csi/msm_csid.c
-index 1ab4e66..92f4372 100644
---- a/drivers/media/video/msm/csi/msm_csid.c
-+++ b/drivers/media/video/msm/csi/msm_csid.c
-@@ -352,7 +352,7 @@ csid_no_resource:
- 	return 0;
- }
+Index: msm/drivers/media/video/msm/csi/msm_csid.c
+===================================================================
+--- msm.orig/drivers/media/video/msm/csi/msm_csid.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/media/video/msm/csi/msm_csid.c	2012-09-14 19:06:53.631212714 -0400
+@@ -624,7 +624,7 @@
+ 
+ MODULE_DEVICE_TABLE(of, msm_csid_dt_match);
  
 -static struct platform_driver csid_driver = {
 +static struct platform_driver csid_driver  __initdata =  {
  	.probe = csid_probe,
  	.driver = {
  		.name = MSM_CSID_DRV_NAME,
-diff --git a/drivers/media/video/msm/csi/msm_csiphy.c b/drivers/media/video/msm/csi/msm_csiphy.c
-index 4693a8a..61c8c17 100644
---- a/drivers/media/video/msm/csi/msm_csiphy.c
-+++ b/drivers/media/video/msm/csi/msm_csiphy.c
-@@ -348,7 +348,7 @@ csiphy_no_resource:
- 	return 0;
- }
+Index: msm/drivers/media/video/msm/csi/msm_csiphy.c
+===================================================================
+--- msm.orig/drivers/media/video/msm/csi/msm_csiphy.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/media/video/msm/csi/msm_csiphy.c	2012-09-14 19:06:53.631212714 -0400
+@@ -440,7 +440,7 @@
+ 
+ MODULE_DEVICE_TABLE(of, msm_csiphy_dt_match);
  
 -static struct platform_driver csiphy_driver = {
 +static struct platform_driver csiphy_driver  __initdata =  {
  	.probe = csiphy_probe,
  	.driver = {
  		.name = MSM_CSIPHY_DRV_NAME,
-diff --git a/drivers/media/video/msm/csi/msm_ispif.c b/drivers/media/video/msm/csi/msm_ispif.c
-index 0f16bbf..90aeb1a 100644
---- a/drivers/media/video/msm/csi/msm_ispif.c
-+++ b/drivers/media/video/msm/csi/msm_ispif.c
-@@ -704,7 +704,7 @@ ispif_no_resource:
- 	return rc;
- }
+Index: msm/drivers/media/video/msm/csi/msm_ispif.c
+===================================================================
+--- msm.orig/drivers/media/video/msm/csi/msm_ispif.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/media/video/msm/csi/msm_ispif.c	2012-09-14 19:06:53.635212642 -0400
+@@ -903,7 +903,7 @@
+ 
+ MODULE_DEVICE_TABLE(of, msm_ispif_dt_match);
  
 -static struct platform_driver ispif_driver = {
 +static struct platform_driver ispif_driver  __initdata =  {
  	.probe = ispif_probe,
  	.driver = {
  		.name = MSM_ISPIF_DRV_NAME,
-diff --git a/drivers/media/video/msm/io/msm_camera_i2c_mux.c b/drivers/media/video/msm/io/msm_camera_i2c_mux.c
-index 60f3e10..aab868e 100644
---- a/drivers/media/video/msm/io/msm_camera_i2c_mux.c
-+++ b/drivers/media/video/msm/io/msm_camera_i2c_mux.c
-@@ -163,7 +163,7 @@ i2c_mux_no_resource:
+Index: msm/drivers/media/video/msm/io/msm_camera_i2c_mux.c
+===================================================================
+--- msm.orig/drivers/media/video/msm/io/msm_camera_i2c_mux.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/media/video/msm/io/msm_camera_i2c_mux.c	2012-09-14 19:06:53.635212642 -0400
+@@ -163,7 +163,7 @@
  	return 0;
  }
  
@@ -297,11 +297,11 @@ index 60f3e10..aab868e 100644
  	.probe = i2c_mux_probe,
  	.driver = {
  		.name = MSM_I2C_MUX_DRV_NAME,
-diff --git a/drivers/mfd/pm8038-core.c b/drivers/mfd/pm8038-core.c
-index b32932b..2da9b66 100644
---- a/drivers/mfd/pm8038-core.c
-+++ b/drivers/mfd/pm8038-core.c
-@@ -807,7 +807,7 @@ static int __devexit pm8038_remove(struct platform_device *pdev)
+Index: msm/drivers/mfd/pm8038-core.c
+===================================================================
+--- msm.orig/drivers/mfd/pm8038-core.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/mfd/pm8038-core.c	2012-09-14 19:06:53.635212642 -0400
+@@ -806,7 +806,7 @@
  	return 0;
  }
  
@@ -310,11 +310,11 @@ index b32932b..2da9b66 100644
  	.probe		= pm8038_probe,
  	.remove		= __devexit_p(pm8038_remove),
  	.driver		= {
-diff --git a/drivers/mfd/pm8821-core.c b/drivers/mfd/pm8821-core.c
-index 1d3c927a..67ea0ac 100644
---- a/drivers/mfd/pm8821-core.c
-+++ b/drivers/mfd/pm8821-core.c
-@@ -290,7 +290,7 @@ static int __devexit pm8821_remove(struct platform_device *pdev)
+Index: msm/drivers/mfd/pm8821-core.c
+===================================================================
+--- msm.orig/drivers/mfd/pm8821-core.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/mfd/pm8821-core.c	2012-09-14 19:06:53.635212642 -0400
+@@ -324,7 +324,7 @@
  	return 0;
  }
  
@@ -323,11 +323,11 @@ index 1d3c927a..67ea0ac 100644
  	.probe		= pm8821_probe,
  	.remove		= __devexit_p(pm8821_remove),
  	.driver		= {
-diff --git a/drivers/mfd/pm8921-core.c b/drivers/mfd/pm8921-core.c
-index f39a19f..45ca914 100644
---- a/drivers/mfd/pm8921-core.c
-+++ b/drivers/mfd/pm8921-core.c
-@@ -972,7 +972,7 @@ static int __devexit pm8921_remove(struct platform_device *pdev)
+Index: msm/drivers/mfd/pm8921-core.c
+===================================================================
+--- msm.orig/drivers/mfd/pm8921-core.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/mfd/pm8921-core.c	2012-09-14 19:06:53.635212642 -0400
+@@ -972,7 +972,7 @@
  	return 0;
  }
  
@@ -336,11 +336,11 @@ index f39a19f..45ca914 100644
  	.probe		= pm8921_probe,
  	.remove		= __devexit_p(pm8921_remove),
  	.driver		= {
-diff --git a/drivers/mfd/pm8xxx-pwm.c b/drivers/mfd/pm8xxx-pwm.c
-index 022cfb6..028fad6e 100644
---- a/drivers/mfd/pm8xxx-pwm.c
-+++ b/drivers/mfd/pm8xxx-pwm.c
-@@ -1443,7 +1443,7 @@ static int __devexit pm8xxx_pwm_remove(struct platform_device *pdev)
+Index: msm/drivers/mfd/pm8xxx-pwm.c
+===================================================================
+--- msm.orig/drivers/mfd/pm8xxx-pwm.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/mfd/pm8xxx-pwm.c	2012-09-14 19:06:53.635212642 -0400
+@@ -1443,7 +1443,7 @@
  	return 0;
  }
  
@@ -349,11 +349,11 @@ index 022cfb6..028fad6e 100644
  	.probe		= pm8xxx_pwm_probe,
  	.remove		= __devexit_p(pm8xxx_pwm_remove),
  	.driver		= {
-diff --git a/drivers/misc/qseecom.c b/drivers/misc/qseecom.c
-index d4eb6e0..d31f61a 100644
---- a/drivers/misc/qseecom.c
-+++ b/drivers/misc/qseecom.c
-@@ -1812,7 +1812,7 @@ static struct of_device_id qseecom_match[] = {
+Index: msm/drivers/misc/qseecom.c
+===================================================================
+--- msm.orig/drivers/misc/qseecom.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/misc/qseecom.c	2012-09-14 19:06:53.635212642 -0400
+@@ -1817,7 +1817,7 @@
  	{}
  };
  
@@ -362,11 +362,11 @@ index d4eb6e0..d31f61a 100644
  	.probe = qseecom_probe,
  	.remove = qseecom_remove,
  	.driver = {
-diff --git a/drivers/platform/msm/sps/sps.c b/drivers/platform/msm/sps/sps.c
-index 0371f5a..dc42062d 100644
---- a/drivers/platform/msm/sps/sps.c
-+++ b/drivers/platform/msm/sps/sps.c
-@@ -2124,7 +2124,7 @@ static struct of_device_id msm_sps_match[] = {
+Index: msm/drivers/platform/msm/sps/sps.c
+===================================================================
+--- msm.orig/drivers/platform/msm/sps/sps.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/platform/msm/sps/sps.c	2012-09-14 19:06:53.635212642 -0400
+@@ -2323,7 +2323,7 @@
  	{}
  };
  
@@ -375,11 +375,11 @@ index 0371f5a..dc42062d 100644
  	.probe          = msm_sps_probe,
  	.driver		= {
  		.name	= SPS_DRV_NAME,
-diff --git a/drivers/power/pm8921-bms.c b/drivers/power/pm8921-bms.c
-index 304dc6b..86aeac8 100644
---- a/drivers/power/pm8921-bms.c
-+++ b/drivers/power/pm8921-bms.c
-@@ -2808,7 +2808,7 @@ static int __devexit pm8921_bms_remove(struct platform_device *pdev)
+Index: msm/drivers/power/pm8921-bms.c
+===================================================================
+--- msm.orig/drivers/power/pm8921-bms.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/power/pm8921-bms.c	2012-09-14 19:06:53.635212642 -0400
+@@ -3282,7 +3282,7 @@
  	return 0;
  }
  
@@ -388,11 +388,11 @@ index 304dc6b..86aeac8 100644
  	.probe	= pm8921_bms_probe,
  	.remove	= __devexit_p(pm8921_bms_remove),
  	.driver	= {
-diff --git a/drivers/power/pm8921-charger.c b/drivers/power/pm8921-charger.c
-index f84e3ac..09747d0 100644
---- a/drivers/power/pm8921-charger.c
-+++ b/drivers/power/pm8921-charger.c
-@@ -4145,7 +4145,7 @@ static const struct dev_pm_ops pm8921_pm_ops = {
+Index: msm/drivers/power/pm8921-charger.c
+===================================================================
+--- msm.orig/drivers/power/pm8921-charger.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/power/pm8921-charger.c	2012-09-14 19:06:53.635212642 -0400
+@@ -4172,7 +4172,7 @@
  	.resume_noirq   = pm8921_charger_resume_noirq,
  	.resume		= pm8921_charger_resume,
  };
@@ -401,11 +401,11 @@ index f84e3ac..09747d0 100644
  	.probe		= pm8921_charger_probe,
  	.remove		= __devexit_p(pm8921_charger_remove),
  	.driver		= {
-diff --git a/drivers/power/pm8xxx-ccadc.c b/drivers/power/pm8xxx-ccadc.c
-index 861bac8..5a40d8c 100644
---- a/drivers/power/pm8xxx-ccadc.c
-+++ b/drivers/power/pm8xxx-ccadc.c
-@@ -712,7 +712,7 @@ static int __devexit pm8xxx_ccadc_remove(struct platform_device *pdev)
+Index: msm/drivers/power/pm8xxx-ccadc.c
+===================================================================
+--- msm.orig/drivers/power/pm8xxx-ccadc.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/power/pm8xxx-ccadc.c	2012-09-14 19:06:53.639212584 -0400
+@@ -712,7 +712,7 @@
  	return 0;
  }
  
@@ -414,11 +414,11 @@ index 861bac8..5a40d8c 100644
  	.probe	= pm8xxx_ccadc_probe,
  	.remove	= __devexit_p(pm8xxx_ccadc_remove),
  	.driver	= {
-diff --git a/drivers/regulator/msm-gpio-regulator.c b/drivers/regulator/msm-gpio-regulator.c
-index 15e5b53..e233732 100644
---- a/drivers/regulator/msm-gpio-regulator.c
-+++ b/drivers/regulator/msm-gpio-regulator.c
-@@ -196,7 +196,7 @@ static int __devexit gpio_vreg_remove(struct platform_device *pdev)
+Index: msm/drivers/regulator/msm-gpio-regulator.c
+===================================================================
+--- msm.orig/drivers/regulator/msm-gpio-regulator.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/regulator/msm-gpio-regulator.c	2012-09-14 19:06:53.639212584 -0400
+@@ -196,7 +196,7 @@
  	return 0;
  }
  
@@ -427,11 +427,11 @@ index 15e5b53..e233732 100644
  	.probe = gpio_vreg_probe,
  	.remove = __devexit_p(gpio_vreg_remove),
  	.driver = {
-diff --git a/drivers/regulator/pm8xxx-regulator.c b/drivers/regulator/pm8xxx-regulator.c
-index dfdbb44..32f78fd 100644
---- a/drivers/regulator/pm8xxx-regulator.c
-+++ b/drivers/regulator/pm8xxx-regulator.c
-@@ -3318,7 +3318,7 @@ static int __devexit pm8xxx_vreg_remove(struct platform_device *pdev)
+Index: msm/drivers/regulator/pm8xxx-regulator.c
+===================================================================
+--- msm.orig/drivers/regulator/pm8xxx-regulator.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/regulator/pm8xxx-regulator.c	2012-09-14 19:06:53.639212584 -0400
+@@ -3318,7 +3318,7 @@
  	return 0;
  }
  
@@ -440,11 +440,11 @@ index dfdbb44..32f78fd 100644
  	.probe	= pm8xxx_vreg_probe,
  	.remove	= __devexit_p(pm8xxx_vreg_remove),
  	.driver	= {
-diff --git a/drivers/slimbus/slim-msm-ctrl.c b/drivers/slimbus/slim-msm-ctrl.c
-index fa9d1df..f9ac239 100644
---- a/drivers/slimbus/slim-msm-ctrl.c
-+++ b/drivers/slimbus/slim-msm-ctrl.c
-@@ -2241,7 +2241,7 @@ static struct of_device_id msm_slim_dt_match[] = {
+Index: msm/drivers/slimbus/slim-msm-ctrl.c
+===================================================================
+--- msm.orig/drivers/slimbus/slim-msm-ctrl.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/slimbus/slim-msm-ctrl.c	2012-09-14 19:06:53.639212584 -0400
+@@ -2362,7 +2362,7 @@
  	{}
  };
  
@@ -453,11 +453,11 @@ index fa9d1df..f9ac239 100644
  	.probe = msm_slim_probe,
  	.remove = msm_slim_remove,
  	.driver	= {
-diff --git a/drivers/staging/android/ram_console.c b/drivers/staging/android/ram_console.c
-index 8e4038b..e740752 100644
---- a/drivers/staging/android/ram_console.c
-+++ b/drivers/staging/android/ram_console.c
-@@ -74,7 +74,7 @@ static int __devinit ram_console_probe(struct platform_device *pdev)
+Index: msm/drivers/staging/android/ram_console.c
+===================================================================
+--- msm.orig/drivers/staging/android/ram_console.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/staging/android/ram_console.c	2012-09-14 19:06:53.639212584 -0400
+@@ -74,7 +74,7 @@
  	return 0;
  }
  
@@ -466,11 +466,11 @@ index 8e4038b..e740752 100644
  	.driver		= {
  		.name	= "ram_console",
  	},
-diff --git a/drivers/staging/tidspbridge/rmgr/drv_interface.c b/drivers/staging/tidspbridge/rmgr/drv_interface.c
-index 3cac014..48a8f77 100644
---- a/drivers/staging/tidspbridge/rmgr/drv_interface.c
-+++ b/drivers/staging/tidspbridge/rmgr/drv_interface.c
-@@ -601,7 +601,7 @@ static int bridge_resume(struct platform_device *pdev)
+Index: msm/drivers/staging/tidspbridge/rmgr/drv_interface.c
+===================================================================
+--- msm.orig/drivers/staging/tidspbridge/rmgr/drv_interface.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/staging/tidspbridge/rmgr/drv_interface.c	2012-09-14 19:06:53.639212584 -0400
+@@ -601,7 +601,7 @@
  }
  #endif
  
@@ -479,11 +479,11 @@ index 3cac014..48a8f77 100644
  	.driver = {
  		   .name = "omap-dsp",
  		   },
-diff --git a/drivers/thermal/msm8960_tsens.c b/drivers/thermal/msm8960_tsens.c
-index 78a1292..3e2a1a7 100644
---- a/drivers/thermal/msm8960_tsens.c
-+++ b/drivers/thermal/msm8960_tsens.c
-@@ -1052,7 +1052,7 @@ static int __devexit tsens_tm_remove(struct platform_device *pdev)
+Index: msm/drivers/thermal/msm8960_tsens.c
+===================================================================
+--- msm.orig/drivers/thermal/msm8960_tsens.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/thermal/msm8960_tsens.c	2012-09-14 19:06:53.639212584 -0400
+@@ -1041,7 +1041,7 @@
  	return 0;
  }
  
@@ -492,11 +492,11 @@ index 78a1292..3e2a1a7 100644
  	.probe = tsens_tm_probe,
  	.remove = tsens_tm_remove,
  	.driver = {
-diff --git a/drivers/thermal/msm8974-tsens.c b/drivers/thermal/msm8974-tsens.c
-index 6628b79..71acd61 100644
---- a/drivers/thermal/msm8974-tsens.c
-+++ b/drivers/thermal/msm8974-tsens.c
-@@ -838,7 +838,7 @@ static struct of_device_id tsens_match[] = {
+Index: msm/drivers/thermal/msm8974-tsens.c
+===================================================================
+--- msm.orig/drivers/thermal/msm8974-tsens.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/thermal/msm8974-tsens.c	2012-09-14 19:06:53.639212584 -0400
+@@ -941,7 +941,7 @@
  	{}
  };
  
@@ -505,11 +505,11 @@ index 6628b79..71acd61 100644
  	.probe = tsens_tm_probe,
  	.remove = tsens_tm_remove,
  	.driver = {
-diff --git a/drivers/thermal/msm_tsens.c b/drivers/thermal/msm_tsens.c
-index 401ad88..425d30b 100644
---- a/drivers/thermal/msm_tsens.c
-+++ b/drivers/thermal/msm_tsens.c
-@@ -634,7 +634,7 @@ static int __devexit tsens_tm_remove(struct platform_device *pdev)
+Index: msm/drivers/thermal/msm_tsens.c
+===================================================================
+--- msm.orig/drivers/thermal/msm_tsens.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/thermal/msm_tsens.c	2012-09-14 19:06:53.639212584 -0400
+@@ -634,7 +634,7 @@
  	return 0;
  }
  
@@ -518,24 +518,24 @@ index 401ad88..425d30b 100644
  	.probe	= tsens_tm_probe,
  	.remove	= __devexit_p(tsens_tm_remove),
  	.driver	= {
-diff --git a/drivers/usb/gadget/android.c b/drivers/usb/gadget/android.c
-index 154d523..b3696e0 100644
---- a/drivers/usb/gadget/android.c
-+++ b/drivers/usb/gadget/android.c
-@@ -1857,7 +1857,7 @@ static int android_remove(struct platform_device *pdev)
- 	return 0;
- }
+Index: msm/drivers/usb/gadget/android.c
+===================================================================
+--- msm.orig/drivers/usb/gadget/android.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/usb/gadget/android.c	2012-09-14 19:06:53.639212584 -0400
+@@ -2355,7 +2355,7 @@
+ 	},
+ };
  
 -static struct platform_driver android_platform_driver = {
 +static struct platform_driver android_platform_driver  __initdata =  {
  	.driver = { .name = "android_usb"},
  	.probe = android_probe,
  	.remove = android_remove,
-diff --git a/drivers/usb/host/ehci-msm-hsic.c b/drivers/usb/host/ehci-msm-hsic.c
-index e49e2a0..b723ebe 100644
---- a/drivers/usb/host/ehci-msm-hsic.c
-+++ b/drivers/usb/host/ehci-msm-hsic.c
-@@ -1505,7 +1505,7 @@ static const struct dev_pm_ops msm_hsic_dev_pm_ops = {
+Index: msm/drivers/usb/host/ehci-msm-hsic.c
+===================================================================
+--- msm.orig/drivers/usb/host/ehci-msm-hsic.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/usb/host/ehci-msm-hsic.c	2012-09-14 19:06:53.639212584 -0400
+@@ -1842,7 +1842,7 @@
  };
  #endif
  
@@ -544,11 +544,11 @@ index e49e2a0..b723ebe 100644
  	.probe	= ehci_hsic_msm_probe,
  	.remove	= __devexit_p(ehci_hsic_msm_remove),
  	.driver = {
-diff --git a/drivers/video/msm/lvds_chimei_wxga.c b/drivers/video/msm/lvds_chimei_wxga.c
-index 9a385b9..77af304 100644
---- a/drivers/video/msm/lvds_chimei_wxga.c
-+++ b/drivers/video/msm/lvds_chimei_wxga.c
-@@ -92,7 +92,7 @@ probe_exit:
+Index: msm/drivers/video/msm/lvds_chimei_wxga.c
+===================================================================
+--- msm.orig/drivers/video/msm/lvds_chimei_wxga.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/video/msm/lvds_chimei_wxga.c	2012-09-14 19:06:53.639212584 -0400
+@@ -92,7 +92,7 @@
  	return rc;
  }
  
@@ -557,11 +557,11 @@ index 9a385b9..77af304 100644
  	.probe  = lvds_chimei_probe,
  	.driver = {
  		.name   = "lvds_chimei_wxga",
-diff --git a/drivers/video/msm/lvds_frc_fhd.c b/drivers/video/msm/lvds_frc_fhd.c
-index 7739588..70cf003 100644
---- a/drivers/video/msm/lvds_frc_fhd.c
-+++ b/drivers/video/msm/lvds_frc_fhd.c
-@@ -126,7 +126,7 @@ probe_exit:
+Index: msm/drivers/video/msm/lvds_frc_fhd.c
+===================================================================
+--- msm.orig/drivers/video/msm/lvds_frc_fhd.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/video/msm/lvds_frc_fhd.c	2012-09-14 19:06:53.639212584 -0400
+@@ -126,7 +126,7 @@
  	return rc;
  }
  
@@ -570,11 +570,11 @@ index 7739588..70cf003 100644
  	.probe  = lvds_frc_probe,
  	.driver = {
  		.name   = "lvds_frc_fhd",
-diff --git a/drivers/video/msm/mipi_orise.c b/drivers/video/msm/mipi_orise.c
-index 2afbb9b..732d6be 100644
---- a/drivers/video/msm/mipi_orise.c
-+++ b/drivers/video/msm/mipi_orise.c
-@@ -130,7 +130,7 @@ static int __devinit mipi_orise_lcd_probe(struct platform_device *pdev)
+Index: msm/drivers/video/msm/mipi_orise.c
+===================================================================
+--- msm.orig/drivers/video/msm/mipi_orise.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/video/msm/mipi_orise.c	2012-09-14 19:06:53.639212584 -0400
+@@ -130,7 +130,7 @@
  	return 0;
  }
  
@@ -583,11 +583,11 @@ index 2afbb9b..732d6be 100644
  	.probe  = mipi_orise_lcd_probe,
  	.driver = {
  		.name   = "mipi_orise",
-diff --git a/drivers/video/vfb.c b/drivers/video/vfb.c
-index 2428997..351150f 100644
---- a/drivers/video/vfb.c
-+++ b/drivers/video/vfb.c
-@@ -566,7 +566,7 @@ static int vfb_remove(struct platform_device *dev)
+Index: msm/drivers/video/vfb.c
+===================================================================
+--- msm.orig/drivers/video/vfb.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/video/vfb.c	2012-09-14 19:06:53.639212584 -0400
+@@ -566,7 +566,7 @@
  	return 0;
  }
  
@@ -596,11 +596,11 @@ index 2428997..351150f 100644
  	.probe	= vfb_probe,
  	.remove = vfb_remove,
  	.driver = {
-diff --git a/sound/soc/codecs/msm_stub.c b/sound/soc/codecs/msm_stub.c
-index 7e603b4..85a85f3 100644
---- a/sound/soc/codecs/msm_stub.c
-+++ b/sound/soc/codecs/msm_stub.c
-@@ -64,7 +64,7 @@ static const struct of_device_id msm_stub_codec_dt_match[] = {
+Index: msm/sound/soc/codecs/msm_stub.c
+===================================================================
+--- msm.orig/sound/soc/codecs/msm_stub.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/sound/soc/codecs/msm_stub.c	2012-09-14 19:06:53.639212584 -0400
+@@ -64,7 +64,7 @@
  	{}
  };
  
@@ -609,11 +609,11 @@ index 7e603b4..85a85f3 100644
  	.driver = {
  		.name = "msm-stub-codec",
  		.owner = THIS_MODULE,
-diff --git a/sound/soc/codecs/wcd9304.c b/sound/soc/codecs/wcd9304.c
-index 70d9fa9..5c9c1d7 100644
---- a/sound/soc/codecs/wcd9304.c
-+++ b/sound/soc/codecs/wcd9304.c
-@@ -5137,7 +5137,7 @@ static int __devexit sitar_remove(struct platform_device *pdev)
+Index: msm/sound/soc/codecs/wcd9304.c
+===================================================================
+--- msm.orig/sound/soc/codecs/wcd9304.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/sound/soc/codecs/wcd9304.c	2012-09-14 19:06:53.643212530 -0400
+@@ -5366,7 +5366,7 @@
  #endif
  	return 0;
  }
@@ -622,11 +622,11 @@ index 70d9fa9..5c9c1d7 100644
  	.probe = sitar_probe,
  	.remove = sitar_remove,
  	.driver = {
-diff --git a/sound/soc/msm/msm-compr-q6.c b/sound/soc/msm/msm-compr-q6.c
-index c894921..846ccc2 100644
---- a/sound/soc/msm/msm-compr-q6.c
-+++ b/sound/soc/msm/msm-compr-q6.c
-@@ -940,7 +940,7 @@ static int msm_compr_remove(struct platform_device *pdev)
+Index: msm/sound/soc/msm/msm-compr-q6.c
+===================================================================
+--- msm.orig/sound/soc/msm/msm-compr-q6.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/sound/soc/msm/msm-compr-q6.c	2012-09-14 19:06:53.643212530 -0400
+@@ -1154,7 +1154,7 @@
  	return 0;
  }
  
@@ -635,11 +635,11 @@ index c894921..846ccc2 100644
  	.driver = {
  		.name = "msm-compr-dsp",
  		.owner = THIS_MODULE,
-diff --git a/sound/soc/msm/msm-dai-fe.c b/sound/soc/msm/msm-dai-fe.c
-index 4cd4a2c..c368475 100644
---- a/sound/soc/msm/msm-dai-fe.c
-+++ b/sound/soc/msm/msm-dai-fe.c
-@@ -490,7 +490,7 @@ static const struct of_device_id msm_dai_fe_dt_match[] = {
+Index: msm/sound/soc/msm/msm-dai-fe.c
+===================================================================
+--- msm.orig/sound/soc/msm/msm-dai-fe.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/sound/soc/msm/msm-dai-fe.c	2012-09-14 19:06:53.643212530 -0400
+@@ -501,7 +501,7 @@
  	{}
  };
  
@@ -648,11 +648,11 @@ index 4cd4a2c..c368475 100644
  	.probe  = msm_fe_dai_dev_probe,
  	.remove = msm_fe_dai_dev_remove,
  	.driver = {
-diff --git a/sound/soc/msm/msm-dai-q6-hdmi.c b/sound/soc/msm/msm-dai-q6-hdmi.c
-index c082ed7..6d3e5aa 100644
---- a/sound/soc/msm/msm-dai-q6-hdmi.c
-+++ b/sound/soc/msm/msm-dai-q6-hdmi.c
-@@ -264,7 +264,7 @@ static __devexit int msm_dai_q6_hdmi_dev_remove(struct platform_device *pdev)
+Index: msm/sound/soc/msm/msm-dai-q6-hdmi.c
+===================================================================
+--- msm.orig/sound/soc/msm/msm-dai-q6-hdmi.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/sound/soc/msm/msm-dai-q6-hdmi.c	2012-09-14 19:06:53.643212530 -0400
+@@ -271,7 +271,7 @@
  	return 0;
  }
  
@@ -661,11 +661,11 @@ index c082ed7..6d3e5aa 100644
  	.probe  = msm_dai_q6_hdmi_dev_probe,
  	.remove = msm_dai_q6_hdmi_dev_remove,
  	.driver = {
-diff --git a/sound/soc/msm/msm-dai-stub.c b/sound/soc/msm/msm-dai-stub.c
-index b2bfa2c..9d22d06 100644
---- a/sound/soc/msm/msm-dai-stub.c
-+++ b/sound/soc/msm/msm-dai-stub.c
-@@ -72,7 +72,7 @@ static __devexit int msm_dai_stub_dev_remove(struct platform_device *pdev)
+Index: msm/sound/soc/msm/msm-dai-stub.c
+===================================================================
+--- msm.orig/sound/soc/msm/msm-dai-stub.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/sound/soc/msm/msm-dai-stub.c	2012-09-14 19:06:53.643212530 -0400
+@@ -72,7 +72,7 @@
  	return 0;
  }
  
@@ -674,11 +674,11 @@ index b2bfa2c..9d22d06 100644
  	.probe  = msm_dai_stub_dev_probe,
  	.remove = msm_dai_stub_dev_remove,
  	.driver = {
-diff --git a/sound/soc/msm/msm-multi-ch-pcm-q6.c b/sound/soc/msm/msm-multi-ch-pcm-q6.c
-index ef58dd1..4fef5f5 100644
---- a/sound/soc/msm/msm-multi-ch-pcm-q6.c
-+++ b/sound/soc/msm/msm-multi-ch-pcm-q6.c
-@@ -776,7 +776,7 @@ static int msm_pcm_remove(struct platform_device *pdev)
+Index: msm/sound/soc/msm/msm-multi-ch-pcm-q6.c
+===================================================================
+--- msm.orig/sound/soc/msm/msm-multi-ch-pcm-q6.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/sound/soc/msm/msm-multi-ch-pcm-q6.c	2012-09-14 19:06:53.643212530 -0400
+@@ -821,7 +821,7 @@
  	return 0;
  }
  
@@ -687,24 +687,24 @@ index ef58dd1..4fef5f5 100644
  	.driver = {
  		.name = "msm-multi-ch-pcm-dsp",
  		.owner = THIS_MODULE,
-diff --git a/sound/soc/msm/msm-mvs.c b/sound/soc/msm/msm-mvs.c
-index eca9864..aaa45b9 100644
---- a/sound/soc/msm/msm-mvs.c
-+++ b/sound/soc/msm/msm-mvs.c
-@@ -898,7 +898,7 @@ static int msm_pcm_remove(struct platform_device *pdev)
+Index: msm/sound/soc/msm/msm-mvs.c
+===================================================================
+--- msm.orig/sound/soc/msm/msm-mvs.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/sound/soc/msm/msm-mvs.c	2012-09-14 19:09:38.125144209 -0400
+@@ -898,7 +898,7 @@
  	return 0;
  }
  
 -static struct platform_driver msm_pcm_driver = {
-+static struct platform_driver msm_pcm_driver  __initdata =  {
++static struct platform_driver msm_pcm_driver  __refdata =  {
  	.driver = {
  		.name = "msm-mvs-audio",
  		.owner = THIS_MODULE,
-diff --git a/sound/soc/msm/msm-pcm-afe.c b/sound/soc/msm/msm-pcm-afe.c
-index 5f3cada..5822124 100644
---- a/sound/soc/msm/msm-pcm-afe.c
-+++ b/sound/soc/msm/msm-pcm-afe.c
-@@ -596,7 +596,7 @@ static int msm_afe_remove(struct platform_device *pdev)
+Index: msm/sound/soc/msm/msm-pcm-afe.c
+===================================================================
+--- msm.orig/sound/soc/msm/msm-pcm-afe.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/sound/soc/msm/msm-pcm-afe.c	2012-09-14 19:06:53.643212530 -0400
+@@ -592,7 +592,7 @@
  	return 0;
  }
  
@@ -713,11 +713,11 @@ index 5f3cada..5822124 100644
  	.driver = {
  		.name = "msm-pcm-afe",
  		.owner = THIS_MODULE,
-diff --git a/sound/soc/msm/msm-pcm-routing.c b/sound/soc/msm/msm-pcm-routing.c
-index 7e8e282..2dd62ed 100644
---- a/sound/soc/msm/msm-pcm-routing.c
-+++ b/sound/soc/msm/msm-pcm-routing.c
-@@ -2686,7 +2686,7 @@ static int msm_routing_pcm_remove(struct platform_device *pdev)
+Index: msm/sound/soc/msm/msm-pcm-routing.c
+===================================================================
+--- msm.orig/sound/soc/msm/msm-pcm-routing.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/sound/soc/msm/msm-pcm-routing.c	2012-09-14 19:06:53.643212530 -0400
+@@ -2813,7 +2813,7 @@
  	return 0;
  }
  
@@ -726,11 +726,20 @@ index 7e8e282..2dd62ed 100644
  	.driver = {
  		.name = "msm-pcm-routing",
  		.owner = THIS_MODULE,
-diff --git a/sound/soc/msm/msm-pcm-voip.c b/sound/soc/msm/msm-pcm-voip.c
-index b18117c..08aee51 100644
---- a/sound/soc/msm/msm-pcm-voip.c
-+++ b/sound/soc/msm/msm-pcm-voip.c
-@@ -1127,7 +1127,7 @@ static int msm_pcm_remove(struct platform_device *pdev)
+Index: msm/sound/soc/msm/msm-pcm-voip.c
+===================================================================
+--- msm.orig/sound/soc/msm/msm-pcm-voip.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/sound/soc/msm/msm-pcm-voip.c	2012-09-14 19:06:53.695211879 -0400
+@@ -1112,7 +1112,7 @@
+ 	return ret;
+ }
+ 
+-static struct snd_soc_platform_driver msm_soc_platform = {
++static struct snd_soc_platform_driver msm_soc_platform __devinitdata = {
+ 	.ops		= &msm_pcm_ops,
+ 	.pcm_new	= msm_asoc_pcm_new,
+ 	.probe		= msm_pcm_voip_probe,
+@@ -1131,7 +1131,7 @@
  	return 0;
  }
  
@@ -739,63 +748,63 @@ index b18117c..08aee51 100644
  	.driver = {
  		.name = "msm-voip-dsp",
  		.owner = THIS_MODULE,
-diff --git a/sound/soc/msm/msm-voip.c b/sound/soc/msm/msm-voip.c
-index b1bb2c4..cfbed10 100644
---- a/sound/soc/msm/msm-voip.c
-+++ b/sound/soc/msm/msm-voip.c
-@@ -576,7 +576,7 @@ static int msm_pcm_remove(struct platform_device *pdev)
+Index: msm/sound/soc/msm/msm-voip.c
+===================================================================
+--- msm.orig/sound/soc/msm/msm-voip.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/sound/soc/msm/msm-voip.c	2012-09-14 19:09:17.485404437 -0400
+@@ -576,7 +576,7 @@
  	return 0;
  }
  
 -static struct platform_driver msm_pcm_driver = {
-+static struct platform_driver msm_pcm_driver  __initdata =  {
++static struct platform_driver msm_pcm_driver  __refdata =  {
  	.driver = {
  		.name = "msm-mvs-audio",
  		.owner = THIS_MODULE,
-diff --git a/sound/soc/msm/msm7kv2-pcm.c b/sound/soc/msm/msm7kv2-pcm.c
-index c64a3ff..928ae16 100644
---- a/sound/soc/msm/msm7kv2-pcm.c
-+++ b/sound/soc/msm/msm7kv2-pcm.c
-@@ -749,7 +749,7 @@ static int msm_pcm_remove(struct platform_device *pdev)
+Index: msm/sound/soc/msm/msm7kv2-pcm.c
+===================================================================
+--- msm.orig/sound/soc/msm/msm7kv2-pcm.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/sound/soc/msm/msm7kv2-pcm.c	2012-09-14 19:09:58.676886076 -0400
+@@ -749,7 +749,7 @@
  	return 0;
  }
  
 -static struct platform_driver msm_pcm_driver = {
-+static struct platform_driver msm_pcm_driver  __initdata =  {
++static struct platform_driver msm_pcm_driver  __refdata =  {
  	.driver = {
  		.name = "msm-dsp-audio",
  		.owner = THIS_MODULE,
-diff --git a/sound/soc/msm/msm8x60-pcm.c b/sound/soc/msm/msm8x60-pcm.c
-index 6f5ad32..b2e1eb7 100644
---- a/sound/soc/msm/msm8x60-pcm.c
-+++ b/sound/soc/msm/msm8x60-pcm.c
-@@ -781,7 +781,7 @@ static int msm_pcm_remove(struct platform_device *pdev)
+Index: msm/sound/soc/msm/msm8x60-pcm.c
+===================================================================
+--- msm.orig/sound/soc/msm/msm8x60-pcm.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/sound/soc/msm/msm8x60-pcm.c	2012-09-14 19:10:11.628723519 -0400
+@@ -781,7 +781,7 @@
  	return 0;
  }
  
 -static struct platform_driver msm_pcm_driver = {
-+static struct platform_driver msm_pcm_driver  __initdata =  {
++static struct platform_driver msm_pcm_driver  __refdata =  {
  	.probe = msm_pcm_probe,
  	.remove = __devexit_p(msm_pcm_remove),
  	.driver = {
-diff --git a/sound/soc/msm/qdsp6v2/msm-compr-q6-v2.c b/sound/soc/msm/qdsp6v2/msm-compr-q6-v2.c
-index 7723934..cc07223 100644
---- a/sound/soc/msm/qdsp6v2/msm-compr-q6-v2.c
-+++ b/sound/soc/msm/qdsp6v2/msm-compr-q6-v2.c
-@@ -632,7 +632,7 @@ static int msm_compr_remove(struct platform_device *pdev)
- 	return 0;
- }
+Index: msm/sound/soc/msm/qdsp6v2/msm-compr-q6-v2.c
+===================================================================
+--- msm.orig/sound/soc/msm/qdsp6v2/msm-compr-q6-v2.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/sound/soc/msm/qdsp6v2/msm-compr-q6-v2.c	2012-09-14 19:06:53.643212530 -0400
+@@ -642,7 +642,7 @@
+ };
+ MODULE_DEVICE_TABLE(of, msm_compr_dt_match);
  
 -static struct platform_driver msm_compr_driver = {
 +static struct platform_driver msm_compr_driver  __initdata =  {
  	.driver = {
  		.name = "msm-compr-dsp",
  		.owner = THIS_MODULE,
-diff --git a/sound/soc/msm/qdsp6v2/msm-multi-ch-pcm-q6-v2.c b/sound/soc/msm/qdsp6v2/msm-multi-ch-pcm-q6-v2.c
-index cab689d..7f94047 100644
---- a/sound/soc/msm/qdsp6v2/msm-multi-ch-pcm-q6-v2.c
-+++ b/sound/soc/msm/qdsp6v2/msm-multi-ch-pcm-q6-v2.c
-@@ -747,7 +747,7 @@ static int msm_pcm_remove(struct platform_device *pdev)
+Index: msm/sound/soc/msm/qdsp6v2/msm-multi-ch-pcm-q6-v2.c
+===================================================================
+--- msm.orig/sound/soc/msm/qdsp6v2/msm-multi-ch-pcm-q6-v2.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/sound/soc/msm/qdsp6v2/msm-multi-ch-pcm-q6-v2.c	2012-09-14 19:06:53.643212530 -0400
+@@ -747,7 +747,7 @@
  	return 0;
  }
  
@@ -804,11 +813,11 @@ index cab689d..7f94047 100644
  	.driver = {
  		.name = "msm-multi-ch-pcm-dsp",
  		.owner = THIS_MODULE,
-diff --git a/sound/soc/msm/qdsp6v2/msm-pcm-afe-v2.c b/sound/soc/msm/qdsp6v2/msm-pcm-afe-v2.c
-index 4593784..cf2aa9a 100644
---- a/sound/soc/msm/qdsp6v2/msm-pcm-afe-v2.c
-+++ b/sound/soc/msm/qdsp6v2/msm-pcm-afe-v2.c
-@@ -554,7 +554,7 @@ static int msm_afe_remove(struct platform_device *pdev)
+Index: msm/sound/soc/msm/qdsp6v2/msm-pcm-afe-v2.c
+===================================================================
+--- msm.orig/sound/soc/msm/qdsp6v2/msm-pcm-afe-v2.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/sound/soc/msm/qdsp6v2/msm-pcm-afe-v2.c	2012-09-14 19:06:53.643212530 -0400
+@@ -554,7 +554,7 @@
  	return 0;
  }
  
@@ -817,11 +826,11 @@ index 4593784..cf2aa9a 100644
  	.driver = {
  		.name = "msm-pcm-afe",
  		.owner = THIS_MODULE,
-diff --git a/sound/soc/msm/qdsp6v2/msm-pcm-lpa-v2.c b/sound/soc/msm/qdsp6v2/msm-pcm-lpa-v2.c
-index 1ac872d..bb8dc33 100644
---- a/sound/soc/msm/qdsp6v2/msm-pcm-lpa-v2.c
-+++ b/sound/soc/msm/qdsp6v2/msm-pcm-lpa-v2.c
-@@ -584,7 +584,7 @@ static const struct of_device_id msm_pcm_lpa_dt_match[] = {
+Index: msm/sound/soc/msm/qdsp6v2/msm-pcm-lpa-v2.c
+===================================================================
+--- msm.orig/sound/soc/msm/qdsp6v2/msm-pcm-lpa-v2.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/sound/soc/msm/qdsp6v2/msm-pcm-lpa-v2.c	2012-09-14 19:06:53.643212530 -0400
+@@ -595,7 +595,7 @@
  };
  MODULE_DEVICE_TABLE(of, msm_pcm_lpa_dt_match);
  
@@ -830,11 +839,11 @@ index 1ac872d..bb8dc33 100644
  	.driver = {
  		.name = "msm-pcm-lpa",
  		.owner = THIS_MODULE,
-diff --git a/sound/soc/msm/qdsp6v2/msm-pcm-q6-v2.c b/sound/soc/msm/qdsp6v2/msm-pcm-q6-v2.c
-index c9f9593..21a7e0e 100644
---- a/sound/soc/msm/qdsp6v2/msm-pcm-q6-v2.c
-+++ b/sound/soc/msm/qdsp6v2/msm-pcm-q6-v2.c
-@@ -702,7 +702,7 @@ static const struct of_device_id msm_pcm_dt_match[] = {
+Index: msm/sound/soc/msm/qdsp6v2/msm-pcm-q6-v2.c
+===================================================================
+--- msm.orig/sound/soc/msm/qdsp6v2/msm-pcm-q6-v2.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/sound/soc/msm/qdsp6v2/msm-pcm-q6-v2.c	2012-09-14 19:06:53.643212530 -0400
+@@ -701,7 +701,7 @@
  };
  MODULE_DEVICE_TABLE(of, msm_pcm_dt_match);
  
@@ -843,11 +852,11 @@ index c9f9593..21a7e0e 100644
  	.driver = {
  		.name = "msm-pcm-dsp",
  		.owner = THIS_MODULE,
-diff --git a/sound/soc/msm/qdsp6v2/msm-pcm-routing-v2.c b/sound/soc/msm/qdsp6v2/msm-pcm-routing-v2.c
-index 67ee8e4..862d3ff 100644
---- a/sound/soc/msm/qdsp6v2/msm-pcm-routing-v2.c
-+++ b/sound/soc/msm/qdsp6v2/msm-pcm-routing-v2.c
-@@ -2174,7 +2174,7 @@ static const struct of_device_id msm_pcm_routing_dt_match[] = {
+Index: msm/sound/soc/msm/qdsp6v2/msm-pcm-routing-v2.c
+===================================================================
+--- msm.orig/sound/soc/msm/qdsp6v2/msm-pcm-routing-v2.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/sound/soc/msm/qdsp6v2/msm-pcm-routing-v2.c	2012-09-14 19:06:53.647212479 -0400
+@@ -2175,7 +2175,7 @@
  };
  MODULE_DEVICE_TABLE(of, msm_pcm_routing_dt_match);
  
@@ -856,24 +865,24 @@ index 67ee8e4..862d3ff 100644
  	.driver = {
  		.name = "msm-pcm-routing",
  		.owner = THIS_MODULE,
-diff --git a/sound/soc/msm/qdsp6v2/msm-pcm-voice-v2.c b/sound/soc/msm/qdsp6v2/msm-pcm-voice-v2.c
-index 206e881..cb6d100 100644
---- a/sound/soc/msm/qdsp6v2/msm-pcm-voice-v2.c
-+++ b/sound/soc/msm/qdsp6v2/msm-pcm-voice-v2.c
-@@ -477,7 +477,7 @@ static int msm_pcm_remove(struct platform_device *pdev)
- 	return 0;
- }
+Index: msm/sound/soc/msm/qdsp6v2/msm-pcm-voice-v2.c
+===================================================================
+--- msm.orig/sound/soc/msm/qdsp6v2/msm-pcm-voice-v2.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/sound/soc/msm/qdsp6v2/msm-pcm-voice-v2.c	2012-09-14 19:06:53.647212479 -0400
+@@ -486,7 +486,7 @@
+ };
+ MODULE_DEVICE_TABLE(of, msm_voice_dt_match);
  
 -static struct platform_driver msm_pcm_driver = {
 +static struct platform_driver msm_pcm_driver  __initdata =  {
  	.driver = {
  		.name = "msm-pcm-voice",
  		.owner = THIS_MODULE,
-diff --git a/sound/soc/msm/qdsp6v2/msm-pcm-voip-v2.c b/sound/soc/msm/qdsp6v2/msm-pcm-voip-v2.c
-index 630405a..cb3749c 100644
---- a/sound/soc/msm/qdsp6v2/msm-pcm-voip-v2.c
-+++ b/sound/soc/msm/qdsp6v2/msm-pcm-voip-v2.c
-@@ -1138,7 +1138,7 @@ static const struct of_device_id msm_voip_dt_match[] = {
+Index: msm/sound/soc/msm/qdsp6v2/msm-pcm-voip-v2.c
+===================================================================
+--- msm.orig/sound/soc/msm/qdsp6v2/msm-pcm-voip-v2.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/sound/soc/msm/qdsp6v2/msm-pcm-voip-v2.c	2012-09-14 19:06:53.647212479 -0400
+@@ -1143,7 +1143,7 @@
  };
  MODULE_DEVICE_TABLE(of, msm_voip_dt_match);
  
@@ -882,24 +891,11 @@ index 630405a..cb3749c 100644
  	.driver = {
  		.name = "msm-voip-dsp",
  		.owner = THIS_MODULE,
-diff --git a/drivers/hwmon/pm8xxx-adc.c b/drivers/hwmon/pm8xxx-adc.c
-index aa9acf7..0e774f7 100644
---- a/drivers/hwmon/pm8xxx-adc.c
-+++ b/drivers/hwmon/pm8xxx-adc.c
-@@ -1264,7 +1264,7 @@ static int __devinit pm8xxx_adc_probe(struct platform_device *pdev)
- 	return 0;
- }
- 
--static struct platform_driver pm8xxx_adc_driver = {
-+static struct platform_driver pm8xxx_adc_driver __refdata = {
- 	.probe	= pm8xxx_adc_probe,
- 	.remove	= __devexit_p(pm8xxx_adc_teardown),
- 	.driver	= {
-diff --git a/drivers/input/touchscreen/cyttsp_i2c.c b/drivers/input/touchscreen/cyttsp_i2c.c
-index 2af1d0c..93cf35b 100644
---- a/drivers/input/touchscreen/cyttsp_i2c.c
-+++ b/drivers/input/touchscreen/cyttsp_i2c.c
-@@ -117,7 +117,7 @@ static const struct i2c_device_id cyttsp_i2c_id[] = {
+Index: msm/drivers/input/touchscreen/cyttsp_i2c.c
+===================================================================
+--- msm.orig/drivers/input/touchscreen/cyttsp_i2c.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/input/touchscreen/cyttsp_i2c.c	2012-09-14 19:06:53.647212479 -0400
+@@ -117,7 +117,7 @@
  };
  MODULE_DEVICE_TABLE(i2c, cyttsp_i2c_id);
  
@@ -908,11 +904,11 @@ index 2af1d0c..93cf35b 100644
  	.driver = {
  		.name	= CY_I2C_NAME,
  		.owner	= THIS_MODULE,
-diff --git a/drivers/mfd/wcd9xxx-core.c b/drivers/mfd/wcd9xxx-core.c
-index 2256f67..d30caa5 100644
---- a/drivers/mfd/wcd9xxx-core.c
-+++ b/drivers/mfd/wcd9xxx-core.c
-@@ -1104,7 +1104,7 @@ static struct i2c_device_id tabla_id_table[] = {
+Index: msm/drivers/mfd/wcd9xxx-core.c
+===================================================================
+--- msm.orig/drivers/mfd/wcd9xxx-core.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/mfd/wcd9xxx-core.c	2012-09-14 19:06:53.647212479 -0400
+@@ -1404,7 +1404,7 @@
  };
  MODULE_DEVICE_TABLE(i2c, tabla_id_table);
  
@@ -921,11 +917,11 @@ index 2256f67..d30caa5 100644
  	.driver                 = {
  		.owner          =       THIS_MODULE,
  		.name           =       "tabla-i2c-core",
-diff --git a/drivers/net/wireless/wcnss/wcnss_wlan.c b/drivers/net/wireless/wcnss/wcnss_wlan.c
-index ad9dc7d..c5d1048 100644
---- a/drivers/net/wireless/wcnss/wcnss_wlan.c
-+++ b/drivers/net/wireless/wcnss/wcnss_wlan.c
-@@ -196,7 +196,7 @@ wcnss_wlan_ctrl_remove(struct platform_device *pdev)
+Index: msm/drivers/net/wireless/wcnss/wcnss_wlan.c
+===================================================================
+--- msm.orig/drivers/net/wireless/wcnss/wcnss_wlan.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/net/wireless/wcnss/wcnss_wlan.c	2012-09-14 19:06:53.647212479 -0400
+@@ -329,7 +329,7 @@
  }
  
  
@@ -934,20 +930,20 @@ index ad9dc7d..c5d1048 100644
  	.driver = {
  		.name	= "WLAN_CTRL",
  		.owner	= THIS_MODULE,
-@@ -491,7 +491,7 @@ static const struct dev_pm_ops wcnss_wlan_pm_ops = {
- 	.resume		= wcnss_wlan_resume,
+@@ -793,7 +793,7 @@
  };
+ #endif
  
 -static struct platform_driver wcnss_wlan_driver = {
 +static struct platform_driver wcnss_wlan_driver __refdata = {
  	.driver = {
  		.name	= DEVICE,
  		.owner	= THIS_MODULE,
-diff --git a/drivers/power/smb349.c b/drivers/power/smb349.c
-index ffc92d5..1ae2bbe 100644
---- a/drivers/power/smb349.c
-+++ b/drivers/power/smb349.c
-@@ -676,7 +676,7 @@ static const struct i2c_device_id smb349_id[] = {
+Index: msm/drivers/power/smb349.c
+===================================================================
+--- msm.orig/drivers/power/smb349.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/power/smb349.c	2012-09-14 19:06:53.647212479 -0400
+@@ -678,7 +678,7 @@
  };
  MODULE_DEVICE_TABLE(i2c, smb349_id);
  
@@ -956,11 +952,11 @@ index ffc92d5..1ae2bbe 100644
  	.driver	= {
  		   .name	= SMB349_NAME,
  		   .owner	= THIS_MODULE,
-diff --git a/drivers/usb/misc/mdm_data_bridge.c b/drivers/usb/misc/mdm_data_bridge.c
-index 1c9de07..79a455e 100644
---- a/drivers/usb/misc/mdm_data_bridge.c
-+++ b/drivers/usb/misc/mdm_data_bridge.c
-@@ -1036,7 +1036,7 @@ static const struct usb_device_id bridge_ids[] = {
+Index: msm/drivers/usb/misc/mdm_data_bridge.c
+===================================================================
+--- msm.orig/drivers/usb/misc/mdm_data_bridge.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/usb/misc/mdm_data_bridge.c	2012-09-14 19:06:53.647212479 -0400
+@@ -1036,7 +1036,7 @@
  };
  MODULE_DEVICE_TABLE(usb, bridge_ids);
  
@@ -969,11 +965,11 @@ index 1c9de07..79a455e 100644
  	.name =			"mdm_bridge",
  	.probe =		bridge_probe,
  	.disconnect =		bridge_disconnect,
-diff --git a/sound/soc/codecs/cs8427.c b/sound/soc/codecs/cs8427.c
-index e406a32..20eba87 100644
---- a/sound/soc/codecs/cs8427.c
-+++ b/sound/soc/codecs/cs8427.c
-@@ -873,7 +873,7 @@ static struct i2c_device_id cs8427_id_table[] = {
+Index: msm/sound/soc/codecs/cs8427.c
+===================================================================
+--- msm.orig/sound/soc/codecs/cs8427.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/sound/soc/codecs/cs8427.c	2012-09-14 19:06:53.647212479 -0400
+@@ -946,7 +946,7 @@
  };
  MODULE_DEVICE_TABLE(i2c, cs8427_id_table);
  
@@ -982,11 +978,11 @@ index e406a32..20eba87 100644
  	.driver                 = {
  		.owner          =       THIS_MODULE,
  		.name           =       "cs8427-spdif",
-diff --git a/sound/soc/codecs/wcd9310.c b/sound/soc/codecs/wcd9310.c
-index 3164a9b..6fa69aa 100644
---- a/sound/soc/codecs/wcd9310.c
-+++ b/sound/soc/codecs/wcd9310.c
-@@ -8124,7 +8124,7 @@ static int __devexit tabla_remove(struct platform_device *pdev)
+Index: msm/sound/soc/codecs/wcd9310.c
+===================================================================
+--- msm.orig/sound/soc/codecs/wcd9310.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/sound/soc/codecs/wcd9310.c	2012-09-14 19:06:53.651212429 -0400
+@@ -8407,7 +8407,7 @@
  	snd_soc_unregister_codec(&pdev->dev);
  	return 0;
  }
@@ -995,46 +991,7 @@ index 3164a9b..6fa69aa 100644
  	.probe = tabla_probe,
  	.remove = tabla_remove,
  	.driver = {
-diff --git a/sound/soc/msm/msm-dai-q6.c b/sound/soc/msm/msm-dai-q6.c
-index fb74c0a..fedb6db 100644
---- a/sound/soc/msm/msm-dai-q6.c
-+++ b/sound/soc/msm/msm-dai-q6.c
-@@ -1966,7 +1966,7 @@ static __devexit int msm_dai_q6_mi2s_dev_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
--static struct platform_driver msm_dai_q6_driver = {
-+static struct platform_driver msm_dai_q6_driver __refdata = {
- 	.probe  = msm_dai_q6_dev_probe,
- 	.remove = msm_dai_q6_dev_remove,
- 	.driver = {
-@@ -1975,7 +1975,7 @@ static struct platform_driver msm_dai_q6_driver = {
- 	},
- };
- 
--static struct platform_driver msm_dai_q6_mi2s_driver = {
-+static struct platform_driver msm_dai_q6_mi2s_driver __refdata = {
- 	.probe  = msm_dai_q6_mi2s_dev_probe,
- 	.remove = msm_dai_q6_mi2s_dev_remove,
- 	.driver = {
-diff --git a/drivers/input/touchscreen/cyttsp-i2c-qc.c b/drivers/input/touchscreen/cyttsp-i2c-qc.c
-index d8881a4..944d504 100644
---- a/drivers/input/touchscreen/cyttsp-i2c-qc.c
-+++ b/drivers/input/touchscreen/cyttsp-i2c-qc.c
-@@ -161,7 +161,7 @@ static const struct dev_pm_ops cyttsp_pm_ops = {
- };
- #endif
- 
--static struct i2c_driver cyttsp_driver = {
-+static struct i2c_driver cyttsp_driver __refdata = {
- 	.driver = {
- 		.name = CY_I2C_NAME,
- 		.owner = THIS_MODULE,
-diff --git a/sound/soc/codecs/wcd9310.c b/sound/soc/codecs/wcd9310.c
-index 3164a9b..f0a71b7 100644
---- a/sound/soc/codecs/wcd9310.c
-+++ b/sound/soc/codecs/wcd9310.c
-@@ -8136,7 +8136,7 @@ static struct platform_driver tabla_codec_driver = {
+@@ -8419,7 +8419,7 @@
  	},
  };
  
@@ -1043,11 +1000,55 @@ index 3164a9b..f0a71b7 100644
  	.probe = tabla_probe,
  	.remove = tabla_remove,
  	.driver = {
-diff --git a/drivers/video/msm/mipi_tc358764_dsi2lvds.c b/drivers/video/msm/mipi_tc358764_dsi2lvds.c
-index 2e65c34..aeadb6f 100644
---- a/drivers/video/msm/mipi_tc358764_dsi2lvds.c
-+++ b/drivers/video/msm/mipi_tc358764_dsi2lvds.c
-@@ -224,7 +224,7 @@ static u32 d2l_3d_gpio_enable;
+Index: msm/sound/soc/msm/msm-dai-q6.c
+===================================================================
+--- msm.orig/sound/soc/msm/msm-dai-q6.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/sound/soc/msm/msm-dai-q6.c	2012-09-14 19:06:53.691211929 -0400
+@@ -1488,7 +1488,7 @@
+ 	.shutdown	= msm_dai_q6_sec_auxpcm_shutdown,
+ };
+ 
+-static struct snd_soc_dai_driver msm_dai_q6_i2s_rx_dai = {
++static struct snd_soc_dai_driver msm_dai_q6_i2s_rx_dai __refdata = {
+ 	.playback = {
+ 		.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_8000 |
+ 		SNDRV_PCM_RATE_16000,
+@@ -1970,7 +1970,7 @@
+ 	return 0;
+ }
+ 
+-static struct platform_driver msm_dai_q6_driver = {
++static struct platform_driver msm_dai_q6_driver __refdata = {
+ 	.probe  = msm_dai_q6_dev_probe,
+ 	.remove = msm_dai_q6_dev_remove,
+ 	.driver = {
+@@ -1979,7 +1979,7 @@
+ 	},
+ };
+ 
+-static struct platform_driver msm_dai_q6_mi2s_driver = {
++static struct platform_driver msm_dai_q6_mi2s_driver __refdata = {
+ 	.probe  = msm_dai_q6_mi2s_dev_probe,
+ 	.remove = msm_dai_q6_mi2s_dev_remove,
+ 	.driver = {
+Index: msm/drivers/input/touchscreen/cyttsp-i2c-qc.c
+===================================================================
+--- msm.orig/drivers/input/touchscreen/cyttsp-i2c-qc.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/input/touchscreen/cyttsp-i2c-qc.c	2012-09-14 19:06:53.651212429 -0400
+@@ -161,7 +161,7 @@
+ };
+ #endif
+ 
+-static struct i2c_driver cyttsp_driver = {
++static struct i2c_driver cyttsp_driver __refdata = {
+ 	.driver = {
+ 		.name = CY_I2C_NAME,
+ 		.owner = THIS_MODULE,
+Index: msm/drivers/video/msm/mipi_tc358764_dsi2lvds.c
+===================================================================
+--- msm.orig/drivers/video/msm/mipi_tc358764_dsi2lvds.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/video/msm/mipi_tc358764_dsi2lvds.c	2012-09-14 19:06:53.679212081 -0400
+@@ -224,7 +224,7 @@
  static u32 d2l_3d_gpio_mode;
  static int d2l_enable_3d;
  static struct i2c_client *d2l_i2c_client;
@@ -1056,11 +1057,20 @@ index 2e65c34..aeadb6f 100644
  
  static int mipi_d2l_init(void);
  static int mipi_d2l_enable_3d(struct msm_fb_data_type *mfd,
-diff --git a/include/linux/oprofile.h b/include/linux/oprofile.h
-index a4c5624..805857b 100644
---- a/include/linux/oprofile.h
-+++ b/include/linux/oprofile.h
-@@ -84,7 +84,7 @@ struct oprofile_operations {
+@@ -973,7 +973,7 @@
+ 	return ret;
+ }
+ 
+-static struct platform_driver d2l_driver = {
++static struct platform_driver d2l_driver __refdata = {
+ 	.probe  = mipi_d2l_probe,
+ 	.remove = __devexit_p(mipi_d2l_remove),
+ 	.driver = {
+Index: msm/include/linux/oprofile.h
+===================================================================
+--- msm.orig/include/linux/oprofile.h	2012-09-14 19:06:24.000000000 -0400
++++ msm/include/linux/oprofile.h	2012-09-14 19:06:53.651212429 -0400
+@@ -84,7 +84,7 @@
   *
   * If an error occurs, the fields should be left untouched.
   */
@@ -1069,11 +1079,11 @@ index a4c5624..805857b 100644
   
  /**
   * One-time exit/cleanup for the arch.
-diff --git a/net/wireless/reg.c b/net/wireless/reg.c
-index e9a0ac8..e984a80 100644
---- a/net/wireless/reg.c
-+++ b/net/wireless/reg.c
-@@ -2309,7 +2309,7 @@ static void reg_timeout_work(struct work_struct *work)
+Index: msm/net/wireless/reg.c
+===================================================================
+--- msm.orig/net/wireless/reg.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/net/wireless/reg.c	2012-09-14 19:06:53.651212429 -0400
+@@ -2309,7 +2309,7 @@
  	restore_regulatory_settings(true);
  }
  
@@ -1082,11 +1092,11 @@ index e9a0ac8..e984a80 100644
  {
  	int err = 0;
  
-diff --git a/net/wireless/reg.h b/net/wireless/reg.h
-index e2aaaf5..e57f076 100644
---- a/net/wireless/reg.h
-+++ b/net/wireless/reg.h
-@@ -27,7 +27,7 @@ int regulatory_hint_user(const char *alpha2);
+Index: msm/net/wireless/reg.h
+===================================================================
+--- msm.orig/net/wireless/reg.h	2012-09-14 19:06:23.000000000 -0400
++++ msm/net/wireless/reg.h	2012-09-14 19:06:53.651212429 -0400
+@@ -27,7 +27,7 @@
  int reg_device_uevent(struct device *dev, struct kobj_uevent_env *env);
  void reg_device_remove(struct wiphy *wiphy);
  
@@ -1095,24 +1105,11 @@ index e2aaaf5..e57f076 100644
  void regulatory_exit(void);
  
  int set_regdom(const struct ieee80211_regdomain *rd);
-diff --git a/arch/arm/mach-msm/pm-boot.c b/arch/arm/mach-msm/pm-boot.c
-index f6105af1..1804cd9 100644
---- a/arch/arm/mach-msm/pm-boot.c
-+++ b/arch/arm/mach-msm/pm-boot.c
-@@ -256,7 +256,7 @@ static struct of_device_id msm_pm_match_table[] = {
- 	{},
- };
- 
--static struct platform_driver msm_pm_boot_driver = {
-+static struct platform_driver msm_pm_boot_driver __devinitdata = {
- 	.probe = msm_pm_boot_probe,
- 	.driver = {
- 		.name = "pm-boot",
-diff --git a/arch/arm/mach-msm/sysmon.c b/arch/arm/mach-msm/sysmon.c
-index ddb8502..2ac4958 100644
---- a/arch/arm/mach-msm/sysmon.c
-+++ b/arch/arm/mach-msm/sysmon.c
-@@ -212,7 +212,7 @@ static int __devexit sysmon_remove(struct platform_device *pdev)
+Index: msm/arch/arm/mach-msm/sysmon.c
+===================================================================
+--- msm.orig/arch/arm/mach-msm/sysmon.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/arch/arm/mach-msm/sysmon.c	2012-09-14 19:06:53.651212429 -0400
+@@ -278,7 +278,7 @@
  	return 0;
  }
  
@@ -1121,11 +1118,11 @@ index ddb8502..2ac4958 100644
  	.probe		= sysmon_probe,
  	.remove		= __devexit_p(sysmon_remove),
  	.driver		= {
-diff --git a/arch/arm/oprofile/common.c b/arch/arm/oprofile/common.c
-index 338e8c2..dfa583f 100644
---- a/arch/arm/oprofile/common.c
-+++ b/arch/arm/oprofile/common.c
-@@ -116,7 +116,7 @@ static void arm_backtrace(struct pt_regs * const regs, unsigned int depth)
+Index: msm/arch/arm/oprofile/common.c
+===================================================================
+--- msm.orig/arch/arm/oprofile/common.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/arch/arm/oprofile/common.c	2012-09-14 19:06:53.651212429 -0400
+@@ -116,7 +116,7 @@
  		tail = user_backtrace(tail);
  }
  
@@ -1134,11 +1131,11 @@ index 338e8c2..dfa583f 100644
  {
  	/* provide backtrace support also in timer mode: */
  	ops->backtrace		= arm_backtrace;
-diff --git a/drivers/bluetooth/bluetooth-power.c b/drivers/bluetooth/bluetooth-power.c
-index 3bf49d1..b3a2a1f 100644
---- a/drivers/bluetooth/bluetooth-power.c
-+++ b/drivers/bluetooth/bluetooth-power.c
-@@ -108,7 +108,7 @@ static int __devexit bt_power_remove(struct platform_device *pdev)
+Index: msm/drivers/bluetooth/bluetooth-power.c
+===================================================================
+--- msm.orig/drivers/bluetooth/bluetooth-power.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/bluetooth/bluetooth-power.c	2012-09-14 19:06:53.651212429 -0400
+@@ -108,7 +108,7 @@
  	return 0;
  }
  
@@ -1147,11 +1144,11 @@ index 3bf49d1..b3a2a1f 100644
  	.probe = bt_power_probe,
  	.remove = __devexit_p(bt_power_remove),
  	.driver = {
-diff --git a/drivers/char/dcc_tty.c b/drivers/char/dcc_tty.c
-index 7643f50..e531640 100644
---- a/drivers/char/dcc_tty.c
-+++ b/drivers/char/dcc_tty.c
-@@ -33,7 +33,7 @@ static char g_dcc_buffer[16];
+Index: msm/drivers/char/dcc_tty.c
+===================================================================
+--- msm.orig/drivers/char/dcc_tty.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/char/dcc_tty.c	2012-09-14 19:06:53.655212380 -0400
+@@ -33,7 +33,7 @@
  static int g_dcc_buffer_head;
  static int g_dcc_buffer_count;
  static unsigned g_dcc_write_delay_usecs = 1;
@@ -1160,7 +1157,7 @@ index 7643f50..e531640 100644
  static struct tty_struct *g_dcc_tty;
  static int g_dcc_tty_open_count;
  
-@@ -246,7 +246,7 @@ static int __init dcc_console_setup(struct console *co, char *options)
+@@ -246,7 +246,7 @@
  }
  
  
@@ -1169,24 +1166,24 @@ index 7643f50..e531640 100644
  {
  	.name		= "ttyDCC",
  	.write		= dcc_console_write,
-diff --git a/drivers/char/hw_random/msm_rng.c b/drivers/char/hw_random/msm_rng.c
-index b03a4ec..eff509d 100644
---- a/drivers/char/hw_random/msm_rng.c
-+++ b/drivers/char/hw_random/msm_rng.c
-@@ -231,7 +231,7 @@ static int __devexit msm_rng_remove(struct platform_device *pdev)
- 	return 0;
- }
+Index: msm/drivers/char/hw_random/msm_rng.c
+===================================================================
+--- msm.orig/drivers/char/hw_random/msm_rng.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/char/hw_random/msm_rng.c	2012-09-14 19:06:53.655212380 -0400
+@@ -237,7 +237,7 @@
+ 	{}
+ };
  
 -static struct platform_driver rng_driver = {
 +static struct platform_driver rng_driver __refdata = {
  	.probe      = msm_rng_probe,
  	.remove     = __devexit_p(msm_rng_remove),
  	.driver     = {
-diff --git a/drivers/char/msm_rotator.c b/drivers/char/msm_rotator.c
-index edf5c27..18a0977 100644
---- a/drivers/char/msm_rotator.c
-+++ b/drivers/char/msm_rotator.c
-@@ -1566,7 +1566,7 @@ static int msm_rotator_resume(struct platform_device *dev)
+Index: msm/drivers/char/msm_rotator.c
+===================================================================
+--- msm.orig/drivers/char/msm_rotator.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/char/msm_rotator.c	2012-09-14 19:06:53.655212380 -0400
+@@ -1809,7 +1809,7 @@
  }
  #endif
  
@@ -1195,11 +1192,11 @@ index edf5c27..18a0977 100644
  	.probe = msm_rotator_probe,
  	.remove = __devexit_p(msm_rotator_remove),
  #ifdef CONFIG_PM
-diff --git a/drivers/gpio/pm8xxx-gpio.c b/drivers/gpio/pm8xxx-gpio.c
-index 53305e3..4137bc5 100644
---- a/drivers/gpio/pm8xxx-gpio.c
-+++ b/drivers/gpio/pm8xxx-gpio.c
-@@ -434,7 +434,7 @@ int pm8xxx_gpio_config(int gpio, struct pm_gpio *param)
+Index: msm/drivers/gpio/pm8xxx-gpio.c
+===================================================================
+--- msm.orig/drivers/gpio/pm8xxx-gpio.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/gpio/pm8xxx-gpio.c	2012-09-14 19:06:53.655212380 -0400
+@@ -435,7 +435,7 @@
  }
  EXPORT_SYMBOL(pm8xxx_gpio_config);
  
@@ -1208,11 +1205,11 @@ index 53305e3..4137bc5 100644
  	.probe		= pm_gpio_probe,
  	.remove		= __devexit_p(pm_gpio_remove),
  	.driver		= {
-diff --git a/drivers/gpio/pm8xxx-mpp.c b/drivers/gpio/pm8xxx-mpp.c
-index 82a11a2..be88b45 100644
---- a/drivers/gpio/pm8xxx-mpp.c
-+++ b/drivers/gpio/pm8xxx-mpp.c
-@@ -307,7 +307,7 @@ static int __devexit pm8xxx_mpp_remove(struct platform_device *pdev)
+Index: msm/drivers/gpio/pm8xxx-mpp.c
+===================================================================
+--- msm.orig/drivers/gpio/pm8xxx-mpp.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/gpio/pm8xxx-mpp.c	2012-09-14 19:06:53.655212380 -0400
+@@ -308,7 +308,7 @@
  	return 0;
  }
  
@@ -1221,24 +1218,24 @@ index 82a11a2..be88b45 100644
  	.probe		= pm8xxx_mpp_probe,
  	.remove		= __devexit_p(pm8xxx_mpp_remove),
  	.driver		= {
-diff --git a/drivers/gpu/msm/adreno.c b/drivers/gpu/msm/adreno.c
-index 12e093b..8f1e00f 100644
---- a/drivers/gpu/msm/adreno.c
-+++ b/drivers/gpu/msm/adreno.c
-@@ -1296,7 +1296,7 @@ static struct platform_device_id adreno_id_table[] = {
+Index: msm/drivers/gpu/msm/adreno.c
+===================================================================
+--- msm.orig/drivers/gpu/msm/adreno.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/gpu/msm/adreno.c	2012-09-14 19:06:53.655212380 -0400
+@@ -2459,7 +2459,7 @@
+ 	.postmortem_dump = adreno_dump,
  };
- MODULE_DEVICE_TABLE(platform, adreno_id_table);
  
 -static struct platform_driver adreno_platform_driver = {
 +static struct platform_driver adreno_platform_driver __refdata = {
  	.probe = adreno_probe,
  	.remove = __devexit_p(adreno_remove),
  	.suspend = kgsl_suspend_driver,
-diff --git a/drivers/gpu/msm/z180.c b/drivers/gpu/msm/z180.c
-index cdb9c23..c9f8dd3 100644
---- a/drivers/gpu/msm/z180.c
-+++ b/drivers/gpu/msm/z180.c
-@@ -915,7 +915,7 @@ static struct platform_device_id z180_id_table[] = {
+Index: msm/drivers/gpu/msm/z180.c
+===================================================================
+--- msm.orig/drivers/gpu/msm/z180.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/gpu/msm/z180.c	2012-09-14 19:06:53.659212331 -0400
+@@ -941,7 +941,7 @@
  };
  MODULE_DEVICE_TABLE(platform, z180_id_table);
  
@@ -1247,11 +1244,11 @@ index cdb9c23..c9f8dd3 100644
  	.probe = z180_probe,
  	.remove = __devexit_p(z180_remove),
  	.suspend = kgsl_suspend_driver,
-diff --git a/drivers/hwmon/msm_adc.c b/drivers/hwmon/msm_adc.c
-index b8d581e..d631bdd 100644
---- a/drivers/hwmon/msm_adc.c
-+++ b/drivers/hwmon/msm_adc.c
-@@ -1372,7 +1372,7 @@ hwmon_err_sens:
+Index: msm/drivers/hwmon/msm_adc.c
+===================================================================
+--- msm.orig/drivers/hwmon/msm_adc.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/hwmon/msm_adc.c	2012-09-14 19:06:53.659212331 -0400
+@@ -1384,7 +1384,7 @@
  	return rc;
  }
  
@@ -1260,7 +1257,7 @@ index b8d581e..d631bdd 100644
  	.probe          = msm_rpc_adc_init,
  	.driver         = {
  		.name   = MSM_ADC_DALRPC_PORT_NAME,
-@@ -1494,7 +1494,7 @@ static int __devexit msm_adc_remove(struct platform_device *pdev)
+@@ -1506,7 +1506,7 @@
  	return 0;
  }
  
@@ -1269,12 +1266,12 @@ index b8d581e..d631bdd 100644
  	.probe = msm_adc_probe,
  	.remove = __devexit_p(msm_adc_remove),
  	.driver = {
-diff --git a/drivers/i2c/busses/i2c-qup.c b/drivers/i2c/busses/i2c-qup.c
-index 3dbbf15..ec7d586 100644
---- a/drivers/i2c/busses/i2c-qup.c
-+++ b/drivers/i2c/busses/i2c-qup.c
-@@ -1294,7 +1294,7 @@ static const struct dev_pm_ops i2c_qup_dev_pm_ops = {
- 	)
+Index: msm/drivers/i2c/busses/i2c-qup.c
+===================================================================
+--- msm.orig/drivers/i2c/busses/i2c-qup.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/i2c/busses/i2c-qup.c	2012-09-14 19:06:53.659212331 -0400
+@@ -1502,7 +1502,7 @@
+ 	{}
  };
  
 -static struct platform_driver qup_i2c_driver = {
@@ -1282,24 +1279,24 @@ index 3dbbf15..ec7d586 100644
  	.probe		= qup_i2c_probe,
  	.remove		= __devexit_p(qup_i2c_remove),
  	.driver		= {
-diff --git a/drivers/input/keyboard/gpio_keys.c b/drivers/input/keyboard/gpio_keys.c
-index 6e6145b..bf2203e 100644
---- a/drivers/input/keyboard/gpio_keys.c
-+++ b/drivers/input/keyboard/gpio_keys.c
-@@ -622,7 +622,7 @@ static const struct dev_pm_ops gpio_keys_pm_ops = {
- };
- #endif
+Index: msm/drivers/input/keyboard/gpio_keys.c
+===================================================================
+--- msm.orig/drivers/input/keyboard/gpio_keys.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/input/keyboard/gpio_keys.c	2012-09-14 19:06:53.659212331 -0400
+@@ -816,7 +816,7 @@
+ 
+ static SIMPLE_DEV_PM_OPS(gpio_keys_pm_ops, gpio_keys_suspend, gpio_keys_resume);
  
 -static struct platform_driver gpio_keys_device_driver = {
 +static struct platform_driver gpio_keys_device_driver __refdata = {
  	.probe		= gpio_keys_probe,
  	.remove		= __devexit_p(gpio_keys_remove),
  	.driver		= {
-diff --git a/drivers/input/keyboard/pmic8xxx-keypad.c b/drivers/input/keyboard/pmic8xxx-keypad.c
-index 0866332..8c235fa 100644
---- a/drivers/input/keyboard/pmic8xxx-keypad.c
-+++ b/drivers/input/keyboard/pmic8xxx-keypad.c
-@@ -781,7 +781,7 @@ static int pmic8xxx_kp_resume(struct device *dev)
+Index: msm/drivers/input/keyboard/pmic8xxx-keypad.c
+===================================================================
+--- msm.orig/drivers/input/keyboard/pmic8xxx-keypad.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/input/keyboard/pmic8xxx-keypad.c	2012-09-14 19:06:53.659212331 -0400
+@@ -781,7 +781,7 @@
  static SIMPLE_DEV_PM_OPS(pm8xxx_kp_pm_ops,
  			 pmic8xxx_kp_suspend, pmic8xxx_kp_resume);
  
@@ -1308,11 +1305,11 @@ index 0866332..8c235fa 100644
  	.probe		= pmic8xxx_kp_probe,
  	.remove		= __devexit_p(pmic8xxx_kp_remove),
  	.driver		= {
-diff --git a/drivers/input/misc/pmic8058-othc.c b/drivers/input/misc/pmic8058-othc.c
-index a28e8e1..b82b2ac 100644
---- a/drivers/input/misc/pmic8058-othc.c
-+++ b/drivers/input/misc/pmic8058-othc.c
-@@ -1153,7 +1153,7 @@ fail_get_res:
+Index: msm/drivers/input/misc/pmic8058-othc.c
+===================================================================
+--- msm.orig/drivers/input/misc/pmic8058-othc.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/input/misc/pmic8058-othc.c	2012-09-14 19:06:53.659212331 -0400
+@@ -1155,7 +1155,7 @@
  	return rc;
  }
  
@@ -1321,11 +1318,11 @@ index a28e8e1..b82b2ac 100644
  	.driver = {
  		.name = "pm8058-othc",
  		.owner = THIS_MODULE,
-diff --git a/drivers/input/touchscreen/atmel_maxtouch.c b/drivers/input/touchscreen/atmel_maxtouch.c
-index e397774..9e6122b 100644
---- a/drivers/input/touchscreen/atmel_maxtouch.c
-+++ b/drivers/input/touchscreen/atmel_maxtouch.c
-@@ -2299,7 +2299,7 @@ static const struct i2c_device_id mxt_idtable[] = {
+Index: msm/drivers/input/touchscreen/atmel_maxtouch.c
+===================================================================
+--- msm.orig/drivers/input/touchscreen/atmel_maxtouch.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/input/touchscreen/atmel_maxtouch.c	2012-09-14 19:06:53.659212331 -0400
+@@ -2299,7 +2299,7 @@
  
  MODULE_DEVICE_TABLE(i2c, mxt_idtable);
  
@@ -1334,24 +1331,24 @@ index e397774..9e6122b 100644
  	.driver = {
  		.name	= "maXTouch",
  		.owner  = THIS_MODULE,
-diff --git a/drivers/input/touchscreen/atmel_mxt_ts.c b/drivers/input/touchscreen/atmel_mxt_ts.c
-index 790a9e1..28f6714 100644
---- a/drivers/input/touchscreen/atmel_mxt_ts.c
-+++ b/drivers/input/touchscreen/atmel_mxt_ts.c
-@@ -1593,7 +1593,7 @@ static const struct i2c_device_id mxt_id[] = {
- };
- MODULE_DEVICE_TABLE(i2c, mxt_id);
+Index: msm/drivers/input/touchscreen/atmel_mxt_ts.c
+===================================================================
+--- msm.orig/drivers/input/touchscreen/atmel_mxt_ts.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/input/touchscreen/atmel_mxt_ts.c	2012-09-14 19:06:53.659212331 -0400
+@@ -2782,7 +2782,7 @@
+ #define mxt_match_table NULL
+ #endif
  
 -static struct i2c_driver mxt_driver = {
 +static struct i2c_driver mxt_driver __refdata = {
  	.driver = {
  		.name	= "atmel_mxt_ts",
  		.owner	= THIS_MODULE,
-diff --git a/drivers/input/touchscreen/cy8c_tmg_ts.c b/drivers/input/touchscreen/cy8c_tmg_ts.c
-index f48374e..f03c38a 100644
---- a/drivers/input/touchscreen/cy8c_tmg_ts.c
-+++ b/drivers/input/touchscreen/cy8c_tmg_ts.c
-@@ -428,7 +428,7 @@ static const struct i2c_device_id cy8c_ts_i2c_id[] = {
+Index: msm/drivers/input/touchscreen/cy8c_tmg_ts.c
+===================================================================
+--- msm.orig/drivers/input/touchscreen/cy8c_tmg_ts.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/input/touchscreen/cy8c_tmg_ts.c	2012-09-14 19:06:53.659212331 -0400
+@@ -428,7 +428,7 @@
  	{}
  };
  
@@ -1360,11 +1357,11 @@ index f48374e..f03c38a 100644
  	.id_table = cy8c_ts_i2c_id,
  	.probe = cy8c_ts_probe,
  	.remove = cy8c_ts_remove,
-diff --git a/drivers/input/touchscreen/cy8c_ts.c b/drivers/input/touchscreen/cy8c_ts.c
-index f708582..da90852 100644
---- a/drivers/input/touchscreen/cy8c_ts.c
-+++ b/drivers/input/touchscreen/cy8c_ts.c
-@@ -790,7 +790,7 @@ static const struct i2c_device_id cy8c_ts_id[] = {
+Index: msm/drivers/input/touchscreen/cy8c_ts.c
+===================================================================
+--- msm.orig/drivers/input/touchscreen/cy8c_ts.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/input/touchscreen/cy8c_ts.c	2012-09-14 19:06:53.659212331 -0400
+@@ -791,7 +791,7 @@
  MODULE_DEVICE_TABLE(i2c, cy8c_ts_id);
  
  
@@ -1373,11 +1370,11 @@ index f708582..da90852 100644
  	.driver = {
  		.name = "cy8c_ts",
  		.owner = THIS_MODULE,
-diff --git a/drivers/leds/leds-pmic8058.c b/drivers/leds/leds-pmic8058.c
-index 3b3a24a..35f4ea5 100644
---- a/drivers/leds/leds-pmic8058.c
-+++ b/drivers/leds/leds-pmic8058.c
-@@ -399,7 +399,7 @@ static int __devexit pmic8058_led_remove(struct platform_device *pdev)
+Index: msm/drivers/leds/leds-pmic8058.c
+===================================================================
+--- msm.orig/drivers/leds/leds-pmic8058.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/leds/leds-pmic8058.c	2012-09-14 19:06:53.659212331 -0400
+@@ -401,7 +401,7 @@
  	return 0;
  }
  
@@ -1386,11 +1383,11 @@ index 3b3a24a..35f4ea5 100644
  	.probe		= pmic8058_led_probe,
  	.remove		= __devexit_p(pmic8058_led_remove),
  	.driver		= {
-diff --git a/drivers/md/dm-crypt.c b/drivers/md/dm-crypt.c
-index c8827ff..028bf4c 100644
---- a/drivers/md/dm-crypt.c
-+++ b/drivers/md/dm-crypt.c
-@@ -539,12 +539,14 @@ static int crypt_iv_lmk_one(struct crypt_config *cc, u8 *iv,
+Index: msm/drivers/md/dm-crypt.c
+===================================================================
+--- msm.orig/drivers/md/dm-crypt.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/md/dm-crypt.c	2012-09-14 19:06:53.663212281 -0400
+@@ -510,12 +510,14 @@
  	struct iv_lmk_private *lmk = &cc->iv_gen_private.lmk;
  	struct {
  		struct shash_desc desc;
@@ -1406,11 +1403,11 @@ index c8827ff..028bf4c 100644
  	sdesc.desc.tfm = lmk->hash_tfm;
  	sdesc.desc.flags = CRYPTO_TFM_REQ_MAY_SLEEP;
  
-diff --git a/drivers/media/radio/radio-tavarua.c b/drivers/media/radio/radio-tavarua.c
-index 5976424..b14cfa1 100644
---- a/drivers/media/radio/radio-tavarua.c
-+++ b/drivers/media/radio/radio-tavarua.c
-@@ -3932,7 +3932,7 @@ static int __devexit tavarua_remove(struct platform_device *pdev)
+Index: msm/drivers/media/radio/radio-tavarua.c
+===================================================================
+--- msm.orig/drivers/media/radio/radio-tavarua.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/media/radio/radio-tavarua.c	2012-09-14 19:06:53.663212281 -0400
+@@ -4580,7 +4580,7 @@
   provide probe() and remove() methods.  They support power management
   and shutdown notifications using the standard conventions.
  */
@@ -1419,11 +1416,11 @@ index 5976424..b14cfa1 100644
  	.driver = {
  		.owner  = THIS_MODULE,
  		.name   = "marimba_fm",
-diff --git a/drivers/mfd/marimba-core.c b/drivers/mfd/marimba-core.c
-index e168c49..fd76d39 100644
---- a/drivers/mfd/marimba-core.c
-+++ b/drivers/mfd/marimba-core.c
-@@ -897,7 +897,7 @@ static struct i2c_device_id marimba_id_table[] = {
+Index: msm/drivers/mfd/marimba-core.c
+===================================================================
+--- msm.orig/drivers/mfd/marimba-core.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/mfd/marimba-core.c	2012-09-14 19:06:53.663212281 -0400
+@@ -909,7 +909,7 @@
  };
  MODULE_DEVICE_TABLE(i2c, marimba_id_table);
  
@@ -1432,11 +1429,11 @@ index e168c49..fd76d39 100644
  		.driver			= {
  			.owner		=	THIS_MODULE,
  			.name		=	"marimba-core",
-diff --git a/drivers/mfd/pm8xxx-batt-alarm.c b/drivers/mfd/pm8xxx-batt-alarm.c
-index 1d30db9..1ee0ef8 100644
---- a/drivers/mfd/pm8xxx-batt-alarm.c
-+++ b/drivers/mfd/pm8xxx-batt-alarm.c
-@@ -778,7 +778,7 @@ static int __devexit pm8xxx_batt_alarm_remove(struct platform_device *pdev)
+Index: msm/drivers/mfd/pm8xxx-batt-alarm.c
+===================================================================
+--- msm.orig/drivers/mfd/pm8xxx-batt-alarm.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/mfd/pm8xxx-batt-alarm.c	2012-09-14 19:06:53.663212281 -0400
+@@ -778,7 +778,7 @@
  	return 0;
  }
  
@@ -1445,11 +1442,11 @@ index 1d30db9..1ee0ef8 100644
  	.probe	= pm8xxx_batt_alarm_probe,
  	.remove	= __devexit_p(pm8xxx_batt_alarm_remove),
  	.driver	= {
-diff --git a/drivers/mfd/pm8xxx-debug.c b/drivers/mfd/pm8xxx-debug.c
-index 7115726..6c1019f 100644
---- a/drivers/mfd/pm8xxx-debug.c
-+++ b/drivers/mfd/pm8xxx-debug.c
-@@ -188,7 +188,7 @@ static int __devexit pm8xxx_debug_remove(struct platform_device *pdev)
+Index: msm/drivers/mfd/pm8xxx-debug.c
+===================================================================
+--- msm.orig/drivers/mfd/pm8xxx-debug.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/mfd/pm8xxx-debug.c	2012-09-14 19:06:53.663212281 -0400
+@@ -189,7 +189,7 @@
  	return 0;
  }
  
@@ -1458,11 +1455,11 @@ index 7115726..6c1019f 100644
  	.probe		= pm8xxx_debug_probe,
  	.remove		= __devexit_p(pm8xxx_debug_remove),
  	.driver		= {
-diff --git a/drivers/mfd/pm8xxx-misc.c b/drivers/mfd/pm8xxx-misc.c
-index a73a695..88f6ded 100644
---- a/drivers/mfd/pm8xxx-misc.c
-+++ b/drivers/mfd/pm8xxx-misc.c
-@@ -1014,7 +1014,7 @@ static int __devexit pm8xxx_misc_remove(struct platform_device *pdev)
+Index: msm/drivers/mfd/pm8xxx-misc.c
+===================================================================
+--- msm.orig/drivers/mfd/pm8xxx-misc.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/mfd/pm8xxx-misc.c	2012-09-14 19:06:53.663212281 -0400
+@@ -1237,7 +1237,7 @@
  	return 0;
  }
  
@@ -1471,11 +1468,11 @@ index a73a695..88f6ded 100644
  	.probe	= pm8xxx_misc_probe,
  	.remove	= __devexit_p(pm8xxx_misc_remove),
  	.driver	= {
-diff --git a/drivers/mfd/pmic8058.c b/drivers/mfd/pmic8058.c
-index ae721e4..7d9c730 100644
---- a/drivers/mfd/pmic8058.c
-+++ b/drivers/mfd/pmic8058.c
-@@ -1258,7 +1258,7 @@ static int __devexit pm8058_remove(struct platform_device *pdev)
+Index: msm/drivers/mfd/pmic8058.c
+===================================================================
+--- msm.orig/drivers/mfd/pmic8058.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/mfd/pmic8058.c	2012-09-14 19:06:53.663212281 -0400
+@@ -765,7 +765,7 @@
  	return 0;
  }
  
@@ -1484,11 +1481,11 @@ index ae721e4..7d9c730 100644
  	.probe		= pm8058_probe,
  	.remove		= __devexit_p(pm8058_remove),
  	.driver		= {
-diff --git a/drivers/mfd/pmic8901.c b/drivers/mfd/pmic8901.c
-index 080a3e3..20b0824 100644
---- a/drivers/mfd/pmic8901.c
-+++ b/drivers/mfd/pmic8901.c
-@@ -338,7 +338,7 @@ static int __devexit pm8901_remove(struct platform_device *pdev)
+Index: msm/drivers/mfd/pmic8901.c
+===================================================================
+--- msm.orig/drivers/mfd/pmic8901.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/mfd/pmic8901.c	2012-09-14 19:06:53.663212281 -0400
+@@ -355,7 +355,7 @@
  	return 0;
  }
  
@@ -1497,11 +1494,11 @@ index 080a3e3..20b0824 100644
  	.probe		= pm8901_probe,
  	.remove		= __devexit_p(pm8901_remove),
  	.driver		= {
-diff --git a/drivers/misc/pm8xxx-upl.c b/drivers/misc/pm8xxx-upl.c
-index d3d9746..85a809e 100644
---- a/drivers/misc/pm8xxx-upl.c
-+++ b/drivers/misc/pm8xxx-upl.c
-@@ -322,7 +322,7 @@ static int __devexit pm8xxx_upl_remove(struct platform_device *pdev)
+Index: msm/drivers/misc/pm8xxx-upl.c
+===================================================================
+--- msm.orig/drivers/misc/pm8xxx-upl.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/misc/pm8xxx-upl.c	2012-09-14 19:06:53.663212281 -0400
+@@ -322,7 +322,7 @@
  	return 0;
  }
  
@@ -1510,11 +1507,11 @@ index d3d9746..85a809e 100644
  	.probe		= pm8xxx_upl_probe,
  	.remove		= __devexit_p(pm8xxx_upl_remove),
  	.driver		= {
-diff --git a/drivers/misc/pmic8058-pwm.c b/drivers/misc/pmic8058-pwm.c
-index 33407b7..90f4f03 100644
---- a/drivers/misc/pmic8058-pwm.c
-+++ b/drivers/misc/pmic8058-pwm.c
-@@ -1057,7 +1057,7 @@ static int __devexit pmic8058_pwm_remove(struct platform_device *pdev)
+Index: msm/drivers/misc/pmic8058-pwm.c
+===================================================================
+--- msm.orig/drivers/misc/pmic8058-pwm.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/misc/pmic8058-pwm.c	2012-09-14 19:06:53.663212281 -0400
+@@ -1057,7 +1057,7 @@
  	return 0;
  }
  
@@ -1523,11 +1520,11 @@ index 33407b7..90f4f03 100644
  	.probe		= pmic8058_pwm_probe,
  	.remove		= __devexit_p(pmic8058_pwm_remove),
  	.driver		= {
-diff --git a/drivers/misc/tsif.c b/drivers/misc/tsif.c
-index 42faa07..7fa7914 100644
---- a/drivers/misc/tsif.c
-+++ b/drivers/misc/tsif.c
-@@ -1405,7 +1405,7 @@ static const struct dev_pm_ops tsif_dev_pm_ops = {
+Index: msm/drivers/misc/tsif.c
+===================================================================
+--- msm.orig/drivers/misc/tsif.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/misc/tsif.c	2012-09-14 19:06:53.667212231 -0400
+@@ -1401,7 +1401,7 @@
  };
  
  
@@ -1536,11 +1533,11 @@ index 42faa07..7fa7914 100644
  	.probe          = msm_tsif_probe,
  	.remove         = __exit_p(msm_tsif_remove),
  	.driver         = {
-diff --git a/drivers/oprofile/oprofilefs.c b/drivers/oprofile/oprofilefs.c
-index 1c0b799..5582ad7 100644
---- a/drivers/oprofile/oprofilefs.c
-+++ b/drivers/oprofile/oprofilefs.c
-@@ -281,13 +281,13 @@ static struct file_system_type oprofilefs_type = {
+Index: msm/drivers/oprofile/oprofilefs.c
+===================================================================
+--- msm.orig/drivers/oprofile/oprofilefs.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/oprofile/oprofilefs.c	2012-09-14 19:06:53.667212231 -0400
+@@ -268,13 +268,13 @@
  };
  
  
@@ -1556,11 +1553,11 @@ index 1c0b799..5582ad7 100644
  {
  	unregister_filesystem(&oprofilefs_type);
  }
-diff --git a/drivers/platform/msm/ssbi.c b/drivers/platform/msm/ssbi.c
-index 8a6dbf7..d6bfd21 100644
---- a/drivers/platform/msm/ssbi.c
-+++ b/drivers/platform/msm/ssbi.c
-@@ -389,7 +389,7 @@ static int __devexit msm_ssbi_remove(struct platform_device *pdev)
+Index: msm/drivers/platform/msm/ssbi.c
+===================================================================
+--- msm.orig/drivers/platform/msm/ssbi.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/platform/msm/ssbi.c	2012-09-14 19:06:53.667212231 -0400
+@@ -414,7 +414,7 @@
  	return 0;
  }
  
@@ -1569,11 +1566,11 @@ index 8a6dbf7..d6bfd21 100644
  	.probe		= msm_ssbi_probe,
  	.remove		= __exit_p(msm_ssbi_remove),
  	.driver		= {
-diff --git a/drivers/power/isl9519q.c b/drivers/power/isl9519q.c
-index 7ebbf46..7f43d7b 100644
---- a/drivers/power/isl9519q.c
-+++ b/drivers/power/isl9519q.c
-@@ -817,7 +817,7 @@ static const struct dev_pm_ops isl9519q_pm_ops = {
+Index: msm/drivers/power/isl9519q.c
+===================================================================
+--- msm.orig/drivers/power/isl9519q.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/power/isl9519q.c	2012-09-14 19:06:53.667212231 -0400
+@@ -817,7 +817,7 @@
  };
  #endif
  
@@ -1582,11 +1579,11 @@ index 7ebbf46..7f43d7b 100644
  	.driver = {
  		   .name = "isl9519q",
  		   .owner = THIS_MODULE,
-diff --git a/drivers/power/msm_charger.c b/drivers/power/msm_charger.c
-index 0cd7967..a9b96d4 100644
---- a/drivers/power/msm_charger.c
-+++ b/drivers/power/msm_charger.c
-@@ -1217,7 +1217,7 @@ static int msm_charger_resume(struct device *dev)
+Index: msm/drivers/power/msm_charger.c
+===================================================================
+--- msm.orig/drivers/power/msm_charger.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/power/msm_charger.c	2012-09-14 19:06:53.667212231 -0400
+@@ -1217,7 +1217,7 @@
  static SIMPLE_DEV_PM_OPS(msm_charger_pm_ops,
  		msm_charger_suspend, msm_charger_resume);
  
@@ -1595,11 +1592,11 @@ index 0cd7967..a9b96d4 100644
  	.probe = msm_charger_probe,
  	.remove = __devexit_p(msm_charger_remove),
  	.driver = {
-diff --git a/drivers/power/pm8058_usb_fix.c b/drivers/power/pm8058_usb_fix.c
-index 80b1f87..86f750b 100644
---- a/drivers/power/pm8058_usb_fix.c
-+++ b/drivers/power/pm8058_usb_fix.c
-@@ -329,7 +329,7 @@ static int __devexit pm8058_charger_remove(struct platform_device *pdev)
+Index: msm/drivers/power/pm8058_usb_fix.c
+===================================================================
+--- msm.orig/drivers/power/pm8058_usb_fix.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/power/pm8058_usb_fix.c	2012-09-14 19:06:53.667212231 -0400
+@@ -329,7 +329,7 @@
  	return 0;
  }
  
@@ -1608,11 +1605,11 @@ index 80b1f87..86f750b 100644
  	.probe = pm8058_charger_probe,
  	.remove = __devexit_p(pm8058_charger_remove),
  	.driver = {
-diff --git a/drivers/power/pmic8058-charger.c b/drivers/power/pmic8058-charger.c
-index 70b5d59..248116f 100644
---- a/drivers/power/pmic8058-charger.c
-+++ b/drivers/power/pmic8058-charger.c
-@@ -2019,7 +2019,7 @@ static int __devexit pm8058_charger_remove(struct platform_device *pdev)
+Index: msm/drivers/power/pmic8058-charger.c
+===================================================================
+--- msm.orig/drivers/power/pmic8058-charger.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/power/pmic8058-charger.c	2012-09-14 19:06:53.667212231 -0400
+@@ -2019,7 +2019,7 @@
  	return rc;
  }
  
@@ -1621,11 +1618,11 @@ index 70b5d59..248116f 100644
  	.probe = pm8058_charger_probe,
  	.remove = __devexit_p(pm8058_charger_remove),
  	.driver = {
-diff --git a/drivers/power/smb137b.c b/drivers/power/smb137b.c
-index 7ff8e28..0770e05 100644
---- a/drivers/power/smb137b.c
-+++ b/drivers/power/smb137b.c
-@@ -826,7 +826,7 @@ static const struct i2c_device_id smb137b_id[] = {
+Index: msm/drivers/power/smb137b.c
+===================================================================
+--- msm.orig/drivers/power/smb137b.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/power/smb137b.c	2012-09-14 19:06:53.667212231 -0400
+@@ -826,7 +826,7 @@
  };
  MODULE_DEVICE_TABLE(i2c, smb137b_id);
  
@@ -1634,11 +1631,11 @@ index 7ff8e28..0770e05 100644
  	.driver = {
  		   .name = "smb137b",
  		   .owner = THIS_MODULE,
-diff --git a/drivers/regulator/dummy.c b/drivers/regulator/dummy.c
-index 910583f..65362f2 100644
---- a/drivers/regulator/dummy.c
-+++ b/drivers/regulator/dummy.c
-@@ -51,7 +51,7 @@ static int __devinit dummy_regulator_probe(struct platform_device *pdev)
+Index: msm/drivers/regulator/dummy.c
+===================================================================
+--- msm.orig/drivers/regulator/dummy.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/regulator/dummy.c	2012-09-14 19:06:53.667212231 -0400
+@@ -52,7 +52,7 @@
  	return 0;
  }
  
@@ -1647,11 +1644,11 @@ index 910583f..65362f2 100644
  	.probe		= dummy_regulator_probe,
  	.driver		= {
  		.name		= "reg-dummy",
-diff --git a/drivers/regulator/pmic8058-regulator.c b/drivers/regulator/pmic8058-regulator.c
-index e137b0f..6d6286d 100644
---- a/drivers/regulator/pmic8058-regulator.c
-+++ b/drivers/regulator/pmic8058-regulator.c
-@@ -1715,7 +1715,7 @@ static int __devexit pm8058_vreg_remove(struct platform_device *pdev)
+Index: msm/drivers/regulator/pmic8058-regulator.c
+===================================================================
+--- msm.orig/drivers/regulator/pmic8058-regulator.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/regulator/pmic8058-regulator.c	2012-09-14 19:06:53.667212231 -0400
+@@ -1716,7 +1716,7 @@
  	return 0;
  }
  
@@ -1660,11 +1657,11 @@ index e137b0f..6d6286d 100644
  	.probe = pm8058_vreg_probe,
  	.remove = __devexit_p(pm8058_vreg_remove),
  	.driver = {
-diff --git a/drivers/regulator/pmic8901-regulator.c b/drivers/regulator/pmic8901-regulator.c
-index 6fd0a05..df2b81d 100644
---- a/drivers/regulator/pmic8901-regulator.c
-+++ b/drivers/regulator/pmic8901-regulator.c
-@@ -977,7 +977,7 @@ static int __devexit pm8901_vreg_remove(struct platform_device *pdev)
+Index: msm/drivers/regulator/pmic8901-regulator.c
+===================================================================
+--- msm.orig/drivers/regulator/pmic8901-regulator.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/regulator/pmic8901-regulator.c	2012-09-14 19:06:53.667212231 -0400
+@@ -978,7 +978,7 @@
  	return 0;
  }
  
@@ -1673,11 +1670,11 @@ index 6fd0a05..df2b81d 100644
  	.probe = pm8901_vreg_probe,
  	.remove = __devexit_p(pm8901_vreg_remove),
  	.driver = {
-diff --git a/drivers/rtc/rtc-pm8xxx.c b/drivers/rtc/rtc-pm8xxx.c
-index e53374e..321d92a 100644
---- a/drivers/rtc/rtc-pm8xxx.c
-+++ b/drivers/rtc/rtc-pm8xxx.c
-@@ -587,7 +587,7 @@ fail_alarm_disable:
+Index: msm/drivers/rtc/rtc-pm8xxx.c
+===================================================================
+--- msm.orig/drivers/rtc/rtc-pm8xxx.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/rtc/rtc-pm8xxx.c	2012-09-14 19:06:53.667212231 -0400
+@@ -587,7 +587,7 @@
  	}
  }
  
@@ -1686,11 +1683,11 @@ index e53374e..321d92a 100644
  	.probe		= pm8xxx_rtc_probe,
  	.remove		= __devexit_p(pm8xxx_rtc_remove),
  	.shutdown	= pm8xxx_rtc_shutdown,
-diff --git a/drivers/slimbus/slimbus.c b/drivers/slimbus/slimbus.c
-index a541d8b..e82f329 100644
---- a/drivers/slimbus/slimbus.c
-+++ b/drivers/slimbus/slimbus.c
-@@ -1997,7 +1997,7 @@ static int slim_sched_chans(struct slim_device *sb, u32 clkgear,
+Index: msm/drivers/slimbus/slimbus.c
+===================================================================
+--- msm.orig/drivers/slimbus/slimbus.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/slimbus/slimbus.c	2012-09-14 19:06:53.667212231 -0400
+@@ -2201,7 +2201,7 @@
  				}
  			}
  			/* schedule 4k family channels */
@@ -1699,11 +1696,11 @@ index a541d8b..e82f329 100644
  				curexp == (int)slc1->rootexp + expshft) {
  				/* searchorder effective when opensl valid */
  				static const int srcho[] = { 5, 2, 4, 1, 3, 0 };
-diff --git a/drivers/spi/spidev.c b/drivers/spi/spidev.c
-index c174306..ee6c97c 100644
---- a/drivers/spi/spidev.c
-+++ b/drivers/spi/spidev.c
-@@ -680,7 +680,7 @@ static int __devexit spidev_remove(struct spi_device *spi)
+Index: msm/drivers/spi/spidev.c
+===================================================================
+--- msm.orig/drivers/spi/spidev.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/spi/spidev.c	2012-09-14 19:06:53.667212231 -0400
+@@ -680,7 +680,7 @@
  	return 0;
  }
  
@@ -1712,11 +1709,11 @@ index c174306..ee6c97c 100644
  	.driver = {
  		.name =		"spidev",
  		.owner =	THIS_MODULE,
-diff --git a/drivers/thermal/pm8xxx-tm.c b/drivers/thermal/pm8xxx-tm.c
-index 1d518e3..47553b4 100644
---- a/drivers/thermal/pm8xxx-tm.c
-+++ b/drivers/thermal/pm8xxx-tm.c
-@@ -696,7 +696,7 @@ static const struct dev_pm_ops pm8xxx_tm_pm_ops = {
+Index: msm/drivers/thermal/pm8xxx-tm.c
+===================================================================
+--- msm.orig/drivers/thermal/pm8xxx-tm.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/thermal/pm8xxx-tm.c	2012-09-14 19:06:53.667212231 -0400
+@@ -696,7 +696,7 @@
  #define PM8XXX_TM_PM_OPS	NULL
  #endif
  
@@ -1725,11 +1722,11 @@ index 1d518e3..47553b4 100644
  	.probe	= pm8xxx_tm_probe,
  	.remove	= __devexit_p(pm8xxx_tm_remove),
  	.driver	= {
-diff --git a/drivers/tty/serial/msm_serial_hs.c b/drivers/tty/serial/msm_serial_hs.c
-index 84cb3f5..6011423 100644
---- a/drivers/tty/serial/msm_serial_hs.c
-+++ b/drivers/tty/serial/msm_serial_hs.c
-@@ -2122,7 +2122,7 @@ static const struct dev_pm_ops msm_hs_dev_pm_ops = {
+Index: msm/drivers/tty/serial/msm_serial_hs.c
+===================================================================
+--- msm.orig/drivers/tty/serial/msm_serial_hs.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/tty/serial/msm_serial_hs.c	2012-09-14 19:06:53.667212231 -0400
+@@ -2176,7 +2176,7 @@
  	.runtime_idle    = msm_hs_runtime_idle,
  };
  
@@ -1738,11 +1735,11 @@ index 84cb3f5..6011423 100644
  	.probe	= msm_hs_probe,
  	.remove = __devexit_p(msm_hs_remove),
  	.driver = {
-diff --git a/drivers/tty/serial/msm_serial_hs_lite.c b/drivers/tty/serial/msm_serial_hs_lite.c
-index 9ba7d2f..bdad486 100644
---- a/drivers/tty/serial/msm_serial_hs_lite.c
-+++ b/drivers/tty/serial/msm_serial_hs_lite.c
-@@ -1190,7 +1190,7 @@ static int __init msm_hsl_console_setup(struct console *co, char *options)
+Index: msm/drivers/tty/serial/msm_serial_hs_lite.c
+===================================================================
+--- msm.orig/drivers/tty/serial/msm_serial_hs_lite.c	2012-09-14 19:06:24.000000000 -0400
++++ msm/drivers/tty/serial/msm_serial_hs_lite.c	2012-09-14 19:06:53.667212231 -0400
+@@ -1239,7 +1239,7 @@
  
  static struct uart_driver msm_hsl_uart_driver;
  
@@ -1751,7 +1748,7 @@ index 9ba7d2f..bdad486 100644
  	.name = "ttyHSL",
  	.write = msm_hsl_console_write,
  	.device = uart_console_device,
-@@ -1391,7 +1391,7 @@ static struct dev_pm_ops msm_hsl_dev_pm_ops = {
+@@ -1533,7 +1533,7 @@
  	.runtime_resume = msm_hsl_runtime_resume,
  };
  
@@ -1760,11 +1757,11 @@ index 9ba7d2f..bdad486 100644
  	.probe = msm_serial_hsl_probe,
  	.remove = __devexit_p(msm_serial_hsl_remove),
  	.driver = {
-diff --git a/drivers/usb/gadget/msm72k_udc.c b/drivers/usb/gadget/msm72k_udc.c
-index 28e217b..276acae 100644
---- a/drivers/usb/gadget/msm72k_udc.c
-+++ b/drivers/usb/gadget/msm72k_udc.c
-@@ -2800,7 +2800,7 @@ static int __exit msm72k_remove(struct platform_device *pdev)
+Index: msm/drivers/usb/gadget/msm72k_udc.c
+===================================================================
+--- msm.orig/drivers/usb/gadget/msm72k_udc.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/usb/gadget/msm72k_udc.c	2012-09-14 19:06:53.671212181 -0400
+@@ -2863,7 +2863,7 @@
  	return usb_free(ui, 0);
  }
  
@@ -1773,11 +1770,11 @@ index 28e217b..276acae 100644
  	.probe = msm72k_probe,
  	.remove = msm72k_remove,
  	.driver = { .name = "msm_hsusb",
-diff --git a/drivers/usb/host/ehci-msm.c b/drivers/usb/host/ehci-msm.c
-index f45f257..20a9d18 100644
---- a/drivers/usb/host/ehci-msm.c
-+++ b/drivers/usb/host/ehci-msm.c
-@@ -279,7 +279,7 @@ static const struct dev_pm_ops ehci_msm_dev_pm_ops = {
+Index: msm/drivers/usb/host/ehci-msm.c
+===================================================================
+--- msm.orig/drivers/usb/host/ehci-msm.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/usb/host/ehci-msm.c	2012-09-14 19:06:53.671212181 -0400
+@@ -263,7 +263,7 @@
  				ehci_msm_runtime_idle)
  };
  
@@ -1786,11 +1783,11 @@ index f45f257..20a9d18 100644
  	.probe	= ehci_msm_probe,
  	.remove	= __devexit_p(ehci_msm_remove),
  	.driver = {
-diff --git a/drivers/usb/host/ehci-msm2.c b/drivers/usb/host/ehci-msm2.c
-index 4f6fe3e..05d816d 100644
---- a/drivers/usb/host/ehci-msm2.c
-+++ b/drivers/usb/host/ehci-msm2.c
-@@ -991,7 +991,7 @@ static const struct dev_pm_ops ehci_msm2_dev_pm_ops = {
+Index: msm/drivers/usb/host/ehci-msm2.c
+===================================================================
+--- msm.orig/drivers/usb/host/ehci-msm2.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/usb/host/ehci-msm2.c	2012-09-14 19:06:53.671212181 -0400
+@@ -1160,7 +1160,7 @@
  };
  #endif
  
@@ -1799,11 +1796,11 @@ index 4f6fe3e..05d816d 100644
  	.probe	= ehci_msm2_probe,
  	.remove	= __devexit_p(ehci_msm2_remove),
  	.driver = {
-diff --git a/drivers/usb/host/ehci-msm72k.c b/drivers/usb/host/ehci-msm72k.c
-index e550e2b..da79b87 100644
---- a/drivers/usb/host/ehci-msm72k.c
-+++ b/drivers/usb/host/ehci-msm72k.c
-@@ -815,7 +815,7 @@ static const struct dev_pm_ops ehci_msm_dev_pm_ops = {
+Index: msm/drivers/usb/host/ehci-msm72k.c
+===================================================================
+--- msm.orig/drivers/usb/host/ehci-msm72k.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/usb/host/ehci-msm72k.c	2012-09-14 19:06:53.671212181 -0400
+@@ -804,7 +804,7 @@
  	.runtime_idle = ehci_msm_runtime_idle
  };
  
@@ -1812,11 +1809,11 @@ index e550e2b..da79b87 100644
  	.probe	= ehci_msm_probe,
  	.remove	= __exit_p(ehci_msm_remove),
  	.driver	= {.name = "msm_hsusb_host",
-diff --git a/drivers/usb/otg/msm72k_otg.c b/drivers/usb/otg/msm72k_otg.c
-index be3a279d..83cff73 100644
---- a/drivers/usb/otg/msm72k_otg.c
-+++ b/drivers/usb/otg/msm72k_otg.c
-@@ -3040,7 +3040,7 @@ static struct dev_pm_ops msm_otg_dev_pm_ops = {
+Index: msm/drivers/usb/otg/msm72k_otg.c
+===================================================================
+--- msm.orig/drivers/usb/otg/msm72k_otg.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/usb/otg/msm72k_otg.c	2012-09-14 19:06:53.671212181 -0400
+@@ -3009,7 +3009,7 @@
  	.runtime_idle = msm_otg_runtime_idle,
  };
  
@@ -1825,11 +1822,11 @@ index be3a279d..83cff73 100644
  	.remove = __exit_p(msm_otg_remove),
  	.driver = {
  		.name = DRIVER_NAME,
-diff --git a/drivers/usb/otg/msm_otg.c b/drivers/usb/otg/msm_otg.c
-index f8b320f..62aa507 100644
---- a/drivers/usb/otg/msm_otg.c
-+++ b/drivers/usb/otg/msm_otg.c
-@@ -2584,7 +2584,7 @@ static struct of_device_id msm_otg_dt_match[] = {
+Index: msm/drivers/usb/otg/msm_otg.c
+===================================================================
+--- msm.orig/drivers/usb/otg/msm_otg.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/usb/otg/msm_otg.c	2012-09-14 19:06:53.671212181 -0400
+@@ -3937,7 +3937,7 @@
  	{}
  };
  
@@ -1838,11 +1835,11 @@ index f8b320f..62aa507 100644
  	.remove = __devexit_p(msm_otg_remove),
  	.driver = {
  		.name = DRIVER_NAME,
-diff --git a/drivers/video/msm/ebi2_l2f.c b/drivers/video/msm/ebi2_l2f.c
-index 767b802..68607d9 100644
---- a/drivers/video/msm/ebi2_l2f.c
-+++ b/drivers/video/msm/ebi2_l2f.c
-@@ -516,7 +516,7 @@ static int __init epsonQcif_probe(struct platform_device *pdev)
+Index: msm/drivers/video/msm/ebi2_l2f.c
+===================================================================
+--- msm.orig/drivers/video/msm/ebi2_l2f.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/video/msm/ebi2_l2f.c	2012-09-14 19:06:53.671212181 -0400
+@@ -516,7 +516,7 @@
  	return 0;
  }
  
@@ -1851,11 +1848,11 @@ index 767b802..68607d9 100644
  	.probe  = epsonQcif_probe,
  	.driver = {
  		.name   = "ebi2_epson_qcif",
-diff --git a/drivers/video/msm/ebi2_lcd.c b/drivers/video/msm/ebi2_lcd.c
-index 68590af..ec8b2ac 100644
---- a/drivers/video/msm/ebi2_lcd.c
-+++ b/drivers/video/msm/ebi2_lcd.c
-@@ -52,7 +52,7 @@ static struct dev_pm_ops ebi2_lcd_dev_pm_ops = {
+Index: msm/drivers/video/msm/ebi2_lcd.c
+===================================================================
+--- msm.orig/drivers/video/msm/ebi2_lcd.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/video/msm/ebi2_lcd.c	2012-09-14 19:06:53.671212181 -0400
+@@ -52,7 +52,7 @@
  	.runtime_resume = ebi2_lcd_runtime_resume,
  };
  
@@ -1864,11 +1861,11 @@ index 68590af..ec8b2ac 100644
  	.probe = ebi2_lcd_probe,
  	.remove = ebi2_lcd_remove,
  	.suspend = NULL,
-diff --git a/drivers/video/msm/ebi2_tmd20.c b/drivers/video/msm/ebi2_tmd20.c
-index 280373f..c2989d2 100644
---- a/drivers/video/msm/ebi2_tmd20.c
-+++ b/drivers/video/msm/ebi2_tmd20.c
-@@ -1059,7 +1059,7 @@ static int __init tmd20qvga_probe(struct platform_device *pdev)
+Index: msm/drivers/video/msm/ebi2_tmd20.c
+===================================================================
+--- msm.orig/drivers/video/msm/ebi2_tmd20.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/video/msm/ebi2_tmd20.c	2012-09-14 19:06:53.671212181 -0400
+@@ -1059,7 +1059,7 @@
  	return 0;
  }
  
@@ -1877,24 +1874,24 @@ index 280373f..c2989d2 100644
  	.probe  = tmd20qvga_probe,
  	.driver = {
  		.name   = "ebi2_tmd_qvga",
-diff --git a/drivers/video/msm/hdmi_msm.c b/drivers/video/msm/hdmi_msm.c
-index 4a4bd15..3a6953c 100644
---- a/drivers/video/msm/hdmi_msm.c
-+++ b/drivers/video/msm/hdmi_msm.c
-@@ -4315,7 +4315,7 @@ static const struct dev_pm_ops hdmi_msm_device_pm_ops = {
- 	.resume = hdmi_msm_device_pm_resume,
- };
+Index: msm/drivers/video/msm/hdmi_msm.c
+===================================================================
+--- msm.orig/drivers/video/msm/hdmi_msm.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/video/msm/hdmi_msm.c	2012-09-14 19:06:53.671212181 -0400
+@@ -4736,7 +4736,7 @@
+ 	return rc;
+ }
  
 -static struct platform_driver this_driver = {
 +static struct platform_driver this_driver __refdata = {
  	.probe = hdmi_msm_probe,
  	.remove = hdmi_msm_remove,
  	.driver.name = "hdmi_msm",
-diff --git a/drivers/video/msm/lcdc.c b/drivers/video/msm/lcdc.c
-index 135bf68..0e00293 100644
---- a/drivers/video/msm/lcdc.c
-+++ b/drivers/video/msm/lcdc.c
-@@ -44,7 +44,7 @@ static int pdev_list_cnt;
+Index: msm/drivers/video/msm/lcdc.c
+===================================================================
+--- msm.orig/drivers/video/msm/lcdc.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/video/msm/lcdc.c	2012-09-14 19:06:53.671212181 -0400
+@@ -45,7 +45,7 @@
  static struct clk *pixel_mdp_clk; /* drives the lcdc block in mdp */
  static struct clk *pixel_lcdc_clk; /* drives the lcdc interface */
  
@@ -1903,11 +1900,11 @@ index 135bf68..0e00293 100644
  	.probe = lcdc_probe,
  	.remove = lcdc_remove,
  	.suspend = NULL,
-diff --git a/drivers/video/msm/lcdc_auo_wvga.c b/drivers/video/msm/lcdc_auo_wvga.c
-index 6b0733f..c7a68c0 100644
---- a/drivers/video/msm/lcdc_auo_wvga.c
-+++ b/drivers/video/msm/lcdc_auo_wvga.c
-@@ -305,7 +305,7 @@ static int __devexit lcdc_auo_spi_remove(struct spi_device *spi)
+Index: msm/drivers/video/msm/lcdc_auo_wvga.c
+===================================================================
+--- msm.orig/drivers/video/msm/lcdc_auo_wvga.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/video/msm/lcdc_auo_wvga.c	2012-09-14 19:06:53.671212181 -0400
+@@ -305,7 +305,7 @@
  	lcdc_spi_client = NULL;
  	return 0;
  }
@@ -1916,11 +1913,11 @@ index 6b0733f..c7a68c0 100644
  	.driver.name   = LCDC_AUO_SPI_DEVICE_NAME,
  	.driver.owner  = THIS_MODULE,
  	.probe         = lcdc_auo_spi_probe,
-diff --git a/drivers/video/msm/lcdc_chimei_wxga.c b/drivers/video/msm/lcdc_chimei_wxga.c
-index 7453ecb..0215e81 100644
---- a/drivers/video/msm/lcdc_chimei_wxga.c
-+++ b/drivers/video/msm/lcdc_chimei_wxga.c
-@@ -161,7 +161,7 @@ probe_exit:
+Index: msm/drivers/video/msm/lcdc_chimei_wxga.c
+===================================================================
+--- msm.orig/drivers/video/msm/lcdc_chimei_wxga.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/video/msm/lcdc_chimei_wxga.c	2012-09-14 19:06:53.671212181 -0400
+@@ -161,7 +161,7 @@
  	return rc;
  }
  
@@ -1929,11 +1926,11 @@ index 7453ecb..0215e81 100644
  	.probe  = chimei_probe,
  	.driver = {
  		.name   = "lcdc_chimei_lvds_wxga",
-diff --git a/drivers/video/msm/lcdc_gordon.c b/drivers/video/msm/lcdc_gordon.c
-index f9532b4..9180a82 100644
---- a/drivers/video/msm/lcdc_gordon.c
-+++ b/drivers/video/msm/lcdc_gordon.c
-@@ -376,7 +376,7 @@ static int __devinit gordon_probe(struct platform_device *pdev)
+Index: msm/drivers/video/msm/lcdc_gordon.c
+===================================================================
+--- msm.orig/drivers/video/msm/lcdc_gordon.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/video/msm/lcdc_gordon.c	2012-09-14 19:06:53.671212181 -0400
+@@ -390,7 +390,7 @@
  	return 0;
  }
  
@@ -1942,11 +1939,11 @@ index f9532b4..9180a82 100644
  	.probe  = gordon_probe,
  	.driver = {
  		.name   = "lcdc_gordon_vga",
-diff --git a/drivers/video/msm/lcdc_nt35582_wvga.c b/drivers/video/msm/lcdc_nt35582_wvga.c
-index 9ecf4b9..a2e778a 100644
---- a/drivers/video/msm/lcdc_nt35582_wvga.c
-+++ b/drivers/video/msm/lcdc_nt35582_wvga.c
-@@ -375,7 +375,7 @@ static int __devexit lcdc_nt35582_spi_remove(struct spi_device *spi)
+Index: msm/drivers/video/msm/lcdc_nt35582_wvga.c
+===================================================================
+--- msm.orig/drivers/video/msm/lcdc_nt35582_wvga.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/video/msm/lcdc_nt35582_wvga.c	2012-09-14 19:06:53.671212181 -0400
+@@ -375,7 +375,7 @@
  	return 0;
  }
  
@@ -1955,7 +1952,7 @@ index 9ecf4b9..a2e778a 100644
  	.driver = {
  		.name = LCDC_NT35582_SPI_DEVICE_NAME,
  		.owner = THIS_MODULE,
-@@ -384,7 +384,7 @@ static struct spi_driver lcdc_nt35582_spi_driver = {
+@@ -384,7 +384,7 @@
  	.remove = __devexit_p(lcdc_nt35582_spi_remove),
  };
  #endif
@@ -1964,11 +1961,11 @@ index 9ecf4b9..a2e778a 100644
  	.probe = nt35582_probe,
  	.driver = {
  		.name = LCDC_NT35582_PANEL_NAME,
-diff --git a/drivers/video/msm/lcdc_panel.c b/drivers/video/msm/lcdc_panel.c
-index 5705325..9b17196 100644
---- a/drivers/video/msm/lcdc_panel.c
-+++ b/drivers/video/msm/lcdc_panel.c
-@@ -30,7 +30,7 @@ static int __devinit lcdc_panel_probe(struct platform_device *pdev)
+Index: msm/drivers/video/msm/lcdc_panel.c
+===================================================================
+--- msm.orig/drivers/video/msm/lcdc_panel.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/video/msm/lcdc_panel.c	2012-09-14 19:06:53.671212181 -0400
+@@ -30,7 +30,7 @@
  	return 0;
  }
  
@@ -1977,11 +1974,11 @@ index 5705325..9b17196 100644
  	.probe  = lcdc_panel_probe,
  	.driver = {
  		.name   = "lcdc_panel",
-diff --git a/drivers/video/msm/lcdc_samsung_oled_pt.c b/drivers/video/msm/lcdc_samsung_oled_pt.c
-index 16790f3..53728ac 100644
---- a/drivers/video/msm/lcdc_samsung_oled_pt.c
-+++ b/drivers/video/msm/lcdc_samsung_oled_pt.c
-@@ -534,7 +534,7 @@ static int __devexit lcdc_samsung_spi_remove(struct spi_device *spi)
+Index: msm/drivers/video/msm/lcdc_samsung_oled_pt.c
+===================================================================
+--- msm.orig/drivers/video/msm/lcdc_samsung_oled_pt.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/video/msm/lcdc_samsung_oled_pt.c	2012-09-14 19:06:53.671212181 -0400
+@@ -534,7 +534,7 @@
  	lcdc_spi_client = NULL;
  	return 0;
  }
@@ -1990,7 +1987,7 @@ index 16790f3..53728ac 100644
  	.driver.name   = LCDC_SAMSUNG_SPI_DEVICE_NAME,
  	.driver.owner  = THIS_MODULE,
  	.probe         = lcdc_samsung_spi_probe,
-@@ -542,7 +542,7 @@ static struct spi_driver lcdc_samsung_spi_driver = {
+@@ -542,7 +542,7 @@
  };
  #endif
  
@@ -1999,11 +1996,11 @@ index 16790f3..53728ac 100644
  	.probe		= samsung_probe,
  	.driver.name	= "lcdc_samsung_oled",
  };
-diff --git a/drivers/video/msm/lcdc_samsung_wsvga.c b/drivers/video/msm/lcdc_samsung_wsvga.c
-index 6b35e52..c329ef7 100644
---- a/drivers/video/msm/lcdc_samsung_wsvga.c
-+++ b/drivers/video/msm/lcdc_samsung_wsvga.c
-@@ -195,7 +195,7 @@ static int __devexit samsung_remove(struct platform_device *pdev)
+Index: msm/drivers/video/msm/lcdc_samsung_wsvga.c
+===================================================================
+--- msm.orig/drivers/video/msm/lcdc_samsung_wsvga.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/video/msm/lcdc_samsung_wsvga.c	2012-09-14 19:06:53.675212131 -0400
+@@ -195,7 +195,7 @@
  }
  #endif
  
@@ -2012,11 +2009,11 @@ index 6b35e52..c329ef7 100644
  	.probe  = samsung_probe,
  #ifdef CONFIG_FB_MSM_LCDC_DSUB
  	.remove = samsung_remove,
-diff --git a/drivers/video/msm/lcdc_sharp_wvga_pt.c b/drivers/video/msm/lcdc_sharp_wvga_pt.c
-index 2ba2618..7e98cfb 100644
---- a/drivers/video/msm/lcdc_sharp_wvga_pt.c
-+++ b/drivers/video/msm/lcdc_sharp_wvga_pt.c
-@@ -320,7 +320,7 @@ static struct spi_driver lcdc_sharp_spi_driver = {
+Index: msm/drivers/video/msm/lcdc_sharp_wvga_pt.c
+===================================================================
+--- msm.orig/drivers/video/msm/lcdc_sharp_wvga_pt.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/video/msm/lcdc_sharp_wvga_pt.c	2012-09-14 19:06:53.675212131 -0400
+@@ -320,7 +320,7 @@
  	.remove        = __devexit_p(lcdc_sharp_spi_remove),
  };
  #endif
@@ -2025,11 +2022,11 @@ index 2ba2618..7e98cfb 100644
  	.probe  = sharp_probe,
  	.driver = {
  		.name   = "lcdc_sharp_wvga",
-diff --git a/drivers/video/msm/lcdc_toshiba_fwvga_pt.c b/drivers/video/msm/lcdc_toshiba_fwvga_pt.c
-index 3e81471..78606e8 100644
---- a/drivers/video/msm/lcdc_toshiba_fwvga_pt.c
-+++ b/drivers/video/msm/lcdc_toshiba_fwvga_pt.c
-@@ -387,7 +387,7 @@ static int __devinit toshiba_probe(struct platform_device *pdev)
+Index: msm/drivers/video/msm/lcdc_toshiba_fwvga_pt.c
+===================================================================
+--- msm.orig/drivers/video/msm/lcdc_toshiba_fwvga_pt.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/video/msm/lcdc_toshiba_fwvga_pt.c	2012-09-14 19:06:53.675212131 -0400
+@@ -387,7 +387,7 @@
  	return 0;
  }
  
@@ -2038,11 +2035,11 @@ index 3e81471..78606e8 100644
  	.probe  = toshiba_probe,
  	.driver = {
  		.name   = "lcdc_toshiba_fwvga_pt",
-diff --git a/drivers/video/msm/lcdc_toshiba_wvga_pt.c b/drivers/video/msm/lcdc_toshiba_wvga_pt.c
-index f0aa8f5..9a07c17 100644
---- a/drivers/video/msm/lcdc_toshiba_wvga_pt.c
-+++ b/drivers/video/msm/lcdc_toshiba_wvga_pt.c
-@@ -428,7 +428,7 @@ static struct spi_driver lcdc_toshiba_spi_driver = {
+Index: msm/drivers/video/msm/lcdc_toshiba_wvga_pt.c
+===================================================================
+--- msm.orig/drivers/video/msm/lcdc_toshiba_wvga_pt.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/video/msm/lcdc_toshiba_wvga_pt.c	2012-09-14 19:06:53.675212131 -0400
+@@ -428,7 +428,7 @@
  	.remove        = __devexit_p(lcdc_toshiba_spi_remove),
  };
  #endif
@@ -2051,11 +2048,11 @@ index f0aa8f5..9a07c17 100644
  	.probe  = toshiba_probe,
  	.driver = {
  		.name   = "lcdc_toshiba_wvga",
-diff --git a/drivers/video/msm/mddi.c b/drivers/video/msm/mddi.c
-index 9b9ee94..632cd87 100644
---- a/drivers/video/msm/mddi.c
-+++ b/drivers/video/msm/mddi.c
-@@ -93,7 +93,7 @@ static int pmdh_clk_status;
+Index: msm/drivers/video/msm/mddi.c
+===================================================================
+--- msm.orig/drivers/video/msm/mddi.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/video/msm/mddi.c	2012-09-14 19:06:53.675212131 -0400
+@@ -93,7 +93,7 @@
  int irq_enabled;
  unsigned char mddi_timer_shutdown_flag;
  
@@ -2064,11 +2061,11 @@ index 9b9ee94..632cd87 100644
  	.probe = mddi_probe,
  	.remove = mddi_remove,
  #ifndef CONFIG_HAS_EARLYSUSPEND
-diff --git a/drivers/video/msm/mddi_client_dummy.c b/drivers/video/msm/mddi_client_dummy.c
-index ebbae87..aba5710 100644
---- a/drivers/video/msm/mddi_client_dummy.c
-+++ b/drivers/video/msm/mddi_client_dummy.c
-@@ -81,7 +81,7 @@ static int mddi_dummy_remove(struct platform_device *pdev)
+Index: msm/drivers/video/msm/mddi_client_dummy.c
+===================================================================
+--- msm.orig/drivers/video/msm/mddi_client_dummy.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/video/msm/mddi_client_dummy.c	2012-09-14 19:06:53.675212131 -0400
+@@ -81,7 +81,7 @@
  	return 0;
  }
  
@@ -2077,11 +2074,11 @@ index ebbae87..aba5710 100644
  	.probe = mddi_dummy_probe,
  	.remove = mddi_dummy_remove,
  	.driver = { .name = "mddi_c_dummy" },
-diff --git a/drivers/video/msm/mddi_client_nt35399.c b/drivers/video/msm/mddi_client_nt35399.c
-index c9e9349..7773f29 100644
---- a/drivers/video/msm/mddi_client_nt35399.c
-+++ b/drivers/video/msm/mddi_client_nt35399.c
-@@ -241,7 +241,7 @@ static int mddi_nt35399_remove(struct platform_device *pdev)
+Index: msm/drivers/video/msm/mddi_client_nt35399.c
+===================================================================
+--- msm.orig/drivers/video/msm/mddi_client_nt35399.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/video/msm/mddi_client_nt35399.c	2012-09-14 19:06:53.675212131 -0400
+@@ -236,7 +236,7 @@
  	return 0;
  }
  
@@ -2090,11 +2087,11 @@ index c9e9349..7773f29 100644
  	.probe = mddi_nt35399_probe,
  	.remove = mddi_nt35399_remove,
  	.driver = { .name = "mddi_c_0bda_8a47" },
-diff --git a/drivers/video/msm/mddi_client_toshiba.c b/drivers/video/msm/mddi_client_toshiba.c
-index 8868781..d0ef389 100644
---- a/drivers/video/msm/mddi_client_toshiba.c
-+++ b/drivers/video/msm/mddi_client_toshiba.c
-@@ -240,7 +240,7 @@ static int mddi_toshiba_remove(struct platform_device *pdev)
+Index: msm/drivers/video/msm/mddi_client_toshiba.c
+===================================================================
+--- msm.orig/drivers/video/msm/mddi_client_toshiba.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/video/msm/mddi_client_toshiba.c	2012-09-14 19:06:53.675212131 -0400
+@@ -240,7 +240,7 @@
  	return 0;
  }
  
@@ -2103,11 +2100,11 @@ index 8868781..d0ef389 100644
  	.probe = mddi_toshiba_probe,
  	.remove = mddi_toshiba_remove,
  	.driver = { .name = "mddi_c_d263_0000" },
-diff --git a/drivers/video/msm/mddi_ext.c b/drivers/video/msm/mddi_ext.c
-index 0ecd593..abf86fd 100644
---- a/drivers/video/msm/mddi_ext.c
-+++ b/drivers/video/msm/mddi_ext.c
-@@ -74,7 +74,7 @@ static struct dev_pm_ops mddi_ext_dev_pm_ops = {
+Index: msm/drivers/video/msm/mddi_ext.c
+===================================================================
+--- msm.orig/drivers/video/msm/mddi_ext.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/video/msm/mddi_ext.c	2012-09-14 19:06:53.675212131 -0400
+@@ -74,7 +74,7 @@
  	.runtime_idle = mddi_ext_runtime_idle,
  };
  
@@ -2116,11 +2113,11 @@ index 0ecd593..abf86fd 100644
  	.probe = mddi_ext_probe,
  	.remove = mddi_ext_remove,
  #ifndef CONFIG_HAS_EARLYSUSPEND
-diff --git a/drivers/video/msm/mddi_ext_lcd.c b/drivers/video/msm/mddi_ext_lcd.c
-index da79513..a3c7a50 100644
---- a/drivers/video/msm/mddi_ext_lcd.c
-+++ b/drivers/video/msm/mddi_ext_lcd.c
-@@ -35,7 +35,7 @@ static int __init mddi_ext_lcd_probe(struct platform_device *pdev)
+Index: msm/drivers/video/msm/mddi_ext_lcd.c
+===================================================================
+--- msm.orig/drivers/video/msm/mddi_ext_lcd.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/video/msm/mddi_ext_lcd.c	2012-09-14 19:06:53.675212131 -0400
+@@ -35,7 +35,7 @@
  	return 0;
  }
  
@@ -2129,11 +2126,11 @@ index da79513..a3c7a50 100644
  	.probe  = mddi_ext_lcd_probe,
  	.driver = {
  		.name   = "extmddi_svga",
-diff --git a/drivers/video/msm/mddi_prism.c b/drivers/video/msm/mddi_prism.c
-index 5269b22..69b7698 100644
---- a/drivers/video/msm/mddi_prism.c
-+++ b/drivers/video/msm/mddi_prism.c
-@@ -38,7 +38,7 @@ static int __devinit prism_probe(struct platform_device *pdev)
+Index: msm/drivers/video/msm/mddi_prism.c
+===================================================================
+--- msm.orig/drivers/video/msm/mddi_prism.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/video/msm/mddi_prism.c	2012-09-14 19:06:53.675212131 -0400
+@@ -38,7 +38,7 @@
  	return 0;
  }
  
@@ -2142,11 +2139,11 @@ index 5269b22..69b7698 100644
  	.probe  = prism_probe,
  	.driver = {
  		.name   = "mddi_prism_wvga",
-diff --git a/drivers/video/msm/mddi_quickvx.c b/drivers/video/msm/mddi_quickvx.c
-index 330e679..c120da9 100644
---- a/drivers/video/msm/mddi_quickvx.c
-+++ b/drivers/video/msm/mddi_quickvx.c
-@@ -609,7 +609,7 @@ static int __devinit mddi_quickvx_lcd_probe(struct platform_device *pdev)
+Index: msm/drivers/video/msm/mddi_quickvx.c
+===================================================================
+--- msm.orig/drivers/video/msm/mddi_quickvx.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/video/msm/mddi_quickvx.c	2012-09-14 19:06:53.675212131 -0400
+@@ -609,7 +609,7 @@
  }
  
  /* Driver data structure */
@@ -2155,11 +2152,11 @@ index 330e679..c120da9 100644
  	.probe  = mddi_quickvx_lcd_probe,
  	.driver	= {
  		.name	= "mddi_quickvx",
-diff --git a/drivers/video/msm/mddi_sharp.c b/drivers/video/msm/mddi_sharp.c
-index b2a7188..2d12c1e 100644
---- a/drivers/video/msm/mddi_sharp.c
-+++ b/drivers/video/msm/mddi_sharp.c
-@@ -760,7 +760,7 @@ static int __devinit mddi_sharp_probe(struct platform_device *pdev)
+Index: msm/drivers/video/msm/mddi_sharp.c
+===================================================================
+--- msm.orig/drivers/video/msm/mddi_sharp.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/video/msm/mddi_sharp.c	2012-09-14 19:06:53.675212131 -0400
+@@ -760,7 +760,7 @@
  	return 0;
  }
  
@@ -2168,11 +2165,11 @@ index b2a7188..2d12c1e 100644
  	.probe  = mddi_sharp_probe,
  	.driver = {
  		.name   = "mddi_sharp_qvga",
-diff --git a/drivers/video/msm/mddi_toshiba.c b/drivers/video/msm/mddi_toshiba.c
-index 9727453..3d02b18 100644
---- a/drivers/video/msm/mddi_toshiba.c
-+++ b/drivers/video/msm/mddi_toshiba.c
-@@ -1672,7 +1672,7 @@ static int __devinit mddi_toshiba_lcd_probe(struct platform_device *pdev)
+Index: msm/drivers/video/msm/mddi_toshiba.c
+===================================================================
+--- msm.orig/drivers/video/msm/mddi_toshiba.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/video/msm/mddi_toshiba.c	2012-09-14 19:06:53.675212131 -0400
+@@ -1672,7 +1672,7 @@
  	return 0;
  }
  
@@ -2181,11 +2178,11 @@ index 9727453..3d02b18 100644
  	.probe  = mddi_toshiba_lcd_probe,
  	.driver = {
  		.name   = "mddi_toshiba",
-diff --git a/drivers/video/msm/mdp.c b/drivers/video/msm/mdp.c
-index aeeb503..f0ed7e3 100644
---- a/drivers/video/msm/mdp.c
-+++ b/drivers/video/msm/mdp.c
-@@ -995,7 +995,7 @@ static struct dev_pm_ops mdp_dev_pm_ops = {
+Index: msm/drivers/video/msm/mdp.c
+===================================================================
+--- msm.orig/drivers/video/msm/mdp.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/video/msm/mdp.c	2012-09-14 19:06:53.675212131 -0400
+@@ -2038,7 +2038,7 @@
  };
  
  
@@ -2194,11 +2191,11 @@ index aeeb503..f0ed7e3 100644
  	.probe = mdp_probe,
  	.remove = mdp_remove,
  #ifndef CONFIG_HAS_EARLYSUSPEND
-diff --git a/drivers/video/msm/mdp4_dtv.c b/drivers/video/msm/mdp4_dtv.c
-index a44f7c0..7de035b 100644
---- a/drivers/video/msm/mdp4_dtv.c
-+++ b/drivers/video/msm/mdp4_dtv.c
-@@ -64,7 +64,7 @@ static const struct dev_pm_ops mdp4_dtv_dev_pm_ops = {
+Index: msm/drivers/video/msm/mdp4_dtv.c
+===================================================================
+--- msm.orig/drivers/video/msm/mdp4_dtv.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/video/msm/mdp4_dtv.c	2012-09-14 19:06:53.675212131 -0400
+@@ -64,7 +64,7 @@
  	.runtime_resume = mdp4_dtv_runtime_resume,
  };
  
@@ -2207,11 +2204,11 @@ index a44f7c0..7de035b 100644
  	.probe = dtv_probe,
  	.remove = dtv_remove,
  	.suspend = NULL,
-diff --git a/drivers/video/msm/mdp4_wfd_writeback.c b/drivers/video/msm/mdp4_wfd_writeback.c
-index a8fdcc0..dcefdbf 100644
---- a/drivers/video/msm/mdp4_wfd_writeback.c
-+++ b/drivers/video/msm/mdp4_wfd_writeback.c
-@@ -84,7 +84,7 @@ static int writeback_probe(struct platform_device *pdev)
+Index: msm/drivers/video/msm/mdp4_wfd_writeback.c
+===================================================================
+--- msm.orig/drivers/video/msm/mdp4_wfd_writeback.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/video/msm/mdp4_wfd_writeback.c	2012-09-14 19:06:53.675212131 -0400
+@@ -84,7 +84,7 @@
  	return rc;
  }
  
@@ -2220,11 +2217,11 @@ index a8fdcc0..dcefdbf 100644
  	.probe = writeback_probe,
  	.driver = {
  		.name = "writeback",
-diff --git a/drivers/video/msm/mdp4_wfd_writeback_panel.c b/drivers/video/msm/mdp4_wfd_writeback_panel.c
-index 77f714c..a120283 100644
---- a/drivers/video/msm/mdp4_wfd_writeback_panel.c
-+++ b/drivers/video/msm/mdp4_wfd_writeback_panel.c
-@@ -52,7 +52,7 @@ static struct platform_device writeback_panel_device = {
+Index: msm/drivers/video/msm/mdp4_wfd_writeback_panel.c
+===================================================================
+--- msm.orig/drivers/video/msm/mdp4_wfd_writeback_panel.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/video/msm/mdp4_wfd_writeback_panel.c	2012-09-14 19:06:53.675212131 -0400
+@@ -52,7 +52,7 @@
  	.id = 1,
  	.dev.platform_data = &writeback_msm_panel_data,
  };
@@ -2233,11 +2230,11 @@ index 77f714c..a120283 100644
  	.probe = writeback_panel_probe,
  	.driver = {
  		.name = "writeback_panel"
-diff --git a/drivers/video/msm/mdp_lcdc.c b/drivers/video/msm/mdp_lcdc.c
-index be8d39d..c3bfbe9 100644
---- a/drivers/video/msm/mdp_lcdc.c
-+++ b/drivers/video/msm/mdp_lcdc.c
-@@ -390,7 +390,7 @@ static int mdp_lcdc_remove(struct platform_device *pdev)
+Index: msm/drivers/video/msm/mdp_lcdc.c
+===================================================================
+--- msm.orig/drivers/video/msm/mdp_lcdc.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/video/msm/mdp_lcdc.c	2012-09-14 19:06:53.675212131 -0400
+@@ -390,7 +390,7 @@
  	return 0;
  }
  
@@ -2246,11 +2243,11 @@ index be8d39d..c3bfbe9 100644
  	.probe = mdp_lcdc_probe,
  	.remove = mdp_lcdc_remove,
  	.driver = {
-diff --git a/drivers/video/msm/mipi_NT35510.c b/drivers/video/msm/mipi_NT35510.c
-index 930b4e9..3c4bd26 100644
---- a/drivers/video/msm/mipi_NT35510.c
-+++ b/drivers/video/msm/mipi_NT35510.c
-@@ -514,7 +514,7 @@ static int __devinit mipi_nt35510_lcd_probe(struct platform_device *pdev)
+Index: msm/drivers/video/msm/mipi_NT35510.c
+===================================================================
+--- msm.orig/drivers/video/msm/mipi_NT35510.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/video/msm/mipi_NT35510.c	2012-09-14 19:06:53.675212131 -0400
+@@ -613,7 +613,7 @@
  	return 0;
  }
  
@@ -2259,11 +2256,11 @@ index 930b4e9..3c4bd26 100644
  	.probe  = mipi_nt35510_lcd_probe,
  	.driver = {
  		.name   = "mipi_NT35510",
-diff --git a/drivers/video/msm/mipi_dsi.c b/drivers/video/msm/mipi_dsi.c
-index aa210f1..4a0f841 100644
---- a/drivers/video/msm/mipi_dsi.c
-+++ b/drivers/video/msm/mipi_dsi.c
-@@ -51,7 +51,7 @@ static struct mipi_dsi_platform_data *mipi_dsi_pdata;
+Index: msm/drivers/video/msm/mipi_dsi.c
+===================================================================
+--- msm.orig/drivers/video/msm/mipi_dsi.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/video/msm/mipi_dsi.c	2012-09-14 19:06:53.675212131 -0400
+@@ -52,7 +52,7 @@
  
  static int vsync_gpio = -1;
  
@@ -2272,11 +2269,11 @@ index aa210f1..4a0f841 100644
  	.probe = mipi_dsi_probe,
  	.remove = mipi_dsi_remove,
  	.shutdown = NULL,
-diff --git a/drivers/video/msm/mipi_novatek.c b/drivers/video/msm/mipi_novatek.c
-index 5e2e515..1c602e4 100644
---- a/drivers/video/msm/mipi_novatek.c
-+++ b/drivers/video/msm/mipi_novatek.c
-@@ -116,7 +116,7 @@ static int __devexit panel_3d_spi_remove(struct spi_device *spi)
+Index: msm/drivers/video/msm/mipi_novatek.c
+===================================================================
+--- msm.orig/drivers/video/msm/mipi_novatek.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/video/msm/mipi_novatek.c	2012-09-14 19:06:53.675212131 -0400
+@@ -119,7 +119,7 @@
  	panel_3d_spi_client = NULL;
  	return 0;
  }
@@ -2285,7 +2282,7 @@ index 5e2e515..1c602e4 100644
  	.probe         = panel_3d_spi_probe,
  	.remove        = __devexit_p(panel_3d_spi_remove),
  	.driver		   = {
-@@ -507,7 +507,7 @@ static int __devinit mipi_novatek_lcd_probe(struct platform_device *pdev)
+@@ -513,7 +513,7 @@
  	return 0;
  }
  
@@ -2294,11 +2291,11 @@ index 5e2e515..1c602e4 100644
  	.probe  = mipi_novatek_lcd_probe,
  	.driver = {
  		.name   = "mipi_novatek",
-diff --git a/drivers/video/msm/mipi_renesas.c b/drivers/video/msm/mipi_renesas.c
-index 6a7027a..773d18b 100644
---- a/drivers/video/msm/mipi_renesas.c
-+++ b/drivers/video/msm/mipi_renesas.c
-@@ -1196,7 +1196,7 @@ static void mipi_renesas_set_backlight(struct msm_fb_data_type *mfd)
+Index: msm/drivers/video/msm/mipi_renesas.c
+===================================================================
+--- msm.orig/drivers/video/msm/mipi_renesas.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/video/msm/mipi_renesas.c	2012-09-14 19:06:53.675212131 -0400
+@@ -1196,7 +1196,7 @@
  		pr_err("%s(): Backlight level set failed", __func__);
  }
  
@@ -2307,11 +2304,11 @@ index 6a7027a..773d18b 100644
  	.probe  = mipi_renesas_lcd_probe,
  	.driver = {
  		.name   = "mipi_renesas",
-diff --git a/drivers/video/msm/mipi_simulator.c b/drivers/video/msm/mipi_simulator.c
-index c6bf534..3f4fa0e 100644
---- a/drivers/video/msm/mipi_simulator.c
-+++ b/drivers/video/msm/mipi_simulator.c
-@@ -98,7 +98,7 @@ static int __devinit mipi_simulator_lcd_probe(struct platform_device *pdev)
+Index: msm/drivers/video/msm/mipi_simulator.c
+===================================================================
+--- msm.orig/drivers/video/msm/mipi_simulator.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/video/msm/mipi_simulator.c	2012-09-14 19:06:53.675212131 -0400
+@@ -98,7 +98,7 @@
  	return 0;
  }
  
@@ -2320,24 +2317,11 @@ index c6bf534..3f4fa0e 100644
  	.probe  = mipi_simulator_lcd_probe,
  	.driver = {
  		.name   = "mipi_simulator",
-diff --git a/drivers/video/msm/mipi_tc358764_dsi2lvds.c b/drivers/video/msm/mipi_tc358764_dsi2lvds.c
-index 2594c1d..c8619e5 100644
---- a/drivers/video/msm/mipi_tc358764_dsi2lvds.c
-+++ b/drivers/video/msm/mipi_tc358764_dsi2lvds.c
-@@ -653,7 +653,7 @@ err_device_put:
- 	return ret;
- }
- 
--static struct platform_driver d2l_driver = {
-+static struct platform_driver d2l_driver __refdata = {
- 	.probe  = mipi_d2l_probe,
- 	.remove = __devexit_p(mipi_d2l_remove),
- 	.driver = {
-diff --git a/drivers/video/msm/mipi_toshiba.c b/drivers/video/msm/mipi_toshiba.c
-index 5788f27..8f13190 100644
---- a/drivers/video/msm/mipi_toshiba.c
-+++ b/drivers/video/msm/mipi_toshiba.c
-@@ -275,7 +275,7 @@ static int __devinit mipi_toshiba_lcd_probe(struct platform_device *pdev)
+Index: msm/drivers/video/msm/mipi_toshiba.c
+===================================================================
+--- msm.orig/drivers/video/msm/mipi_toshiba.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/video/msm/mipi_toshiba.c	2012-09-14 19:06:53.679212081 -0400
+@@ -286,7 +286,7 @@
  	return 0;
  }
  
@@ -2346,11 +2330,11 @@ index 5788f27..8f13190 100644
  	.probe  = mipi_toshiba_lcd_probe,
  	.driver = {
  		.name   = "mipi_toshiba",
-diff --git a/drivers/video/msm/mipi_truly.c b/drivers/video/msm/mipi_truly.c
-index a2060f0..be3638b 100644
---- a/drivers/video/msm/mipi_truly.c
-+++ b/drivers/video/msm/mipi_truly.c
-@@ -194,7 +194,7 @@ static int __devinit mipi_truly_lcd_probe(struct platform_device *pdev)
+Index: msm/drivers/video/msm/mipi_truly.c
+===================================================================
+--- msm.orig/drivers/video/msm/mipi_truly.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/video/msm/mipi_truly.c	2012-09-14 19:06:53.679212081 -0400
+@@ -194,7 +194,7 @@
  	return 0;
  }
  
@@ -2359,11 +2343,11 @@ index a2060f0..be3638b 100644
  	.probe  = mipi_truly_lcd_probe,
  	.driver = {
  		.name   = "mipi_truly",
-diff --git a/drivers/video/msm/mipi_truly_tft540960_1_e.c b/drivers/video/msm/mipi_truly_tft540960_1_e.c
-index 937a598..732c494 100644
---- a/drivers/video/msm/mipi_truly_tft540960_1_e.c
-+++ b/drivers/video/msm/mipi_truly_tft540960_1_e.c
-@@ -734,7 +734,7 @@ static int __devinit mipi_truly_lcd_probe(struct platform_device *pdev)
+Index: msm/drivers/video/msm/mipi_truly_tft540960_1_e.c
+===================================================================
+--- msm.orig/drivers/video/msm/mipi_truly_tft540960_1_e.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/video/msm/mipi_truly_tft540960_1_e.c	2012-09-14 19:06:53.679212081 -0400
+@@ -795,7 +795,7 @@
  	return rc;
  }
  
@@ -2372,12 +2356,12 @@ index 937a598..732c494 100644
  	.probe  = mipi_truly_lcd_probe,
  	.driver = {
  		.name   = "mipi_truly_tft540960_1_e",
-diff --git a/drivers/video/msm/msm_fb.c b/drivers/video/msm/msm_fb.c
-index 10e4156..24e07f3 100644
---- a/drivers/video/msm/msm_fb.c
-+++ b/drivers/video/msm/msm_fb.c
-@@ -609,7 +609,7 @@ static struct dev_pm_ops msm_fb_dev_pm_ops = {
- 	.runtime_idle = msm_fb_runtime_idle,
+Index: msm/drivers/video/msm/msm_fb.c
+===================================================================
+--- msm.orig/drivers/video/msm/msm_fb.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/video/msm/msm_fb.c	2012-09-14 19:06:53.679212081 -0400
+@@ -720,7 +720,7 @@
+ #endif
  };
  
 -static struct platform_driver msm_fb_driver = {
@@ -2385,11 +2369,11 @@ index 10e4156..24e07f3 100644
  	.probe = msm_fb_probe,
  	.remove = msm_fb_remove,
  #ifndef CONFIG_HAS_EARLYSUSPEND
-diff --git a/drivers/video/msm/tvenc.c b/drivers/video/msm/tvenc.c
-index 672b2a7..6444fab 100644
---- a/drivers/video/msm/tvenc.c
-+++ b/drivers/video/msm/tvenc.c
-@@ -75,7 +75,7 @@ static struct dev_pm_ops tvenc_dev_pm_ops = {
+Index: msm/drivers/video/msm/tvenc.c
+===================================================================
+--- msm.orig/drivers/video/msm/tvenc.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/video/msm/tvenc.c	2012-09-14 19:06:53.679212081 -0400
+@@ -75,7 +75,7 @@
  	.runtime_resume = tvenc_runtime_resume,
  };
  
@@ -2398,11 +2382,11 @@ index 672b2a7..6444fab 100644
  	.probe = tvenc_probe,
  	.remove = tvenc_remove,
  	.suspend = NULL,
-diff --git a/drivers/video/msm/tvout_msm.c b/drivers/video/msm/tvout_msm.c
-index 9ee55cc..4bf8b37 100644
---- a/drivers/video/msm/tvout_msm.c
-+++ b/drivers/video/msm/tvout_msm.c
-@@ -565,7 +565,7 @@ static const struct dev_pm_ops tvout_device_pm_ops = {
+Index: msm/drivers/video/msm/tvout_msm.c
+===================================================================
+--- msm.orig/drivers/video/msm/tvout_msm.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/video/msm/tvout_msm.c	2012-09-14 19:06:53.679212081 -0400
+@@ -565,7 +565,7 @@
  	.resume = tvout_device_pm_resume,
  };
  
@@ -2411,11 +2395,11 @@ index 9ee55cc..4bf8b37 100644
  	.probe  = tvout_probe,
  	.remove = tvout_remove,
  	.driver = {
-diff --git a/drivers/video/msm/vidc/common/init/vidc_init.c b/drivers/video/msm/vidc/common/init/vidc_init.c
-index 1217f1f..0002c1c 100644
---- a/drivers/video/msm/vidc/common/init/vidc_init.c
-+++ b/drivers/video/msm/vidc/common/init/vidc_init.c
-@@ -202,7 +202,7 @@ static const struct dev_pm_ops vidc_dev_pm_ops = {
+Index: msm/drivers/video/msm/vidc/common/init/vidc_init.c
+===================================================================
+--- msm.orig/drivers/video/msm/vidc/common/init/vidc_init.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/drivers/video/msm/vidc/common/init/vidc_init.c	2012-09-14 19:06:53.679212081 -0400
+@@ -202,7 +202,7 @@
  	.runtime_resume = vidc_runtime_resume,
  };
  
@@ -2424,11 +2408,11 @@ index 1217f1f..0002c1c 100644
  	.probe = vidc_720p_probe,
  	.remove = vidc_720p_remove,
  	.driver = {
-diff --git a/include/net/net_namespace.h b/include/net/net_namespace.h
-index aef430d..c840046 100644
---- a/include/net/net_namespace.h
-+++ b/include/net/net_namespace.h
-@@ -239,10 +239,12 @@ static inline struct net *read_pnet(struct net * const *pnet)
+Index: msm/include/net/net_namespace.h
+===================================================================
+--- msm.orig/include/net/net_namespace.h	2012-09-14 19:06:24.000000000 -0400
++++ msm/include/net/net_namespace.h	2012-09-14 19:06:53.679212081 -0400
+@@ -240,10 +240,12 @@
  #define __net_init
  #define __net_exit
  #define __net_initdata
@@ -2441,32 +2425,11 @@ index aef430d..c840046 100644
  #endif
  
  struct pernet_operations {
-diff --git a/lib/string.c b/lib/string.c
-index 01fad9b..077873d 100644
---- a/lib/string.c
-+++ b/lib/string.c
-@@ -756,3 +756,15 @@ void *memchr(const void *s, int c, size_t n)
- }
- EXPORT_SYMBOL(memchr);
- #endif
-+
-+void __aeabi_memcpy (void *dest, const void *src, size_t n) 
-+{
-+    (void)memcpy(dest, src, n);
-+}
-+EXPORT_SYMBOL(__aeabi_memcpy);
-+
-+void __aeabi_memset(void *s, int c, size_t n) 
-+{
-+    (void)memset(s, c, n);
-+}
-+EXPORT_SYMBOL(__aeabi_memset);
-
-diff --git a/net/core/fib_rules.c b/net/core/fib_rules.c
-index f39ef5c..75691a7 100644
---- a/net/core/fib_rules.c
-+++ b/net/core/fib_rules.c
-@@ -733,7 +733,7 @@ static int __net_init fib_rules_net_init(struct net *net)
+Index: msm/net/core/fib_rules.c
+===================================================================
+--- msm.orig/net/core/fib_rules.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/net/core/fib_rules.c	2012-09-14 19:06:53.679212081 -0400
+@@ -737,7 +737,7 @@
  	return 0;
  }
  
@@ -2475,11 +2438,11 @@ index f39ef5c..75691a7 100644
  	.init = fib_rules_net_init,
  };
  
-diff --git a/net/core/rtnetlink.c b/net/core/rtnetlink.c
-index abd936d..d7c7b58 100644
---- a/net/core/rtnetlink.c
-+++ b/net/core/rtnetlink.c
-@@ -1996,7 +1996,7 @@ static void __net_exit rtnetlink_net_exit(struct net *net)
+Index: msm/net/core/rtnetlink.c
+===================================================================
+--- msm.orig/net/core/rtnetlink.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/net/core/rtnetlink.c	2012-09-14 19:06:53.679212081 -0400
+@@ -2113,7 +2113,7 @@
  	net->rtnl = NULL;
  }
  
@@ -2488,11 +2451,11 @@ index abd936d..d7c7b58 100644
  	.init = rtnetlink_net_init,
  	.exit = rtnetlink_net_exit,
  };
-diff --git a/net/ipv4/arp.c b/net/ipv4/arp.c
-index 1b74d3b..f9566d4 100644
---- a/net/ipv4/arp.c
-+++ b/net/ipv4/arp.c
-@@ -1442,7 +1442,7 @@ static int arp_seq_open(struct inode *inode, struct file *file)
+Index: msm/net/ipv4/arp.c
+===================================================================
+--- msm.orig/net/ipv4/arp.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/net/ipv4/arp.c	2012-09-14 19:06:53.679212081 -0400
+@@ -1405,7 +1405,7 @@
  			    sizeof(struct neigh_seq_state));
  }
  
@@ -2501,7 +2464,7 @@ index 1b74d3b..f9566d4 100644
  	.owner		= THIS_MODULE,
  	.open           = arp_seq_open,
  	.read           = seq_read,
-@@ -1463,7 +1463,7 @@ static void __net_exit arp_net_exit(struct net *net)
+@@ -1426,7 +1426,7 @@
  	proc_net_remove(net, "arp");
  }
  
@@ -2510,11 +2473,11 @@ index 1b74d3b..f9566d4 100644
  	.init = arp_net_init,
  	.exit = arp_net_exit,
  };
-diff --git a/net/ipv4/fib_frontend.c b/net/ipv4/fib_frontend.c
-index 2252471..f1a69a2 100644
---- a/net/ipv4/fib_frontend.c
-+++ b/net/ipv4/fib_frontend.c
-@@ -1117,7 +1117,7 @@ static void __net_exit fib_net_exit(struct net *net)
+Index: msm/net/ipv4/fib_frontend.c
+===================================================================
+--- msm.orig/net/ipv4/fib_frontend.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/net/ipv4/fib_frontend.c	2012-09-14 19:06:53.679212081 -0400
+@@ -1116,7 +1116,7 @@
  	ip_fib_net_exit(net);
  }
  
@@ -2523,11 +2486,11 @@ index 2252471..f1a69a2 100644
  	.init = fib_net_init,
  	.exit = fib_net_exit,
  };
-diff --git a/net/ipv4/ip_fragment.c b/net/ipv4/ip_fragment.c
-index 0ad6035..91190f0 100644
---- a/net/ipv4/ip_fragment.c
-+++ b/net/ipv4/ip_fragment.c
-@@ -814,7 +814,7 @@ static void __net_exit ipv4_frags_exit_net(struct net *net)
+Index: msm/net/ipv4/ip_fragment.c
+===================================================================
+--- msm.orig/net/ipv4/ip_fragment.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/net/ipv4/ip_fragment.c	2012-09-14 19:06:53.679212081 -0400
+@@ -852,7 +852,7 @@
  	inet_frags_exit_net(&net->ipv4.frags, &ip4_frags);
  }
  
@@ -2536,11 +2499,11 @@ index 0ad6035..91190f0 100644
  	.init = ipv4_frags_init_net,
  	.exit = ipv4_frags_exit_net,
  };
-diff --git a/net/ipv4/netfilter/arp_tables.c b/net/ipv4/netfilter/arp_tables.c
-index fd7a3f6..a7de963 100644
---- a/net/ipv4/netfilter/arp_tables.c
-+++ b/net/ipv4/netfilter/arp_tables.c
-@@ -1865,7 +1865,7 @@ static void __net_exit arp_tables_net_exit(struct net *net)
+Index: msm/net/ipv4/netfilter/arp_tables.c
+===================================================================
+--- msm.orig/net/ipv4/netfilter/arp_tables.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/net/ipv4/netfilter/arp_tables.c	2012-09-14 19:06:53.679212081 -0400
+@@ -1865,7 +1865,7 @@
  	xt_proto_fini(net, NFPROTO_ARP);
  }
  
@@ -2549,11 +2512,11 @@ index fd7a3f6..a7de963 100644
  	.init = arp_tables_net_init,
  	.exit = arp_tables_net_exit,
  };
-diff --git a/net/ipv4/netfilter/ip_tables.c b/net/ipv4/netfilter/ip_tables.c
-index 24e556e..2846b05 100644
---- a/net/ipv4/netfilter/ip_tables.c
-+++ b/net/ipv4/netfilter/ip_tables.c
-@@ -2216,7 +2216,7 @@ static void __net_exit ip_tables_net_exit(struct net *net)
+Index: msm/net/ipv4/netfilter/ip_tables.c
+===================================================================
+--- msm.orig/net/ipv4/netfilter/ip_tables.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/net/ipv4/netfilter/ip_tables.c	2012-09-14 19:06:53.683212031 -0400
+@@ -2216,7 +2216,7 @@
  	xt_proto_fini(net, NFPROTO_IPV4);
  }
  
@@ -2562,11 +2525,11 @@ index 24e556e..2846b05 100644
  	.init = ip_tables_net_init,
  	.exit = ip_tables_net_exit,
  };
-diff --git a/net/ipv4/netfilter/iptable_filter.c b/net/ipv4/netfilter/iptable_filter.c
-index c37641e..ab09a8e 100644
---- a/net/ipv4/netfilter/iptable_filter.c
-+++ b/net/ipv4/netfilter/iptable_filter.c
-@@ -79,7 +79,7 @@ static void __net_exit iptable_filter_net_exit(struct net *net)
+Index: msm/net/ipv4/netfilter/iptable_filter.c
+===================================================================
+--- msm.orig/net/ipv4/netfilter/iptable_filter.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/net/ipv4/netfilter/iptable_filter.c	2012-09-14 19:06:53.683212031 -0400
+@@ -79,7 +79,7 @@
  	ipt_unregister_table(net, net->ipv4.iptable_filter);
  }
  
@@ -2575,11 +2538,11 @@ index c37641e..ab09a8e 100644
  	.init = iptable_filter_net_init,
  	.exit = iptable_filter_net_exit,
  };
-diff --git a/net/ipv4/netfilter/nf_nat_core.c b/net/ipv4/netfilter/nf_nat_core.c
-index 3346de5..044a17d 100644
---- a/net/ipv4/netfilter/nf_nat_core.c
-+++ b/net/ipv4/netfilter/nf_nat_core.c
-@@ -711,7 +711,7 @@ static void __net_exit nf_nat_net_exit(struct net *net)
+Index: msm/net/ipv4/netfilter/nf_nat_core.c
+===================================================================
+--- msm.orig/net/ipv4/netfilter/nf_nat_core.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/net/ipv4/netfilter/nf_nat_core.c	2012-09-14 19:06:53.683212031 -0400
+@@ -681,7 +681,7 @@
  	nf_ct_free_hashtable(net->ipv4.nat_bysource, net->ipv4.nat_htable_size);
  }
  
@@ -2588,11 +2551,11 @@ index 3346de5..044a17d 100644
  	.init = nf_nat_net_init,
  	.exit = nf_nat_net_exit,
  };
-diff --git a/net/ipv4/tcp_ipv4.c b/net/ipv4/tcp_ipv4.c
-index 33ffa13..cdbf313 100644
---- a/net/ipv4/tcp_ipv4.c
-+++ b/net/ipv4/tcp_ipv4.c
-@@ -2566,7 +2566,7 @@ static void __net_exit tcp4_proc_exit_net(struct net *net)
+Index: msm/net/ipv4/tcp_ipv4.c
+===================================================================
+--- msm.orig/net/ipv4/tcp_ipv4.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/net/ipv4/tcp_ipv4.c	2012-09-14 19:06:53.683212031 -0400
+@@ -2603,7 +2603,7 @@
  	tcp_proc_unregister(net, &tcp4_seq_afinfo);
  }
  
@@ -2601,11 +2564,11 @@ index 33ffa13..cdbf313 100644
  	.init = tcp4_proc_init_net,
  	.exit = tcp4_proc_exit_net,
  };
-diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
-index 198f75b..8aa26d0 100644
---- a/net/ipv4/udp.c
-+++ b/net/ipv4/udp.c
-@@ -2142,7 +2142,7 @@ static void __net_exit udp4_proc_exit_net(struct net *net)
+Index: msm/net/ipv4/udp.c
+===================================================================
+--- msm.orig/net/ipv4/udp.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/net/ipv4/udp.c	2012-09-14 19:06:53.683212031 -0400
+@@ -2144,7 +2144,7 @@
  	udp_proc_unregister(net, &udp4_seq_afinfo);
  }
  
@@ -2614,11 +2577,11 @@ index 198f75b..8aa26d0 100644
  	.init = udp4_proc_init_net,
  	.exit = udp4_proc_exit_net,
  };
-diff --git a/net/ipv4/udplite.c b/net/ipv4/udplite.c
-index aee9963..aa90768 100644
---- a/net/ipv4/udplite.c
-+++ b/net/ipv4/udplite.c
-@@ -93,7 +93,7 @@ static void __net_exit udplite4_proc_exit_net(struct net *net)
+Index: msm/net/ipv4/udplite.c
+===================================================================
+--- msm.orig/net/ipv4/udplite.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/net/ipv4/udplite.c	2012-09-14 19:06:53.683212031 -0400
+@@ -104,7 +104,7 @@
  	udp_proc_unregister(net, &udplite4_seq_afinfo);
  }
  
@@ -2627,11 +2590,11 @@ index aee9963..aa90768 100644
  	.init = udplite4_proc_init_net,
  	.exit = udplite4_proc_exit_net,
  };
-diff --git a/net/ipv6/addrconf.c b/net/ipv6/addrconf.c
-index 713e09d..549f4d3 100644
---- a/net/ipv6/addrconf.c
-+++ b/net/ipv6/addrconf.c
-@@ -3129,7 +3129,7 @@ static void __net_exit if6_proc_net_exit(struct net *net)
+Index: msm/net/ipv6/addrconf.c
+===================================================================
+--- msm.orig/net/ipv6/addrconf.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/net/ipv6/addrconf.c	2012-09-14 19:06:53.683212031 -0400
+@@ -3213,7 +3213,7 @@
         proc_net_remove(net, "if_inet6");
  }
  
@@ -2640,7 +2603,7 @@ index 713e09d..549f4d3 100644
         .init = if6_proc_net_init,
         .exit = if6_proc_net_exit,
  };
-@@ -4648,7 +4648,7 @@ static void __net_exit addrconf_exit_net(struct net *net)
+@@ -4749,7 +4749,7 @@
  	}
  }
  
@@ -2649,11 +2612,11 @@ index 713e09d..549f4d3 100644
  	.init = addrconf_init_net,
  	.exit = addrconf_exit_net,
  };
-diff --git a/net/ipv6/addrlabel.c b/net/ipv6/addrlabel.c
-index c8993e5..747bafe 100644
---- a/net/ipv6/addrlabel.c
-+++ b/net/ipv6/addrlabel.c
-@@ -381,7 +381,7 @@ static void __net_exit ip6addrlbl_net_exit(struct net *net)
+Index: msm/net/ipv6/addrlabel.c
+===================================================================
+--- msm.orig/net/ipv6/addrlabel.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/net/ipv6/addrlabel.c	2012-09-14 19:06:53.683212031 -0400
+@@ -381,7 +381,7 @@
  	spin_unlock(&ip6addrlbl_table.lock);
  }
  
@@ -2662,11 +2625,11 @@ index c8993e5..747bafe 100644
  	.init = ip6addrlbl_net_init,
  	.exit = ip6addrlbl_net_exit,
  };
-diff --git a/net/ipv6/af_inet6.c b/net/ipv6/af_inet6.c
-index 7e8340e..1f8ef02 100644
---- a/net/ipv6/af_inet6.c
-+++ b/net/ipv6/af_inet6.c
-@@ -1088,7 +1088,7 @@ static void __net_exit inet6_net_exit(struct net *net)
+Index: msm/net/ipv6/af_inet6.c
+===================================================================
+--- msm.orig/net/ipv6/af_inet6.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/net/ipv6/af_inet6.c	2012-09-14 19:06:53.683212031 -0400
+@@ -1090,7 +1090,7 @@
  	ipv6_cleanup_mibs(net);
  }
  
@@ -2675,11 +2638,11 @@ index 7e8340e..1f8ef02 100644
  	.init = inet6_net_init,
  	.exit = inet6_net_exit,
  };
-diff --git a/net/ipv6/ip6_fib.c b/net/ipv6/ip6_fib.c
-index 4076a0b..7785593 100644
---- a/net/ipv6/ip6_fib.c
-+++ b/net/ipv6/ip6_fib.c
-@@ -1566,7 +1566,7 @@ static void fib6_net_exit(struct net *net)
+Index: msm/net/ipv6/ip6_fib.c
+===================================================================
+--- msm.orig/net/ipv6/ip6_fib.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/net/ipv6/ip6_fib.c	2012-09-14 19:06:53.683212031 -0400
+@@ -1672,7 +1672,7 @@
  	kfree(net->ipv6.rt6_stats);
  }
  
@@ -2688,11 +2651,11 @@ index 4076a0b..7785593 100644
  	.init = fib6_net_init,
  	.exit = fib6_net_exit,
  };
-diff --git a/net/ipv6/ip6_flowlabel.c b/net/ipv6/ip6_flowlabel.c
-index f3caf1b..fd31066 100644
---- a/net/ipv6/ip6_flowlabel.c
-+++ b/net/ipv6/ip6_flowlabel.c
-@@ -729,7 +729,7 @@ static int ip6fl_seq_open(struct inode *inode, struct file *file)
+Index: msm/net/ipv6/ip6_flowlabel.c
+===================================================================
+--- msm.orig/net/ipv6/ip6_flowlabel.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/net/ipv6/ip6_flowlabel.c	2012-09-14 19:06:53.683212031 -0400
+@@ -730,7 +730,7 @@
  			    sizeof(struct ip6fl_iter_state));
  }
  
@@ -2701,7 +2664,7 @@ index f3caf1b..fd31066 100644
  	.owner		=	THIS_MODULE,
  	.open		=	ip6fl_seq_open,
  	.read		=	seq_read,
-@@ -765,7 +765,7 @@ static void __net_exit ip6_flowlabel_net_exit(struct net *net)
+@@ -766,7 +766,7 @@
  	ip6_flowlabel_proc_fini(net);
  }
  
@@ -2710,11 +2673,11 @@ index f3caf1b..fd31066 100644
  	.init = ip6_flowlabel_proc_init,
  	.exit = ip6_flowlabel_net_exit,
  };
-diff --git a/net/ipv6/mcast.c b/net/ipv6/mcast.c
-index ee7839f..59e1358 100644
---- a/net/ipv6/mcast.c
-+++ b/net/ipv6/mcast.c
-@@ -2663,7 +2663,7 @@ static void __net_exit igmp6_net_exit(struct net *net)
+Index: msm/net/ipv6/mcast.c
+===================================================================
+--- msm.orig/net/ipv6/mcast.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/net/ipv6/mcast.c	2012-09-14 19:06:53.683212031 -0400
+@@ -2652,7 +2652,7 @@
  	igmp6_proc_exit(net);
  }
  
@@ -2723,11 +2686,11 @@ index ee7839f..59e1358 100644
  	.init = igmp6_net_init,
  	.exit = igmp6_net_exit,
  };
-diff --git a/net/ipv6/ndisc.c b/net/ipv6/ndisc.c
-index 7596f07..b5ec4a7 100644
---- a/net/ipv6/ndisc.c
-+++ b/net/ipv6/ndisc.c
-@@ -1756,7 +1756,7 @@ static int ndisc_netdev_event(struct notifier_block *this, unsigned long event,
+Index: msm/net/ipv6/ndisc.c
+===================================================================
+--- msm.orig/net/ipv6/ndisc.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/net/ipv6/ndisc.c	2012-09-14 19:06:53.683212031 -0400
+@@ -1752,7 +1752,7 @@
  	return NOTIFY_DONE;
  }
  
@@ -2736,11 +2699,11 @@ index 7596f07..b5ec4a7 100644
  	.notifier_call = ndisc_netdev_event,
  };
  
-diff --git a/net/ipv6/netfilter/ip6_tables.c b/net/ipv6/netfilter/ip6_tables.c
-index 14cb310..377cec1 100644
---- a/net/ipv6/netfilter/ip6_tables.c
-+++ b/net/ipv6/netfilter/ip6_tables.c
-@@ -2238,7 +2238,7 @@ static void __net_exit ip6_tables_net_exit(struct net *net)
+Index: msm/net/ipv6/netfilter/ip6_tables.c
+===================================================================
+--- msm.orig/net/ipv6/netfilter/ip6_tables.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/net/ipv6/netfilter/ip6_tables.c	2012-09-14 19:06:53.683212031 -0400
+@@ -2225,7 +2225,7 @@
  	xt_proto_fini(net, NFPROTO_IPV6);
  }
  
@@ -2749,11 +2712,11 @@ index 14cb310..377cec1 100644
  	.init = ip6_tables_net_init,
  	.exit = ip6_tables_net_exit,
  };
-diff --git a/net/ipv6/netfilter/ip6table_filter.c b/net/ipv6/netfilter/ip6table_filter.c
-index c9e37c8..f045598 100644
---- a/net/ipv6/netfilter/ip6table_filter.c
-+++ b/net/ipv6/netfilter/ip6table_filter.c
-@@ -22,7 +22,7 @@ MODULE_DESCRIPTION("ip6tables filter table");
+Index: msm/net/ipv6/netfilter/ip6table_filter.c
+===================================================================
+--- msm.orig/net/ipv6/netfilter/ip6table_filter.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/net/ipv6/netfilter/ip6table_filter.c	2012-09-14 19:06:53.687211980 -0400
+@@ -22,7 +22,7 @@
  			    (1 << NF_INET_FORWARD) | \
  			    (1 << NF_INET_LOCAL_OUT))
  
@@ -2762,7 +2725,7 @@ index c9e37c8..f045598 100644
  	.name		= "filter",
  	.valid_hooks	= FILTER_VALID_HOOKS,
  	.me		= THIS_MODULE,
-@@ -71,7 +71,7 @@ static void __net_exit ip6table_filter_net_exit(struct net *net)
+@@ -71,7 +71,7 @@
  	ip6t_unregister_table(net, net->ipv6.ip6table_filter);
  }
  
@@ -2771,11 +2734,11 @@ index c9e37c8..f045598 100644
  	.init = ip6table_filter_net_init,
  	.exit = ip6table_filter_net_exit,
  };
-diff --git a/net/ipv6/raw.c b/net/ipv6/raw.c
-index cc7313b..ef27664 100644
---- a/net/ipv6/raw.c
-+++ b/net/ipv6/raw.c
-@@ -1302,7 +1302,7 @@ static void __net_exit raw6_exit_net(struct net *net)
+Index: msm/net/ipv6/raw.c
+===================================================================
+--- msm.orig/net/ipv6/raw.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/net/ipv6/raw.c	2012-09-14 19:06:53.687211980 -0400
+@@ -1300,7 +1300,7 @@
  	proc_net_remove(net, "raw6");
  }
  
@@ -2784,7 +2747,7 @@ index cc7313b..ef27664 100644
  	.init = raw6_init_net,
  	.exit = raw6_exit_net,
  };
-@@ -1344,7 +1344,7 @@ static const struct proto_ops inet6_sockraw_ops = {
+@@ -1342,7 +1342,7 @@
  #endif
  };
  
@@ -2793,11 +2756,11 @@ index cc7313b..ef27664 100644
  	.type		= SOCK_RAW,
  	.protocol	= IPPROTO_IP,	/* wild card */
  	.prot		= &rawv6_prot,
-diff --git a/net/ipv6/reassembly.c b/net/ipv6/reassembly.c
-index 7b954e2..7b4f685 100644
---- a/net/ipv6/reassembly.c
-+++ b/net/ipv6/reassembly.c
-@@ -720,7 +720,7 @@ static void __net_exit ipv6_frags_exit_net(struct net *net)
+Index: msm/net/ipv6/reassembly.c
+===================================================================
+--- msm.orig/net/ipv6/reassembly.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/net/ipv6/reassembly.c	2012-09-14 19:06:53.687211980 -0400
+@@ -720,7 +720,7 @@
  	inet_frags_exit_net(&net->ipv6.frags, &ip6_frags);
  }
  
@@ -2806,11 +2769,11 @@ index 7b954e2..7b4f685 100644
  	.init = ipv6_frags_init_net,
  	.exit = ipv6_frags_exit_net,
  };
-diff --git a/net/ipv6/route.c b/net/ipv6/route.c
-index 0ef1f08..36e0158 100644
---- a/net/ipv6/route.c
-+++ b/net/ipv6/route.c
-@@ -2863,7 +2863,7 @@ static void __net_exit ip6_route_net_exit(struct net *net)
+Index: msm/net/ipv6/route.c
+===================================================================
+--- msm.orig/net/ipv6/route.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/net/ipv6/route.c	2012-09-14 19:06:53.687211980 -0400
+@@ -2989,7 +2989,7 @@
  	dst_entries_destroy(&net->ipv6.ip6_dst_ops);
  }
  
@@ -2819,11 +2782,11 @@ index 0ef1f08..36e0158 100644
  	.init = ip6_route_net_init,
  	.exit = ip6_route_net_exit,
  };
-diff --git a/net/ipv6/sysctl_net_ipv6.c b/net/ipv6/sysctl_net_ipv6.c
-index 6dcf5e7..83c8c5b 100644
---- a/net/ipv6/sysctl_net_ipv6.c
-+++ b/net/ipv6/sysctl_net_ipv6.c
-@@ -128,7 +128,7 @@ static void __net_exit ipv6_sysctl_net_exit(struct net *net)
+Index: msm/net/ipv6/sysctl_net_ipv6.c
+===================================================================
+--- msm.orig/net/ipv6/sysctl_net_ipv6.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/net/ipv6/sysctl_net_ipv6.c	2012-09-14 19:06:53.687211980 -0400
+@@ -129,7 +129,7 @@
  	kfree(ipv6_icmp_table);
  }
  
@@ -2832,11 +2795,11 @@ index 6dcf5e7..83c8c5b 100644
  	.init = ipv6_sysctl_net_init,
  	.exit = ipv6_sysctl_net_exit,
  };
-diff --git a/net/ipv6/tcp_ipv6.c b/net/ipv6/tcp_ipv6.c
-index 7c43e86..af7123b 100644
---- a/net/ipv6/tcp_ipv6.c
-+++ b/net/ipv6/tcp_ipv6.c
-@@ -2272,7 +2272,7 @@ static void __net_exit tcpv6_net_exit_batch(struct list_head *net_exit_list)
+Index: msm/net/ipv6/tcp_ipv6.c
+===================================================================
+--- msm.orig/net/ipv6/tcp_ipv6.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/net/ipv6/tcp_ipv6.c	2012-09-14 19:06:53.687211980 -0400
+@@ -2156,7 +2156,7 @@
  	inet_twsk_purge(&tcp_hashinfo, &tcp_death_row, AF_INET6);
  }
  
@@ -2845,11 +2808,11 @@ index 7c43e86..af7123b 100644
  	.init	    = tcpv6_net_init,
  	.exit	    = tcpv6_net_exit,
  	.exit_batch = tcpv6_net_exit_batch,
-diff --git a/net/ipv6/udplite.c b/net/ipv6/udplite.c
-index 986c4de..5e04305 100644
---- a/net/ipv6/udplite.c
-+++ b/net/ipv6/udplite.c
-@@ -115,7 +115,7 @@ static void __net_exit udplite6_proc_exit_net(struct net *net)
+Index: msm/net/ipv6/udplite.c
+===================================================================
+--- msm.orig/net/ipv6/udplite.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/net/ipv6/udplite.c	2012-09-14 19:06:53.687211980 -0400
+@@ -123,7 +123,7 @@
  	udp_proc_unregister(net, &udplite6_seq_afinfo);
  }
  
@@ -2858,11 +2821,11 @@ index 986c4de..5e04305 100644
  	.init = udplite6_proc_init_net,
  	.exit = udplite6_proc_exit_net,
  };
-diff --git a/net/ipv6/xfrm6_tunnel.c b/net/ipv6/xfrm6_tunnel.c
-index 4fe1db12..eaec572 100644
---- a/net/ipv6/xfrm6_tunnel.c
-+++ b/net/ipv6/xfrm6_tunnel.c
-@@ -345,7 +345,7 @@ static void __net_exit xfrm6_tunnel_net_exit(struct net *net)
+Index: msm/net/ipv6/xfrm6_tunnel.c
+===================================================================
+--- msm.orig/net/ipv6/xfrm6_tunnel.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/net/ipv6/xfrm6_tunnel.c	2012-09-14 19:06:53.687211980 -0400
+@@ -345,7 +345,7 @@
  {
  }
  
@@ -2871,11 +2834,11 @@ index 4fe1db12..eaec572 100644
  	.init	= xfrm6_tunnel_net_init,
  	.exit	= xfrm6_tunnel_net_exit,
  	.id	= &xfrm6_tunnel_net_id,
-diff --git a/net/netfilter/nf_conntrack_proto_dccp.c b/net/netfilter/nf_conntrack_proto_dccp.c
-index 2e664a6..3c47a77 100644
---- a/net/netfilter/nf_conntrack_proto_dccp.c
-+++ b/net/netfilter/nf_conntrack_proto_dccp.c
-@@ -852,7 +852,7 @@ static __net_exit void dccp_net_exit(struct net *net)
+Index: msm/net/netfilter/nf_conntrack_proto_dccp.c
+===================================================================
+--- msm.orig/net/netfilter/nf_conntrack_proto_dccp.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/net/netfilter/nf_conntrack_proto_dccp.c	2012-09-14 19:06:53.687211980 -0400
+@@ -928,7 +928,7 @@
  #endif
  }
  
@@ -2884,11 +2847,11 @@ index 2e664a6..3c47a77 100644
  	.init = dccp_net_init,
  	.exit = dccp_net_exit,
  	.id   = &dccp_net_id,
-diff --git a/net/netfilter/nfnetlink.c b/net/netfilter/nfnetlink.c
-index b4a4532..7797557 100644
---- a/net/netfilter/nfnetlink.c
-+++ b/net/netfilter/nfnetlink.c
-@@ -205,7 +205,7 @@ static void __net_exit nfnetlink_net_exit_batch(struct list_head *net_exit_list)
+Index: msm/net/netfilter/nfnetlink.c
+===================================================================
+--- msm.orig/net/netfilter/nfnetlink.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/net/netfilter/nfnetlink.c	2012-09-14 19:06:53.687211980 -0400
+@@ -224,7 +224,7 @@
  		netlink_kernel_release(net->nfnl_stash);
  }
  
@@ -2897,11 +2860,11 @@ index b4a4532..7797557 100644
  	.init		= nfnetlink_net_init,
  	.exit_batch	= nfnetlink_net_exit_batch,
  };
-diff --git a/net/netfilter/xt_hashlimit.c b/net/netfilter/xt_hashlimit.c
-index 9228ee0..590f645 100644
---- a/net/netfilter/xt_hashlimit.c
-+++ b/net/netfilter/xt_hashlimit.c
-@@ -797,7 +797,7 @@ static void __net_exit hashlimit_net_exit(struct net *net)
+Index: msm/net/netfilter/xt_hashlimit.c
+===================================================================
+--- msm.orig/net/netfilter/xt_hashlimit.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/net/netfilter/xt_hashlimit.c	2012-09-14 19:06:53.687211980 -0400
+@@ -798,7 +798,7 @@
  	hashlimit_proc_net_exit(net);
  }
  
@@ -2910,11 +2873,11 @@ index 9228ee0..590f645 100644
  	.init	= hashlimit_net_init,
  	.exit	= hashlimit_net_exit,
  	.id	= &hashlimit_net_id,
-diff --git a/net/netlink/genetlink.c b/net/netlink/genetlink.c
-index 1781d99..d47e06e 100644
---- a/net/netlink/genetlink.c
-+++ b/net/netlink/genetlink.c
-@@ -844,7 +844,7 @@ static int genl_ctrl_event(int event, void *data)
+Index: msm/net/netlink/genetlink.c
+===================================================================
+--- msm.orig/net/netlink/genetlink.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/net/netlink/genetlink.c	2012-09-14 19:06:53.687211980 -0400
+@@ -897,7 +897,7 @@
  	return 0;
  }
  
@@ -2923,7 +2886,7 @@ index 1781d99..d47e06e 100644
  	.cmd		= CTRL_CMD_GETFAMILY,
  	.doit		= ctrl_getfamily,
  	.dumpit		= ctrl_dumpfamily,
-@@ -877,7 +877,7 @@ static void __net_exit genl_pernet_exit(struct net *net)
+@@ -930,7 +930,7 @@
  	net->genl_sock = NULL;
  }
  
@@ -2932,11 +2895,11 @@ index 1781d99..d47e06e 100644
  	.init = genl_pernet_init,
  	.exit = genl_pernet_exit,
  };
-diff --git a/net/packet/af_packet.c b/net/packet/af_packet.c
-index c0c3cda..6564d75 100644
---- a/net/packet/af_packet.c
-+++ b/net/packet/af_packet.c
-@@ -2771,7 +2771,7 @@ static void __net_exit packet_net_exit(struct net *net)
+Index: msm/net/packet/af_packet.c
+===================================================================
+--- msm.orig/net/packet/af_packet.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/net/packet/af_packet.c	2012-09-14 19:06:53.687211980 -0400
+@@ -3929,7 +3929,7 @@
  	proc_net_remove(net, "packet");
  }
  
@@ -2945,11 +2908,11 @@ index c0c3cda..6564d75 100644
  	.init = packet_net_init,
  	.exit = packet_net_exit,
  };
-diff --git a/net/sched/sch_api.c b/net/sched/sch_api.c
-index 6b86276..460f0d6 100644
---- a/net/sched/sch_api.c
-+++ b/net/sched/sch_api.c
-@@ -1737,7 +1737,7 @@ static int psched_open(struct inode *inode, struct file *file)
+Index: msm/net/sched/sch_api.c
+===================================================================
+--- msm.orig/net/sched/sch_api.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/net/sched/sch_api.c	2012-09-14 19:06:53.687211980 -0400
+@@ -1770,7 +1770,7 @@
  	return single_open(file, psched_show, NULL);
  }
  
@@ -2958,7 +2921,7 @@ index 6b86276..460f0d6 100644
  	.owner = THIS_MODULE,
  	.open = psched_open,
  	.read  = seq_read,
-@@ -1771,7 +1771,7 @@ static void __net_exit psched_net_exit(struct net *net)
+@@ -1804,7 +1804,7 @@
  }
  #endif
  
@@ -2967,12 +2930,12 @@ index 6b86276..460f0d6 100644
  	.init = psched_net_init,
  	.exit = psched_net_exit,
  };
-diff --git a/net/sysctl_net.c b/net/sysctl_net.c
-index ca84212..0a133b0 100644
---- a/net/sysctl_net.c
-+++ b/net/sysctl_net.c
-@@ -84,7 +84,7 @@ static void __net_exit sysctl_net_exit(struct net *net)
- 	WARN_ON(!list_empty(&net->sysctls.list));
+Index: msm/net/sysctl_net.c
+===================================================================
+--- msm.orig/net/sysctl_net.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/net/sysctl_net.c	2012-09-14 19:06:53.687211980 -0400
+@@ -83,7 +83,7 @@
+ 	retire_sysctl_set(&net->sysctls);
  }
  
 -static struct pernet_operations sysctl_pernet_ops = {
@@ -2980,11 +2943,11 @@ index ca84212..0a133b0 100644
  	.init = sysctl_net_init,
  	.exit = sysctl_net_exit,
  };
-diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
-index 0722a25..5a4cf83 100644
---- a/net/unix/af_unix.c
-+++ b/net/unix/af_unix.c
-@@ -2342,7 +2342,7 @@ static void __net_exit unix_net_exit(struct net *net)
+Index: msm/net/unix/af_unix.c
+===================================================================
+--- msm.orig/net/unix/af_unix.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/net/unix/af_unix.c	2012-09-14 19:06:53.687211980 -0400
+@@ -2400,7 +2400,7 @@
  	proc_net_remove(net, "unix");
  }
  
@@ -2993,11 +2956,11 @@ index 0722a25..5a4cf83 100644
  	.init = unix_net_init,
  	.exit = unix_net_exit,
  };
-diff --git a/net/wireless/wext-core.c b/net/wireless/wext-core.c
-index fdbc23c..167922b 100644
---- a/net/wireless/wext-core.c
-+++ b/net/wireless/wext-core.c
-@@ -352,7 +352,7 @@ static void __net_exit wext_pernet_exit(struct net *net)
+Index: msm/net/wireless/wext-core.c
+===================================================================
+--- msm.orig/net/wireless/wext-core.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/net/wireless/wext-core.c	2012-09-14 19:06:53.687211980 -0400
+@@ -353,7 +353,7 @@
  	skb_queue_purge(&net->wext_nlevents);
  }
  
@@ -3006,11 +2969,11 @@ index fdbc23c..167922b 100644
  	.init = wext_pernet_init,
  	.exit = wext_pernet_exit,
  };
-diff --git a/sound/soc/msm/lpass-dma.c b/sound/soc/msm/lpass-dma.c
-index 66c1836..9c2a495 100644
---- a/sound/soc/msm/lpass-dma.c
-+++ b/sound/soc/msm/lpass-dma.c
-@@ -424,7 +424,7 @@ static int dai_remove(struct platform_device *pdev)
+Index: msm/sound/soc/msm/lpass-dma.c
+===================================================================
+--- msm.orig/sound/soc/msm/lpass-dma.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/sound/soc/msm/lpass-dma.c	2012-09-14 19:06:53.687211980 -0400
+@@ -424,7 +424,7 @@
  	return 0;
  }
  
@@ -3019,24 +2982,11 @@ index 66c1836..9c2a495 100644
  	.probe = dai_probe,
  	.remove = dai_remove,
  	.driver = {
-diff --git a/sound/soc/msm/msm-dai-q6.c b/sound/soc/msm/msm-dai-q6.c
-index 5e02797..96ab173 100644
---- a/sound/soc/msm/msm-dai-q6.c
-+++ b/sound/soc/msm/msm-dai-q6.c
-@@ -631,7 +631,7 @@ static struct snd_soc_dai_ops msm_dai_q6_auxpcm_ops = {
- 	.shutdown	= msm_dai_q6_auxpcm_shutdown,
- };
- 
--static struct snd_soc_dai_driver msm_dai_q6_i2s_rx_dai = {
-+static struct snd_soc_dai_driver msm_dai_q6_i2s_rx_dai __refdata = {
- 	.playback = {
- 		.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_8000 |
- 		SNDRV_PCM_RATE_16000,
-diff --git a/sound/soc/msm/msm-dai.c b/sound/soc/msm/msm-dai.c
-index 61e4675..835e356 100644
---- a/sound/soc/msm/msm-dai.c
-+++ b/sound/soc/msm/msm-dai.c
-@@ -102,7 +102,7 @@ static int __devexit asoc_pcm_cpu_remove(struct platform_device *pdev)
+Index: msm/sound/soc/msm/msm-dai.c
+===================================================================
+--- msm.orig/sound/soc/msm/msm-dai.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/sound/soc/msm/msm-dai.c	2012-09-14 19:06:53.691211929 -0400
+@@ -102,7 +102,7 @@
  	return 0;
  }
  
@@ -3045,7 +2995,7 @@ index 61e4675..835e356 100644
  	.probe = asoc_msm_codec_probe,
  	.remove = __devexit_p(asoc_msm_codec_remove),
  	.driver = {
-@@ -111,7 +111,7 @@ static struct platform_driver asoc_codec_dai_driver = {
+@@ -111,7 +111,7 @@
  	},
  };
  
@@ -3054,24 +3004,11 @@ index 61e4675..835e356 100644
  	.probe = asoc_pcm_cpu_probe,
  	.remove = __devexit_p(asoc_pcm_cpu_remove),
  	.driver = {
-diff --git a/sound/soc/msm/msm-mvs.c b/sound/soc/msm/msm-mvs.c
-index 2e7114c..c5c6052 100644
---- a/sound/soc/msm/msm-mvs.c
-+++ b/sound/soc/msm/msm-mvs.c
-@@ -898,7 +898,7 @@ static int msm_pcm_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
--static struct platform_driver msm_pcm_driver = {
-+static struct platform_driver msm_pcm_driver __refdata = {
- 	.driver = {
- 		.name = "msm-mvs-audio",
- 		.owner = THIS_MODULE,
-diff --git a/sound/soc/msm/msm-pcm-lpa.c b/sound/soc/msm/msm-pcm-lpa.c
-index 29f89ce..cc26f9a 100644
---- a/sound/soc/msm/msm-pcm-lpa.c
-+++ b/sound/soc/msm/msm-pcm-lpa.c
-@@ -514,7 +514,7 @@ static int msm_pcm_remove(struct platform_device *pdev)
+Index: msm/sound/soc/msm/msm-pcm-lpa.c
+===================================================================
+--- msm.orig/sound/soc/msm/msm-pcm-lpa.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/sound/soc/msm/msm-pcm-lpa.c	2012-09-14 19:06:53.691211929 -0400
+@@ -587,7 +587,7 @@
  	return 0;
  }
  
@@ -3080,11 +3017,11 @@ index 29f89ce..cc26f9a 100644
  	.driver = {
  		.name = "msm-pcm-lpa",
  		.owner = THIS_MODULE,
-diff --git a/sound/soc/msm/msm-pcm-q6.c b/sound/soc/msm/msm-pcm-q6.c
-index 738e024..50029df 100644
---- a/sound/soc/msm/msm-pcm-q6.c
-+++ b/sound/soc/msm/msm-pcm-q6.c
-@@ -688,7 +688,7 @@ static int msm_pcm_remove(struct platform_device *pdev)
+Index: msm/sound/soc/msm/msm-pcm-q6.c
+===================================================================
+--- msm.orig/sound/soc/msm/msm-pcm-q6.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/sound/soc/msm/msm-pcm-q6.c	2012-09-14 19:06:53.691211929 -0400
+@@ -722,7 +722,7 @@
  	return 0;
  }
  
@@ -3093,11 +3030,11 @@ index 738e024..50029df 100644
  	.driver = {
  		.name = "msm-pcm-dsp",
  		.owner = THIS_MODULE,
-diff --git a/sound/soc/msm/msm-pcm-voice.c b/sound/soc/msm/msm-pcm-voice.c
-index 5b50509..4e6376b 100644
---- a/sound/soc/msm/msm-pcm-voice.c
-+++ b/sound/soc/msm/msm-pcm-voice.c
-@@ -342,7 +342,7 @@ static int msm_pcm_remove(struct platform_device *pdev)
+Index: msm/sound/soc/msm/msm-pcm-voice.c
+===================================================================
+--- msm.orig/sound/soc/msm/msm-pcm-voice.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/sound/soc/msm/msm-pcm-voice.c	2012-09-14 19:06:53.695211879 -0400
+@@ -616,7 +616,7 @@
  	return 0;
  }
  
@@ -3106,37 +3043,11 @@ index 5b50509..4e6376b 100644
  	.driver = {
  		.name = "msm-pcm-voice",
  		.owner = THIS_MODULE,
-diff --git a/sound/soc/msm/msm-pcm-voip.c b/sound/soc/msm/msm-pcm-voip.c
-index 56b4cf5..48ac552 100644
---- a/sound/soc/msm/msm-pcm-voip.c
-+++ b/sound/soc/msm/msm-pcm-voip.c
-@@ -1008,7 +1008,7 @@ static int msm_asoc_pcm_new(struct snd_soc_pcm_runtime *rtd)
- 	return ret;
- }
- 
--static struct snd_soc_platform_driver msm_soc_platform = {
-+static struct snd_soc_platform_driver msm_soc_platform __devinitdata = {
- 	.ops		= &msm_pcm_ops,
- 	.pcm_new	= msm_asoc_pcm_new,
- 	.probe		= msm_pcm_voip_probe,
-diff --git a/sound/soc/msm/msm-voip.c b/sound/soc/msm/msm-voip.c
-index 082c840..85c90f3 100644
---- a/sound/soc/msm/msm-voip.c
-+++ b/sound/soc/msm/msm-voip.c
-@@ -576,7 +576,7 @@ static int msm_pcm_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
--static struct platform_driver msm_pcm_driver = {
-+static struct platform_driver msm_pcm_driver __refdata = {
- 	.driver = {
- 		.name = "msm-mvs-audio",
- 		.owner = THIS_MODULE,
-diff --git a/sound/soc/msm/msm7k-pcm.c b/sound/soc/msm/msm7k-pcm.c
-index 1f36e3b..7f59e01 100644
---- a/sound/soc/msm/msm7k-pcm.c
-+++ b/sound/soc/msm/msm7k-pcm.c
-@@ -575,7 +575,7 @@ static int msm_pcm_remove(struct platform_device *pdev)
+Index: msm/sound/soc/msm/msm7k-pcm.c
+===================================================================
+--- msm.orig/sound/soc/msm/msm7k-pcm.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/sound/soc/msm/msm7k-pcm.c	2012-09-14 19:06:53.695211879 -0400
+@@ -674,7 +674,7 @@
  	return 0;
  }
  
@@ -3145,24 +3056,11 @@ index 1f36e3b..7f59e01 100644
  	.driver = {
  		.name = "msm-dsp-audio",
  		.owner = THIS_MODULE,
-diff --git a/sound/soc/msm/msm7kv2-pcm.c b/sound/soc/msm/msm7kv2-pcm.c
-index c64a3ff..72127fd 100644
---- a/sound/soc/msm/msm7kv2-pcm.c
-+++ b/sound/soc/msm/msm7kv2-pcm.c
-@@ -749,7 +749,7 @@ static int msm_pcm_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
--static struct platform_driver msm_pcm_driver = {
-+static struct platform_driver msm_pcm_driver __refdata = {
- 	.driver = {
- 		.name = "msm-dsp-audio",
- 		.owner = THIS_MODULE,
-diff --git a/sound/soc/msm/msm8x60-dai.c b/sound/soc/msm/msm8x60-dai.c
-index 8130f07..ce232e0 100644
---- a/sound/soc/msm/msm8x60-dai.c
-+++ b/sound/soc/msm/msm8x60-dai.c
-@@ -100,7 +100,7 @@ static int __devexit asoc_msm_cpu_remove(struct platform_device *pdev)
+Index: msm/sound/soc/msm/msm8x60-dai.c
+===================================================================
+--- msm.orig/sound/soc/msm/msm8x60-dai.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/sound/soc/msm/msm8x60-dai.c	2012-09-14 19:06:53.695211879 -0400
+@@ -100,7 +100,7 @@
  	return 0;
  }
  
@@ -3171,7 +3069,7 @@ index 8130f07..ce232e0 100644
  	.probe = asoc_msm_codec_probe,
  	.remove = __devexit_p(asoc_msm_codec_remove),
  	.driver = {
-@@ -109,7 +109,7 @@ static struct platform_driver asoc_msm_codec_driver = {
+@@ -109,7 +109,7 @@
  	},
  };
  
@@ -3180,24 +3078,11 @@ index 8130f07..ce232e0 100644
  	.probe = asoc_msm_cpu_probe,
  	.remove = __devexit_p(asoc_msm_cpu_remove),
  	.driver = {
-diff --git a/sound/soc/msm/msm8x60-pcm.c b/sound/soc/msm/msm8x60-pcm.c
-index 6f5ad32..dad5f76 100644
---- a/sound/soc/msm/msm8x60-pcm.c
-+++ b/sound/soc/msm/msm8x60-pcm.c
-@@ -781,7 +781,7 @@ static int msm_pcm_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
--static struct platform_driver msm_pcm_driver = {
-+static struct platform_driver msm_pcm_driver __refdata = {
- 	.probe = msm_pcm_probe,
- 	.remove = __devexit_p(msm_pcm_remove),
- 	.driver = {
-diff --git a/sound/soc/msm/mvs-dai.c b/sound/soc/msm/mvs-dai.c
-index 521c5e5..74507ec 100644
---- a/sound/soc/msm/mvs-dai.c
-+++ b/sound/soc/msm/mvs-dai.c
-@@ -93,7 +93,7 @@ static int __devexit asoc_mvs_cpu_remove(struct platform_device *pdev)
+Index: msm/sound/soc/msm/mvs-dai.c
+===================================================================
+--- msm.orig/sound/soc/msm/mvs-dai.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/sound/soc/msm/mvs-dai.c	2012-09-14 19:06:53.695211879 -0400
+@@ -93,7 +93,7 @@
  	return 0;
  }
  
@@ -3206,7 +3091,7 @@ index 521c5e5..74507ec 100644
  	.probe = asoc_mvs_codec_probe,
  	.remove = __devexit_p(asoc_mvs_codec_remove),
  	.driver = {
-@@ -102,7 +102,7 @@ static struct platform_driver asoc_mvs_codec_driver = {
+@@ -102,7 +102,7 @@
  	},
  };
  
@@ -3215,11 +3100,11 @@ index 521c5e5..74507ec 100644
  	.probe = asoc_mvs_cpu_probe,
  	.remove = __devexit_p(asoc_mvs_cpu_remove),
  	.driver = {
-diff --git a/sound/soc/soc-utils.c b/sound/soc/soc-utils.c
-index cd987de..c681b56 100644
---- a/sound/soc/soc-utils.c
-+++ b/sound/soc/soc-utils.c
-@@ -100,7 +100,7 @@ static __devexit int snd_soc_dummy_remove(struct platform_device *pdev)
+Index: msm/sound/soc/soc-utils.c
+===================================================================
+--- msm.orig/sound/soc/soc-utils.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/sound/soc/soc-utils.c	2012-09-14 19:06:53.695211879 -0400
+@@ -119,7 +119,7 @@
  	return 0;
  }
  
@@ -3228,11 +3113,11 @@ index cd987de..c681b56 100644
  	.driver = {
  		.name = "snd-soc-dummy",
  		.owner = THIS_MODULE,
-diff --git a/net/netfilter/nf_conntrack_netlink.c b/net/netfilter/nf_conntrack_netlink.c
-index ca7e835..65be412 100644
---- a/net/netfilter/nf_conntrack_netlink.c
-+++ b/net/netfilter/nf_conntrack_netlink.c
-@@ -2375,7 +2375,7 @@ static void __net_exit ctnetlink_net_exit_batch(struct list_head *net_exit_list)
+Index: msm/net/netfilter/nf_conntrack_netlink.c
+===================================================================
+--- msm.orig/net/netfilter/nf_conntrack_netlink.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/net/netfilter/nf_conntrack_netlink.c	2012-09-14 19:06:53.695211879 -0400
+@@ -2375,7 +2375,7 @@
  		ctnetlink_net_exit(net);
  }
  
@@ -3241,11 +3126,11 @@ index ca7e835..65be412 100644
  	.init		= ctnetlink_net_init,
  	.exit_batch	= ctnetlink_net_exit_batch,
  };
-diff --git a/net/sunrpc/auth_gss/auth_gss.c b/net/sunrpc/auth_gss/auth_gss.c
-index d3ad81f..a184b3e 100644
---- a/net/sunrpc/auth_gss/auth_gss.c
-+++ b/net/sunrpc/auth_gss/auth_gss.c
-@@ -1672,7 +1672,7 @@ static __net_exit void rpcsec_gss_exit_net(struct net *net)
+Index: msm/net/sunrpc/auth_gss/auth_gss.c
+===================================================================
+--- msm.orig/net/sunrpc/auth_gss/auth_gss.c	2012-09-14 19:06:23.000000000 -0400
++++ msm/net/sunrpc/auth_gss/auth_gss.c	2012-09-14 19:06:53.695211879 -0400
+@@ -1672,7 +1672,7 @@
  	gss_svc_shutdown_net(net);
  }
  
@@ -3254,11 +3139,11 @@ index d3ad81f..a184b3e 100644
  	.init = rpcsec_gss_init_net,
  	.exit = rpcsec_gss_exit_net,
  };
-diff --git a/sound/soc/msm/msm-pcm-hostless.c b/sound/soc/msm/msm-pcm-hostless.c
-index c9b23d0..fb9b1e6 100644
---- a/sound/soc/msm/msm-pcm-hostless.c
-+++ b/sound/soc/msm/msm-pcm-hostless.c
-@@ -45,7 +45,7 @@ static const struct of_device_id msm_pcm_hostless_dt_match[] = {
+Index: msm/sound/soc/msm/msm-pcm-hostless.c
+===================================================================
+--- msm.orig/sound/soc/msm/msm-pcm-hostless.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/sound/soc/msm/msm-pcm-hostless.c	2012-09-14 19:06:53.695211879 -0400
+@@ -45,7 +45,7 @@
  	{}
  };
  
@@ -3267,11 +3152,11 @@ index c9b23d0..fb9b1e6 100644
  	.driver = {
  		.name = "msm-pcm-hostless",
  		.owner = THIS_MODULE,
-diff --git a/arch/arm/mach-msm/cpufreq.c b/arch/arm/mach-msm/cpufreq.c
-index 2477221..8bcd2f8 100644
---- a/arch/arm/mach-msm/cpufreq.c
-+++ b/arch/arm/mach-msm/cpufreq.c
-@@ -285,7 +285,7 @@ static struct freq_attr *msm_freq_attr[] = {
+Index: msm/arch/arm/mach-msm/cpufreq.c
+===================================================================
+--- msm.orig/arch/arm/mach-msm/cpufreq.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/arch/arm/mach-msm/cpufreq.c	2012-09-14 19:06:53.695211879 -0400
+@@ -387,7 +387,7 @@
  	NULL,
  };
  
@@ -3280,11 +3165,11 @@ index 2477221..8bcd2f8 100644
  	/* lps calculations are handled here. */
  	.flags		= CPUFREQ_STICKY | CPUFREQ_CONST_LOOPS,
  	.init		= msm_cpufreq_init,
-diff --git a/arch/arm/mach-msm/footswitch-8x60.c b/arch/arm/mach-msm/footswitch-8x60.c
-index 98447fa..ff2710d 100644
---- a/arch/arm/mach-msm/footswitch-8x60.c
-+++ b/arch/arm/mach-msm/footswitch-8x60.c
-@@ -561,7 +561,7 @@ static int __devexit footswitch_remove(struct platform_device *pdev)
+Index: msm/arch/arm/mach-msm/footswitch-8x60.c
+===================================================================
+--- msm.orig/arch/arm/mach-msm/footswitch-8x60.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/arch/arm/mach-msm/footswitch-8x60.c	2012-09-14 19:06:53.695211879 -0400
+@@ -550,7 +550,7 @@
  	return 0;
  }
  
@@ -3293,11 +3178,11 @@ index 98447fa..ff2710d 100644
  	.probe		= footswitch_probe,
  	.remove		= __devexit_p(footswitch_remove),
  	.driver		= {
-diff --git a/arch/arm/mach-msm/footswitch-pcom.c b/arch/arm/mach-msm/footswitch-pcom.c
-index 8eec807..ed7f0c6 100644
---- a/arch/arm/mach-msm/footswitch-pcom.c
-+++ b/arch/arm/mach-msm/footswitch-pcom.c
-@@ -291,7 +291,7 @@ static int __devexit footswitch_remove(struct platform_device *pdev)
+Index: msm/arch/arm/mach-msm/footswitch-pcom.c
+===================================================================
+--- msm.orig/arch/arm/mach-msm/footswitch-pcom.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/arch/arm/mach-msm/footswitch-pcom.c	2012-09-14 19:06:53.695211879 -0400
+@@ -299,7 +299,7 @@
  	return 0;
  }
  
@@ -3306,11 +3191,11 @@ index 8eec807..ed7f0c6 100644
  	.probe		= footswitch_probe,
  	.remove		= __devexit_p(footswitch_remove),
  	.driver		= {
-diff --git a/arch/arm/mach-msm/msm_dsps.c b/arch/arm/mach-msm/msm_dsps.c
-index efb2bf6..057665b 100644
---- a/arch/arm/mach-msm/msm_dsps.c
-+++ b/arch/arm/mach-msm/msm_dsps.c
-@@ -868,7 +868,7 @@ static int __devexit dsps_remove(struct platform_device *pdev)
+Index: msm/arch/arm/mach-msm/msm_dsps.c
+===================================================================
+--- msm.orig/arch/arm/mach-msm/msm_dsps.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/arch/arm/mach-msm/msm_dsps.c	2012-09-14 19:06:53.695211879 -0400
+@@ -972,7 +972,7 @@
  	return 0;
  }
  
@@ -3319,11 +3204,11 @@ index efb2bf6..057665b 100644
  	.probe          = dsps_probe,
  	.remove         = __exit_p(dsps_remove),
  	.driver         = {
-diff --git a/arch/arm/mach-msm/pil-modem.c b/arch/arm/mach-msm/pil-modem.c
-index 5aa3834..a8344c3 100644
---- a/arch/arm/mach-msm/pil-modem.c
-+++ b/arch/arm/mach-msm/pil-modem.c
-@@ -319,7 +319,7 @@ static int __devexit pil_modem_driver_exit(struct platform_device *pdev)
+Index: msm/arch/arm/mach-msm/pil-modem.c
+===================================================================
+--- msm.orig/arch/arm/mach-msm/pil-modem.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/arch/arm/mach-msm/pil-modem.c	2012-09-14 19:06:53.695211879 -0400
+@@ -286,7 +286,7 @@
  	return 0;
  }
  
@@ -3332,11 +3217,11 @@ index 5aa3834..a8344c3 100644
  	.probe = pil_modem_driver_probe,
  	.remove = __devexit_p(pil_modem_driver_exit),
  	.driver = {
-diff --git a/arch/arm/mach-msm/pil-q6v3.c b/arch/arm/mach-msm/pil-q6v3.c
-index 7354d93..ffb9351 100644
---- a/arch/arm/mach-msm/pil-q6v3.c
-+++ b/arch/arm/mach-msm/pil-q6v3.c
-@@ -274,7 +274,7 @@ static int __devexit pil_q6v3_driver_exit(struct platform_device *pdev)
+Index: msm/arch/arm/mach-msm/pil-q6v3.c
+===================================================================
+--- msm.orig/arch/arm/mach-msm/pil-q6v3.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/arch/arm/mach-msm/pil-q6v3.c	2012-09-14 19:06:53.699211829 -0400
+@@ -252,7 +252,7 @@
  	return 0;
  }
  
@@ -3345,11 +3230,11 @@ index 7354d93..ffb9351 100644
  	.probe = pil_q6v3_driver_probe,
  	.remove = __devexit_p(pil_q6v3_driver_exit),
  	.driver = {
-diff --git a/arch/arm/mach-msm/pil-tzapps.c b/arch/arm/mach-msm/pil-tzapps.c
-index 90ac1d9..63f5d5a 100644
---- a/arch/arm/mach-msm/pil-tzapps.c
-+++ b/arch/arm/mach-msm/pil-tzapps.c
-@@ -71,7 +71,7 @@ static int __devexit pil_tzapps_driver_exit(struct platform_device *pdev)
+Index: msm/arch/arm/mach-msm/pil-tzapps.c
+===================================================================
+--- msm.orig/arch/arm/mach-msm/pil-tzapps.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/arch/arm/mach-msm/pil-tzapps.c	2012-09-14 19:06:53.699211829 -0400
+@@ -71,7 +71,7 @@
  	return 0;
  }
  
@@ -3358,11 +3243,11 @@ index 90ac1d9..63f5d5a 100644
  	.probe = pil_tzapps_driver_probe,
  	.remove = __devexit_p(pil_tzapps_driver_exit),
  	.driver = {
-diff --git a/arch/arm/mach-msm/rpm-regulator.c b/arch/arm/mach-msm/rpm-regulator.c
-index 5c2bb8e..065ebfc 100644
---- a/arch/arm/mach-msm/rpm-regulator.c
-+++ b/arch/arm/mach-msm/rpm-regulator.c
-@@ -1393,7 +1393,7 @@ static int __devexit rpm_vreg_remove(struct platform_device *pdev)
+Index: msm/arch/arm/mach-msm/rpm-regulator.c
+===================================================================
+--- msm.orig/arch/arm/mach-msm/rpm-regulator.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/arch/arm/mach-msm/rpm-regulator.c	2012-09-14 19:06:53.699211829 -0400
+@@ -1947,7 +1947,7 @@
  	return 0;
  }
  
@@ -3371,11 +3256,11 @@ index 5c2bb8e..065ebfc 100644
  	.probe = rpm_vreg_probe,
  	.remove = __devexit_p(rpm_vreg_remove),
  	.driver = {
-diff --git a/arch/arm/mach-msm/rpm.c b/arch/arm/mach-msm/rpm.c
-index ef2956a..3fc36fb 100644
---- a/arch/arm/mach-msm/rpm.c
-+++ b/arch/arm/mach-msm/rpm.c
-@@ -819,7 +819,7 @@ static int __devexit msm_rpm_remove(struct platform_device *pdev)
+Index: msm/arch/arm/mach-msm/rpm.c
+===================================================================
+--- msm.orig/arch/arm/mach-msm/rpm.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/arch/arm/mach-msm/rpm.c	2012-09-14 19:06:53.699211829 -0400
+@@ -880,7 +880,7 @@
  	return 0;
  }
  
@@ -3384,11 +3269,11 @@ index ef2956a..3fc36fb 100644
  	.probe = msm_rpm_probe,
  	.remove = __devexit_p(msm_rpm_remove),
  	.driver = {
-diff --git a/arch/arm/mach-msm/rpm_log.c b/arch/arm/mach-msm/rpm_log.c
-index 3ed55da..df43a1a 100644
---- a/arch/arm/mach-msm/rpm_log.c
-+++ b/arch/arm/mach-msm/rpm_log.c
-@@ -335,7 +335,7 @@ static int __devexit msm_rpm_log_remove(struct platform_device *pdev)
+Index: msm/arch/arm/mach-msm/rpm_log.c
+===================================================================
+--- msm.orig/arch/arm/mach-msm/rpm_log.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/arch/arm/mach-msm/rpm_log.c	2012-09-14 19:06:53.699211829 -0400
+@@ -333,7 +333,7 @@
  	return 0;
  }
  
@@ -3397,11 +3282,11 @@ index 3ed55da..df43a1a 100644
  	.probe		= msm_rpm_log_probe,
  	.remove		= __devexit_p(msm_rpm_log_remove),
  	.driver		= {
-diff --git a/arch/arm/mach-msm/rpm_stats.c b/arch/arm/mach-msm/rpm_stats.c
-index a831bd5..f5d8888 100644
---- a/arch/arm/mach-msm/rpm_stats.c
-+++ b/arch/arm/mach-msm/rpm_stats.c
-@@ -222,7 +222,7 @@ static int __devexit msm_rpmstats_remove(struct platform_device *pdev)
+Index: msm/arch/arm/mach-msm/rpm_stats.c
+===================================================================
+--- msm.orig/arch/arm/mach-msm/rpm_stats.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/arch/arm/mach-msm/rpm_stats.c	2012-09-14 19:06:53.699211829 -0400
+@@ -222,7 +222,7 @@
  	platform_set_drvdata(pdev, NULL);
  	return 0;
  }
@@ -3410,11 +3295,11 @@ index a831bd5..f5d8888 100644
  	.probe	= msm_rpmstats_probe,
  	.remove = __devexit_p(msm_rpmstats_remove),
  	.driver = {
-diff --git a/arch/arm/mach-msm/saw-regulator.c b/arch/arm/mach-msm/saw-regulator.c
-index b11b1fa..edb7ca4 100644
---- a/arch/arm/mach-msm/saw-regulator.c
-+++ b/arch/arm/mach-msm/saw-regulator.c
-@@ -208,7 +208,7 @@ static int __devexit saw_remove(struct platform_device *pdev)
+Index: msm/arch/arm/mach-msm/saw-regulator.c
+===================================================================
+--- msm.orig/arch/arm/mach-msm/saw-regulator.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/arch/arm/mach-msm/saw-regulator.c	2012-09-14 19:06:53.699211829 -0400
+@@ -209,7 +209,7 @@
  	return 0;
  }
  
@@ -3423,11 +3308,11 @@ index b11b1fa..edb7ca4 100644
  	.probe = saw_probe,
  	.remove = __devexit_p(saw_remove),
  	.driver = {
-diff --git a/arch/arm/mach-msm/smd.c b/arch/arm/mach-msm/smd.c
-index e794801..d6c60bd 100644
---- a/arch/arm/mach-msm/smd.c
-+++ b/arch/arm/mach-msm/smd.c
-@@ -2580,7 +2580,7 @@ static __init int modem_restart_late_init(void)
+Index: msm/arch/arm/mach-msm/smd.c
+===================================================================
+--- msm.orig/arch/arm/mach-msm/smd.c	2012-09-14 19:06:22.000000000 -0400
++++ msm/arch/arm/mach-msm/smd.c	2012-09-14 19:06:53.699211829 -0400
+@@ -3553,7 +3553,7 @@
  }
  late_initcall(modem_restart_late_init);
  
