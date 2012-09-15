@@ -7,11 +7,11 @@ Subject: [PATCH 35/48] Changes to scripts/Makefile.build to handle warnings whil
  scripts/Makefile.build |    7 +++++--
  1 files changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/scripts/Makefile.build b/scripts/Makefile.build
-index d2b366c..91d999c 100644
---- a/scripts/Makefile.build
-+++ b/scripts/Makefile.build
-@@ -64,11 +64,14 @@ warning-  := $(empty)
+Index: linux/scripts/Makefile.build
+===================================================================
+--- linux.orig/scripts/Makefile.build	2012-09-14 23:20:38.000000000 -0400
++++ linux/scripts/Makefile.build	2012-09-14 23:52:12.574515595 -0400
+@@ -64,12 +64,21 @@
  
  warning-1 := -Wextra -Wunused -Wno-unused-parameter
  warning-1 += -Wmissing-declarations
@@ -23,11 +23,15 @@ index d2b366c..91d999c 100644
  warning-1 += $(call cc-option, -Wmissing-include-dirs)
 -warning-1 += $(call cc-option, -Wunused-but-set-variable)
 +#warning-1 += $(call cc-option, -Wunused-but-set-variable)
-+warning-1 += -Wno-unused-value -Wno-format -Wno-unknown-warning-option -Wno-self-assign
-+warning-1 += -fcatch-undefined-behavior -Wno-sign-compare -Wno-format-zero-length -Wno-uninitialized
+ warning-1 += $(call cc-option, -Wunused-value)
++warning-1 += -Wno-unused-value
++warning-1 += -Wno-format
++warning-1 += -Wno-unknown-warning-option
++warning-1 += -Wno-self-assign
++warning-1 += -fcatch-undefined-behavior
++warning-1 += -Wno-sign-compare
++warning-1 += -Wno-format-zero-length
++warning-1 += -Wno-uninitialized
  
  warning-2 := -Waggregate-return
  warning-2 += -Wcast-align
--- 
-1.7.3.4
-

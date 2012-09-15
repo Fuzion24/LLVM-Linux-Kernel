@@ -42,7 +42,11 @@ ifeq "${KERNEL_BRANCH}" ""
 KERNEL_BRANCH	= master
 endif
 ifeq "${KERNEL_REPO_PATCHES}" ""
+ifneq "${KERNEL_TAG}" ""
+KERNEL_REPO_PATCHES = ${KERNEL_TAG}
+else
 KERNEL_REPO_PATCHES = ${KERNEL_BRANCH}
+endif
 endif
 ifeq "${KERNELDIR}" ""
 KERNELDIR	= ${SRCDIR}/linux

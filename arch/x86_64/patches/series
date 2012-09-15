@@ -4,10 +4,7 @@
 0004-Add-.gnu.linkonc.d.-to-include-asm-generic-vmlinux.l.patch
 0006-Add-noinline_for_stack-to-sound-pci-ac97-ac97_codec..patch
 0007-Add-noinline_for_stack-to-not-core-ethtool.c-.-Patch.patch
-0008-Fix-VLAIS-usage-in-net-netfilter-xt_repldata.h-.-Pat.patch
 0009-Add-noinline_for_stack-to-net-sctp-socket.c-.-Patch-.patch
-0010-Fix-VLAIS-usage-in-crypto-hmac.c-.-Patch-from-series.patch
-0011-Fix-VLAIS-usage-in-crypto-testmgr.c-.-Patch-from-ser.patch
 0012-Add-noinline_for_stack-to-drivers-block-loop.c-.-Pat.patch
 0013-Fix-VLAIS-usage-in-drivers-md-dm-crypt.c-.-Patch-fro.patch
 0014-Fix-VLAIS-usage-in-fs-cifs-cifsglob.h-.-Patch-from-s.patch
@@ -33,7 +30,6 @@
 0036-CFI_STARTPROC32-takes-a-parameter-which-has-no-defau.patch
 0037-Bug-in-linux-because-rax-rdx-are-listed-in-the-outpu.patch
 0038-Linux-Bug-this-macro-invoked-undefined-behaviour.patch
-0039-clang-doesn-t-parse-accept-__alignof__-on-types-for-.patch
 0040-Invalid-syntax-that-gcc-still-accepts.patch
 0041-Invalid-syntax-that-gcc-still-accepts.patch
 0042-Unused-variable.-Patch-from-series-at-http-lists.cs..patch
