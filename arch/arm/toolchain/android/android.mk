@@ -51,8 +51,11 @@ ${ANDROID_DIR}:
 
 android-gcc arm-cc: ${ANDROID_DIR}-gcc
 ${ANDROID_DIR}-gcc: ${ANDROID_DIR}
-	@(uname -i | grep -v i386 || echo "Android compiler only supported on x86_64" && \
-		echo "set CROSS_ARM_TOOLCHAIN=codesourcery for i386" && false)
+	@if [ ! `uname -i | grep -v i386` ]; then \
+		echo "Android compiler only supported on x86_64"; \
+		echo "set CROSS_ARM_TOOLCHAIN=codesourcery for i386"; \
+		false; \
+	fi
 	@$(call banner,Installing Android compiler...)
 	(rm -rf ${ANDROID_CC_DIR})
 	(cd ${ANDROID_DIR} && git clone ${ANDROID_SDK_GIT} -b ${ANDROID_SDK_BRANCH})
