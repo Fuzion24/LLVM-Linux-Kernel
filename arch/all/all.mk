@@ -326,13 +326,13 @@ patch-dry-run2:
 	(cd ${KERNELDIR} && patch --dry-run -p1 -i ${TMPDIR}/filtered.patch > ${LOGDIR}/filteredpatch.log)
 
 kernel-reset: state/kernel-fetch
-	${MAKE} -C ${KERNELDIR} clean
+	@(cd ${KERNELDIR} && ${MAKE} clean)
 	@$(call unpatch,${KERNELDIR})
 	@(cd ${KERNELDIR} && git reset --hard HEAD && git clean -d -f) || true
 	@rm -f $(addprefix ${STATEDIR}/,kernel-patch kernel-quilt kernel-configure kernel-build )
 
 kernel-gcc-reset: state/kernel-gcc-fetch
-	${MAKE} -C ${KERNELGCC} clean
+	@(cd ${KERNELGCC} && ${MAKE} clean)
 	@$(call unpatch,${KERNELGCC})
 	@(cd ${KERNELGCC} && [ ! -d patches ] && git reset --hard HEAD && git clean -d -f) || true
 	@rm -f $(addprefix ${STATEDIR}/,kernel-gcc-configure kernel-gcc-patch kernel-gcc-build)
