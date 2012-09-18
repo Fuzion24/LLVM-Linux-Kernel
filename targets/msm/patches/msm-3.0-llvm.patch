@@ -12,15 +12,3 @@ index 20fb776..a1639fa 100644
  
  	/* See the kfree_rcu() header comment. */
  	BUILD_BUG_ON(!__is_kfree_rcu_offset(offset));
-diff --git a/drivers/media/video/msm/Makefile b/drivers/media/video/msm/Makefile
-index 740e424..a1735fb 100644
---- a/drivers/media/video/msm/Makefile
-+++ b/drivers/media/video/msm/Makefile
-@@ -2,6 +2,7 @@ GCC_VERSION      := $(shell $(CONFIG_SHELL) $(PWD)/scripts/gcc-version.sh $(CROS
- 
- ccflags-y += -Idrivers/media/video/msm/io
- ccflags-y += -Idrivers/media/video/msm/vfe
-+ccflags-y += -Idrivers/media/video/msm
- obj-$(CONFIG_MSM_CAMERA) += io/
- ifeq ($(CONFIG_MSM_CAMERA_V4L2),y)
-   EXTRA_CFLAGS += -Idrivers/media/video/msm/cci

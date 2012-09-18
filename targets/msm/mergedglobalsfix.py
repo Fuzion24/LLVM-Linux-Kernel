@@ -84,6 +84,8 @@ if __name__ == "__main__":
    print("%s" % tokenmap)
    fmap = processhunks(hunks)
    for key in fmap.keys():
+      print fmap[key]
+      ref = "unknown"
       if len(fmap[key]) == 1:
          if fmap[key][0] == "__devinit":
             ref = "__initdata"
@@ -92,8 +94,6 @@ if __name__ == "__main__":
       elif len(fmap[key]) == 2:
          if "__devinit" in fmap[key] and "__devexit" in fmap[key]:
             ref = "__refdata"
-      else:
-         ref = "unknown"
       if ref != "unknown":
          print(key[0])
          print("   %s" % key[1])

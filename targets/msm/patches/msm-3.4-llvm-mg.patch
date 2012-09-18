@@ -1,8 +1,8 @@
 Index: msm/arch/arm/kernel/perf_event.c
 ===================================================================
---- msm.orig/arch/arm/kernel/perf_event.c	2012-09-17 13:18:18.037103822 -0700
-+++ msm/arch/arm/kernel/perf_event.c	2012-09-17 13:19:55.213105465 -0700
-@@ -696,7 +696,7 @@
+--- msm.orig/arch/arm/kernel/perf_event.c	2012-09-18 13:08:17.000000000 -0700
++++ msm/arch/arm/kernel/perf_event.c	2012-09-18 13:48:21.166594267 -0700
+@@ -677,7 +677,7 @@
  	return 0;
  }
  
@@ -13,9 +13,9 @@ Index: msm/arch/arm/kernel/perf_event.c
  		.of_match_table = armpmu_of_device_ids,
 Index: msm/arch/arm/mach-msm/mdm2.c
 ===================================================================
---- msm.orig/arch/arm/mach-msm/mdm2.c	2012-09-17 13:18:18.109103824 -0700
-+++ msm/arch/arm/mach-msm/mdm2.c	2012-09-17 13:19:55.213105465 -0700
-@@ -298,7 +298,7 @@
+--- msm.orig/arch/arm/mach-msm/mdm2.c	2012-09-18 13:08:17.000000000 -0700
++++ msm/arch/arm/mach-msm/mdm2.c	2012-09-18 13:48:21.166594267 -0700
+@@ -273,7 +273,7 @@
  	mdm_common_modem_shutdown(pdev);
  }
  
@@ -26,8 +26,8 @@ Index: msm/arch/arm/mach-msm/mdm2.c
  	.driver         = {
 Index: msm/arch/arm/mach-msm/perf_event_msm_krait_l2.c
 ===================================================================
---- msm.orig/arch/arm/mach-msm/perf_event_msm_krait_l2.c	2012-09-17 13:19:55.189105464 -0700
-+++ msm/arch/arm/mach-msm/perf_event_msm_krait_l2.c	2012-09-17 13:19:55.213105465 -0700
+--- msm.orig/arch/arm/mach-msm/perf_event_msm_krait_l2.c	2012-09-18 13:26:23.000000000 -0700
++++ msm/arch/arm/mach-msm/perf_event_msm_krait_l2.c	2012-09-18 13:48:21.166594267 -0700
 @@ -542,7 +542,7 @@
  	return 0;
  }
@@ -39,8 +39,8 @@ Index: msm/arch/arm/mach-msm/perf_event_msm_krait_l2.c
  	},
 Index: msm/arch/arm/mach-msm/pil-gss.c
 ===================================================================
---- msm.orig/arch/arm/mach-msm/pil-gss.c	2012-09-17 13:18:18.113103824 -0700
-+++ msm/arch/arm/mach-msm/pil-gss.c	2012-09-17 13:19:55.213105465 -0700
+--- msm.orig/arch/arm/mach-msm/pil-gss.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/arch/arm/mach-msm/pil-gss.c	2012-09-18 13:48:21.166594267 -0700
 @@ -373,7 +373,7 @@
  	return 0;
  }
@@ -52,8 +52,8 @@ Index: msm/arch/arm/mach-msm/pil-gss.c
  	.driver = {
 Index: msm/arch/arm/mach-msm/pil-q6v4.c
 ===================================================================
---- msm.orig/arch/arm/mach-msm/pil-q6v4.c	2012-09-17 13:18:18.113103824 -0700
-+++ msm/arch/arm/mach-msm/pil-q6v4.c	2012-09-17 13:19:55.213105465 -0700
+--- msm.orig/arch/arm/mach-msm/pil-q6v4.c	2012-09-18 13:08:17.000000000 -0700
++++ msm/arch/arm/mach-msm/pil-q6v4.c	2012-09-18 13:48:21.166594267 -0700
 @@ -441,7 +441,7 @@
  	return 0;
  }
@@ -65,9 +65,9 @@ Index: msm/arch/arm/mach-msm/pil-q6v4.c
  	.driver = {
 Index: msm/arch/arm/mach-msm/pil-riva.c
 ===================================================================
---- msm.orig/arch/arm/mach-msm/pil-riva.c	2012-09-17 13:18:18.113103824 -0700
-+++ msm/arch/arm/mach-msm/pil-riva.c	2012-09-17 13:19:55.213105465 -0700
-@@ -347,7 +347,7 @@
+--- msm.orig/arch/arm/mach-msm/pil-riva.c	2012-09-18 13:08:17.000000000 -0700
++++ msm/arch/arm/mach-msm/pil-riva.c	2012-09-18 13:48:21.170594267 -0700
+@@ -359,7 +359,7 @@
  	return 0;
  }
  
@@ -78,8 +78,8 @@ Index: msm/arch/arm/mach-msm/pil-riva.c
  	.driver = {
 Index: msm/arch/arm/mach-msm/pil-vidc.c
 ===================================================================
---- msm.orig/arch/arm/mach-msm/pil-vidc.c	2012-09-17 13:18:18.113103824 -0700
-+++ msm/arch/arm/mach-msm/pil-vidc.c	2012-09-17 13:19:55.213105465 -0700
+--- msm.orig/arch/arm/mach-msm/pil-vidc.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/arch/arm/mach-msm/pil-vidc.c	2012-09-18 13:48:21.170594267 -0700
 @@ -105,7 +105,7 @@
  	return 0;
  }
@@ -91,8 +91,8 @@ Index: msm/arch/arm/mach-msm/pil-vidc.c
  	.driver = {
 Index: msm/arch/arm/mach-msm/pm-boot.c
 ===================================================================
---- msm.orig/arch/arm/mach-msm/pm-boot.c	2012-09-17 13:18:18.113103824 -0700
-+++ msm/arch/arm/mach-msm/pm-boot.c	2012-09-17 13:19:55.213105465 -0700
+--- msm.orig/arch/arm/mach-msm/pm-boot.c	2012-09-18 13:08:17.000000000 -0700
++++ msm/arch/arm/mach-msm/pm-boot.c	2012-09-18 13:48:21.170594267 -0700
 @@ -256,7 +256,7 @@
  	{},
  };
@@ -104,8 +104,8 @@ Index: msm/arch/arm/mach-msm/pm-boot.c
  		.name = "pm-boot",
 Index: msm/arch/arm/mach-msm/spm_devices.c
 ===================================================================
---- msm.orig/arch/arm/mach-msm/spm_devices.c	2012-09-17 13:18:18.133103824 -0700
-+++ msm/arch/arm/mach-msm/spm_devices.c	2012-09-17 13:19:55.217105465 -0700
+--- msm.orig/arch/arm/mach-msm/spm_devices.c	2012-09-18 13:08:17.000000000 -0700
++++ msm/arch/arm/mach-msm/spm_devices.c	2012-09-18 13:48:21.170594267 -0700
 @@ -379,7 +379,7 @@
  	{},
  };
@@ -117,8 +117,8 @@ Index: msm/arch/arm/mach-msm/spm_devices.c
  		.name = "spm-v2",
 Index: msm/arch/arm/mach-msm/tz_log.c
 ===================================================================
---- msm.orig/arch/arm/mach-msm/tz_log.c	2012-09-17 13:18:18.133103824 -0700
-+++ msm/arch/arm/mach-msm/tz_log.c	2012-09-17 13:19:55.217105465 -0700
+--- msm.orig/arch/arm/mach-msm/tz_log.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/arch/arm/mach-msm/tz_log.c	2012-09-18 13:48:21.170594267 -0700
 @@ -542,7 +542,7 @@
  	{}
  };
@@ -130,9 +130,9 @@ Index: msm/arch/arm/mach-msm/tz_log.c
  	.driver		= {
 Index: msm/drivers/coresight/coresight-etb.c
 ===================================================================
---- msm.orig/drivers/coresight/coresight-etb.c	2012-09-17 13:18:18.593103832 -0700
-+++ msm/drivers/coresight/coresight-etb.c	2012-09-17 13:19:55.217105465 -0700
-@@ -441,7 +441,7 @@
+--- msm.orig/drivers/coresight/coresight-etb.c	2012-09-18 13:08:17.000000000 -0700
++++ msm/drivers/coresight/coresight-etb.c	2012-09-18 13:48:21.170594267 -0700
+@@ -425,7 +425,7 @@
  	{}
  };
  
@@ -143,9 +143,9 @@ Index: msm/drivers/coresight/coresight-etb.c
  	.driver         = {
 Index: msm/drivers/coresight/coresight-etm.c
 ===================================================================
---- msm.orig/drivers/coresight/coresight-etm.c	2012-09-17 13:18:18.593103832 -0700
-+++ msm/drivers/coresight/coresight-etm.c	2012-09-17 13:19:55.217105465 -0700
-@@ -1644,7 +1644,7 @@
+--- msm.orig/drivers/coresight/coresight-etm.c	2012-09-18 13:08:17.000000000 -0700
++++ msm/drivers/coresight/coresight-etm.c	2012-09-18 13:48:21.170594267 -0700
+@@ -1620,7 +1620,7 @@
  	{}
  };
  
@@ -156,9 +156,9 @@ Index: msm/drivers/coresight/coresight-etm.c
  	.driver         = {
 Index: msm/drivers/coresight/coresight-funnel.c
 ===================================================================
---- msm.orig/drivers/coresight/coresight-funnel.c	2012-09-17 13:18:18.593103832 -0700
-+++ msm/drivers/coresight/coresight-funnel.c	2012-09-17 13:19:55.217105465 -0700
-@@ -234,7 +234,7 @@
+--- msm.orig/drivers/coresight/coresight-funnel.c	2012-09-18 13:08:17.000000000 -0700
++++ msm/drivers/coresight/coresight-funnel.c	2012-09-18 13:48:21.170594267 -0700
+@@ -249,7 +249,7 @@
  	{}
  };
  
@@ -169,9 +169,9 @@ Index: msm/drivers/coresight/coresight-funnel.c
  	.driver         = {
 Index: msm/drivers/coresight/coresight-stm.c
 ===================================================================
---- msm.orig/drivers/coresight/coresight-stm.c	2012-09-17 13:18:18.593103832 -0700
-+++ msm/drivers/coresight/coresight-stm.c	2012-09-17 13:19:55.217105465 -0700
-@@ -747,7 +747,7 @@
+--- msm.orig/drivers/coresight/coresight-stm.c	2012-09-18 13:08:17.000000000 -0700
++++ msm/drivers/coresight/coresight-stm.c	2012-09-18 13:48:21.170594267 -0700
+@@ -611,7 +611,7 @@
  	{}
  };
  
@@ -182,9 +182,9 @@ Index: msm/drivers/coresight/coresight-stm.c
  	.driver         = {
 Index: msm/drivers/coresight/coresight-tpiu.c
 ===================================================================
---- msm.orig/drivers/coresight/coresight-tpiu.c	2012-09-17 13:18:18.593103832 -0700
-+++ msm/drivers/coresight/coresight-tpiu.c	2012-09-17 13:19:55.217105465 -0700
-@@ -206,7 +206,7 @@
+--- msm.orig/drivers/coresight/coresight-tpiu.c	2012-09-18 13:08:17.000000000 -0700
++++ msm/drivers/coresight/coresight-tpiu.c	2012-09-18 13:48:21.170594267 -0700
+@@ -150,7 +150,7 @@
  	{}
  };
  
@@ -195,9 +195,9 @@ Index: msm/drivers/coresight/coresight-tpiu.c
  	.driver         = {
 Index: msm/drivers/hwmon/epm_adc.c
 ===================================================================
---- msm.orig/drivers/hwmon/epm_adc.c	2012-09-17 13:18:18.697103834 -0700
-+++ msm/drivers/hwmon/epm_adc.c	2012-09-17 13:19:55.221105465 -0700
-@@ -1824,7 +1824,7 @@
+--- msm.orig/drivers/hwmon/epm_adc.c	2012-09-18 13:08:17.000000000 -0700
++++ msm/drivers/hwmon/epm_adc.c	2012-09-18 13:48:21.170594267 -0700
+@@ -870,7 +870,7 @@
  	return 0;
  }
  
@@ -208,9 +208,9 @@ Index: msm/drivers/hwmon/epm_adc.c
  	.driver = {
 Index: msm/drivers/hwmon/pm8xxx-adc.c
 ===================================================================
---- msm.orig/drivers/hwmon/pm8xxx-adc.c	2012-09-17 13:18:18.705103834 -0700
-+++ msm/drivers/hwmon/pm8xxx-adc.c	2012-09-17 13:19:55.221105465 -0700
-@@ -1274,7 +1274,7 @@
+--- msm.orig/drivers/hwmon/pm8xxx-adc.c	2012-09-18 13:08:17.000000000 -0700
++++ msm/drivers/hwmon/pm8xxx-adc.c	2012-09-18 13:48:21.170594267 -0700
+@@ -1264,7 +1264,7 @@
  	return 0;
  }
  
@@ -221,9 +221,9 @@ Index: msm/drivers/hwmon/pm8xxx-adc.c
  	.driver	= {
 Index: msm/drivers/leds/leds-pm8xxx.c
 ===================================================================
---- msm.orig/drivers/leds/leds-pm8xxx.c	2012-09-17 13:18:18.809103835 -0700
-+++ msm/drivers/leds/leds-pm8xxx.c	2012-09-17 13:19:55.221105465 -0700
-@@ -982,7 +982,7 @@
+--- msm.orig/drivers/leds/leds-pm8xxx.c	2012-09-18 13:08:17.000000000 -0700
++++ msm/drivers/leds/leds-pm8xxx.c	2012-09-18 13:48:21.174594267 -0700
+@@ -942,7 +942,7 @@
  	return 0;
  }
  
@@ -234,9 +234,9 @@ Index: msm/drivers/leds/leds-pm8xxx.c
  	.driver		= {
 Index: msm/drivers/media/radio/radio-iris.c
 ===================================================================
---- msm.orig/drivers/media/radio/radio-iris.c	2012-09-17 13:18:18.861103837 -0700
-+++ msm/drivers/media/radio/radio-iris.c	2012-09-17 13:19:55.221105465 -0700
-@@ -3687,7 +3687,7 @@
+--- msm.orig/drivers/media/radio/radio-iris.c	2012-09-18 13:08:17.000000000 -0700
++++ msm/drivers/media/radio/radio-iris.c	2012-09-18 13:48:21.174594267 -0700
+@@ -3688,7 +3688,7 @@
  	return 0;
  }
  
@@ -247,11 +247,11 @@ Index: msm/drivers/media/radio/radio-iris.c
  		.name   = "iris_fm",
 Index: msm/drivers/media/video/msm/csi/msm_csid.c
 ===================================================================
---- msm.orig/drivers/media/video/msm/csi/msm_csid.c	2012-09-17 13:18:18.909103837 -0700
-+++ msm/drivers/media/video/msm/csi/msm_csid.c	2012-09-17 13:19:55.221105465 -0700
-@@ -624,7 +624,7 @@
- 
- MODULE_DEVICE_TABLE(of, msm_csid_dt_match);
+--- msm.orig/drivers/media/video/msm/csi/msm_csid.c	2012-09-18 13:08:17.000000000 -0700
++++ msm/drivers/media/video/msm/csi/msm_csid.c	2012-09-18 13:48:21.174594267 -0700
+@@ -347,7 +347,7 @@
+ 	return 0;
+ }
  
 -static struct platform_driver csid_driver = {
 +static struct platform_driver csid_driver  __initdata =  {
@@ -260,11 +260,11 @@ Index: msm/drivers/media/video/msm/csi/msm_csid.c
  		.name = MSM_CSID_DRV_NAME,
 Index: msm/drivers/media/video/msm/csi/msm_csiphy.c
 ===================================================================
---- msm.orig/drivers/media/video/msm/csi/msm_csiphy.c	2012-09-17 13:18:18.909103837 -0700
-+++ msm/drivers/media/video/msm/csi/msm_csiphy.c	2012-09-17 13:19:55.221105465 -0700
-@@ -440,7 +440,7 @@
- 
- MODULE_DEVICE_TABLE(of, msm_csiphy_dt_match);
+--- msm.orig/drivers/media/video/msm/csi/msm_csiphy.c	2012-09-18 13:08:17.000000000 -0700
++++ msm/drivers/media/video/msm/csi/msm_csiphy.c	2012-09-18 13:48:21.174594267 -0700
+@@ -343,7 +343,7 @@
+ 	return 0;
+ }
  
 -static struct platform_driver csiphy_driver = {
 +static struct platform_driver csiphy_driver  __initdata =  {
@@ -273,11 +273,11 @@ Index: msm/drivers/media/video/msm/csi/msm_csiphy.c
  		.name = MSM_CSIPHY_DRV_NAME,
 Index: msm/drivers/media/video/msm/csi/msm_ispif.c
 ===================================================================
---- msm.orig/drivers/media/video/msm/csi/msm_ispif.c	2012-09-17 13:18:18.909103837 -0700
-+++ msm/drivers/media/video/msm/csi/msm_ispif.c	2012-09-17 13:19:55.225105465 -0700
-@@ -903,7 +903,7 @@
- 
- MODULE_DEVICE_TABLE(of, msm_ispif_dt_match);
+--- msm.orig/drivers/media/video/msm/csi/msm_ispif.c	2012-09-18 13:08:17.000000000 -0700
++++ msm/drivers/media/video/msm/csi/msm_ispif.c	2012-09-18 13:48:21.174594267 -0700
+@@ -699,7 +699,7 @@
+ 	return rc;
+ }
  
 -static struct platform_driver ispif_driver = {
 +static struct platform_driver ispif_driver  __initdata =  {
@@ -286,8 +286,8 @@ Index: msm/drivers/media/video/msm/csi/msm_ispif.c
  		.name = MSM_ISPIF_DRV_NAME,
 Index: msm/drivers/media/video/msm/io/msm_camera_i2c_mux.c
 ===================================================================
---- msm.orig/drivers/media/video/msm/io/msm_camera_i2c_mux.c	2012-09-17 13:18:18.913103838 -0700
-+++ msm/drivers/media/video/msm/io/msm_camera_i2c_mux.c	2012-09-17 13:19:55.225105465 -0700
+--- msm.orig/drivers/media/video/msm/io/msm_camera_i2c_mux.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/media/video/msm/io/msm_camera_i2c_mux.c	2012-09-18 13:48:21.174594267 -0700
 @@ -163,7 +163,7 @@
  	return 0;
  }
@@ -299,9 +299,9 @@ Index: msm/drivers/media/video/msm/io/msm_camera_i2c_mux.c
  		.name = MSM_I2C_MUX_DRV_NAME,
 Index: msm/drivers/mfd/pm8038-core.c
 ===================================================================
---- msm.orig/drivers/mfd/pm8038-core.c	2012-09-17 13:18:18.969103838 -0700
-+++ msm/drivers/mfd/pm8038-core.c	2012-09-17 13:19:55.225105465 -0700
-@@ -806,7 +806,7 @@
+--- msm.orig/drivers/mfd/pm8038-core.c	2012-09-18 13:08:18.000000000 -0700
++++ msm/drivers/mfd/pm8038-core.c	2012-09-18 13:48:21.174594267 -0700
+@@ -807,7 +807,7 @@
  	return 0;
  }
  
@@ -312,9 +312,9 @@ Index: msm/drivers/mfd/pm8038-core.c
  	.driver		= {
 Index: msm/drivers/mfd/pm8821-core.c
 ===================================================================
---- msm.orig/drivers/mfd/pm8821-core.c	2012-09-17 13:18:18.969103838 -0700
-+++ msm/drivers/mfd/pm8821-core.c	2012-09-17 13:19:55.225105465 -0700
-@@ -324,7 +324,7 @@
+--- msm.orig/drivers/mfd/pm8821-core.c	2012-09-18 13:08:18.000000000 -0700
++++ msm/drivers/mfd/pm8821-core.c	2012-09-18 13:48:21.174594267 -0700
+@@ -290,7 +290,7 @@
  	return 0;
  }
  
@@ -325,8 +325,8 @@ Index: msm/drivers/mfd/pm8821-core.c
  	.driver		= {
 Index: msm/drivers/mfd/pm8921-core.c
 ===================================================================
---- msm.orig/drivers/mfd/pm8921-core.c	2012-09-17 13:18:18.969103838 -0700
-+++ msm/drivers/mfd/pm8921-core.c	2012-09-17 13:19:55.225105465 -0700
+--- msm.orig/drivers/mfd/pm8921-core.c	2012-09-18 13:08:18.000000000 -0700
++++ msm/drivers/mfd/pm8921-core.c	2012-09-18 13:48:21.174594267 -0700
 @@ -972,7 +972,7 @@
  	return 0;
  }
@@ -338,8 +338,8 @@ Index: msm/drivers/mfd/pm8921-core.c
  	.driver		= {
 Index: msm/drivers/mfd/pm8xxx-pwm.c
 ===================================================================
---- msm.orig/drivers/mfd/pm8xxx-pwm.c	2012-09-17 13:18:18.973103839 -0700
-+++ msm/drivers/mfd/pm8xxx-pwm.c	2012-09-17 13:19:55.225105465 -0700
+--- msm.orig/drivers/mfd/pm8xxx-pwm.c	2012-09-18 13:08:18.000000000 -0700
++++ msm/drivers/mfd/pm8xxx-pwm.c	2012-09-18 13:48:21.174594267 -0700
 @@ -1443,7 +1443,7 @@
  	return 0;
  }
@@ -351,9 +351,9 @@ Index: msm/drivers/mfd/pm8xxx-pwm.c
  	.driver		= {
 Index: msm/drivers/misc/qseecom.c
 ===================================================================
---- msm.orig/drivers/misc/qseecom.c	2012-09-17 13:18:18.981103838 -0700
-+++ msm/drivers/misc/qseecom.c	2012-09-17 13:19:55.225105465 -0700
-@@ -1817,7 +1817,7 @@
+--- msm.orig/drivers/misc/qseecom.c	2012-09-18 13:08:18.000000000 -0700
++++ msm/drivers/misc/qseecom.c	2012-09-18 13:48:21.178594267 -0700
+@@ -1827,7 +1827,7 @@
  	{}
  };
  
@@ -364,9 +364,9 @@ Index: msm/drivers/misc/qseecom.c
  	.driver = {
 Index: msm/drivers/platform/msm/sps/sps.c
 ===================================================================
---- msm.orig/drivers/platform/msm/sps/sps.c	2012-09-17 13:18:19.329103845 -0700
-+++ msm/drivers/platform/msm/sps/sps.c	2012-09-17 13:19:55.229105465 -0700
-@@ -2323,7 +2323,7 @@
+--- msm.orig/drivers/platform/msm/sps/sps.c	2012-09-18 13:08:18.000000000 -0700
++++ msm/drivers/platform/msm/sps/sps.c	2012-09-18 13:48:21.194594267 -0700
+@@ -2128,7 +2128,7 @@
  	{}
  };
  
@@ -377,9 +377,9 @@ Index: msm/drivers/platform/msm/sps/sps.c
  		.name	= SPS_DRV_NAME,
 Index: msm/drivers/power/pm8921-bms.c
 ===================================================================
---- msm.orig/drivers/power/pm8921-bms.c	2012-09-17 13:18:19.341103844 -0700
-+++ msm/drivers/power/pm8921-bms.c	2012-09-17 13:19:55.233105465 -0700
-@@ -3282,7 +3282,7 @@
+--- msm.orig/drivers/power/pm8921-bms.c	2012-09-18 13:08:18.000000000 -0700
++++ msm/drivers/power/pm8921-bms.c	2012-09-18 13:48:21.198594267 -0700
+@@ -2808,7 +2808,7 @@
  	return 0;
  }
  
@@ -390,9 +390,9 @@ Index: msm/drivers/power/pm8921-bms.c
  	.driver	= {
 Index: msm/drivers/power/pm8921-charger.c
 ===================================================================
---- msm.orig/drivers/power/pm8921-charger.c	2012-09-17 13:18:19.341103844 -0700
-+++ msm/drivers/power/pm8921-charger.c	2012-09-17 13:19:55.233105465 -0700
-@@ -4213,7 +4213,7 @@
+--- msm.orig/drivers/power/pm8921-charger.c	2012-09-18 13:08:18.000000000 -0700
++++ msm/drivers/power/pm8921-charger.c	2012-09-18 13:48:21.202594267 -0700
+@@ -4145,7 +4145,7 @@
  	.resume_noirq   = pm8921_charger_resume_noirq,
  	.resume		= pm8921_charger_resume,
  };
@@ -403,8 +403,8 @@ Index: msm/drivers/power/pm8921-charger.c
  	.driver		= {
 Index: msm/drivers/power/pm8xxx-ccadc.c
 ===================================================================
---- msm.orig/drivers/power/pm8xxx-ccadc.c	2012-09-17 13:18:19.341103844 -0700
-+++ msm/drivers/power/pm8xxx-ccadc.c	2012-09-17 13:19:55.233105465 -0700
+--- msm.orig/drivers/power/pm8xxx-ccadc.c	2012-09-18 13:08:18.000000000 -0700
++++ msm/drivers/power/pm8xxx-ccadc.c	2012-09-18 13:48:21.202594267 -0700
 @@ -712,7 +712,7 @@
  	return 0;
  }
@@ -416,8 +416,8 @@ Index: msm/drivers/power/pm8xxx-ccadc.c
  	.driver	= {
 Index: msm/drivers/regulator/msm-gpio-regulator.c
 ===================================================================
---- msm.orig/drivers/regulator/msm-gpio-regulator.c	2012-09-17 13:18:19.349103845 -0700
-+++ msm/drivers/regulator/msm-gpio-regulator.c	2012-09-17 13:19:55.233105465 -0700
+--- msm.orig/drivers/regulator/msm-gpio-regulator.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/regulator/msm-gpio-regulator.c	2012-09-18 13:48:21.202594267 -0700
 @@ -196,7 +196,7 @@
  	return 0;
  }
@@ -429,8 +429,8 @@ Index: msm/drivers/regulator/msm-gpio-regulator.c
  	.driver = {
 Index: msm/drivers/regulator/pm8xxx-regulator.c
 ===================================================================
---- msm.orig/drivers/regulator/pm8xxx-regulator.c	2012-09-17 13:18:19.349103845 -0700
-+++ msm/drivers/regulator/pm8xxx-regulator.c	2012-09-17 13:19:55.237105465 -0700
+--- msm.orig/drivers/regulator/pm8xxx-regulator.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/regulator/pm8xxx-regulator.c	2012-09-18 13:48:21.202594267 -0700
 @@ -3318,7 +3318,7 @@
  	return 0;
  }
@@ -442,9 +442,9 @@ Index: msm/drivers/regulator/pm8xxx-regulator.c
  	.driver	= {
 Index: msm/drivers/slimbus/slim-msm-ctrl.c
 ===================================================================
---- msm.orig/drivers/slimbus/slim-msm-ctrl.c	2012-09-17 13:18:19.453103846 -0700
-+++ msm/drivers/slimbus/slim-msm-ctrl.c	2012-09-17 13:19:55.237105465 -0700
-@@ -1576,7 +1576,7 @@
+--- msm.orig/drivers/slimbus/slim-msm-ctrl.c	2012-09-18 13:08:18.000000000 -0700
++++ msm/drivers/slimbus/slim-msm-ctrl.c	2012-09-18 13:48:21.202594267 -0700
+@@ -2241,7 +2241,7 @@
  	{}
  };
  
@@ -455,8 +455,8 @@ Index: msm/drivers/slimbus/slim-msm-ctrl.c
  	.driver	= {
 Index: msm/drivers/staging/android/ram_console.c
 ===================================================================
---- msm.orig/drivers/staging/android/ram_console.c	2012-09-17 13:18:19.465103847 -0700
-+++ msm/drivers/staging/android/ram_console.c	2012-09-17 13:19:55.237105465 -0700
+--- msm.orig/drivers/staging/android/ram_console.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/staging/android/ram_console.c	2012-09-18 13:48:21.202594267 -0700
 @@ -74,7 +74,7 @@
  	return 0;
  }
@@ -468,8 +468,8 @@ Index: msm/drivers/staging/android/ram_console.c
  	},
 Index: msm/drivers/staging/tidspbridge/rmgr/drv_interface.c
 ===================================================================
---- msm.orig/drivers/staging/tidspbridge/rmgr/drv_interface.c	2012-09-17 13:18:19.553103848 -0700
-+++ msm/drivers/staging/tidspbridge/rmgr/drv_interface.c	2012-09-17 13:19:55.237105465 -0700
+--- msm.orig/drivers/staging/tidspbridge/rmgr/drv_interface.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/staging/tidspbridge/rmgr/drv_interface.c	2012-09-18 13:48:21.202594267 -0700
 @@ -601,7 +601,7 @@
  }
  #endif
@@ -481,9 +481,9 @@ Index: msm/drivers/staging/tidspbridge/rmgr/drv_interface.c
  		   },
 Index: msm/drivers/thermal/msm8960_tsens.c
 ===================================================================
---- msm.orig/drivers/thermal/msm8960_tsens.c	2012-09-17 13:18:19.585103849 -0700
-+++ msm/drivers/thermal/msm8960_tsens.c	2012-09-17 13:19:55.237105465 -0700
-@@ -1041,7 +1041,7 @@
+--- msm.orig/drivers/thermal/msm8960_tsens.c	2012-09-18 13:08:18.000000000 -0700
++++ msm/drivers/thermal/msm8960_tsens.c	2012-09-18 13:48:21.206594267 -0700
+@@ -1052,7 +1052,7 @@
  	return 0;
  }
  
@@ -492,23 +492,10 @@ Index: msm/drivers/thermal/msm8960_tsens.c
  	.probe = tsens_tm_probe,
  	.remove = tsens_tm_remove,
  	.driver = {
-Index: msm/drivers/thermal/msm8974-tsens.c
-===================================================================
---- msm.orig/drivers/thermal/msm8974-tsens.c	2012-09-17 13:18:19.585103849 -0700
-+++ msm/drivers/thermal/msm8974-tsens.c	2012-09-17 13:19:55.237105465 -0700
-@@ -941,7 +941,7 @@
- 	{}
- };
- 
--static struct platform_driver tsens_tm_driver = {
-+static struct platform_driver tsens_tm_driver  __refdata =  {
- 	.probe = tsens_tm_probe,
- 	.remove = tsens_tm_remove,
- 	.driver = {
 Index: msm/drivers/thermal/msm_tsens.c
 ===================================================================
---- msm.orig/drivers/thermal/msm_tsens.c	2012-09-17 13:13:06.097098552 -0700
-+++ msm/drivers/thermal/msm_tsens.c	2012-09-17 13:19:55.237105465 -0700
+--- msm.orig/drivers/thermal/msm_tsens.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/thermal/msm_tsens.c	2012-09-18 13:48:21.206594267 -0700
 @@ -634,7 +634,7 @@
  	return 0;
  }
@@ -518,24 +505,11 @@ Index: msm/drivers/thermal/msm_tsens.c
  	.probe	= tsens_tm_probe,
  	.remove	= __devexit_p(tsens_tm_remove),
  	.driver	= {
-Index: msm/drivers/usb/gadget/android.c
-===================================================================
---- msm.orig/drivers/usb/gadget/android.c	2012-09-17 13:18:19.617103849 -0700
-+++ msm/drivers/usb/gadget/android.c	2012-09-17 13:19:55.237105465 -0700
-@@ -2421,7 +2421,7 @@
- 	{}
- };
- 
--static struct platform_driver android_platform_driver = {
-+static struct platform_driver android_platform_driver  __initdata = {
- 	.driver = {
- 		.name = "android_usb",
- 		.of_match_table = usb_android_dt_match,
 Index: msm/drivers/usb/host/ehci-msm-hsic.c
 ===================================================================
---- msm.orig/drivers/usb/host/ehci-msm-hsic.c	2012-09-17 13:18:19.637103849 -0700
-+++ msm/drivers/usb/host/ehci-msm-hsic.c	2012-09-17 13:19:55.237105465 -0700
-@@ -1842,7 +1842,7 @@
+--- msm.orig/drivers/usb/host/ehci-msm-hsic.c	2012-09-18 13:08:18.000000000 -0700
++++ msm/drivers/usb/host/ehci-msm-hsic.c	2012-09-18 13:48:21.206594267 -0700
+@@ -1505,7 +1505,7 @@
  };
  #endif
  
@@ -546,8 +520,8 @@ Index: msm/drivers/usb/host/ehci-msm-hsic.c
  	.driver = {
 Index: msm/drivers/video/msm/lvds_chimei_wxga.c
 ===================================================================
---- msm.orig/drivers/video/msm/lvds_chimei_wxga.c	2012-09-17 13:18:19.689103851 -0700
-+++ msm/drivers/video/msm/lvds_chimei_wxga.c	2012-09-17 13:19:55.241105465 -0700
+--- msm.orig/drivers/video/msm/lvds_chimei_wxga.c	2012-09-18 13:08:18.000000000 -0700
++++ msm/drivers/video/msm/lvds_chimei_wxga.c	2012-09-18 13:48:21.206594267 -0700
 @@ -92,7 +92,7 @@
  	return rc;
  }
@@ -559,8 +533,8 @@ Index: msm/drivers/video/msm/lvds_chimei_wxga.c
  		.name   = "lvds_chimei_wxga",
 Index: msm/drivers/video/msm/lvds_frc_fhd.c
 ===================================================================
---- msm.orig/drivers/video/msm/lvds_frc_fhd.c	2012-09-17 13:18:19.689103851 -0700
-+++ msm/drivers/video/msm/lvds_frc_fhd.c	2012-09-17 13:19:55.241105465 -0700
+--- msm.orig/drivers/video/msm/lvds_frc_fhd.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/video/msm/lvds_frc_fhd.c	2012-09-18 13:48:21.206594267 -0700
 @@ -126,7 +126,7 @@
  	return rc;
  }
@@ -572,8 +546,8 @@ Index: msm/drivers/video/msm/lvds_frc_fhd.c
  		.name   = "lvds_frc_fhd",
 Index: msm/drivers/video/msm/mipi_orise.c
 ===================================================================
---- msm.orig/drivers/video/msm/mipi_orise.c	2012-09-17 13:13:06.105098551 -0700
-+++ msm/drivers/video/msm/mipi_orise.c	2012-09-17 13:19:55.241105465 -0700
+--- msm.orig/drivers/video/msm/mipi_orise.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/video/msm/mipi_orise.c	2012-09-18 13:48:21.206594267 -0700
 @@ -130,7 +130,7 @@
  	return 0;
  }
@@ -585,8 +559,8 @@ Index: msm/drivers/video/msm/mipi_orise.c
  		.name   = "mipi_orise",
 Index: msm/drivers/video/vfb.c
 ===================================================================
---- msm.orig/drivers/video/vfb.c	2012-09-17 13:18:19.717103851 -0700
-+++ msm/drivers/video/vfb.c	2012-09-17 13:19:55.241105465 -0700
+--- msm.orig/drivers/video/vfb.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/video/vfb.c	2012-09-18 13:48:21.206594267 -0700
 @@ -566,7 +566,7 @@
  	return 0;
  }
@@ -598,8 +572,8 @@ Index: msm/drivers/video/vfb.c
  	.driver = {
 Index: msm/sound/soc/codecs/msm_stub.c
 ===================================================================
---- msm.orig/sound/soc/codecs/msm_stub.c	2012-09-17 13:18:20.213103859 -0700
-+++ msm/sound/soc/codecs/msm_stub.c	2012-09-17 13:19:55.241105465 -0700
+--- msm.orig/sound/soc/codecs/msm_stub.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/sound/soc/codecs/msm_stub.c	2012-09-18 13:48:21.206594267 -0700
 @@ -64,7 +64,7 @@
  	{}
  };
@@ -611,9 +585,9 @@ Index: msm/sound/soc/codecs/msm_stub.c
  		.owner = THIS_MODULE,
 Index: msm/sound/soc/codecs/wcd9304.c
 ===================================================================
---- msm.orig/sound/soc/codecs/wcd9304.c	2012-09-17 13:18:20.217103860 -0700
-+++ msm/sound/soc/codecs/wcd9304.c	2012-09-17 13:19:55.241105465 -0700
-@@ -5366,7 +5366,7 @@
+--- msm.orig/sound/soc/codecs/wcd9304.c	2012-09-18 13:08:18.000000000 -0700
++++ msm/sound/soc/codecs/wcd9304.c	2012-09-18 13:48:21.210594267 -0700
+@@ -5137,7 +5137,7 @@
  #endif
  	return 0;
  }
@@ -624,9 +598,9 @@ Index: msm/sound/soc/codecs/wcd9304.c
  	.driver = {
 Index: msm/sound/soc/msm/msm-compr-q6.c
 ===================================================================
---- msm.orig/sound/soc/msm/msm-compr-q6.c	2012-09-17 13:18:20.241103860 -0700
-+++ msm/sound/soc/msm/msm-compr-q6.c	2012-09-17 13:19:55.245105465 -0700
-@@ -1154,7 +1154,7 @@
+--- msm.orig/sound/soc/msm/msm-compr-q6.c	2012-09-18 13:08:18.000000000 -0700
++++ msm/sound/soc/msm/msm-compr-q6.c	2012-09-18 13:48:21.210594267 -0700
+@@ -940,7 +940,7 @@
  	return 0;
  }
  
@@ -637,9 +611,9 @@ Index: msm/sound/soc/msm/msm-compr-q6.c
  		.owner = THIS_MODULE,
 Index: msm/sound/soc/msm/msm-dai-fe.c
 ===================================================================
---- msm.orig/sound/soc/msm/msm-dai-fe.c	2012-09-17 13:18:20.241103860 -0700
-+++ msm/sound/soc/msm/msm-dai-fe.c	2012-09-17 13:19:55.245105465 -0700
-@@ -501,7 +501,7 @@
+--- msm.orig/sound/soc/msm/msm-dai-fe.c	2012-09-18 13:08:18.000000000 -0700
++++ msm/sound/soc/msm/msm-dai-fe.c	2012-09-18 13:48:21.210594267 -0700
+@@ -490,7 +490,7 @@
  	{}
  };
  
@@ -650,9 +624,9 @@ Index: msm/sound/soc/msm/msm-dai-fe.c
  	.driver = {
 Index: msm/sound/soc/msm/msm-dai-q6-hdmi.c
 ===================================================================
---- msm.orig/sound/soc/msm/msm-dai-q6-hdmi.c	2012-09-17 13:18:20.241103860 -0700
-+++ msm/sound/soc/msm/msm-dai-q6-hdmi.c	2012-09-17 13:19:55.245105465 -0700
-@@ -271,7 +271,7 @@
+--- msm.orig/sound/soc/msm/msm-dai-q6-hdmi.c	2012-09-18 13:08:18.000000000 -0700
++++ msm/sound/soc/msm/msm-dai-q6-hdmi.c	2012-09-18 13:48:21.210594267 -0700
+@@ -264,7 +264,7 @@
  	return 0;
  }
  
@@ -663,8 +637,8 @@ Index: msm/sound/soc/msm/msm-dai-q6-hdmi.c
  	.driver = {
 Index: msm/sound/soc/msm/msm-dai-stub.c
 ===================================================================
---- msm.orig/sound/soc/msm/msm-dai-stub.c	2012-09-17 13:18:20.241103860 -0700
-+++ msm/sound/soc/msm/msm-dai-stub.c	2012-09-17 13:19:55.245105465 -0700
+--- msm.orig/sound/soc/msm/msm-dai-stub.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/sound/soc/msm/msm-dai-stub.c	2012-09-18 13:48:21.210594267 -0700
 @@ -72,7 +72,7 @@
  	return 0;
  }
@@ -674,23 +648,10 @@ Index: msm/sound/soc/msm/msm-dai-stub.c
  	.probe  = msm_dai_stub_dev_probe,
  	.remove = msm_dai_stub_dev_remove,
  	.driver = {
-Index: msm/sound/soc/msm/msm-multi-ch-pcm-q6.c
-===================================================================
---- msm.orig/sound/soc/msm/msm-multi-ch-pcm-q6.c	2012-09-17 13:18:20.241103860 -0700
-+++ msm/sound/soc/msm/msm-multi-ch-pcm-q6.c	2012-09-17 13:19:55.245105465 -0700
-@@ -821,7 +821,7 @@
- 	return 0;
- }
- 
--static struct platform_driver msm_pcm_driver = {
-+static struct platform_driver msm_pcm_driver  __initdata =  {
- 	.driver = {
- 		.name = "msm-multi-ch-pcm-dsp",
- 		.owner = THIS_MODULE,
 Index: msm/sound/soc/msm/msm-mvs.c
 ===================================================================
---- msm.orig/sound/soc/msm/msm-mvs.c	2012-09-17 13:18:20.241103860 -0700
-+++ msm/sound/soc/msm/msm-mvs.c	2012-09-17 13:19:55.245105465 -0700
+--- msm.orig/sound/soc/msm/msm-mvs.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/sound/soc/msm/msm-mvs.c	2012-09-18 13:48:21.210594267 -0700
 @@ -898,7 +898,7 @@
  	return 0;
  }
@@ -702,9 +663,9 @@ Index: msm/sound/soc/msm/msm-mvs.c
  		.owner = THIS_MODULE,
 Index: msm/sound/soc/msm/msm-pcm-afe.c
 ===================================================================
---- msm.orig/sound/soc/msm/msm-pcm-afe.c	2012-09-17 13:18:20.241103860 -0700
-+++ msm/sound/soc/msm/msm-pcm-afe.c	2012-09-17 13:19:55.245105465 -0700
-@@ -592,7 +592,7 @@
+--- msm.orig/sound/soc/msm/msm-pcm-afe.c	2012-09-18 13:08:18.000000000 -0700
++++ msm/sound/soc/msm/msm-pcm-afe.c	2012-09-18 13:48:21.210594267 -0700
+@@ -596,7 +596,7 @@
  	return 0;
  }
  
@@ -715,9 +676,9 @@ Index: msm/sound/soc/msm/msm-pcm-afe.c
  		.owner = THIS_MODULE,
 Index: msm/sound/soc/msm/msm-pcm-routing.c
 ===================================================================
---- msm.orig/sound/soc/msm/msm-pcm-routing.c	2012-09-17 13:18:20.241103860 -0700
-+++ msm/sound/soc/msm/msm-pcm-routing.c	2012-09-17 13:19:55.249105465 -0700
-@@ -2813,7 +2813,7 @@
+--- msm.orig/sound/soc/msm/msm-pcm-routing.c	2012-09-18 13:08:18.000000000 -0700
++++ msm/sound/soc/msm/msm-pcm-routing.c	2012-09-18 13:48:21.210594267 -0700
+@@ -2680,7 +2680,7 @@
  	return 0;
  }
  
@@ -728,9 +689,9 @@ Index: msm/sound/soc/msm/msm-pcm-routing.c
  		.owner = THIS_MODULE,
 Index: msm/sound/soc/msm/msm-pcm-voip.c
 ===================================================================
---- msm.orig/sound/soc/msm/msm-pcm-voip.c	2012-09-17 13:18:20.241103860 -0700
-+++ msm/sound/soc/msm/msm-pcm-voip.c	2012-09-17 13:19:55.249105465 -0700
-@@ -1112,7 +1112,7 @@
+--- msm.orig/sound/soc/msm/msm-pcm-voip.c	2012-09-18 13:08:18.000000000 -0700
++++ msm/sound/soc/msm/msm-pcm-voip.c	2012-09-18 13:48:21.210594267 -0700
+@@ -1108,7 +1108,7 @@
  	return ret;
  }
  
@@ -739,7 +700,7 @@ Index: msm/sound/soc/msm/msm-pcm-voip.c
  	.ops		= &msm_pcm_ops,
  	.pcm_new	= msm_asoc_pcm_new,
  	.probe		= msm_pcm_voip_probe,
-@@ -1131,7 +1131,7 @@
+@@ -1127,7 +1127,7 @@
  	return 0;
  }
  
@@ -750,8 +711,8 @@ Index: msm/sound/soc/msm/msm-pcm-voip.c
  		.owner = THIS_MODULE,
 Index: msm/sound/soc/msm/msm-voip.c
 ===================================================================
---- msm.orig/sound/soc/msm/msm-voip.c	2012-09-17 13:18:20.241103860 -0700
-+++ msm/sound/soc/msm/msm-voip.c	2012-09-17 13:19:55.249105465 -0700
+--- msm.orig/sound/soc/msm/msm-voip.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/sound/soc/msm/msm-voip.c	2012-09-18 13:48:21.214594267 -0700
 @@ -576,7 +576,7 @@
  	return 0;
  }
@@ -763,8 +724,8 @@ Index: msm/sound/soc/msm/msm-voip.c
  		.owner = THIS_MODULE,
 Index: msm/sound/soc/msm/msm7kv2-pcm.c
 ===================================================================
---- msm.orig/sound/soc/msm/msm7kv2-pcm.c	2012-09-17 13:13:06.125098552 -0700
-+++ msm/sound/soc/msm/msm7kv2-pcm.c	2012-09-17 13:19:55.249105465 -0700
+--- msm.orig/sound/soc/msm/msm7kv2-pcm.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/sound/soc/msm/msm7kv2-pcm.c	2012-09-18 13:48:21.214594267 -0700
 @@ -749,7 +749,7 @@
  	return 0;
  }
@@ -776,8 +737,8 @@ Index: msm/sound/soc/msm/msm7kv2-pcm.c
  		.owner = THIS_MODULE,
 Index: msm/sound/soc/msm/msm8x60-pcm.c
 ===================================================================
---- msm.orig/sound/soc/msm/msm8x60-pcm.c	2012-09-17 13:13:06.125098552 -0700
-+++ msm/sound/soc/msm/msm8x60-pcm.c	2012-09-17 13:19:55.249105465 -0700
+--- msm.orig/sound/soc/msm/msm8x60-pcm.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/sound/soc/msm/msm8x60-pcm.c	2012-09-18 13:48:21.214594267 -0700
 @@ -781,7 +781,7 @@
  	return 0;
  }
@@ -789,11 +750,11 @@ Index: msm/sound/soc/msm/msm8x60-pcm.c
  	.driver = {
 Index: msm/sound/soc/msm/qdsp6v2/msm-compr-q6-v2.c
 ===================================================================
---- msm.orig/sound/soc/msm/qdsp6v2/msm-compr-q6-v2.c	2012-09-17 13:18:20.245103860 -0700
-+++ msm/sound/soc/msm/qdsp6v2/msm-compr-q6-v2.c	2012-09-17 13:19:55.249105465 -0700
-@@ -642,7 +642,7 @@
- };
- MODULE_DEVICE_TABLE(of, msm_compr_dt_match);
+--- msm.orig/sound/soc/msm/qdsp6v2/msm-compr-q6-v2.c	2012-09-18 13:08:18.000000000 -0700
++++ msm/sound/soc/msm/qdsp6v2/msm-compr-q6-v2.c	2012-09-18 13:48:21.214594267 -0700
+@@ -632,7 +632,7 @@
+ 	return 0;
+ }
  
 -static struct platform_driver msm_compr_driver = {
 +static struct platform_driver msm_compr_driver  __initdata =  {
@@ -802,8 +763,8 @@ Index: msm/sound/soc/msm/qdsp6v2/msm-compr-q6-v2.c
  		.owner = THIS_MODULE,
 Index: msm/sound/soc/msm/qdsp6v2/msm-multi-ch-pcm-q6-v2.c
 ===================================================================
---- msm.orig/sound/soc/msm/qdsp6v2/msm-multi-ch-pcm-q6-v2.c	2012-09-17 13:18:20.245103860 -0700
-+++ msm/sound/soc/msm/qdsp6v2/msm-multi-ch-pcm-q6-v2.c	2012-09-17 13:19:55.249105465 -0700
+--- msm.orig/sound/soc/msm/qdsp6v2/msm-multi-ch-pcm-q6-v2.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/sound/soc/msm/qdsp6v2/msm-multi-ch-pcm-q6-v2.c	2012-09-18 13:48:21.214594267 -0700
 @@ -747,7 +747,7 @@
  	return 0;
  }
@@ -815,8 +776,8 @@ Index: msm/sound/soc/msm/qdsp6v2/msm-multi-ch-pcm-q6-v2.c
  		.owner = THIS_MODULE,
 Index: msm/sound/soc/msm/qdsp6v2/msm-pcm-afe-v2.c
 ===================================================================
---- msm.orig/sound/soc/msm/qdsp6v2/msm-pcm-afe-v2.c	2012-09-17 13:18:20.245103860 -0700
-+++ msm/sound/soc/msm/qdsp6v2/msm-pcm-afe-v2.c	2012-09-17 13:19:55.249105465 -0700
+--- msm.orig/sound/soc/msm/qdsp6v2/msm-pcm-afe-v2.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/sound/soc/msm/qdsp6v2/msm-pcm-afe-v2.c	2012-09-18 13:48:21.214594267 -0700
 @@ -554,7 +554,7 @@
  	return 0;
  }
@@ -828,9 +789,9 @@ Index: msm/sound/soc/msm/qdsp6v2/msm-pcm-afe-v2.c
  		.owner = THIS_MODULE,
 Index: msm/sound/soc/msm/qdsp6v2/msm-pcm-lpa-v2.c
 ===================================================================
---- msm.orig/sound/soc/msm/qdsp6v2/msm-pcm-lpa-v2.c	2012-09-17 13:18:20.245103860 -0700
-+++ msm/sound/soc/msm/qdsp6v2/msm-pcm-lpa-v2.c	2012-09-17 13:19:55.249105465 -0700
-@@ -595,7 +595,7 @@
+--- msm.orig/sound/soc/msm/qdsp6v2/msm-pcm-lpa-v2.c	2012-09-18 13:08:18.000000000 -0700
++++ msm/sound/soc/msm/qdsp6v2/msm-pcm-lpa-v2.c	2012-09-18 13:48:21.214594267 -0700
+@@ -584,7 +584,7 @@
  };
  MODULE_DEVICE_TABLE(of, msm_pcm_lpa_dt_match);
  
@@ -841,9 +802,9 @@ Index: msm/sound/soc/msm/qdsp6v2/msm-pcm-lpa-v2.c
  		.owner = THIS_MODULE,
 Index: msm/sound/soc/msm/qdsp6v2/msm-pcm-q6-v2.c
 ===================================================================
---- msm.orig/sound/soc/msm/qdsp6v2/msm-pcm-q6-v2.c	2012-09-17 13:18:20.245103860 -0700
-+++ msm/sound/soc/msm/qdsp6v2/msm-pcm-q6-v2.c	2012-09-17 13:19:55.249105465 -0700
-@@ -701,7 +701,7 @@
+--- msm.orig/sound/soc/msm/qdsp6v2/msm-pcm-q6-v2.c	2012-09-18 13:08:18.000000000 -0700
++++ msm/sound/soc/msm/qdsp6v2/msm-pcm-q6-v2.c	2012-09-18 13:48:21.214594267 -0700
+@@ -702,7 +702,7 @@
  };
  MODULE_DEVICE_TABLE(of, msm_pcm_dt_match);
  
@@ -854,9 +815,9 @@ Index: msm/sound/soc/msm/qdsp6v2/msm-pcm-q6-v2.c
  		.owner = THIS_MODULE,
 Index: msm/sound/soc/msm/qdsp6v2/msm-pcm-routing-v2.c
 ===================================================================
---- msm.orig/sound/soc/msm/qdsp6v2/msm-pcm-routing-v2.c	2012-09-17 13:18:20.245103860 -0700
-+++ msm/sound/soc/msm/qdsp6v2/msm-pcm-routing-v2.c	2012-09-17 13:19:55.253105465 -0700
-@@ -2175,7 +2175,7 @@
+--- msm.orig/sound/soc/msm/qdsp6v2/msm-pcm-routing-v2.c	2012-09-18 13:08:18.000000000 -0700
++++ msm/sound/soc/msm/qdsp6v2/msm-pcm-routing-v2.c	2012-09-18 13:48:21.214594267 -0700
+@@ -2174,7 +2174,7 @@
  };
  MODULE_DEVICE_TABLE(of, msm_pcm_routing_dt_match);
  
@@ -867,11 +828,11 @@ Index: msm/sound/soc/msm/qdsp6v2/msm-pcm-routing-v2.c
  		.owner = THIS_MODULE,
 Index: msm/sound/soc/msm/qdsp6v2/msm-pcm-voice-v2.c
 ===================================================================
---- msm.orig/sound/soc/msm/qdsp6v2/msm-pcm-voice-v2.c	2012-09-17 13:18:20.245103860 -0700
-+++ msm/sound/soc/msm/qdsp6v2/msm-pcm-voice-v2.c	2012-09-17 13:19:55.253105465 -0700
-@@ -486,7 +486,7 @@
- };
- MODULE_DEVICE_TABLE(of, msm_voice_dt_match);
+--- msm.orig/sound/soc/msm/qdsp6v2/msm-pcm-voice-v2.c	2012-09-18 13:08:18.000000000 -0700
++++ msm/sound/soc/msm/qdsp6v2/msm-pcm-voice-v2.c	2012-09-18 13:48:21.218594266 -0700
+@@ -477,7 +477,7 @@
+ 	return 0;
+ }
  
 -static struct platform_driver msm_pcm_driver = {
 +static struct platform_driver msm_pcm_driver  __initdata =  {
@@ -880,9 +841,9 @@ Index: msm/sound/soc/msm/qdsp6v2/msm-pcm-voice-v2.c
  		.owner = THIS_MODULE,
 Index: msm/sound/soc/msm/qdsp6v2/msm-pcm-voip-v2.c
 ===================================================================
---- msm.orig/sound/soc/msm/qdsp6v2/msm-pcm-voip-v2.c	2012-09-17 13:18:20.245103860 -0700
-+++ msm/sound/soc/msm/qdsp6v2/msm-pcm-voip-v2.c	2012-09-17 13:19:55.253105465 -0700
-@@ -1143,7 +1143,7 @@
+--- msm.orig/sound/soc/msm/qdsp6v2/msm-pcm-voip-v2.c	2012-09-18 13:08:18.000000000 -0700
++++ msm/sound/soc/msm/qdsp6v2/msm-pcm-voip-v2.c	2012-09-18 13:48:21.218594266 -0700
+@@ -1138,7 +1138,7 @@
  };
  MODULE_DEVICE_TABLE(of, msm_voip_dt_match);
  
@@ -893,8 +854,8 @@ Index: msm/sound/soc/msm/qdsp6v2/msm-pcm-voip-v2.c
  		.owner = THIS_MODULE,
 Index: msm/drivers/input/touchscreen/cyttsp_i2c.c
 ===================================================================
---- msm.orig/drivers/input/touchscreen/cyttsp_i2c.c	2012-09-17 13:18:18.765103835 -0700
-+++ msm/drivers/input/touchscreen/cyttsp_i2c.c	2012-09-17 13:19:55.253105465 -0700
+--- msm.orig/drivers/input/touchscreen/cyttsp_i2c.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/input/touchscreen/cyttsp_i2c.c	2012-09-18 13:48:21.218594266 -0700
 @@ -117,7 +117,7 @@
  };
  MODULE_DEVICE_TABLE(i2c, cyttsp_i2c_id);
@@ -906,9 +867,9 @@ Index: msm/drivers/input/touchscreen/cyttsp_i2c.c
  		.owner	= THIS_MODULE,
 Index: msm/drivers/mfd/wcd9xxx-core.c
 ===================================================================
---- msm.orig/drivers/mfd/wcd9xxx-core.c	2012-09-17 13:18:18.973103839 -0700
-+++ msm/drivers/mfd/wcd9xxx-core.c	2012-09-17 13:19:55.253105465 -0700
-@@ -1435,7 +1435,7 @@
+--- msm.orig/drivers/mfd/wcd9xxx-core.c	2012-09-18 13:08:18.000000000 -0700
++++ msm/drivers/mfd/wcd9xxx-core.c	2012-09-18 14:21:39.562628031 -0700
+@@ -1136,7 +1136,7 @@
  };
  MODULE_DEVICE_TABLE(i2c, tabla_id_table);
  
@@ -917,42 +878,20 @@ Index: msm/drivers/mfd/wcd9xxx-core.c
  	.driver                 = {
  		.owner          =       THIS_MODULE,
  		.name           =       "tabla-i2c-core",
-Index: msm/drivers/net/wireless/wcnss/wcnss_wlan.c
-===================================================================
---- msm.orig/drivers/net/wireless/wcnss/wcnss_wlan.c	2012-09-17 13:18:19.301103844 -0700
-+++ msm/drivers/net/wireless/wcnss/wcnss_wlan.c	2012-09-17 13:33:33.741119296 -0700
-@@ -329,7 +329,7 @@
- }
- 
- 
--static struct platform_driver wcnss_wlan_ctrl_driver = {
-+static struct platform_driver wcnss_wlan_ctrl_driver __refdata = {
- 	.driver = {
- 		.name	= "WLAN_CTRL",
- 		.owner	= THIS_MODULE,
-@@ -368,7 +368,7 @@
- }
- 
- /* platform device for WCNSS_CTRL SMD channel */
--static struct platform_driver wcnss_ctrl_driver = {
-+static struct platform_driver wcnss_ctrl_driver __refdata = {
- 	.driver = {
- 		.name	= "WCNSS_CTRL",
- 		.owner	= THIS_MODULE,
-@@ -793,7 +793,7 @@
+@@ -1148,7 +1148,7 @@
+ 	.suspend = wcd9xxx_i2c_suspend,
  };
- #endif
  
--static struct platform_driver wcnss_wlan_driver = {
-+static struct platform_driver wcnss_wlan_driver __refdata = {
- 	.driver = {
- 		.name	= DEVICE,
- 		.owner	= THIS_MODULE,
+-static struct i2c_driver sitar_i2c_driver = {
++static struct i2c_driver sitar_i2c_driver __refdata = {
+ 	.driver                 = {
+ 		.owner          =       THIS_MODULE,
+ 		.name           =       "sitar-i2c-core",
 Index: msm/drivers/power/smb349.c
 ===================================================================
---- msm.orig/drivers/power/smb349.c	2012-09-17 13:18:19.341103844 -0700
-+++ msm/drivers/power/smb349.c	2012-09-17 13:19:55.253105465 -0700
-@@ -678,7 +678,7 @@
+--- msm.orig/drivers/power/smb349.c	2012-09-18 13:08:18.000000000 -0700
++++ msm/drivers/power/smb349.c	2012-09-18 13:48:21.218594266 -0700
+@@ -676,7 +676,7 @@
  };
  MODULE_DEVICE_TABLE(i2c, smb349_id);
  
@@ -963,8 +902,8 @@ Index: msm/drivers/power/smb349.c
  		   .owner	= THIS_MODULE,
 Index: msm/drivers/usb/misc/mdm_data_bridge.c
 ===================================================================
---- msm.orig/drivers/usb/misc/mdm_data_bridge.c	2012-09-17 13:18:19.649103850 -0700
-+++ msm/drivers/usb/misc/mdm_data_bridge.c	2012-09-17 13:19:55.253105465 -0700
+--- msm.orig/drivers/usb/misc/mdm_data_bridge.c	2012-09-18 13:08:18.000000000 -0700
++++ msm/drivers/usb/misc/mdm_data_bridge.c	2012-09-18 13:48:21.218594266 -0700
 @@ -1036,7 +1036,7 @@
  };
  MODULE_DEVICE_TABLE(usb, bridge_ids);
@@ -976,9 +915,9 @@ Index: msm/drivers/usb/misc/mdm_data_bridge.c
  	.disconnect =		bridge_disconnect,
 Index: msm/sound/soc/codecs/cs8427.c
 ===================================================================
---- msm.orig/sound/soc/codecs/cs8427.c	2012-09-17 13:18:20.213103859 -0700
-+++ msm/sound/soc/codecs/cs8427.c	2012-09-17 13:19:55.253105465 -0700
-@@ -946,7 +946,7 @@
+--- msm.orig/sound/soc/codecs/cs8427.c	2012-09-18 13:08:18.000000000 -0700
++++ msm/sound/soc/codecs/cs8427.c	2012-09-18 13:48:21.218594266 -0700
+@@ -873,7 +873,7 @@
  };
  MODULE_DEVICE_TABLE(i2c, cs8427_id_table);
  
@@ -989,9 +928,9 @@ Index: msm/sound/soc/codecs/cs8427.c
  		.name           =       "cs8427-spdif",
 Index: msm/sound/soc/codecs/wcd9310.c
 ===================================================================
---- msm.orig/sound/soc/codecs/wcd9310.c	2012-09-17 13:18:20.221103860 -0700
-+++ msm/sound/soc/codecs/wcd9310.c	2012-09-17 13:19:55.257105466 -0700
-@@ -8407,7 +8407,7 @@
+--- msm.orig/sound/soc/codecs/wcd9310.c	2012-09-18 13:08:18.000000000 -0700
++++ msm/sound/soc/codecs/wcd9310.c	2012-09-18 13:48:21.218594266 -0700
+@@ -8112,7 +8112,7 @@
  	snd_soc_unregister_codec(&pdev->dev);
  	return 0;
  }
@@ -1000,7 +939,7 @@ Index: msm/sound/soc/codecs/wcd9310.c
  	.probe = tabla_probe,
  	.remove = tabla_remove,
  	.driver = {
-@@ -8419,7 +8419,7 @@
+@@ -8124,7 +8124,7 @@
  	},
  };
  
@@ -1011,9 +950,9 @@ Index: msm/sound/soc/codecs/wcd9310.c
  	.driver = {
 Index: msm/sound/soc/msm/msm-dai-q6.c
 ===================================================================
---- msm.orig/sound/soc/msm/msm-dai-q6.c	2012-09-17 13:18:20.241103860 -0700
-+++ msm/sound/soc/msm/msm-dai-q6.c	2012-09-17 13:19:55.257105466 -0700
-@@ -1488,7 +1488,7 @@
+--- msm.orig/sound/soc/msm/msm-dai-q6.c	2012-09-18 13:08:18.000000000 -0700
++++ msm/sound/soc/msm/msm-dai-q6.c	2012-09-18 13:48:21.222594267 -0700
+@@ -1484,7 +1484,7 @@
  	.shutdown	= msm_dai_q6_sec_auxpcm_shutdown,
  };
  
@@ -1022,7 +961,7 @@ Index: msm/sound/soc/msm/msm-dai-q6.c
  	.playback = {
  		.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_8000 |
  		SNDRV_PCM_RATE_16000,
-@@ -1970,7 +1970,7 @@
+@@ -1966,7 +1966,7 @@
  	return 0;
  }
  
@@ -1031,7 +970,7 @@ Index: msm/sound/soc/msm/msm-dai-q6.c
  	.probe  = msm_dai_q6_dev_probe,
  	.remove = msm_dai_q6_dev_remove,
  	.driver = {
-@@ -1979,7 +1979,7 @@
+@@ -1975,7 +1975,7 @@
  	},
  };
  
@@ -1042,9 +981,9 @@ Index: msm/sound/soc/msm/msm-dai-q6.c
  	.driver = {
 Index: msm/drivers/input/touchscreen/cyttsp-i2c-qc.c
 ===================================================================
---- msm.orig/drivers/input/touchscreen/cyttsp-i2c-qc.c	2012-09-17 13:18:18.761103835 -0700
-+++ msm/drivers/input/touchscreen/cyttsp-i2c-qc.c	2012-09-17 13:19:55.257105466 -0700
-@@ -162,7 +162,7 @@
+--- msm.orig/drivers/input/touchscreen/cyttsp-i2c-qc.c	2012-09-18 13:08:17.000000000 -0700
++++ msm/drivers/input/touchscreen/cyttsp-i2c-qc.c	2012-09-18 13:48:21.222594267 -0700
+@@ -161,7 +161,7 @@
  };
  #endif
  
@@ -1055,8 +994,8 @@ Index: msm/drivers/input/touchscreen/cyttsp-i2c-qc.c
  		.owner = THIS_MODULE,
 Index: msm/drivers/video/msm/mipi_tc358764_dsi2lvds.c
 ===================================================================
---- msm.orig/drivers/video/msm/mipi_tc358764_dsi2lvds.c	2012-09-17 13:18:19.697103851 -0700
-+++ msm/drivers/video/msm/mipi_tc358764_dsi2lvds.c	2012-09-17 13:19:55.257105466 -0700
+--- msm.orig/drivers/video/msm/mipi_tc358764_dsi2lvds.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/video/msm/mipi_tc358764_dsi2lvds.c	2012-09-18 13:48:21.222594267 -0700
 @@ -224,7 +224,7 @@
  static u32 d2l_3d_gpio_mode;
  static int d2l_enable_3d;
@@ -1077,8 +1016,8 @@ Index: msm/drivers/video/msm/mipi_tc358764_dsi2lvds.c
  	.driver = {
 Index: msm/include/linux/oprofile.h
 ===================================================================
---- msm.orig/include/linux/oprofile.h	2012-09-17 13:18:19.917103854 -0700
-+++ msm/include/linux/oprofile.h	2012-09-17 13:19:55.257105466 -0700
+--- msm.orig/include/linux/oprofile.h	2012-09-18 13:02:02.000000000 -0700
++++ msm/include/linux/oprofile.h	2012-09-18 13:48:21.222594267 -0700
 @@ -84,7 +84,7 @@
   *
   * If an error occurs, the fields should be left untouched.
@@ -1090,8 +1029,8 @@ Index: msm/include/linux/oprofile.h
   * One-time exit/cleanup for the arch.
 Index: msm/net/wireless/reg.c
 ===================================================================
---- msm.orig/net/wireless/reg.c	2012-09-17 13:18:20.137103858 -0700
-+++ msm/net/wireless/reg.c	2012-09-17 13:19:55.257105466 -0700
+--- msm.orig/net/wireless/reg.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/net/wireless/reg.c	2012-09-18 13:48:21.222594267 -0700
 @@ -2309,7 +2309,7 @@
  	restore_regulatory_settings(true);
  }
@@ -1103,8 +1042,8 @@ Index: msm/net/wireless/reg.c
  
 Index: msm/net/wireless/reg.h
 ===================================================================
---- msm.orig/net/wireless/reg.h	2012-09-17 13:18:20.137103858 -0700
-+++ msm/net/wireless/reg.h	2012-09-17 13:19:55.261105466 -0700
+--- msm.orig/net/wireless/reg.h	2012-09-18 13:02:02.000000000 -0700
++++ msm/net/wireless/reg.h	2012-09-18 13:48:21.222594267 -0700
 @@ -27,7 +27,7 @@
  int reg_device_uevent(struct device *dev, struct kobj_uevent_env *env);
  void reg_device_remove(struct wiphy *wiphy);
@@ -1116,8 +1055,8 @@ Index: msm/net/wireless/reg.h
  int set_regdom(const struct ieee80211_regdomain *rd);
 Index: msm/arch/arm/mach-msm/sysmon.c
 ===================================================================
---- msm.orig/arch/arm/mach-msm/sysmon.c	2012-09-17 13:18:18.133103824 -0700
-+++ msm/arch/arm/mach-msm/sysmon.c	2012-09-17 13:19:55.261105466 -0700
+--- msm.orig/arch/arm/mach-msm/sysmon.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/arch/arm/mach-msm/sysmon.c	2012-09-18 13:48:21.222594267 -0700
 @@ -278,7 +278,7 @@
  	return 0;
  }
@@ -1129,8 +1068,8 @@ Index: msm/arch/arm/mach-msm/sysmon.c
  	.driver		= {
 Index: msm/arch/arm/oprofile/common.c
 ===================================================================
---- msm.orig/arch/arm/oprofile/common.c	2012-09-17 13:18:18.213103825 -0700
-+++ msm/arch/arm/oprofile/common.c	2012-09-17 13:19:55.261105466 -0700
+--- msm.orig/arch/arm/oprofile/common.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/arch/arm/oprofile/common.c	2012-09-18 13:48:21.226594268 -0700
 @@ -116,7 +116,7 @@
  		tail = user_backtrace(tail);
  }
@@ -1142,8 +1081,8 @@ Index: msm/arch/arm/oprofile/common.c
  	ops->backtrace		= arm_backtrace;
 Index: msm/drivers/bluetooth/bluetooth-power.c
 ===================================================================
---- msm.orig/drivers/bluetooth/bluetooth-power.c	2012-09-17 13:13:06.081098551 -0700
-+++ msm/drivers/bluetooth/bluetooth-power.c	2012-09-17 13:19:55.261105466 -0700
+--- msm.orig/drivers/bluetooth/bluetooth-power.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/bluetooth/bluetooth-power.c	2012-09-18 13:48:21.226594268 -0700
 @@ -108,7 +108,7 @@
  	return 0;
  }
@@ -1155,8 +1094,8 @@ Index: msm/drivers/bluetooth/bluetooth-power.c
  	.driver = {
 Index: msm/drivers/char/dcc_tty.c
 ===================================================================
---- msm.orig/drivers/char/dcc_tty.c	2012-09-17 13:13:06.081098551 -0700
-+++ msm/drivers/char/dcc_tty.c	2012-09-17 13:19:55.261105466 -0700
+--- msm.orig/drivers/char/dcc_tty.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/char/dcc_tty.c	2012-09-18 13:48:21.226594268 -0700
 @@ -33,7 +33,7 @@
  static int g_dcc_buffer_head;
  static int g_dcc_buffer_count;
@@ -1177,8 +1116,8 @@ Index: msm/drivers/char/dcc_tty.c
  	.write		= dcc_console_write,
 Index: msm/drivers/char/hw_random/msm_rng.c
 ===================================================================
---- msm.orig/drivers/char/hw_random/msm_rng.c	2012-09-17 13:18:18.585103832 -0700
-+++ msm/drivers/char/hw_random/msm_rng.c	2012-09-17 13:19:55.261105466 -0700
+--- msm.orig/drivers/char/hw_random/msm_rng.c	2012-09-18 13:08:17.000000000 -0700
++++ msm/drivers/char/hw_random/msm_rng.c	2012-09-18 13:48:21.226594268 -0700
 @@ -237,7 +237,7 @@
  	{}
  };
@@ -1190,9 +1129,9 @@ Index: msm/drivers/char/hw_random/msm_rng.c
  	.driver     = {
 Index: msm/drivers/char/msm_rotator.c
 ===================================================================
---- msm.orig/drivers/char/msm_rotator.c	2012-09-17 13:18:18.589103832 -0700
-+++ msm/drivers/char/msm_rotator.c	2012-09-17 13:19:55.321105464 -0700
-@@ -1809,7 +1809,7 @@
+--- msm.orig/drivers/char/msm_rotator.c	2012-09-18 13:08:17.000000000 -0700
++++ msm/drivers/char/msm_rotator.c	2012-09-18 13:48:21.226594268 -0700
+@@ -1802,7 +1802,7 @@
  }
  #endif
  
@@ -1203,8 +1142,8 @@ Index: msm/drivers/char/msm_rotator.c
  #ifdef CONFIG_PM
 Index: msm/drivers/gpio/pm8xxx-gpio.c
 ===================================================================
---- msm.orig/drivers/gpio/pm8xxx-gpio.c	2012-09-17 13:18:18.625103832 -0700
-+++ msm/drivers/gpio/pm8xxx-gpio.c	2012-09-17 13:19:55.321105464 -0700
+--- msm.orig/drivers/gpio/pm8xxx-gpio.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/gpio/pm8xxx-gpio.c	2012-09-18 13:48:21.226594268 -0700
 @@ -435,7 +435,7 @@
  }
  EXPORT_SYMBOL(pm8xxx_gpio_config);
@@ -1216,8 +1155,8 @@ Index: msm/drivers/gpio/pm8xxx-gpio.c
  	.driver		= {
 Index: msm/drivers/gpio/pm8xxx-mpp.c
 ===================================================================
---- msm.orig/drivers/gpio/pm8xxx-mpp.c	2012-09-17 13:18:18.625103832 -0700
-+++ msm/drivers/gpio/pm8xxx-mpp.c	2012-09-17 13:19:55.321105464 -0700
+--- msm.orig/drivers/gpio/pm8xxx-mpp.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/gpio/pm8xxx-mpp.c	2012-09-18 13:48:21.318594265 -0700
 @@ -308,7 +308,7 @@
  	return 0;
  }
@@ -1229,11 +1168,11 @@ Index: msm/drivers/gpio/pm8xxx-mpp.c
  	.driver		= {
 Index: msm/drivers/gpu/msm/adreno.c
 ===================================================================
---- msm.orig/drivers/gpu/msm/adreno.c	2012-09-17 13:18:18.681103834 -0700
-+++ msm/drivers/gpu/msm/adreno.c	2012-09-17 13:19:55.321105464 -0700
-@@ -2456,7 +2456,7 @@
- 	.postmortem_dump = adreno_dump,
+--- msm.orig/drivers/gpu/msm/adreno.c	2012-09-18 13:08:17.000000000 -0700
++++ msm/drivers/gpu/msm/adreno.c	2012-09-18 13:48:21.322594269 -0700
+@@ -1755,7 +1755,7 @@
  };
+ MODULE_DEVICE_TABLE(platform, adreno_id_table);
  
 -static struct platform_driver adreno_platform_driver = {
 +static struct platform_driver adreno_platform_driver __refdata = {
@@ -1242,9 +1181,9 @@ Index: msm/drivers/gpu/msm/adreno.c
  	.suspend = kgsl_suspend_driver,
 Index: msm/drivers/gpu/msm/z180.c
 ===================================================================
---- msm.orig/drivers/gpu/msm/z180.c	2012-09-17 13:18:18.685103833 -0700
-+++ msm/drivers/gpu/msm/z180.c	2012-09-17 13:19:55.321105464 -0700
-@@ -941,7 +941,7 @@
+--- msm.orig/drivers/gpu/msm/z180.c	2012-09-18 13:08:17.000000000 -0700
++++ msm/drivers/gpu/msm/z180.c	2012-09-18 13:48:21.322594269 -0700
+@@ -944,7 +944,7 @@
  };
  MODULE_DEVICE_TABLE(platform, z180_id_table);
  
@@ -1255,8 +1194,8 @@ Index: msm/drivers/gpu/msm/z180.c
  	.suspend = kgsl_suspend_driver,
 Index: msm/drivers/hwmon/msm_adc.c
 ===================================================================
---- msm.orig/drivers/hwmon/msm_adc.c	2012-09-17 13:18:18.705103834 -0700
-+++ msm/drivers/hwmon/msm_adc.c	2012-09-17 13:19:55.321105464 -0700
+--- msm.orig/drivers/hwmon/msm_adc.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/hwmon/msm_adc.c	2012-09-18 13:48:21.322594269 -0700
 @@ -1384,7 +1384,7 @@
  	return rc;
  }
@@ -1277,9 +1216,9 @@ Index: msm/drivers/hwmon/msm_adc.c
  	.driver = {
 Index: msm/drivers/i2c/busses/i2c-qup.c
 ===================================================================
---- msm.orig/drivers/i2c/busses/i2c-qup.c	2012-09-17 13:18:18.717103834 -0700
-+++ msm/drivers/i2c/busses/i2c-qup.c	2012-09-17 13:19:55.321105464 -0700
-@@ -1502,7 +1502,7 @@
+--- msm.orig/drivers/i2c/busses/i2c-qup.c	2012-09-18 13:08:17.000000000 -0700
++++ msm/drivers/i2c/busses/i2c-qup.c	2012-09-18 13:48:21.322594269 -0700
+@@ -1488,7 +1488,7 @@
  	{}
  };
  
@@ -1290,8 +1229,8 @@ Index: msm/drivers/i2c/busses/i2c-qup.c
  	.driver		= {
 Index: msm/drivers/input/keyboard/gpio_keys.c
 ===================================================================
---- msm.orig/drivers/input/keyboard/gpio_keys.c	2012-09-17 13:18:18.749103834 -0700
-+++ msm/drivers/input/keyboard/gpio_keys.c	2012-09-17 13:19:55.325105465 -0700
+--- msm.orig/drivers/input/keyboard/gpio_keys.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/input/keyboard/gpio_keys.c	2012-09-18 13:48:21.322594269 -0700
 @@ -816,7 +816,7 @@
  
  static SIMPLE_DEV_PM_OPS(gpio_keys_pm_ops, gpio_keys_suspend, gpio_keys_resume);
@@ -1303,8 +1242,8 @@ Index: msm/drivers/input/keyboard/gpio_keys.c
  	.driver		= {
 Index: msm/drivers/input/keyboard/pmic8xxx-keypad.c
 ===================================================================
---- msm.orig/drivers/input/keyboard/pmic8xxx-keypad.c	2012-09-17 13:18:18.749103834 -0700
-+++ msm/drivers/input/keyboard/pmic8xxx-keypad.c	2012-09-17 13:19:55.325105465 -0700
+--- msm.orig/drivers/input/keyboard/pmic8xxx-keypad.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/input/keyboard/pmic8xxx-keypad.c	2012-09-18 13:48:21.322594269 -0700
 @@ -781,7 +781,7 @@
  static SIMPLE_DEV_PM_OPS(pm8xxx_kp_pm_ops,
  			 pmic8xxx_kp_suspend, pmic8xxx_kp_resume);
@@ -1316,8 +1255,8 @@ Index: msm/drivers/input/keyboard/pmic8xxx-keypad.c
  	.driver		= {
 Index: msm/drivers/input/misc/pmic8058-othc.c
 ===================================================================
---- msm.orig/drivers/input/misc/pmic8058-othc.c	2012-09-17 13:13:06.085098551 -0700
-+++ msm/drivers/input/misc/pmic8058-othc.c	2012-09-17 13:19:55.325105465 -0700
+--- msm.orig/drivers/input/misc/pmic8058-othc.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/input/misc/pmic8058-othc.c	2012-09-18 13:48:21.322594269 -0700
 @@ -1155,7 +1155,7 @@
  	return rc;
  }
@@ -1329,8 +1268,8 @@ Index: msm/drivers/input/misc/pmic8058-othc.c
  		.owner = THIS_MODULE,
 Index: msm/drivers/input/touchscreen/atmel_maxtouch.c
 ===================================================================
---- msm.orig/drivers/input/touchscreen/atmel_maxtouch.c	2012-09-17 13:18:18.761103835 -0700
-+++ msm/drivers/input/touchscreen/atmel_maxtouch.c	2012-09-17 13:19:55.325105465 -0700
+--- msm.orig/drivers/input/touchscreen/atmel_maxtouch.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/input/touchscreen/atmel_maxtouch.c	2012-09-18 13:48:21.322594269 -0700
 @@ -2299,7 +2299,7 @@
  
  MODULE_DEVICE_TABLE(i2c, mxt_idtable);
@@ -1342,11 +1281,11 @@ Index: msm/drivers/input/touchscreen/atmel_maxtouch.c
  		.owner  = THIS_MODULE,
 Index: msm/drivers/input/touchscreen/atmel_mxt_ts.c
 ===================================================================
---- msm.orig/drivers/input/touchscreen/atmel_mxt_ts.c	2012-09-17 13:18:18.761103835 -0700
-+++ msm/drivers/input/touchscreen/atmel_mxt_ts.c	2012-09-17 13:19:55.325105465 -0700
-@@ -2782,7 +2782,7 @@
- #define mxt_match_table NULL
- #endif
+--- msm.orig/drivers/input/touchscreen/atmel_mxt_ts.c	2012-09-18 13:08:17.000000000 -0700
++++ msm/drivers/input/touchscreen/atmel_mxt_ts.c	2012-09-18 13:48:21.322594269 -0700
+@@ -2541,7 +2541,7 @@
+ };
+ MODULE_DEVICE_TABLE(i2c, mxt_id);
  
 -static struct i2c_driver mxt_driver = {
 +static struct i2c_driver mxt_driver __refdata = {
@@ -1355,8 +1294,8 @@ Index: msm/drivers/input/touchscreen/atmel_mxt_ts.c
  		.owner	= THIS_MODULE,
 Index: msm/drivers/input/touchscreen/cy8c_tmg_ts.c
 ===================================================================
---- msm.orig/drivers/input/touchscreen/cy8c_tmg_ts.c	2012-09-17 13:13:06.085098551 -0700
-+++ msm/drivers/input/touchscreen/cy8c_tmg_ts.c	2012-09-17 13:19:55.325105465 -0700
+--- msm.orig/drivers/input/touchscreen/cy8c_tmg_ts.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/input/touchscreen/cy8c_tmg_ts.c	2012-09-18 13:48:21.322594269 -0700
 @@ -428,7 +428,7 @@
  	{}
  };
@@ -1368,8 +1307,8 @@ Index: msm/drivers/input/touchscreen/cy8c_tmg_ts.c
  	.remove = cy8c_ts_remove,
 Index: msm/drivers/input/touchscreen/cy8c_ts.c
 ===================================================================
---- msm.orig/drivers/input/touchscreen/cy8c_ts.c	2012-09-17 13:13:06.085098551 -0700
-+++ msm/drivers/input/touchscreen/cy8c_ts.c	2012-09-17 13:19:55.325105465 -0700
+--- msm.orig/drivers/input/touchscreen/cy8c_ts.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/input/touchscreen/cy8c_ts.c	2012-09-18 13:48:21.326594272 -0700
 @@ -791,7 +791,7 @@
  MODULE_DEVICE_TABLE(i2c, cy8c_ts_id);
  
@@ -1381,8 +1320,8 @@ Index: msm/drivers/input/touchscreen/cy8c_ts.c
  		.owner = THIS_MODULE,
 Index: msm/drivers/leds/leds-pmic8058.c
 ===================================================================
---- msm.orig/drivers/leds/leds-pmic8058.c	2012-09-17 13:18:18.809103835 -0700
-+++ msm/drivers/leds/leds-pmic8058.c	2012-09-17 13:19:55.325105465 -0700
+--- msm.orig/drivers/leds/leds-pmic8058.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/leds/leds-pmic8058.c	2012-09-18 13:48:21.326594272 -0700
 @@ -401,7 +401,7 @@
  	return 0;
  }
@@ -1394,8 +1333,8 @@ Index: msm/drivers/leds/leds-pmic8058.c
  	.driver		= {
 Index: msm/drivers/md/dm-crypt.c
 ===================================================================
---- msm.orig/drivers/md/dm-crypt.c	2012-09-17 13:18:18.813103836 -0700
-+++ msm/drivers/md/dm-crypt.c	2012-09-17 13:19:55.329105466 -0700
+--- msm.orig/drivers/md/dm-crypt.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/md/dm-crypt.c	2012-09-18 13:48:21.326594272 -0700
 @@ -510,12 +510,14 @@
  	struct iv_lmk_private *lmk = &cc->iv_gen_private.lmk;
  	struct {
@@ -1414,9 +1353,9 @@ Index: msm/drivers/md/dm-crypt.c
  
 Index: msm/drivers/media/radio/radio-tavarua.c
 ===================================================================
---- msm.orig/drivers/media/radio/radio-tavarua.c	2012-09-17 13:18:18.865103837 -0700
-+++ msm/drivers/media/radio/radio-tavarua.c	2012-09-17 13:19:55.329105466 -0700
-@@ -4580,7 +4580,7 @@
+--- msm.orig/drivers/media/radio/radio-tavarua.c	2012-09-18 13:08:17.000000000 -0700
++++ msm/drivers/media/radio/radio-tavarua.c	2012-09-18 13:48:21.326594272 -0700
+@@ -4384,7 +4384,7 @@
   provide probe() and remove() methods.  They support power management
   and shutdown notifications using the standard conventions.
  */
@@ -1427,8 +1366,8 @@ Index: msm/drivers/media/radio/radio-tavarua.c
  		.name   = "marimba_fm",
 Index: msm/drivers/mfd/marimba-core.c
 ===================================================================
---- msm.orig/drivers/mfd/marimba-core.c	2012-09-17 13:18:18.969103838 -0700
-+++ msm/drivers/mfd/marimba-core.c	2012-09-17 13:19:55.329105466 -0700
+--- msm.orig/drivers/mfd/marimba-core.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/mfd/marimba-core.c	2012-09-18 13:48:21.326594272 -0700
 @@ -909,7 +909,7 @@
  };
  MODULE_DEVICE_TABLE(i2c, marimba_id_table);
@@ -1440,8 +1379,8 @@ Index: msm/drivers/mfd/marimba-core.c
  			.name		=	"marimba-core",
 Index: msm/drivers/mfd/pm8xxx-batt-alarm.c
 ===================================================================
---- msm.orig/drivers/mfd/pm8xxx-batt-alarm.c	2012-09-17 13:13:06.089098551 -0700
-+++ msm/drivers/mfd/pm8xxx-batt-alarm.c	2012-09-17 13:19:55.329105466 -0700
+--- msm.orig/drivers/mfd/pm8xxx-batt-alarm.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/mfd/pm8xxx-batt-alarm.c	2012-09-18 13:48:21.326594272 -0700
 @@ -778,7 +778,7 @@
  	return 0;
  }
@@ -1453,8 +1392,8 @@ Index: msm/drivers/mfd/pm8xxx-batt-alarm.c
  	.driver	= {
 Index: msm/drivers/mfd/pm8xxx-debug.c
 ===================================================================
---- msm.orig/drivers/mfd/pm8xxx-debug.c	2012-09-17 13:18:18.969103838 -0700
-+++ msm/drivers/mfd/pm8xxx-debug.c	2012-09-17 13:19:55.329105466 -0700
+--- msm.orig/drivers/mfd/pm8xxx-debug.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/mfd/pm8xxx-debug.c	2012-09-18 13:48:21.326594272 -0700
 @@ -189,7 +189,7 @@
  	return 0;
  }
@@ -1466,9 +1405,9 @@ Index: msm/drivers/mfd/pm8xxx-debug.c
  	.driver		= {
 Index: msm/drivers/mfd/pm8xxx-misc.c
 ===================================================================
---- msm.orig/drivers/mfd/pm8xxx-misc.c	2012-09-17 13:18:18.969103838 -0700
-+++ msm/drivers/mfd/pm8xxx-misc.c	2012-09-17 13:19:55.329105466 -0700
-@@ -1237,7 +1237,7 @@
+--- msm.orig/drivers/mfd/pm8xxx-misc.c	2012-09-18 13:08:18.000000000 -0700
++++ msm/drivers/mfd/pm8xxx-misc.c	2012-09-18 13:48:21.326594272 -0700
+@@ -1229,7 +1229,7 @@
  	return 0;
  }
  
@@ -1479,8 +1418,8 @@ Index: msm/drivers/mfd/pm8xxx-misc.c
  	.driver	= {
 Index: msm/drivers/mfd/pmic8058.c
 ===================================================================
---- msm.orig/drivers/mfd/pmic8058.c	2012-09-17 13:18:18.973103839 -0700
-+++ msm/drivers/mfd/pmic8058.c	2012-09-17 13:19:55.329105466 -0700
+--- msm.orig/drivers/mfd/pmic8058.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/mfd/pmic8058.c	2012-09-18 13:48:21.326594272 -0700
 @@ -765,7 +765,7 @@
  	return 0;
  }
@@ -1492,8 +1431,8 @@ Index: msm/drivers/mfd/pmic8058.c
  	.driver		= {
 Index: msm/drivers/mfd/pmic8901.c
 ===================================================================
---- msm.orig/drivers/mfd/pmic8901.c	2012-09-17 13:18:18.973103839 -0700
-+++ msm/drivers/mfd/pmic8901.c	2012-09-17 13:19:55.329105466 -0700
+--- msm.orig/drivers/mfd/pmic8901.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/mfd/pmic8901.c	2012-09-18 13:48:21.330594272 -0700
 @@ -355,7 +355,7 @@
  	return 0;
  }
@@ -1505,8 +1444,8 @@ Index: msm/drivers/mfd/pmic8901.c
  	.driver		= {
 Index: msm/drivers/misc/pm8xxx-upl.c
 ===================================================================
---- msm.orig/drivers/misc/pm8xxx-upl.c	2012-09-17 13:13:06.089098551 -0700
-+++ msm/drivers/misc/pm8xxx-upl.c	2012-09-17 13:19:55.333105467 -0700
+--- msm.orig/drivers/misc/pm8xxx-upl.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/misc/pm8xxx-upl.c	2012-09-18 13:48:21.330594272 -0700
 @@ -322,7 +322,7 @@
  	return 0;
  }
@@ -1518,8 +1457,8 @@ Index: msm/drivers/misc/pm8xxx-upl.c
  	.driver		= {
 Index: msm/drivers/misc/pmic8058-pwm.c
 ===================================================================
---- msm.orig/drivers/misc/pmic8058-pwm.c	2012-09-17 13:13:06.089098551 -0700
-+++ msm/drivers/misc/pmic8058-pwm.c	2012-09-17 13:19:55.333105467 -0700
+--- msm.orig/drivers/misc/pmic8058-pwm.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/misc/pmic8058-pwm.c	2012-09-18 13:48:21.330594272 -0700
 @@ -1057,7 +1057,7 @@
  	return 0;
  }
@@ -1531,9 +1470,9 @@ Index: msm/drivers/misc/pmic8058-pwm.c
  	.driver		= {
 Index: msm/drivers/misc/tsif.c
 ===================================================================
---- msm.orig/drivers/misc/tsif.c	2012-09-17 13:18:18.985103838 -0700
-+++ msm/drivers/misc/tsif.c	2012-09-17 13:19:55.333105467 -0700
-@@ -1401,7 +1401,7 @@
+--- msm.orig/drivers/misc/tsif.c	2012-09-18 13:08:18.000000000 -0700
++++ msm/drivers/misc/tsif.c	2012-09-18 13:48:21.330594272 -0700
+@@ -1421,7 +1421,7 @@
  };
  
  
@@ -1544,8 +1483,8 @@ Index: msm/drivers/misc/tsif.c
  	.driver         = {
 Index: msm/drivers/oprofile/oprofilefs.c
 ===================================================================
---- msm.orig/drivers/oprofile/oprofilefs.c	2012-09-17 13:18:19.313103844 -0700
-+++ msm/drivers/oprofile/oprofilefs.c	2012-09-17 13:19:55.385105467 -0700
+--- msm.orig/drivers/oprofile/oprofilefs.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/oprofile/oprofilefs.c	2012-09-18 13:48:21.330594272 -0700
 @@ -268,13 +268,13 @@
  };
  
@@ -1564,8 +1503,8 @@ Index: msm/drivers/oprofile/oprofilefs.c
  }
 Index: msm/drivers/platform/msm/ssbi.c
 ===================================================================
---- msm.orig/drivers/platform/msm/ssbi.c	2012-09-17 13:18:19.329103845 -0700
-+++ msm/drivers/platform/msm/ssbi.c	2012-09-17 13:19:55.385105467 -0700
+--- msm.orig/drivers/platform/msm/ssbi.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/platform/msm/ssbi.c	2012-09-18 13:48:21.330594272 -0700
 @@ -414,7 +414,7 @@
  	return 0;
  }
@@ -1577,8 +1516,8 @@ Index: msm/drivers/platform/msm/ssbi.c
  	.driver		= {
 Index: msm/drivers/power/isl9519q.c
 ===================================================================
---- msm.orig/drivers/power/isl9519q.c	2012-09-17 13:13:06.093098552 -0700
-+++ msm/drivers/power/isl9519q.c	2012-09-17 13:19:55.385105467 -0700
+--- msm.orig/drivers/power/isl9519q.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/power/isl9519q.c	2012-09-18 13:48:21.330594272 -0700
 @@ -817,7 +817,7 @@
  };
  #endif
@@ -1590,8 +1529,8 @@ Index: msm/drivers/power/isl9519q.c
  		   .owner = THIS_MODULE,
 Index: msm/drivers/power/msm_charger.c
 ===================================================================
---- msm.orig/drivers/power/msm_charger.c	2012-09-17 13:18:19.341103844 -0700
-+++ msm/drivers/power/msm_charger.c	2012-09-17 13:19:55.385105467 -0700
+--- msm.orig/drivers/power/msm_charger.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/power/msm_charger.c	2012-09-18 13:48:21.330594272 -0700
 @@ -1217,7 +1217,7 @@
  static SIMPLE_DEV_PM_OPS(msm_charger_pm_ops,
  		msm_charger_suspend, msm_charger_resume);
@@ -1603,8 +1542,8 @@ Index: msm/drivers/power/msm_charger.c
  	.driver = {
 Index: msm/drivers/power/pm8058_usb_fix.c
 ===================================================================
---- msm.orig/drivers/power/pm8058_usb_fix.c	2012-09-17 13:13:06.093098552 -0700
-+++ msm/drivers/power/pm8058_usb_fix.c	2012-09-17 13:19:55.385105467 -0700
+--- msm.orig/drivers/power/pm8058_usb_fix.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/power/pm8058_usb_fix.c	2012-09-18 13:48:21.330594272 -0700
 @@ -329,7 +329,7 @@
  	return 0;
  }
@@ -1616,8 +1555,8 @@ Index: msm/drivers/power/pm8058_usb_fix.c
  	.driver = {
 Index: msm/drivers/power/pmic8058-charger.c
 ===================================================================
---- msm.orig/drivers/power/pmic8058-charger.c	2012-09-17 13:13:06.093098552 -0700
-+++ msm/drivers/power/pmic8058-charger.c	2012-09-17 13:19:55.385105467 -0700
+--- msm.orig/drivers/power/pmic8058-charger.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/power/pmic8058-charger.c	2012-09-18 13:48:21.330594272 -0700
 @@ -2019,7 +2019,7 @@
  	return rc;
  }
@@ -1629,8 +1568,8 @@ Index: msm/drivers/power/pmic8058-charger.c
  	.driver = {
 Index: msm/drivers/power/smb137b.c
 ===================================================================
---- msm.orig/drivers/power/smb137b.c	2012-09-17 13:13:06.093098552 -0700
-+++ msm/drivers/power/smb137b.c	2012-09-17 13:19:55.385105467 -0700
+--- msm.orig/drivers/power/smb137b.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/power/smb137b.c	2012-09-18 13:48:21.334594272 -0700
 @@ -826,7 +826,7 @@
  };
  MODULE_DEVICE_TABLE(i2c, smb137b_id);
@@ -1642,8 +1581,8 @@ Index: msm/drivers/power/smb137b.c
  		   .owner = THIS_MODULE,
 Index: msm/drivers/regulator/dummy.c
 ===================================================================
---- msm.orig/drivers/regulator/dummy.c	2012-09-17 13:18:19.345103845 -0700
-+++ msm/drivers/regulator/dummy.c	2012-09-17 13:19:55.385105467 -0700
+--- msm.orig/drivers/regulator/dummy.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/regulator/dummy.c	2012-09-18 13:48:21.334594272 -0700
 @@ -52,7 +52,7 @@
  	return 0;
  }
@@ -1655,8 +1594,8 @@ Index: msm/drivers/regulator/dummy.c
  		.name		= "reg-dummy",
 Index: msm/drivers/regulator/pmic8058-regulator.c
 ===================================================================
---- msm.orig/drivers/regulator/pmic8058-regulator.c	2012-09-17 13:18:19.349103845 -0700
-+++ msm/drivers/regulator/pmic8058-regulator.c	2012-09-17 13:19:55.385105467 -0700
+--- msm.orig/drivers/regulator/pmic8058-regulator.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/regulator/pmic8058-regulator.c	2012-09-18 13:48:21.334594272 -0700
 @@ -1716,7 +1716,7 @@
  	return 0;
  }
@@ -1668,8 +1607,8 @@ Index: msm/drivers/regulator/pmic8058-regulator.c
  	.driver = {
 Index: msm/drivers/regulator/pmic8901-regulator.c
 ===================================================================
---- msm.orig/drivers/regulator/pmic8901-regulator.c	2012-09-17 13:18:19.349103845 -0700
-+++ msm/drivers/regulator/pmic8901-regulator.c	2012-09-17 13:19:55.385105467 -0700
+--- msm.orig/drivers/regulator/pmic8901-regulator.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/regulator/pmic8901-regulator.c	2012-09-18 13:48:21.334594272 -0700
 @@ -978,7 +978,7 @@
  	return 0;
  }
@@ -1681,8 +1620,8 @@ Index: msm/drivers/regulator/pmic8901-regulator.c
  	.driver = {
 Index: msm/drivers/rtc/rtc-pm8xxx.c
 ===================================================================
---- msm.orig/drivers/rtc/rtc-pm8xxx.c	2012-09-17 13:13:06.097098552 -0700
-+++ msm/drivers/rtc/rtc-pm8xxx.c	2012-09-17 13:19:55.385105467 -0700
+--- msm.orig/drivers/rtc/rtc-pm8xxx.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/rtc/rtc-pm8xxx.c	2012-09-18 13:48:21.334594272 -0700
 @@ -587,7 +587,7 @@
  	}
  }
@@ -1694,9 +1633,9 @@ Index: msm/drivers/rtc/rtc-pm8xxx.c
  	.shutdown	= pm8xxx_rtc_shutdown,
 Index: msm/drivers/slimbus/slimbus.c
 ===================================================================
---- msm.orig/drivers/slimbus/slimbus.c	2012-09-17 13:18:19.457103846 -0700
-+++ msm/drivers/slimbus/slimbus.c	2012-09-17 13:19:55.385105467 -0700
-@@ -2201,7 +2201,7 @@
+--- msm.orig/drivers/slimbus/slimbus.c	2012-09-18 13:08:18.000000000 -0700
++++ msm/drivers/slimbus/slimbus.c	2012-09-18 13:48:21.334594272 -0700
+@@ -2129,7 +2129,7 @@
  				}
  			}
  			/* schedule 4k family channels */
@@ -1707,8 +1646,8 @@ Index: msm/drivers/slimbus/slimbus.c
  				static const int srcho[] = { 5, 2, 4, 1, 3, 0 };
 Index: msm/drivers/spi/spidev.c
 ===================================================================
---- msm.orig/drivers/spi/spidev.c	2012-09-17 13:18:19.461103847 -0700
-+++ msm/drivers/spi/spidev.c	2012-09-17 13:19:55.389105467 -0700
+--- msm.orig/drivers/spi/spidev.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/spi/spidev.c	2012-09-18 13:48:21.334594272 -0700
 @@ -680,7 +680,7 @@
  	return 0;
  }
@@ -1720,9 +1659,9 @@ Index: msm/drivers/spi/spidev.c
  		.owner =	THIS_MODULE,
 Index: msm/drivers/thermal/pm8xxx-tm.c
 ===================================================================
---- msm.orig/drivers/thermal/pm8xxx-tm.c	2012-09-17 13:18:19.585103849 -0700
-+++ msm/drivers/thermal/pm8xxx-tm.c	2012-09-17 13:19:55.389105467 -0700
-@@ -714,7 +714,7 @@
+--- msm.orig/drivers/thermal/pm8xxx-tm.c	2012-09-18 13:08:18.000000000 -0700
++++ msm/drivers/thermal/pm8xxx-tm.c	2012-09-18 13:48:21.334594272 -0700
+@@ -696,7 +696,7 @@
  #define PM8XXX_TM_PM_OPS	NULL
  #endif
  
@@ -1733,9 +1672,9 @@ Index: msm/drivers/thermal/pm8xxx-tm.c
  	.driver	= {
 Index: msm/drivers/tty/serial/msm_serial_hs.c
 ===================================================================
---- msm.orig/drivers/tty/serial/msm_serial_hs.c	2012-09-17 13:18:19.597103849 -0700
-+++ msm/drivers/tty/serial/msm_serial_hs.c	2012-09-17 13:19:55.389105467 -0700
-@@ -2176,7 +2176,7 @@
+--- msm.orig/drivers/tty/serial/msm_serial_hs.c	2012-09-18 13:08:18.000000000 -0700
++++ msm/drivers/tty/serial/msm_serial_hs.c	2012-09-18 13:48:21.334594272 -0700
+@@ -2166,7 +2166,7 @@
  	.runtime_idle    = msm_hs_runtime_idle,
  };
  
@@ -1746,8 +1685,8 @@ Index: msm/drivers/tty/serial/msm_serial_hs.c
  	.driver = {
 Index: msm/drivers/tty/serial/msm_serial_hs_lite.c
 ===================================================================
---- msm.orig/drivers/tty/serial/msm_serial_hs_lite.c	2012-09-17 13:18:19.597103849 -0700
-+++ msm/drivers/tty/serial/msm_serial_hs_lite.c	2012-09-17 13:19:55.389105467 -0700
+--- msm.orig/drivers/tty/serial/msm_serial_hs_lite.c	2012-09-18 13:08:18.000000000 -0700
++++ msm/drivers/tty/serial/msm_serial_hs_lite.c	2012-09-18 13:48:21.338594270 -0700
 @@ -1239,7 +1239,7 @@
  
  static struct uart_driver msm_hsl_uart_driver;
@@ -1757,7 +1696,7 @@ Index: msm/drivers/tty/serial/msm_serial_hs_lite.c
  	.name = "ttyHSL",
  	.write = msm_hsl_console_write,
  	.device = uart_console_device,
-@@ -1533,7 +1533,7 @@
+@@ -1534,7 +1534,7 @@
  	.runtime_resume = msm_hsl_runtime_resume,
  };
  
@@ -1768,9 +1707,9 @@ Index: msm/drivers/tty/serial/msm_serial_hs_lite.c
  	.driver = {
 Index: msm/drivers/usb/gadget/msm72k_udc.c
 ===================================================================
---- msm.orig/drivers/usb/gadget/msm72k_udc.c	2012-09-17 13:18:19.629103850 -0700
-+++ msm/drivers/usb/gadget/msm72k_udc.c	2012-09-17 13:19:55.389105467 -0700
-@@ -2863,7 +2863,7 @@
+--- msm.orig/drivers/usb/gadget/msm72k_udc.c	2012-09-18 13:08:18.000000000 -0700
++++ msm/drivers/usb/gadget/msm72k_udc.c	2012-09-18 13:48:21.338594270 -0700
+@@ -2831,7 +2831,7 @@
  	return usb_free(ui, 0);
  }
  
@@ -1781,8 +1720,8 @@ Index: msm/drivers/usb/gadget/msm72k_udc.c
  	.driver = { .name = "msm_hsusb",
 Index: msm/drivers/usb/host/ehci-msm.c
 ===================================================================
---- msm.orig/drivers/usb/host/ehci-msm.c	2012-09-17 13:18:19.637103849 -0700
-+++ msm/drivers/usb/host/ehci-msm.c	2012-09-17 13:19:55.389105467 -0700
+--- msm.orig/drivers/usb/host/ehci-msm.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/usb/host/ehci-msm.c	2012-09-18 13:48:21.338594270 -0700
 @@ -263,7 +263,7 @@
  				ehci_msm_runtime_idle)
  };
@@ -1794,9 +1733,9 @@ Index: msm/drivers/usb/host/ehci-msm.c
  	.driver = {
 Index: msm/drivers/usb/host/ehci-msm2.c
 ===================================================================
---- msm.orig/drivers/usb/host/ehci-msm2.c	2012-09-17 13:18:19.637103849 -0700
-+++ msm/drivers/usb/host/ehci-msm2.c	2012-09-17 13:19:55.389105467 -0700
-@@ -1160,7 +1160,7 @@
+--- msm.orig/drivers/usb/host/ehci-msm2.c	2012-09-18 13:08:18.000000000 -0700
++++ msm/drivers/usb/host/ehci-msm2.c	2012-09-18 13:48:21.338594270 -0700
+@@ -1078,7 +1078,7 @@
  };
  #endif
  
@@ -1807,8 +1746,8 @@ Index: msm/drivers/usb/host/ehci-msm2.c
  	.driver = {
 Index: msm/drivers/usb/host/ehci-msm72k.c
 ===================================================================
---- msm.orig/drivers/usb/host/ehci-msm72k.c	2012-09-17 13:18:19.637103849 -0700
-+++ msm/drivers/usb/host/ehci-msm72k.c	2012-09-17 13:19:55.389105467 -0700
+--- msm.orig/drivers/usb/host/ehci-msm72k.c	2012-09-18 13:08:18.000000000 -0700
++++ msm/drivers/usb/host/ehci-msm72k.c	2012-09-18 13:48:21.338594270 -0700
 @@ -804,7 +804,7 @@
  	.runtime_idle = ehci_msm_runtime_idle
  };
@@ -1820,8 +1759,8 @@ Index: msm/drivers/usb/host/ehci-msm72k.c
  	.driver	= {.name = "msm_hsusb_host",
 Index: msm/drivers/usb/otg/msm72k_otg.c
 ===================================================================
---- msm.orig/drivers/usb/otg/msm72k_otg.c	2012-09-17 13:18:19.657103850 -0700
-+++ msm/drivers/usb/otg/msm72k_otg.c	2012-09-17 13:19:55.389105467 -0700
+--- msm.orig/drivers/usb/otg/msm72k_otg.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/usb/otg/msm72k_otg.c	2012-09-18 13:48:21.338594270 -0700
 @@ -3009,7 +3009,7 @@
  	.runtime_idle = msm_otg_runtime_idle,
  };
@@ -1833,9 +1772,9 @@ Index: msm/drivers/usb/otg/msm72k_otg.c
  		.name = DRIVER_NAME,
 Index: msm/drivers/usb/otg/msm_otg.c
 ===================================================================
---- msm.orig/drivers/usb/otg/msm_otg.c	2012-09-17 13:18:19.657103850 -0700
-+++ msm/drivers/usb/otg/msm_otg.c	2012-09-17 13:19:55.393105468 -0700
-@@ -3957,7 +3957,7 @@
+--- msm.orig/drivers/usb/otg/msm_otg.c	2012-09-18 13:08:18.000000000 -0700
++++ msm/drivers/usb/otg/msm_otg.c	2012-09-18 13:48:21.338594270 -0700
+@@ -3712,7 +3712,7 @@
  	{}
  };
  
@@ -1846,8 +1785,8 @@ Index: msm/drivers/usb/otg/msm_otg.c
  		.name = DRIVER_NAME,
 Index: msm/drivers/video/msm/ebi2_l2f.c
 ===================================================================
---- msm.orig/drivers/video/msm/ebi2_l2f.c	2012-09-17 13:13:06.101098551 -0700
-+++ msm/drivers/video/msm/ebi2_l2f.c	2012-09-17 13:19:55.393105468 -0700
+--- msm.orig/drivers/video/msm/ebi2_l2f.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/video/msm/ebi2_l2f.c	2012-09-18 13:48:21.342594268 -0700
 @@ -516,7 +516,7 @@
  	return 0;
  }
@@ -1859,8 +1798,8 @@ Index: msm/drivers/video/msm/ebi2_l2f.c
  		.name   = "ebi2_epson_qcif",
 Index: msm/drivers/video/msm/ebi2_lcd.c
 ===================================================================
---- msm.orig/drivers/video/msm/ebi2_lcd.c	2012-09-17 13:13:06.101098551 -0700
-+++ msm/drivers/video/msm/ebi2_lcd.c	2012-09-17 13:19:55.393105468 -0700
+--- msm.orig/drivers/video/msm/ebi2_lcd.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/video/msm/ebi2_lcd.c	2012-09-18 13:48:21.342594268 -0700
 @@ -52,7 +52,7 @@
  	.runtime_resume = ebi2_lcd_runtime_resume,
  };
@@ -1872,8 +1811,8 @@ Index: msm/drivers/video/msm/ebi2_lcd.c
  	.suspend = NULL,
 Index: msm/drivers/video/msm/ebi2_tmd20.c
 ===================================================================
---- msm.orig/drivers/video/msm/ebi2_tmd20.c	2012-09-17 13:13:06.101098551 -0700
-+++ msm/drivers/video/msm/ebi2_tmd20.c	2012-09-17 13:19:55.393105468 -0700
+--- msm.orig/drivers/video/msm/ebi2_tmd20.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/video/msm/ebi2_tmd20.c	2012-09-18 13:48:21.342594268 -0700
 @@ -1059,7 +1059,7 @@
  	return 0;
  }
@@ -1885,9 +1824,9 @@ Index: msm/drivers/video/msm/ebi2_tmd20.c
  		.name   = "ebi2_tmd_qvga",
 Index: msm/drivers/video/msm/hdmi_msm.c
 ===================================================================
---- msm.orig/drivers/video/msm/hdmi_msm.c	2012-09-17 13:18:19.689103851 -0700
-+++ msm/drivers/video/msm/hdmi_msm.c	2012-09-17 13:19:55.393105468 -0700
-@@ -4736,7 +4736,7 @@
+--- msm.orig/drivers/video/msm/hdmi_msm.c	2012-09-18 13:08:18.000000000 -0700
++++ msm/drivers/video/msm/hdmi_msm.c	2012-09-18 13:48:21.342594268 -0700
+@@ -4699,7 +4699,7 @@
  	return rc;
  }
  
@@ -1898,9 +1837,9 @@ Index: msm/drivers/video/msm/hdmi_msm.c
  	.driver.name = "hdmi_msm",
 Index: msm/drivers/video/msm/lcdc.c
 ===================================================================
---- msm.orig/drivers/video/msm/lcdc.c	2012-09-17 13:18:19.689103851 -0700
-+++ msm/drivers/video/msm/lcdc.c	2012-09-17 13:19:55.393105468 -0700
-@@ -45,7 +45,7 @@
+--- msm.orig/drivers/video/msm/lcdc.c	2012-09-18 13:08:18.000000000 -0700
++++ msm/drivers/video/msm/lcdc.c	2012-09-18 13:48:21.346594267 -0700
+@@ -44,7 +44,7 @@
  static struct clk *pixel_mdp_clk; /* drives the lcdc block in mdp */
  static struct clk *pixel_lcdc_clk; /* drives the lcdc interface */
  
@@ -1911,8 +1850,8 @@ Index: msm/drivers/video/msm/lcdc.c
  	.suspend = NULL,
 Index: msm/drivers/video/msm/lcdc_auo_wvga.c
 ===================================================================
---- msm.orig/drivers/video/msm/lcdc_auo_wvga.c	2012-09-17 13:13:06.101098551 -0700
-+++ msm/drivers/video/msm/lcdc_auo_wvga.c	2012-09-17 13:19:55.393105468 -0700
+--- msm.orig/drivers/video/msm/lcdc_auo_wvga.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/video/msm/lcdc_auo_wvga.c	2012-09-18 13:48:21.346594267 -0700
 @@ -305,7 +305,7 @@
  	lcdc_spi_client = NULL;
  	return 0;
@@ -1924,8 +1863,8 @@ Index: msm/drivers/video/msm/lcdc_auo_wvga.c
  	.probe         = lcdc_auo_spi_probe,
 Index: msm/drivers/video/msm/lcdc_chimei_wxga.c
 ===================================================================
---- msm.orig/drivers/video/msm/lcdc_chimei_wxga.c	2012-09-17 13:13:06.101098551 -0700
-+++ msm/drivers/video/msm/lcdc_chimei_wxga.c	2012-09-17 13:19:55.393105468 -0700
+--- msm.orig/drivers/video/msm/lcdc_chimei_wxga.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/video/msm/lcdc_chimei_wxga.c	2012-09-18 13:48:21.346594267 -0700
 @@ -161,7 +161,7 @@
  	return rc;
  }
@@ -1937,8 +1876,8 @@ Index: msm/drivers/video/msm/lcdc_chimei_wxga.c
  		.name   = "lcdc_chimei_lvds_wxga",
 Index: msm/drivers/video/msm/lcdc_gordon.c
 ===================================================================
---- msm.orig/drivers/video/msm/lcdc_gordon.c	2012-09-17 13:18:19.689103851 -0700
-+++ msm/drivers/video/msm/lcdc_gordon.c	2012-09-17 13:19:55.397105468 -0700
+--- msm.orig/drivers/video/msm/lcdc_gordon.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/video/msm/lcdc_gordon.c	2012-09-18 13:48:21.346594267 -0700
 @@ -390,7 +390,7 @@
  	return 0;
  }
@@ -1950,8 +1889,8 @@ Index: msm/drivers/video/msm/lcdc_gordon.c
  		.name   = "lcdc_gordon_vga",
 Index: msm/drivers/video/msm/lcdc_nt35582_wvga.c
 ===================================================================
---- msm.orig/drivers/video/msm/lcdc_nt35582_wvga.c	2012-09-17 13:13:06.101098551 -0700
-+++ msm/drivers/video/msm/lcdc_nt35582_wvga.c	2012-09-17 13:19:55.397105468 -0700
+--- msm.orig/drivers/video/msm/lcdc_nt35582_wvga.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/video/msm/lcdc_nt35582_wvga.c	2012-09-18 13:48:21.346594267 -0700
 @@ -375,7 +375,7 @@
  	return 0;
  }
@@ -1972,8 +1911,8 @@ Index: msm/drivers/video/msm/lcdc_nt35582_wvga.c
  		.name = LCDC_NT35582_PANEL_NAME,
 Index: msm/drivers/video/msm/lcdc_panel.c
 ===================================================================
---- msm.orig/drivers/video/msm/lcdc_panel.c	2012-09-17 13:13:06.101098551 -0700
-+++ msm/drivers/video/msm/lcdc_panel.c	2012-09-17 13:19:55.397105468 -0700
+--- msm.orig/drivers/video/msm/lcdc_panel.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/video/msm/lcdc_panel.c	2012-09-18 13:48:21.346594267 -0700
 @@ -30,7 +30,7 @@
  	return 0;
  }
@@ -1985,8 +1924,8 @@ Index: msm/drivers/video/msm/lcdc_panel.c
  		.name   = "lcdc_panel",
 Index: msm/drivers/video/msm/lcdc_samsung_oled_pt.c
 ===================================================================
---- msm.orig/drivers/video/msm/lcdc_samsung_oled_pt.c	2012-09-17 13:13:06.101098551 -0700
-+++ msm/drivers/video/msm/lcdc_samsung_oled_pt.c	2012-09-17 13:19:55.397105468 -0700
+--- msm.orig/drivers/video/msm/lcdc_samsung_oled_pt.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/video/msm/lcdc_samsung_oled_pt.c	2012-09-18 13:48:21.346594267 -0700
 @@ -534,7 +534,7 @@
  	lcdc_spi_client = NULL;
  	return 0;
@@ -2007,8 +1946,8 @@ Index: msm/drivers/video/msm/lcdc_samsung_oled_pt.c
  };
 Index: msm/drivers/video/msm/lcdc_samsung_wsvga.c
 ===================================================================
---- msm.orig/drivers/video/msm/lcdc_samsung_wsvga.c	2012-09-17 13:13:06.101098551 -0700
-+++ msm/drivers/video/msm/lcdc_samsung_wsvga.c	2012-09-17 13:19:55.397105468 -0700
+--- msm.orig/drivers/video/msm/lcdc_samsung_wsvga.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/video/msm/lcdc_samsung_wsvga.c	2012-09-18 13:48:21.346594267 -0700
 @@ -195,7 +195,7 @@
  }
  #endif
@@ -2020,8 +1959,8 @@ Index: msm/drivers/video/msm/lcdc_samsung_wsvga.c
  	.remove = samsung_remove,
 Index: msm/drivers/video/msm/lcdc_sharp_wvga_pt.c
 ===================================================================
---- msm.orig/drivers/video/msm/lcdc_sharp_wvga_pt.c	2012-09-17 13:13:06.101098551 -0700
-+++ msm/drivers/video/msm/lcdc_sharp_wvga_pt.c	2012-09-17 13:19:55.397105468 -0700
+--- msm.orig/drivers/video/msm/lcdc_sharp_wvga_pt.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/video/msm/lcdc_sharp_wvga_pt.c	2012-09-18 13:48:21.346594267 -0700
 @@ -320,7 +320,7 @@
  	.remove        = __devexit_p(lcdc_sharp_spi_remove),
  };
@@ -2033,8 +1972,8 @@ Index: msm/drivers/video/msm/lcdc_sharp_wvga_pt.c
  		.name   = "lcdc_sharp_wvga",
 Index: msm/drivers/video/msm/lcdc_toshiba_fwvga_pt.c
 ===================================================================
---- msm.orig/drivers/video/msm/lcdc_toshiba_fwvga_pt.c	2012-09-17 13:18:19.689103851 -0700
-+++ msm/drivers/video/msm/lcdc_toshiba_fwvga_pt.c	2012-09-17 13:19:55.421105468 -0700
+--- msm.orig/drivers/video/msm/lcdc_toshiba_fwvga_pt.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/video/msm/lcdc_toshiba_fwvga_pt.c	2012-09-18 13:48:21.346594267 -0700
 @@ -387,7 +387,7 @@
  	return 0;
  }
@@ -2046,8 +1985,8 @@ Index: msm/drivers/video/msm/lcdc_toshiba_fwvga_pt.c
  		.name   = "lcdc_toshiba_fwvga_pt",
 Index: msm/drivers/video/msm/lcdc_toshiba_wvga_pt.c
 ===================================================================
---- msm.orig/drivers/video/msm/lcdc_toshiba_wvga_pt.c	2012-09-17 13:13:06.101098551 -0700
-+++ msm/drivers/video/msm/lcdc_toshiba_wvga_pt.c	2012-09-17 13:19:55.421105468 -0700
+--- msm.orig/drivers/video/msm/lcdc_toshiba_wvga_pt.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/video/msm/lcdc_toshiba_wvga_pt.c	2012-09-18 13:48:21.386594270 -0700
 @@ -428,7 +428,7 @@
  	.remove        = __devexit_p(lcdc_toshiba_spi_remove),
  };
@@ -2059,8 +1998,8 @@ Index: msm/drivers/video/msm/lcdc_toshiba_wvga_pt.c
  		.name   = "lcdc_toshiba_wvga",
 Index: msm/drivers/video/msm/mddi.c
 ===================================================================
---- msm.orig/drivers/video/msm/mddi.c	2012-09-17 13:13:06.101098551 -0700
-+++ msm/drivers/video/msm/mddi.c	2012-09-17 13:19:55.421105468 -0700
+--- msm.orig/drivers/video/msm/mddi.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/video/msm/mddi.c	2012-09-18 13:48:21.386594270 -0700
 @@ -93,7 +93,7 @@
  int irq_enabled;
  unsigned char mddi_timer_shutdown_flag;
@@ -2072,8 +2011,8 @@ Index: msm/drivers/video/msm/mddi.c
  #ifndef CONFIG_HAS_EARLYSUSPEND
 Index: msm/drivers/video/msm/mddi_client_dummy.c
 ===================================================================
---- msm.orig/drivers/video/msm/mddi_client_dummy.c	2012-09-17 13:13:06.101098551 -0700
-+++ msm/drivers/video/msm/mddi_client_dummy.c	2012-09-17 13:19:55.421105468 -0700
+--- msm.orig/drivers/video/msm/mddi_client_dummy.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/video/msm/mddi_client_dummy.c	2012-09-18 13:48:21.386594270 -0700
 @@ -81,7 +81,7 @@
  	return 0;
  }
@@ -2085,8 +2024,8 @@ Index: msm/drivers/video/msm/mddi_client_dummy.c
  	.driver = { .name = "mddi_c_dummy" },
 Index: msm/drivers/video/msm/mddi_client_nt35399.c
 ===================================================================
---- msm.orig/drivers/video/msm/mddi_client_nt35399.c	2012-09-17 13:18:19.689103851 -0700
-+++ msm/drivers/video/msm/mddi_client_nt35399.c	2012-09-17 13:19:55.421105468 -0700
+--- msm.orig/drivers/video/msm/mddi_client_nt35399.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/video/msm/mddi_client_nt35399.c	2012-09-18 13:48:21.386594270 -0700
 @@ -236,7 +236,7 @@
  	return 0;
  }
@@ -2098,8 +2037,8 @@ Index: msm/drivers/video/msm/mddi_client_nt35399.c
  	.driver = { .name = "mddi_c_0bda_8a47" },
 Index: msm/drivers/video/msm/mddi_client_toshiba.c
 ===================================================================
---- msm.orig/drivers/video/msm/mddi_client_toshiba.c	2012-09-17 13:13:06.101098551 -0700
-+++ msm/drivers/video/msm/mddi_client_toshiba.c	2012-09-17 13:19:55.425105468 -0700
+--- msm.orig/drivers/video/msm/mddi_client_toshiba.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/video/msm/mddi_client_toshiba.c	2012-09-18 13:48:21.386594270 -0700
 @@ -240,7 +240,7 @@
  	return 0;
  }
@@ -2111,8 +2050,8 @@ Index: msm/drivers/video/msm/mddi_client_toshiba.c
  	.driver = { .name = "mddi_c_d263_0000" },
 Index: msm/drivers/video/msm/mddi_ext.c
 ===================================================================
---- msm.orig/drivers/video/msm/mddi_ext.c	2012-09-17 13:13:06.101098551 -0700
-+++ msm/drivers/video/msm/mddi_ext.c	2012-09-17 13:19:55.425105468 -0700
+--- msm.orig/drivers/video/msm/mddi_ext.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/video/msm/mddi_ext.c	2012-09-18 13:48:21.386594270 -0700
 @@ -74,7 +74,7 @@
  	.runtime_idle = mddi_ext_runtime_idle,
  };
@@ -2124,8 +2063,8 @@ Index: msm/drivers/video/msm/mddi_ext.c
  #ifndef CONFIG_HAS_EARLYSUSPEND
 Index: msm/drivers/video/msm/mddi_ext_lcd.c
 ===================================================================
---- msm.orig/drivers/video/msm/mddi_ext_lcd.c	2012-09-17 13:13:06.101098551 -0700
-+++ msm/drivers/video/msm/mddi_ext_lcd.c	2012-09-17 13:19:55.425105468 -0700
+--- msm.orig/drivers/video/msm/mddi_ext_lcd.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/video/msm/mddi_ext_lcd.c	2012-09-18 13:48:21.386594270 -0700
 @@ -35,7 +35,7 @@
  	return 0;
  }
@@ -2137,8 +2076,8 @@ Index: msm/drivers/video/msm/mddi_ext_lcd.c
  		.name   = "extmddi_svga",
 Index: msm/drivers/video/msm/mddi_prism.c
 ===================================================================
---- msm.orig/drivers/video/msm/mddi_prism.c	2012-09-17 13:13:06.101098551 -0700
-+++ msm/drivers/video/msm/mddi_prism.c	2012-09-17 13:19:55.425105468 -0700
+--- msm.orig/drivers/video/msm/mddi_prism.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/video/msm/mddi_prism.c	2012-09-18 13:48:21.386594270 -0700
 @@ -38,7 +38,7 @@
  	return 0;
  }
@@ -2150,8 +2089,8 @@ Index: msm/drivers/video/msm/mddi_prism.c
  		.name   = "mddi_prism_wvga",
 Index: msm/drivers/video/msm/mddi_quickvx.c
 ===================================================================
---- msm.orig/drivers/video/msm/mddi_quickvx.c	2012-09-17 13:13:06.101098551 -0700
-+++ msm/drivers/video/msm/mddi_quickvx.c	2012-09-17 13:19:55.425105468 -0700
+--- msm.orig/drivers/video/msm/mddi_quickvx.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/video/msm/mddi_quickvx.c	2012-09-18 13:48:21.386594270 -0700
 @@ -609,7 +609,7 @@
  }
  
@@ -2163,8 +2102,8 @@ Index: msm/drivers/video/msm/mddi_quickvx.c
  		.name	= "mddi_quickvx",
 Index: msm/drivers/video/msm/mddi_sharp.c
 ===================================================================
---- msm.orig/drivers/video/msm/mddi_sharp.c	2012-09-17 13:13:06.101098551 -0700
-+++ msm/drivers/video/msm/mddi_sharp.c	2012-09-17 13:19:55.425105468 -0700
+--- msm.orig/drivers/video/msm/mddi_sharp.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/video/msm/mddi_sharp.c	2012-09-18 13:48:21.386594270 -0700
 @@ -760,7 +760,7 @@
  	return 0;
  }
@@ -2176,8 +2115,8 @@ Index: msm/drivers/video/msm/mddi_sharp.c
  		.name   = "mddi_sharp_qvga",
 Index: msm/drivers/video/msm/mddi_toshiba.c
 ===================================================================
---- msm.orig/drivers/video/msm/mddi_toshiba.c	2012-09-17 13:13:06.105098551 -0700
-+++ msm/drivers/video/msm/mddi_toshiba.c	2012-09-17 13:19:55.425105468 -0700
+--- msm.orig/drivers/video/msm/mddi_toshiba.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/video/msm/mddi_toshiba.c	2012-09-18 13:48:21.386594270 -0700
 @@ -1672,7 +1672,7 @@
  	return 0;
  }
@@ -2189,9 +2128,9 @@ Index: msm/drivers/video/msm/mddi_toshiba.c
  		.name   = "mddi_toshiba",
 Index: msm/drivers/video/msm/mdp.c
 ===================================================================
---- msm.orig/drivers/video/msm/mdp.c	2012-09-17 13:18:19.689103851 -0700
-+++ msm/drivers/video/msm/mdp.c	2012-09-17 13:19:55.425105468 -0700
-@@ -2038,7 +2038,7 @@
+--- msm.orig/drivers/video/msm/mdp.c	2012-09-18 13:08:18.000000000 -0700
++++ msm/drivers/video/msm/mdp.c	2012-09-18 13:48:21.386594270 -0700
+@@ -1975,7 +1975,7 @@
  };
  
  
@@ -2202,8 +2141,8 @@ Index: msm/drivers/video/msm/mdp.c
  #ifndef CONFIG_HAS_EARLYSUSPEND
 Index: msm/drivers/video/msm/mdp4_dtv.c
 ===================================================================
---- msm.orig/drivers/video/msm/mdp4_dtv.c	2012-09-17 13:13:06.105098551 -0700
-+++ msm/drivers/video/msm/mdp4_dtv.c	2012-09-17 13:19:55.425105468 -0700
+--- msm.orig/drivers/video/msm/mdp4_dtv.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/video/msm/mdp4_dtv.c	2012-09-18 13:48:21.390594270 -0700
 @@ -64,7 +64,7 @@
  	.runtime_resume = mdp4_dtv_runtime_resume,
  };
@@ -2215,8 +2154,8 @@ Index: msm/drivers/video/msm/mdp4_dtv.c
  	.suspend = NULL,
 Index: msm/drivers/video/msm/mdp4_wfd_writeback.c
 ===================================================================
---- msm.orig/drivers/video/msm/mdp4_wfd_writeback.c	2012-09-17 13:13:06.105098551 -0700
-+++ msm/drivers/video/msm/mdp4_wfd_writeback.c	2012-09-17 13:19:55.425105468 -0700
+--- msm.orig/drivers/video/msm/mdp4_wfd_writeback.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/video/msm/mdp4_wfd_writeback.c	2012-09-18 13:48:21.390594270 -0700
 @@ -84,7 +84,7 @@
  	return rc;
  }
@@ -2228,8 +2167,8 @@ Index: msm/drivers/video/msm/mdp4_wfd_writeback.c
  		.name = "writeback",
 Index: msm/drivers/video/msm/mdp4_wfd_writeback_panel.c
 ===================================================================
---- msm.orig/drivers/video/msm/mdp4_wfd_writeback_panel.c	2012-09-17 13:13:06.105098551 -0700
-+++ msm/drivers/video/msm/mdp4_wfd_writeback_panel.c	2012-09-17 13:19:55.425105468 -0700
+--- msm.orig/drivers/video/msm/mdp4_wfd_writeback_panel.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/video/msm/mdp4_wfd_writeback_panel.c	2012-09-18 13:48:21.390594270 -0700
 @@ -52,7 +52,7 @@
  	.id = 1,
  	.dev.platform_data = &writeback_msm_panel_data,
@@ -2241,8 +2180,8 @@ Index: msm/drivers/video/msm/mdp4_wfd_writeback_panel.c
  		.name = "writeback_panel"
 Index: msm/drivers/video/msm/mdp_lcdc.c
 ===================================================================
---- msm.orig/drivers/video/msm/mdp_lcdc.c	2012-09-17 13:13:06.105098551 -0700
-+++ msm/drivers/video/msm/mdp_lcdc.c	2012-09-17 13:19:55.425105468 -0700
+--- msm.orig/drivers/video/msm/mdp_lcdc.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/video/msm/mdp_lcdc.c	2012-09-18 13:48:21.390594270 -0700
 @@ -390,7 +390,7 @@
  	return 0;
  }
@@ -2254,9 +2193,9 @@ Index: msm/drivers/video/msm/mdp_lcdc.c
  	.driver = {
 Index: msm/drivers/video/msm/mipi_NT35510.c
 ===================================================================
---- msm.orig/drivers/video/msm/mipi_NT35510.c	2012-09-17 13:18:19.697103851 -0700
-+++ msm/drivers/video/msm/mipi_NT35510.c	2012-09-17 13:19:55.425105468 -0700
-@@ -613,7 +613,7 @@
+--- msm.orig/drivers/video/msm/mipi_NT35510.c	2012-09-18 13:08:18.000000000 -0700
++++ msm/drivers/video/msm/mipi_NT35510.c	2012-09-18 13:48:21.390594270 -0700
+@@ -602,7 +602,7 @@
  	return 0;
  }
  
@@ -2267,8 +2206,8 @@ Index: msm/drivers/video/msm/mipi_NT35510.c
  		.name   = "mipi_NT35510",
 Index: msm/drivers/video/msm/mipi_dsi.c
 ===================================================================
---- msm.orig/drivers/video/msm/mipi_dsi.c	2012-09-17 13:18:19.697103851 -0700
-+++ msm/drivers/video/msm/mipi_dsi.c	2012-09-17 13:19:55.425105468 -0700
+--- msm.orig/drivers/video/msm/mipi_dsi.c	2012-09-18 13:08:18.000000000 -0700
++++ msm/drivers/video/msm/mipi_dsi.c	2012-09-18 13:48:21.390594270 -0700
 @@ -52,7 +52,7 @@
  
  static int vsync_gpio = -1;
@@ -2280,8 +2219,8 @@ Index: msm/drivers/video/msm/mipi_dsi.c
  	.shutdown = NULL,
 Index: msm/drivers/video/msm/mipi_novatek.c
 ===================================================================
---- msm.orig/drivers/video/msm/mipi_novatek.c	2012-09-17 13:18:19.697103851 -0700
-+++ msm/drivers/video/msm/mipi_novatek.c	2012-09-17 13:19:55.429105468 -0700
+--- msm.orig/drivers/video/msm/mipi_novatek.c	2012-09-18 13:08:18.000000000 -0700
++++ msm/drivers/video/msm/mipi_novatek.c	2012-09-18 13:48:21.390594270 -0700
 @@ -119,7 +119,7 @@
  	panel_3d_spi_client = NULL;
  	return 0;
@@ -2291,7 +2230,7 @@ Index: msm/drivers/video/msm/mipi_novatek.c
  	.probe         = panel_3d_spi_probe,
  	.remove        = __devexit_p(panel_3d_spi_remove),
  	.driver		   = {
-@@ -513,7 +513,7 @@
+@@ -512,7 +512,7 @@
  	return 0;
  }
  
@@ -2302,8 +2241,8 @@ Index: msm/drivers/video/msm/mipi_novatek.c
  		.name   = "mipi_novatek",
 Index: msm/drivers/video/msm/mipi_renesas.c
 ===================================================================
---- msm.orig/drivers/video/msm/mipi_renesas.c	2012-09-17 13:18:19.697103851 -0700
-+++ msm/drivers/video/msm/mipi_renesas.c	2012-09-17 13:19:55.429105468 -0700
+--- msm.orig/drivers/video/msm/mipi_renesas.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/video/msm/mipi_renesas.c	2012-09-18 13:48:21.390594270 -0700
 @@ -1196,7 +1196,7 @@
  		pr_err("%s(): Backlight level set failed", __func__);
  }
@@ -2315,8 +2254,8 @@ Index: msm/drivers/video/msm/mipi_renesas.c
  		.name   = "mipi_renesas",
 Index: msm/drivers/video/msm/mipi_simulator.c
 ===================================================================
---- msm.orig/drivers/video/msm/mipi_simulator.c	2012-09-17 13:13:06.105098551 -0700
-+++ msm/drivers/video/msm/mipi_simulator.c	2012-09-17 13:19:55.429105468 -0700
+--- msm.orig/drivers/video/msm/mipi_simulator.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/video/msm/mipi_simulator.c	2012-09-18 13:48:21.390594270 -0700
 @@ -98,7 +98,7 @@
  	return 0;
  }
@@ -2328,8 +2267,8 @@ Index: msm/drivers/video/msm/mipi_simulator.c
  		.name   = "mipi_simulator",
 Index: msm/drivers/video/msm/mipi_toshiba.c
 ===================================================================
---- msm.orig/drivers/video/msm/mipi_toshiba.c	2012-09-17 13:13:06.105098551 -0700
-+++ msm/drivers/video/msm/mipi_toshiba.c	2012-09-17 13:19:55.441105469 -0700
+--- msm.orig/drivers/video/msm/mipi_toshiba.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/video/msm/mipi_toshiba.c	2012-09-18 13:48:21.406594271 -0700
 @@ -286,7 +286,7 @@
  	return 0;
  }
@@ -2341,8 +2280,8 @@ Index: msm/drivers/video/msm/mipi_toshiba.c
  		.name   = "mipi_toshiba",
 Index: msm/drivers/video/msm/mipi_truly.c
 ===================================================================
---- msm.orig/drivers/video/msm/mipi_truly.c	2012-09-17 13:13:06.105098551 -0700
-+++ msm/drivers/video/msm/mipi_truly.c	2012-09-17 13:19:55.441105469 -0700
+--- msm.orig/drivers/video/msm/mipi_truly.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/video/msm/mipi_truly.c	2012-09-18 13:48:21.406594271 -0700
 @@ -194,7 +194,7 @@
  	return 0;
  }
@@ -2354,8 +2293,8 @@ Index: msm/drivers/video/msm/mipi_truly.c
  		.name   = "mipi_truly",
 Index: msm/drivers/video/msm/mipi_truly_tft540960_1_e.c
 ===================================================================
---- msm.orig/drivers/video/msm/mipi_truly_tft540960_1_e.c	2012-09-17 13:18:19.697103851 -0700
-+++ msm/drivers/video/msm/mipi_truly_tft540960_1_e.c	2012-09-17 13:19:55.441105469 -0700
+--- msm.orig/drivers/video/msm/mipi_truly_tft540960_1_e.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/video/msm/mipi_truly_tft540960_1_e.c	2012-09-18 13:48:21.406594271 -0700
 @@ -795,7 +795,7 @@
  	return rc;
  }
@@ -2367,9 +2306,9 @@ Index: msm/drivers/video/msm/mipi_truly_tft540960_1_e.c
  		.name   = "mipi_truly_tft540960_1_e",
 Index: msm/drivers/video/msm/msm_fb.c
 ===================================================================
---- msm.orig/drivers/video/msm/msm_fb.c	2012-09-17 13:18:19.697103851 -0700
-+++ msm/drivers/video/msm/msm_fb.c	2012-09-17 13:19:55.445105469 -0700
-@@ -720,7 +720,7 @@
+--- msm.orig/drivers/video/msm/msm_fb.c	2012-09-18 13:08:18.000000000 -0700
++++ msm/drivers/video/msm/msm_fb.c	2012-09-18 13:48:21.406594271 -0700
+@@ -694,7 +694,7 @@
  #endif
  };
  
@@ -2380,8 +2319,8 @@ Index: msm/drivers/video/msm/msm_fb.c
  #ifndef CONFIG_HAS_EARLYSUSPEND
 Index: msm/drivers/video/msm/tvenc.c
 ===================================================================
---- msm.orig/drivers/video/msm/tvenc.c	2012-09-17 13:13:06.105098551 -0700
-+++ msm/drivers/video/msm/tvenc.c	2012-09-17 13:19:55.445105469 -0700
+--- msm.orig/drivers/video/msm/tvenc.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/video/msm/tvenc.c	2012-09-18 13:48:21.406594271 -0700
 @@ -75,7 +75,7 @@
  	.runtime_resume = tvenc_runtime_resume,
  };
@@ -2393,8 +2332,8 @@ Index: msm/drivers/video/msm/tvenc.c
  	.suspend = NULL,
 Index: msm/drivers/video/msm/tvout_msm.c
 ===================================================================
---- msm.orig/drivers/video/msm/tvout_msm.c	2012-09-17 13:13:06.105098551 -0700
-+++ msm/drivers/video/msm/tvout_msm.c	2012-09-17 13:19:55.445105469 -0700
+--- msm.orig/drivers/video/msm/tvout_msm.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/video/msm/tvout_msm.c	2012-09-18 13:48:21.406594271 -0700
 @@ -565,7 +565,7 @@
  	.resume = tvout_device_pm_resume,
  };
@@ -2406,8 +2345,8 @@ Index: msm/drivers/video/msm/tvout_msm.c
  	.driver = {
 Index: msm/drivers/video/msm/vidc/common/init/vidc_init.c
 ===================================================================
---- msm.orig/drivers/video/msm/vidc/common/init/vidc_init.c	2012-09-17 13:18:19.701103851 -0700
-+++ msm/drivers/video/msm/vidc/common/init/vidc_init.c	2012-09-17 13:19:55.445105469 -0700
+--- msm.orig/drivers/video/msm/vidc/common/init/vidc_init.c	2012-09-18 13:08:18.000000000 -0700
++++ msm/drivers/video/msm/vidc/common/init/vidc_init.c	2012-09-18 13:48:21.406594271 -0700
 @@ -202,7 +202,7 @@
  	.runtime_resume = vidc_runtime_resume,
  };
@@ -2419,8 +2358,8 @@ Index: msm/drivers/video/msm/vidc/common/init/vidc_init.c
  	.driver = {
 Index: msm/include/net/net_namespace.h
 ===================================================================
---- msm.orig/include/net/net_namespace.h	2012-09-17 13:18:19.949103855 -0700
-+++ msm/include/net/net_namespace.h	2012-09-17 13:19:55.445105469 -0700
+--- msm.orig/include/net/net_namespace.h	2012-09-18 13:02:02.000000000 -0700
++++ msm/include/net/net_namespace.h	2012-09-18 13:48:21.410594271 -0700
 @@ -240,10 +240,12 @@
  #define __net_init
  #define __net_exit
@@ -2436,8 +2375,8 @@ Index: msm/include/net/net_namespace.h
  struct pernet_operations {
 Index: msm/net/core/fib_rules.c
 ===================================================================
---- msm.orig/net/core/fib_rules.c	2012-09-17 13:18:20.061103857 -0700
-+++ msm/net/core/fib_rules.c	2012-09-17 13:19:55.445105469 -0700
+--- msm.orig/net/core/fib_rules.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/net/core/fib_rules.c	2012-09-18 13:48:21.410594271 -0700
 @@ -737,7 +737,7 @@
  	return 0;
  }
@@ -2449,8 +2388,8 @@ Index: msm/net/core/fib_rules.c
  
 Index: msm/net/core/rtnetlink.c
 ===================================================================
---- msm.orig/net/core/rtnetlink.c	2012-09-17 13:18:20.061103857 -0700
-+++ msm/net/core/rtnetlink.c	2012-09-17 13:19:55.445105469 -0700
+--- msm.orig/net/core/rtnetlink.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/net/core/rtnetlink.c	2012-09-18 13:48:21.410594271 -0700
 @@ -2113,7 +2113,7 @@
  	net->rtnl = NULL;
  }
@@ -2462,8 +2401,8 @@ Index: msm/net/core/rtnetlink.c
  };
 Index: msm/net/ipv4/arp.c
 ===================================================================
---- msm.orig/net/ipv4/arp.c	2012-09-17 13:18:20.069103857 -0700
-+++ msm/net/ipv4/arp.c	2012-09-17 13:19:55.449105469 -0700
+--- msm.orig/net/ipv4/arp.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/net/ipv4/arp.c	2012-09-18 13:48:21.410594271 -0700
 @@ -1405,7 +1405,7 @@
  			    sizeof(struct neigh_seq_state));
  }
@@ -2484,8 +2423,8 @@ Index: msm/net/ipv4/arp.c
  };
 Index: msm/net/ipv4/fib_frontend.c
 ===================================================================
---- msm.orig/net/ipv4/fib_frontend.c	2012-09-17 13:18:20.069103857 -0700
-+++ msm/net/ipv4/fib_frontend.c	2012-09-17 13:19:55.449105469 -0700
+--- msm.orig/net/ipv4/fib_frontend.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/net/ipv4/fib_frontend.c	2012-09-18 13:48:21.410594271 -0700
 @@ -1116,7 +1116,7 @@
  	ip_fib_net_exit(net);
  }
@@ -2497,8 +2436,8 @@ Index: msm/net/ipv4/fib_frontend.c
  };
 Index: msm/net/ipv4/ip_fragment.c
 ===================================================================
---- msm.orig/net/ipv4/ip_fragment.c	2012-09-17 13:18:20.073103857 -0700
-+++ msm/net/ipv4/ip_fragment.c	2012-09-17 13:19:55.449105469 -0700
+--- msm.orig/net/ipv4/ip_fragment.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/net/ipv4/ip_fragment.c	2012-09-18 13:48:21.410594271 -0700
 @@ -852,7 +852,7 @@
  	inet_frags_exit_net(&net->ipv4.frags, &ip4_frags);
  }
@@ -2510,8 +2449,8 @@ Index: msm/net/ipv4/ip_fragment.c
  };
 Index: msm/net/ipv4/netfilter/arp_tables.c
 ===================================================================
---- msm.orig/net/ipv4/netfilter/arp_tables.c	2012-09-17 13:13:06.113098552 -0700
-+++ msm/net/ipv4/netfilter/arp_tables.c	2012-09-17 13:19:55.453105469 -0700
+--- msm.orig/net/ipv4/netfilter/arp_tables.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/net/ipv4/netfilter/arp_tables.c	2012-09-18 13:48:21.418594271 -0700
 @@ -1865,7 +1865,7 @@
  	xt_proto_fini(net, NFPROTO_ARP);
  }
@@ -2523,8 +2462,8 @@ Index: msm/net/ipv4/netfilter/arp_tables.c
  };
 Index: msm/net/ipv4/netfilter/ip_tables.c
 ===================================================================
---- msm.orig/net/ipv4/netfilter/ip_tables.c	2012-09-17 13:13:06.113098552 -0700
-+++ msm/net/ipv4/netfilter/ip_tables.c	2012-09-17 13:19:55.457105469 -0700
+--- msm.orig/net/ipv4/netfilter/ip_tables.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/net/ipv4/netfilter/ip_tables.c	2012-09-18 13:48:21.418594271 -0700
 @@ -2216,7 +2216,7 @@
  	xt_proto_fini(net, NFPROTO_IPV4);
  }
@@ -2536,8 +2475,8 @@ Index: msm/net/ipv4/netfilter/ip_tables.c
  };
 Index: msm/net/ipv4/netfilter/iptable_filter.c
 ===================================================================
---- msm.orig/net/ipv4/netfilter/iptable_filter.c	2012-09-17 13:18:20.073103857 -0700
-+++ msm/net/ipv4/netfilter/iptable_filter.c	2012-09-17 13:19:55.457105469 -0700
+--- msm.orig/net/ipv4/netfilter/iptable_filter.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/net/ipv4/netfilter/iptable_filter.c	2012-09-18 13:48:21.418594271 -0700
 @@ -79,7 +79,7 @@
  	ipt_unregister_table(net, net->ipv4.iptable_filter);
  }
@@ -2549,8 +2488,8 @@ Index: msm/net/ipv4/netfilter/iptable_filter.c
  };
 Index: msm/net/ipv4/netfilter/nf_nat_core.c
 ===================================================================
---- msm.orig/net/ipv4/netfilter/nf_nat_core.c	2012-09-17 13:18:20.073103857 -0700
-+++ msm/net/ipv4/netfilter/nf_nat_core.c	2012-09-17 13:19:55.457105469 -0700
+--- msm.orig/net/ipv4/netfilter/nf_nat_core.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/net/ipv4/netfilter/nf_nat_core.c	2012-09-18 13:48:21.418594271 -0700
 @@ -681,7 +681,7 @@
  	nf_ct_free_hashtable(net->ipv4.nat_bysource, net->ipv4.nat_htable_size);
  }
@@ -2562,8 +2501,8 @@ Index: msm/net/ipv4/netfilter/nf_nat_core.c
  };
 Index: msm/net/ipv4/tcp_ipv4.c
 ===================================================================
---- msm.orig/net/ipv4/tcp_ipv4.c	2012-09-17 13:18:20.081103857 -0700
-+++ msm/net/ipv4/tcp_ipv4.c	2012-09-17 13:19:55.457105469 -0700
+--- msm.orig/net/ipv4/tcp_ipv4.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/net/ipv4/tcp_ipv4.c	2012-09-18 13:48:21.418594271 -0700
 @@ -2603,7 +2603,7 @@
  	tcp_proc_unregister(net, &tcp4_seq_afinfo);
  }
@@ -2575,8 +2514,8 @@ Index: msm/net/ipv4/tcp_ipv4.c
  };
 Index: msm/net/ipv4/udp.c
 ===================================================================
---- msm.orig/net/ipv4/udp.c	2012-09-17 13:18:20.081103857 -0700
-+++ msm/net/ipv4/udp.c	2012-09-17 13:19:55.457105469 -0700
+--- msm.orig/net/ipv4/udp.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/net/ipv4/udp.c	2012-09-18 13:48:21.418594271 -0700
 @@ -2144,7 +2144,7 @@
  	udp_proc_unregister(net, &udp4_seq_afinfo);
  }
@@ -2588,8 +2527,8 @@ Index: msm/net/ipv4/udp.c
  };
 Index: msm/net/ipv4/udplite.c
 ===================================================================
---- msm.orig/net/ipv4/udplite.c	2012-09-17 13:18:20.081103857 -0700
-+++ msm/net/ipv4/udplite.c	2012-09-17 13:19:55.457105469 -0700
+--- msm.orig/net/ipv4/udplite.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/net/ipv4/udplite.c	2012-09-18 13:48:21.418594271 -0700
 @@ -104,7 +104,7 @@
  	udp_proc_unregister(net, &udplite4_seq_afinfo);
  }
@@ -2601,8 +2540,8 @@ Index: msm/net/ipv4/udplite.c
  };
 Index: msm/net/ipv6/addrconf.c
 ===================================================================
---- msm.orig/net/ipv6/addrconf.c	2012-09-17 13:18:20.081103857 -0700
-+++ msm/net/ipv6/addrconf.c	2012-09-17 13:19:55.461105469 -0700
+--- msm.orig/net/ipv6/addrconf.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/net/ipv6/addrconf.c	2012-09-18 13:48:21.422594271 -0700
 @@ -3213,7 +3213,7 @@
         proc_net_remove(net, "if_inet6");
  }
@@ -2623,8 +2562,8 @@ Index: msm/net/ipv6/addrconf.c
  };
 Index: msm/net/ipv6/addrlabel.c
 ===================================================================
---- msm.orig/net/ipv6/addrlabel.c	2012-09-17 13:18:20.081103857 -0700
-+++ msm/net/ipv6/addrlabel.c	2012-09-17 13:19:55.461105469 -0700
+--- msm.orig/net/ipv6/addrlabel.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/net/ipv6/addrlabel.c	2012-09-18 13:48:21.422594271 -0700
 @@ -381,7 +381,7 @@
  	spin_unlock(&ip6addrlbl_table.lock);
  }
@@ -2636,8 +2575,8 @@ Index: msm/net/ipv6/addrlabel.c
  };
 Index: msm/net/ipv6/af_inet6.c
 ===================================================================
---- msm.orig/net/ipv6/af_inet6.c	2012-09-17 13:18:20.081103857 -0700
-+++ msm/net/ipv6/af_inet6.c	2012-09-17 13:19:55.461105469 -0700
+--- msm.orig/net/ipv6/af_inet6.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/net/ipv6/af_inet6.c	2012-09-18 13:48:21.422594271 -0700
 @@ -1090,7 +1090,7 @@
  	ipv6_cleanup_mibs(net);
  }
@@ -2649,8 +2588,8 @@ Index: msm/net/ipv6/af_inet6.c
  };
 Index: msm/net/ipv6/ip6_fib.c
 ===================================================================
---- msm.orig/net/ipv6/ip6_fib.c	2012-09-17 13:18:20.081103857 -0700
-+++ msm/net/ipv6/ip6_fib.c	2012-09-17 13:19:55.461105469 -0700
+--- msm.orig/net/ipv6/ip6_fib.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/net/ipv6/ip6_fib.c	2012-09-18 13:48:21.422594271 -0700
 @@ -1672,7 +1672,7 @@
  	kfree(net->ipv6.rt6_stats);
  }
@@ -2662,8 +2601,8 @@ Index: msm/net/ipv6/ip6_fib.c
  };
 Index: msm/net/ipv6/ip6_flowlabel.c
 ===================================================================
---- msm.orig/net/ipv6/ip6_flowlabel.c	2012-09-17 13:18:20.081103857 -0700
-+++ msm/net/ipv6/ip6_flowlabel.c	2012-09-17 13:19:55.461105469 -0700
+--- msm.orig/net/ipv6/ip6_flowlabel.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/net/ipv6/ip6_flowlabel.c	2012-09-18 13:48:21.422594271 -0700
 @@ -730,7 +730,7 @@
  			    sizeof(struct ip6fl_iter_state));
  }
@@ -2684,8 +2623,8 @@ Index: msm/net/ipv6/ip6_flowlabel.c
  };
 Index: msm/net/ipv6/mcast.c
 ===================================================================
---- msm.orig/net/ipv6/mcast.c	2012-09-17 13:18:20.085103857 -0700
-+++ msm/net/ipv6/mcast.c	2012-09-17 13:19:55.461105469 -0700
+--- msm.orig/net/ipv6/mcast.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/net/ipv6/mcast.c	2012-09-18 13:48:21.422594271 -0700
 @@ -2652,7 +2652,7 @@
  	igmp6_proc_exit(net);
  }
@@ -2697,8 +2636,8 @@ Index: msm/net/ipv6/mcast.c
  };
 Index: msm/net/ipv6/ndisc.c
 ===================================================================
---- msm.orig/net/ipv6/ndisc.c	2012-09-17 13:18:20.085103857 -0700
-+++ msm/net/ipv6/ndisc.c	2012-09-17 13:19:55.461105469 -0700
+--- msm.orig/net/ipv6/ndisc.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/net/ipv6/ndisc.c	2012-09-18 13:48:21.426594271 -0700
 @@ -1752,7 +1752,7 @@
  	return NOTIFY_DONE;
  }
@@ -2710,8 +2649,8 @@ Index: msm/net/ipv6/ndisc.c
  
 Index: msm/net/ipv6/netfilter/ip6_tables.c
 ===================================================================
---- msm.orig/net/ipv6/netfilter/ip6_tables.c	2012-09-17 13:18:20.085103857 -0700
-+++ msm/net/ipv6/netfilter/ip6_tables.c	2012-09-17 13:19:55.465105469 -0700
+--- msm.orig/net/ipv6/netfilter/ip6_tables.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/net/ipv6/netfilter/ip6_tables.c	2012-09-18 13:48:21.426594271 -0700
 @@ -2225,7 +2225,7 @@
  	xt_proto_fini(net, NFPROTO_IPV6);
  }
@@ -2723,8 +2662,8 @@ Index: msm/net/ipv6/netfilter/ip6_tables.c
  };
 Index: msm/net/ipv6/netfilter/ip6table_filter.c
 ===================================================================
---- msm.orig/net/ipv6/netfilter/ip6table_filter.c	2012-09-17 13:18:20.085103857 -0700
-+++ msm/net/ipv6/netfilter/ip6table_filter.c	2012-09-17 13:19:55.465105469 -0700
+--- msm.orig/net/ipv6/netfilter/ip6table_filter.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/net/ipv6/netfilter/ip6table_filter.c	2012-09-18 13:48:21.426594271 -0700
 @@ -22,7 +22,7 @@
  			    (1 << NF_INET_FORWARD) | \
  			    (1 << NF_INET_LOCAL_OUT))
@@ -2745,8 +2684,8 @@ Index: msm/net/ipv6/netfilter/ip6table_filter.c
  };
 Index: msm/net/ipv6/raw.c
 ===================================================================
---- msm.orig/net/ipv6/raw.c	2012-09-17 13:18:20.085103857 -0700
-+++ msm/net/ipv6/raw.c	2012-09-17 13:19:55.465105469 -0700
+--- msm.orig/net/ipv6/raw.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/net/ipv6/raw.c	2012-09-18 13:48:21.426594271 -0700
 @@ -1300,7 +1300,7 @@
  	proc_net_remove(net, "raw6");
  }
@@ -2767,8 +2706,8 @@ Index: msm/net/ipv6/raw.c
  	.prot		= &rawv6_prot,
 Index: msm/net/ipv6/reassembly.c
 ===================================================================
---- msm.orig/net/ipv6/reassembly.c	2012-09-17 13:18:20.085103857 -0700
-+++ msm/net/ipv6/reassembly.c	2012-09-17 13:19:55.517105470 -0700
+--- msm.orig/net/ipv6/reassembly.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/net/ipv6/reassembly.c	2012-09-18 13:48:21.434594271 -0700
 @@ -720,7 +720,7 @@
  	inet_frags_exit_net(&net->ipv6.frags, &ip6_frags);
  }
@@ -2780,8 +2719,8 @@ Index: msm/net/ipv6/reassembly.c
  };
 Index: msm/net/ipv6/route.c
 ===================================================================
---- msm.orig/net/ipv6/route.c	2012-09-17 13:18:20.085103857 -0700
-+++ msm/net/ipv6/route.c	2012-09-17 13:19:55.517105470 -0700
+--- msm.orig/net/ipv6/route.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/net/ipv6/route.c	2012-09-18 13:48:21.434594271 -0700
 @@ -2989,7 +2989,7 @@
  	dst_entries_destroy(&net->ipv6.ip6_dst_ops);
  }
@@ -2793,8 +2732,8 @@ Index: msm/net/ipv6/route.c
  };
 Index: msm/net/ipv6/sysctl_net_ipv6.c
 ===================================================================
---- msm.orig/net/ipv6/sysctl_net_ipv6.c	2012-09-17 13:18:20.085103857 -0700
-+++ msm/net/ipv6/sysctl_net_ipv6.c	2012-09-17 13:19:55.517105470 -0700
+--- msm.orig/net/ipv6/sysctl_net_ipv6.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/net/ipv6/sysctl_net_ipv6.c	2012-09-18 13:48:21.434594271 -0700
 @@ -129,7 +129,7 @@
  	kfree(ipv6_icmp_table);
  }
@@ -2806,8 +2745,8 @@ Index: msm/net/ipv6/sysctl_net_ipv6.c
  };
 Index: msm/net/ipv6/tcp_ipv6.c
 ===================================================================
---- msm.orig/net/ipv6/tcp_ipv6.c	2012-09-17 13:18:20.085103857 -0700
-+++ msm/net/ipv6/tcp_ipv6.c	2012-09-17 13:19:55.517105470 -0700
+--- msm.orig/net/ipv6/tcp_ipv6.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/net/ipv6/tcp_ipv6.c	2012-09-18 13:48:21.438594271 -0700
 @@ -2156,7 +2156,7 @@
  	inet_twsk_purge(&tcp_hashinfo, &tcp_death_row, AF_INET6);
  }
@@ -2819,8 +2758,8 @@ Index: msm/net/ipv6/tcp_ipv6.c
  	.exit_batch = tcpv6_net_exit_batch,
 Index: msm/net/ipv6/udplite.c
 ===================================================================
---- msm.orig/net/ipv6/udplite.c	2012-09-17 13:18:20.085103857 -0700
-+++ msm/net/ipv6/udplite.c	2012-09-17 13:19:55.517105470 -0700
+--- msm.orig/net/ipv6/udplite.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/net/ipv6/udplite.c	2012-09-18 13:48:21.438594271 -0700
 @@ -123,7 +123,7 @@
  	udp_proc_unregister(net, &udplite6_seq_afinfo);
  }
@@ -2832,8 +2771,8 @@ Index: msm/net/ipv6/udplite.c
  };
 Index: msm/net/ipv6/xfrm6_tunnel.c
 ===================================================================
---- msm.orig/net/ipv6/xfrm6_tunnel.c	2012-09-17 13:13:06.117098552 -0700
-+++ msm/net/ipv6/xfrm6_tunnel.c	2012-09-17 13:19:55.517105470 -0700
+--- msm.orig/net/ipv6/xfrm6_tunnel.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/net/ipv6/xfrm6_tunnel.c	2012-09-18 13:48:21.438594271 -0700
 @@ -345,7 +345,7 @@
  {
  }
@@ -2845,8 +2784,8 @@ Index: msm/net/ipv6/xfrm6_tunnel.c
  	.id	= &xfrm6_tunnel_net_id,
 Index: msm/net/netfilter/nf_conntrack_proto_dccp.c
 ===================================================================
---- msm.orig/net/netfilter/nf_conntrack_proto_dccp.c	2012-09-17 13:18:20.105103857 -0700
-+++ msm/net/netfilter/nf_conntrack_proto_dccp.c	2012-09-17 13:19:55.517105470 -0700
+--- msm.orig/net/netfilter/nf_conntrack_proto_dccp.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/net/netfilter/nf_conntrack_proto_dccp.c	2012-09-18 13:48:21.438594271 -0700
 @@ -928,7 +928,7 @@
  #endif
  }
@@ -2858,8 +2797,8 @@ Index: msm/net/netfilter/nf_conntrack_proto_dccp.c
  	.id   = &dccp_net_id,
 Index: msm/net/netfilter/nfnetlink.c
 ===================================================================
---- msm.orig/net/netfilter/nfnetlink.c	2012-09-17 13:18:20.105103857 -0700
-+++ msm/net/netfilter/nfnetlink.c	2012-09-17 13:19:55.521105470 -0700
+--- msm.orig/net/netfilter/nfnetlink.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/net/netfilter/nfnetlink.c	2012-09-18 13:48:21.438594271 -0700
 @@ -224,7 +224,7 @@
  		netlink_kernel_release(net->nfnl_stash);
  }
@@ -2871,8 +2810,8 @@ Index: msm/net/netfilter/nfnetlink.c
  };
 Index: msm/net/netfilter/xt_hashlimit.c
 ===================================================================
---- msm.orig/net/netfilter/xt_hashlimit.c	2012-09-17 13:18:20.109103857 -0700
-+++ msm/net/netfilter/xt_hashlimit.c	2012-09-17 13:19:55.521105470 -0700
+--- msm.orig/net/netfilter/xt_hashlimit.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/net/netfilter/xt_hashlimit.c	2012-09-18 13:48:21.438594271 -0700
 @@ -798,7 +798,7 @@
  	hashlimit_proc_net_exit(net);
  }
@@ -2884,8 +2823,8 @@ Index: msm/net/netfilter/xt_hashlimit.c
  	.id	= &hashlimit_net_id,
 Index: msm/net/netlink/genetlink.c
 ===================================================================
---- msm.orig/net/netlink/genetlink.c	2012-09-17 13:18:20.109103857 -0700
-+++ msm/net/netlink/genetlink.c	2012-09-17 13:19:55.521105470 -0700
+--- msm.orig/net/netlink/genetlink.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/net/netlink/genetlink.c	2012-09-18 13:48:21.438594271 -0700
 @@ -897,7 +897,7 @@
  	return 0;
  }
@@ -2906,8 +2845,8 @@ Index: msm/net/netlink/genetlink.c
  };
 Index: msm/net/packet/af_packet.c
 ===================================================================
---- msm.orig/net/packet/af_packet.c	2012-09-17 13:18:20.113103858 -0700
-+++ msm/net/packet/af_packet.c	2012-09-17 13:19:55.521105470 -0700
+--- msm.orig/net/packet/af_packet.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/net/packet/af_packet.c	2012-09-18 13:48:21.438594271 -0700
 @@ -3929,7 +3929,7 @@
  	proc_net_remove(net, "packet");
  }
@@ -2919,9 +2858,9 @@ Index: msm/net/packet/af_packet.c
  };
 Index: msm/net/sched/sch_api.c
 ===================================================================
---- msm.orig/net/sched/sch_api.c	2012-09-17 13:18:20.121103858 -0700
-+++ msm/net/sched/sch_api.c	2012-09-17 13:19:55.521105470 -0700
-@@ -1770,7 +1770,7 @@
+--- msm.orig/net/sched/sch_api.c	2012-09-18 13:08:18.000000000 -0700
++++ msm/net/sched/sch_api.c	2012-09-18 13:48:21.438594271 -0700
+@@ -1741,7 +1741,7 @@
  	return single_open(file, psched_show, NULL);
  }
  
@@ -2930,7 +2869,7 @@ Index: msm/net/sched/sch_api.c
  	.owner = THIS_MODULE,
  	.open = psched_open,
  	.read  = seq_read,
-@@ -1804,7 +1804,7 @@
+@@ -1775,7 +1775,7 @@
  }
  #endif
  
@@ -2941,8 +2880,8 @@ Index: msm/net/sched/sch_api.c
  };
 Index: msm/net/sysctl_net.c
 ===================================================================
---- msm.orig/net/sysctl_net.c	2012-09-17 13:18:20.133103858 -0700
-+++ msm/net/sysctl_net.c	2012-09-17 13:19:55.521105470 -0700
+--- msm.orig/net/sysctl_net.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/net/sysctl_net.c	2012-09-18 13:48:21.438594271 -0700
 @@ -83,7 +83,7 @@
  	retire_sysctl_set(&net->sysctls);
  }
@@ -2954,8 +2893,8 @@ Index: msm/net/sysctl_net.c
  };
 Index: msm/net/unix/af_unix.c
 ===================================================================
---- msm.orig/net/unix/af_unix.c	2012-09-17 13:18:20.133103858 -0700
-+++ msm/net/unix/af_unix.c	2012-09-17 13:19:55.521105470 -0700
+--- msm.orig/net/unix/af_unix.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/net/unix/af_unix.c	2012-09-18 13:48:21.442594271 -0700
 @@ -2400,7 +2400,7 @@
  	proc_net_remove(net, "unix");
  }
@@ -2967,8 +2906,8 @@ Index: msm/net/unix/af_unix.c
  };
 Index: msm/net/wireless/wext-core.c
 ===================================================================
---- msm.orig/net/wireless/wext-core.c	2012-09-17 13:18:20.137103858 -0700
-+++ msm/net/wireless/wext-core.c	2012-09-17 13:19:55.521105470 -0700
+--- msm.orig/net/wireless/wext-core.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/net/wireless/wext-core.c	2012-09-18 13:48:21.442594271 -0700
 @@ -353,7 +353,7 @@
  	skb_queue_purge(&net->wext_nlevents);
  }
@@ -2980,8 +2919,8 @@ Index: msm/net/wireless/wext-core.c
  };
 Index: msm/sound/soc/msm/lpass-dma.c
 ===================================================================
---- msm.orig/sound/soc/msm/lpass-dma.c	2012-09-17 13:13:06.121098552 -0700
-+++ msm/sound/soc/msm/lpass-dma.c	2012-09-17 13:19:55.525105470 -0700
+--- msm.orig/sound/soc/msm/lpass-dma.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/sound/soc/msm/lpass-dma.c	2012-09-18 13:48:21.442594271 -0700
 @@ -424,7 +424,7 @@
  	return 0;
  }
@@ -2993,8 +2932,8 @@ Index: msm/sound/soc/msm/lpass-dma.c
  	.driver = {
 Index: msm/sound/soc/msm/msm-dai.c
 ===================================================================
---- msm.orig/sound/soc/msm/msm-dai.c	2012-09-17 13:13:06.121098552 -0700
-+++ msm/sound/soc/msm/msm-dai.c	2012-09-17 13:19:55.525105470 -0700
+--- msm.orig/sound/soc/msm/msm-dai.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/sound/soc/msm/msm-dai.c	2012-09-18 13:48:21.442594271 -0700
 @@ -102,7 +102,7 @@
  	return 0;
  }
@@ -3015,9 +2954,9 @@ Index: msm/sound/soc/msm/msm-dai.c
  	.driver = {
 Index: msm/sound/soc/msm/msm-pcm-lpa.c
 ===================================================================
---- msm.orig/sound/soc/msm/msm-pcm-lpa.c	2012-09-17 13:18:20.241103860 -0700
-+++ msm/sound/soc/msm/msm-pcm-lpa.c	2012-09-17 13:19:55.525105470 -0700
-@@ -587,7 +587,7 @@
+--- msm.orig/sound/soc/msm/msm-pcm-lpa.c	2012-09-18 13:08:18.000000000 -0700
++++ msm/sound/soc/msm/msm-pcm-lpa.c	2012-09-18 13:48:21.442594271 -0700
+@@ -585,7 +585,7 @@
  	return 0;
  }
  
@@ -3028,9 +2967,9 @@ Index: msm/sound/soc/msm/msm-pcm-lpa.c
  		.owner = THIS_MODULE,
 Index: msm/sound/soc/msm/msm-pcm-q6.c
 ===================================================================
---- msm.orig/sound/soc/msm/msm-pcm-q6.c	2012-09-17 13:18:20.241103860 -0700
-+++ msm/sound/soc/msm/msm-pcm-q6.c	2012-09-17 13:19:55.525105470 -0700
-@@ -722,7 +722,7 @@
+--- msm.orig/sound/soc/msm/msm-pcm-q6.c	2012-09-18 13:08:18.000000000 -0700
++++ msm/sound/soc/msm/msm-pcm-q6.c	2012-09-18 13:48:21.442594271 -0700
+@@ -713,7 +713,7 @@
  	return 0;
  }
  
@@ -3041,9 +2980,9 @@ Index: msm/sound/soc/msm/msm-pcm-q6.c
  		.owner = THIS_MODULE,
 Index: msm/sound/soc/msm/msm-pcm-voice.c
 ===================================================================
---- msm.orig/sound/soc/msm/msm-pcm-voice.c	2012-09-17 13:18:20.241103860 -0700
-+++ msm/sound/soc/msm/msm-pcm-voice.c	2012-09-17 13:19:55.525105470 -0700
-@@ -616,7 +616,7 @@
+--- msm.orig/sound/soc/msm/msm-pcm-voice.c	2012-09-18 13:08:18.000000000 -0700
++++ msm/sound/soc/msm/msm-pcm-voice.c	2012-09-18 13:48:21.442594271 -0700
+@@ -610,7 +610,7 @@
  	return 0;
  }
  
@@ -3054,8 +2993,8 @@ Index: msm/sound/soc/msm/msm-pcm-voice.c
  		.owner = THIS_MODULE,
 Index: msm/sound/soc/msm/msm7k-pcm.c
 ===================================================================
---- msm.orig/sound/soc/msm/msm7k-pcm.c	2012-09-17 13:18:20.241103860 -0700
-+++ msm/sound/soc/msm/msm7k-pcm.c	2012-09-17 13:19:55.553105468 -0700
+--- msm.orig/sound/soc/msm/msm7k-pcm.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/sound/soc/msm/msm7k-pcm.c	2012-09-18 13:48:21.442594271 -0700
 @@ -674,7 +674,7 @@
  	return 0;
  }
@@ -3067,8 +3006,8 @@ Index: msm/sound/soc/msm/msm7k-pcm.c
  		.owner = THIS_MODULE,
 Index: msm/sound/soc/msm/msm8x60-dai.c
 ===================================================================
---- msm.orig/sound/soc/msm/msm8x60-dai.c	2012-09-17 13:13:06.125098552 -0700
-+++ msm/sound/soc/msm/msm8x60-dai.c	2012-09-17 13:19:55.553105468 -0700
+--- msm.orig/sound/soc/msm/msm8x60-dai.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/sound/soc/msm/msm8x60-dai.c	2012-09-18 13:48:21.442594271 -0700
 @@ -100,7 +100,7 @@
  	return 0;
  }
@@ -3089,8 +3028,8 @@ Index: msm/sound/soc/msm/msm8x60-dai.c
  	.driver = {
 Index: msm/sound/soc/msm/mvs-dai.c
 ===================================================================
---- msm.orig/sound/soc/msm/mvs-dai.c	2012-09-17 13:13:06.125098552 -0700
-+++ msm/sound/soc/msm/mvs-dai.c	2012-09-17 13:19:55.553105468 -0700
+--- msm.orig/sound/soc/msm/mvs-dai.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/sound/soc/msm/mvs-dai.c	2012-09-18 13:48:21.442594271 -0700
 @@ -93,7 +93,7 @@
  	return 0;
  }
@@ -3111,8 +3050,8 @@ Index: msm/sound/soc/msm/mvs-dai.c
  	.driver = {
 Index: msm/sound/soc/soc-utils.c
 ===================================================================
---- msm.orig/sound/soc/soc-utils.c	2012-09-17 13:18:20.257103860 -0700
-+++ msm/sound/soc/soc-utils.c	2012-09-17 13:19:55.553105468 -0700
+--- msm.orig/sound/soc/soc-utils.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/sound/soc/soc-utils.c	2012-09-18 13:48:21.442594271 -0700
 @@ -119,7 +119,7 @@
  	return 0;
  }
@@ -3124,8 +3063,8 @@ Index: msm/sound/soc/soc-utils.c
  		.owner = THIS_MODULE,
 Index: msm/net/netfilter/nf_conntrack_netlink.c
 ===================================================================
---- msm.orig/net/netfilter/nf_conntrack_netlink.c	2012-09-17 13:18:20.105103857 -0700
-+++ msm/net/netfilter/nf_conntrack_netlink.c	2012-09-17 13:19:55.553105468 -0700
+--- msm.orig/net/netfilter/nf_conntrack_netlink.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/net/netfilter/nf_conntrack_netlink.c	2012-09-18 13:48:21.446594271 -0700
 @@ -2375,7 +2375,7 @@
  		ctnetlink_net_exit(net);
  }
@@ -3137,8 +3076,8 @@ Index: msm/net/netfilter/nf_conntrack_netlink.c
  };
 Index: msm/net/sunrpc/auth_gss/auth_gss.c
 ===================================================================
---- msm.orig/net/sunrpc/auth_gss/auth_gss.c	2012-09-17 13:18:20.125103858 -0700
-+++ msm/net/sunrpc/auth_gss/auth_gss.c	2012-09-17 13:19:55.557105469 -0700
+--- msm.orig/net/sunrpc/auth_gss/auth_gss.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/net/sunrpc/auth_gss/auth_gss.c	2012-09-18 13:48:21.502594272 -0700
 @@ -1672,7 +1672,7 @@
  	gss_svc_shutdown_net(net);
  }
@@ -3150,8 +3089,8 @@ Index: msm/net/sunrpc/auth_gss/auth_gss.c
  };
 Index: msm/sound/soc/msm/msm-pcm-hostless.c
 ===================================================================
---- msm.orig/sound/soc/msm/msm-pcm-hostless.c	2012-09-17 13:18:20.241103860 -0700
-+++ msm/sound/soc/msm/msm-pcm-hostless.c	2012-09-17 13:19:55.557105469 -0700
+--- msm.orig/sound/soc/msm/msm-pcm-hostless.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/sound/soc/msm/msm-pcm-hostless.c	2012-09-18 13:48:21.502594272 -0700
 @@ -45,7 +45,7 @@
  	{}
  };
@@ -3163,9 +3102,9 @@ Index: msm/sound/soc/msm/msm-pcm-hostless.c
  		.owner = THIS_MODULE,
 Index: msm/arch/arm/mach-msm/cpufreq.c
 ===================================================================
---- msm.orig/arch/arm/mach-msm/cpufreq.c	2012-09-17 13:18:18.093103823 -0700
-+++ msm/arch/arm/mach-msm/cpufreq.c	2012-09-17 13:19:55.557105469 -0700
-@@ -387,7 +387,7 @@
+--- msm.orig/arch/arm/mach-msm/cpufreq.c	2012-09-18 13:08:17.000000000 -0700
++++ msm/arch/arm/mach-msm/cpufreq.c	2012-09-18 13:48:21.502594272 -0700
+@@ -359,7 +359,7 @@
  	NULL,
  };
  
@@ -3176,8 +3115,8 @@ Index: msm/arch/arm/mach-msm/cpufreq.c
  	.init		= msm_cpufreq_init,
 Index: msm/arch/arm/mach-msm/footswitch-8x60.c
 ===================================================================
---- msm.orig/arch/arm/mach-msm/footswitch-8x60.c	2012-09-17 13:18:18.097103823 -0700
-+++ msm/arch/arm/mach-msm/footswitch-8x60.c	2012-09-17 13:19:55.557105469 -0700
+--- msm.orig/arch/arm/mach-msm/footswitch-8x60.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/arch/arm/mach-msm/footswitch-8x60.c	2012-09-18 13:48:21.502594272 -0700
 @@ -550,7 +550,7 @@
  	return 0;
  }
@@ -3189,8 +3128,8 @@ Index: msm/arch/arm/mach-msm/footswitch-8x60.c
  	.driver		= {
 Index: msm/arch/arm/mach-msm/footswitch-pcom.c
 ===================================================================
---- msm.orig/arch/arm/mach-msm/footswitch-pcom.c	2012-09-17 13:18:18.097103823 -0700
-+++ msm/arch/arm/mach-msm/footswitch-pcom.c	2012-09-17 13:19:55.557105469 -0700
+--- msm.orig/arch/arm/mach-msm/footswitch-pcom.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/arch/arm/mach-msm/footswitch-pcom.c	2012-09-18 13:48:21.502594272 -0700
 @@ -299,7 +299,7 @@
  	return 0;
  }
@@ -3202,9 +3141,9 @@ Index: msm/arch/arm/mach-msm/footswitch-pcom.c
  	.driver		= {
 Index: msm/arch/arm/mach-msm/msm_dsps.c
 ===================================================================
---- msm.orig/arch/arm/mach-msm/msm_dsps.c	2012-09-17 13:18:18.109103824 -0700
-+++ msm/arch/arm/mach-msm/msm_dsps.c	2012-09-17 13:19:55.557105469 -0700
-@@ -972,7 +972,7 @@
+--- msm.orig/arch/arm/mach-msm/msm_dsps.c	2012-09-18 13:08:17.000000000 -0700
++++ msm/arch/arm/mach-msm/msm_dsps.c	2012-09-18 13:48:21.502594272 -0700
+@@ -968,7 +968,7 @@
  	return 0;
  }
  
@@ -3215,8 +3154,8 @@ Index: msm/arch/arm/mach-msm/msm_dsps.c
  	.driver         = {
 Index: msm/arch/arm/mach-msm/pil-modem.c
 ===================================================================
---- msm.orig/arch/arm/mach-msm/pil-modem.c	2012-09-17 13:18:18.113103824 -0700
-+++ msm/arch/arm/mach-msm/pil-modem.c	2012-09-17 13:19:55.557105469 -0700
+--- msm.orig/arch/arm/mach-msm/pil-modem.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/arch/arm/mach-msm/pil-modem.c	2012-09-18 13:48:21.502594272 -0700
 @@ -286,7 +286,7 @@
  	return 0;
  }
@@ -3228,8 +3167,8 @@ Index: msm/arch/arm/mach-msm/pil-modem.c
  	.driver = {
 Index: msm/arch/arm/mach-msm/pil-q6v3.c
 ===================================================================
---- msm.orig/arch/arm/mach-msm/pil-q6v3.c	2012-09-17 13:18:18.113103824 -0700
-+++ msm/arch/arm/mach-msm/pil-q6v3.c	2012-09-17 13:19:55.557105469 -0700
+--- msm.orig/arch/arm/mach-msm/pil-q6v3.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/arch/arm/mach-msm/pil-q6v3.c	2012-09-18 13:48:21.502594272 -0700
 @@ -252,7 +252,7 @@
  	return 0;
  }
@@ -3241,8 +3180,8 @@ Index: msm/arch/arm/mach-msm/pil-q6v3.c
  	.driver = {
 Index: msm/arch/arm/mach-msm/pil-tzapps.c
 ===================================================================
---- msm.orig/arch/arm/mach-msm/pil-tzapps.c	2012-09-17 13:18:18.113103824 -0700
-+++ msm/arch/arm/mach-msm/pil-tzapps.c	2012-09-17 13:19:55.557105469 -0700
+--- msm.orig/arch/arm/mach-msm/pil-tzapps.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/arch/arm/mach-msm/pil-tzapps.c	2012-09-18 13:48:21.502594272 -0700
 @@ -71,7 +71,7 @@
  	return 0;
  }
@@ -3254,9 +3193,9 @@ Index: msm/arch/arm/mach-msm/pil-tzapps.c
  	.driver = {
 Index: msm/arch/arm/mach-msm/rpm-regulator.c
 ===================================================================
---- msm.orig/arch/arm/mach-msm/rpm-regulator.c	2012-09-17 13:18:18.129103824 -0700
-+++ msm/arch/arm/mach-msm/rpm-regulator.c	2012-09-17 13:19:55.557105469 -0700
-@@ -1947,7 +1947,7 @@
+--- msm.orig/arch/arm/mach-msm/rpm-regulator.c	2012-09-18 13:08:17.000000000 -0700
++++ msm/arch/arm/mach-msm/rpm-regulator.c	2012-09-18 13:48:21.518594272 -0700
+@@ -1761,7 +1761,7 @@
  	return 0;
  }
  
@@ -3267,8 +3206,8 @@ Index: msm/arch/arm/mach-msm/rpm-regulator.c
  	.driver = {
 Index: msm/arch/arm/mach-msm/rpm.c
 ===================================================================
---- msm.orig/arch/arm/mach-msm/rpm.c	2012-09-17 13:18:18.133103824 -0700
-+++ msm/arch/arm/mach-msm/rpm.c	2012-09-17 13:19:55.557105469 -0700
+--- msm.orig/arch/arm/mach-msm/rpm.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/arch/arm/mach-msm/rpm.c	2012-09-18 13:48:21.518594272 -0700
 @@ -880,7 +880,7 @@
  	return 0;
  }
@@ -3280,9 +3219,9 @@ Index: msm/arch/arm/mach-msm/rpm.c
  	.driver = {
 Index: msm/arch/arm/mach-msm/rpm_log.c
 ===================================================================
---- msm.orig/arch/arm/mach-msm/rpm_log.c	2012-09-17 13:18:18.133103824 -0700
-+++ msm/arch/arm/mach-msm/rpm_log.c	2012-09-17 13:19:55.557105469 -0700
-@@ -333,7 +333,7 @@
+--- msm.orig/arch/arm/mach-msm/rpm_log.c	2012-09-18 13:08:17.000000000 -0700
++++ msm/arch/arm/mach-msm/rpm_log.c	2012-09-18 13:48:21.518594272 -0700
+@@ -335,7 +335,7 @@
  	return 0;
  }
  
@@ -3293,8 +3232,8 @@ Index: msm/arch/arm/mach-msm/rpm_log.c
  	.driver		= {
 Index: msm/arch/arm/mach-msm/rpm_stats.c
 ===================================================================
---- msm.orig/arch/arm/mach-msm/rpm_stats.c	2012-09-17 13:13:06.077098551 -0700
-+++ msm/arch/arm/mach-msm/rpm_stats.c	2012-09-17 13:19:55.557105469 -0700
+--- msm.orig/arch/arm/mach-msm/rpm_stats.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/arch/arm/mach-msm/rpm_stats.c	2012-09-18 13:48:21.518594272 -0700
 @@ -222,7 +222,7 @@
  	platform_set_drvdata(pdev, NULL);
  	return 0;
@@ -3306,8 +3245,8 @@ Index: msm/arch/arm/mach-msm/rpm_stats.c
  	.driver = {
 Index: msm/arch/arm/mach-msm/saw-regulator.c
 ===================================================================
---- msm.orig/arch/arm/mach-msm/saw-regulator.c	2012-09-17 13:18:18.133103824 -0700
-+++ msm/arch/arm/mach-msm/saw-regulator.c	2012-09-17 13:19:55.557105469 -0700
+--- msm.orig/arch/arm/mach-msm/saw-regulator.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/arch/arm/mach-msm/saw-regulator.c	2012-09-18 13:48:21.518594272 -0700
 @@ -209,7 +209,7 @@
  	return 0;
  }
@@ -3319,9 +3258,9 @@ Index: msm/arch/arm/mach-msm/saw-regulator.c
  	.driver = {
 Index: msm/arch/arm/mach-msm/smd.c
 ===================================================================
---- msm.orig/arch/arm/mach-msm/smd.c	2012-09-17 13:18:18.133103824 -0700
-+++ msm/arch/arm/mach-msm/smd.c	2012-09-17 13:19:55.557105469 -0700
-@@ -3553,7 +3553,7 @@
+--- msm.orig/arch/arm/mach-msm/smd.c	2012-09-18 13:08:17.000000000 -0700
++++ msm/arch/arm/mach-msm/smd.c	2012-09-18 13:48:21.518594272 -0700
+@@ -3475,7 +3475,7 @@
  }
  late_initcall(modem_restart_late_init);
  
@@ -3330,23 +3269,10 @@ Index: msm/arch/arm/mach-msm/smd.c
  	.probe = msm_smd_probe,
  	.driver = {
  		.name = MODULE_NAME,
-Index: msm/arch/arm/mach-msm/rpm_rbcpr_stats.c
-===================================================================
---- msm.orig/arch/arm/mach-msm/rpm_rbcpr_stats.c	2012-09-17 13:18:18.133103824 -0700
-+++ msm/arch/arm/mach-msm/rpm_rbcpr_stats.c	2012-09-17 13:19:55.557105469 -0700
-@@ -392,7 +392,7 @@
- 	return 0;
- }
- 
--static struct platform_driver msm_rpmrbcpr_driver = {
-+static struct platform_driver msm_rpmrbcpr_driver  __refdata =  {
- 	.probe  = msm_rpmrbcpr_probe,
- 	.remove = __devexit_p(msm_rpmrbcpr_remove),
- 	.driver = {
 Index: msm/drivers/gpio/gpio-msm-v1.c
 ===================================================================
---- msm.orig/drivers/gpio/gpio-msm-v1.c	2012-09-17 13:18:18.621103833 -0700
-+++ msm/drivers/gpio/gpio-msm-v1.c	2012-09-17 13:19:55.561105470 -0700
+--- msm.orig/drivers/gpio/gpio-msm-v1.c	2012-09-18 13:02:02.000000000 -0700
++++ msm/drivers/gpio/gpio-msm-v1.c	2012-09-18 13:48:21.522594273 -0700
 @@ -822,7 +822,7 @@
  	return 0;
  }
@@ -3356,24 +3282,24 @@ Index: msm/drivers/gpio/gpio-msm-v1.c
  	.probe = msm_gpio_probe,
  	.driver = {
  		.name = "msmgpio",
-Index: msm/arch/arm/mach-msm/pm-8x60.c
+Index: msm/drivers/coresight/coresight.c
 ===================================================================
---- msm.orig/arch/arm/mach-msm/pm-8x60.c	2012-09-17 13:18:18.113103824 -0700
-+++ msm/arch/arm/mach-msm/pm-8x60.c	2012-09-17 13:19:55.561105470 -0700
-@@ -980,7 +980,7 @@
- 	{},
+--- msm.orig/drivers/coresight/coresight.c	2012-09-18 13:08:17.950553657 -0700
++++ msm/drivers/coresight/coresight.c	2012-09-18 14:13:46.430620039 -0700
+@@ -565,7 +565,7 @@
+ 	{}
  };
  
--static struct platform_driver msm_pc_counter_driver = {
-+static struct platform_driver msm_pc_counter_driver  __initdata =  {
- 	.probe = msm_pc_debug_probe,
- 	.driver = {
- 		.name = "pc-cntr",
-Index: msm/drivers/media/video/msm/vfe/msm_vfe32.c
+-static struct platform_driver qdss_driver = {
++static struct platform_driver qdss_driver  __refdata =  {
+ 	.probe          = qdss_probe,
+ 	.remove         = __devexit_p(qdss_remove),
+ 	.driver         = {
+Index: msm/drivers/media/video/msm/msm_vfe32.c
 ===================================================================
---- msm.orig/drivers/media/video/msm/vfe/msm_vfe32.c	2012-09-17 13:18:18.921103837 -0700
-+++ msm/drivers/media/video/msm/vfe/msm_vfe32.c	2012-09-17 13:19:55.561105470 -0700
-@@ -6730,7 +6730,7 @@
+--- msm.orig/drivers/media/video/msm/msm_vfe32.c	2012-09-18 13:08:17.990553657 -0700
++++ msm/drivers/media/video/msm/msm_vfe32.c	2012-09-18 14:13:46.430620039 -0700
+@@ -4602,7 +4602,7 @@
  	return 0;
  }
  
@@ -3382,94 +3308,64 @@ Index: msm/drivers/media/video/msm/vfe/msm_vfe32.c
  	.probe = vfe32_probe,
  	.driver = {
  		.name = MSM_VFE_DRV_NAME,
-Index: msm/sound/soc/msm/msm-lowlatency-pcm-q6.c
+Index: msm/sound/soc/msm/msm-multi-ch-pcm-q6.c
 ===================================================================
---- msm.orig/sound/soc/msm/msm-lowlatency-pcm-q6.c	2012-09-17 13:18:20.241103860 -0700
-+++ msm/sound/soc/msm/msm-lowlatency-pcm-q6.c	2012-09-17 13:19:55.561105470 -0700
-@@ -726,7 +726,7 @@
+--- msm.orig/sound/soc/msm/msm-multi-ch-pcm-q6.c	2012-09-18 13:08:18.000000000 -0700
++++ msm/sound/soc/msm/msm-multi-ch-pcm-q6.c	2012-09-18 14:13:46.430620039 -0700
+@@ -776,7 +776,7 @@
  	return 0;
  }
  
 -static struct platform_driver msm_pcm_driver = {
 +static struct platform_driver msm_pcm_driver  __initdata =  {
  	.driver = {
- 		.name = "msm-lowlatency-pcm-dsp",
+ 		.name = "msm-multi-ch-pcm-dsp",
  		.owner = THIS_MODULE,
-Index: msm/drivers/coresight/coresight-csr.c
+Index: msm/drivers/media/video/msm/wfd/wfd-ioctl.c
 ===================================================================
---- msm.orig/drivers/coresight/coresight-csr.c	2012-09-17 13:18:18.593103832 -0700
-+++ msm/drivers/coresight/coresight-csr.c	2012-09-17 13:19:55.561105470 -0700
-@@ -176,7 +176,7 @@
- 	{}
- };
- 
--static struct platform_driver csr_driver = {
-+static struct platform_driver csr_driver  __refdata =  {
- 	.probe          = csr_probe,
- 	.remove         = __devexit_p(csr_remove),
- 	.driver         = {
-Index: msm/drivers/thermal/msm_thermal.c
-===================================================================
---- msm.orig/drivers/thermal/msm_thermal.c	2012-09-17 13:18:19.585103849 -0700
-+++ msm/drivers/thermal/msm_thermal.c	2012-09-17 13:19:55.561105470 -0700
-@@ -240,7 +240,7 @@
- 	{},
- };
- 
--static struct platform_driver msm_thermal_device_driver = {
-+static struct platform_driver msm_thermal_device_driver  __initdata =  {
- 	.probe = msm_thermal_dev_probe,
- 	.driver = {
- 		.name = "msm-thermal",
-Index: msm/drivers/coresight/coresight-tmc.c
-===================================================================
---- msm.orig/drivers/coresight/coresight-tmc.c	2012-09-17 13:18:18.593103832 -0700
-+++ msm/drivers/coresight/coresight-tmc.c	2012-09-17 13:19:55.561105470 -0700
-@@ -1183,7 +1183,7 @@
- };
- EXPORT_COMPAT("arm,coresight-tmc");
- 
--static struct platform_driver tmc_driver = {
-+static struct platform_driver tmc_driver  __refdata =  {
- 	.probe          = tmc_probe,
- 	.remove         = __devexit_p(tmc_remove),
- 	.driver         = {
-Index: msm/drivers/media/video/msm_wfd/wfd-ioctl.c
-===================================================================
---- msm.orig/drivers/media/video/msm_wfd/wfd-ioctl.c	2012-09-17 13:18:18.929103838 -0700
-+++ msm/drivers/media/video/msm_wfd/wfd-ioctl.c	2012-09-17 13:34:27.005120196 -0700
-@@ -1625,7 +1625,7 @@
+--- msm.orig/drivers/media/video/msm/wfd/wfd-ioctl.c	2012-09-18 13:08:18.002553658 -0700
++++ msm/drivers/media/video/msm/wfd/wfd-ioctl.c	2012-09-18 14:17:28.538623791 -0700
+@@ -1598,7 +1598,7 @@
  	kfree(wfd_dev);
  	return 0;
  }
 -static struct platform_driver wfd_driver = {
-+static struct platform_driver wfd_driver __refdata =  {
++static struct platform_driver wfd_driver __refdata = {
  	.probe =  __wfd_probe,
  	.remove = __wfd_remove,
  	.driver = {
-Index: msm/drivers/gpio/gpio-msm-common.c
+Index: msm/drivers/net/wireless/wcnss/wcnss_wlan.c
 ===================================================================
---- msm.orig/drivers/gpio/gpio-msm-common.c	2012-09-17 13:18:18.621103833 -0700
-+++ msm/drivers/gpio/gpio-msm-common.c	2012-09-17 13:19:55.565105471 -0700
-@@ -587,7 +587,7 @@
- 	return 0;
+--- msm.orig/drivers/net/wireless/wcnss/wcnss_wlan.c	2012-09-18 13:08:18.000000000 -0700
++++ msm/drivers/net/wireless/wcnss/wcnss_wlan.c	2012-09-18 14:23:11.034629581 -0700
+@@ -196,7 +196,7 @@
  }
  
--static struct platform_driver msm_gpio_driver = {
-+static struct platform_driver msm_gpio_driver  __refdata =  {
- 	.probe = msm_gpio_probe,
- 	.remove = __devexit_p(msm_gpio_remove),
+ 
+-static struct platform_driver wcnss_wlan_ctrl_driver = {
++static struct platform_driver wcnss_wlan_ctrl_driver __refdata = {
  	.driver = {
-Index: msm/drivers/coresight/coresight-replicator.c
-===================================================================
---- msm.orig/drivers/coresight/coresight-replicator.c	2012-09-17 13:18:18.593103832 -0700
-+++ msm/drivers/coresight/coresight-replicator.c	2012-09-17 13:19:55.565105471 -0700
-@@ -185,7 +185,7 @@
- 	{}
+ 		.name	= "WLAN_CTRL",
+ 		.owner	= THIS_MODULE,
+@@ -491,7 +491,7 @@
+ 	.resume		= wcnss_wlan_resume,
  };
  
--static struct platform_driver replicator_driver = {
-+static struct platform_driver replicator_driver  __refdata =  {
- 	.probe          = replicator_probe,
- 	.remove         = __devexit_p(replicator_remove),
- 	.driver         = {
+-static struct platform_driver wcnss_wlan_driver = {
++static struct platform_driver wcnss_wlan_driver __refdata = {
+ 	.driver = {
+ 		.name	= DEVICE,
+ 		.owner	= THIS_MODULE,
+Index: msm/drivers/media/video/msm/msm.c
+===================================================================
+--- msm.orig/drivers/media/video/msm/msm.c	2012-09-18 13:08:17.974553658 -0700
++++ msm/drivers/media/video/msm/msm.c	2012-09-18 14:19:58.554626328 -0700
+@@ -3556,7 +3556,7 @@
+ }
+ 
+ 
+-static struct platform_driver msm_cam_server_driver = {
++static struct platform_driver msm_cam_server_driver __refdata = {
+ 	.probe = msm_camera_probe,
+ 	.remove = msm_camera_exit,
+ 	.driver = {

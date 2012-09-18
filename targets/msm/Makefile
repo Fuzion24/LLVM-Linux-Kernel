@@ -30,6 +30,7 @@ KERNEL_CFG	= ${SRCDIR}/msm/arch/arm/configs/msm8960_defconfig
 KERNEL_BRANCH	= msm-3.4
 KERNEL_GIT	= git://codeaurora.org/kernel/msm.git
 KERNELDIR	= ${SRCDIR}/msm
+KERNEL_TAG	= af5840ff25c178e0a1f94330b6905ac986c4364c
 
 EXTRAFLAGS	= 
 #EXTRAFLAGS	= -Iarch/arm/mach-msm
