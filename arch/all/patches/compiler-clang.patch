@@ -39,5 +39,5 @@ index 0
 +
 +#ifdef uninitialized_var
 +#undef uninitialized_var
-+#define uninitialized_var(x) x
++#define uninitialized_var(x) x = *(&x)
 +#endif
