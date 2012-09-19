@@ -155,7 +155,10 @@ specifying an optional patch level.
 
  quilt import -p0 <patchfile>
 
-At this point it will copy the patch to the target patches directory, and add the patch filename to the generated target series file. The next time you run make, it will find the new patch, and add it to the series.target file before regenerating the target series file.
+At this point it will copy the patch to the target patches directory, and add
+the patch filename to the generated target series file. The next time you run
+make, it will find the new patch, and add it to the series.target file before
+regenerating the target series file.
 
 If you want the newly added patch to be a generic patch, you can move it to the
 appropriate patches directory (e.g. arch/arm/patches), adding the filename to
@@ -165,7 +168,12 @@ series.target file (otherwise it will appear to be magically readded).
 
 = Removing a target patch from the kernel
 
-Removing a patch from a patch series can be done with quilt delete (first you need to quilt push/pop to make that patch the most recently applied patch). This will remove the patch and remove the patch filename from the target series file. However, you need to manually remove the patch filename from the series.target file (or generic patches directory series file) or when the target series file is regenerated it will be magically readded.
+Removing a patch from a patch series can be done with quilt delete (first you
+need to quilt push/pop to make that patch the most recently applied patch).
+This will remove the patch and remove the patch filename from the target series
+file. However, you need to manually remove the patch filename from the
+series.target file (or generic patches directory series file) or when the
+target series file is regenerated it will be magically readded.
 
  # Use quilt pop or push to make the patch you want to remove the most recently
  # applied patch
