@@ -1,8 +1,8 @@
 #!/bin/bash
-#make kernel-build > logmg 2>&1
+make kernel-build > logmg 2>&1
 cat logmg | grep "Section mismatch in reference" | sed -e "s/^.*://" | cut -f1 -d"(" | sort | uniq > listmg
 rm -rf src/msm-mgf
-git clone src/msm/.git src/msm-mgf
+git clone src/msm/.git src/msm-mgf -b AU_LINUX_BASE_TARGET_ALL.01.00.461
 
 # Get the current commit
 pushd .

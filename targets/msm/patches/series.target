@@ -1,4 +1,4 @@
-msm-3.0-llvm.patch
-msm-3.0-llvm-arm.patch
+clang-unsupported.patch
+msm-bugs.patch
 fix-warnings.patch
-msm-3.4-llvm-mg.patch
+msm-merged-globals.patch

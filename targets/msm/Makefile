@@ -30,7 +30,10 @@ KERNEL_CFG	= ${SRCDIR}/msm/arch/arm/configs/msm8960_defconfig
 KERNEL_BRANCH	= msm-3.4
 KERNEL_GIT	= git://codeaurora.org/kernel/msm.git
 KERNELDIR	= ${SRCDIR}/msm
-KERNEL_TAG	= af5840ff25c178e0a1f94330b6905ac986c4364c
+KERNEL_TAG	= AU_LINUX_BASE_TARGET_ALL.01.00.461
+
+#Use the branch name for the dir containing MSM specific patch overrides
+KERNEL_REPO_PATCHES=${KERNEL_BRANCH}
 
 EXTRAFLAGS	= 
 #EXTRAFLAGS	= -Iarch/arm/mach-msm
@@ -63,3 +66,5 @@ clean:
 mrproper: clean tmp-mrproper
 	( ( test -e ${KERNELDIR} && cd ${KERNELDIR} && make mrproper ) || exit 0 )
 	@rm -rf ${LOGDIR}/*
+
+get-msm-tags:

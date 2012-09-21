@@ -1,0 +1,66 @@
+Index: msm/arch/arm/mach-msm/vreg.c
+===================================================================
+--- msm.orig/arch/arm/mach-msm/vreg.c
++++ msm/arch/arm/mach-msm/vreg.c
+@@ -299,7 +299,7 @@
+ }
+ #else
+ static inline int __init vreg_debug_init(void) { return 0; }
+-static inline void __exit vreg_debug_exit(void) { return 0; }
++static inline void __exit vreg_debug_exit(void) { return; }
+ #endif
+ 
+ static int __init vreg_init(void)
+Index: msm/arch/arm/mach-msm/perf_event_msm_krait_l2.c
+===================================================================
+--- msm.orig/arch/arm/mach-msm/perf_event_msm_krait_l2.c
++++ msm/arch/arm/mach-msm/perf_event_msm_krait_l2.c
+@@ -18,6 +18,10 @@
+ 
+ #include <mach/msm-krait-l2-accessors.h>
+ 
++#ifndef CONFIG_HW_PERF_EVENTS
++#error "CONFIG_HW_PERF_EVENTS is undefined but is required"
++#endif
++
+ #define MAX_L2_PERIOD	((1ULL << 32) - 1)
+ #define MAX_KRAIT_L2_CTRS 10
+ 
+Index: msm/arch/arm/mach-msm/peripheral-loader.c
+===================================================================
+--- msm.orig/arch/arm/mach-msm/peripheral-loader.c
++++ msm/arch/arm/mach-msm/peripheral-loader.c
+@@ -576,7 +576,7 @@
+ }
+ #else
+ static int __init msm_pil_debugfs_init(void) { return 0; };
+-static void __exit msm_pil_debugfs_exit(void) { return 0; };
++static void __exit msm_pil_debugfs_exit(void) { return; };
+ static int msm_pil_debugfs_add(struct pil_device *pil) { return 0; }
+ static void msm_pil_debugfs_remove(struct pil_device *pil) { }
+ #endif
+Index: msm/drivers/media/video/msm/Makefile
+===================================================================
+--- msm.orig/drivers/media/video/msm/Makefile
++++ msm/drivers/media/video/msm/Makefile
+@@ -4,6 +4,7 @@
+ ccflags-y += -Idrivers/media/video/msm/vfe
+ obj-$(CONFIG_MSM_CAMERA) += io/
+ ifeq ($(CONFIG_MSM_CAMERA_V4L2),y)
++  EXTRA_CFLAGS += -Idrivers/media/video/msm
+   EXTRA_CFLAGS += -Idrivers/media/video/msm/cci
+   EXTRA_CFLAGS += -Idrivers/media/video/msm/csi
+   EXTRA_CFLAGS += -Idrivers/media/video/msm/eeprom
+Index: msm/arch/arm/configs/msm8960_defconfig
+===================================================================
+--- msm.orig/arch/arm/configs/msm8960_defconfig
++++ msm/arch/arm/configs/msm8960_defconfig
+@@ -472,8 +472,6 @@
+ CONFIG_MSM_IOMMU=y
+ CONFIG_MOBICORE_SUPPORT=m
+ CONFIG_MOBICORE_API=m
+-CONFIG_MSM_QDSS=y
+-CONFIG_MSM_QDSS_ETM_DEFAULT_ENABLE=y
+ CONFIG_EXT2_FS=y
+ CONFIG_EXT2_FS_XATTR=y
+ CONFIG_EXT3_FS=y
