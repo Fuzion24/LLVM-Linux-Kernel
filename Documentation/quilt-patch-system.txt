@@ -89,7 +89,7 @@ patches directories are searched.
  arch/all/patches
 
 In this case, the first patch file named inline.patch found in the above
-directorys would be linked to the Vexpress patches dir. If the file is found in
+directories would be linked to the Vexpress patches dir. If the file is found in
 the target patches directory, it is left as is.
 
  arch/all/patches/foo/inline.patch -> targets/vexpress/patches/inline.patch
@@ -142,11 +142,13 @@ be unapplied and re-applied automatically for you again).
 When you make a change to a patch file with a "quilt refresh", it will remove
 the symlinked patch and replace it with the new patch file. If the new patch
 will be used as an "override patch" it now needs to be copied to the
-appropriate directory now, before doing anything else. Othereise, in order to
+appropriate directory now, before doing anything else. Otherwise, in order to
 have the new patch file copied back to the appropriate existing place, you
 merely need to do another make (which ends up doing a kernel-patch which does a
 kernel-quilt).  The Make file will search for the patch filename (as described
 in a previous section) copy it back and then recreate the symlink.
+
+*** Please do not quilt refresh a symlinked patch from a non-mainline git repo ***
 
 = Adding a target patch to the kernel
 
@@ -164,7 +166,7 @@ If you want the newly added patch to be a generic patch, you can move it to the
 appropriate patches directory (e.g. arch/arm/patches), adding the filename to
 the existing series file in that directory. In this case you need to make sure
 you delete the new patch file name from both the target series file and the
-series.target file (otherwise it will appear to be magically readded).
+series.target file (otherwise it will appear to be magically re-added).
 
 = Removing a target patch from the kernel
 
@@ -173,7 +175,7 @@ need to quilt push/pop to make that patch the most recently applied patch).
 This will remove the patch and remove the patch filename from the target series
 file. However, you need to manually remove the patch filename from the
 series.target file (or generic patches directory series file) or when the
-target series file is regenerated it will be magically readded.
+target series file is regenerated it will be magically re-added.
 
  # Use quilt pop or push to make the patch you want to remove the most recently
  # applied patch
