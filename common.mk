@@ -35,19 +35,25 @@ TARGETS		+= ${COMMON_TARGETS}
 HELP_TARGETS	+= common-help
 .PHONY:		${COMMON_TARGETS}
 
+##############################################################################
 seperator = "---------------------------------------------------------------------"
 banner	= ( echo ${seperator}; echo ${1}; echo ${seperator} )
 state	= @mkdir -p $(dir ${1}) && touch ${1} \
 	  && $(call banner,"Finished state $(notdir ${1})") \
 	  && ( [ -d $(dir ${1})${2} ] || rm -f $(dir ${1})${2} )
+leavestate = rm -f $(addprefix ${1}/,${2})
 error1	= ( echo Error: ${1}; false )
 assert	= [ ${1} ] || $(call error1,${2})
 #assert	= echo "${1} --> ${2}"
 
+##############################################################################
+# Quilt patch macros used by all subsystems
 applied	= ( [ -d ${1} ] && cd ${1} && quilt applied || true )
-patch	= [ ! -d ${1} ] || (cd ${1} && if [ -e patches ] && quilt unapplied ; then quilt push -a ; else >/dev/null ; fi)
-unpatch	= [ ! -d ${1} ] || (cd ${1} && if [ -e patches ] && quilt applied ; then quilt pop -af ; else >/dev/null ; fi)
+patch	= [ ! -d ${1} ] || (cd ${1} && if [ -e patches ] && $(call banner,"Applying patches to ${1}") && quilt unapplied ; then quilt push -a ; else >/dev/null ; fi)
+unpatch	= [ ! -d ${1} ] || (cd ${1} && if [ -e patches ] && $(call banner,"Unapplying patches from ${1}") && quilt applied ; then quilt pop -af ; else >/dev/null ; fi)
+gitreset = (cd ${1} && $(call banner,"Reseting git tree ${1}") && git reset --hard HEAD && git clean -d -f) || true
 
+##############################################################################
 # Default jobs is number of processors + 1 for disk I/O
 ifeq "${JOBS}" ""
   JOBS:=${shell expr `getconf _NPROCESSORS_ONLN` + 1}
@@ -56,6 +62,7 @@ ifeq "${JOBS}" ""
   endif
 endif
 
+##############################################################################
 common-help:
 	@echo
 	@echo "* make clean-all	- clean all code"
@@ -74,6 +81,7 @@ common-help:
 	@echo
 	@echo "* make CONFIG=<file> ... - Choose configuration file(s) to use"
 
+##############################################################################
 list-jobs:
 	@echo "-j${JOBS}"
 
@@ -96,7 +104,7 @@ list-patch-applied:
 list-path:
 	@echo ${PATH}
 
-list-settings list-config:
+list-settings settings list-config config:
 	@${MAKE} --silent ${SETTINGS_TARGETS}
 
 list-versions:
