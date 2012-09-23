@@ -7,8 +7,8 @@ Do not upstream this patch as is.
 
 Index: linux/mm/slab.c
 ===================================================================
---- linux.orig/mm/slab.c	2012-09-06 14:07:04.870905123 -0400
-+++ linux/mm/slab.c	2012-09-06 14:07:48.686354288 -0400
+--- linux.orig/mm/slab.c
++++ linux/mm/slab.c
 @@ -342,7 +342,8 @@
  {
  	extern void __bad_size(void);

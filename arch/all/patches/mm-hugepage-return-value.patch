@@ -9,8 +9,8 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 
 Index: linux/include/linux/mm.h
 ===================================================================
---- linux.orig/include/linux/mm.h	2012-09-06 14:07:04.914904568 -0400
-+++ linux/include/linux/mm.h	2012-09-06 14:07:48.686354288 -0400
+--- linux.orig/include/linux/mm.h
++++ linux/include/linux/mm.h
 @@ -336,12 +336,14 @@
  
  static inline unsigned long compound_lock_irqsave(struct page *page)

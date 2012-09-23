@@ -10,8 +10,8 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 
 Index: linux/Makefile
 ===================================================================
---- linux.orig/Makefile	2012-09-06 14:07:04.878905022 -0400
-+++ linux/Makefile	2012-09-06 14:07:48.686354288 -0400
+--- linux.orig/Makefile
++++ linux/Makefile
 @@ -366,7 +366,7 @@
  		   -fno-delete-null-pointer-checks
  KBUILD_AFLAGS_KERNEL :=

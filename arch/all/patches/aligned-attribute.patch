@@ -10,8 +10,8 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 
 Index: linux/crypto/shash.c
 ===================================================================
---- linux.orig/crypto/shash.c	2012-09-06 14:07:04.858905273 -0400
-+++ linux/crypto/shash.c	2012-09-06 14:07:48.686354288 -0400
+--- linux.orig/crypto/shash.c
++++ linux/crypto/shash.c
 @@ -67,7 +67,8 @@ 
  static inline unsigned int shash_align_buffer_size(unsigned len,
  						   unsigned long mask)

@@ -6,8 +6,8 @@ Remove variable length arrays in structs (VLAIS) from gadget code
 
 Index: linux/drivers/usb/gadget/f_fs.c
 ===================================================================
---- linux.orig/drivers/usb/gadget/f_fs.c	2012-09-03 11:29:42.190578695 -0400
-+++ linux/drivers/usb/gadget/f_fs.c	2012-09-05 12:14:02.473410498 -0400
+--- linux.orig/drivers/usb/gadget/f_fs.c
++++ linux/drivers/usb/gadget/f_fs.c
 @@ -1331,8 +1331,21 @@
  	if (ffs->epfiles)
  		ffs_epfiles_destroy(ffs->epfiles, ffs->eps_count);

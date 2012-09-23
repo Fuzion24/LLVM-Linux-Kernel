@@ -15,8 +15,8 @@ Signed-off-by: Bryce Lelbach aka "wash" <blelbach@cct.lsu.edu>
 
 Index: linux/fs/bio.c
 ===================================================================
---- linux.orig/fs/bio.c	2012-09-06 16:08:53.000000000 -0400
-+++ linux/fs/bio.c	2012-09-06 17:48:24.726603567 -0400
+--- linux.orig/fs/bio.c
++++ linux/fs/bio.c
 @@ -428,7 +428,7 @@
  }
  EXPORT_SYMBOL(bio_put);
@@ -28,8 +28,8 @@ Index: linux/fs/bio.c
  		blk_recount_segments(q, bio);
 Index: linux/fs/block_dev.c
 ===================================================================
---- linux.orig/fs/block_dev.c	2012-09-06 16:08:53.000000000 -0400
-+++ linux/fs/block_dev.c	2012-09-06 17:48:24.726603567 -0400
+--- linux.orig/fs/block_dev.c
++++ linux/fs/block_dev.c
 @@ -42,7 +42,7 @@
  	return container_of(inode, struct bdev_inode, vfs_inode);
  }
@@ -41,8 +41,8 @@ Index: linux/fs/block_dev.c
  }
 Index: linux/fs/buffer.c
 ===================================================================
---- linux.orig/fs/buffer.c	2012-09-06 16:08:53.000000000 -0400
-+++ linux/fs/buffer.c	2012-09-06 17:48:24.726603567 -0400
+--- linux.orig/fs/buffer.c
++++ linux/fs/buffer.c
 @@ -46,7 +46,7 @@
  
  #define BH_ENTRY(list) list_entry((list), struct buffer_head, b_assoc_buffers)
@@ -54,8 +54,8 @@ Index: linux/fs/buffer.c
  	bh->b_end_io = handler;
 Index: linux/kernel/time.c
 ===================================================================
---- linux.orig/kernel/time.c	2012-09-06 16:08:53.000000000 -0400
-+++ linux/kernel/time.c	2012-09-06 17:48:24.726603567 -0400
+--- linux.orig/kernel/time.c
++++ linux/kernel/time.c
 @@ -232,7 +232,7 @@
   * Avoid unnecessary multiplications/divisions in the
   * two most common HZ cases:
@@ -76,8 +76,8 @@ Index: linux/kernel/time.c
  	return (USEC_PER_SEC / HZ) * j;
 Index: linux/mm/filemap.c
 ===================================================================
---- linux.orig/mm/filemap.c	2012-09-06 16:08:53.000000000 -0400
-+++ linux/mm/filemap.c	2012-09-06 17:48:24.726603567 -0400
+--- linux.orig/mm/filemap.c
++++ linux/mm/filemap.c
 @@ -2073,7 +2073,7 @@
   * Returns appropriate error code that caller should return or
   * zero in case that write should be allowed.
@@ -89,8 +89,8 @@ Index: linux/mm/filemap.c
  	unsigned long limit = rlimit(RLIMIT_FSIZE);
 Index: linux/net/core/dev.c
 ===================================================================
---- linux.orig/net/core/dev.c	2012-09-06 16:08:53.000000000 -0400
-+++ linux/net/core/dev.c	2012-09-06 17:48:24.726603567 -0400
+--- linux.orig/net/core/dev.c
++++ linux/net/core/dev.c
 @@ -3444,7 +3444,7 @@
  	return netif_receive_skb(skb);
  }
@@ -102,8 +102,8 @@ Index: linux/net/core/dev.c
  
 Index: linux/net/ipv4/ip_output.c
 ===================================================================
---- linux.orig/net/ipv4/ip_output.c	2012-09-06 16:08:53.000000000 -0400
-+++ linux/net/ipv4/ip_output.c	2012-09-06 17:48:24.734603491 -0400
+--- linux.orig/net/ipv4/ip_output.c
++++ linux/net/ipv4/ip_output.c
 @@ -84,7 +84,7 @@
  EXPORT_SYMBOL(sysctl_ip_default_ttl);
  
@@ -115,8 +115,8 @@ Index: linux/net/ipv4/ip_output.c
  	iph->check = ip_fast_csum((unsigned char *)iph, iph->ihl);
 Index: linux/drivers/gpu/drm/i915/i915_drv.h
 ===================================================================
---- linux.orig/drivers/gpu/drm/i915/i915_drv.h	2012-09-03 11:29:40.000000000 -0400
-+++ linux/drivers/gpu/drm/i915/i915_drv.h	2012-09-06 17:50:29.205038695 -0400
+--- linux.orig/drivers/gpu/drm/i915/i915_drv.h
++++ linux/drivers/gpu/drm/i915/i915_drv.h
 @@ -1473,7 +1473,7 @@
  /* intel_i2c.c */
  extern int intel_setup_gmbus(struct drm_device *dev);

@@ -16,8 +16,8 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 
 Index: linux/drivers/input/serio/ambakmi.c
 ===================================================================
---- linux.orig/drivers/input/serio/ambakmi.c	2012-09-05 12:03:39.821231160 -0400
-+++ linux/drivers/input/serio/ambakmi.c	2012-09-05 12:13:27.821838984 -0400
+--- linux.orig/drivers/input/serio/ambakmi.c
++++ linux/drivers/input/serio/ambakmi.c
 @@ -197,7 +197,7 @@
  
  MODULE_DEVICE_TABLE(amba, amba_kmi_idtable);
@@ -29,8 +29,8 @@ Index: linux/drivers/input/serio/ambakmi.c
  		.owner	= THIS_MODULE,
 Index: linux/drivers/mmc/host/sdhci-pxav2.c
 ===================================================================
---- linux.orig/drivers/mmc/host/sdhci-pxav2.c	2012-09-05 12:03:39.825231110 -0400
-+++ linux/drivers/mmc/host/sdhci-pxav2.c	2012-09-05 12:13:27.821838984 -0400
+--- linux.orig/drivers/mmc/host/sdhci-pxav2.c
++++ linux/drivers/mmc/host/sdhci-pxav2.c
 @@ -265,7 +265,7 @@
  	return 0;
  }
@@ -42,8 +42,8 @@ Index: linux/drivers/mmc/host/sdhci-pxav2.c
  		.owner	= THIS_MODULE,
 Index: linux/drivers/mmc/host/sdhci-pxav3.c
 ===================================================================
---- linux.orig/drivers/mmc/host/sdhci-pxav3.c	2012-09-05 12:03:39.825231110 -0400
-+++ linux/drivers/mmc/host/sdhci-pxav3.c	2012-09-05 12:13:27.821838984 -0400
+--- linux.orig/drivers/mmc/host/sdhci-pxav3.c
++++ linux/drivers/mmc/host/sdhci-pxav3.c
 @@ -309,7 +309,7 @@
  	return 0;
  }
@@ -55,8 +55,8 @@ Index: linux/drivers/mmc/host/sdhci-pxav3.c
  #ifdef CONFIG_OF
 Index: linux/drivers/net/ethernet/smsc/smc91x.c
 ===================================================================
---- linux.orig/drivers/net/ethernet/smsc/smc91x.c	2012-09-05 12:03:39.829231060 -0400
-+++ linux/drivers/net/ethernet/smsc/smc91x.c	2012-09-05 12:13:27.821838984 -0400
+--- linux.orig/drivers/net/ethernet/smsc/smc91x.c
++++ linux/drivers/net/ethernet/smsc/smc91x.c
 @@ -2405,7 +2405,7 @@
  	.resume		= smc_drv_resume,
  };
@@ -68,8 +68,8 @@ Index: linux/drivers/net/ethernet/smsc/smc91x.c
  	.driver		= {
 Index: linux/drivers/mmc/host/mmci.c
 ===================================================================
---- linux.orig/drivers/mmc/host/mmci.c	2012-09-05 12:03:39.825231110 -0400
-+++ linux/drivers/mmc/host/mmci.c	2012-09-05 12:13:27.821838984 -0400
+--- linux.orig/drivers/mmc/host/mmci.c
++++ linux/drivers/mmc/host/mmci.c
 @@ -1668,9 +1668,15 @@
  	{ 0, 0 },
  };
@@ -90,8 +90,8 @@ Index: linux/drivers/mmc/host/mmci.c
  		.pm	= &mmci_dev_pm_ops,
 Index: linux/sound/arm/aaci.c
 ===================================================================
---- linux.orig/sound/arm/aaci.c	2012-09-05 12:03:39.849230806 -0400
-+++ linux/sound/arm/aaci.c	2012-09-05 12:13:27.821838984 -0400
+--- linux.orig/sound/arm/aaci.c
++++ linux/sound/arm/aaci.c
 @@ -1097,9 +1097,14 @@
  	{ 0, 0 },
  };
@@ -111,8 +111,8 @@ Index: linux/sound/arm/aaci.c
  	},
 Index: linux/drivers/net/ethernet/smsc/smsc911x.c
 ===================================================================
---- linux.orig/drivers/net/ethernet/smsc/smsc911x.c	2012-09-05 12:03:39.829231060 -0400
-+++ linux/drivers/net/ethernet/smsc/smsc911x.c	2012-09-05 12:13:27.825838937 -0400
+--- linux.orig/drivers/net/ethernet/smsc/smsc911x.c
++++ linux/drivers/net/ethernet/smsc/smsc911x.c
 @@ -2574,7 +2574,7 @@
  };
  MODULE_DEVICE_TABLE(of, smsc911x_dt_ids);
@@ -124,8 +124,8 @@ Index: linux/drivers/net/ethernet/smsc/smsc911x.c
  	.driver = {
 Index: linux/drivers/net/ethernet/smsc/smc911x.c
 ===================================================================
---- linux.orig/drivers/net/ethernet/smsc/smc911x.c	2012-09-05 12:03:39.825231110 -0400
-+++ linux/drivers/net/ethernet/smsc/smc911x.c	2012-09-05 12:13:27.825838937 -0400
+--- linux.orig/drivers/net/ethernet/smsc/smc911x.c
++++ linux/drivers/net/ethernet/smsc/smc911x.c
 @@ -2184,7 +2184,7 @@
  	return 0;
  }

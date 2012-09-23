@@ -8,8 +8,8 @@ Do not upstream this patch. Clang behavior is likely to change
 
 Index: linux/scripts/Kbuild.include
 ===================================================================
---- linux.orig/scripts/Kbuild.include	2012-09-06 14:07:04.890904871 -0400
-+++ linux/scripts/Kbuild.include	2012-09-06 14:09:05.741385626 -0400
+--- linux.orig/scripts/Kbuild.include
++++ linux/scripts/Kbuild.include
 @@ -106,9 +106,25 @@ as-option = $(call try-run,\
  as-instr = $(call try-run,\
  	printf "%b\n" "$(1)" | $(CC) $(KBUILD_AFLAGS) -c -xassembler -o "$$TMP" -,$(2),$(3))
@@ -51,8 +51,8 @@ Index: linux/scripts/Kbuild.include
  cc-version = $(shell $(CONFIG_SHELL) $(srctree)/scripts/gcc-version.sh $(CC))
 Index: linux/scripts/Makefile.build
 ===================================================================
---- linux.orig/scripts/Makefile.build	2012-09-06 14:07:04.902904721 -0400
-+++ linux/scripts/Makefile.build	2012-09-06 14:07:48.686354288 -0400
+--- linux.orig/scripts/Makefile.build
++++ linux/scripts/Makefile.build
 @@ -69,6 +69,7 @@
  warning-1 += -Wold-style-definition
  warning-1 += $(call cc-option, -Wmissing-include-dirs)

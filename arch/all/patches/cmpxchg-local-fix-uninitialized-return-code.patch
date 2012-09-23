@@ -9,8 +9,8 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 
 Index: linux/include/asm-generic/cmpxchg-local.h
 ===================================================================
---- linux.orig/include/asm-generic/cmpxchg-local.h	2012-09-06 14:07:04.930904368 -0400
-+++ linux/include/asm-generic/cmpxchg-local.h	2012-09-06 14:07:48.686354288 -0400
+--- linux.orig/include/asm-generic/cmpxchg-local.h
++++ linux/include/asm-generic/cmpxchg-local.h
 @@ -41,6 +41,7 @@
  		break;
  	default:
