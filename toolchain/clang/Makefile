@@ -34,4 +34,5 @@ warning:
 
 include ${TOPDIR}/common.mk
 include ${TOPDIR}/arch/all/all.mk
-include clang.mk
+
+# clang.mk is included by toolchain.mk which is included by common.mk
