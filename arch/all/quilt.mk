@@ -151,7 +151,7 @@ ${QUILT_STATE}: state/kernel-fetch ${QUILTRC}
 	@$(MAKE) kernel-quilt-link-patches
 	@$(call banner, "Quilting kernel...")
 	@$(call ln_kernel_patch_dir,${KERNELDIR})
-	@$(call ln_kernel_patch_dir,${KERNELGCC})
+	-@$(call ln_kernel_patch_dir,${KERNELGCC})
 	$(call state,$@,kernel-patch)
 
 ##############################################################################
