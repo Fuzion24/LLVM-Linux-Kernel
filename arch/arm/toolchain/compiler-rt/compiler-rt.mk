@@ -22,22 +22,32 @@
 
 # This makefile must be included after common.mk which includes toolchain.mk
 
-ARMSTATE		= ${ARCH_ARM_TOOLCHAIN}/state
-COMPILERRTBUILDDIR	= ${ARCH_ARM_TOOLCHAIN}/compiler-rt/build
+COMPILERRT_LOCALGIT  = "${LLVMSRCDIR}/llvm/projects/compiler-rt/.git"
+
+COMPILERRTSTATE		= ${ARCH_ARM_TOOLCHAIN}/compiler-rt/state
+
+COMPILERRTPATCHES	= ${ARCH_ARM_TOOLCHAIN}/compiler-rt/patches
+COMPILERRTDIR		= ${ARCH_ARM_TOOLCHAIN}/compiler-rt/build
 COMPILERRTINSTALLDIR	= ${ARCH_ARM_TOOLCHAIN}/compiler-rt/install
-TARGETS			+= compilerrt-arm-configure compilerrt-arm-build
+TARGETS			+= compilerrt-arm-clone compilerrt-arm-patch compilerrt-arm-configure compilerrt-arm-build 
 
-compilerrt-arm-configure: ${ARMSTATE}/compilerrt-configure
-${ARMSTATE}/compilerrt-configure: ${LLVMSTATE}/compilerrt-patch ${LLVMSTATE}/cmake-build
-	@$(call banner, "Configure Compiler-rt...")
-	@mkdir -p ${COMPILERRTBUILDDIR}
-	(cd ${COMPILERRTBUILDDIR} && ${LLVMINSTALLDIR}/bin/cmake -DCMAKE_BUILD_TYPE=Release  -DCMAKE_INSTALL_PREFIX=${LLVMINSTALLDIR} -DCLANG_PATH_TO_LLVM_SOURCE=${LLVMDIR}   -DCLANG_PATH_TO_LLVM_BUILD=${LLVMINSTALLDIR}   ${COMPILERRTDIR} )
-	$(call state,$@,compilerrt-arm-build)
+compilerrt-arm-clone: ${COMPILERRTSTATE}/compilerrt-arm-clone
+${COMPILERRTSTATE}/compilerrt-arm-clone: ${LLVMSTATE}/compilerrt-fetch
+	@$(call banner, "Cloning Compiler-rt for ARM build...")
+	( [ -d ${COMPILERRTDIR}/compiler-rt/.git ] || (cd ${COMPILERRTDIR} && git clone ${COMPILERRT_LOCALGIT} -b ${COMPILERRT_BRANCH}))
+	$(call state,$@)
 
-compilerrt-arm-build: ${LLVMSTATE}/compilerrt-build
-${ARMSTATE}/compilerrt-build: ${ARMSTATE}/compilerrt-configure
+compilerrt-arm-patch: ${COMPILERRTSTATE}/compilerrt-arm-patch
+${COMPILERRTSTATE}/compilerrt-arm-patch: ${COMPILERRTSTATE}/compilerrt-arm-clone
+	@$(call banner, "Patching Compiler-rt...")
+	@ln -sf ${COMPILERRTPATCHES} ${COMPILERRTDIR}/compiler-rt/patches
+	@$(call patch,${COMPILERRTDIR}/compiler-rt)
+	$(call state,$@)
+
+compilerrt-arm-build: ${COMPILERRTSTATE}/compilerrt-arm-build
+${COMPILERRTSTATE}/compilerrt-arm-build: ${COMPILERRTSTATE}/compilerrt-arm-patch
 	@$(call banner, "Building Compiler-rt...")
-	@mkdir -p ${COMPILERRTNSTALLDIR} ${COMPILERRTBUILDDIR}
-	(cd ${COMPILERRTBUILDDIR} && make -j${JOBS} install)
-	$(call state,$@,compiilerrt-build)
+	@mkdir -p ${COMPILERRTINSTALLDIR}
+	(cd ${COMPILERRTDIR}/compiler-rt && make ARMGCCHOME=${ARCH_ARM_TOOLCHAIN}/codesourcery/arm-2011.03 linux_armv7)
+	$(call state,$@)
 

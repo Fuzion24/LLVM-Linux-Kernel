@@ -109,7 +109,7 @@ Index: compiler-rt/make/platform/linux_armv7.mk
 ===================================================================
 --- /dev/null
 +++ compiler-rt/make/platform/linux_armv7.mk
-@@ -0,0 +1,88 @@
+@@ -0,0 +1,92 @@
 +Description := Static runtime libraries for Linux/armv7
 +
 +###
@@ -149,9 +149,13 @@ Index: compiler-rt/make/platform/linux_armv7.mk
 +
 +###
 +
-+PATH := /local2/mnt/workspace/llvmlinux/toolchain/clang/install/bin:/local2/mnt/workspace/llvmlinux/arch/arm/toolchain/codesourcery/arm-2011.03/arm-none-linux-gnueabi/bin:$(PATH)
++ifeq ($(ARMGCCHOME),)
++$(error "Must set ARMGCCHOME")
++endif
 +
-+CFLAGS := -v -mcpu=cortex-a9 -mfloat-abi=softfp -mfpu=neon -Wall -Werror -O3 -fomit-frame-pointer -DGNU_ASM -ccc-host-triple arm-none-linux-gnueabi -ccc-gcc-name arm-none-gnueabi-g++ --sysroot=/local2/mnt/workspace/llvmlinux/arch/arm/toolchain/codesourcery/arm-2011.03/arm-none-linux-gnueabi/libc
++PATH := $(ARMGCCHOME)/arm-none-linux-gnueabi/bin:$(PATH)
++
++CFLAGS := -v -mcpu=cortex-a9 -mfloat-abi=softfp -mfpu=neon -Wall -Werror -O3 -fomit-frame-pointer -DGNU_ASM -ccc-host-triple arm-none-linux-gnueabi -ccc-gcc-name arm-none-gnueabi-g++ --sysroot=$(ARMGCCHOME) -I$(ARMGCCHOME)/arm-none-linux-gnueabi/libc/usr/include
 +
 +CFLAGS.full-arm := $(CFLAGS)
 +CFLAGS.profile-arm := $(CFLAGS)
