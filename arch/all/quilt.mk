@@ -34,11 +34,9 @@ endif
 #############################################################################
 GENERIC_PATCH_DIR	= $(filter-out %${KERNEL_REPO_PATCHES},$(filter-out ${TARGETDIR}/%,${KERNEL_PATCH_DIR}))
 GENERIC_PATCH_SERIES	= $(addsuffix /series,$(GENERIC_PATCH_DIR))
-TARGET_PATCH_DIR	= $(filter-out ${ARCHDIR}/%,${KERNEL_PATCH_DIR})
-TARGET_PATCH_SERIES	= $(addsuffix /series.target,$(TARGET_PATCH_DIR))
-ALL_PATCH_SERIES	= ${GENERIC_PATCH_SERIES} ${TARGET_PATCH_SERIES}
 TARGET_PATCH_SERIES	= ${PATCHDIR}/series
 SERIES_DOT_TARGET	= ${TARGET_PATCH_SERIES}.target
+ALL_PATCH_SERIES	= ${GENERIC_PATCH_SERIES} ${SERIES_DOT_TARGET}
 
 #############################################################################
 checkfilefor	= grep -q ${2} ${1} || echo "${2}${3}" >> ${1}
@@ -93,7 +91,7 @@ ${SERIES_DOT_TARGET}:
 ##############################################################################
 # Save any new patches from the generated series file to the series.target file
 kernel-quilt-update-series-dot-target:
-	@[ `stat -c %Z ${TARGET_PATCH_SERIES}` -le `stat -c %Z ${SERIES_DOT_TARGET}` ] || \
+	-@[ `stat -c %Z ${TARGET_PATCH_SERIES}` -le `stat -c %Z ${SERIES_DOT_TARGET}` ] || \
 		($(call banner, "Saving quilt changes to series.target file for kernel...") ; \
 		diff ${TARGET_PATCH_SERIES} ${SERIES_DOT_TARGET} \
 		| perl -ne 'print "$$1\n" if $$hunk>1 && /^< (.*)$$/; $$hunk++ if /^[^<>]/' \
@@ -105,8 +103,7 @@ kernel-quilt-generate-series: ${TARGET_PATCH_SERIES}
 ${TARGET_PATCH_SERIES}: ${ALL_PATCH_SERIES}
 	$(MAKE) kernel-quilt-update-series-dot-target
 	@$(call banner, "Building quilt series file for kernel...")
-# Save any new patches from the generated series file to the series.target file
-	@cat $^ > $@
+	@cat ${ALL_PATCH_SERIES} > $@
 
 ##############################################################################
 # Have git ignore extra patch files
@@ -116,7 +113,7 @@ ${QUILT_GITIGNORE}: ${GENERIC_PATCH_SERIES}
 	@$(call banner, "Ignore symbolic linked quilt patches for kernel...")
 	@echo .gitignore > $@
 	@echo series >> $@
-	@cat $^ >> $@
+	@cat ${GENERIC_PATCH_SERIES} >> $@
 
 ##############################################################################
 # Remove broken symbolic links to old patches
