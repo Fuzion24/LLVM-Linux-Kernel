@@ -30,7 +30,7 @@ include ${ARCHDIR}/all/all.mk
 FETCH_TARGETS	+= arm-cc
 RAZE_TARGETS	+= arm-cc-clean
 
-include ${ARCHDIR}/toolchain/toolchain.mk
+include ${ARCHDIR}/arm/toolchain/toolchain.mk
 
 KERNEL_PATCHES	+= $(call add_patches,${ARCH_ARM_PATCHES})
 KERNEL_PATCH_DIR+= ${ARCH_ARM_PATCHES} ${ARCH_ARM_PATCHES}/${KERNEL_REPO_PATCHES}
