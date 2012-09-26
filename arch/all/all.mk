@@ -114,7 +114,7 @@ get-kernel-version	= [ ! -d ${1} ] || (cd ${1} && echo "src/$(notdir ${1}) versi
 
 #############################################################################
 KERNEL_TARGETS_CLANG	= kernel-fetch kernel-patch kernel-configure kernel-build kernel-sync
-KERNEL_TARGETS_GCC	= kernel-gcc-fetch kernel-gcc-patch kernel-gcc-configure kernel-gcc-build kernel-gcc-sync
+KERNEL_TARGETS_GCC	= kernel-gcc-fetch kernel-gcc-patch kernel-gcc-configure kernel-gcc-build kernel-gcc-sparse kernel-gcc-sync
 KERNEL_TARGETS_APPLIED	= kernel-patch-applied kernel-gcc-patch-applied
 KERNEL_TARGETS_CLEAN	= kernel-clean kernel-gcc-clean tmp-clean
 KERNEL_TARGETS_VERSION	= kernel-version kernel-gcc-version
@@ -138,6 +138,13 @@ kernel-help:
 	@echo
 	@echo "* make kernel-[fetch,patch,configure,build,sync,clean]"
 	@echo "* make kernel-gcc-[fetch,patch,configure,build,sync,clean]"
+	@echo "               fetch     - clone kernel code"
+	@echo "               patch     - patch kernel code"
+	@echo "               configure - configure kernel code (add .config file, etc)"
+	@echo "               build     - build kernel code"
+	@echo "               sync      - clean, unpatch, then git pull kernel code"
+	@echo "               clean     - clean, unpatch kernel code"
+	@echo "* make kernel-gcc-sparse - build gcc kernel with sparse"
 	@echo "* make kernels		- build kernel with both clang and gcc"
 
 #############################################################################
@@ -293,12 +300,28 @@ state/kernel-gcc-build: ${CROSS_GCC} state/kernel-gcc-configure
 	$(call assert,-n "${MAKE_KERNEL}",MAKE_KERNEL undefined)
 	@$(MAKE) kernel-quilt-link-patches
 	@$(call banner, "Building kernel with gcc...")
-	(cd ${KERNELGCC} && time make -j${JOBS} ${MAKE_FLAGS} CROSS_COMPILE=${CROSS_COMPILE} CC=${GCC_CC})
+	(cd ${KERNELGCC} && time make -j${JOBS} ${MAKE_FLAGS} ${SPARSE} CROSS_COMPILE=${CROSS_COMPILE} CC=${GCC_CC})
 	@mkdir -p ${TOPLOGDIR}
 	( ${CROSS_GCC} --version | head -1 ; \
 		cd ${KERNELGCC} && wc -c ${KERNEL_SIZE_ARTIFACTS}) \
 		| tee $(call sizelog,${TOPLOGDIR},gcc)
 	$(call state,$@,done)
+
+#############################################################################
+kernel-build-force kernel-gcc-build-force: %-force:
+	@rm -f state/$*
+	${MAKE} $*
+
+#############################################################################
+kernel-gcc-sparse:
+	@$(call assert_found_in_path,sparse)
+	${MAKE} kernel-gcc-configure
+	@$(call banner, "Building unpatched gcc kernel for eventual analysis with sparse...")
+	@$(call unpatch,${KERNELGCC})
+	${MAKE} kernel-gcc-build-force
+	@$(call banner, "Rebuilding patched gcc kernel with sparse (changed files only)...")
+	@$(call patch,${KERNELGCC})
+	${MAKE} SPARSE=C=1 kernel-gcc-build-force
 
 #############################################################################
 kernels: kernel-build kernel-gcc-build
