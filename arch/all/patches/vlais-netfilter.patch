@@ -30,7 +30,7 @@ Index: linux/net/netfilter/xt_repldata.h
  		struct type##_error term; \
 -	} *tbl = kzalloc(sizeof(*tbl), GFP_KERNEL); \
 +		struct type##_standard entries[0]; \
-+	} *tbl = kzalloc(sizeof(*tbl)+nhooks*sizeof(struct type##_standard),
++	} *tbl = kzalloc(sizeof(*tbl)+nhooks*sizeof(struct type##_standard), \
 +		GFP_KERNEL); \
  	if (tbl == NULL) \
  		return NULL; \
