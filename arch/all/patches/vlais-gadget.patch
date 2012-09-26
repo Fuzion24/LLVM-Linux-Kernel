@@ -1,36 +1,42 @@
 Remove variable length arrays in structs (VLAIS) from gadget code
 
+The use of VLAIS in the Linux Kernel code precludes the use of compilers which
+don't implement VLAIS (for instance the Clang compiler)
+
+Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
+Reviewed-by: Behan Webster <behanw@converseincode.com>
 ---
  f_fs.c |  204 ++++++++++++++++++++++++++++++++++++++++++-----------------------
- 1 file changed, 133 insertions(+), 71 deletions(-)
+ 1 file changed, 134 insertions(+), 70 deletions(-)
 
 Index: linux/drivers/usb/gadget/f_fs.c
 ===================================================================
 --- linux.orig/drivers/usb/gadget/f_fs.c
 +++ linux/drivers/usb/gadget/f_fs.c
-@@ -1331,8 +1331,21 @@
+@@ -1335,8 +1335,22 @@
  	if (ffs->epfiles)
  		ffs_epfiles_destroy(ffs->epfiles, ffs->eps_count);
  
-+	/* REVIEW: I'm pretty certain raw_desc used to be allocated in the same chunk
-+	   as eps (in ffs_func_bind()) through the use of VLAIS hackery. eps is freed
-+	   in ffs_func_free(), which calls ffs_data_put(), which ends up calling this
-+	   function. Doesn't this mean the freeing of raw_descs in this function
-+	   was incorrect? Or am I misunderstanding something? I'm leaving this in for
-+		 now. If this doesn't free the raw_descs that is allocated in
-+		 ffs_func_bind(), then that memory is never freed (aka a leak). */
++	/* REVIEW: I'm pretty certain raw_desc used to be allocated in the same
++	   chunk as eps (in ffs_func_bind()) through the use of VLAIS hackery.
++	   eps is freed in ffs_func_free(), which calls ffs_data_put(), which
++	   ends up calling this function. Doesn't this mean the freeing of
++	   raw_descs in this function was incorrect? Or am I misunderstanding
++	   something?  I'm leaving this in for now. If this doesn't free the
++	   raw_descs that is allocated in ffs_func_bind(), then that memory is
++	   never freed (aka a leak). */
  	kfree(ffs->raw_descs);
  	kfree(ffs->raw_strings);
 +
 +	/* stringtabs is an array of pointers, each of which is a pointer to an
-+	   element of a dynamically allocated array of usb_gadget_strings. So, first
-+	   we need to free the array of usb_gadget_strings, then we free the array of
-+	   pointers. (wash) */
++	   element of a dynamically allocated array of usb_gadget_strings. So,
++	   first we need to free the array of usb_gadget_strings, then we free
++	   the array of pointers. (wash) */
 +	kfree(*ffs->stringtabs);
  	kfree(ffs->stringtabs);
  }
  
-@@ -1504,7 +1517,16 @@
+@@ -1508,7 +1522,17 @@
  
  	ENTER();
  
@@ -39,15 +45,16 @@ Index: linux/drivers/usb/gadget/f_fs.c
 +		func->ffs->hs_descs_count;
 +
 +	/* REVIEW: See my note in ffs_data_clear(), which this function
-+		(conditionally) calls. It appears that this frees the raw_desc memory
-+		allocated in ffs_func_bind, but I don't understand why that would have been
-+		done in the old code, so this might be leaking memory. */
++		(conditionally) calls. It appears that this frees the raw_desc
++		memory allocated in ffs_func_bind, but I don't understand why
++		that would have been done in the old code, so this might be
++		leaking memory. */
  	/* cleanup after autoconfig */
 +
  	spin_lock_irqsave(&func->ffs->eps_lock, flags);
  	do {
  		if (ep->ep && ep->req)
-@@ -1517,11 +1539,19 @@
+@@ -1521,11 +1545,17 @@
  	ffs_data_put(func->ffs);
  
  	kfree(func->eps);
@@ -62,32 +69,29 @@ Index: linux/drivers/usb/gadget/f_fs.c
 +		so this should never happen. */
 +	BUG_ON(!(full | high));
 +
-+	if (likely(full)) {
++	if (likely(full))
 +		kfree(func->function.descriptors);
-+	}
 +
-+	if (likely(high)) {
++	if (likely(high))
 +		kfree(func->function.hs_descriptors);
-+	}
  
  	kfree(func);
  }
-@@ -1866,9 +1896,11 @@
+@@ -1870,9 +1900,11 @@
  				  char *const _data, size_t len)
  {
  	u32 str_count, needed_count, lang_count;
 -	struct usb_gadget_strings **stringtabs, *t;
 -	struct usb_string *strings, *s;
--	const char *data = _data;
-+	struct usb_gadget_strings** stringtabs, **stringtabs_ptr;
-+	struct usb_gadget_strings* stringtab, *stringtab_ptr;
-+	struct usb_string* strings, *strings_ptr;
-+	const char* data = _data;
++	struct usb_gadget_strings **stringtabs, **stringtabs_ptr;
++	struct usb_gadget_strings *stringtab, *stringtab_ptr;
++	struct usb_string *strings, *strings_ptr;
+ 	const char *data = _data;
 +	unsigned i = 0;
  
  	ENTER();
  
-@@ -1896,35 +1928,43 @@
+@@ -1900,35 +1932,43 @@
  		return 0;
  	}
  
@@ -105,7 +109,7 @@ Index: linux/drivers/usb/gadget/f_fs.c
 -			kfree(_data);
 -			return -ENOMEM;
 -		}
-+	stringtabs = kmalloc(sizeof(struct usb_gadget_strings*)*(lang_count+1),
++	stringtabs = kmalloc(sizeof(struct usb_gadget_strings *)*(lang_count+1),
 +			GFP_KERNEL);
 +	if (unlikely(!stringtabs)) {
 +		kfree(_data);
@@ -132,8 +136,8 @@ Index: linux/drivers/usb/gadget/f_fs.c
 -		t = d->stringtab;
 -		s = d->strings;
 -		strings = s;
-+	strings = kmalloc(sizeof(struct usb_string)*(lang_count*(needed_count+1)),
-+		GFP_KERNEL);
++	strings = kmalloc(sizeof(struct usb_string)
++			* (lang_count*(needed_count+1)), GFP_KERNEL);
 +	if (unlikely(!strings)) {
 +		kfree(stringtab);
 +		kfree(stringtabs);
@@ -157,7 +161,7 @@ Index: linux/drivers/usb/gadget/f_fs.c
  	/* For each language */
  	data += 16;
  	len -= 16;
-@@ -1934,9 +1974,9 @@
+@@ -1938,9 +1978,9 @@
  
  		if (unlikely(len < 3))
  			goto error_free;
@@ -170,7 +174,7 @@ Index: linux/drivers/usb/gadget/f_fs.c
  
  		data += 2;
  		len -= 2;
-@@ -1959,18 +1999,18 @@
+@@ -1963,18 +2003,18 @@
  				 * function to configuration so for
  				 * now just leave garbage here.
  				 */
@@ -194,7 +198,7 @@ Index: linux/drivers/usb/gadget/f_fs.c
  
  	} while (--lang_count);
  
-@@ -1985,6 +2025,7 @@
+@@ -1989,6 +2029,7 @@
  	return 0;
  
  error_free:
@@ -202,7 +206,7 @@ Index: linux/drivers/usb/gadget/f_fs.c
  	kfree(stringtabs);
  error:
  	kfree(_data);
-@@ -2196,17 +2237,43 @@
+@@ -2200,17 +2241,45 @@
  
  	int ret;
  
@@ -219,16 +223,18 @@ Index: linux/drivers/usb/gadget/f_fs.c
 -	} *data;
 +	ssize_t eps_size = sizeof(struct ffs_ep)*ffs->eps_count;
 +	ssize_t fs_descs_size
-+		= sizeof(struct usb_descriptor_header*)*(ffs->fs_descs_count+1);
++		= sizeof(struct usb_descriptor_header *)
++			* (ffs->fs_descs_count+1);
 +	ssize_t hs_descs_size
-+		= sizeof(struct usb_descriptor_header*)*(ffs->hs_descs_count+1);
++		= sizeof(struct usb_descriptor_header *)
++			* (ffs->hs_descs_count+1);
 +	ssize_t inums_size = sizeof(short)*ffs->interfaces_count;
 +	ssize_t raw_descs_size = sizeof(char)*(high
 +		? ffs->raw_descs_length
 +		: ffs->raw_fs_descs_length);
 +
-+	/* Clang doesn't support VLAIS, so we can't us them here. */ 
-+	struct ffs_ep* eps = kmalloc(eps_size, GFP_KERNEL);
++	/* Clang doesn't support VLAIS, so we can't us them here. */
++	struct ffs_ep *eps = kmalloc(eps_size, GFP_KERNEL);
 +	if (unlikely(!eps))
 +		return -ENOMEM;
 +
@@ -257,7 +263,7 @@ Index: linux/drivers/usb/gadget/f_fs.c
  
  	ENTER();
  
-@@ -2214,21 +2281,16 @@
+@@ -2218,21 +2287,16 @@
  	if (unlikely(!(full | high)))
  		return -ENOTSUPP;
  
@@ -285,7 +291,7 @@ Index: linux/drivers/usb/gadget/f_fs.c
  
  	/*
  	 * Go through all the endpoint descriptors and allocate
-@@ -2236,10 +2298,10 @@
+@@ -2240,10 +2304,10 @@
  	 * numbers without worrying that it may be described later on.
  	 */
  	if (likely(full)) {
@@ -299,7 +305,7 @@ Index: linux/drivers/usb/gadget/f_fs.c
  				   __ffs_func_bind_do_descs, func);
  		if (unlikely(ret < 0))
  			goto error;
-@@ -2248,10 +2310,10 @@
+@@ -2252,10 +2316,10 @@
  	}
  
  	if (likely(high)) {
@@ -313,7 +319,7 @@ Index: linux/drivers/usb/gadget/f_fs.c
  				   __ffs_func_bind_do_descs, func);
  	}
  
-@@ -2262,7 +2324,7 @@
+@@ -2266,7 +2330,7 @@
  	 */
  	ret = ffs_do_descs(ffs->fs_descs_count +
  			   (high ? ffs->hs_descs_count : 0),

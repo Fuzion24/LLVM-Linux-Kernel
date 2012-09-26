@@ -5,8 +5,10 @@ disable-clang-integrated-as.patch
 kbuild-clang.patch
 mm-hugepage-return-value.patch
 slab-builtin_contant_p.patch
-vlais-hmac.patch
-vlais-netfilter.patch
 vlais-gadget.patch
+vlais-hmac.patch
+vlais-jbd2.patch
+vlais-libcrc32c.patch
+vlais-netfilter.patch
 inline.patch
 refdata.patch

@@ -1,26 +1,28 @@
 Remove variable length arrays in structures (VLAIS) from the netfilter code.
 
-Signed-off-by: Mark Charlebois <charlebm@gmail.com>
----
- include/linux/jbd2.h        |    2 +-
- lib/libcrc32c.c             |    2 +-
- net/netfilter/xt_repldata.h |    6 ++++--
- 3 files changed, 6 insertions(+), 4 deletions(-)
+The use of VLAIS in the Linux Kernel code precludes the use of compilers which
+don't implement VLAIS (for instance the Clang compiler)
 
-diff --git a/net/netfilter/xt_repldata.h b/net/netfilter/xt_repldata.h
-index 6efe4e5..868174d 100644
---- a/net/netfilter/xt_repldata.h
-+++ b/net/netfilter/xt_repldata.h
+Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+Reviewed-by: Behan Webster <behanw@converseincode.com>
+---
+ xt_repldata.h |    7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+Index: linux/net/netfilter/xt_repldata.h
+===================================================================
+--- linux.orig/net/netfilter/xt_repldata.h
++++ linux/net/netfilter/xt_repldata.h
 @@ -3,6 +3,8 @@
   *
   * 'entries' and 'term' are never anywhere referenced by word in code. In fact,
   * they serve as the hanging-off data accessed through repl.data[].
 + * The order or the last two elements in the struct can be changed because only
-+ * the size matters since the structure members are not referenced. 
++ * the size matters since the structure members are not referenced.
   */
  
  #define xt_alloc_initial_table(type, typ2) ({ \
-@@ -11,9 +13,9 @@
+@@ -11,9 +13,10 @@
  	unsigned int bytes = 0, hooknum = 0, i = 0; \
  	struct { \
  		struct type##_replace repl; \
@@ -28,33 +30,8 @@ index 6efe4e5..868174d 100644
  		struct type##_error term; \
 -	} *tbl = kzalloc(sizeof(*tbl), GFP_KERNEL); \
 +		struct type##_standard entries[0]; \
-+	} *tbl = kzalloc(sizeof(*tbl)+nhooks*sizeof(struct type##_standard), GFP_KERNEL); \
++	} *tbl = kzalloc(sizeof(*tbl)+nhooks*sizeof(struct type##_standard),
++		GFP_KERNEL); \
  	if (tbl == NULL) \
  		return NULL; \
  	strncpy(tbl->repl.name, info->name, sizeof(tbl->repl.name)); \
-diff --git a/lib/libcrc32c.c b/lib/libcrc32c.c
-index 244f548..5c47a93 100644
---- a/lib/libcrc32c.c
-+++ b/lib/libcrc32c.c
-@@ -43,7 +43,7 @@ u32 crc32c(u32 crc, const void *address, unsigned int length)
- {
- 	struct {
- 		struct shash_desc shash;
--		char ctx[crypto_shash_descsize(tfm)];
-+		char ctx[4];
- 	} desc;
- 	int err;
- 
-diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-index 3efc43f..efcbdfc 100644
---- a/include/linux/jbd2.h
-+++ b/include/linux/jbd2.h
-@@ -1308,7 +1308,7 @@ static inline u32 jbd2_chksum(journal_t *journal, u32 crc,
- {
- 	struct {
- 		struct shash_desc shash;
--		char ctx[crypto_shash_descsize(journal->j_chksum_driver)];
-+		char ctx[4];
- 	} desc;
- 	int err;
- 
