@@ -124,7 +124,7 @@ ltp-clean: ltp-clean-all
 	[ -d ${LTPBUILDDIR} ] && make -C ${LTPBUILDDIR} clean >/dev/null
 
 ltp-mrproper: ltp-clean-all
-	rm ${LTPSTATE}/ltp-*
+	rm -f ${LTPSTATE}/ltp-*
 	rm -rf ${LTPBUILDDIR}
 
 ltp-raze: ltp-mrproper
