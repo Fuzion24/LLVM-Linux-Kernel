@@ -36,18 +36,21 @@ CLANG		= ${LLVMINSTALLDIR}/bin/clang
 
 LLVMDIR		= ${LLVMSRCDIR}/llvm
 CLANGDIR	= ${LLVMSRCDIR}/clang
+COMPILERRTDIR	= ${LLVMSRCDIR}/llvm/projects/compiler-rt
 
 LLVMBUILDDIR	= ${LLVMTOP}/build/llvm
 CLANGBUILDDIR	= ${LLVMTOP}/build/clang
+COMPILERRTBUILDDIR	= ${LLVMTOP}/build/compiler-rt
 
 LLVM_TARGETS 		= llvm llvm-fetch llvm-patch llvm-configure llvm-build
 CLANG_TARGETS 		= clang clang-fetch clang-patch clang-configure clang-build clang-update-all
+COMPILERRT_TARGETS 	= compilerrt-fetch compilerrt-patch
 LLVM_TARGETS_APPLIED	= llvm-patch-applied clang-patch-applied
 LLVM_CLEAN_TARGETS	= llvm-clean clang-clean
 LLVM_SYNC_TARGETS	= llvm-sync clang-sync
 LLVM_VERSION_TARGETS	= llvm-version clang-version
 
-TARGETS			+= ${LLVM_TARGETS} ${CLANG_TARGETS} ${LLVM_SYNC_TARGETS} ${LLVM_CLEAN_TARGETS}
+TARGETS			+= ${LLVM_TARGETS} ${CLANG_TARGETS} ${COMPILERRT_TARGETS} ${LLVM_SYNC_TARGETS} ${LLVM_CLEAN_TARGETS}
 FETCH_TARGETS		+= llvm-fetch compilerrt-fetch clang-fetch
 SYNC_TARGETS		+= ${LLVM_SYNC_TARGETS}
 CLEAN_TARGETS		+= llvm-clean
@@ -60,6 +63,8 @@ VERSION_TARGETS		+= ${LLVM_VERSION_TARGETS}
 LLVM_GIT	= "http://llvm.org/git/llvm.git"
 CLANG_GIT	= "http://llvm.org/git/clang.git"
 COMPILERRT_GIT	= "http://llvm.org/git/compiler-rt.git"
+CMAKE_VERSION	= "2.8.9"
+CMAKE_TGZ	= "http://www.cmake.org/files/v2.8/cmake-${CMAKE_VERSION}.tar.gz"
 
 #LLVM_BRANCH	= "release_30"
 LLVM_BRANCH	= "master"
@@ -72,6 +77,9 @@ LLVM_OPTIMIZED	= --enable-optimized --enable-assertions
 
 HELP_TARGETS	+= llvm-help
 SETTINGS_TARGETS+= llvm-settings
+
+# A locally build version of cmake may be required
+PATH		:= ${LLVMINSTALLDIR}/bin:${PATH}
 
 llvm-help:
 	@echo
@@ -97,7 +105,7 @@ ${LLVMSTATE}/llvm-fetch:
 	$(call state,$@,llvm-patch)
 
 compilerrt-fetch: ${LLVMSTATE}/compilerrt-fetch
-${LLVMSTATE}/compilerrt-fetch: ${LLVMSTATE}/llvm-fetch
+${LLVMSTATE}/compilerrt-fetch: ${LLVMSTATE}/llvm-fetch 
 	@$(call banner, "Fetching Compilerrt...")
 	( [ -d ${LLVMSRCDIR}/llvm/projects/compiler-rt/.git ] || (cd ${LLVMDIR}/projects && git clone ${COMPILERRT_GIT} -b ${COMPILERRT_BRANCH}))
 	$(call state,$@)
@@ -110,7 +118,7 @@ ${LLVMSTATE}/clang-fetch:
 	$(call state,$@,clang-patch)
 
 llvm-patch: ${LLVMSTATE}/llvm-patch
-${LLVMSTATE}/llvm-patch: ${LLVMSTATE}/llvm-fetch ${LLVMSTATE}/compilerrt-fetch
+${LLVMSTATE}/llvm-patch: ${LLVMSTATE}/llvm-fetch
 	@$(call banner, "Patching LLVM...")
 	@ln -sf ${LLVMPATCHES}/llvm ${LLVMDIR}/patches
 	@$(call patch,${LLVMDIR})
@@ -123,6 +131,13 @@ ${LLVMSTATE}/clang-patch: ${LLVMSTATE}/clang-fetch
 	@$(call patch,${CLANGDIR})
 	$(call state,$@,clang-configure)
 
+compilerrt-patch: ${LLVMSTATE}/compilerrt-patch
+${LLVMSTATE}/compilerrt-patch: ${LLVMSTATE}/compilerrt-fetch
+	@$(call banner, "Patching Compiler-rt...")
+	@ln -sf ${LLVMPATCHES}/compiler-rt ${COMPILERRTDIR}/patches
+	@$(call patch,${COMPILERRTDIR})
+	$(call state,$@)
+
 ${LLVM_TARGETS_APPLIED}: %-patch-applied:
 	@$(call banner,"Patches applied for $*")
 	@$(call applied,${LLVMSRCDIR}/$*)
@@ -134,23 +149,12 @@ ${LLVMSTATE}/llvm-configure: ${LLVMSTATE}/llvm-patch
 	(cd ${LLVMBUILDDIR} && cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${LLVMINSTALLDIR} ${LLVMDIR})
 	$(call state,$@,llvm-build)
 
-#	(cd ${LLVMBUILDDIR} && CC=gcc CXX=g++ ${LLVMDIR}/configure \
-#		--enable-targets=arm,mips,x86_64 --disable-shared \
-#		--enable-languages=c,c++ --enable-bindings=none \
-#		${LLVM_OPTIMIZED} --prefix=${LLVMINSTALLDIR} ) 
-
-
 clang-configure: ${LLVMSTATE}/clang-configure
 ${LLVMSTATE}/clang-configure: ${LLVMSTATE}/clang-patch
 	@$(call banner, "Configure Clang...")
 	@mkdir -p ${CLANGBUILDDIR}
 	(cd ${CLANGBUILDDIR} && cmake -DCMAKE_BUILD_TYPE=Release  -DCMAKE_INSTALL_PREFIX=${LLVMINSTALLDIR} -DCLANG_PATH_TO_LLVM_SOURCE=${LLVMDIR}   -DCLANG_PATH_TO_LLVM_BUILD=${LLVMBUILDDIR}   ${CLANGDIR} )
 	$(call state,$@,clang-build)
-
-#	(cd ${CLANGBUILDDIR} && CC=gcc CXX=g++ ${LLVMDIR}/configure \
-#		--enable-targets=arm,mips,x86_64 --disable-shared \
-#		--enable-languages=c,c++ --enable-bindings=none \
-#		${LLVM_OPTIMIZED} --prefix=${LLVMINSTALLDIR} ) 
 
 llvm llvm-build: ${LLVMSTATE}/llvm-build
 ${LLVMSTATE}/llvm-build: ${LLVMSTATE}/llvm-configure
@@ -223,3 +227,18 @@ clang-version:
 	@(cd ${CLANGDIR}/$* && echo "`${CLANG} --version | grep version | xargs echo` commit `git rev-parse HEAD`")
 
 clang-update-all: llvm-sync clang-sync llvm-build clang-build
+
+# cmake version 2.8.8 or newer is required to build compiler-rt
+cmake-build: ${LLVMSTATE}/cmake-build
+${LLVMSTATE}/cmake-build:
+	@(cd ${LLVMSRCDIR} && [ -e cmake-${CMAKE_VERSION}.tar.gz ] || wget ${CMAKE_TGZ})
+	@(cd ${LLVMSRCDIR} && tar -xvzf cmake-${CMAKE_VERSION}.tar.gz)
+	@(mkdir -p ${LLVMINSTALLDIR})
+	@(cd ${LLVMSRCDIR}/cmake-${CMAKE_VERSION} && ./configure --prefix=${LLVMINSTALLDIR} && make install)
+	$(call state,$@)
+
+cmake-clean:
+	@rm -f ${LLVMINSTALLDIR}/bin/cmake
+	@rm -f ${LLVMSRCDIR}/cmake-*.tar.gz
+	@rm -rf ${LLVMSRCDIR}/cmake-*
+	@rm -f ${LLVMSTATE}/cmake-build
