@@ -37,16 +37,17 @@ GENERIC_PATCH_SERIES	= $(addsuffix /series,$(GENERIC_PATCH_DIR))
 TARGET_PATCH_SERIES	= ${PATCHDIR}/series
 SERIES_DOT_TARGET	= ${TARGET_PATCH_SERIES}.target
 ALL_PATCH_SERIES	= ${GENERIC_PATCH_SERIES} ${SERIES_DOT_TARGET}
+PATCH_FILTER_REGEX	= .*
 
 #############################################################################
 checkfilefor	= grep -q ${2} ${1} || echo "${2}${3}" >> ${1}
 reverselist	= `for DIR in ${1} ; do echo $$DIR; done | tac`
-ln_if_new	= ls -l "${2}" | grep -q "${1}" || ln -fsv "${1}" "${2}"
-mv_n_ln		= mv -v "${1}" "${2}" ; ln -sv "${2}" "${1}"
+ln_if_new	= ls -l "${2}" 2>&1 | grep -q "${1}" || ln -fsv "${1}" "${2}"
+mv_n_ln		= mv "${1}" "${2}" ; ln -sv "${2}" "${1}"
 ln_kernel_patch_dir = [ -z "${1}" ] || [ -e ${1}/patches ] || ln -sv ${PATCHDIR} ${1}/patches
 
 #############################################################################
-QUILT_TARGETS		= kernel-quilt kernel-quilt-clean kernel-quilt-help kernel-quilt-settings list-kernel-patches list-kernel-maintainer
+QUILT_TARGETS		= kernel-quilt kernel-quilt-clean kernel-quilt-help kernel-quilt-settings list-kernel-patches list-kernel-maintainer list-kernel-checkpatch
 TARGETS			+= ${QUILT_TARGETS}
 CLEAN_TARGETS		+= kernel-quilt-clean
 HELP_TARGETS		+= kernel-quilt-help
@@ -90,7 +91,7 @@ ${SERIES_DOT_TARGET}:
 
 ##############################################################################
 # Save any new patches from the generated series file to the series.target file
-kernel-quilt-update-series-dot-target:
+kernel-quilt-update-series-dot-target: ${SERIES_DOT_TARGET}
 	-@[ `stat -c %Z ${TARGET_PATCH_SERIES}` -le `stat -c %Z ${SERIES_DOT_TARGET}` ] || \
 		($(call banner, "Saving quilt changes to series.target file for kernel...") ; \
 		diff ${TARGET_PATCH_SERIES} ${SERIES_DOT_TARGET} \
@@ -130,6 +131,7 @@ kernel-quilt-link-patches: ${TARGET_PATCH_SERIES} ${QUILT_GITIGNORE}
 	for PATCH in `cat ${GENERIC_PATCH_SERIES}` ; do \
 		PATCHLINK="${PATCHDIR}/$$PATCH" ; \
 		for DIR in $$REVDIRS ; do \
+			[ "$$DIR" != "${PATCHDIR}" ] || continue ; \
 			if [ -f "$$DIR/$$PATCH" -a ! -L "$$DIR/$$PATCH" ] ; then \
 				if [ -f "$$PATCHLINK" -a ! -L "$$PATCHLINK" ] ; then \
 					$(call mv_n_ln,$$PATCHLINK,$$DIR/$$PATCH) ; \
@@ -165,11 +167,22 @@ list-kernel-patches:
 	done
 
 ##############################################################################
-list-kernel-maintainer: kernel-quilt
-	@$(call banner,Finding maintainers for patches)
-	@(cd ${KERNELDIR} && for PATCH in `cat ${ALL_PATCH_SERIES}` ; do \
-		$(call banner,$$PATCH) ; \
-		./scripts/get_maintainer.pl $$PATCH ; \
+# List maintainers who are relevant to a particular patch
+# You can specify a regex to narrow down the patches by setting PATCH_FILTER_REGEX
+# e.g. make PATCH_FILTER_REGEX=vlais\* list-kernel-maintainer
+list-kernel-maintainer: list-kernel-get_maintainer
+list-kernel-checkpatch list-kernel-get_maintainer: list-kernel-%:
+	@$(call banner,Running $* for patches PATCH_FILTER_REGEX="${PATCH_FILTER_REGEX}")
+	@(REVDIRS=$(call reverselist,${KERNEL_PATCH_DIR}) ; \
+	cd ${KERNELDIR} ; \
+	for PATCH in `cat ${ALL_PATCH_SERIES} | grep "${PATCH_FILTER_REGEX}"` ; do \
+		for DIR in $$REVDIRS ; do \
+			if [ -f "$$DIR/$$PATCH" -a ! -L "$$DIR/$$PATCH" ] ; then \
+				$(call banner,$$DIR/$$PATCH) ; \
+				./scripts/$*.pl "$$DIR/$$PATCH" ; \
+				break; \
+			fi ; \
+		done ; \
 	done)
 
 ##############################################################################

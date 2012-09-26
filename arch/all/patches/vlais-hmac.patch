@@ -1,15 +1,20 @@
 Remove variable length arrays in structs (VLAIS) from HMAC
 
----
- hmac.c    |   25 +++++++++++--------------
- testmgr.c |   15 +++++++--------
- 2 files changed, 18 insertions(+), 22 deletions(-)
+The use of VLAIS in the Linux Kernel code precludes the use of compilers which
+don't implement VLAIS (for instance the Clang compiler)
 
-diff --git a/crypto/testmgr.c b/crypto/testmgr.c
-index a2ca743..8160167 100644
---- a/crypto/testmgr.c
-+++ b/crypto/testmgr.c
-@@ -1478,7 +1478,7 @@ static int alg_test_crc32c(const struct alg_test_desc *desc,
+Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+Reviewed-by: Behan Webster <behanw@converseincode.com>
+---
+ hmac.c    |    2 +-
+ testmgr.c |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+Index: linux/crypto/testmgr.c
+===================================================================
+--- linux.orig/crypto/testmgr.c
++++ linux/crypto/testmgr.c
+@@ -1478,7 +1478,7 @@
  	do {
  		struct {
  			struct shash_desc shash;
@@ -18,11 +23,11 @@ index a2ca743..8160167 100644
  		} sdesc;
  
  		sdesc.shash.tfm = tfm;
-diff --git a/crypto/hmac.c b/crypto/hmac.c
-index 8d9544c..51f8a1b 100644
---- a/crypto/hmac.c
-+++ b/crypto/hmac.c
-@@ -54,7 +54,7 @@ static int hmac_setkey(struct crypto_shash *parent,
+Index: linux/crypto/hmac.c
+===================================================================
+--- linux.orig/crypto/hmac.c
++++ linux/crypto/hmac.c
+@@ -54,7 +54,7 @@
  	struct crypto_shash *hash = ctx->hash;
  	struct {
  		struct shash_desc shash;
