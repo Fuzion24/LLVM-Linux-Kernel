@@ -1,0 +1,27 @@
+= External configuration files =
+
+== How do I enable a configuration file? ==
+
+Include the following in your target Makefile after all other includes.
+
+ include ${CONFIG}
+
+== How do I create an external configuration file? ==
+
+You can dump the current configuration file like this:
+
+ cd targets/vexpress
+ make config > config.mk
+
+Then you can edit config.mk however you wish. You only need to include lines in
+the file which differ from the defaults.
+
+You can include any Make variable you want in the configuration file. You can
+actually include make targets the same file if you found a need to.
+
+== How do I use an external configuration file? ==
+
+You can use a configuration file by specifying the configuration file do use on
+the command line with a CONFIG= option.
+
+ make CONFIG=config.mk kernel-build
