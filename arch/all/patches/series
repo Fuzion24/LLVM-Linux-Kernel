@@ -2,8 +2,8 @@ compiler-clang.patch
 aligned-attribute.patch
 cmpxchg-local-fix-uninitialized-return-code.patch
 disable-clang-integrated-as.patch
+fix-warnings.patch
 kbuild-clang.patch
-mm-hugepage-return-value.patch
 slab-builtin_contant_p.patch
 vlais-gadget.patch
 vlais-hmac.patch
