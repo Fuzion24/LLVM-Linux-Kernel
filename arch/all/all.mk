@@ -150,12 +150,14 @@ kernel-help:
 
 #############################################################################
 kernel-settings:
-	@echo "# Kernel settings"
-	@echo "KERNEL_GIT		= ${KERNEL_GIT}"
-	@echo "KERNEL_BRANCH		= ${KERNEL_BRANCH}"
-	@echo "KERNEL_TAG		= ${KERNEL_TAG}"
-	@echo "KERNELDIR		= ${KERNELDIR}"
-	@echo "KERNELGCC		= ${KERNELGCC}"
+	@(echo "# Kernel settings" ; \
+	echo "KERNEL_GIT		= ${KERNEL_GIT}" ; \
+	echo "KERNEL_BRANCH		= ${KERNEL_BRANCH}" ; \
+	echo "KERNEL_TAG		= ${KERNEL_TAG}" ; \
+	echo "KERNELDIR		= ${KERNELDIR}" ; \
+	echo "KERNELGCC		= ${KERNELGCC}" ; \
+	echo "KERNEL_CFG		= ${KERNEL_CFG}" ; \
+	) | sed -e 's|${TARGETDIR}|$${TARGETDIR}|g'
 
 include ${ARCHDIR}/all/quilt.mk
 

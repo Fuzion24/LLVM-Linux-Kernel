@@ -78,7 +78,9 @@ kernel-quilt-help:
 
 #############################################################################
 kernel-quilt-settings:
-	@echo "KERNEL_REPO_PATCHES	= ${KERNEL_REPO_PATCHES}"
+	@(echo "KERNEL_REPO_PATCHES	= ${KERNEL_REPO_PATCHES}" ; \
+	echo "KERNEL_PATCH_DIR	+= ${PATCHDIR} ${PATCHDIR}/${KERNEL_REPO_PATCHES}" ; \
+	) | sed -e 's|${TARGETDIR}|$${TARGETDIR}|g'
 
 ##############################################################################
 # Tweak quilt setup to make diffs-of-diffs easier to read

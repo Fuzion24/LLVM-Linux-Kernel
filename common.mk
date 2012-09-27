@@ -106,7 +106,14 @@ list-path:
 	@echo ${PATH}
 
 list-settings settings list-config config:
-	@${MAKE} --silent ${SETTINGS_TARGETS}
+	@${MAKE} --silent ${SETTINGS_TARGETS} 2>/dev/null | sed \
+		-e 's|${TARGETDIR}|$${TARGETDIR}|g' \
+		-e 's|${ARCHDIR}|$${ARCHDIR}|g' \
+		-e 's|${TESTDIR}|$${TESTDIR}|g' \
+		-e 's|${TOOLCHAIN}|$${TOOLCHAIN}|g' \
+		-e 's|${TOOLSDIR}|$${TOOLSDIR}|g' \
+		-e 's|${TOPDIR}|$${TOPDIR}|g' \
+		-e 's|^make[:\[].*$$||g'
 
 list-versions:
 	@cmake --version
