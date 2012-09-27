@@ -62,8 +62,6 @@ VERSION_TARGETS		+= ${LLVM_VERSION_TARGETS}
 LLVM_GIT	= "http://llvm.org/git/llvm.git"
 CLANG_GIT	= "http://llvm.org/git/clang.git"
 COMPILERRT_GIT	= "http://llvm.org/git/compiler-rt.git"
-CMAKE_VERSION	= "2.8.9"
-CMAKE_TGZ	= "http://www.cmake.org/files/v2.8/cmake-${CMAKE_VERSION}.tar.gz"
 
 #LLVM_BRANCH	= "release_30"
 LLVM_BRANCH	= "master"
@@ -77,7 +75,7 @@ LLVM_OPTIMIZED	= --enable-optimized --enable-assertions
 HELP_TARGETS	+= llvm-help
 SETTINGS_TARGETS+= llvm-settings
 
-# A locally build version of cmake may be required
+# Add clang to the path
 PATH		:= ${LLVMINSTALLDIR}/bin:${PATH}
 
 llvm-help:
@@ -228,17 +226,3 @@ clang-version:
 
 clang-update-all: llvm-sync clang-sync llvm-build clang-build
 
-# cmake version 2.8.8 or newer is required to build compiler-rt
-cmake-build: ${LLVMSTATE}/cmake-build
-${LLVMSTATE}/cmake-build:
-	@(cd ${LLVMSRCDIR} && [ -e cmake-${CMAKE_VERSION}.tar.gz ] || wget ${CMAKE_TGZ})
-	@(cd ${LLVMSRCDIR} && tar -xvzf cmake-${CMAKE_VERSION}.tar.gz)
-	@(mkdir -p ${LLVMINSTALLDIR})
-	@(cd ${LLVMSRCDIR}/cmake-${CMAKE_VERSION} && ./configure --prefix=${LLVMINSTALLDIR} && make install)
-	$(call state,$@)
-
-cmake-clean:
-	@rm -f ${LLVMINSTALLDIR}/bin/cmake
-	@rm -f ${LLVMSRCDIR}/cmake-*.tar.gz
-	@rm -rf ${LLVMSRCDIR}/cmake-*
-	@rm -f ${LLVMSTATE}/cmake-build
