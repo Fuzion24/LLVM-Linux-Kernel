@@ -1,6 +1,13 @@
 Remove variable length arrays in structures (VLAIS) from the netfilter code.
 
+The use of VLAIS in the Linux Kernel code precludes the use of compilers which
+don't implement VLAIS (for instance the Clang compiler). By moving the variable
+length array to the end of the structure as a zero length array and manually
+handling the allocation of memory, you get the same overall effect without the
+use of VLAIS.
+
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+Reviewed-by: Behan Webster <behanw@converseincode.com>
 ---
  include/linux/jbd2.h        |    2 +-
  lib/libcrc32c.c             |    2 +-
@@ -32,16 +39,3 @@ Index: msm/net/netfilter/xt_repldata.h
  	if (tbl == NULL) \
  		return NULL; \
  	strncpy(tbl->repl.name, info->name, sizeof(tbl->repl.name)); \
-Index: msm/lib/libcrc32c.c
-===================================================================
---- msm.orig/lib/libcrc32c.c	2012-09-14 11:41:36.000000000 -0400
-+++ msm/lib/libcrc32c.c	2012-09-14 15:25:42.241573809 -0400
-@@ -43,7 +43,7 @@
- {
- 	struct {
- 		struct shash_desc shash;
--		char ctx[crypto_shash_descsize(tfm)];
-+		char ctx[4];
- 	} desc;
- 	int err;
- 
