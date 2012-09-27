@@ -337,12 +337,20 @@ kernel-shared-sync:
 #############################################################################
 kernel-sync: state/kernel-fetch kernel-shared-sync kernel-clean
 	@$(call banner, "Syncing kernel...")
+ifneq "${KERNEL_TAG}" ""
+	(cd ${KERNELDIR} && git pull origin ${KERNEL_TAG})
+else
 	(cd ${KERNELDIR} && git pull)
+endif
 
 #############################################################################
 kernel-gcc-sync: state/kernel-gcc-fetch kernel-shared-sync kernel-gcc-clean
 	@$(call banner, "Syncing gcc kernel...")
-	@(cd ${KERNELGCC} && git pull)
+ifneq "${KERNEL_TAG}" ""
+	(cd ${KERNELGCC} && git pull origin ${KERNEL_TAG})
+else
+	(cd ${KERNELGCC} && git pull)
+endif
 
 #############################################################################
 kernel-reset: state/kernel-fetch
