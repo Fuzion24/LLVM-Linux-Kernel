@@ -1,8 +1,6 @@
 = Make targets for vexpress =
 
-Other build targets have similar make targets.
-
-You can get the following with:
+Other build targets have similar make targets. You can get the following with:
 
  make -C targets/vexpress help
 
@@ -23,6 +21,7 @@ targets/vexpress has these options:
 * make clean		- Remove most built files
 * make mrproper		- Remove all downloaded and built files
 
+These are the generic make targets for all build targets:
 * make clean-all	- clean all code
 * make fetch-all	- fetch all repos and external files
 * make mproper-all	- scrub all code (cleaner than clean)
@@ -39,28 +38,53 @@ targets/vexpress has these options:
 
 * make CONFIG=<file> ... - Choose configuration file(s) to use
 
+These are the make targets for building LLVM and Clang:
 * make llvm-[fetch,configure,build,sync,clean]
 * make clang-[fetch,configure,build,sync,clean]
 
+These are the kernel make targets:
 * make kernel-[fetch,patch,configure,build,sync,clean]
 * make kernel-gcc-[fetch,patch,configure,build,sync,clean]
+               fetch     - clone kernel code
+               patch     - patch kernel code
+               configure - configure kernel code (add .config file, etc)
+               build     - build kernel code
+               sync      - clean, unpatch, then git pull kernel code
+               clean     - clean, unpatch kernel code
+* make kernel-gcc-sparse - build gcc kernel with sparse
 * make kernels		- build kernel with both clang and gcc
+
+These are the quilt (patching) make targets:
 * make kernel-quilt - Setup kernel(s) to be patched by quilt
 * make kernel-quilt-clean - Remove quilt setup
+* make kernel-quilt-generate-series
+			- Build kernel quilt series file
+* make kernel-quilt-update-series-dot-target
+			- Save updates from kernel quilt series file to series.target file
+* make kernel-quilt-link-patches
+			- Link kernel patches to target patches directory
 * make list-kernel-patches
 			- List which kernel patches will be applied
-* make list-kernel-maintainer
+
+* make list-kernel-checkpatch [PATCH_FILTER_REGEX=<regex>]
+			- List which kernel maintainers should be contacted for each patch
+* make list-kernel-maintainer [PATCH_FILTER_REGEX=<regex>]
 			- List which kernel maintainers should be contacted for each patch
 
+These are the make targets for building a basic testing initramfs:
 * make initramfs-[build,clean]
 
+These are the make targets for the Linux Test Project (LTP):
 * make ltp-[fetch,configure,build,sync,clean]
 
+These are the make targets for QEMU:
 * make qemu-[fetch,patch,configure,build,sync,clean]
 
+These options are specific to building a Linux Kernel for ARM:
 * make CROSS_ARM_TOOLCHAIN=[codesourcery,linaro,android] ...
 			- Choose the gcc cross toolchain you want to use
 
+These are the make targets for LTP testing vexpress:
 * make test3-ltp	- linaro/ubuntu rootfs starting LTP, kernel built with clang
 * make test3-gcc-ltp	- linaro/ubuntu rootfs starting LTP, kernel built with gcc
 * make test3-all-ltp	- linaro/ubuntu rootfs starting LTP, for all built kernels

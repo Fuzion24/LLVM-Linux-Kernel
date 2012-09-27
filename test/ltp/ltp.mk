@@ -55,6 +55,7 @@ ltpstate=mkdir -p ${LTPSTATE}; touch $(1); echo "Entering state $(notdir $(1))";
 
 ltp-help:
 	@echo
+	@echo "These are the make targets for the Linux Test Project (LTP):"
 	@echo "* make ltp-[fetch,configure,build,sync,clean]"
 
 ltp-settings:

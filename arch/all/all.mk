@@ -136,6 +136,7 @@ VERSION_TARGETS		+= ${KERNEL_TARGETS_VERSION}
 #############################################################################
 kernel-help:
 	@echo
+	@echo "These are the kernel make targets:"
 	@echo "* make kernel-[fetch,patch,configure,build,sync,clean]"
 	@echo "* make kernel-gcc-[fetch,patch,configure,build,sync,clean]"
 	@echo "               fetch     - clone kernel code"

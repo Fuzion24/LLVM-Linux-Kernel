@@ -52,6 +52,7 @@ SETTINGS_TARGETS+= initramfs-settings
 
 initramfs-help:
 	@echo
+	@echo "These are the make targets for building a basic testing initramfs:"
 	@echo "* make initramfs-[build,clean]"
 
 initramfs-settings:

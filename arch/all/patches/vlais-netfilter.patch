@@ -1,7 +1,10 @@
 Remove variable length arrays in structures (VLAIS) from the netfilter code.
 
 The use of VLAIS in the Linux Kernel code precludes the use of compilers which
-don't implement VLAIS (for instance the Clang compiler)
+don't implement VLAIS (for instance the Clang compiler). By moving the variable
+length array to the end of the structure as a zero length array and manually
+handling the allocation of memory, you get the same overall effect without the
+use of VLAIS.
 
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Reviewed-by: Behan Webster <behanw@converseincode.com>

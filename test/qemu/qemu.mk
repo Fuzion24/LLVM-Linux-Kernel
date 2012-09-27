@@ -52,6 +52,7 @@ QEMU_BRANCH	= "stable-1.0"
 
 qemu-help:
 	@echo
+	@echo "These are the make targets for QEMU:"
 	@echo "* make qemu-[fetch,patch,configure,build,sync,clean]"
 
 qemu-settings:

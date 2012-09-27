@@ -58,11 +58,22 @@ SETTINGS_TARGETS	+= kernel-quilt-settings
 
 #############################################################################
 kernel-quilt-help:
+	@echo
+	@echo "These are the quilt (patching) make targets:"
 	@echo "* make kernel-quilt - Setup kernel(s) to be patched by quilt"
 	@echo "* make kernel-quilt-clean - Remove quilt setup"
+	@echo "* make kernel-quilt-generate-series"
+	@echo "			- Build kernel quilt series file"
+	@echo "* make kernel-quilt-update-series-dot-target"
+	@echo "			- Save updates from kernel quilt series file to series.target file"
+	@echo "* make kernel-quilt-link-patches"
+	@echo "			- Link kernel patches to target patches directory"
 	@echo "* make list-kernel-patches"
 	@echo "			- List which kernel patches will be applied"
-	@echo "* make list-kernel-maintainer"
+	@echo
+	@echo "* make list-kernel-checkpatch [PATCH_FILTER_REGEX=<regex>]"
+	@echo "			- List which kernel maintainers should be contacted for each patch"
+	@echo "* make list-kernel-maintainer [PATCH_FILTER_REGEX=<regex>]"
 	@echo "			- List which kernel maintainers should be contacted for each patch"
 
 #############################################################################
