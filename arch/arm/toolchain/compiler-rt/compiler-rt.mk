@@ -59,4 +59,3 @@ compilerrt-arm-clean:
 
 compilerrt-arm-sync: ${LLVMSTATE}/compilerrt-sync compilerrt-arm-clean compilerrt-arm-clone
 	@$(call banner, "Updated Compiler-rt for ARM...")
-	$(call state,$@)
