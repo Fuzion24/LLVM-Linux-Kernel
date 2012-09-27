@@ -34,6 +34,7 @@ TARGETS			+= compilerrt-arm-clone compilerrt-arm-patch compilerrt-arm-configure 
 compilerrt-arm-clone: ${COMPILERRTSTATE}/compilerrt-arm-clone
 ${COMPILERRTSTATE}/compilerrt-arm-clone: ${LLVMSTATE}/compilerrt-fetch
 	@$(call banner, "Cloning Compiler-rt for ARM build...")
+	@mkdir -p ${COMPILERRTDIR}
 	( [ -d ${COMPILERRTDIR}/compiler-rt/.git ] || (cd ${COMPILERRTDIR} && git clone ${COMPILERRT_LOCALGIT} -b ${COMPILERRT_BRANCH}))
 	$(call state,$@)
 
