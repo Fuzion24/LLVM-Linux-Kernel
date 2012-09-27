@@ -29,7 +29,7 @@ COMPILERRTSTATE		= ${ARCH_ARM_TOOLCHAIN}/compiler-rt/state
 COMPILERRTPATCHES	= ${ARCH_ARM_TOOLCHAIN}/compiler-rt/patches
 COMPILERRTDIR		= ${ARCH_ARM_TOOLCHAIN}/compiler-rt/build
 COMPILERRTINSTALLDIR	= ${ARCH_ARM_TOOLCHAIN}/compiler-rt/install
-TARGETS			+= compilerrt-arm-clone compilerrt-arm-patch compilerrt-arm-configure compilerrt-arm-build 
+TARGETS			+= compilerrt-arm-clone compilerrt-arm-patch compilerrt-arm-configure compilerrt-arm-build compilerrt-arm-clean compilerrt-arm-sync
 
 compilerrt-arm-clone: ${COMPILERRTSTATE}/compilerrt-arm-clone
 ${COMPILERRTSTATE}/compilerrt-arm-clone: ${LLVMSTATE}/compilerrt-fetch
@@ -52,3 +52,11 @@ ${COMPILERRTSTATE}/compilerrt-arm-build: ${COMPILERRTSTATE}/compilerrt-arm-patch
 	(cd ${COMPILERRTDIR}/compiler-rt && make ARMGCCHOME=${ARCH_ARM_TOOLCHAIN}/codesourcery/arm-2011.03 linux_armv7)
 	$(call state,$@)
 
+compilerrt-arm-clean:
+	@$(call banner, "Reseting Compiler-rt...")
+	@rm -rf ${COMPILERRTDIR}/*
+	@rm -f ${COMPILERRTSTATE}/compilerrt-arm-*
+
+compilerrt-arm-sync: ${LLVMSTATE}/compilerrt-sync compilerrt-arm-clean compilerrt-arm-clone
+	@$(call banner, "Updated Compiler-rt for ARM...")
+	$(call state,$@)

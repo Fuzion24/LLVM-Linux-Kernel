@@ -213,16 +213,21 @@ clang-raze: clang-clean-noreset
 llvm-sync: llvm-clean
 	@$(call banner,Updating LLVM...)
 	(cd ${LLVMDIR} && git checkout ${LLVM_BRANCH} && git pull)
-	(cd ${LLVMDIR}/projects/compiler-rt && git checkout ${COMPILERRT_BRANCH} && git pull)
 
 clang-sync: clang-clean
 	@$(call banner,Updating Clang...)
 	(cd ${CLANGDIR} && git checkout ${CLANG_BRANCH} && git pull)
+
+compilerrt-sync: ${LLVMSTATE}/compilerrt-sync
+${LLVMSTATE}/compilerrt-sync: ${LLVMSTATE}/llvm-fetch 
+	@$(call banner, "Updating Compilerrt...")
+	(cd ${LLVMDIR}/projects/compiler-rt && git checkout ${COMPILERRT_BRANCH} && git pull)
+	$(call state,$@)
 
 llvm-version:
 	@(cd ${LLVMDIR}/$* && echo "`${LLVMINSTALLDIR}/bin/llc --version | grep version | xargs echo` commit `git rev-parse HEAD`")
 clang-version:
 	@(cd ${CLANGDIR}/$* && echo "`${CLANG} --version | grep version | xargs echo` commit `git rev-parse HEAD`")
 
-clang-update-all: llvm-sync clang-sync llvm-build clang-build
+clang-update-all: llvm-sync clang-sync compilerrt-sync llvm-build clang-build
 
