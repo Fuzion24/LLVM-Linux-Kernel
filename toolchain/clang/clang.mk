@@ -82,6 +82,7 @@ PATH		:= ${LLVMINSTALLDIR}/bin:${PATH}
 
 llvm-help:
 	@echo
+	@echo "These are the make targets for building LLVM and Clang:"
 	@echo "* make llvm-[fetch,configure,build,sync,clean]"
 	@echo "* make clang-[fetch,configure,build,sync,clean]"
 

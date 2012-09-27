@@ -35,7 +35,8 @@ RAZE_TARGETS		+= vexpress-ltp-mrproper
 .PHONY:			${VEXPRESS_LTP_TARGETS}
 
 vexpress-ltp-help:
-	@echo ""
+	@echo
+	@echo "These are the make targets for LTP testing vexpress:"
 	@echo "* make test3-ltp	- linaro/ubuntu rootfs starting LTP, kernel built with clang"
 	@echo "* make test3-gcc-ltp	- linaro/ubuntu rootfs starting LTP, kernel built with gcc"
 	@echo "* make test3-all-ltp	- linaro/ubuntu rootfs starting LTP, for all built kernels"

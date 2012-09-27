@@ -56,6 +56,7 @@ qemu = $(call runqemu,${QEMUBINDIR}/qemu-system-arm,${1},${2}/arch/arm/boot/zIma
 
 arm-help:
 	@echo
+	@echo "These options are specific to building a Linux Kernel for ARM:"
 	@echo "* make CROSS_ARM_TOOLCHAIN=[codesourcery,linaro,android] ..."
 	@echo "			- Choose the gcc cross toolchain you want to use"
 

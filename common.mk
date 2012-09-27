@@ -65,6 +65,7 @@ endif
 ##############################################################################
 common-help:
 	@echo
+	@echo "These are the generic make targets for all build targets:"
 	@echo "* make clean-all	- clean all code"
 	@echo "* make fetch-all	- fetch all repos and external files"
 	@echo "* make mproper-all	- scrub all code (cleaner than clean)"
