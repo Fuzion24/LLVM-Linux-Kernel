@@ -22,42 +22,74 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
+# This is a template file with the kinds of settings and make targets filled in.
+# Those settings with defaults are commented out.
+# Delete make targets you don't need.
+
 TARGETDIR	= ${CURDIR}
 TOPDIR		= $(realpath ${TARGETDIR}/../..)
 
-KERNEL_CFG	= ${TARGETDIR}/config_template
+ARCH	= arm
+BOARD	= template
 
-KERNEL_PATCHES     += $(call add_patches,${TARGETDIR}/patches)
-KERNEL_PATCH_DIR+= ${TARGETDIR}/patches
+# Kernel settings
+#KERNEL_GIT		= git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+#KERNEL_BRANCH		= master
+#KERNEL_TAG		= 
+#KERNELDIR		= ${TARGETDIR}/src/linux
+#KERNELGCC		= ${TARGETDIR}/src/linux-gcc
+KERNEL_CFG		= ${TARGETDIR}/config_${BOARD}
+#KERNEL_REPO_PATCHES	= master
+KERNEL_PATCH_DIR	+= ${TARGETDIR}/patches ${TARGETDIR}/patches/master
 
-all: bailout_remove prep kernel-build
-.PHONY: clean mrproper
+BOARD_TARGETS		= board-clean board-help board-fetch board-mrproper board-raze board-settings clean mrproper
+TARGETS			+= ${BOARD_TARGETS}
+CLEAN_TARGETS		+= board-clean
+HELP_TARGETS		+= board-help
+FETCH_TARGETS		+= board-fetch
+MRPROPER_TARGETS	+= board-mrproper
+RAZE_TARGETS		+= board-raze
+SETTINGS_TARGETS	+= board-settings
+.PHONY:			${BOARD_TARGETS}
 
-TARGETS			+=
-CLEAN_TARGETS		+=
-HELP_TARGETS		+=
-FETCH_TARGETS		+=
-MRPROPER_TARGETS	+=
-RAZE_TARGETS		+=
+all: remove_me_when_configured prep kernel-build
+
+# Remove me when you want this makefile to do something useful
+remove_me_when_configured:
+	@echo "Not configured yet"
+	@exit 1
 
 include ${TOPDIR}/common.mk
-#include ${ARCHDIR}/arm/arm.mk
+include ${ARCHDIR}/${ARCH}/${ARCH}.mk
 include ${CONFIG}
-
-bailout_remove:
-	@exit 1
 
 prep: state/prep
 state/prep:
 	@mkdir -p ${LOGDIR} ${TMPDIR}
 	$(call state,$@)
 
-clean: tmp-clean
-	( ( test -e ${KERNELDIR} && make kernel-clean ) || exit 0 )
-	@make clang-clean llvm-clean
+board-help:
+	@echo "targets/${BOARD} has these options:"
+	@echo
+	@echo "* make <your make target here>	- Description"
 
-# do a real wipe
-mrproper: clean
-	( ( test -e ${KERNELDIR} && cd ${KERNELDIR} && make mrproper ) || exit 0 )
+board-settings:
+	@echo "FOO		= ${FOO}"
+
+board-fetch:
+	@$(call banner,Fetching foo)
+
+board-clean:
+	@$(call banner,Cleaning foo)
+
+board-mrproper:
+	@$(call banner,Really cleaning foo)
+
+board-raze:
+	@$(call banner,Getting rid of all downloaded files for foo)
+
+clean: kernel-clean kernel-gcc-clean board-clean
 	@rm -rf ${LOGDIR}/* ${TMPDIR}/*
+
+mrproper: clean kernel-mrproper kernel-gcc-mrproper board-mrproper
 
