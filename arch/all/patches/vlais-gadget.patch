@@ -4,6 +4,7 @@ The use of VLAIS in the Linux Kernel code precludes the use of compilers which
 don't implement VLAIS (for instance the Clang compiler). This patch
 reimplements the same functionality without the use of VLAIS.
 
+Signed-off-by: Bryce Adelstein-Lelbach <blelbach@cct.lsu.edu>
 Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
 Reviewed-by: Behan Webster <behanw@converseincode.com>
 ---
