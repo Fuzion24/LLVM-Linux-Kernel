@@ -1,21 +1,28 @@
-Remove variable length arrays in structs (VLAIS) from gadget code
+From 22d4881505f6722c0ec4765d85af58464a32fb9c Mon Sep 17 00:00:00 2001
+From: Behan Webster <behanw@converseincode.com>
+Date: Fri, 28 Sep 2012 15:18:18 -0400
+Subject: [PATCH 1/5] Remove VLAIS from gadget code
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-The use of VLAIS in the Linux Kernel code precludes the use of compilers which
-don't implement VLAIS (for instance the Clang compiler). This patch
-reimplements the same functionality without the use of VLAIS.
+The use of variable length arrays in structs (VLAIS) in the Linux Kernel code
+precludes the use of compilers which don't implement VLAIS (for instance the
+Clang compiler). This patch reimplements the same functionality without the use
+of VLAIS.
 
 Signed-off-by: Bryce Adelstein-Lelbach <blelbach@cct.lsu.edu>
-Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
+Reviewed-by: Jan-Simon Möller <dl9pf@gmx.de>
 Reviewed-by: Behan Webster <behanw@converseincode.com>
 ---
- f_fs.c |  204 ++++++++++++++++++++++++++++++++++++++++++-----------------------
+ drivers/usb/gadget/f_fs.c |  204 +++++++++++++++++++++++++++++----------------
  1 file changed, 134 insertions(+), 70 deletions(-)
 
-Index: linux/drivers/usb/gadget/f_fs.c
-===================================================================
---- linux.orig/drivers/usb/gadget/f_fs.c
-+++ linux/drivers/usb/gadget/f_fs.c
-@@ -1335,8 +1335,22 @@
+diff --git a/drivers/usb/gadget/f_fs.c b/drivers/usb/gadget/f_fs.c
+index 829aba7..bf94e1b 100644
+--- a/drivers/usb/gadget/f_fs.c
++++ b/drivers/usb/gadget/f_fs.c
+@@ -1335,8 +1335,22 @@ static void ffs_data_clear(struct ffs_data *ffs)
  	if (ffs->epfiles)
  		ffs_epfiles_destroy(ffs->epfiles, ffs->eps_count);
  
@@ -38,7 +45,7 @@ Index: linux/drivers/usb/gadget/f_fs.c
  	kfree(ffs->stringtabs);
  }
  
-@@ -1508,7 +1522,17 @@
+@@ -1508,7 +1522,17 @@ static void ffs_func_free(struct ffs_function *func)
  
  	ENTER();
  
@@ -56,7 +63,7 @@ Index: linux/drivers/usb/gadget/f_fs.c
  	spin_lock_irqsave(&func->ffs->eps_lock, flags);
  	do {
  		if (ep->ep && ep->req)
-@@ -1521,11 +1545,17 @@
+@@ -1521,11 +1545,17 @@ static void ffs_func_free(struct ffs_function *func)
  	ffs_data_put(func->ffs);
  
  	kfree(func->eps);
@@ -79,7 +86,7 @@ Index: linux/drivers/usb/gadget/f_fs.c
  
  	kfree(func);
  }
-@@ -1870,9 +1900,11 @@
+@@ -1870,9 +1900,11 @@ static int __ffs_data_got_strings(struct ffs_data *ffs,
  				  char *const _data, size_t len)
  {
  	u32 str_count, needed_count, lang_count;
@@ -93,7 +100,7 @@ Index: linux/drivers/usb/gadget/f_fs.c
  
  	ENTER();
  
-@@ -1900,35 +1932,43 @@
+@@ -1900,35 +1932,43 @@ static int __ffs_data_got_strings(struct ffs_data *ffs,
  		return 0;
  	}
  
@@ -163,7 +170,7 @@ Index: linux/drivers/usb/gadget/f_fs.c
  	/* For each language */
  	data += 16;
  	len -= 16;
-@@ -1938,9 +1978,9 @@
+@@ -1938,9 +1978,9 @@ static int __ffs_data_got_strings(struct ffs_data *ffs,
  
  		if (unlikely(len < 3))
  			goto error_free;
@@ -176,7 +183,7 @@ Index: linux/drivers/usb/gadget/f_fs.c
  
  		data += 2;
  		len -= 2;
-@@ -1963,18 +2003,18 @@
+@@ -1963,18 +2003,18 @@ static int __ffs_data_got_strings(struct ffs_data *ffs,
  				 * function to configuration so for
  				 * now just leave garbage here.
  				 */
@@ -200,7 +207,7 @@ Index: linux/drivers/usb/gadget/f_fs.c
  
  	} while (--lang_count);
  
-@@ -1989,6 +2029,7 @@
+@@ -1989,6 +2029,7 @@ static int __ffs_data_got_strings(struct ffs_data *ffs,
  	return 0;
  
  error_free:
@@ -208,7 +215,7 @@ Index: linux/drivers/usb/gadget/f_fs.c
  	kfree(stringtabs);
  error:
  	kfree(_data);
-@@ -2200,17 +2241,45 @@
+@@ -2200,17 +2241,45 @@ static int ffs_func_bind(struct usb_configuration *c,
  
  	int ret;
  
@@ -265,7 +272,7 @@ Index: linux/drivers/usb/gadget/f_fs.c
  
  	ENTER();
  
-@@ -2218,21 +2287,16 @@
+@@ -2218,21 +2287,16 @@ static int ffs_func_bind(struct usb_configuration *c,
  	if (unlikely(!(full | high)))
  		return -ENOTSUPP;
  
@@ -293,7 +300,7 @@ Index: linux/drivers/usb/gadget/f_fs.c
  
  	/*
  	 * Go through all the endpoint descriptors and allocate
-@@ -2240,10 +2304,10 @@
+@@ -2240,10 +2304,10 @@ static int ffs_func_bind(struct usb_configuration *c,
  	 * numbers without worrying that it may be described later on.
  	 */
  	if (likely(full)) {
@@ -307,7 +314,7 @@ Index: linux/drivers/usb/gadget/f_fs.c
  				   __ffs_func_bind_do_descs, func);
  		if (unlikely(ret < 0))
  			goto error;
-@@ -2252,10 +2316,10 @@
+@@ -2252,10 +2316,10 @@ static int ffs_func_bind(struct usb_configuration *c,
  	}
  
  	if (likely(high)) {
@@ -321,7 +328,7 @@ Index: linux/drivers/usb/gadget/f_fs.c
  				   __ffs_func_bind_do_descs, func);
  	}
  
-@@ -2266,7 +2330,7 @@
+@@ -2266,7 +2330,7 @@ static int ffs_func_bind(struct usb_configuration *c,
  	 */
  	ret = ffs_do_descs(ffs->fs_descs_count +
  			   (high ? ffs->hs_descs_count : 0),
@@ -330,3 +337,6 @@ Index: linux/drivers/usb/gadget/f_fs.c
  			   __ffs_func_bind_do_nums, func);
  	if (unlikely(ret < 0))
  		goto error;
+-- 
+1.7.9.5
+
