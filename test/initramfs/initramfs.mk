@@ -23,7 +23,7 @@
 
 # NOTE: CROSS_COMPILE, HOST and CC must be defined by <arch>.mk
 
-TARGETS		+= initramfs initramfs-clean
+TARGETS_TEST	+= initramfs initramfs-clean
 CLEAN_TARGETS	+= initramfs-clean
 MRPROPER_TARGETS+= initramfs-mrproper
 RAZE_TARGETS	+= initramfs-raze

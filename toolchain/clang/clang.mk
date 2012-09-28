@@ -41,15 +41,13 @@ COMPILERRTDIR	= ${LLVMSRCDIR}/llvm/projects/compiler-rt
 LLVMBUILDDIR	= ${LLVMTOP}/build/llvm
 CLANGBUILDDIR	= ${LLVMTOP}/build/clang
 
-LLVM_TARGETS 		= llvm llvm-fetch llvm-patch llvm-configure llvm-build
-CLANG_TARGETS 		= clang clang-fetch clang-patch clang-configure clang-build clang-update-all
+LLVM_TARGETS 		= llvm llvm-[fetch,patch,configure,build,clean,sync]
+CLANG_TARGETS 		= clang clang-[fetch,patch,configure,build,sync] clang-update-all
 COMPILERRT_TARGETS 	= compilerrt-fetch 
 LLVM_TARGETS_APPLIED	= llvm-patch-applied clang-patch-applied
-LLVM_CLEAN_TARGETS	= llvm-clean clang-clean
-LLVM_SYNC_TARGETS	= llvm-sync clang-sync
 LLVM_VERSION_TARGETS	= llvm-version clang-version
 
-TARGETS			+= ${LLVM_TARGETS} ${CLANG_TARGETS} ${COMPILERRT_TARGETS} ${LLVM_SYNC_TARGETS} ${LLVM_CLEAN_TARGETS}
+TARGETS_TOOLCHAIN	+= ${LLVM_TARGETS} ${CLANG_TARGETS} ${COMPILERRT_TARGETS}
 FETCH_TARGETS		+= llvm-fetch compilerrt-fetch clang-fetch
 SYNC_TARGETS		+= ${LLVM_SYNC_TARGETS}
 CLEAN_TARGETS		+= llvm-clean

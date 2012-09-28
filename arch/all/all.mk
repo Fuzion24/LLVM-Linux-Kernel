@@ -113,14 +113,14 @@ KERNEL_SIZE_GCC_LOG	= gcc-`date +%Y-%m-%d_%H:%M:%S`-kernel-size.log
 get-kernel-version	= [ ! -d ${1} ] || (cd ${1} && echo "src/$(notdir ${1}) version `make kernelversion 2>/dev/null | grep -v ^make` commit `git rev-parse HEAD`")
 
 #############################################################################
-KERNEL_TARGETS_CLANG	= kernel-fetch kernel-patch kernel-configure kernel-build kernel-sync
-KERNEL_TARGETS_GCC	= kernel-gcc-fetch kernel-gcc-patch kernel-gcc-configure kernel-gcc-build kernel-gcc-sparse kernel-gcc-sync
+KERNEL_TARGETS_CLANG	= kernel-[fetch,patch,configure,build,clean,sync]
+KERNEL_TARGETS_GCC	= kernel-gcc-[fetch,patch,configure,build,clean,sync] kernel-gcc-sparse 
 KERNEL_TARGETS_APPLIED	= kernel-patch-applied kernel-gcc-patch-applied
-KERNEL_TARGETS_CLEAN	= kernel-clean kernel-gcc-clean tmp-clean
+KERNEL_TARGETS_CLEAN	= tmp-clean
 KERNEL_TARGETS_VERSION	= kernel-version kernel-gcc-version
 
 #############################################################################
-TARGETS			+= ${KERNEL_TARGETS_CLANG} ${KERNEL_TARGETS_GCC} ${KERNEL_TARGETS_APPLIED} ${KERNEL_TARGETS_CLEAN}
+TARGETS_BUILD		+= ${KERNEL_TARGETS_CLANG} ${KERNEL_TARGETS_GCC} ${KERNEL_TARGETS_APPLIED} ${KERNEL_TARGETS_CLEAN}
 CLEAN_TARGETS		+= ${KERNEL_TARGETS_CLEAN}
 FETCH_TARGETS		+= kernel-fetch kernel-gcc-fetch
 HELP_TARGETS		+= kernel-help

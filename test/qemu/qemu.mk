@@ -32,9 +32,9 @@ QEMUPATCHES	= ${QEMUDIR}/patches
 
 QEMUBINDIR	= ${QEMUINSTALLDIR}/bin
 
-QEMU_TARGETS	= qemu qemu-fetch qemu-configure qemu-build qemu-clean qemu-sync qemu-patch-applied qemu-version
+QEMU_TARGETS	= qemu qemu-[fetch,configure,build,clean,sync] qemu-patch-applied qemu-version
 
-TARGETS			+= ${QEMU_TARGETS}
+TARGETS_TEST		+= ${QEMU_TARGETS}
 CLEAN_TARGETS		+= qemu-clean
 FETCH_TARGETS		+= qemu-fetch
 HELP_TARGETS		+= qemu-help

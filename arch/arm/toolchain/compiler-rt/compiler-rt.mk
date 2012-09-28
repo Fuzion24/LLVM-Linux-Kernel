@@ -29,7 +29,7 @@ COMPILERRTSTATE		= ${ARCH_ARM_TOOLCHAIN}/compiler-rt/state
 COMPILERRTPATCHES	= ${ARCH_ARM_TOOLCHAIN}/compiler-rt/patches
 COMPILERRTDIR		= ${ARCH_ARM_TOOLCHAIN}/compiler-rt/build
 COMPILERRTINSTALLDIR	= ${ARCH_ARM_TOOLCHAIN}/compiler-rt/install
-TARGETS			+= compilerrt-arm-clone compilerrt-arm-patch compilerrt-arm-configure compilerrt-arm-build compilerrt-arm-clean compilerrt-arm-sync
+TARGETS_TOOLCHAIN	+= compilerrt-arm-[clone,patch,configure,build,clean,sync]
 
 compilerrt-arm-clone: ${COMPILERRTSTATE}/compilerrt-arm-clone
 ${COMPILERRTSTATE}/compilerrt-arm-clone: ${LLVMSTATE}/compilerrt-fetch

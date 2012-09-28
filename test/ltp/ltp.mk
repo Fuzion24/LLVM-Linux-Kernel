@@ -40,7 +40,7 @@ FETCH_TARGETS	+= ltp-fetch
 SYNC_TARGETS	+= ltp-sync
 
 LTP_TARGETS	= ltp-fetch ltp-configure ltp-build ltp-clean ltp-sync ltp-mrproper ltp-clean
-TARGETS		+= ${LTP_TARGETS}
+TARGETS_TEST	+= ${LTP_TARGETS}
 CLEAN_TARGETS	+= ltp-clean
 HELP_TARGETS	+= ltp-help
 MRPROPER_TARGETS+= ltp-mrproper

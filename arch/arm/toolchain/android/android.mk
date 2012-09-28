@@ -23,7 +23,7 @@
 
 # Note: use CROSS_ARM_TOOLCHAIN=android to include this file
 
-TARGETS		+= android-gcc
+TARGETS_TOOLCHAIN	+= android-gcc
 
 ANDROID_SDK_BRANCH 	= aosp-new/jb-release
 ANDROID_SDK_GIT 	= git://codeaurora.org/platform/prebuilts/gcc/linux-x86/arm/${ANDROID_CC_VERSION}.git

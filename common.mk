@@ -31,7 +31,11 @@ TESTDIR		= ${TOPDIR}/test
 
 COMMON_TARGETS	= list-config list-jobs list-targets list-fetch-all list-patch-applied list-path list-versions \
 			clean-all fetch-all mrproper-all raze-all sync-all tmp-mrproper
-TARGETS		+= ${COMMON_TARGETS}
+TARGETS_UTILS	+= ${COMMON_TARGETS}
+TARGETS_BUILD	= 
+TARGETS_TEST	= 
+TARGETS_TOOLCHAIN = 
+
 HELP_TARGETS	+= common-help
 .PHONY:		${COMMON_TARGETS}
 
@@ -93,8 +97,17 @@ help:
 	@${MAKE} --silent ${HELP_TARGETS}
 
 list-targets:
-	@echo "List of available make targets:"
-	@for t in ${TARGETS}; do echo $$t; done | sort -u
+	@echo "List of unclassified make targets:"
+	@for t in ${TARGETS}; do echo "\t"$$t; done | sort -u
+	@echo
+	@echo "List of available make targets for test tools:"
+	@for t in ${TARGETS_TEST}; do echo "\t"$$t; done | sort -u
+	@echo
+	@echo "List of available make targets for toolchain:"
+	@for t in ${TARGETS_TOOLCHAIN}; do echo "\t"$$t; done | sort -u
+	@echo
+	@echo "List of available make targets for platform:"
+	@for t in ${TARGETS_BUILD}; do echo "\t"$$t; done | sort -u
 
 list-fetch-all:
 	@for t in ${FETCH_TARGETS}; do echo $$t | sed -e "s|^`pwd`/||"; done
