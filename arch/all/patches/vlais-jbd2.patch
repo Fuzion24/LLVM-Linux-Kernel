@@ -1,21 +1,24 @@
-Remove variable length arrays in structures (VLAIS) from the JBD2 code.
+From ba11518b0743f4d2984e988fb77a5818939310d1 Mon Sep 17 00:00:00 2001
+From: Behan Webster <behanw@converseincode.com>
+Date: Fri, 28 Sep 2012 15:23:44 -0400
+Subject: [PATCH 3/5] Remove VLAIS from the JBD2 code
 
-The use of VLAIS in the Linux Kernel code precludes the use of compilers which
-don't implement VLAIS (for instance the Clang compiler). Since ctx is always
-32-bit, hard coding a size of 4 accomplishes the same thing without the use of
-VLAIS.
+The use of variable length arrays in structures (VLAIS) in the Linux Kernel
+code precludes the use of compilers which don't implement VLAIS (for instance
+the Clang compiler). Since ctx is always 32-bit, hard coding a size of 4
+accomplishes the same thing without the use of VLAIS.
 
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Reviewed-by: Behan Webster <behanw@converseincode.com>
 ---
- jbd2.h |    2 +-
+ include/linux/jbd2.h |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Index: linux/include/linux/jbd2.h
-===================================================================
---- linux.orig/include/linux/jbd2.h
-+++ linux/include/linux/jbd2.h
-@@ -1308,7 +1308,7 @@
+diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
+index 3efc43f..efcbdfc 100644
+--- a/include/linux/jbd2.h
++++ b/include/linux/jbd2.h
+@@ -1308,7 +1308,7 @@ static inline u32 jbd2_chksum(journal_t *journal, u32 crc,
  {
  	struct {
  		struct shash_desc shash;
@@ -23,3 +26,7 @@ Index: linux/include/linux/jbd2.h
 +		char ctx[4];
  	} desc;
  	int err;
+ 
+-- 
+1.7.9.5
+

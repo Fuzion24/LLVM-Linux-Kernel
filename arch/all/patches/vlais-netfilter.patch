@@ -1,21 +1,24 @@
-Remove variable length arrays in structures (VLAIS) from the netfilter code.
+From 5172ce228074f51db88ce262882e21a32ba38be7 Mon Sep 17 00:00:00 2001
+From: Behan Webster <behanw@converseincode.com>
+Date: Fri, 28 Sep 2012 15:25:42 -0400
+Subject: [PATCH 5/5] Remove VLAIS from the netfilter code
 
-The use of VLAIS in the Linux Kernel code precludes the use of compilers which
-don't implement VLAIS (for instance the Clang compiler). By moving the variable
-length array to the end of the structure as a zero length array and manually
-handling the allocation of memory, you get the same overall effect without the
-use of VLAIS.
+The use of variable length arrays in structures (VLAIS) in the Linux Kernel
+code precludes the use of compilers which don't implement VLAIS (for instance
+the Clang compiler). By moving the variable length array to the end of the
+structure as a zero length array and manually handling the allocation of
+memory, you get the same overall effect without the use of VLAIS.
 
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Reviewed-by: Behan Webster <behanw@converseincode.com>
 ---
- xt_repldata.h |    7 +++++--
+ net/netfilter/xt_repldata.h |    7 +++++--
  1 file changed, 5 insertions(+), 2 deletions(-)
 
-Index: linux/net/netfilter/xt_repldata.h
-===================================================================
---- linux.orig/net/netfilter/xt_repldata.h
-+++ linux/net/netfilter/xt_repldata.h
+diff --git a/net/netfilter/xt_repldata.h b/net/netfilter/xt_repldata.h
+index 6efe4e5..6199d18 100644
+--- a/net/netfilter/xt_repldata.h
++++ b/net/netfilter/xt_repldata.h
 @@ -3,6 +3,8 @@
   *
   * 'entries' and 'term' are never anywhere referenced by word in code. In fact,
@@ -38,3 +41,6 @@ Index: linux/net/netfilter/xt_repldata.h
  	if (tbl == NULL) \
  		return NULL; \
  	strncpy(tbl->repl.name, info->name, sizeof(tbl->repl.name)); \
+-- 
+1.7.9.5
+
