@@ -218,31 +218,6 @@ ifneq "${KERNEL_TAG}" ""
 endif
 	$(call state,$@,kernel-gcc-patch)
 
-ifdef DISABLED
-#############################################################################
-kernel-copy: state/kernel-copy
-state/kernel-copy: state/kernel-fetch
-	@$(call banner, "Copying kernel...")
-	[ -d ${KERNELCOPY}/.git ] || git clone ${KERNELDIR} ${KERNELCOPY}
-ifneq "${KERNEL_TAG}" ""
-	( cd ${KERNELDIR} && git checkout ${KERNEL_TAG} )
-endif
-ifneq "${KERNEL_BRANCH}" ""
-	( cd ${KERNELDIR} && git checkout -B ${KERNEL_BRANCH} )
-endif
-	$(call state,$@)
-
-#############################################################################
-kernel-autopatch: kernel-build state/kernel-copy
-	(cd ${KERNELCOPY} && git reset --hard HEAD && git pull)
-	(cd ${KERNELCOPY} &&  patch -p1 -i ${TMPDIR}/final.patch >> ${LOGDIR}/patchcopy.log)
-	@${TOOLSDIR}/unusedfix.py ${LOGDIR}/build.log ${KERNELCOPY} 
-	(cd ${KERNELCOPY} &&  patch -R -p1 -i ${TMPDIR}/final.patch >> ${LOGDIR}/patchcopy.log)
-	(cd ${KERNELCOPY} && git diff > ${TMPDIR}/autopatch.patch)
-	@${TOOLSDIR}/splitarch.py ${TMPDIR}/autopatch.patch ${TARGETDIR} autopatch
-	$(call state,$@)
-endif
-
 #############################################################################
 kernel-patch: state/kernel-patch
 state/kernel-patch: state/kernel-fetch state/kernel-quilt
