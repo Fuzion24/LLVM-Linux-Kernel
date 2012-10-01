@@ -27,7 +27,7 @@ TOPDIR=`dirname $0`/../../..
 # Use clang by default
 USECLANG=${USECLANG:-1}
 DRYRUN=${DRYRUN:+echo}
-MARCH=${MARCH:+armv7-a}
+MARCH=${MARCH:-armv7-a}
 V=${V:+V=1}
 export PATH=`echo $PATH | sed -E 's/(.*?) :(.*)/\2\1/g; s/(.*?) :(.*)/\2\1/g; s/(.*?) :(.*)/\2\1/g'`
 
