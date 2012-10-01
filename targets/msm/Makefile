@@ -26,11 +26,11 @@ TARGETDIR	= ${CURDIR}
 TOPDIR		= $(realpath ${TARGETDIR}/../..)
 CROSS_ARM_TOOLCHAIN = android
 
-KERNEL_CFG	= ${SRCDIR}/msm/arch/arm/configs/msm8960_defconfig
 KERNEL_BRANCH	= msm-3.4
 KERNEL_GIT	= git://codeaurora.org/kernel/msm.git
 KERNELDIR	= ${SRCDIR}/msm
 KERNEL_TAG	= AU_LINUX_BASE_TARGET_ALL.01.00.461
+KERNEL_CFG	= ${KERNELDIR}/arch/arm/configs/msm8960_defconfig
 
 #Use the branch name for the dir containing MSM specific patch overrides
 KERNEL_REPO_PATCHES=${KERNEL_BRANCH}
@@ -44,7 +44,6 @@ include ${TOPDIR}/common.mk
 include ${ARCHDIR}/arm/arm.mk
 include ${CONFIG}
 
-KERNEL_PATCHES	+= $(call add_patches,${TARGETDIR}/patches)
 KERNEL_PATCH_DIR+= ${TARGETDIR}/patches ${TARGETDIR}/patches/${KERNEL_REPO_PATCHES}
 
 TARGETS+= check-dups kernel-autopatch clean mrproper
@@ -56,7 +55,7 @@ state/prep:
 	$(call state,$@)
 
 check-dups:
-	${TOOLSDIR}/checkduplicates.py ${KERNEL_PATCHES}
+	${TOOLSDIR}/checkduplicates.py $(shell ${MAKE} list-kernel-patches)
 
 clean: 
 	( ( test -e ${KERNELDIR} && make kernel-clean ) || exit 0 )
