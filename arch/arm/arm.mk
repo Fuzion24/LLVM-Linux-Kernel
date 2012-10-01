@@ -41,7 +41,7 @@ SETTINGS_TARGETS+= arm-settings
 VERSION_TARGETS	+= arm-cc-version
 
 ARCH		= arm
-MARCH		= arm7-a
+MARCH		= armv7-a
 MAKE_FLAGS	= ARCH=${ARCH}
 MAKE_KERNEL	= ${ARCH_ARM_BINDIR}/make-kernel.sh ${LLVMINSTALLDIR} ${EXTRAFLAGS}
 CROSS_COMPILE	= ${HOST}-
