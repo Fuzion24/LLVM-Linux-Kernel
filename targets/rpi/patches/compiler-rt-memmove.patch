@@ -1,0 +1,20 @@
+Add __aeabi_memmove for rpi
+
+This patch should not be upstreamed.
+Using compiler-rt is the right solution
+
+Signed-off-by: Behan Webster <behanw@converseincode.com>
+---
+
+--- rpi.orig/lib/string.c
++++ rpi/lib/string.c
+@@ -821,3 +821,9 @@
+     (void)memset(s, c, n);
+ }
+ EXPORT_SYMBOL(__aeabi_memset);
++
++void __aeabi_memmove(void *s, size_t n, int c)
++{
++    (void)memmove(s, c, n);
++}
++EXPORT_SYMBOL(__aeabi_memmove);

@@ -89,6 +89,7 @@ kernel-quiltrc: ${QUILTRC}
 ${QUILTRC}:
 	@$(call banner, "Setting up quilt rc file...")
 	@touch $@
+	@$(call checkfilefor,$@,QUILT_NO_DIFF_INDEX,=1)
 	@$(call checkfilefor,$@,QUILT_NO_DIFF_TIMESTAMPS,=1)
 	@$(call checkfilefor,$@,QUILT_PAGER,=)
 

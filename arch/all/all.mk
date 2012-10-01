@@ -24,13 +24,13 @@
 # NOTE: MAKE_KERNEL must also be defined in the calling Makefile
 #
 # The ARCH makefile must provide the following:
-#   - KERNEL_PATCHES+=... Additional arch specific patch file(s)
 #   - MAKE_FLAGS
 #   - MAKE_KERNEL
+#   - KERNEL_PATCH_DIR += ${ARCH_xxx_PATCHES} ${ARCH_xxx_PATCHES}/${KERNEL_REPO_PATCHES}
 #   
 # The target makefile must provide the following:
-#   - KERNEL_PATCHES+=... Additional target specific patch file(s)
 #   - KERNEL_CFG
+#   - KERNEL_PATCH_DIR += ${PATCHDIR} ${PATCHDIR}/${KERNEL_REPO_PATCHES}
 
 export V
 export CHECKERDIR
@@ -45,7 +45,9 @@ MAINLINEURI	= git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
 SHARED_KERNEL	= ${ARCH_ALL_DIR}/kernel.git
 
 export TIME
-TIME		= \n\
+TIME		= $(shell echo ${seperator})\n\
+$(shell echo Build Time)\n\
+$(shell echo ${seperator})\n\
 	User time (seconds): %U\n\
 	System time (seconds): %S\n\
 	Percent of CPU this job got: %P\n\
@@ -101,7 +103,6 @@ TMPDIRS		+= ${TMPDIR}
 #############################################################################
 catfile		= ([ -f ${1} ] && cat ${1})
 add_patches	= $(addprefix ${1}/,$(shell $(call catfile,${1}/series.target) || $(call catfile,${1}/series)))
-KERNEL_PATCHES	+= $(call add_patches,${ARCH_ALL_PATCHES})
 KERNEL_PATCH_DIR+= ${ARCH_ALL_PATCHES} ${ARCH_ALL_PATCHES}/${KERNEL_REPO_PATCHES}
 
 # ${1}=logdir ${2}=toolchain ${3}=testname

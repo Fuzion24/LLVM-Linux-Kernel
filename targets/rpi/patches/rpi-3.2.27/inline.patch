@@ -1,0 +1,128 @@
+Remove useless inline specifiers
+
+Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+Signed-off-by: Bryce Lelbach aka "wash" <blelbach@cct.lsu.edu>
+---
+ drivers/gpu/drm/i915/i915_drv.h |    2 +-
+ fs/bio.c                        |    2 +-
+ fs/block_dev.c                  |    2 +-
+ fs/buffer.c                     |    2 +-
+ kernel/time.c                   |    4 ++--
+ mm/filemap.c                    |    2 +-
+ net/core/dev.c                  |    2 +-
+ net/ipv4/ip_output.c            |    2 +-
+ 8 files changed, 9 insertions(+), 9 deletions(-)
+
+Index: rpi/fs/bio.c
+===================================================================
+--- rpi.orig/fs/bio.c
++++ rpi/fs/bio.c
+@@ -424,7 +424,7 @@
+ }
+ EXPORT_SYMBOL(bio_put);
+ 
+-inline int bio_phys_segments(struct request_queue *q, struct bio *bio)
++int bio_phys_segments(struct request_queue *q, struct bio *bio)
+ {
+ 	if (unlikely(!bio_flagged(bio, BIO_SEG_VALID)))
+ 		blk_recount_segments(q, bio);
+Index: rpi/fs/block_dev.c
+===================================================================
+--- rpi.orig/fs/block_dev.c
++++ rpi/fs/block_dev.c
+@@ -40,7 +40,7 @@
+ 	return container_of(inode, struct bdev_inode, vfs_inode);
+ }
+ 
+-inline struct block_device *I_BDEV(struct inode *inode)
++struct block_device *I_BDEV(struct inode *inode)
+ {
+ 	return &BDEV_I(inode)->bdev;
+ }
+Index: rpi/fs/buffer.c
+===================================================================
+--- rpi.orig/fs/buffer.c
++++ rpi/fs/buffer.c
+@@ -47,7 +47,7 @@
+ 
+ #define BH_ENTRY(list) list_entry((list), struct buffer_head, b_assoc_buffers)
+ 
+-inline void
++void
+ init_buffer(struct buffer_head *bh, bh_end_io_t *handler, void *private)
+ {
+ 	bh->b_end_io = handler;
+Index: rpi/kernel/time.c
+===================================================================
+--- rpi.orig/kernel/time.c
++++ rpi/kernel/time.c
+@@ -238,7 +238,7 @@
+  * Avoid unnecessary multiplications/divisions in the
+  * two most common HZ cases:
+  */
+-inline unsigned int jiffies_to_msecs(const unsigned long j)
++unsigned int jiffies_to_msecs(const unsigned long j)
+ {
+ #if HZ <= MSEC_PER_SEC && !(MSEC_PER_SEC % HZ)
+ 	return (MSEC_PER_SEC / HZ) * j;
+@@ -254,7 +254,7 @@
+ }
+ EXPORT_SYMBOL(jiffies_to_msecs);
+ 
+-inline unsigned int jiffies_to_usecs(const unsigned long j)
++unsigned int jiffies_to_usecs(const unsigned long j)
+ {
+ #if HZ <= USEC_PER_SEC && !(USEC_PER_SEC % HZ)
+ 	return (USEC_PER_SEC / HZ) * j;
+Index: rpi/mm/filemap.c
+===================================================================
+--- rpi.orig/mm/filemap.c
++++ rpi/mm/filemap.c
+@@ -2165,7 +2165,7 @@
+  * Returns appropriate error code that caller should return or
+  * zero in case that write should be allowed.
+  */
+-inline int generic_write_checks(struct file *file, loff_t *pos, size_t *count, int isblk)
++int generic_write_checks(struct file *file, loff_t *pos, size_t *count, int isblk)
+ {
+ 	struct inode *inode = file->f_mapping->host;
+ 	unsigned long limit = rlimit(RLIMIT_FSIZE);
+Index: rpi/net/core/dev.c
+===================================================================
+--- rpi.orig/net/core/dev.c
++++ rpi/net/core/dev.c
+@@ -3428,7 +3428,7 @@
+ 	return netif_receive_skb(skb);
+ }
+ 
+-inline void napi_gro_flush(struct napi_struct *napi)
++void napi_gro_flush(struct napi_struct *napi)
+ {
+ 	struct sk_buff *skb, *next;
+ 
+Index: rpi/net/ipv4/ip_output.c
+===================================================================
+--- rpi.orig/net/ipv4/ip_output.c
++++ rpi/net/ipv4/ip_output.c
+@@ -85,7 +85,7 @@
+ EXPORT_SYMBOL(sysctl_ip_default_ttl);
+ 
+ /* Generate a checksum for an outgoing IP datagram. */
+-__inline__ void ip_send_check(struct iphdr *iph)
++void ip_send_check(struct iphdr *iph)
+ {
+ 	iph->check = 0;
+ 	iph->check = ip_fast_csum((unsigned char *)iph, iph->ihl);
+Index: rpi/drivers/gpu/drm/i915/i915_drv.h
+===================================================================
+--- rpi.orig/drivers/gpu/drm/i915/i915_drv.h
++++ rpi/drivers/gpu/drm/i915/i915_drv.h
+@@ -1276,7 +1276,7 @@
+ extern void intel_teardown_gmbus(struct drm_device *dev);
+ extern void intel_gmbus_set_speed(struct i2c_adapter *adapter, int speed);
+ extern void intel_gmbus_force_bit(struct i2c_adapter *adapter, bool force_bit);
+-extern inline bool intel_gmbus_is_forced_bit(struct i2c_adapter *adapter)
++extern bool intel_gmbus_is_forced_bit(struct i2c_adapter *adapter)
+ {
+ 	return container_of(adapter, struct intel_gmbus, adapter)->force_bit;
+ }

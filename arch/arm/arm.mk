@@ -23,6 +23,8 @@
 
 # Note: This file must be included after ${TOPDIR}/common.mk
 
+export MARCH
+
 STATE_TOOLCHAIN	= state/arm-cc
 
 include ${ARCHDIR}/all/all.mk
@@ -32,7 +34,6 @@ RAZE_TARGETS	+= arm-cc-clean
 
 include ${ARCHDIR}/arm/toolchain/toolchain.mk
 
-KERNEL_PATCHES	+= $(call add_patches,${ARCH_ARM_PATCHES})
 KERNEL_PATCH_DIR+= ${ARCH_ARM_PATCHES} ${ARCH_ARM_PATCHES}/${KERNEL_REPO_PATCHES}
 
 HELP_TARGETS	+= arm-help
@@ -40,6 +41,9 @@ SETTINGS_TARGETS+= arm-settings
 VERSION_TARGETS	+= arm-cc-version
 
 ARCH		= arm
+ifeq "${MARCH}" ""
+MARCH		= armv7-a
+endif
 MAKE_FLAGS	= ARCH=${ARCH}
 MAKE_KERNEL	= ${ARCH_ARM_BINDIR}/make-kernel.sh ${LLVMINSTALLDIR} ${EXTRAFLAGS}
 CROSS_COMPILE	= ${HOST}-

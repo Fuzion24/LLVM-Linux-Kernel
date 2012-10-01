@@ -26,7 +26,6 @@ TARGETDIR	= ${CURDIR}
 TOPDIR		= $(realpath ${TARGETDIR}/../..)
 
 KERNEL_CFG	= ${TARGETDIR}/config_i586
-KERNEL_PATCHES	= 
 # override KERNEL_BRANCH to v3.3
 KERNEL_TAG = v3.3
 
