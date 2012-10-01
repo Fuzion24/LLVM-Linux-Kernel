@@ -4,20 +4,20 @@
 #               2012 Behan Webster
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to 
-# deal in the Software without restriction, including without limitation the 
-# rights to use, copy, modify, merge, publish, distribute, sublicense, and/or 
-# sell copies of the Software, and to permit persons to whom the Software is 
+# of this software and associated documentation files (the "Software"), to
+# deal in the Software without restriction, including without limitation the
+# rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+# sell copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
 #
-# The above copyright notice and this permission notice shall be included in 
+# The above copyright notice and this permission notice shall be included in
 # all copies or substantial portions of the Software.
 #
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 # IN THE SOFTWARE.
 ##############################################################################
@@ -40,7 +40,10 @@ BOARD	= template
 #KERNELGCC		= ${TARGETDIR}/src/linux-gcc
 KERNEL_CFG		= ${TARGETDIR}/config_${BOARD}
 #KERNEL_REPO_PATCHES	= master
-KERNEL_PATCH_DIR	+= ${TARGETDIR}/patches ${TARGETDIR}/patches/master
+#EXTRAFLAGS		=
+
+# Arm specific
+#MARCH			= armv7-a
 
 BOARD_TARGETS		= board-clean board-help board-fetch board-mrproper board-raze board-settings clean mrproper
 TARGETS			+= ${BOARD_TARGETS}
@@ -50,7 +53,7 @@ FETCH_TARGETS		+= board-fetch
 MRPROPER_TARGETS	+= board-mrproper
 RAZE_TARGETS		+= board-raze
 SETTINGS_TARGETS	+= board-settings
-.PHONY:			${BOARD_TARGETS}
+.PHONY:			${BOARD_TARGETS} clean mrproper
 
 all: remove_me_when_configured prep kernel-build
 
@@ -63,6 +66,7 @@ include ${TOPDIR}/common.mk
 include ${ARCHDIR}/${ARCH}/${ARCH}.mk
 include ${CONFIG}
 
+KERNEL_PATCH_DIR	+= ${PATCHDIR} ${PATCHDIR}/${KERNEL_REPO_PATCHES}
 prep: state/prep
 state/prep:
 	@mkdir -p ${LOGDIR} ${TMPDIR}
