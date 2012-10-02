@@ -54,6 +54,9 @@ if [ $USECLANG -eq "1" ]; then
 	export CC_FOR_BUILD="${INSTALLDIR}/bin/clang -ccc-host-triple ${HOST_TRIPLE} -ccc-gcc-name ${HOST}-gcc ${CLANGFLAGS}"
 fi
 
+# FIXME This is not correct as it is not being linked into the kernel
+export LDFLAGS=-L${TOPDIR}/arch/arm/toolchain/compiler-rt/install/armv7 -lcompiler_rt
+
 export LD=${CROSS_COMPILE}ld
 
 #if [ -n "$CHECKERDIR" ] ; then

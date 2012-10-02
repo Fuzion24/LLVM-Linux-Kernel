@@ -50,11 +50,13 @@ ${COMPILERRTSTATE}/compilerrt-arm-build: ${COMPILERRTSTATE}/compilerrt-arm-patch
 	@$(call banner, "Building Compiler-rt...")
 	@mkdir -p ${COMPILERRTINSTALLDIR}
 	(cd ${COMPILERRTDIR}/compiler-rt && make ARMGCCHOME=${ARCH_ARM_TOOLCHAIN}/codesourcery/arm-2011.03 linux_armv7)
+	@cp -r ${COMPILERRTDIR}/compiler-rt/linux_armv7/full-arm/* ${COMPILERRTINSTALLDIR}
 	$(call state,$@)
 
 compilerrt-arm-clean:
 	@$(call banner, "Reseting Compiler-rt...")
 	@rm -rf ${COMPILERRTDIR}/*
+	@rm -rf ${COMPILERRTINSTALLDIR}/*
 	@rm -f ${COMPILERRTSTATE}/compilerrt-arm-*
 
 compilerrt-arm-sync: ${LLVMSTATE}/compilerrt-sync compilerrt-arm-clean compilerrt-arm-clone
