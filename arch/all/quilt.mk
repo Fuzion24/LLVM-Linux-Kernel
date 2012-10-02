@@ -47,7 +47,7 @@ mv_n_ln		= mv "${1}" "${2}" ; ln -sv "${2}" "${1}"
 
 #############################################################################
 QUILT_TARGETS		= kernel-quilt kernel-quilt-clean kernel-quilt-help kernel-quilt-settings list-kernel-patches list-kernel-maintainer list-kernel-checkpatch
-TARGETS			+= ${QUILT_TARGETS}
+TARGETS_BUILD		+= ${QUILT_TARGETS}
 CLEAN_TARGETS		+= kernel-quilt-clean
 HELP_TARGETS		+= kernel-quilt-help
 MRPROPER_TARGETS	+= kernel-quilt-clean

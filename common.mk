@@ -32,9 +32,7 @@ TESTDIR		= ${TOPDIR}/test
 COMMON_TARGETS	= list-config list-jobs list-targets list-fetch-all list-patch-applied list-path list-versions \
 			clean-all fetch-all mrproper-all raze-all sync-all tmp-mrproper
 TARGETS_UTILS	+= ${COMMON_TARGETS}
-TARGETS_BUILD	= 
-TARGETS_TEST	= 
-TARGETS_TOOLCHAIN = 
+CMDLINE_VARS	+= 'CONFIG=<file>' JOBS=n GIT_HARD_RESET=1
 
 HELP_TARGETS	+= common-help
 .PHONY:		${COMMON_TARGETS}
@@ -90,7 +88,9 @@ common-help:
 	@echo "* make list-path	- List the search path used by the Makefiles"
 	@echo "* make list-versions	- List the version of all relevant software"
 	@echo
-	@echo "* make CONFIG=<file> ... - Choose configuration file(s) to use"
+	@echo "* make CONFIG=<file> ...    - Choose configuration file(s) to use"
+	@echo "* make GIT_HARD_RESET=1 ... - Run a hard git reset after quilt unpatch"
+	@echo "* make JOBS=n ...           - Choose how many jobs to run under make (default ${JOBS})"
 
 ##############################################################################
 list-jobs:
@@ -103,9 +103,11 @@ help:
 	@${MAKE} --silent ${HELP_TARGETS}
 
 list-targets:
+ifneq "${TARGETS}" ""
 	@echo "List of unclassified make targets:"
 	@for t in ${TARGETS}; do echo "\t"$$t; done | sort -u
 	@echo
+endif
 	@echo "List of available make targets for test tools:"
 	@for t in ${TARGETS_TEST}; do echo "\t"$$t; done | sort -u
 	@echo
@@ -114,6 +116,12 @@ list-targets:
 	@echo
 	@echo "List of available make targets for platform:"
 	@for t in ${TARGETS_BUILD}; do echo "\t"$$t; done | sort -u
+	@echo
+	@echo "List of available utility make targets:"
+	@for t in ${TARGETS_UTILS}; do echo "\t"$$t; done | sort -u
+	@echo
+	@echo "List of available command-line make variables:"
+	@for t in ${CMDLINE_VARS}; do echo "\t"$$t; done | sort -u
 
 list-fetch-all:
 	@for t in ${FETCH_TARGETS}; do echo $$t | sed -e "s|^`pwd`/||"; done

@@ -47,7 +47,7 @@ get_prebuilt		= mkdir -p $(dir ${1}) && wget -P $(dir ${1}) -c ${BUILDBOT_PREBUI
 VEXPRESS_TARGETS	= test test2 test3 \
 			test-boot-poweroff test-gcc-boot-poweroff \
 			clean mrproper
-TARGETS			+= ${VEXPRESS_TARGETS}
+TARGETS_BUILD		+= test test[23] test[-gcc]-boot-poweroff clean mrproper
 CLEAN_TARGETS		+= vexpress-clean
 HELP_TARGETS		+= vexpress-help
 FETCH_TARGETS		+= ${INITRAMIMG} ${VEXPRESS_IMG_GZ}
