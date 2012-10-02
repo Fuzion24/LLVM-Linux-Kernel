@@ -71,7 +71,6 @@ export LD=${CROSS_COMPILE}ld
 
 set -e
 echo "export PATH=$PATH"
-env
 #[ -n "$DRYRUN" ] || set -x
 #$DRYRUN $CHECKER $RUNMAKE $V CC="$CC_FOR_BUILD" $PARALLEL \
 #	|| ( echo "********************************************************************************" \
