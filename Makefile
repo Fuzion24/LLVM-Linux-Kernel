@@ -27,16 +27,20 @@ TOPDIR=${CURDIR}
 all: help
 .PHONY: mrproper
 
-clean: toplevel-help
+ALL_BOARD_TARGETS = $(filter-out targets/template,$(wildcard targets/*))
+
 toplevel-help:
 	@echo "Usage: Go into target directory ( cd targets/<target> ) and execute make there."
 	@echo
-	@for DIR in targets/*; do echo "* cd $$DIR;	make help" ; done
+	@for DIR in ${ALL_BOARD_TARGETS}; do echo "* cd $$DIR;	make help" ; done
 	@echo
 	@echo "* make build-dep	- Make sure packaged build-dependencies are installed"
 
-mrproper:
-	@for DIR in targets/*; do make mrproper || true; done
+clean mrproper:
+	@for DIR in ${ALL_BOARD_TARGETS}; do make -C $$DIR $@ || true; done
+
+list-board-targets:
+	@for DIR in ${ALL_BOARD_TARGETS}; do echo $$DIR; done
 
 TARGETS		+= build-dep install-build-dep
 HELP_TARGETS	+= toplevel-help
