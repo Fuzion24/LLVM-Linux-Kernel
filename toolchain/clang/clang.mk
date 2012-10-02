@@ -223,9 +223,13 @@ ${LLVMSTATE}/compilerrt-sync: ${LLVMSTATE}/llvm-fetch
 	$(call state,$@)
 
 llvm-version:
-	@(cd ${LLVMDIR}/$* && echo "`${LLVMINSTALLDIR}/bin/llc --version | grep version | xargs echo` commit `git rev-parse HEAD`")
+	@(cd ${LLVMDIR} && [ -f "${LLVMINSTALLDIR}/bin/llc" ] \
+		&& echo "`${LLVMINSTALLDIR}/bin/llc --version | grep version | xargs echo` commit `git rev-parse HEAD`" \
+		|| echo "LLVM version ? commit `git rev-parse HEAD`")
 clang-version:
-	@(cd ${CLANGDIR}/$* && echo "`${CLANG} --version | grep version | xargs echo` commit `git rev-parse HEAD`")
+	@(cd ${CLANGDIR} && [ -f "${CLANG}" ] \
+		&& echo "`${CLANG} --version | grep version | xargs echo` commit `git rev-parse HEAD`" \
+		|| echo "clsng version ? commit `git rev-parse HEAD`")
 
 clang-update-all: llvm-sync clang-sync compilerrt-sync llvm-build clang-build
 
