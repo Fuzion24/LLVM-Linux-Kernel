@@ -93,7 +93,8 @@ board-raze:
 	@$(call banner,Getting rid of all downloaded files for foo)
 
 clean: kernel-clean kernel-gcc-clean board-clean
-	@rm -rf ${LOGDIR}/* ${TMPDIR}/*
+	@$(call banner,Clean)
 
-mrproper: clean kernel-mrproper kernel-gcc-mrproper board-mrproper
-
+mrproper: clean kernel-mrproper kernel-gcc-mrproper board-mrproper tmp-mrproper
+	@rm -rf ${LOGDIR}/*
+	@$(call banner,Very Clean)

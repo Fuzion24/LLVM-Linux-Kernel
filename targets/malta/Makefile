@@ -39,12 +39,9 @@ state/prep:
 	@mkdir -p ${LOGDIR} ${TMPDIR}
 	$(call state,$@)
 
-clean: 
-	( ( test -e ${KERNELDIR} && make kernel-clean ) || exit 0 )
-	@make llvm-clean clang-clean
+clean: kernel-clean kernel-gcc-clean
+	@$(call banner,Clean)
 
-# do a real wipe
-mrproper: clean tmp-clean
-	( ( test -e ${KERNELDIR} && cd ${KERNELDIR} && make mrproper ) || exit 0 )
+mrproper: clean kernel-mrproper kernel-gcc-mrproper tmp-mrproper
 	@rm -rf ${LOGDIR}/*
-
+	@$(call banner,Very Clean)

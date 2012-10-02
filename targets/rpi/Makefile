@@ -49,5 +49,9 @@ state/prep:
 	@mkdir -p ${LOGDIR} ${TMPDIR}
 	$(call state,$@)
 
-clean: kernel-clean
-mrproper: clean kernel-mrproper tmp-mrproper
+clean: kernel-clean kernel-gcc-clean
+	@$(call banner,Clean)
+
+mrproper: clean kernel-mrproper kernel-gcc-mrproper tmp-mrproper
+	@rm -rf ${LOGDIR}/*
+	@$(call banner,Very Clean)

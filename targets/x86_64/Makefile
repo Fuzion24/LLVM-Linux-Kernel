@@ -46,13 +46,12 @@ state/prep:
 	@mkdir -p ${LOGDIR} ${TMPDIR}
 	$(call state,$@)
 
-clean: qemu-clean kernel-clean clang-clean llvm-clean initramfs-clean
+clean: kernel-clean kernel-gcc-clean
+	@$(call banner,Clean)
 
-# do a real wipe
-mrproper: clean kernel-clean
+mrproper: clean kernel-mrproper kernel-gcc-mrproper tmp-mrproper
 	@rm -rf ${LOGDIR}/*
-	( cd ${KERNELDIR} && make mrproper )
-	rm -f state/kernel-build state/kernel-configure
+	@$(call banner,Very Clean)
 
 test: ${QEMUSTATE}/qemu-build initramfs state/kernel-build
 	@$(call qemu,${BOARD},${KERNELDIR},768,/dev/ram0,init=/init,-initrd initramfs.img)
