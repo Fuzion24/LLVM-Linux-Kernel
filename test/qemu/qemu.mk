@@ -70,7 +70,7 @@ ${QEMUSTATE}/qemu-fetch:
 qemu-patch: ${QEMUSTATE}/qemu-patch
 ${QEMUSTATE}/qemu-patch: ${QEMUSTATE}/qemu-fetch
 	@$(call banner, "Patching QEMU...")
-	@ln -sf ${QEMUPATCHES} ${QEMUSRCDIR}
+	@$(call patches_dir,${QEMUPATCHES},${QEMUSRCDIR}/patches)
 	@$(call patch,${QEMUSRCDIR})
 	$(call state,$@,qemu-configure)
 
@@ -102,7 +102,7 @@ qemu-clean-all:
 
 qemu-clean qemu-mrproper: qemu-clean-all ${QEMUSTATE}/qemu-fetch
 	@$(call unpatch,${QEMUSRCDIR})
-#	(cd ${QEMUSRCDIR} && git reset --hard HEAD)
+	@$(call optional_gitreset,${QEMUSRCDIR})
 	
 qemu-raze: qemu-clean-all
 	@$(call banner, "Razing QEMU...")

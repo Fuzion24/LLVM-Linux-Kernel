@@ -36,7 +36,7 @@ CLANG		= ${LLVMINSTALLDIR}/bin/clang
 
 LLVMDIR		= ${LLVMSRCDIR}/llvm
 CLANGDIR	= ${LLVMSRCDIR}/clang
-COMPILERRTDIR	= ${LLVMSRCDIR}/llvm/projects/compiler-rt
+COMPILERRTDIR	= ${LLVMDIR}/projects/compiler-rt
 
 LLVMBUILDDIR	= ${LLVMTOP}/build/llvm
 CLANGBUILDDIR	= ${LLVMTOP}/build/clang
@@ -103,7 +103,7 @@ ${LLVMSTATE}/llvm-fetch:
 compilerrt-fetch: ${LLVMSTATE}/compilerrt-fetch
 ${LLVMSTATE}/compilerrt-fetch: ${LLVMSTATE}/llvm-fetch 
 	@$(call banner, "Fetching Compilerrt...")
-	( [ -d ${LLVMSRCDIR}/llvm/projects/compiler-rt/.git ] || (cd ${LLVMDIR}/projects && git clone ${COMPILERRT_GIT} -b ${COMPILERRT_BRANCH}))
+	( [ -d ${COMPILERRTDIR}/.git ] || (cd ${LLVMDIR}/projects && git clone ${COMPILERRT_GIT} -b ${COMPILERRT_BRANCH}))
 	$(call state,$@)
 
 clang-fetch: ${LLVMSTATE}/clang-fetch
@@ -116,21 +116,21 @@ ${LLVMSTATE}/clang-fetch:
 llvm-patch: ${LLVMSTATE}/llvm-patch
 ${LLVMSTATE}/llvm-patch: ${LLVMSTATE}/llvm-fetch
 	@$(call banner, "Patching LLVM...")
-	@ln -sf ${LLVMPATCHES}/llvm ${LLVMDIR}/patches
+	@$(call patches_dir,${LLVMPATCHES}/llvm,${LLVMDIR}/patches)
 	@$(call patch,${LLVMDIR})
 	$(call state,$@,llvm-configure)
 
 clang-patch: ${LLVMSTATE}/clang-patch
 ${LLVMSTATE}/clang-patch: ${LLVMSTATE}/clang-fetch
 	@$(call banner, "Patching Clang...")
-	@ln -sf ${LLVMPATCHES}/clang ${CLANGDIR}/patches
+	@$(call patches_dir,${LLVMPATCHES}/clang,${CLANGDIR}/patches)
 	@$(call patch,${CLANGDIR})
 	$(call state,$@,clang-configure)
 
 compilerrt-patch: ${LLVMSTATE}/compilerrt-patch
 ${LLVMSTATE}/compilerrt-patch: ${LLVMSTATE}/compilerrt-fetch
 	@$(call banner, "Patching Compiler-rt...")
-	@ln -sf ${LLVMPATCHES}/compiler-rt ${COMPILERRTDIR}/patches
+	@$(call patches_dir,${LLVMPATCHES}/compiler-rt,${COMPILERRTDIR}/patches)
 	@$(call patch,${COMPILERRTDIR})
 	$(call state,$@)
 
@@ -171,8 +171,8 @@ ${LLVMSTATE}/clang-build: ${LLVMSTATE}/llvm-build ${LLVMSTATE}/clang-configure
 llvm-reset: ${LLVMSTATE}/clang-fetch ${LLVMSTATE}/compilerrt-fetch
 	@$(call banner,Removing LLVM patches...)
 	@$(call unpatch,${LLVMDIR})
-#	(cd ${LLVMDIR} && git reset --hard HEAD)
-#	(cd ${LLVMDIR}/projects/compiler-rt && git reset --hard HEAD)
+	@$(call optional_gitreset,${LLVMDIR})
+	@$(call optional_gitreset,${COMPILERRTDIR})
 	@rm -f $(addprefix ${LLVMSTATE}/,llvm-patch llvm-configure llvm-build)
 
 llvm-clean-noreset:
@@ -192,7 +192,7 @@ llvm-raze: llvm-clean-noreset clang-raze
 clang-reset: ${LLVMSTATE}/clang-fetch
 	@$(call banner,Removing Clang patches...)
 	@$(call unpatch,${CLANGDIR})
-#	(cd ${CLANGDIR} && git reset --hard HEAD)
+	@$(call optional_gitreset,${CLANGDIR})
 	@rm -f $(addprefix ${LLVMSTATE}/,clang-patch clang-configure clang-build)
 
 clang-clean-noreset: llvm-clean-noreset
@@ -219,7 +219,7 @@ clang-sync: clang-clean
 compilerrt-sync: ${LLVMSTATE}/compilerrt-sync
 ${LLVMSTATE}/compilerrt-sync: ${LLVMSTATE}/llvm-fetch 
 	@$(call banner, "Updating Compilerrt...")
-	(cd ${LLVMDIR}/projects/compiler-rt && git checkout ${COMPILERRT_BRANCH} && git pull)
+	(cd ${COMPILERRTDIR} && git checkout ${COMPILERRT_BRANCH} && git pull)
 	$(call state,$@)
 
 llvm-version:

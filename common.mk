@@ -52,10 +52,16 @@ assert_found_in_path = which ${1} || (echo "${1}: Not found in PATH"; false)
 
 ##############################################################################
 # Quilt patch macros used by all subsystems
+patches_dir = [ -e ${2} ] || ln -sf ${1} ${2}
 applied	= ( [ -d ${1} ] && cd ${1} && quilt applied || true )
 patch	= [ ! -d ${1} ] || (cd ${1} && if [ -e patches ] && $(call banner,"Applying patches to ${1}") && quilt unapplied ; then quilt push -a ; else >/dev/null ; fi)
 unpatch	= [ ! -d ${1} ] || (cd ${1} && if [ -e patches ] && $(call banner,"Unapplying patches from ${1}") && quilt applied ; then quilt pop -af ; else >/dev/null ; fi)
 gitreset = (cd ${1} && $(call banner,"Reseting git tree ${1}") && git reset --hard HEAD && git clean -d -f) || true
+ifeq "GIT_HARD_RESET" ""
+optional_gitreset =
+else
+optional_gitreset = $(call gitreset,${1})
+endif
 
 ##############################################################################
 # Default jobs is number of processors + 1 for disk I/O
