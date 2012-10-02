@@ -92,6 +92,9 @@ ${QUILTRC}:
 	@$(call checkfilefor,$@,QUILT_NO_DIFF_TIMESTAMPS,=1)
 	@$(call checkfilefor,$@,QUILT_PAGER,=)
 
+# Always check ~/.quiltrc
+.PHONY: ${QUILTRC}
+
 ##############################################################################
 # Handle the case of renaming target/%/series -> target/%/series.target
 kernel-quilt-series-dot-target: ${SERIES_DOT_TARGET}
@@ -159,8 +162,8 @@ kernel-quilt-link-patches: ${TARGET_PATCH_SERIES} ${QUILT_GITIGNORE}
 ##############################################################################
 QUILT_STATE	= state/kernel-quilt
 kernel-quilt: ${QUILT_STATE}
-${QUILT_STATE}: state/kernel-fetch ${QUILTRC}
-	@$(MAKE) kernel-quilt-link-patches
+${QUILT_STATE}: state/kernel-fetch
+	@$(MAKE) ${QUILTRC} kernel-quilt-link-patches
 	@$(call banner, "Quilted kernel...")
 	$(call state,$@,kernel-patch)
 
