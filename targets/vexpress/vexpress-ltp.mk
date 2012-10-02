@@ -26,7 +26,7 @@
 # Also that it is imported after the vexpress-linaro.mk
 
 VEXPRESS_LTP_TARGETS	= test3-ltp test3-gcc-ltp test3-all-ltp
-TARGETS			+= ${VEXPRESS_LTP_TARGETS}
+TARGETS_BUILD		+= test3[-gcc,-all]-ltp
 CLEAN_TARGETS		+= vexpress-ltp-clean
 HELP_TARGETS		+= vexpress-ltp-help
 FETCH_TARGETS		+= ${VEXPRESS_LTP_BZ_TMP}

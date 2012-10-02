@@ -44,11 +44,10 @@ checkfilefor	= grep -q ${2} ${1} || echo "${2}${3}" >> ${1}
 reverselist	= `for DIR in ${1} ; do echo $$DIR; done | tac`
 ln_if_new	= ls -l "${2}" 2>&1 | grep -q "${1}" || ln -fsv "${1}" "${2}"
 mv_n_ln		= mv "${1}" "${2}" ; ln -sv "${2}" "${1}"
-ln_kernel_patch_dir = [ -z "${1}" ] || [ -e ${1}/patches ] || ln -sv ${PATCHDIR} ${1}/patches
 
 #############################################################################
 QUILT_TARGETS		= kernel-quilt kernel-quilt-clean kernel-quilt-help kernel-quilt-settings list-kernel-patches list-kernel-maintainer list-kernel-checkpatch
-TARGETS			+= ${QUILT_TARGETS}
+TARGETS_BUILD		+= ${QUILT_TARGETS}
 CLEAN_TARGETS		+= kernel-quilt-clean
 HELP_TARGETS		+= kernel-quilt-help
 MRPROPER_TARGETS	+= kernel-quilt-clean
@@ -92,6 +91,9 @@ ${QUILTRC}:
 	@$(call checkfilefor,$@,QUILT_NO_DIFF_INDEX,=1)
 	@$(call checkfilefor,$@,QUILT_NO_DIFF_TIMESTAMPS,=1)
 	@$(call checkfilefor,$@,QUILT_PAGER,=)
+
+# Always check ~/.quiltrc
+.PHONY: ${QUILTRC}
 
 ##############################################################################
 # Handle the case of renaming target/%/series -> target/%/series.target
@@ -160,11 +162,9 @@ kernel-quilt-link-patches: ${TARGET_PATCH_SERIES} ${QUILT_GITIGNORE}
 ##############################################################################
 QUILT_STATE	= state/kernel-quilt
 kernel-quilt: ${QUILT_STATE}
-${QUILT_STATE}: state/kernel-fetch ${QUILTRC}
-	@$(MAKE) kernel-quilt-link-patches
-	@$(call banner, "Quilting kernel...")
-	@$(call ln_kernel_patch_dir,${KERNELDIR})
-	-@$(call ln_kernel_patch_dir,${KERNELGCC})
+${QUILT_STATE}: state/kernel-fetch
+	@$(MAKE) ${QUILTRC} kernel-quilt-link-patches
+	@$(call banner, "Quilted kernel...")
 	$(call state,$@,kernel-patch)
 
 ##############################################################################

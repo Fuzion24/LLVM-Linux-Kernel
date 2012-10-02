@@ -222,6 +222,7 @@ endif
 kernel-patch: state/kernel-patch
 state/kernel-patch: state/kernel-fetch state/kernel-quilt
 	@$(call banner, "Patching kernel...")
+	@$(call patches_dir,${PATCHDIR},${KERNELDIR}/patches)
 	@$(call patch,${KERNELDIR})
 	$(call state,$@,kernel-configure)
 
@@ -229,6 +230,7 @@ state/kernel-patch: state/kernel-fetch state/kernel-quilt
 kernel-gcc-patch: state/kernel-gcc-patch
 state/kernel-gcc-patch: state/kernel-gcc-fetch state/kernel-quilt
 	@$(call banner, "Patching kernel for gcc...")
+	@$(call patches_dir,${PATCHDIR},${KERNELGCC}/patches)
 	@$(call patch,${KERNELGCC})
 	$(call state,$@,kernel-gcc-configure)
 
@@ -295,6 +297,7 @@ kernel-build-force kernel-gcc-build-force: %-force:
 kernel-gcc-sparse:
 	@$(call assert_found_in_path,sparse)
 	${MAKE} kernel-gcc-configure
+	@$(call patches_dir,${PATCHDIR},${KERNELGCC}/patches)
 	@$(call banner, "Building unpatched gcc kernel for eventual analysis with sparse...")
 	@$(call unpatch,${KERNELGCC})
 	${MAKE} kernel-gcc-build-force
@@ -334,14 +337,14 @@ endif
 kernel-reset: state/kernel-fetch
 	@(cd ${KERNELDIR} && ${MAKE} clean)
 	@$(call unpatch,${KERNELDIR})
-	@$(call gitreset,${KERNELDIR})
+	@$(call optional_gitreset,${KERNELDIR})
 	@$(call leavestate,${STATEDIR},kernel-patch kernel-quilt kernel-configure kernel-build)
 
 #############################################################################
 kernel-gcc-reset: state/kernel-gcc-fetch
 	@(cd ${KERNELGCC} && ${MAKE} clean)
 	@$(call unpatch,${KERNELGCC})
-	@$(call gitreset,${KERNELGCC})
+	@$(call optional_gitreset,${KERNELGCC})
 	@$(leavestate ${STATEDIR},kernel-gcc-configure kernel-gcc-patch kernel-gcc-build)
 
 #############################################################################
