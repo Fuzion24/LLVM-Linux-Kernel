@@ -119,6 +119,9 @@ test-gcc-boot-poweroff: state/prep state/kernel-gcc-build ${QEMUSTATE}/qemu-buil
 test2: state/prep ${QEMUSTATE}/qemu-build state/kernel-build initramfs
 	@$(call qemu,${BOARD},${KERNELDIR},256,/dev/ram0,init=/bin/init,-initrd initramfs.img.gz)
 
+test2-gcc: state/prep ${QEMUSTATE}/qemu-build state/kernel-gcc-build initramfs
+	@$(call qemu,${BOARD},${KERNELGCC},256,/dev/ram0,init=/bin/init,-initrd initramfs.img.gz)
+
 # Get prebuilt vexpress image
 VEXPRESS_IMG_GZ	= ${TMPDIR}/${NANOIMG}.gz
 ${VEXPRESS_IMG_GZ}:
