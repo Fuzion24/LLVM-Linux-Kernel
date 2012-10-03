@@ -210,16 +210,16 @@ clang-raze: clang-clean-noreset
 
 llvm-sync: llvm-clean
 	@$(call banner,Updating LLVM...)
-	(cd ${LLVMDIR} && git checkout ${LLVM_BRANCH} && git pull)
+	(cd ${LLVMDIR} && git checkout -f ${LLVM_BRANCH} && git pull)
 
 clang-sync: clang-clean
 	@$(call banner,Updating Clang...)
-	(cd ${CLANGDIR} && git checkout ${CLANG_BRANCH} && git pull)
+	(cd ${CLANGDIR} && git checkout -f ${CLANG_BRANCH} && git pull)
 
 compilerrt-sync: ${LLVMSTATE}/compilerrt-sync
 ${LLVMSTATE}/compilerrt-sync: ${LLVMSTATE}/llvm-fetch 
 	@$(call banner, "Updating Compilerrt...")
-	(cd ${COMPILERRTDIR} && git checkout ${COMPILERRT_BRANCH} && git pull)
+	(cd ${COMPILERRTDIR} && git checkout -f ${COMPILERRT_BRANCH} && git pull)
 	$(call state,$@)
 
 llvm-version:
