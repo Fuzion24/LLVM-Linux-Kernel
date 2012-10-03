@@ -155,6 +155,7 @@ kernel-settings:
 	echo "KERNEL_GIT		= ${KERNEL_GIT}" ; \
 	echo "KERNEL_BRANCH		= ${KERNEL_BRANCH}" ; \
 	echo "KERNEL_TAG		= ${KERNEL_TAG}" ; \
+	$(call gitcommit,${KERNELDIR},KERNEL_COMMIT) ; \
 	echo "KERNELDIR		= ${KERNELDIR}" ; \
 	echo "KERNELGCC		= ${KERNELGCC}" ; \
 	echo "KERNEL_CFG		= ${KERNEL_CFG}" ; \
@@ -192,30 +193,31 @@ kernel-fetch: state/kernel-fetch
 state/kernel-fetch: ${SHARED_KERNEL}
 	@$(call banner, "Cloning kernel...")
 	@mkdir -p ${SRCDIR}
-ifneq "${KERNEL_BRANCH}" ""
-	@$(call banner, "Checking out kernel branch...")
-endif
-	[ -d ${KERNELDIR}/.git ] || git clone --reference $< ${KERNEL_GIT} -b ${KERNEL_BRANCH} ${KERNELDIR}
-ifneq "${KERNEL_TAG}" ""
-	@$(call banner, "Checking out tagged kernel...")
-	@( cd ${KERNELDIR} && ( [ -f ${KERNELDIR}/.git/refs/heads/${KERNEL_TAG} ] || git checkout -b ${KERNEL_TAG} ${KERNEL_TAG} ))
-	@( cd ${KERNELDIR} && git checkout -f ${KERNEL_TAG} )
-endif
+	@[ -z "${KERNEL_BRANCH}" ] || $(call banner, "Checking out kernel branch...")
+	$(call gitclone,--reference $< ${KERNEL_GIT} -b ${KERNEL_BRANCH},${KERNELDIR})
+	@if [ -n "${KERNEL_COMMIT}" ] ; then \
+		$(call banner, "Checking out commit-ish kernel...") ; \
+		( cd ${KERNELDIR} && git checkout -f ${KERNEL_COMMIT} ) ; \
+	elif [ -n "${KERNEL_TAG}" ] ; then \
+		$(call banner, "Checking out tagged kernel...") ; \
+		( cd ${KERNELDIR} && ( [ -f ${KERNELDIR}/.git/refs/heads/${KERNEL_TAG} ] || git checkout -b ${KERNEL_TAG} ${KERNEL_TAG} )) ; \
+		( cd ${KERNELDIR} && git checkout -f ${KERNEL_TAG} ) ; \
+	fi
 	$(call state,$@,kernel-patch)
 
 #############################################################################
 kernel-gcc-fetch: state/kernel-gcc-fetch
 state/kernel-gcc-fetch: state/kernel-fetch
 	@$(call banner, "Cloning kernel for gcc...")
-	[ -d ${KERNELGCC}/.git ] || git clone ${KERNELDIR} ${KERNELGCC}
-ifneq "${KERNEL_BRANCH}" ""
-	@$(call banner, "Checking out kernel branch for gcc...")
-	( cd ${KERNELDIR} && git checkout -B ${KERNEL_BRANCH} )
-endif
-ifneq "${KERNEL_TAG}" ""
-	@$(call banner, "Checking out tagged kernel for gcc...")
-	( cd ${KERNELDIR} && git checkout ${KERNEL_TAG} )
-endif
+	$(call gitclone,${KERNELDIR},${KERNELGCC})
+	if [ -n "${KERNEL_BRANCH}" ] ; \
+		$(call banner, "Checking out kernel branch for gcc...") ; \
+		(cd ${KERNELDIR} && git checkout -B ${KERNEL_BRANCH}) ; \
+	fi
+	if [ -n "${KERNEL_TAG}" ] ; \
+		$(call banner, "Checking out tagged kernel for gcc...") ; \
+		(cd ${KERNELDIR} && git checkout ${KERNEL_TAG}) ; \
+	fi
 	$(call state,$@,kernel-gcc-patch)
 
 #############################################################################
@@ -318,20 +320,26 @@ kernel-shared-sync:
 #############################################################################
 kernel-sync: state/kernel-fetch kernel-shared-sync kernel-clean
 	@$(call banner, "Syncing kernel...")
-ifneq "${KERNEL_TAG}" ""
-	(cd ${KERNELDIR} && git pull origin ${KERNEL_TAG})
-else
-	(cd ${KERNELDIR} && git pull)
-endif
+	@if [ -n "${KERNEL_COMMIT}" ] ; then \
+		$(call banner, "Syncing commit-ish kernel...") ; \
+		( cd ${KERNELDIR} && git checkout -f ${KERNEL_COMMIT} ) ; \
+	elif [ -n "${KERNEL_TAG}" ] ; then \
+		(cd ${KERNELDIR} && git pull origin ${KERNEL_TAG}) ; \
+	else \
+		(cd ${KERNELDIR} && git pull) \
+	fi
 
 #############################################################################
 kernel-gcc-sync: state/kernel-gcc-fetch kernel-shared-sync kernel-gcc-clean
 	@$(call banner, "Syncing gcc kernel...")
-ifneq "${KERNEL_TAG}" ""
-	(cd ${KERNELGCC} && git pull origin ${KERNEL_TAG})
-else
-	(cd ${KERNELGCC} && git pull)
-endif
+	@if [ -n "${KERNEL_COMMIT}" ] ; then \
+		$(call banner, "Syncing commit-ish kernel-gcc...") ; \
+		( cd ${KERNELGCC} && git checkout -f ${KERNEL_COMMIT} ) ; \
+	elif [ -n "${KERNEL_TAG}" ] ; then \
+		(cd ${KERNELGCC} && git pull origin ${KERNEL_TAG}) ; \
+	else \
+		(cd ${KERNELGCC} && git pull) ; \
+	fi
 
 #############################################################################
 kernel-reset: state/kernel-fetch

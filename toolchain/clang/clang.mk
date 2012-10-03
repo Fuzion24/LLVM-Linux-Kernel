@@ -86,31 +86,42 @@ llvm-settings:
 	@echo "# LLVM settings"
 	@echo "LLVM_GIT		= ${LLVM_GIT}"
 	@echo "LLVM_BRANCH		= ${LLVM_BRANCH}"
+	@$(call gitcommit,${LLVMDIR},LLVM_COMMIT)
 	@echo "LLVM_OPTIMIZED		= ${LLVM_OPTIMIZED}"
 	@echo "# Clang settings"
 	@echo "CLANG_GIT		= ${CLANG_GIT}"
 	@echo "CLANG_BRANCH		= ${CLANG_BRANCH}"
+	@$(call gitcommit,${CLANGDIR},CLANG_COMMIT)
 	@echo "COMPILERRT_GIT		= ${COMPILERRT_GIT}"
 	@echo "COMPILERRT_BRANCH	= ${COMPILERRT_BRANCH}"
+	@$(call gitcommit,${COMPILERRTDIR},COMPILERRT_COMMIT)
 
 llvm-fetch: ${LLVMSTATE}/llvm-fetch
 ${LLVMSTATE}/llvm-fetch:
 	@$(call banner, "Fetching LLVM...")
 	@mkdir -p $(dir ${LLVMDIR})
-	[ -d ${LLVMDIR}/.git ] || (rm -rf ${LLVMDIR} && git clone ${LLVM_GIT} -b ${LLVM_BRANCH} ${LLVMDIR})
+	$(call gitclone,${LLVM_GIT} -b ${LLVM_BRANCH},${LLVMDIR})
+	@if [ -n "${LLVM_COMMIT}" ] ; then \
+		$(call banner, "Fetching commit-ish LLVM...") ; \
+		(cd ${LLVMDIR} && git checkout -f ${LLVM_COMMIT}) ; \
+	fi
 	$(call state,$@,llvm-patch)
 
 compilerrt-fetch: ${LLVMSTATE}/compilerrt-fetch
 ${LLVMSTATE}/compilerrt-fetch: ${LLVMSTATE}/llvm-fetch 
 	@$(call banner, "Fetching Compilerrt...")
-	( [ -d ${COMPILERRTDIR}/.git ] || (cd ${LLVMDIR}/projects && git clone ${COMPILERRT_GIT} -b ${COMPILERRT_BRANCH}))
+	$(call gitclone,${COMPILERRT_GIT} -b ${COMPILERRT_BRANCH},${COMPILERRTDIR})
 	$(call state,$@)
 
 clang-fetch: ${LLVMSTATE}/clang-fetch
 ${LLVMSTATE}/clang-fetch:
 	@$(call banner, "Fetching Clang...")
 	@mkdir -p ${LLVMSRCDIR}
-	( [ -d ${LLVMSRCDIR}/clang/.git ] || (cd ${LLVMSRCDIR} && git clone ${CLANG_GIT} -b ${CLANG_BRANCH}))
+	$(call gitclone,${CLANG_GIT} -b ${CLANG_BRANCH},${CLANGDIR})
+	@if [ -n "${CLANG_COMMIT}" ] ; then \
+		$(call banner, "Fetching commit-ish Clang...") ; \
+		(cd ${CLANGDIR} && git checkout -f ${CLANG_COMMIT}) ; \
+	fi
 	$(call state,$@,clang-patch)
 
 llvm-patch: ${LLVMSTATE}/llvm-patch
@@ -210,11 +221,21 @@ clang-raze: clang-clean-noreset
 
 llvm-sync: llvm-clean
 	@$(call banner,Updating LLVM...)
-	(cd ${LLVMDIR} && git checkout ${LLVM_BRANCH} && git pull)
+	@if [ -n "${LLVM_COMMIT}" ] ; then \
+		$(call banner, "Syncing commit-ish Clang...") ; \
+		(cd ${LLVMDIR} && git checkout -f ${LLVM_COMMIT}) ; \
+	else \
+		(cd ${LLVMDIR} && git checkout ${LLVM_BRANCH} && git pull) ; \
+	fi
 
 clang-sync: clang-clean
 	@$(call banner,Updating Clang...)
-	(cd ${CLANGDIR} && git checkout ${CLANG_BRANCH} && git pull)
+	@if [ -n "${CLANG_COMMIT}" ] ; then \
+		$(call banner, "Syncing commit-ish Clang...") ; \
+		(cd ${CLANGDIR} && git checkout -f ${CLANG_COMMIT}) ; \
+	else \
+		(cd ${CLANGDIR} && git checkout ${CLANG_BRANCH} && git pull) ; \
+	fi
 
 compilerrt-sync: ${LLVMSTATE}/compilerrt-sync
 ${LLVMSTATE}/compilerrt-sync: ${LLVMSTATE}/llvm-fetch 
