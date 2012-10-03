@@ -38,7 +38,7 @@ ${ARMCOMPILERRTSTATE}/compilerrt-arm-clone: ${LLVMSTATE}/compilerrt-fetch
 	@$(call banner, "Cloning Compiler-rt for ARM build...")
 	@mkdir -p ${ARMCOMPILERRTBUILDDIR}
 	$(call gitclone,${COMPILERRT_LOCALGIT} -b ${COMPILERRT_BRANCH},${ARMCOMPILERRTSRCDIR})
-	[ -z "${COMPILERRT_COMMIT}" ] || (cd ${ARMCOMPILERRTSRCDIR} && git checkout -f ${COMPILERRT_COMMIT})
+	[ -z "${COMPILERRT_COMMIT}" ] || $(call gitcheckout,${ARMCOMPILERRTSRCDIR},${COMPILERRT_BRANCH},${COMPILERRT_COMMIT})
 	$(call state,$@)
 
 compilerrt-arm-patch: ${ARMCOMPILERRTSTATE}/compilerrt-arm-patch
