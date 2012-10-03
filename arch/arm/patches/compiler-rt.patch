@@ -1,9 +1,20 @@
---- linux.orig/lib/string.c
-+++ linux/lib/string.c
-@@ -824,3 +824,21 @@
- 	return check_bytes8(start, value, bytes % 8);
- }
- EXPORT_SYMBOL(memchr_inv);
+--- /dev/null
++++ linux/lib/eabi.c
+@@ -0,0 +1,33 @@
++/*
++ *  linux/lib/eabi.c
++ *
++ *  Copyright (C) 2012  Mark Charlebois
++ */
++
++/*
++ * EABI routines
++ */
++
++#include <linux/types.h>
++#include <linux/string.h>
++#include <linux/ctype.h>
++#include <linux/export.h>
 +
 +void __aeabi_memcpy (void *dest, const void *src, size_t n)
 +{
@@ -22,3 +33,14 @@
 +    (void)memset(s, c, n);
 +}
 +EXPORT_SYMBOL(__aeabi_memset);
+--- linux.orig/lib/Makefile
++++ linux/lib/Makefile
+@@ -7,7 +7,7 @@
+ KBUILD_CFLAGS = $(subst -pg,,$(ORIG_CFLAGS))
+ endif
+ 
+-lib-y := ctype.o string.o vsprintf.o cmdline.o \
++lib-y := ctype.o string.o vsprintf.o cmdline.o eabi.o\
+ 	 rbtree.o radix-tree.o dump_stack.o timerqueue.o\
+ 	 idr.o int_sqrt.o extable.o prio_tree.o \
+ 	 sha1.o md5.o irq_regs.o reciprocal_div.o argv_split.o \

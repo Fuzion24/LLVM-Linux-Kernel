@@ -225,7 +225,7 @@ llvm-sync: llvm-clean
 		$(call banner, "Syncing commit-ish Clang...") ; \
 		$(call gitcheckout,${LLVMDIR},${LLVM_BRANCH},${LLVM_COMMIT}) ; \
 	else \
-		(cd ${LLVMDIR} && git checkout ${LLVM_BRANCH} && git pull) ; \
+		(cd ${LLVMDIR} && git checkout -f ${LLVM_BRANCH} && git pull) ; \
 	fi
 
 clang-sync: clang-clean
@@ -234,13 +234,13 @@ clang-sync: clang-clean
 		$(call banner, "Syncing commit-ish Clang...") ; \
 		$(call gitcheckout,${CLANGDIR},${CLANG_BRANCH},${CLANG_COMMIT}) ; \
 	else \
-		(cd ${CLANGDIR} && git checkout ${CLANG_BRANCH} && git pull) ; \
+		(cd ${CLANGDIR} && git checkout -f ${CLANG_BRANCH} && git pull) ; \
 	fi
 
 compilerrt-sync: ${LLVMSTATE}/compilerrt-sync
 ${LLVMSTATE}/compilerrt-sync: ${LLVMSTATE}/llvm-fetch 
 	@$(call banner, "Updating Compilerrt...")
-	(cd ${COMPILERRTDIR} && git checkout ${COMPILERRT_BRANCH} && git pull)
+	(cd ${COMPILERRTDIR} && git checkout -f ${COMPILERRT_BRANCH} && git pull)
 	$(call state,$@)
 
 llvm-version:
