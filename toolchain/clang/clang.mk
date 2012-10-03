@@ -103,7 +103,7 @@ ${LLVMSTATE}/llvm-fetch:
 	$(call gitclone,${LLVM_GIT} -b ${LLVM_BRANCH},${LLVMDIR})
 	@if [ -n "${LLVM_COMMIT}" ] ; then \
 		$(call banner, "Fetching commit-ish LLVM...") ; \
-		(cd ${LLVMDIR} && git checkout -f ${LLVM_COMMIT}) ; \
+		$(call gitcheckout,${LLVMDIR},${LLVM_BRANCH},${LLVM_COMMIT}) ; \
 	fi
 	$(call state,$@,llvm-patch)
 
@@ -120,7 +120,7 @@ ${LLVMSTATE}/clang-fetch:
 	$(call gitclone,${CLANG_GIT} -b ${CLANG_BRANCH},${CLANGDIR})
 	@if [ -n "${CLANG_COMMIT}" ] ; then \
 		$(call banner, "Fetching commit-ish Clang...") ; \
-		(cd ${CLANGDIR} && git checkout -f ${CLANG_COMMIT}) ; \
+		$(call gitcheckout,${CLANGDIR},${CLANG_BRANCH},${CLANG_COMMIT}) ; \
 	fi
 	$(call state,$@,clang-patch)
 
@@ -223,7 +223,7 @@ llvm-sync: llvm-clean
 	@$(call banner,Updating LLVM...)
 	@if [ -n "${LLVM_COMMIT}" ] ; then \
 		$(call banner, "Syncing commit-ish Clang...") ; \
-		(cd ${LLVMDIR} && git checkout -f ${LLVM_COMMIT}) ; \
+		$(call gitcheckout,${LLVMDIR},${LLVM_BRANCH},${LLVM_COMMIT}) ; \
 	else \
 		(cd ${LLVMDIR} && git checkout ${LLVM_BRANCH} && git pull) ; \
 	fi
@@ -232,7 +232,7 @@ clang-sync: clang-clean
 	@$(call banner,Updating Clang...)
 	@if [ -n "${CLANG_COMMIT}" ] ; then \
 		$(call banner, "Syncing commit-ish Clang...") ; \
-		(cd ${CLANGDIR} && git checkout -f ${CLANG_COMMIT}) ; \
+		$(call gitcheckout,${CLANGDIR},${CLANG_BRANCH},${CLANG_COMMIT}) ; \
 	else \
 		(cd ${CLANGDIR} && git checkout ${CLANG_BRANCH} && git pull) ; \
 	fi
@@ -250,7 +250,7 @@ llvm-version:
 clang-version:
 	@(cd ${CLANGDIR} && [ -f "${CLANG}" ] \
 		&& echo "`${CLANG} --version | grep version | xargs echo` commit `git rev-parse HEAD`" \
-		|| echo "clsng version ? commit `git rev-parse HEAD`")
+		|| echo "clang version ? commit `git rev-parse HEAD`")
 
 clang-update-all: llvm-sync clang-sync compilerrt-sync llvm-build clang-build
 

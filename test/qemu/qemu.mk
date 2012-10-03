@@ -66,7 +66,7 @@ ${QEMUSTATE}/qemu-fetch:
 	@$(call banner, "Fetching QEMU...")
 	@mkdir -p ${QEMUSRCDIR}
 	$(call gitclone,${QEMU_GIT} -b ${QEMU_BRANCH},${QEMUSRCDIR})
-	@[ -z "${QEMU_COMMIT}" ] || (cd ${QEMUSRCDIR} && git checkout -f ${QEMU_COMMIT})
+	@[ -z "${QEMU_COMMIT}" ] || $(call gitcheckout,${QEMUSRCDIR},${QEMU_BRANCH},${QEMU_COMMIT})
 	$(call state,$@,qemu-patch)
 
 qemu-patch: ${QEMUSTATE}/qemu-patch
@@ -116,7 +116,7 @@ qemu-sync: ${QEMUSTATE}/qemu-fetch
 	@${MAKE} qemu-clean
 	@if [ -n "${QEMU_COMMIT}" ] ; then \
 		$(call banner, "Syncing commit-ish QEMU...") ; \
-		(cd ${QEMUSRCDIR} && git checkout -f ${QEMU_COMMIT}) ; \
+		$(call gitcheckout,${QEMUSRCDIR},${QEMU_BRANCH},${QEMU_COMMIT}) ; \
 	else \
 		(cd ${QEMUSRCDIR} && git checkout ${QEMU_BRANCH} && git pull) ; \
 	fi
