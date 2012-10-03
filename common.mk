@@ -54,12 +54,17 @@ patches_dir = [ -e ${2} ] || ln -sf ${1} ${2}
 applied	= ( [ -d ${1} ] && cd ${1} && quilt applied || true )
 patch	= [ ! -d ${1} ] || (cd ${1} && if [ -e patches ] && $(call banner,"Applying patches to ${1}") && quilt unapplied ; then quilt push -a ; else >/dev/null ; fi)
 unpatch	= [ ! -d ${1} ] || (cd ${1} && if [ -e patches ] && $(call banner,"Unapplying patches from ${1}") && quilt applied ; then quilt pop -af ; else >/dev/null ; fi)
+
+##############################################################################
+# Git macros used by all subsystems
+gitclone = [ -d ${2}/.git ] || (rm -rf ${2} && git clone ${1} ${2})
 gitreset = (cd ${1} && $(call banner,"Reseting git tree ${1}") && git reset --hard HEAD && git clean -d -f) || true
 ifeq "GIT_HARD_RESET" ""
 optional_gitreset =
 else
 optional_gitreset = $(call gitreset,${1})
 endif
+gitcommit = [ ! -d ${1}/.git ] || (cd ${1} && echo "${2}		= `git rev-parse HEAD`")
 
 ##############################################################################
 # Default jobs is number of processors + 1 for disk I/O
