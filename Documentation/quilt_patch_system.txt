@@ -1,4 +1,4 @@
-= LLVMLinux Patch System:
+= LLVMLinux Patch System: =
 
 The LLVMLinux project is a Meta-project in that the project code repository is
 largely comprised of patch files against other code bases. The project is
@@ -9,7 +9,7 @@ able to be built using the Clang C compiler.
 The quilt patch management system is used to maintain patches which cleanly
 apply to an upstream source tree, making it easy to upstream patches.
 
-= Quilt for Clang/LLVM
+= Quilt for Clang/LLVM =
 
 In the case of Clang/LLVM (and QEMU) the patch directories are simple quilt
 patches directories:
@@ -21,18 +21,18 @@ patches directories:
 
 These patch directories are symlinked into the upstream source directories once
 the upstream source is downloaded so that quilt can be used. For instance for
-the patches dir in the upstream llvm source directory is linked to the
-patches/llvm dir.
+the patches directory in the upstream llvm source directory is linked to the
+patches/llvm directory.
 
  toolchain/clang/src/llvm/patches -> toolchain/clang/patches/llvm
  toolchain/clang/src/clang/patches -> toolchain/clang/patches/clang
 
-= Quilt for the mainline Linux Kernel
+= Quilt for the mainline Linux Kernel =
 
 However, for the kernel it's a little more complicated. We have several other
 things we want to support with kernel patching.
 
-Similar to the Clang/LLMV case, the target patches directory is symlinked into
+Similar to the Clang/LLVM case, the target patches directory is symlinked into
 the cloned kernel source tree. For example, in the case of the Vexpress target:
 
  targets/vexpress/src/linux/patches -> targets/vexpress/patches
@@ -49,8 +49,8 @@ an ARM) target we get kernel patches from:
 
 Patches from these directories are symlinked into targets/vexpress/patches and
 the series files from each directory (series.target from the target patches
-directory) is concatenated in order generate the final targets/vexpress/patches
-file.
+directory) is concatenated in order to generate the final
+targets/vexpress/patches file.
 
  arch/all/patches/series                 }
  arch/arm/patches/series                 } => targets/vexpress/patches/series
@@ -59,7 +59,14 @@ file.
 During the "make kernel-patch" phase, quilt merely applies all the symlinked
 patches in order as listed in the generated series file as per normal.
 
-= Quilt for building a non-tip and/or non-mainline Linux Kernel
+You can force the regeneration of targets/vexpress/patches/series as follows:
+
+ make kernel-quilt-generate-series
+
+The way in which kernel patches are symbolically linked into the target patches
+directory are described in a lot more detail in the next section.
+
+= Quilt for building a non-tip and/or non-mainline Linux Kernel =
 
 If you are patching against a kernel which isn't the tip of mainline, then
 things get interesting. It could be that the generic common patches and generic
@@ -83,14 +90,20 @@ to be linked is called inline.patch, this would be the order in which the
 patches directories are searched.
 
  targets/vexpress/patches/foo
+ targets/vexpress/patches
  arch/arm/patches/foo
  arch/arm/patches
  arch/all/patches/foo
  arch/all/patches
 
+NOTE: You can get a list of the patch directories consulted for your build
+target with:
+
+ make list-kernel-patches-path
+
 In this case, the first patch file named inline.patch found in the above
-directories would be linked to the Vexpress patches dir. If the file is found in
-the target patches directory, it is left as is.
+directories would be linked to the Vexpress patches directory. If the file is
+found in the target patches directory, it is left as is.
 
  arch/all/patches/foo/inline.patch -> targets/vexpress/patches/inline.patch
 
@@ -100,15 +113,21 @@ NOTE: This means of course that all patch file names must be unique across all
 kernel patch directories. Since patch filenames should be descriptive, this
 shouldn't be too hard to do.
 
-= Manually applying and unapplying patches with quilt
+You can force all patches to be reconsidered for linking (or force old patch links to be deleted) with:
+
+ make kernel-quilt-link-patches
+ make kernel-quilt-clean-broken-symlinks
+
+= Manually applying and unapplying patches with quilt =
 
 The Makefiles will automatically apply and unapply patches as you build/clean
 your code base. However, when there are problems with patches applying cleanly
 you need to step in to fix things manually.
 
-For the example of the Vexpress kernel you would first go into the kernel source directory:
+For the example of the Vexpress kernel you would first go into the kernel
+source directory:
 
- cd targets/vespress/src/linux
+ cd targets/vexpress/src/linux
 
 Then you would apply patches until one broke:
 
@@ -137,7 +156,7 @@ Keep applying patches until they are all applied, at which point you can go
 back to the target directory and build the kernel again normally (patches will
 be unapplied and re-applied automatically for you again).
 
-= Editing a target patch for the kernel
+= Editing a target patch for the kernel =
 
 When you make a change to a patch file with a "quilt refresh", it will remove
 the symlinked patch and replace it with the new patch file. If the new patch
@@ -150,7 +169,7 @@ in a previous section) copy it back and then recreate the symlink.
 
 *** Please do not quilt refresh a symlinked patch from a non-mainline git repo ***
 
-= Adding a target patch to the kernel
+= Adding a target patch to the kernel =
 
 You can add a new patch to the target series file with a "quilt import",
 specifying an optional patch level.
@@ -162,13 +181,18 @@ the patch filename to the generated target series file. The next time you run
 make, it will find the new patch, and add it to the series.target file before
 regenerating the target series file.
 
+NOTE: If you wish to force your series.target file to be updated with changes
+from the generated series file, you can do a:
+
+ make kernel-quilt-update-series-dot-target
+
 If you want the newly added patch to be a generic patch, you can move it to the
 appropriate patches directory (e.g. arch/arm/patches), adding the filename to
 the existing series file in that directory. In this case you need to make sure
 you delete the new patch file name from both the target series file and the
 series.target file (otherwise it will appear to be magically re-added).
 
-= Removing a target patch from the kernel
+= Removing a target patch from the kernel =
 
 Removing a patch from a patch series can be done with quilt delete (first you
 need to quilt push/pop to make that patch the most recently applied patch).
