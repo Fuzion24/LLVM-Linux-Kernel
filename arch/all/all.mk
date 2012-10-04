@@ -210,7 +210,7 @@ kernel-gcc-fetch: state/kernel-gcc-fetch
 state/kernel-gcc-fetch: state/kernel-fetch
 	@$(call banner, "Cloning kernel for gcc...")
 	$(call gitclone,${KERNELDIR},${KERNELGCC})
-	@if [ -n "${KERNEL_BRANCH}" ] ; \
+	@if [ -n "${KERNEL_BRANCH}" ] ; then \
 		$(call banner, "Checking out kernel branch for gcc...") ; \
 		(cd ${KERNELGCC} && git checkout -B ${KERNEL_BRANCH}) ; \
 	fi
