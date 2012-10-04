@@ -99,7 +99,7 @@ llvm-settings:
 llvm-fetch: ${LLVMSTATE}/llvm-fetch
 ${LLVMSTATE}/llvm-fetch:
 	@$(call banner, "Fetching LLVM...")
-	@mkdir -p $(dir ${LLVMDIR})
+	@mkdir -p $(dir ${LLVMSRCDIR})
 	$(call gitclone,${LLVM_GIT} -b ${LLVM_BRANCH},${LLVMDIR})
 	@if [ -n "${LLVM_COMMIT}" ] ; then \
 		$(call banner, "Fetching commit-ish LLVM...") ; \
@@ -111,6 +111,10 @@ compilerrt-fetch: ${LLVMSTATE}/compilerrt-fetch
 ${LLVMSTATE}/compilerrt-fetch: ${LLVMSTATE}/llvm-fetch 
 	@$(call banner, "Fetching Compilerrt...")
 	$(call gitclone,${COMPILERRT_GIT} -b ${COMPILERRT_BRANCH},${COMPILERRTDIR})
+	@if [ -n "${COMPILERRT_COMMIT}" ] ; then \
+		$(call banner, "Fetching commit-ish compiler-rt...") ; \
+		$(call gitcheckout,${COMPILERRTDIR},${COMPILERRT_BRANCH},${COMPILERRT_COMMIT}) ; \
+	fi
 	$(call state,$@)
 
 clang-fetch: ${LLVMSTATE}/clang-fetch
