@@ -41,19 +41,21 @@ PATCH_FILTER_REGEX	= .*
 
 #############################################################################
 checkfilefor	= grep -q ${2} ${1} || echo "${2}${3}" >> ${1}
-reverselist	= `for DIR in ${1} ; do echo $$DIR; done | tac`
+reverselist	= for DIR in ${1} ; do echo $$DIR; done | tac
 ln_if_new	= ls -l "${2}" 2>&1 | grep -q "${1}" || ln -fsv "${1}" "${2}"
 mv_n_ln		= mv "${1}" "${2}" ; ln -sv "${2}" "${1}"
 
 #############################################################################
-QUILT_TARGETS		= kernel-quilt kernel-quilt-clean kernel-quilt-help kernel-quilt-settings list-kernel-patches list-kernel-maintainer list-kernel-checkpatch
+QUILT_TARGETS		= kernel-quilt kernel-quilt-clean kernel-quilt-generate-series kernel-quilt-update-series-dot-target \
+				kernel-quilt-link-patches kernel-quilt-clean-broken-symlinks \
+				list-kernel-patches list-kernel-patches-path list-kernel-maintainer list-kernel-checkpatch
 TARGETS_BUILD		+= ${QUILT_TARGETS}
 CLEAN_TARGETS		+= kernel-quilt-clean
 HELP_TARGETS		+= kernel-quilt-help
 MRPROPER_TARGETS	+= kernel-quilt-clean
 SETTINGS_TARGETS	+= kernel-quilt-settings
 
-.PHONY:			${QUILT_TARGETS}
+.PHONY:			${QUILT_TARGETS} kernel-quilt-help kernel-quilt-settings
 
 #############################################################################
 kernel-quilt-help:
@@ -67,6 +69,10 @@ kernel-quilt-help:
 	@echo "			- Save updates from kernel quilt series file to series.target file"
 	@echo "* make kernel-quilt-link-patches"
 	@echo "			- Link kernel patches to target patches directory"
+	@echo "* make kernel-quilt-clean-broken-symlinks"
+	@echo "			- Remove links to deleted kernel patches from target patches directory"
+	@echo "* make list-kernel-patches-path"
+	@echo "			- List the order in which kernel patches directories are searched for patch filenames"
 	@echo "* make list-kernel-patches"
 	@echo "			- List which kernel patches will be applied"
 	@echo
@@ -140,10 +146,10 @@ kernel-quilt-clean-broken-symlinks:
 
 ##############################################################################
 # Move updated patches back to their proper place, and link patch files into target patches dir
-kernel-quilt-link-patches: ${TARGET_PATCH_SERIES} ${QUILT_GITIGNORE}
+kernel-quilt-link-patches: ${QUILT_GITIGNORE}
 	$(MAKE) kernel-quilt-update-series-dot-target kernel-quilt-clean-broken-symlinks
 	@$(call banner, "Linking quilt patches for kernel...")
-	@REVDIRS=$(call reverselist,${KERNEL_PATCH_DIR}) ; \
+	@REVDIRS=`$(call reverselist,${KERNEL_PATCH_DIR})` ; \
 	for PATCH in `cat ${GENERIC_PATCH_SERIES}` ; do \
 		PATCHLINK="${PATCHDIR}/$$PATCH" ; \
 		for DIR in $$REVDIRS ; do \
@@ -154,10 +160,12 @@ kernel-quilt-link-patches: ${TARGET_PATCH_SERIES} ${QUILT_GITIGNORE}
 				else \
 					$(call ln_if_new,$$DIR/$$PATCH,$$PATCHLINK) ; \
 				fi ; \
+				rm -f ${TARGET_PATCH_SERIES} ; \
 				break; \
 			fi ; \
 		done ; \
 	done | sed -e 's|${TARGETDIR}|.|g; s|${TOPDIR}|...|g'
+	@$(MAKE) ${TARGET_PATCH_SERIES}
 
 ##############################################################################
 QUILT_STATE	= state/kernel-quilt
@@ -168,9 +176,14 @@ ${QUILT_STATE}: state/kernel-fetch
 	$(call state,$@,kernel-patch)
 
 ##############################################################################
+# List patch search path
+list-kernel-patches-path:
+	@$(call reverselist,${KERNEL_PATCH_DIR})
+
+##############################################################################
 # List all patches which are being applied to the kernel
 list-kernel-patches:
-	@REVDIRS=$(call reverselist,${KERNEL_PATCH_DIR}) ; \
+	@REVDIRS=`$(call reverselist,${KERNEL_PATCH_DIR})` ; \
 	for PATCH in `cat ${ALL_PATCH_SERIES}` ; do \
 		for DIR in $$REVDIRS ; do \
 			if [ -f "$$DIR/$$PATCH" -a ! -L "$$DIR/$$PATCH" ] ; then \
@@ -187,7 +200,7 @@ list-kernel-patches:
 list-kernel-maintainer: list-kernel-get_maintainer
 list-kernel-checkpatch list-kernel-get_maintainer: list-kernel-%:
 	@$(call banner,Running $* for patches PATCH_FILTER_REGEX="${PATCH_FILTER_REGEX}")
-	@(REVDIRS=$(call reverselist,${KERNEL_PATCH_DIR}) ; \
+	@(REVDIRS=`$(call reverselist,${KERNEL_PATCH_DIR})` ; \
 	cd ${KERNELDIR} ; \
 	for PATCH in `cat ${ALL_PATCH_SERIES} | grep "${PATCH_FILTER_REGEX}"` ; do \
 		for DIR in $$REVDIRS ; do \
