@@ -51,7 +51,7 @@ DEBDEP_32	= libc6:i386 libncurses5:i386
 DEBDEP_EXTRAS	= linaro-image-tools
 debdep		= [ `dpkg -l $(1) | grep -c '^[pu]'` -eq 0 ] || ( echo "$(2)"; echo "  sudo apt-get install $(1)"; false )
 
-RPMDEP		= cmake gcc flex gcc g++ git kpartx make patch quilt rsync sparse subversion zlib-devel
+RPMDEP		= cmake gcc flex gcc gcc-g++ git git-svn kpartx make patch quilt rsync sparse subversion zlib-devel
 
 build-dep:
 	@if [ -f /etc/debian_version ] ; then \
