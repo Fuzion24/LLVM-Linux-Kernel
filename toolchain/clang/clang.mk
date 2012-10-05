@@ -76,12 +76,14 @@ SETTINGS_TARGETS+= llvm-settings
 # Add clang to the path
 PATH		:= ${LLVMINSTALLDIR}/bin:${PATH}
 
+##############################################################################
 llvm-help:
 	@echo
 	@echo "These are the make targets for building LLVM and Clang:"
 	@echo "* make llvm-[fetch,configure,build,sync,clean]"
 	@echo "* make clang-[fetch,configure,build,sync,clean]"
 
+##############################################################################
 llvm-settings:
 	@echo "# LLVM settings"
 	@echo "LLVM_GIT		= ${LLVM_GIT}"
@@ -96,93 +98,97 @@ llvm-settings:
 	@echo "COMPILERRT_BRANCH	= ${COMPILERRT_BRANCH}"
 	@$(call gitcommit,${COMPILERRTDIR},COMPILERRT_COMMIT)
 
+##############################################################################
+llvmfetch = $(call banner, "Fetching ${1}...") ; \
+	mkdir -p $(dir ${2}) ; \
+	$(call gitclone,${4} -b ${5},${3}) ; \
+	if [ -n "${6}" ] ; then \
+		$(call banner, "Fetching commit-ish ${1}...") ; \
+		$(call gitcheckout,${3},${5},${6}) ; \
+	fi ;
+
+##############################################################################
 llvm-fetch: ${LLVMSTATE}/llvm-fetch
 ${LLVMSTATE}/llvm-fetch:
-	@$(call banner, "Fetching LLVM...")
-	@mkdir -p $(dir ${LLVMSRCDIR})
-	$(call gitclone,${LLVM_GIT} -b ${LLVM_BRANCH},${LLVMDIR})
-	@if [ -n "${LLVM_COMMIT}" ] ; then \
-		$(call banner, "Fetching commit-ish LLVM...") ; \
-		$(call gitcheckout,${LLVMDIR},${LLVM_BRANCH},${LLVM_COMMIT}) ; \
-	fi
+	@$(call llvmfetch,LLVM,${LLVMSRCDIR},${LLVMDIR},${LLVM_GIT},${LLVM_BRANCH},${LLVM_COMMIT})
 	$(call state,$@,llvm-patch)
 
+##############################################################################
 compilerrt-fetch: ${LLVMSTATE}/compilerrt-fetch
 ${LLVMSTATE}/compilerrt-fetch: ${LLVMSTATE}/llvm-fetch 
-	@$(call banner, "Fetching Compilerrt...")
-	$(call gitclone,${COMPILERRT_GIT} -b ${COMPILERRT_BRANCH},${COMPILERRTDIR})
-	@if [ -n "${COMPILERRT_COMMIT}" ] ; then \
-		$(call banner, "Fetching commit-ish compiler-rt...") ; \
-		$(call gitcheckout,${COMPILERRTDIR},${COMPILERRT_BRANCH},${COMPILERRT_COMMIT}) ; \
-	fi
+	@$(call llvmfetch,compiler-rt,${LLVMSRCDIR},${COMPILERRTDIR},${COMPILERRT_GIT},${COMPILERRT_BRANCH},${COMPILERRT_COMMIT})
 	$(call state,$@)
 
+##############################################################################
 clang-fetch: ${LLVMSTATE}/clang-fetch
 ${LLVMSTATE}/clang-fetch:
-	@$(call banner, "Fetching Clang...")
-	@mkdir -p ${LLVMSRCDIR}
-	$(call gitclone,${CLANG_GIT} -b ${CLANG_BRANCH},${CLANGDIR})
-	@if [ -n "${CLANG_COMMIT}" ] ; then \
-		$(call banner, "Fetching commit-ish Clang...") ; \
-		$(call gitcheckout,${CLANGDIR},${CLANG_BRANCH},${CLANG_COMMIT}) ; \
-	fi
+	@$(call llvmfetch,Clang,${LLVMSRCDIR},${CLANGDIR},${CLANG_GIT},${CLANG_BRANCH},${CLANG_COMMIT})
 	$(call state,$@,clang-patch)
 
+##############################################################################
+llvmpatch = $(call banner, "Patching ${1}...") ; \
+	$(call patches_dir,${2},${3}/patches) ; \
+	$(call patch,${3})
+
+##############################################################################
 llvm-patch: ${LLVMSTATE}/llvm-patch
 ${LLVMSTATE}/llvm-patch: ${LLVMSTATE}/llvm-fetch
-	@$(call banner, "Patching LLVM...")
-	@$(call patches_dir,${LLVMPATCHES}/llvm,${LLVMDIR}/patches)
-	@$(call patch,${LLVMDIR})
+	@$(call llvmpatch,LLVM,${LLVMPATCHES}/llvm,${LLVMDIR})
 	$(call state,$@,llvm-configure)
 
+##############################################################################
 clang-patch: ${LLVMSTATE}/clang-patch
 ${LLVMSTATE}/clang-patch: ${LLVMSTATE}/clang-fetch
-	@$(call banner, "Patching Clang...")
-	@$(call patches_dir,${LLVMPATCHES}/clang,${CLANGDIR}/patches)
-	@$(call patch,${CLANGDIR})
+	@$(call llvmpatch,Clang,${LLVMPATCHES}/clang,${CLANGDIR})
 	$(call state,$@,clang-configure)
 
+##############################################################################
 compilerrt-patch: ${LLVMSTATE}/compilerrt-patch
 ${LLVMSTATE}/compilerrt-patch: ${LLVMSTATE}/compilerrt-fetch
-	@$(call banner, "Patching Compiler-rt...")
-	@$(call patches_dir,${LLVMPATCHES}/compiler-rt,${COMPILERRTDIR}/patches)
-	@$(call patch,${COMPILERRTDIR})
+	@$(call llvmpatch,Compiler-rt,${LLVMPATCHES}/compiler-rt,${COMPILERRTDIR})
 	$(call state,$@)
 
+##############################################################################
 ${LLVM_TARGETS_APPLIED}: %-patch-applied:
 	@$(call banner,"Patches applied for $*")
 	@$(call applied,${LLVMSRCDIR}/$*)
 
+##############################################################################
+llvmconfig = $(call banner, "Configure ${1}...") ; \
+	mkdir -p ${2} ${3} && \
+	(cd ${2} && cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${3} ${4} ${5})
+
+##############################################################################
 llvm-configure: ${LLVMSTATE}/llvm-configure
 ${LLVMSTATE}/llvm-configure: ${LLVMSTATE}/llvm-patch
-	@$(call banner, "Configure LLVM...")
-	@mkdir -p ${LLVMBUILDDIR}
-	(cd ${LLVMBUILDDIR} && cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${LLVMINSTALLDIR} ${LLVMDIR})
+	@$(call llvmconfig,LLVM,${LLVMBUILDDIR},${LLVMINSTALLDIR},,${LLVMDIR})
 	$(call state,$@,llvm-build)
 
+##############################################################################
 clang-configure: ${LLVMSTATE}/clang-configure
 ${LLVMSTATE}/clang-configure: ${LLVMSTATE}/clang-patch
-	@$(call banner, "Configure Clang...")
-	@mkdir -p ${CLANGBUILDDIR}
-	(cd ${CLANGBUILDDIR} && cmake -DCMAKE_BUILD_TYPE=Release  -DCMAKE_INSTALL_PREFIX=${LLVMINSTALLDIR} -DCLANG_PATH_TO_LLVM_SOURCE=${LLVMDIR}   -DCLANG_PATH_TO_LLVM_BUILD=${LLVMBUILDDIR}   ${CLANGDIR} )
+	@$(call llvmconfig,CLANG,${CLANGBUILDDIR},${LLVMINSTALLDIR},-DCLANG_PATH_TO_LLVM_SOURCE=${LLVMDIR} -DCLANG_PATH_TO_LLVM_BUILD=${LLVMBUILDDIR},${CLANGDIR})
 	$(call state,$@,clang-build)
 
+##############################################################################
+llvmbuild = $(call banner, "Building ${1}...") ; \
+	make -C ${2} -j${JOBS} install
+
+##############################################################################
 llvm llvm-build: ${LLVMSTATE}/llvm-build
 ${LLVMSTATE}/llvm-build: ${LLVMSTATE}/llvm-configure
-	@$(call banner, "Building LLVM...")
-	@mkdir -p ${LLVMINSTALLDIR} ${LLVMBUILDDIR}
-	(cd ${LLVMBUILDDIR} && make -j${JOBS} install)
+	@$(call llvmbuild,LLVM,${LLVMBUILDDIR})
 	$(call state,$@,clang-build)
 
+##############################################################################
 clang clang-build:  ${LLVMSTATE}/clang-build
 ${LLVMSTATE}/clang-build: ${LLVMSTATE}/llvm-build ${LLVMSTATE}/clang-configure
-	@$(call banner, "Building Clang...")
-	@mkdir -p ${LLVMINSTALLDIR} ${CLANGBUILDDIR}
-	(cd ${CLANGBUILDDIR} && make -j${JOBS} install)
+	@$(call llvmbuild,Clang,${CLANGBUILDDIR})
 	cp -a ${CLANGDIR}/tools/scan-build/* ${LLVMINSTALLDIR}/bin
 	cp -a ${CLANGDIR}/tools/scan-view/* ${LLVMINSTALLDIR}/bin
 	$(call state,$@)
 
+##############################################################################
 llvm-reset: ${LLVMSTATE}/clang-fetch ${LLVMSTATE}/compilerrt-fetch
 	@$(call banner,Removing LLVM patches...)
 	@$(call unpatch,${LLVMDIR})
@@ -190,71 +196,83 @@ llvm-reset: ${LLVMSTATE}/clang-fetch ${LLVMSTATE}/compilerrt-fetch
 	@$(call optional_gitreset,${COMPILERRTDIR})
 	@rm -f $(addprefix ${LLVMSTATE}/,llvm-patch llvm-configure llvm-build)
 
+##############################################################################
 llvm-clean-noreset:
 	@$(call banner,Cleaning LLVM...)
 	@rm -rf ${LLVMINSTALLDIR} ${LLVMBUILDDIR}
 	@rm -f $(addprefix ${LLVMSTATE}/,llvm-configure llvm-build)
 
+##############################################################################
 llvm-clean: llvm-reset llvm-clean-noreset clang-clean
 
+##############################################################################
 llvm-mrproper: llvm-clean clang-mrproper
 	(cd ${LLVMDIR} && git clean -f)
 
+##############################################################################
 llvm-raze: llvm-clean-noreset clang-raze
 	@$(call banner,Razing LLVM...)
 	@rm -rf ${LLVMDIR} ${LLVMSTATE}/llvm-* ${LLVMSTATE}/compilerrt-*
 
+##############################################################################
 clang-reset: ${LLVMSTATE}/clang-fetch
 	@$(call banner,Removing Clang patches...)
 	@$(call unpatch,${CLANGDIR})
 	@$(call optional_gitreset,${CLANGDIR})
 	@rm -f $(addprefix ${LLVMSTATE}/,clang-patch clang-configure clang-build)
 
+##############################################################################
 clang-clean-noreset: llvm-clean-noreset
 	@$(call banner,Cleaning Clang...)
 	@rm -rf ${LLVMINSTALLDIR}/clang ${CLANGBUILDDIR}
 
+##############################################################################
 clang-clean: clang-reset clang-clean-noreset
 
+##############################################################################
 clang-mrproper: clang-clean
 	(cd ${CLANGDIR} && git clean -f)
 
+##############################################################################
 clang-raze: clang-clean-noreset
 	@$(call banner,Razing Clang...)
 	@rm -rf ${CLANGDIR} ${LLVMSTATE}/clang-*
 
+##############################################################################
+llvmsync = $(call banner,Updating ${1}...) ; \
+	$(call unpatch,${2}) ; \
+	if [ -n "${4}" ] ; then \
+		$(call banner, "Syncing commit-ish ${1}...") ; \
+		$(call gitcheckout,${2},${3},${4}) ; \
+	else \
+		(cd ${2} && git checkout -f ${3} && git pull) ; \
+	fi
+
+##############################################################################
 llvm-sync: llvm-clean
-	@$(call banner,Updating LLVM...)
-	@if [ -n "${LLVM_COMMIT}" ] ; then \
-		$(call banner, "Syncing commit-ish Clang...") ; \
-		$(call gitcheckout,${LLVMDIR},${LLVM_BRANCH},${LLVM_COMMIT}) ; \
-	else \
-		(cd ${LLVMDIR} && git checkout -f ${LLVM_BRANCH} && git pull) ; \
-	fi
+	@$(call llvmsync,LLVM,${LLVMDIR},${LLVM_BRANCH},${LLVM_COMMIT})
 
+##############################################################################
 clang-sync: clang-clean
-	@$(call banner,Updating Clang...)
-	@if [ -n "${CLANG_COMMIT}" ] ; then \
-		$(call banner, "Syncing commit-ish Clang...") ; \
-		$(call gitcheckout,${CLANGDIR},${CLANG_BRANCH},${CLANG_COMMIT}) ; \
-	else \
-		(cd ${CLANGDIR} && git checkout -f ${CLANG_BRANCH} && git pull) ; \
-	fi
+	@$(call llvmsync,Clang,${CLANGDIR},${CLANG_BRANCH},${CLANG_COMMIT})
 
+##############################################################################
 compilerrt-sync: ${LLVMSTATE}/compilerrt-sync
 ${LLVMSTATE}/compilerrt-sync: ${LLVMSTATE}/llvm-fetch 
-	@$(call banner, "Updating Compilerrt...")
-	(cd ${COMPILERRTDIR} && git checkout -f ${COMPILERRT_BRANCH} && git pull)
+	@$(call llvmsync,compiler-rt,${COMPILERRTDIR},${COMPILERRT_BRANCH},${COMPILERRT_COMMIT})
 	$(call state,$@)
 
+##############################################################################
 llvm-version:
 	@(cd ${LLVMDIR} && [ -f "${LLVMINSTALLDIR}/bin/llc" ] \
 		&& echo "`${LLVMINSTALLDIR}/bin/llc --version | grep version | xargs echo` commit `git rev-parse HEAD`" \
 		|| echo "LLVM version ? commit `git rev-parse HEAD`")
+
+##############################################################################
 clang-version:
 	@(cd ${CLANGDIR} && [ -f "${CLANG}" ] \
 		&& echo "`${CLANG} --version | grep version | xargs echo` commit `git rev-parse HEAD`" \
 		|| echo "clang version ? commit `git rev-parse HEAD`")
 
+##############################################################################
 clang-update-all: llvm-sync clang-sync compilerrt-sync llvm-build clang-build
-
