@@ -241,11 +241,11 @@ ${LLVMSTATE}/clang-unpatched-build: ${LLVMSTATE}/llvm-unpatched-build ${LLVMSTAT
 ##############################################################################
 llvm-reset: ${LLVMSTATE}/clang-fetch ${LLVMSTATE}/compilerrt-fetch
 	@$(call banner,Removing LLVM patches...)
-	make -C ${LLVMBUILDDIR} clean
+	-@if [ -d ${LLVMBUILDDIR} ]; then make -C ${LLVMBUILDDIR} clean; fi
 	@$(call unpatch,${LLVMDIR})
 	@$(call optional_gitreset,${COMPILERRTDIR})
 	@$(call optional_gitreset,${LLVMDIR})
-	-make -C ${LLVMBUILDDIR2} clean
+	-@if [ -d ${LLVMBUILDDIR2} ]; then make -C ${LLVMBUILDDIR2} clean; fi
 	@$(call optional_gitreset,${COMPILERRTDIR2})
 	@$(call optional_gitreset,${LLVMDIR2})
 	@rm -f $(addprefix ${LLVMSTATE}/,llvm-patch llvm-configure llvm-build llvm-unpatched-configure llvm-unpatched-build)
@@ -270,10 +270,10 @@ llvm-raze: llvm-clean-noreset clang-raze
 ##############################################################################
 clang-reset: ${LLVMSTATE}/clang-fetch
 	@$(call banner,Removing Clang patches...)
-	make -C ${CLANGBUILDDIR} clean
+	-@if [ -d ${CLANGBUILDDIR} ]; then make -C ${CLANGBUILDDIR} clean; fi
 	@$(call unpatch,${CLANGDIR})
 	@$(call optional_gitreset,${CLANGDIR})
-	make -C ${CLANGBUILDDIR2} clean
+	-@if [ -d ${CLANGBUILDDIR2} ]; then make -C ${CLANGBUILDDIR2} clean; fi
 	@$(call optional_gitreset,${CLANGDIR2})
 	@rm -f $(addprefix ${LLVMSTATE}/,clang-patch clang-configure clang-build clang-unpatched-configure clang-unpatched-build)
 

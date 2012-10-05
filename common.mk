@@ -59,7 +59,7 @@ unpatch	= [ ! -d ${1} ] || (cd ${1} && if [ -e patches ] && $(call banner,"Unapp
 # Git macros used by all subsystems
 gitclone = [ -d ${2}/.git ] || (rm -rf ${2} && git clone ${1} ${2})
 gitcheckout = (cd ${1} && git checkout ${2} && git pull && git checkout ${3})
-gitreset = (cd ${1} && $(call banner,"Reseting git tree ${1}") && git reset --hard HEAD && git clean -d -f) || true
+gitreset = ([ -d ${1} ] && cd ${1} && $(call banner,"Reseting git tree ${1}") && git reset --hard HEAD && git clean -d -f) || true
 ifeq "GIT_HARD_RESET" ""
 optional_gitreset =
 else
