@@ -25,6 +25,7 @@
 # Assumes has been included from ../toolchain.mk
 
 LLVMSRCDIR	= ${LLVMTOP}/src
+LLVMBUILD	= ${LLVMTOP}/build
 LLVMINSTALLDIR	:= ${LLVMTOP}/install
 LLVMSTATE	= ${LLVMTOP}/state
 LLVMPATCHES	= ${LLVMTOP}/patches
@@ -38,8 +39,15 @@ LLVMDIR		= ${LLVMSRCDIR}/llvm
 CLANGDIR	= ${LLVMSRCDIR}/clang
 COMPILERRTDIR	= ${LLVMDIR}/projects/compiler-rt
 
-LLVMBUILDDIR	= ${LLVMTOP}/build/llvm
-CLANGBUILDDIR	= ${LLVMTOP}/build/clang
+LLVMBUILDDIR	= ${LLVMBUILD}/llvm
+CLANGBUILDDIR	= ${LLVMBUILD}/clang
+
+LLVMDIR2	= ${LLVMSRCDIR}/llvm-unpatched
+CLANGDIR2	= ${LLVMSRCDIR}/clang-unpatched
+COMPILERRTDIR2	= ${LLVMDIR}/projects/compiler-rt-unpatched
+LLVMBUILDDIR2	= ${LLVMBUILD}/llvm-unpatched
+CLANGBUILDDIR2	= ${LLVMBUILD}/clang-unpatched
+LLVMINSTALLDIR2	:= ${LLVMTOP}/install-unpatched
 
 LLVM_TARGETS 		= llvm llvm-[fetch,patch,configure,build,clean,sync]
 CLANG_TARGETS 		= clang clang-[fetch,patch,configure,build,sync] clang-update-all
@@ -126,6 +134,24 @@ ${LLVMSTATE}/clang-fetch:
 	$(call state,$@,clang-patch)
 
 ##############################################################################
+llvm-unpatched-fetch: ${LLVMSTATE}/llvm-unpatched-fetch
+${LLVMSTATE}/llvm-unpatched-fetch: ${LLVMSTATE}/llvm-fetch
+	@$(call llvmfetch,LLVM-unpatched,${LLVMSRCDIR},${LLVMDIR2},${LLVMDIR}/.git,${LLVM_BRANCH},${LLVM_COMMIT})
+	$(call state,$@,llvm-unpatched-configure)
+
+##############################################################################
+compilerrt-unpatched-fetch: ${LLVMSTATE}/compilerrt-unpatched-fetch
+${LLVMSTATE}/compilerrt-unpatched-fetch: ${LLVMSTATE}/llvm-unpatched-fetch 
+	@$(call llvmfetch,compiler-rt-unpatched,${LLVMSRCDIR},${COMPILERRTDIR2},${COMPILERRTDIR}/.git,${COMPILERRT_BRANCH},${COMPILERRT_COMMIT})
+	$(call state,$@)
+
+##############################################################################
+clang-unpatched-fetch: ${LLVMSTATE}/clang-unpatched-fetch
+${LLVMSTATE}/clang-unpatched-fetch: ${LLVMSTATE}/clang-fetch
+	@$(call llvmfetch,Clang-unpatched,${LLVMSRCDIR},${CLANGDIR2},${CLANGDIR}/.git,${CLANG_BRANCH},${CLANG_COMMIT})
+	$(call state,$@,clang-unpatched-configure)
+
+##############################################################################
 llvmpatch = $(call banner, "Patching ${1}...") ; \
 	$(call patches_dir,${2},${3}/patches) ; \
 	$(call patch,${3})
@@ -167,8 +193,20 @@ ${LLVMSTATE}/llvm-configure: ${LLVMSTATE}/llvm-patch
 ##############################################################################
 clang-configure: ${LLVMSTATE}/clang-configure
 ${LLVMSTATE}/clang-configure: ${LLVMSTATE}/clang-patch
-	@$(call llvmconfig,CLANG,${CLANGBUILDDIR},${LLVMINSTALLDIR},-DCLANG_PATH_TO_LLVM_SOURCE=${LLVMDIR} -DCLANG_PATH_TO_LLVM_BUILD=${LLVMBUILDDIR},${CLANGDIR})
+	@$(call llvmconfig,Clang,${CLANGBUILDDIR},${LLVMINSTALLDIR},-DCLANG_PATH_TO_LLVM_SOURCE=${LLVMDIR} -DCLANG_PATH_TO_LLVM_BUILD=${LLVMBUILDDIR},${CLANGDIR})
 	$(call state,$@,clang-build)
+
+##############################################################################
+llvm-unpatched-configure: ${LLVMSTATE}/llvm-unpatched-configure
+${LLVMSTATE}/llvm-unpatched-configure: ${LLVMSTATE}/llvm-unpatched-fetch
+	@$(call llvmconfig,LLVM-unpatched,${LLVMBUILDDIR2},${LLVMINSTALLDIR2},-DCMAKE_EXECUTABLE_SUFFIX=-unpatched,${LLVMDIR2})
+	$(call state,$@,llvm-unpatched-build)
+
+##############################################################################
+clang-unpatched-configure: ${LLVMSTATE}/clang-unpatched-configure
+${LLVMSTATE}/clang-unpatched-configure: ${LLVMSTATE}/clang-unpatched-fetch
+	@$(call llvmconfig,Clang-unpatched,${CLANGBUILDDIR2},${LLVMINSTALLDIR2},-DCLANG_PATH_TO_LLVM_SOURCE=${LLVMDIR2} -DCLANG_PATH_TO_LLVM_BUILD=${LLVMBUILDDIR2} -DCMAKE_EXECUTABLE_SUFFIX=-unpatched,${CLANGDIR2})
+	$(call state,$@,clang-unpatched-build)
 
 ##############################################################################
 llvmbuild = $(call banner, "Building ${1}...") ; \
@@ -181,7 +219,7 @@ ${LLVMSTATE}/llvm-build: ${LLVMSTATE}/llvm-configure
 	$(call state,$@,clang-build)
 
 ##############################################################################
-clang clang-build:  ${LLVMSTATE}/clang-build
+clang clang-build: ${LLVMSTATE}/clang-build
 ${LLVMSTATE}/clang-build: ${LLVMSTATE}/llvm-build ${LLVMSTATE}/clang-configure
 	@$(call llvmbuild,Clang,${CLANGBUILDDIR})
 	cp -a ${CLANGDIR}/tools/scan-build/* ${LLVMINSTALLDIR}/bin
@@ -189,25 +227,40 @@ ${LLVMSTATE}/clang-build: ${LLVMSTATE}/llvm-build ${LLVMSTATE}/clang-configure
 	$(call state,$@)
 
 ##############################################################################
+llvm llvm-unpatched-build: ${LLVMSTATE}/llvm-unpatched-build
+${LLVMSTATE}/llvm-unpatched-build: ${LLVMSTATE}/llvm-unpatched-configure
+	@$(call llvmbuild,LLVM-unpatched,${LLVMBUILDDIR2})
+	$(call state,$@,clang-build)
+
+##############################################################################
+clang clang-unpatched-build: ${LLVMSTATE}/clang-unpatched-build
+${LLVMSTATE}/clang-unpatched-build: ${LLVMSTATE}/llvm-unpatched-build ${LLVMSTATE}/clang-unpatched-configure
+	@$(call llvmbuild,Clang-unpatched,${CLANGBUILDDIR2})
+	$(call state,$@)
+
+##############################################################################
 llvm-reset: ${LLVMSTATE}/clang-fetch ${LLVMSTATE}/compilerrt-fetch
 	@$(call banner,Removing LLVM patches...)
+	make -C ${LLVMBUILDDIR} clean
 	@$(call unpatch,${LLVMDIR})
-	@$(call optional_gitreset,${LLVMDIR})
 	@$(call optional_gitreset,${COMPILERRTDIR})
-	@rm -f $(addprefix ${LLVMSTATE}/,llvm-patch llvm-configure llvm-build)
+	@$(call optional_gitreset,${LLVMDIR})
+	-make -C ${LLVMBUILDDIR2} clean
+	@$(call optional_gitreset,${COMPILERRTDIR2})
+	@$(call optional_gitreset,${LLVMDIR2})
+	@rm -f $(addprefix ${LLVMSTATE}/,llvm-patch llvm-configure llvm-build llvm-unpatched-configure llvm-unpatched-build)
 
 ##############################################################################
 llvm-clean-noreset:
 	@$(call banner,Cleaning LLVM...)
-	@rm -rf ${LLVMINSTALLDIR} ${LLVMBUILDDIR}
-	@rm -f $(addprefix ${LLVMSTATE}/,llvm-configure llvm-build)
+	@rm -rf ${LLVMINSTALLDIR} ${LLVMINSTALLDIR2} ${LLVMBUILDDIR}
+	@rm -f $(addprefix ${LLVMSTATE}/,llvm-configure llvm-build llvm-unpatched-configure llvm-unpatched-build)
 
 ##############################################################################
 llvm-clean: llvm-reset llvm-clean-noreset clang-clean
 
 ##############################################################################
 llvm-mrproper: llvm-clean clang-mrproper
-	(cd ${LLVMDIR} && git clean -f)
 
 ##############################################################################
 llvm-raze: llvm-clean-noreset clang-raze
@@ -217,14 +270,17 @@ llvm-raze: llvm-clean-noreset clang-raze
 ##############################################################################
 clang-reset: ${LLVMSTATE}/clang-fetch
 	@$(call banner,Removing Clang patches...)
+	make -C ${CLANGBUILDDIR} clean
 	@$(call unpatch,${CLANGDIR})
 	@$(call optional_gitreset,${CLANGDIR})
-	@rm -f $(addprefix ${LLVMSTATE}/,clang-patch clang-configure clang-build)
+	make -C ${CLANGBUILDDIR2} clean
+	@$(call optional_gitreset,${CLANGDIR2})
+	@rm -f $(addprefix ${LLVMSTATE}/,clang-patch clang-configure clang-build clang-unpatched-configure clang-unpatched-build)
 
 ##############################################################################
 clang-clean-noreset: llvm-clean-noreset
 	@$(call banner,Cleaning Clang...)
-	@rm -rf ${LLVMINSTALLDIR}/clang ${CLANGBUILDDIR}
+	@rm -rf ${LLVMINSTALLDIR}/clang ${CLANGBUILDDIR} ${CLANGBUILDDIR2}
 
 ##############################################################################
 clang-clean: clang-reset clang-clean-noreset
