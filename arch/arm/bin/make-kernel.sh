@@ -50,12 +50,10 @@ if [ $USECLANG -eq "1" ]; then
 	export PATH="${INSTALLDIR}/bin:${PATH}"
 	export CROSS_COMPILE=${HOST}-
 
-	export CLANGFLAGS="-march=$MARCH -mfpu=vfp -mfloat-abi=hard -Qunused-arguments ${EXTRAFLAGS}"
+	# Must pass -mllvm -use-new-sroa=false or Clang will segfault on
+	export CLANGFLAGS="-march=$MARCH -mfpu=vfp -mfloat-abi=hard -Qunused-arguments -mllvm -use-new-sroa=false ${EXTRAFLAGS}"
 	export CC_FOR_BUILD="${INSTALLDIR}/bin/clang -ccc-host-triple ${HOST_TRIPLE} -ccc-gcc-name ${HOST}-gcc ${CLANGFLAGS}"
 fi
-
-# FIXME This is not correct as it is not being linked into the kernel
-export LDFLAGS=-L${TOPDIR}/arch/arm/toolchain/compiler-rt/install/armv7 -lcompiler_rt
 
 export LD=${CROSS_COMPILE}ld
 
