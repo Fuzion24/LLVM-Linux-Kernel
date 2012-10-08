@@ -2,55 +2,9 @@ Add Clang support to Kbuild
 
 Do not upstream this patch. Clang behavior is likely to change
 ---
- Kbuild.include |   23 +++++++++++++++++-----
  Makefile.build |    1 +
  2 files changed, 18 insertions(+), 5 deletions(-)
 
-Index: linux/scripts/Kbuild.include
-===================================================================
---- linux.orig/scripts/Kbuild.include
-+++ linux/scripts/Kbuild.include
-@@ -106,9 +106,25 @@ as-option = $(call try-run,\
- as-instr = $(call try-run,\
- 	printf "%b\n" "$(1)" | $(CC) $(KBUILD_AFLAGS) -c -xassembler -o "$$TMP" -,$(2),$(3))
- 
-+# Test for clang
-+ifeq ($(shell $(CC) -v 2>&1 | grep -c "clang version"), 1)
-+
-+# cc-disable-warning
-+# Usage: cflags-y += $(call cc-disable-warning,unused-but-set-variable)
-+cc-disable-warning = $(call try-run,\
-+	$(CC) $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) -W$(strip $(1)) -c -xc /dev/null -o "$$TMP" 2>&1 | grep -q "unknown warning option",,-Wno-$(strip $(1)))
-+
-+# Otherwise assume GCC or something compatible
-+else
-+
-+# cc-disable-warning
-+# Usage: cflags-y += $(call cc-disable-warning,unused-but-set-variable)
-+cc-disable-warning = $(call try-run,\
-+	$(CC) $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) -W$(strip $(1)) -c -xc /dev/null -o "$$TMP",-Wno-$(strip $(1)))
-+
-+endif
- # cc-option
- # Usage: cflags-y += $(call cc-option,-march=winchip-c6,-march=i586)
--
- cc-option = $(call try-run,\
- 	$(CC) $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) $(1) -c -xc /dev/null -o "$$TMP",$(1),$(2))
- 
-@@ -122,11 +138,6 @@ cc-option-yn = $(call try-run,\
- cc-option-align = $(subst -functions=0,,\
- 	$(call cc-option,-falign-functions=0,-malign-functions=0))
- 
--# cc-disable-warning
--# Usage: cflags-y += $(call cc-disable-warning,unused-but-set-variable)
--cc-disable-warning = $(call try-run,\
--	$(CC) $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) -W$(strip $(1)) -c -xc /dev/null -o "$$TMP",-Wno-$(strip $(1)))
--
- # cc-version
- # Usage gcc-ver := $(call cc-version)
- cc-version = $(shell $(CONFIG_SHELL) $(srctree)/scripts/gcc-version.sh $(CC))
-Index: linux/scripts/Makefile.build
-===================================================================
 --- linux.orig/scripts/Makefile.build
 +++ linux/scripts/Makefile.build
 @@ -69,6 +69,7 @@
@@ -61,3 +15,29 @@ Index: linux/scripts/Makefile.build
  warning-1 += $(call cc-disable-warning, missing-field-initializers)
  
  warning-2 := -Waggregate-return
+--- linux.orig/scripts/Kbuild.include
++++ linux/scripts/Kbuild.include
+@@ -122,11 +122,23 @@
+ cc-option-align = $(subst -functions=0,,\
+ 	$(call cc-option,-falign-functions=0,-malign-functions=0))
+ 
++# Test for clang
++ifeq ($(shell $(CC) -v 2>&1 | grep -c "clang version"), 1)
++# cc-disable-warning
++# Usage: cflags-y += $(call cc-disable-warning,unused-but-set-variable)
++cc-disable-warning = $(call try-run,\
++	$(CC) $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) -W$(strip $(1)) -c -xc /dev/null -o "$$TMP" 2>&1 | grep -q "unknown warning option",,-Wno-$(strip $(1)))
++
++# Otherwise assume GCC or something compatible
++else
++
+ # cc-disable-warning
+ # Usage: cflags-y += $(call cc-disable-warning,unused-but-set-variable)
+ cc-disable-warning = $(call try-run,\
+ 	$(CC) $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) -W$(strip $(1)) -c -x c /dev/null -o "$$TMP",-Wno-$(strip $(1)))
+ 
++endif
++
+ # cc-version
+ # Usage gcc-ver := $(call cc-version)
+ cc-version = $(shell $(CONFIG_SHELL) $(srctree)/scripts/gcc-version.sh $(CC))
