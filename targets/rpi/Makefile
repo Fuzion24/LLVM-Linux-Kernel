@@ -33,7 +33,9 @@ KERNELDIR	= ${SRCDIR}/rpi
 
 MARCH		= armv6
 MFLOAT		= -mfloat-abi=hard -mfpu=vfp
-EXTRAFLAGS	= -mcpu=arm1176jzf-s
+# TODO(tinti) Remove workaround flags '-mllvm -use-new-sroa=false'
+# when http://llvm.org/bugs/show_bug.cgi?id=14034 fixed.
+EXTRAFLAGS	= -mcpu=arm1176jzf-s -mllvm -use-new-sroa=false
 
 all: prep kernel-build
 
