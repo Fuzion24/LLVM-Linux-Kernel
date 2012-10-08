@@ -67,4 +67,5 @@ arm-help:
 arm-settings:
 	@echo "# ARM settings"
 	@echo "CROSS_ARM_TOOLCHAIN	= ${CROSS_ARM_TOOLCHAIN}"
+	@echo "EXTRAFLAGS		= ${EXTRAFLAGS}"
 
