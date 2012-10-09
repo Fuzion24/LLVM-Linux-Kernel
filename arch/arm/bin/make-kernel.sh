@@ -28,6 +28,7 @@ TOPDIR=`dirname $0`/../../..
 USECLANG=${USECLANG:-1}
 DRYRUN=${DRYRUN:+echo}
 MARCH=${MARCH:-armv7-a}
+MFLOAT=${MFLOAT:-"-mfloat-abi=hard -mfpu=neon"}
 V=${V:+V=1}
 export PATH=`echo $PATH | sed -E 's/(.*?) :(.*)/\2\1/g; s/(.*?) :(.*)/\2\1/g; s/(.*?) :(.*)/\2\1/g'`
 
@@ -51,7 +52,7 @@ if [ $USECLANG -eq "1" ]; then
 	export CROSS_COMPILE=${HOST}-
 
 	# Must pass -mllvm -use-new-sroa=false or Clang will segfault on
-	export CLANGFLAGS="-march=$MARCH -mfpu=vfp -mfloat-abi=hard -Qunused-arguments -mllvm -use-new-sroa=false ${EXTRAFLAGS}"
+	export CLANGFLAGS="-march=$MARCH $MFLOAT -fno-builtin -Qunused-arguments -mllvm -use-new-sroa=false ${EXTRAFLAGS}"
 	export CC_FOR_BUILD="${INSTALLDIR}/bin/clang -ccc-host-triple ${HOST_TRIPLE} -ccc-gcc-name ${HOST}-gcc ${CLANGFLAGS}"
 fi
 

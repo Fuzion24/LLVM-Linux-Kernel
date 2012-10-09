@@ -24,6 +24,7 @@
 # Note: This file must be included after ${TOPDIR}/common.mk
 
 export MARCH
+export MFLOAT
 
 STATE_TOOLCHAIN	= state/arm-cc
 
@@ -41,9 +42,8 @@ SETTINGS_TARGETS+= arm-settings
 VERSION_TARGETS	+= arm-cc-version
 
 ARCH		= arm
-ifeq "${MARCH}" ""
-MARCH		= armv7-a
-endif
+MARCH		?= armv7-a
+MFLOAT		?= -mfloat-abi=softfp -mfpu=neon
 MAKE_FLAGS	= ARCH=${ARCH}
 MAKE_KERNEL	= ${ARCH_ARM_BINDIR}/make-kernel.sh ${LLVMINSTALLDIR} ${EXTRAFLAGS}
 CROSS_COMPILE	= ${HOST}-

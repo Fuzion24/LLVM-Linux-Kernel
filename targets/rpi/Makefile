@@ -32,6 +32,7 @@ KERNEL_GIT	= https://github.com/raspberrypi/linux.git
 KERNELDIR	= ${SRCDIR}/rpi
 
 MARCH		= armv6
+MFLOAT		= -mfloat-abi=hard -mfpu=vfp
 EXTRAFLAGS	= -mcpu=arm1176jzf-s
 
 all: prep kernel-build
