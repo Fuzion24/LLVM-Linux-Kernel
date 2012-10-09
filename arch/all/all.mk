@@ -347,6 +347,7 @@ kernel-gcc-sync: state/kernel-gcc-fetch kernel-shared-sync kernel-gcc-clean
 #############################################################################
 kernel-reset: state/kernel-fetch
 	@(cd ${KERNELDIR} && ${MAKE} clean)
+	@rm -f ${KERNELDIR}/arch/arm/boot/compressed/vmlinux
 	@$(call unpatch,${KERNELDIR})
 	@$(call optional_gitreset,${KERNELDIR})
 	@$(call leavestate,${STATEDIR},kernel-patch kernel-quilt kernel-configure kernel-build)
@@ -354,6 +355,7 @@ kernel-reset: state/kernel-fetch
 #############################################################################
 kernel-gcc-reset: state/kernel-gcc-fetch
 	@(cd ${KERNELGCC} && ${MAKE} clean)
+	@rm -f ${KERNELGCC}/arch/arm/boot/compressed/vmlinux
 	@$(call unpatch,${KERNELGCC})
 	@$(call optional_gitreset,${KERNELGCC})
 	@$(leavestate ${STATEDIR},kernel-gcc-configure kernel-gcc-patch kernel-gcc-build)
