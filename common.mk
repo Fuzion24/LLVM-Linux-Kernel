@@ -65,7 +65,13 @@ optional_gitreset =
 else
 optional_gitreset = $(call gitreset,${1})
 endif
-gitcommit = [ ! -d ${1}/.git ] || (cd ${1} && echo "${2}		= `git rev-parse HEAD`")
+
+##############################################################################
+# Settings macros used by all subsystems
+prsetting = (printf "%-24s= %s\n" "${1}" "${2}" | unexpand --all)
+praddsetting = (printf "%-23s+= %s\n" "${1}" "${2}" | unexpand --all)
+gitcommit = [ ! -d ${1}/.git ] || (cd ${1} && $(call prsetting,${2},`git rev-parse HEAD`))
+configfilter = sed -e 's|${TARGETDIR}|$${TARGETDIR}|g'
 
 ##############################################################################
 # Default jobs is number of processors + 1 for disk I/O
@@ -99,15 +105,22 @@ common-help:
 	@echo "* make JOBS=n ...           - Choose how many jobs to run under make (default ${JOBS})"
 
 ##############################################################################
+SETTINGS_TARGETS += common-settings
+common-settings:
+	@$(call gitcommit,${TOPDIR},LLVMLINUX_COMMIT)
+
+##############################################################################
 list-jobs:
 	@echo "-j${JOBS}"
 
 # The order of these includes is important
 include ${TOOLCHAIN}/toolchain.mk
 
+##############################################################################
 help:
 	@${MAKE} --silent ${HELP_TARGETS}
 
+##############################################################################
 list-targets:
 ifneq "${TARGETS}" ""
 	@echo "List of unclassified make targets:"
@@ -129,15 +142,19 @@ endif
 	@echo "List of available command-line make variables:"
 	@for t in ${CMDLINE_VARS}; do echo "\t"$$t; done | sort -u
 
+##############################################################################
 list-fetch-all:
 	@for t in ${FETCH_TARGETS}; do echo $$t | sed -e "s|^`pwd`/||"; done
 
+##############################################################################
 list-patch-applied:
 	${MAKE} ${PATCH_APPLIED_TARGETS}
 
+##############################################################################
 list-path:
 	@echo ${PATH}
 
+##############################################################################
 list-settings settings list-config config:
 	@${MAKE} --silent ${SETTINGS_TARGETS} 2>/dev/null | sed \
 		-e 's|${TARGETDIR}|$${TARGETDIR}|g' \
@@ -148,6 +165,7 @@ list-settings settings list-config config:
 		-e 's|${TOPDIR}|$${TOPDIR}|g' \
 		-e 's|^make[:\[].*$$||g'
 
+##############################################################################
 list-versions:
 	@cmake --version
 	@gcc --version | head -1
@@ -156,26 +174,32 @@ list-versions:
 	@echo "quilt version `quilt --version`"
 	@${MAKE} ${VERSION_TARGETS} | grep -v ^make
 
+##############################################################################
 clean-all:
 	@$(call banner,Cleaning everything...)
 	${MAKE} ${CLEAN_TARGETS}
 
+##############################################################################
 fetch-all:
 	@$(call banner,Fetching external repos...)
 	${MAKE} ${FETCH_TARGETS}
 
+##############################################################################
 mrproper-all: tmp-mrproper
 	@$(call banner,Scrubbing everything...)
 	${MAKE} ${MRPROPER_TARGETS}
 
+##############################################################################
 raze-all: tmp-mrproper
 	@$(call banner,Removing everything...)
 	${MAKE} ${RAZE_TARGETS}
 
+##############################################################################
 sync-all:
 	@$(call banner,Syncing everything...)
 	${MAKE} ${SYNC_TARGETS}
 
+##############################################################################
 tmp-mrproper:
 	@$(call banner,Scrubbing tmp dirs...)
 	rm -rf $(addsuffix /*,${TMPDIRS})
