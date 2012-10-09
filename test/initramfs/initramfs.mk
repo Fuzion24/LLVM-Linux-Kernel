@@ -57,15 +57,15 @@ initramfs-help:
 
 initramfs-settings:
 	@echo "# initramfs settings"
-	@echo "TOYBOXVER		= ${TOYBOXVER}"
-	@echo "TOYBOX			= ${TOYBOX}"
-	@echo "TOYBOXURL		= ${TOYBOXURL}"
-	@echo "DASHVER			= ${DASHVER}"
-	@echo "DASH			= ${DASH}"
-	@echo "DASHURL			= ${DASHURL}"
-#	@echo "LTPVER			= ${LTPVER}"
-#	@echo "LTP			= ${LTP}"
-#	@echo "LTPURL			= ${LTPURL}"
+	@$(call prsetting,TOYBOXVER,${TOYBOXVER})
+	@$(call prsetting,TOYBOX,${TOYBOX})
+	@$(call prsetting,TOYBOXURL,${TOYBOXURL})
+	@$(call prsetting,DASHVER,${DASHVER})
+	@$(call prsetting,DASH,${DASH})
+	@$(call prsetting,DASHURL,${DASHURL})
+#	@$(call prsetting,LTPVER,${LTPVER})
+#	@$(call prsetting,LTP,${LTP})
+#	@$(call prsetting,LTPURL,${LTPURL})
 
 ${INITCPIO}: toybox dash 
 	@rm -rf ${INITBUILDFSDIR}

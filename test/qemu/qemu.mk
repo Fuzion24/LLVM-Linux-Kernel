@@ -57,8 +57,8 @@ qemu-help:
 
 qemu-settings:
 	@echo "# QEMU settings"
-	@echo "QEMU_BRANCH		= ${QEMU_BRANCH}"
-	@echo "QEMU_GIT		= ${QEMU_GIT}"
+	@$(call prsetting,QEMU_BRANCH,${QEMU_BRANCH})
+	@$(call prsetting,QEMU_GIT,${QEMU_GIT})
 	@$(call gitcommit,${QEMUSRCDIR},QEMU_COMMIT)
 
 qemu-fetch: ${QEMUSTATE}/qemu-fetch

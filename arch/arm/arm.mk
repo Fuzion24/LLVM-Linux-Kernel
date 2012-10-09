@@ -66,6 +66,6 @@ arm-help:
 
 arm-settings:
 	@echo "# ARM settings"
-	@echo "CROSS_ARM_TOOLCHAIN	= ${CROSS_ARM_TOOLCHAIN}"
-	@echo "EXTRAFLAGS		= ${EXTRAFLAGS}"
+	@$(call prsetting,CROSS_ARM_TOOLCHAIN,${CROSS_ARM_TOOLCHAIN})
+	@$(call prsetting,EXTRAFLAGS,${EXTRAFLAGS})
 

@@ -94,16 +94,16 @@ llvm-help:
 ##############################################################################
 llvm-settings:
 	@echo "# LLVM settings"
-	@echo "LLVM_GIT		= ${LLVM_GIT}"
-	@echo "LLVM_BRANCH		= ${LLVM_BRANCH}"
+	@$(call prsetting,LLVM_GIT,${LLVM_GIT})
+	@$(call prsetting,LLVM_BRANCH,${LLVM_BRANCH})
 	@$(call gitcommit,${LLVMDIR},LLVM_COMMIT)
-	@echo "LLVM_OPTIMIZED		= ${LLVM_OPTIMIZED}"
+	@$(call prsetting,LLVM_OPTIMIZED,${LLVM_OPTIMIZED})
 	@echo "# Clang settings"
-	@echo "CLANG_GIT		= ${CLANG_GIT}"
-	@echo "CLANG_BRANCH		= ${CLANG_BRANCH}"
+	@$(call prsetting,CLANG_GIT,${CLANG_GIT})
+	@$(call prsetting,CLANG_BRANCH,${CLANG_BRANCH})
 	@$(call gitcommit,${CLANGDIR},CLANG_COMMIT)
-	@echo "COMPILERRT_GIT		= ${COMPILERRT_GIT}"
-	@echo "COMPILERRT_BRANCH	= ${COMPILERRT_BRANCH}"
+	@$(call prsetting,COMPILERRT_GIT,${COMPILERRT_GIT})
+	@$(call prsetting,COMPILERRT_BRANCH,${COMPILERRT_BRANCH})
 	@$(call gitcommit,${COMPILERRTDIR},COMPILERRT_COMMIT)
 
 ##############################################################################

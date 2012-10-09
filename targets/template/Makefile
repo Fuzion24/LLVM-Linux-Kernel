@@ -78,7 +78,7 @@ board-help:
 	@echo "* make <your make target here>	- Description"
 
 board-settings:
-	@echo "FOO		= ${FOO}"
+	@$(call prsetting,FOO,${FOO})
 
 board-fetch:
 	@$(call banner,Fetching foo)

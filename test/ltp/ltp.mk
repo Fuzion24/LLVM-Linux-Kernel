@@ -60,9 +60,9 @@ ltp-help:
 
 ltp-settings:
 	@echo "# LTP settings"
-	@echo "LTPSF_RELEASE		= ${LTPSF_RELEASE}"
-	@echo "LTPSF_TAR		= ${LTPSF_TAR}"
-	@echo "LTPSF_URI		= ${LTPSF_URI}"
+	@$(call prsetting,LTPSF_RELEASE,${LTPSF_RELEASE})
+	@$(call prsetting,LTPSF_TAR,${LTPSF_TAR})
+	@$(call prsetting,LTPSF_URI,${LTPSF_URI})
 
 ${LTPTMPDIR}/${LTPSF_TAR}:
 	@mkdir -p $(dir $@)
