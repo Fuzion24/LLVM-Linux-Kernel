@@ -55,9 +55,9 @@ MRPROPER_TARGETS	+= vexpress-mrproper
 RAZE_TARGETS		+= vexpress-raze
 .PHONY:			${VEXPRESS_TARGETS}
 
-include ${TARGETDIR}/vexpress-linaro.mk
 include ${TOPDIR}/common.mk
 include ${ARCHDIR}/arm/arm.mk
+include ${TARGETDIR}/vexpress-linaro.mk
 include ${TARGETDIR}/vexpress-ltp.mk
 include ${CONFIG}
 

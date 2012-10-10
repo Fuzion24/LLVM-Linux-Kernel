@@ -36,28 +36,30 @@ MRPROPER_TARGETS	+= vexpress-linaro-mrproper
 RAZE_TARGETS		+= vexpress-linaro-mrproper
 .PHONY:			
 
-# Build vexpress image
+# Get the Linaro sources.txt file
+linaro-sources: ${TMPDIR}/sources.txt
 ${TMPDIR}/sources.txt:
 	wget --quiet $(LINARORELEASEURL)/sources.txt -O $@
 
-${TMPDIR}/get-sources.sh: ${TMPDIR}/sources.txt
-	perl -ne 'if(/^${NANOBOARD}:/){$$f=1} elsif($$f && m|(http://\S+)|){print "wget -c -P ${TMPDIR} $$1/"} elsif($$f && /(\S*\.tar\..*): md5sum/){print "$$1\n"} elsif(/^\s+:/) {$$f=0}' $< >$@
-	sh $@
-
+# Build a list of URLs to download the parts needed to build a Linaro image with linaro-media-create
+linaro-board-sources: ${TMPDIR}/board-sources.txt
 ${TMPDIR}/board-sources.txt: ${TMPDIR}/sources.txt
 	perl -ne 'if(/^${NANOBOARD}:/){$$f=1} elsif($$f && m|(http://\S+)|){print "$$1/"} elsif($$f && /(\S*\.tar\..*): md5sum/){print "$$1\n"} elsif(/^\s+:/) {$$f=0}' $< >$@
 	wget -c -P ${TMPDIR} `cat $@`
 
+# Build an SD image with the files downloaded from board-sources.txt
+linaro-image: ${NANOIMG}
 ${NANOIMG}: ${TMPDIR}/board-sources.txt
 	(cd ${TMPDIR} && sudo linaro-media-create --dev ${BOARD} --rootfs ext4 \
 		`sed 's|.*nano.*/|--binary |; s|.*hwpack.*/|--hwpack |' $(notdir $<)` \
 		--hwpack-force-yes --image-size 1G --image-file $@ \
 	)
 
+# Remove SD image
 vexpress-linaro-clean:
 	rm -f ${NANOIMG}
 
-# do a real wipe
+# Remove all derived files
 vexpress-linaro-mrproper: vexpress-linaro-clean
-	rm -f ${TMPDIR}/sources.txt ${TMPDIR}/get-sources.sh ${TMPDIR}/board-sources.txt
+	rm -f ${TMPDIR}/sources.txt ${TMPDIR}/board-sources.txt
 
