@@ -1,8 +1,6 @@
-Index: linux/arch/arm/include/asm/thread_info.h
-===================================================================
---- linux.orig/arch/arm/include/asm/thread_info.h	2012-09-05 12:03:39.813231260 -0400
-+++ linux/arch/arm/include/asm/thread_info.h	2012-09-05 12:13:43.297644753 -0400
-@@ -93,8 +93,7 @@
+--- linux.orig/arch/arm/include/asm/thread_info.h
++++ linux/arch/arm/include/asm/thread_info.h
+@@ -95,8 +95,7 @@
  
  static inline struct thread_info *current_thread_info(void)
  {
@@ -12,10 +10,8 @@ Index: linux/arch/arm/include/asm/thread_info.h
  }
  
  #define thread_saved_pc(tsk)	\
-Index: linux/arch/arm/kernel/return_address.c
-===================================================================
---- linux.orig/arch/arm/kernel/return_address.c	2012-09-05 12:03:39.813231260 -0400
-+++ linux/arch/arm/kernel/return_address.c	2012-09-05 12:13:43.297644753 -0400
+--- linux.orig/arch/arm/kernel/return_address.c
++++ linux/arch/arm/kernel/return_address.c
 @@ -39,12 +39,11 @@
  {
  	struct return_address_data data;
@@ -30,10 +26,8 @@ Index: linux/arch/arm/kernel/return_address.c
  	frame.lr = (unsigned long)__builtin_return_address(0);
  	frame.pc = (unsigned long)return_address;
  
-Index: linux/arch/arm/kernel/stacktrace.c
-===================================================================
---- linux.orig/arch/arm/kernel/stacktrace.c	2012-09-05 12:03:39.813231260 -0400
-+++ linux/arch/arm/kernel/stacktrace.c	2012-09-05 12:13:43.297644753 -0400
+--- linux.orig/arch/arm/kernel/stacktrace.c
++++ linux/arch/arm/kernel/stacktrace.c
 @@ -109,11 +109,9 @@
  		frame.pc = thread_saved_pc(tsk);
  #endif
@@ -47,10 +41,8 @@ Index: linux/arch/arm/kernel/stacktrace.c
  		frame.lr = (unsigned long)__builtin_return_address(0);
  		frame.pc = (unsigned long)save_stack_trace_tsk;
  	}
-Index: linux/arch/arm/kernel/unwind.c
-===================================================================
---- linux.orig/arch/arm/kernel/unwind.c	2012-09-05 12:03:39.813231260 -0400
-+++ linux/arch/arm/kernel/unwind.c	2012-09-05 12:13:43.297644753 -0400
+--- linux.orig/arch/arm/kernel/unwind.c
++++ linux/arch/arm/kernel/unwind.c
 @@ -408,7 +408,6 @@
  void unwind_backtrace(struct pt_regs *regs, struct task_struct *tsk)
  {
@@ -68,3 +60,15 @@ Index: linux/arch/arm/kernel/unwind.c
  		frame.lr = (unsigned long)__builtin_return_address(0);
  		frame.pc = (unsigned long)unwind_backtrace;
  	} else {
+--- linux.orig/arch/arm/include/asm/ptrace.h
++++ linux/arch/arm/include/asm/ptrace.h
+@@ -255,8 +255,7 @@
+ }
+ 
+ #define current_pt_regs(void) ({				\
+-	register unsigned long sp asm ("sp");			\
+-	(struct pt_regs *)((sp | (THREAD_SIZE - 1)) - 7) - 1;	\
++	(struct pt_regs *)(((unsigned long)(__builtin_frame_address(0)) | (THREAD_SIZE - 1)) - 7) - 1;	\
+ })
+ 
+ #endif /* __KERNEL__ */
