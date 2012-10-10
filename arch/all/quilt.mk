@@ -114,8 +114,9 @@ ${SERIES_DOT_TARGET}:
 ##############################################################################
 # Save any new patches from the generated series file to the series.target file
 kernel-quilt-update-series-dot-target: ${SERIES_DOT_TARGET}
-	-@[ `stat -c %Z ${TARGET_PATCH_SERIES}` -le `stat -c %Z ${SERIES_DOT_TARGET}` ] || \
-		($(call banner, "Saving quilt changes to series.target file for kernel...") ; \
+	-@[ ! -d ${TARGET_PATCH_SERIES} ] \
+		|| [ `stat -c %Z ${TARGET_PATCH_SERIES}` -le `stat -c %Z ${SERIES_DOT_TARGET}` ] \
+		|| ($(call banner, "Saving quilt changes to series.target file for kernel...") ; \
 		diff ${TARGET_PATCH_SERIES} ${SERIES_DOT_TARGET} \
 		| perl -ne 'print "$$1\n" if $$hunk>1 && /^< (.*)$$/; $$hunk++ if /^[^<>]/' \
 		>> ${SERIES_DOT_TARGET}; touch ${SERIES_DOT_TARGET})
@@ -124,7 +125,7 @@ kernel-quilt-update-series-dot-target: ${SERIES_DOT_TARGET}
 # Generate target series file from relevant kernel quilt patch series files
 kernel-quilt-generate-series: ${TARGET_PATCH_SERIES}
 ${TARGET_PATCH_SERIES}: ${ALL_PATCH_SERIES}
-	$(MAKE) kernel-quilt-update-series-dot-target
+	@$(MAKE) kernel-quilt-update-series-dot-target
 	@$(call banner, "Building quilt series file for kernel...")
 	@cat ${ALL_PATCH_SERIES} > $@
 
