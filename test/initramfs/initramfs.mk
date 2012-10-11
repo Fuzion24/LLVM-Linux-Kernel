@@ -28,7 +28,7 @@ CLEAN_TARGETS	+= initramfs-clean
 MRPROPER_TARGETS+= initramfs-mrproper
 RAZE_TARGETS	+= initramfs-raze
 
-.PHONY: initramfs-prep initramfs initramfs-clean ltp dash
+.PHONY: initramfs-prep initramfs initramfs-clean ltp busybox
 
 INITRAMFS	= initramfs.img.gz
 INITBUILDDIR	= ${TARGETDIR}/initramfs
@@ -44,6 +44,7 @@ DASHURL		= http://gondor.apana.org.au/~herbert/dash/files/${DASH}.tar.gz
 LTPVER		= 20120104
 LTP		= ltp-full-${LTPVER}
 LTPURL		= http://prdownloads.sourceforge.net/ltp/${LTP}.bz2?download
+BUSYBOX		= ${INITBUILDDIR}/busybox/_install/bin/busybox
 
 GCC		= gcc
 
@@ -67,48 +68,38 @@ initramfs-settings:
 #	@$(call prsetting,LTP,${LTP})
 #	@$(call prsetting,LTPURL,${LTPURL})
 
-${INITCPIO}: toybox dash 
+initramfs-unpacked: ${INITBUILDFSDIR}/init
+${INITBUILDFSDIR}/init: ${BUSYBOX} ${KERNEL_MODULES}
 	@rm -rf ${INITBUILDFSDIR}
 	@mkdir -p $(addprefix ${INITBUILDFSDIR}/,bin sys dev proc tmp usr/bin)
-	@PREFIX=${INITBUILDFSDIR} make -C ${INITBUILDDIR}/${TOYBOX} install
-	@make -C ${INITBUILDDIR}/${DASH} install
-	@ln -sf bin/dash ${INITBUILDFSDIR}/init
-	@(cd ${INITBUILDFSDIR} && find . | cpio -H newc -o > ${INITCPIO})
-#	@cp ${INITRAMFSDIR}/bin/ls ${INITBUILDFSDIR}/usr/bin
-#	@(cd ${INITBUILDDIR}/${LTP} && make install)
-
+	@cp -ar ${INITBUILDDIR}/busybox/_install/* ${INITBUILDFSDIR}
+	@cp -r ${INITRAMFSDIR}/etc ${INITBUILDFSDIR}
+	@cp ${INITRAMFSDIR}/init ${INITBUILDFSDIR}
 
 initramfs initramfs-build: ${INITRAMFS}
-${INITRAMFS}: ${INITCPIO}
-	@cat $< | gzip -9c > $@
+${INITRAMFS}: ${INITBUILDFSDIR}/init
+	@(cd ${INITBUILDFSDIR} && find . | cpio -H newc -o > ${INITCPIO})
+	@cat ${INITCPIO} | gzip -9c > $@
 	@echo "Created $@: Done."
 
 initramfs-clean:
 	@$(call banner,Clean initramfs...)
-	rm -rf ${INITRAMFS} $(addprefix ${INITBUILDDIR}/,initramfs initramfs-build ${DASH}* ${TOYBOX}* ${LTP}*)
+	rm -rf ${INITRAMFS} $(addprefix ${INITBUILDDIR}/,initramfs initramfs-build ${LTP}*)
+	([ -f ${INITBUILDDIR}/busybox/Makefile ] && cd ${INITBUILDDIR}/busybox && make clean || rm -rf ${INITBUILDDIR}/busybox)
 
 initramfs-mrproper initramfs-raze:
 	@$(call banner,Scrub initramfs...)
 	rm -f ${INITRAMFS}
 	rm -rf ${INITBUILDDIR}
 
-toybox: ${INITBUILDDIR}/${TOYBOX}/toybox
-${INITBUILDDIR}/${TOYBOX}/toybox:
-	@wget -P ${INITBUILDDIR} -c ${TOYBOXURL}
-	@rm -rf ${INITBUILDDIR}/${TOYBOX}
-	(cd ${INITBUILDDIR} && tar xjf ${TOYBOX}.tar.bz2)
-	(cd ${INITBUILDDIR}/${TOYBOX} && CFLAGS="--static" CC=${GCC} CROSS_COMPILE=${CROSS_COMPILE} PREFIX=${INITBUILDFSDIR} make defconfig toybox)
+busybox: ${BUSYBOX}
+${BUSYBOX}:
+	([ ! -f ${INITBUILDDIR}/busybox/.git/config ] && (cd ${INITBUILDDIR} && git clone git://busybox.net/busybox.git) || \
+		(cd ${INITBUILDDIR}/busybox && git pull))
+	(cd ${INITBUILDDIR}/busybox && LDFLAGS="--static" make -j ${JOBS} CROSS_COMPILE="${HOST}-" defconfig)
+	(cd ${INITBUILDDIR}/busybox && LDFLAGS="--static" make -j ${JOBS} CROSS_COMPILE="${HOST}-")
+	(cd ${INITBUILDDIR}/busybox && LDFLAGS="--static" make -j ${JOBS} CROSS_COMPILE="${HOST}-" install)
 
-# && cd ${TOYBOX} && patch -p1 < ${INITRAMFSDIR}/patches/toybox.patch)
-
-dash: ${INITBUILDDIR}/${DASH}/src/dash
-${INITBUILDDIR}/${DASH}/src/dash:
-	env
-	@wget -P ${INITBUILDDIR} -c ${DASHURL}
-	@rm -rf ${INITBUILDDIR}/${DASH}
-	(cd ${INITBUILDDIR} && tar xzf ${DASH}.tar.gz)
-	(cd ${INITBUILDDIR}/${DASH} && ./configure --prefix=${INITBUILDFSDIR} --host=${HOST})
-	(cd ${INITBUILDDIR}/${DASH} && make CFLAGS="-static")
 
 ltp: ${INITBUILDDIR}/${LTP}/Version
 ${INITBUILDDIR}/${LTP}/Version:

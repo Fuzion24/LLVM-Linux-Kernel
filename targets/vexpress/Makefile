@@ -116,11 +116,20 @@ test-gcc-boot-poweroff: state/prep state/kernel-gcc-build ${QEMUSTATE}/qemu-buil
 	( sleep 10 && killall -s 9 qemu-system-arm ) || exit 0
 	@grep -a "SUCCESS" tmp/qemu_gcc_log 
 
-test2: state/prep ${QEMUSTATE}/qemu-build state/kernel-build initramfs
-	@$(call qemu,${BOARD},${KERNELDIR},256,/dev/ram0,init=/bin/init,-initrd initramfs.img.gz)
+# Create the generic initramfs, add in the kernel modules, then create the cpio
+test2: state/prep ${QEMUSTATE}/qemu-build state/kernel-build initramfs-unpacked
+	@rm -rf ${INITBUILDFSDIR}/lib
+	(cd ${KERNELDIR} && make INSTALL_MOD_PATH=${INITBUILDFSDIR} ARCH=arm modules_install)
+	@rm -f ${INITRAMFS}
+	@make ${INITRAMFS}
+	@$(call qemu,${BOARD},${KERNELDIR},256,/dev/ram0,init=/sbin/init,-initrd initramfs.img.gz)
 
-test2-gcc: state/prep ${QEMUSTATE}/qemu-build state/kernel-gcc-build initramfs
-	@$(call qemu,${BOARD},${KERNELGCC},256,/dev/ram0,init=/bin/init,-initrd initramfs.img.gz)
+test2-gcc: state/prep ${QEMUSTATE}/qemu-build state/kernel-gcc-build initramfs-unpacked
+	@rm -rf ${INITBUILDFSDIR}/lib
+	(cd ${KERNELGCC} && make INSTALL_MOD_PATH=${INITBUILDFSDIR} ARCH=arm modules_install)
+	@rm -f ${INITRAMFS}
+	@make ${INITRAMFS}
+	@$(call qemu,${BOARD},${KERNELGCC},256,/dev/ram0,init=/sbin/init,-initrd initramfs.img.gz)
 
 # Get prebuilt vexpress image
 VEXPRESS_IMG_GZ	= ${TMPDIR}/${NANOIMG}.gz
@@ -133,14 +142,6 @@ ${VEXPRESS_IMG}: ${VEXPRESS_IMG_GZ}
 
 test3: state/prep ${QEMUSTATE}/qemu-build state/kernel-build ${VEXPRESS_IMG}
 	@$(call qemu,${BOARD},${KERNELDIR},256,/dev/mmcblk0p2,rootfstype=ext4 init=/bin/bash,-sd ${VEXPRESS_IMG}) ${NET}
-
-patch-update: state/kernel-patch
-	@${TOOLSDIR}/applyfilter.py ${ARCH_ALL_PATCHES}/common.patch ${TMPDIR}/common.patch ${FILTERFILE}
-	@${TOOLSDIR}/applyfilter.py ${ARCH_ALL_PATCHES}/fix-warnings.patch ${TMPDIR}/fix-warnings.patch ${FILTERFILE}
-	@${TOOLSDIR}/applyfilter.py ${ARCH_ALL_PATCHES}/fix-warnings-unused.patch ${TMPDIR}/fix-warnings-unused.patch ${FILTERFILE}
-	@${TOOLSDIR}/applyfilter.py ${ARCH_ARM_PATCHES}/common-arm.patch ${TMPDIR}/common-arm.patch ${FILTERFILE}
-	@${TOOLSDIR}/applyfilter.py ${ARCH_ARM_PATCHES}/fix-warnings-arm.patch ${TMPDIR}/fix-warnings-arm.patch ${FILTERFILE}
-	@${TOOLSDIR}/applyfilter.py ${ARCH_ARM_PATCHES}/fix-warnings-arm-unused.patch ${TMPDIR}/fix-warnings-arm-unused.patch ${FILTERFILE}
 
 vexpress-clean: kernel-clean kernel-gcc-clean
 	@$(call banner,Cleaning Vexpress)
