@@ -43,10 +43,15 @@ banner	= ( echo ${seperator}; echo ${1}; echo ${seperator} )
 state	= @mkdir -p $(dir ${1}) && touch ${1} \
 	  && $(call banner,"Finished state $(notdir ${1})") \
 	  && ( [ -d $(dir ${1})${2} ] || rm -f $(dir ${1})${2} )
-leavestate = rm -f $(addprefix ${1}/,${2})
+leavestate = rm -f $(wildcard $(addprefix ${1}/,${2}))
 error1	= ( echo Error: ${1}; false )
 assert	= [ ${1} ] || $(call error1,${2})
 assert_found_in_path = which ${1} || (echo "${1}: Not found in PATH"; false)
+
+##############################################################################
+# recursive Make macros
+makeclean = if [ -d ${1} ]; then ${MAKE} -C ${1} clean | grep -v '^make\['; fi
+makemrproper = if [ -d ${1} ]; then ${MAKE} -C ${1} mrproper | grep -v '^make\['; fi
 
 ##############################################################################
 # Quilt patch macros used by all subsystems
@@ -62,7 +67,7 @@ gitcheckout = (cd ${1} && git checkout ${2} && ([ -z "${3}" ] || git pull && git
 gitmove = (cd ${1} && git branch --move ${2} $3 >/dev/null 2>&1)
 gitpull = (cd ${1} && git checkout ${2} && git pull origin ${2})
 gitreset = ([ -d ${1} ] && cd ${1} && $(call banner,"Reseting git tree ${1}") && git reset --hard HEAD && git clean -d -f) || true
-ifneq "GIT_HARD_RESET" ""
+ifneq "${GIT_HARD_RESET}" ""
 optional_gitreset = $(call gitreset,${1})
 else
 optional_gitreset =
@@ -180,29 +185,35 @@ list-versions:
 clean-all:
 	@$(call banner,Cleaning everything...)
 	${MAKE} ${CLEAN_TARGETS}
+	@$(call banner,All clean!)
 
 ##############################################################################
 fetch-all:
 	@$(call banner,Fetching external repos...)
 	${MAKE} ${FETCH_TARGETS}
+	@$(call banner,All external sources fetched!)
 
 ##############################################################################
 mrproper-all: tmp-mrproper
 	@$(call banner,Scrubbing everything...)
 	${MAKE} ${MRPROPER_TARGETS}
+	@$(call banner,All very clean!)
 
 ##############################################################################
 raze-all: tmp-mrproper
 	@$(call banner,Removing everything...)
 	${MAKE} ${RAZE_TARGETS}
+	@$(call banner,All external sources razed!)
 
 ##############################################################################
 sync-all:
 	@$(call banner,Syncing everything...)
 	${MAKE} ${SYNC_TARGETS}
+	@$(call banner,All external sources synced!)
 
 ##############################################################################
 tmp-mrproper:
 	@$(call banner,Scrubbing tmp dirs...)
 	rm -rf $(addsuffix /*,${TMPDIRS})
+	@$(call banner,All tmp dirs very clean!)
 

@@ -93,7 +93,7 @@ ${LTPSTATE}/ltp-configure: ${LTPSTATE}/ltp-fetch
 	(cd ${LTPBUILDDIR} && ${LTPSRCDIR}/ltp/configure \
 		--host arm-none-linux-gnueabi \
 		--disable-docs --prefix=${LTPINSTALLDIR})
-	make -C ${LTPBUILDDIR} clean
+	@$(call makeclean,${LTPBUILDDIR}) >/dev/null
 	@$(call ltpstate,$@,build)
 
 ltp-build: ${LTPSTATE}/ltp-build
@@ -122,7 +122,7 @@ ltp-clean-all:
 	rm -rf ${TOPLTPINSTALLDIR}
 
 ltp-clean: ltp-clean-all
-	[ -d ${LTPBUILDDIR} ] && make -C ${LTPBUILDDIR} clean >/dev/null
+	@$(call makeclean,${LTPBUILDDIR}) >/dev/null
 
 ltp-mrproper: ltp-clean-all
 	rm -f ${LTPSTATE}/ltp-*
