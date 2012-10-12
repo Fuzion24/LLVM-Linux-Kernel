@@ -66,28 +66,6 @@ Index: linux/drivers/net/ethernet/smsc/smc91x.c
  	.probe		= smc_drv_probe,
  	.remove		= __devexit_p(smc_drv_remove),
  	.driver		= {
-Index: linux/drivers/mmc/host/mmci.c
-===================================================================
---- linux.orig/drivers/mmc/host/mmci.c
-+++ linux/drivers/mmc/host/mmci.c
-@@ -1668,9 +1668,15 @@
- 	{ 0, 0 },
- };
- 
--MODULE_DEVICE_TABLE(amba, mmci_ids);
-+// FIXME
-+// MODULE_DEVICE_TABLE(amba, mmci_ids);
-+// Which expands to:
-+// extern const struct amba_device_id __mod_amba_device_table __attribute__ ((unused, __alias__("mmci_ids")));
-+// causes the following error in LLVM:
-+// ERROR: "__unnamed_1" [drivers/mmc/host/mmci.ko] undefined!
- 
--static struct amba_driver mmci_driver = {
-+
-+static struct amba_driver mmci_driver __refdata = {
- 	.drv		= {
- 		.name	= DRIVER_NAME,
- 		.pm	= &mmci_dev_pm_ops,
 Index: linux/sound/arm/aaci.c
 ===================================================================
 --- linux.orig/sound/arm/aaci.c
