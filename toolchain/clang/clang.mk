@@ -301,7 +301,7 @@ llvmsync = $(call banner,Updating ${1}...) ; \
 		$(call banner, "Syncing commit-ish ${1}...") ; \
 		$(call gitcheckout,${2},${3},${4}) ; \
 	else \
-		(cd ${2} && git checkout -f ${3} && git pull) ; \
+		$(call gitpull,${2},${3}) ; \
 	fi
 
 ##############################################################################

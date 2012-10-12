@@ -118,7 +118,7 @@ qemu-sync: ${QEMUSTATE}/qemu-fetch
 		$(call banner, "Syncing commit-ish QEMU...") ; \
 		$(call gitcheckout,${QEMUSRCDIR},${QEMU_BRANCH},${QEMU_COMMIT}) ; \
 	else \
-		(cd ${QEMUSRCDIR} && git checkout ${QEMU_BRANCH} && git pull) ; \
+		$(call gitpull,${QEMUSRCDIR},${QEMU_BRANCH}) ; \
 	fi
 
 qemu-version: ${QEMUSTATE}/qemu-fetch

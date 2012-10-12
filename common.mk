@@ -58,12 +58,14 @@ unpatch	= [ ! -d ${1} ] || (cd ${1} && if [ -e patches ] && $(call banner,"Unapp
 ##############################################################################
 # Git macros used by all subsystems
 gitclone = [ -d ${2}/.git ] || (rm -rf ${2} && git clone ${1} ${2})
-gitcheckout = (cd ${1} && git checkout ${2} && git pull && git checkout ${3})
+gitcheckout = (cd ${1} && git checkout ${2} && ([ -z "${3}" ] || git pull && git checkout ${3}))
+gitmove = (cd ${1} && git branch --move ${2} $3 >/dev/null 2>&1)
+gitpull = (cd ${1} && git checkout ${2} && git pull origin ${2})
 gitreset = ([ -d ${1} ] && cd ${1} && $(call banner,"Reseting git tree ${1}") && git reset --hard HEAD && git clean -d -f) || true
-ifeq "GIT_HARD_RESET" ""
-optional_gitreset =
-else
+ifneq "GIT_HARD_RESET" ""
 optional_gitreset = $(call gitreset,${1})
+else
+optional_gitreset =
 endif
 
 ##############################################################################
