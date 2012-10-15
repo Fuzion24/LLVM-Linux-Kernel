@@ -50,8 +50,8 @@ assert_found_in_path = which ${1} || (echo "${1}: Not found in PATH"; false)
 
 ##############################################################################
 # recursive Make macros
-makeclean = if [ -d ${1} ]; then ${MAKE} -C ${1} clean | grep -v '^make\['; fi
-makemrproper = if [ -d ${1} ]; then ${MAKE} -C ${1} mrproper | grep -v '^make\['; fi
+makeclean = if [ -d ${1} ]; then ${MAKE} --quiet -C ${1} clean ; fi
+makemrproper = if [ -d ${1} ]; then ${MAKE} --quiet -C ${1} mrproper ; fi
 
 ##############################################################################
 # Quilt patch macros used by all subsystems

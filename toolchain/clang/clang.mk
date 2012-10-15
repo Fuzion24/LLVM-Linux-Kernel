@@ -249,7 +249,7 @@ llvm-reset: ${LLVMSTATE}/clang-fetch ${LLVMSTATE}/compilerrt-fetch
 	@$(call optional_gitreset,${LLVMDIR})
 # Unpatched LLVM
 	@$(call banner,Cleaning unpatched LLVM...)
-	@$(call makeclean,${LLVMBUILDDIR2}) || true
+	@$(call makeclean,${LLVMBUILDDIR2})
 	@$(call optional_gitreset,${COMPILERRTDIR2})
 	@$(call optional_gitreset,${LLVMDIR2})
 	@$(call leavestate,${LLVMSTATE},llvm-patch llvm-configure llvm-build llvm-unpatched-configure llvm-unpatched-build)
@@ -317,10 +317,12 @@ llvmsync = $(call banner,Updating ${1}...) ; \
 ##############################################################################
 llvm-sync: llvm-clean
 	@$(call llvmsync,LLVM,${LLVMDIR},${LLVM_BRANCH},${LLVM_COMMIT})
+	@$(call llvmsync,unpatched LLVM,${LLVMDIR2},${LLVM_BRANCH},${LLVM_COMMIT})
 
 ##############################################################################
 clang-sync: clang-clean
 	@$(call llvmsync,Clang,${CLANGDIR},${CLANG_BRANCH},${CLANG_COMMIT})
+	@$(call llvmsync,Unpatched Clang,${CLANGDIR2},${CLANG_BRANCH},${CLANG_COMMIT})
 
 ##############################################################################
 compilerrt-sync: ${LLVMSTATE}/compilerrt-sync
