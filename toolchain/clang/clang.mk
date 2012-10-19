@@ -307,7 +307,7 @@ clang-raze: clang-clean-noreset
 ##############################################################################
 llvmsync = $(call banner,Updating ${1}...) ; \
 	$(call unpatch,${2}) ; \
-	if [ -n "${4}" ] ; then \
+	[ ! -d ${2} ] || if [ -n "${4}" ] ; then \
 		$(call banner, "Syncing commit-ish ${1}...") ; \
 		$(call gitcheckout,${2},${3},${4}) ; \
 	else \
