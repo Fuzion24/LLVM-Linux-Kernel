@@ -258,7 +258,7 @@ llvm-reset: ${LLVMSTATE}/clang-fetch ${LLVMSTATE}/compilerrt-fetch
 llvm-clean-noreset:
 	@$(call banner,Removing LLVM Build and Install dirs...)
 	@rm -rf ${LLVMBUILDDIR} ${LLVMINSTALLDIR} ${LLVMINSTALLDIR2}
-	@$(call leavstate,${LLVMSTATE},llvm-configure llvm-build llvm-unpatched-configure llvm-unpatched-build)
+	@$(call leavestate,${LLVMSTATE},llvm-configure llvm-build llvm-unpatched-configure llvm-unpatched-build)
 
 ##############################################################################
 llvm-clean: llvm-reset llvm-clean-noreset clang-clean
