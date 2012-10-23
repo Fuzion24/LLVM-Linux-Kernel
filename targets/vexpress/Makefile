@@ -122,14 +122,14 @@ test2: state/prep ${QEMUSTATE}/qemu-build state/kernel-build initramfs-unpacked
 	(cd ${KERNELDIR} && make INSTALL_MOD_PATH=${INITBUILDFSDIR} ARCH=arm modules_install)
 	@rm -f ${INITRAMFS}
 	@make ${INITRAMFS}
-	${TOPDIR}/test/qemu/install/bin/qemu-system-arm -M vexpress-a9 -m 256M -kernel ${KERNELDIR}/arch/arm/boot/zImage -append "mem=256M root=/dev/ram0 console=earlycon console=ttyAMA0,38400n8 earlyprintk rdinit=/sbin/init" -initrd initramfs.img.gz -nographic
+	@$(call qemu,${BOARD},${KERNELDIR},256,/dev/ram0,rdinit=/sbin/init,-initrd ${INITRAMFS})
 
 test2-gcc: state/prep ${QEMUSTATE}/qemu-build state/kernel-gcc-build initramfs-unpacked
 	@rm -rf ${INITBUILDFSDIR}/lib
 	(cd ${KERNELGCC} && make INSTALL_MOD_PATH=${INITBUILDFSDIR} ARCH=arm modules_install)
 	@rm -f ${INITRAMFS}
 	@make ${INITRAMFS}
-	${TOPDIR}/test/qemu/install/bin/qemu-system-arm -M vexpress-a9 -m 256M -kernel ${KERNELGCC}/arch/arm/boot/zImage -append "mem=256M root=/dev/ram0 console=earlycon console=ttyAMA0,38400n8 earlyprintk rdinit=/sbin/init" -initrd initramfs.img.gz -nographic
+	@$(call qemu,${BOARD},${KERNELGCC},256,/dev/ram0,rdinit=/sbin/init,-initrd ${INITRAMFS})
 
 # Get prebuilt vexpress image
 VEXPRESS_IMG_GZ	= ${TMPDIR}/${NANOIMG}.gz
