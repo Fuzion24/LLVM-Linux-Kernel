@@ -35,16 +35,11 @@ INITBUILDDIR	= ${TARGETDIR}/initramfs
 INITBUILDFSDIR	= ${INITBUILDDIR}/initramfs
 INITCPIO	= ${INITBUILDFSDIR}.cpio
 
-TOYBOXVER	= 0.4.0
-TOYBOX		= toybox-${TOYBOXVER}
-TOYBOXURL	= http://landley.net/toybox/downloads/${TOYBOX}.tar.bz2
-DASHVER		= 0.5.7
-DASH		= dash-${DASHVER}
-DASHURL		= http://gondor.apana.org.au/~herbert/dash/files/${DASH}.tar.gz
 LTPVER		= 20120104
-LTP		= ltp-full-${LTPVER}
+LTP			= ltp-full-${LTPVER}
 LTPURL		= http://prdownloads.sourceforge.net/ltp/${LTP}.bz2?download
 BUSYBOX		= ${INITBUILDDIR}/busybox/_install/bin/busybox
+BUSYBOXGIT	= git://busybox.net/busybox.git
 
 GCC		= gcc
 
@@ -58,23 +53,16 @@ initramfs-help:
 
 initramfs-settings:
 	@echo "# initramfs settings"
-	@$(call prsetting,TOYBOXVER,${TOYBOXVER})
-	@$(call prsetting,TOYBOX,${TOYBOX})
-	@$(call prsetting,TOYBOXURL,${TOYBOXURL})
-	@$(call prsetting,DASHVER,${DASHVER})
-	@$(call prsetting,DASH,${DASH})
-	@$(call prsetting,DASHURL,${DASHURL})
 #	@$(call prsetting,LTPVER,${LTPVER})
 #	@$(call prsetting,LTP,${LTP})
 #	@$(call prsetting,LTPURL,${LTPURL})
 
-initramfs-unpacked: ${INITBUILDFSDIR}/init
+initramfs-unpacked: ${BUSYBOX}
 ${INITBUILDFSDIR}/init: ${BUSYBOX} ${KERNEL_MODULES}
 	@rm -rf ${INITBUILDFSDIR}
 	@mkdir -p $(addprefix ${INITBUILDFSDIR}/,bin sys dev proc tmp usr/bin)
 	@cp -ar ${INITBUILDDIR}/busybox/_install/* ${INITBUILDFSDIR}
 	@cp -r ${INITRAMFSDIR}/etc ${INITBUILDFSDIR}
-	@cp ${INITRAMFSDIR}/init ${INITBUILDFSDIR}
 
 initramfs initramfs-build: ${INITRAMFS}
 ${INITRAMFS}: ${INITBUILDFSDIR}/init
@@ -94,7 +82,8 @@ initramfs-mrproper initramfs-raze:
 
 busybox: ${BUSYBOX}
 ${BUSYBOX}:
-	([ ! -f ${INITBUILDDIR}/busybox/.git/config ] && (cd ${INITBUILDDIR} && git clone git://busybox.net/busybox.git) || \
+	([ ! -d ${INITBUILDDIR} ] && mkdir -p ${INITBUILDDIR})
+	([ ! -f ${INITBUILDDIR}/busybox/.git/config ] && (cd ${INITBUILDDIR} && git clone ${BUSYBOXGIT}) || \
 		(cd ${INITBUILDDIR}/busybox && git pull))
 	(cd ${INITBUILDDIR}/busybox && LDFLAGS="--static" make -j ${JOBS} CROSS_COMPILE="${HOST}-" defconfig)
 	(cd ${INITBUILDDIR}/busybox && LDFLAGS="--static" make -j ${JOBS} CROSS_COMPILE="${HOST}-")
