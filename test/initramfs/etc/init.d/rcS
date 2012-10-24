@@ -3,3 +3,7 @@ mount -t proc none /proc
 mount -t sysfs none /sys
 sysctl -w kernel.hotplug=/sbin/mdev
 mdev -s
+
+ifconfig eth0 up
+ifconfig eth0 10.0.2.15
+route add default gw 10.0.2.2
