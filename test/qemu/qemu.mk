@@ -48,7 +48,7 @@ VERSION_TARGETS		+= qemu-version
 .PHONY:		${QEMU_TARGETS}
 
 QEMU_GIT	= "git://git.qemu.org/qemu.git"
-QEMU_BRANCH	= "stable-1.0"
+QEMU_BRANCH	= "stable-1.1"
 
 qemu-help:
 	@echo
