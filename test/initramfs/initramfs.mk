@@ -58,14 +58,15 @@ initramfs-settings:
 #	@$(call prsetting,LTPURL,${LTPURL})
 
 initramfs-unpacked: ${BUSYBOX}
-${INITBUILDFSDIR}/init: ${BUSYBOX} ${KERNEL_MODULES}
+${INITBUILDFSDIR}/etc: ${BUSYBOX} ${KERNEL_MODULES}
 	@rm -rf ${INITBUILDFSDIR}
 	@mkdir -p $(addprefix ${INITBUILDFSDIR}/,bin sys dev proc tmp usr/bin)
 	@cp -ar ${INITBUILDDIR}/busybox/_install/* ${INITBUILDFSDIR}
 	@cp -r ${INITRAMFSDIR}/etc ${INITBUILDFSDIR}
+	@cp  /etc/resolv.conf ${INITBUILDFSDIR}/etc
 
 initramfs initramfs-build: ${INITRAMFS}
-${INITRAMFS}: ${INITBUILDFSDIR}/init
+${INITRAMFS}: ${INITBUILDFSDIR}/etc
 	@(cd ${INITBUILDFSDIR} && find . | cpio -H newc -o > ${INITCPIO})
 	@cat ${INITCPIO} | gzip -9c > $@
 	@echo "Created $@: Done."
