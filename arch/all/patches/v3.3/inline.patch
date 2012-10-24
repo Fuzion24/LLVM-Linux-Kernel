@@ -122,7 +122,7 @@ Index: linux/drivers/gpu/drm/i915/i915_drv.h
  extern void intel_gmbus_set_speed(struct i2c_adapter *adapter, int speed);
  extern void intel_gmbus_force_bit(struct i2c_adapter *adapter, bool force_bit);
 -extern inline bool intel_gmbus_is_forced_bit(struct i2c_adapter *adapter)
-+extern bool intel_gmbus_is_forced_bit(struct i2c_adapter *adapter)
++inline bool intel_gmbus_is_forced_bit(struct i2c_adapter *adapter)
  {
  	return container_of(adapter, struct intel_gmbus, adapter)->force_bit;
  }
