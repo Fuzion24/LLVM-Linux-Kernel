@@ -101,7 +101,7 @@ ${STRACE}:
 	([ ! -f ${INITBUILDDIR}/${STRACETARXZ} ] && wget -O ${INITBUILDDIR}/${STRACETARXZ} -c ${STRACEURL} || true)
 	rm -rf ${INITBUILDDIR}/strace-${STRACEVER}.tar ${INITBUILDDIR}/strace-${STRACEVER}
 	(cd ${INITBUILDDIR} && unxz ${STRACETARXZ} && tar xvf strace-${STRACEVER}.tar)
-	(cd ${INITBUILDDIR}/strace-${STRACEVER} && CC=${CROSS_COMPILE}gcc ./configure --host=arm && make)
+	(cd ${INITBUILDDIR}/strace-${STRACEVER} && CC=${CROSS_COMPILE}gcc ./configure --host=arm && make LDFLAGS=-static)
 
 
 ltp: ${INITBUILDDIR}/${LTP}/Version
