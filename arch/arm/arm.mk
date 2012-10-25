@@ -56,7 +56,7 @@ KERNEL_SIZE_ARTIFACTS	= arch/arm/boot/zImage vmlinux*
 KERNELOPTS	= console=earlycon console=ttyAMA0,38400n8 earlyprintk
 
 # ${1}=Machine_type ${2}=kerneldir ${3}=RAM ${4}=rootfs ${5}=Kernel_opts ${6}=QEMU_opts
-qemu = $(call runqemu,${QEMUBINDIR}/qemu-system-arm,${1},${2}/arch/arm/boot/zImage,${3},${4},${KERNELOPTS} ${5},${6})
+qemu_arm = $(call runqemu,${QEMUBINDIR}/qemu-system-arm,${1},${2}/arch/arm/boot/zImage,${3},${4},${KERNELOPTS} ${5},${6})
 
 arm-help:
 	@echo
