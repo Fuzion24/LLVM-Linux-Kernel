@@ -6,8 +6,6 @@
 0007-Add-noinline_for_stack-to-not-core-ethtool.c-.-Patch.patch
 0009-Add-noinline_for_stack-to-net-sctp-socket.c-.-Patch-.patch
 0012-Add-noinline_for_stack-to-drivers-block-loop.c-.-Pat.patch
-0013-Fix-VLAIS-usage-in-drivers-md-dm-crypt.c-.-Patch-fro.patch
-0014-Fix-VLAIS-usage-in-fs-cifs-cifsglob.h-.-Patch-from-s.patch
 0017-ACPI-realmode-code-needs-no-integrated-as-.-Patch-fr.patch
 0018-Fix-assembly.-btr-btrl-.-Patch-from-series-at-http-l.patch
 0019-Various-modifications-in-arch-x86-kernel-.-Patch-fro.patch

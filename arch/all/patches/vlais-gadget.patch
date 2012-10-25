@@ -18,120 +18,55 @@ Reviewed-by: Behan Webster <behanw@converseincode.com>
  drivers/usb/gadget/f_fs.c |  204 +++++++++++++++++++++++++++++----------------
  1 file changed, 134 insertions(+), 70 deletions(-)
 
-diff --git a/drivers/usb/gadget/f_fs.c b/drivers/usb/gadget/f_fs.c
-index 829aba7..bf94e1b 100644
---- a/drivers/usb/gadget/f_fs.c
-+++ b/drivers/usb/gadget/f_fs.c
-@@ -1335,8 +1335,22 @@ static void ffs_data_clear(struct ffs_data *ffs)
- 	if (ffs->epfiles)
- 		ffs_epfiles_destroy(ffs->epfiles, ffs->eps_count);
+--- linux.orig/drivers/usb/gadget/f_fs.c
++++ linux/drivers/usb/gadget/f_fs.c
+@@ -22,6 +22,7 @@
+ #include <linux/pagemap.h>
+ #include <linux/export.h>
+ #include <linux/hid.h>
++#include <linux/valign.h>
+ #include <asm/unaligned.h>
  
-+	/* REVIEW: I'm pretty certain raw_desc used to be allocated in the same
-+	   chunk as eps (in ffs_func_bind()) through the use of VLAIS hackery.
-+	   eps is freed in ffs_func_free(), which calls ffs_data_put(), which
-+	   ends up calling this function. Doesn't this mean the freeing of
-+	   raw_descs in this function was incorrect? Or am I misunderstanding
-+	   something?  I'm leaving this in for now. If this doesn't free the
-+	   raw_descs that is allocated in ffs_func_bind(), then that memory is
-+	   never freed (aka a leak). */
- 	kfree(ffs->raw_descs);
- 	kfree(ffs->raw_strings);
-+
-+	/* stringtabs is an array of pointers, each of which is a pointer to an
-+	   element of a dynamically allocated array of usb_gadget_strings. So,
-+	   first we need to free the array of usb_gadget_strings, then we free
-+	   the array of pointers. (wash) */
-+	kfree(*ffs->stringtabs);
- 	kfree(ffs->stringtabs);
+ #include <linux/usb/composite.h>
+@@ -1875,6 +1876,15 @@
+ 	return ret;
  }
  
-@@ -1508,7 +1522,17 @@ static void ffs_func_free(struct ffs_function *func)
- 
- 	ENTER();
- 
-+	const int full = !!func->ffs->fs_descs_count;
-+	const int high = gadget_is_dualspeed(func->gadget) &&
-+		func->ffs->hs_descs_count;
++static void __ffs_init_stringtabs(struct usb_gadget_strings **stringtabs,
++	struct usb_gadget_strings *t, unsigned len)
++{
++		do {
++			*stringtabs++ = t++;
++		} while (--len);
++		*stringtabs = NULL;
++}
 +
-+	/* REVIEW: See my note in ffs_data_clear(), which this function
-+		(conditionally) calls. It appears that this frees the raw_desc
-+		memory allocated in ffs_func_bind, but I don't understand why
-+		that would have been done in the old code, so this might be
-+		leaking memory. */
- 	/* cleanup after autoconfig */
-+
- 	spin_lock_irqsave(&func->ffs->eps_lock, flags);
- 	do {
- 		if (ep->ep && ep->req)
-@@ -1521,11 +1545,17 @@ static void ffs_func_free(struct ffs_function *func)
- 	ffs_data_put(func->ffs);
- 
- 	kfree(func->eps);
--	/*
--	 * eps and interfaces_nums are allocated in the same chunk so
--	 * only one free is required.  Descriptors are also allocated
--	 * in the same chunk.
--	 */
-+	kfree(func->interfaces_nums);
-+
-+	/* ffs_func_bind() also checks for this on the allocation end of things,
-+		so this should never happen. */
-+	BUG_ON(!(full | high));
-+
-+	if (likely(full))
-+		kfree(func->function.descriptors);
-+
-+	if (likely(high))
-+		kfree(func->function.hs_descriptors);
- 
- 	kfree(func);
- }
-@@ -1870,9 +1900,11 @@ static int __ffs_data_got_strings(struct ffs_data *ffs,
+ static int __ffs_data_got_strings(struct ffs_data *ffs,
  				  char *const _data, size_t len)
  {
- 	u32 str_count, needed_count, lang_count;
--	struct usb_gadget_strings **stringtabs, *t;
--	struct usb_string *strings, *s;
-+	struct usb_gadget_strings **stringtabs, **stringtabs_ptr;
-+	struct usb_gadget_strings *stringtab, *stringtab_ptr;
-+	struct usb_string *strings, *strings_ptr;
- 	const char *data = _data;
-+	unsigned i = 0;
+@@ -1911,31 +1921,24 @@
  
- 	ENTER();
- 
-@@ -1900,35 +1932,43 @@ static int __ffs_data_got_strings(struct ffs_data *ffs,
- 		return 0;
- 	}
- 
--	/* Allocate everything in one chunk so there's less maintenance. */
--	{
+ 	/* Allocate everything in one chunk so there's less maintenance. */
+ 	{
 -		struct {
 -			struct usb_gadget_strings *stringtabs[lang_count + 1];
 -			struct usb_gadget_strings stringtab[lang_count];
 -			struct usb_string strings[lang_count*(needed_count+1)];
 -		} *d;
 -		unsigned i = 0;
--
++		int strtabslen = paddedsize(0, lang_count+1,
++			struct usb_gadget_strings *, struct usb_gadget_strings);
++		int strtablen = paddedsize(strtabslen, lang_count,
++			struct usb_gadget_strings, struct usb_string);
++		int strlen = paddedsize(strtabslen + strtablen,
++			lang_count*(needed_count+1), struct usb_string, int);
+ 
 -		d = kmalloc(sizeof *d, GFP_KERNEL);
--		if (unlikely(!d)) {
--			kfree(_data);
--			return -ENOMEM;
--		}
-+	stringtabs = kmalloc(sizeof(struct usb_gadget_strings *)*(lang_count+1),
-+			GFP_KERNEL);
-+	if (unlikely(!stringtabs)) {
-+		kfree(_data);
-+		return -ENOMEM;
-+	}
-+
-+	stringtab = kmalloc(sizeof(struct usb_gadget_strings)*(lang_count),
-+		GFP_KERNEL);
-+	if (unlikely(!stringtab)) {
-+		kfree(stringtabs);
-+		kfree(_data);
-+		return -ENOMEM;
-+	}
++		stringtabs = kmalloc(strtabslen + strtablen + strlen, GFP_KERNEL);
+ 		if (unlikely(!d)) {
+ 			kfree(_data);
+ 			return -ENOMEM;
+ 		}
  
 -		stringtabs = d->stringtabs;
 -		t = d->stringtab;
@@ -144,78 +79,15 @@ index 829aba7..bf94e1b 100644
 -		stringtabs = d->stringtabs;
 -		t = d->stringtab;
 -		s = d->strings;
--		strings = s;
-+	strings = kmalloc(sizeof(struct usb_string)
-+			* (lang_count*(needed_count+1)), GFP_KERNEL);
-+	if (unlikely(!strings)) {
-+		kfree(stringtab);
-+		kfree(stringtabs);
-+		kfree(_data);
-+		return -ENOMEM;
++		t = paddedstart(stringtabs, strtabslen, struct usb_gadget_strings);
++		s = paddedstart(t, strtablen, struct usb_string);
+ 		strings = s;
++
++		__ffs_init_stringtabs(stringtabs, t, lang_count);
  	}
  
-+	stringtabs_ptr = stringtabs;
-+	stringtab_ptr = stringtab;
-+
-+	i = lang_count;
-+	do {
-+		*stringtabs_ptr++ = stringtab_ptr++;
-+	} while (--i);
-+	*stringtabs_ptr = NULL;
-+
-+	stringtabs_ptr = stringtabs;
-+	stringtab_ptr = stringtab;
-+	strings_ptr = strings;
-+
  	/* For each language */
- 	data += 16;
- 	len -= 16;
-@@ -1938,9 +1978,9 @@ static int __ffs_data_got_strings(struct ffs_data *ffs,
- 
- 		if (unlikely(len < 3))
- 			goto error_free;
--		t->language = get_unaligned_le16(data);
--		t->strings  = s;
--		++t;
-+		stringtab_ptr->language = get_unaligned_le16(data);
-+		stringtab_ptr->strings  = strings_ptr;
-+		++stringtab_ptr;
- 
- 		data += 2;
- 		len -= 2;
-@@ -1963,18 +2003,18 @@ static int __ffs_data_got_strings(struct ffs_data *ffs,
- 				 * function to configuration so for
- 				 * now just leave garbage here.
- 				 */
--				s->s = data;
-+				strings_ptr->s = data;
- 				--needed;
--				++s;
-+				++strings_ptr;
- 			}
- 
- 			data += length + 1;
- 			len -= length + 1;
- 		} while (--str_count);
- 
--		s->id = 0;   /* terminator */
--		s->s = NULL;
--		++s;
-+		strings_ptr->id = 0;   /* terminator */
-+		strings_ptr->s = NULL;
-+		++strings_ptr;
- 
- 	} while (--lang_count);
- 
-@@ -1989,6 +2029,7 @@ static int __ffs_data_got_strings(struct ffs_data *ffs,
- 	return 0;
- 
- error_free:
-+	kfree(stringtab);
- 	kfree(stringtabs);
- error:
- 	kfree(_data);
-@@ -2200,17 +2241,45 @@ static int ffs_func_bind(struct usb_configuration *c,
+@@ -2209,17 +2212,23 @@
  
  	int ret;
  
@@ -230,49 +102,27 @@ index 829aba7..bf94e1b 100644
 -		char raw_descs[high ? ffs->raw_descs_length
 -				    : ffs->raw_fs_descs_length];
 -	} *data;
-+	ssize_t eps_size = sizeof(struct ffs_ep)*ffs->eps_count;
-+	ssize_t fs_descs_size
-+		= sizeof(struct usb_descriptor_header *)
-+			* (ffs->fs_descs_count+1);
-+	ssize_t hs_descs_size
-+		= sizeof(struct usb_descriptor_header *)
-+			* (ffs->hs_descs_count+1);
-+	ssize_t inums_size = sizeof(short)*ffs->interfaces_count;
-+	ssize_t raw_descs_size = sizeof(char)*(high
-+		? ffs->raw_descs_length
-+		: ffs->raw_fs_descs_length);
++	struct ffs_ep *eps;
++	struct usb_descriptor_header **fs_descs;
++	struct usb_descriptor_header **hs_descs;
++	short *inums;
++	char *raw_descs;
 +
-+	/* Clang doesn't support VLAIS, so we can't us them here. */
-+	struct ffs_ep *eps = kmalloc(eps_size, GFP_KERNEL);
-+	if (unlikely(!eps))
-+		return -ENOMEM;
-+
-+	struct usb_descriptor_header **fs_descs = 0;
-+	struct usb_descriptor_header **hs_descs = 0;
-+
-+	if (full) {
-+		fs_descs = kmalloc(fs_descs_size, GFP_KERNEL);
-+		if (unlikely(!fs_descs))
-+			return -ENOMEM;
-+	}
-+
-+	if (high) {
-+		hs_descs = kmalloc(hs_descs_size, GFP_KERNEL);
-+		if (unlikely(!hs_descs))
-+			return -ENOMEM;
-+	}
-+
-+	short *inums = kmalloc(inums_size, GFP_KERNEL);
-+	if (unlikely(!inums))
-+		return -ENOMEM;
-+
-+	char *raw_descs = kmalloc(raw_descs_size, GFP_KERNEL);
-+	if (unlikely(!raw_descs))
-+		return -ENOMEM;
++	int epslen = paddedsize(0, ffs->eps_count,
++			struct ffs_ep, struct usb_descriptor_header);
++	int fsdlen = paddedsize(epslen, full ? ffs->fs_descs_count + 1 : 0,
++			struct usb_descriptor_header,
++			struct usb_descriptor_header);
++	int hsdlen = paddedsize(fsdlen, high ? ffs->hs_descs_count + 1 : 0,
++			struct usb_descriptor_header, short);
++	int inumlen = paddedsize(hsdlen, ffs->interfaces_count, short, char);
++	int rawlen = paddedsize(inumlen,
++		high ? ffs->raw_descs_length : ffs->raw_fs_descs_length,
++		char, int);
  
  	ENTER();
  
-@@ -2218,21 +2287,16 @@ static int ffs_func_bind(struct usb_configuration *c,
+@@ -2227,21 +2236,26 @@
  	if (unlikely(!(full | high)))
  		return -ENOTSUPP;
  
@@ -280,14 +130,23 @@ index 829aba7..bf94e1b 100644
 -	data = kmalloc(sizeof *data, GFP_KERNEL);
 -	if (unlikely(!data))
 -		return -ENOMEM;
--
++	/* Allocate a single chunk, less management later on */
++	eps = kmalloc(epslen+fsdlen+hsdlen+inumlen+rawlen, GFP_KERNEL);
++	if (unlikely(!data)) return -ENOMEM;
++
++	/* Calculate start of each variable in the allocated memory */
++	fs_descs = paddedstart(eps, epslen, struct usb_descriptor_header *);
++	hs_descs = paddedstart(fs_descs, fsdlen, struct usb_descriptor_header *);
++	inums = paddedstart(hs_descs, hsdlen, short);
++	raw_descs = paddedstart(inums, inumlen, char);
+ 
  	/* Zero */
 -	memset(data->eps, 0, sizeof data->eps);
 -	memcpy(data->raw_descs, ffs->raw_descs + 16, sizeof data->raw_descs);
 -	memset(data->inums, 0xff, sizeof data->inums);
-+	memset(eps, 0, eps_size);
-+	memcpy(raw_descs, ffs->raw_descs + 16, raw_descs_size);
-+	memset(inums, 0xff, inums_size);
++	memset(eps, 0, epslen);
++	memcpy(raw_descs, ffs->raw_descs + 16, rawlen);
++	memset(inums, 0xff, inumlen);
  	for (ret = ffs->eps_count; ret; --ret)
 -		data->eps[ret].num = -1;
 +		eps[ret].num = -1;
@@ -300,7 +159,7 @@ index 829aba7..bf94e1b 100644
  
  	/*
  	 * Go through all the endpoint descriptors and allocate
-@@ -2240,10 +2304,10 @@ static int ffs_func_bind(struct usb_configuration *c,
+@@ -2249,10 +2263,9 @@
  	 * numbers without worrying that it may be described later on.
  	 */
  	if (likely(full)) {
@@ -309,12 +168,11 @@ index 829aba7..bf94e1b 100644
  		ret = ffs_do_descs(ffs->fs_descs_count,
 -				   data->raw_descs,
 -				   sizeof data->raw_descs,
-+						raw_descs,
-+						raw_descs_size,
++				   raw_descs, rawlen,
  				   __ffs_func_bind_do_descs, func);
  		if (unlikely(ret < 0))
  			goto error;
-@@ -2252,10 +2316,10 @@ static int ffs_func_bind(struct usb_configuration *c,
+@@ -2261,10 +2274,9 @@
  	}
  
  	if (likely(high)) {
@@ -323,20 +181,16 @@ index 829aba7..bf94e1b 100644
  		ret = ffs_do_descs(ffs->hs_descs_count,
 -				   data->raw_descs + ret,
 -				   (sizeof data->raw_descs) - ret,
-+				   raw_descs + ret,
-+				   raw_descs_size - ret,
++				   raw_descs + ret, rawlen - ret,
  				   __ffs_func_bind_do_descs, func);
  	}
  
-@@ -2266,7 +2330,7 @@ static int ffs_func_bind(struct usb_configuration *c,
+@@ -2275,7 +2287,7 @@
  	 */
  	ret = ffs_do_descs(ffs->fs_descs_count +
  			   (high ? ffs->hs_descs_count : 0),
 -			   data->raw_descs, sizeof data->raw_descs,
-+			   raw_descs, raw_descs_size,
++			   raw_descs, rawlen,
  			   __ffs_func_bind_do_nums, func);
  	if (unlikely(ret < 0))
  		goto error;
--- 
-1.7.9.5
-
