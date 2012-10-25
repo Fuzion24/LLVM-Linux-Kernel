@@ -1,6 +1,6 @@
 --- /dev/null
 +++ linux/include/linux/valign.h
-@@ -0,0 +1,40 @@
+@@ -0,0 +1,41 @@
 +/*
 + * Variable alignment macros used to break up a larger chunk of memory into
 + * smaller variables. Meant to be used to replace the use of Variable Length
@@ -9,7 +9,8 @@
 + * Author: Behan Webster <behanw@conversincode.com>
 + */
 +
-+#ifndef _VALIGN_H_ #define _VALIGN_H_
++#ifndef _VALIGN_H_
++#define _VALIGN_H_
 +
 +/* Truncate an address or size to a particular memory alignment */
 +#define truncalign(num,padwidth) ((long)(num) & ~((padwidth)-1))
