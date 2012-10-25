@@ -41,6 +41,11 @@ LTPURL		= http://prdownloads.sourceforge.net/ltp/${LTP}.bz2?download
 BUSYBOX		= ${INITBUILDDIR}/busybox/_install/bin/busybox
 BUSYBOXGIT	= git://busybox.net/busybox.git
 
+STRACEVER	= 4.7
+STRACE		= ${INITBUILDDIR}/strace-${STRACEVER}/strace
+STRACEURL	= "http://sourceforge.net/projects/strace/files/strace/${STRACEVER}/strace-${STRACEVER}.tar.xz/download"
+STRACETARXZ	= strace-${STRACEVER}.tar.xz
+
 GCC		= gcc
 
 HELP_TARGETS	+= initramfs-help
@@ -57,13 +62,13 @@ initramfs-settings:
 #	@$(call prsetting,LTP,${LTP})
 #	@$(call prsetting,LTPURL,${LTPURL})
 
-initramfs-unpacked: ${BUSYBOX}
-${INITBUILDFSDIR}/etc: ${BUSYBOX} ${KERNEL_MODULES}
+initramfs-unpacked: ${INITBUILDFSDIR}/etc
+${INITBUILDFSDIR}/etc: ${BUSYBOX} ${STRACE} ${KERNEL_MODULES}
 	@rm -rf ${INITBUILDFSDIR}
 	@mkdir -p $(addprefix ${INITBUILDFSDIR}/,bin sys dev proc tmp usr/bin)
 	@cp -ar ${INITBUILDDIR}/busybox/_install/* ${INITBUILDFSDIR}
 	@cp -r ${INITRAMFSDIR}/etc ${INITBUILDFSDIR}
-	@cp  /etc/resolv.conf ${INITBUILDFSDIR}/etc
+	@cp ${STRACE} ${INITBUILDFSDIR}/usr/bin/strace
 
 initramfs initramfs-build: ${INITRAMFS}
 ${INITRAMFS}: ${INITBUILDFSDIR}/etc
@@ -83,16 +88,25 @@ initramfs-mrproper initramfs-raze:
 
 busybox: ${BUSYBOX}
 ${BUSYBOX}:
-	([ ! -d ${INITBUILDDIR} ] && mkdir -p ${INITBUILDDIR})
+	([ ! -d ${INITBUILDDIR} ] && mkdir -p ${INITBUILDDIR} || true)
 	([ ! -f ${INITBUILDDIR}/busybox/.git/config ] && (cd ${INITBUILDDIR} && git clone ${BUSYBOXGIT}) || \
 		(cd ${INITBUILDDIR}/busybox && git pull))
 	(cd ${INITBUILDDIR}/busybox && LDFLAGS="--static" make -j ${JOBS} CROSS_COMPILE="${HOST}-" defconfig)
 	(cd ${INITBUILDDIR}/busybox && LDFLAGS="--static" make -j ${JOBS} CROSS_COMPILE="${HOST}-")
 	(cd ${INITBUILDDIR}/busybox && LDFLAGS="--static" make -j ${JOBS} CROSS_COMPILE="${HOST}-" install)
 
+strace: ${STRACE}
+${STRACE}:
+	([ ! -d ${INITBUILDDIR} ] && mkdir -p ${INITBUILDDIR} || true)
+	([ ! -f ${INITBUILDDIR}/${STRACETARXZ} ] && wget -O ${INITBUILDDIR}/${STRACETARXZ} -c ${STRACEURL} || true)
+	rm -rf ${INITBUILDDIR}/strace-${STRACEVER}.tar ${INITBUILDDIR}/strace-${STRACEVER}
+	(cd ${INITBUILDDIR} && unxz ${STRACETARXZ} && tar xvf strace-${STRACEVER}.tar)
+	(cd ${INITBUILDDIR}/strace-${STRACEVER} && CC=${CROSS_COMPILE}gcc ./configure --host=arm && make LDFLAGS=-static)
+
 
 ltp: ${INITBUILDDIR}/${LTP}/Version
 ${INITBUILDDIR}/${LTP}/Version:
+	([ ! -d ${INITBUILDDIR} ] && mkdir -p ${INITBUILDDIR} || true)
 	@wget -P ${INITBUILDDIR} -c ${LTPURL}
 	@rm -rf ${INITBUILDDIR}/${LTP}
 	(cd ${INITBUILDDIR} && tar xjf ${LTP}.bz2 && cd ${LTP} && patch -p1 < ${INITRAMFSDIR}/patches/ltp.patch)
