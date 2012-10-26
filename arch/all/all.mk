@@ -131,6 +131,7 @@ RAZE_TARGETS		+= kernel-raze
 SETTINGS_TARGETS	+= kernel-settings
 SYNC_TARGETS		+= kernels-sync
 VERSION_TARGETS		+= ${KERNEL_TARGETS_VERSION}
+GCC_CC			+= gcc
 
 .PHONY:			${KERNEL_TARGETS_CLANG} ${KERNEL_TARGETS_GCC} ${KERNEL_TARGETS_APPLIED} ${KERNEL_TARGETS_CLEAN} ${KERNEL_TARGETS_VERSION}
 
@@ -281,10 +282,13 @@ state/kernel-build: ${LLVMSTATE}/clang-build ${STATE_TOOLCHAIN} state/kernel-con
 	$(call state,$@,done)
 
 #############################################################################
+## FIXME: hack of the day:  gcc-4.7 does bail out when passed "-no-integrated-as"
 kernel-gcc-build: ${STATE_TOOLCHAIN} state/kernel-gcc-build
 state/kernel-gcc-build: ${CROSS_GCC} state/kernel-gcc-configure
 	$(call assert,-n "${MAKE_KERNEL}",MAKE_KERNEL undefined)
 	@$(MAKE) kernel-quilt-link-patches
+	@$(call banner, "Fix for gcc47...")
+	(cd ${KERNELGCC} && ( for i in `git grep "\-no-integrated-as" | cut -d":" -f1 ` ; do echo $$i ; sed -i -e "s#-no-integrated-as##g" $$i ; done ))
 	@$(call banner, "Building kernel with gcc...")
 	(cd ${KERNELGCC} && time make -j${JOBS} ${MAKE_FLAGS} ${SPARSE} CROSS_COMPILE=${CROSS_COMPILE} CC=${GCC_CC})
 	@mkdir -p ${TOPLOGDIR}
