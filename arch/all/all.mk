@@ -229,6 +229,7 @@ kernel-patch: state/kernel-patch
 state/kernel-patch: state/kernel-fetch state/kernel-quilt
 	@$(call banner, "Patching kernel...")
 	@$(call patches_dir,${PATCHDIR},${KERNELDIR}/patches)
+	@$(call optional_gitreset,${KERNELDIR})
 	@$(call patch,${KERNELDIR})
 	$(call state,$@,kernel-configure)
 
@@ -237,6 +238,7 @@ kernel-gcc-patch: state/kernel-gcc-patch
 state/kernel-gcc-patch: state/kernel-gcc-fetch state/kernel-quilt
 	@$(call banner, "Patching kernel for gcc...")
 	@$(call patches_dir,${PATCHDIR},${KERNELGCC}/patches)
+	@$(call optional_gitreset,${KERNELGCC})
 	@$(call patch,${KERNELGCC})
 	$(call state,$@,kernel-gcc-configure)
 
