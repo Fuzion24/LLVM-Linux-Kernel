@@ -52,7 +52,7 @@ if [ $USECLANG -eq "1" ]; then
 	export CROSS_COMPILE=${HOST}-
 
 	# Must pass -mllvm -use-new-sroa=false or Clang will segfault on
-	export CLANGFLAGS="-march=$MARCH $MFLOAT -fno-builtin -Qunused-arguments ${EXTRAFLAGS}"
+	export CLANGFLAGS="-march=$MARCH $MFLOAT -fno-builtin -Qunused-arguments -Wno-asm-operand-widths ${EXTRAFLAGS}"
 	export CC_FOR_BUILD="${INSTALLDIR}/bin/clang -ccc-host-triple ${HOST_TRIPLE} -ccc-gcc-name ${HOST}-gcc ${CLANGFLAGS}"
 fi
 
