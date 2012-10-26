@@ -1,9 +1,7 @@
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
-Index: linux/arch/arm/Makefile
-===================================================================
---- linux.orig/arch/arm/Makefile	2012-09-05 12:03:39.809231310 -0400
-+++ linux/arch/arm/Makefile	2012-09-05 12:13:34.565754207 -0400
-@@ -49,7 +49,7 @@
+--- linux.orig/arch/arm/Makefile
++++ linux/arch/arm/Makefile
+@@ -47,7 +47,7 @@
  AS		+= -EB
  LD		+= -EB
  else
@@ -12,7 +10,7 @@ Index: linux/arch/arm/Makefile
  AS		+= -EL
  LD		+= -EL
  endif
-@@ -93,7 +93,7 @@
+@@ -91,7 +91,7 @@
  tune-$(CONFIG_CPU_V6K)		:=$(call cc-option,-mtune=arm1136j-s,-mtune=strongarm)
  
  ifeq ($(CONFIG_AEABI),y)
@@ -21,19 +19,17 @@ Index: linux/arch/arm/Makefile
  else
  CFLAGS_ABI	:=$(call cc-option,-mapcs-32,-mabi=apcs-gnu) $(call cc-option,-mno-thumb-interwork,)
  endif
-@@ -114,7 +114,7 @@
+@@ -115,7 +115,7 @@
  endif
  
  # Need -Uarm for gcc < 3.x
--KBUILD_CFLAGS	+=$(CFLAGS_ABI) $(CFLAGS_THUMB2) $(arch-y) $(tune-y) $(call cc-option,-mshort-load-bytes,$(call cc-option,-malignment-traps,)) -msoft-float -Uarm
+-KBUILD_CFLAGS	+=$(CFLAGS_ABI) $(CFLAGS_ISA) $(arch-y) $(tune-y) $(call cc-option,-mshort-load-bytes,$(call cc-option,-malignment-traps,)) -msoft-float -Uarm
 +KBUILD_CFLAGS	+=$(CFLAGS_ABI) $(CFLAGS_THUMB2) $(arch-y) $(tune-y) -msoft-float
- KBUILD_AFLAGS	+=$(CFLAGS_ABI) $(AFLAGS_THUMB2) $(arch-y) $(tune-y) -include asm/unified.h -msoft-float
+ KBUILD_AFLAGS	+=$(CFLAGS_ABI) $(AFLAGS_ISA) $(arch-y) $(tune-y) -include asm/unified.h -msoft-float
  
  CHECKFLAGS	+= -D__arm__
-Index: linux/arch/arm/include/asm/ftrace.h
-===================================================================
---- linux.orig/arch/arm/include/asm/ftrace.h	2012-09-05 12:03:39.813231260 -0400
-+++ linux/arch/arm/include/asm/ftrace.h	2012-09-05 12:13:34.569754156 -0400
+--- linux.orig/arch/arm/include/asm/ftrace.h
++++ linux/arch/arm/include/asm/ftrace.h
 @@ -45,7 +45,7 @@
  
  #else
@@ -43,11 +39,9 @@ Index: linux/arch/arm/include/asm/ftrace.h
  {
  	return NULL;
  }
-Index: linux/include/linux/netdevice.h
-===================================================================
---- linux.orig/include/linux/netdevice.h	2012-09-05 12:03:39.837230959 -0400
-+++ linux/include/linux/netdevice.h	2012-09-05 12:13:34.569754156 -0400
-@@ -1266,7 +1266,7 @@
+--- linux.orig/include/linux/netdevice.h
++++ linux/include/linux/netdevice.h
+@@ -1238,7 +1238,7 @@
  	enum {
  		RTNL_LINK_INITIALIZED,
  		RTNL_LINK_INITIALIZING,
