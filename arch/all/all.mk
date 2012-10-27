@@ -351,7 +351,7 @@ kernel-gcc-sync: state/kernel-gcc-fetch kernel-shared-sync kernel-gcc-clean
 	fi
 
 #############################################################################
-kernel-reset: state/kernel-fetch
+kernel-reset:
 	@$(call makeclean,${KERNELDIR})
 	@rm -f ${KERNELDIR}/arch/arm/boot/compressed/vmlinux
 	@$(call unpatch,${KERNELDIR})
@@ -359,7 +359,7 @@ kernel-reset: state/kernel-fetch
 	@$(call leavestate,${STATEDIR},kernel-patch kernel-quilt kernel-configure kernel-build)
 
 #############################################################################
-kernel-gcc-reset: state/kernel-gcc-fetch
+kernel-gcc-reset:
 	@$(call makeclean,${KERNELGCC})
 	@rm -f ${KERNELGCC}/arch/arm/boot/compressed/vmlinux
 	@$(call unpatch,${KERNELGCC})
@@ -367,12 +367,12 @@ kernel-gcc-reset: state/kernel-gcc-fetch
 	@$(leavestate ${STATEDIR},kernel-gcc-configure kernel-gcc-patch kernel-gcc-build)
 
 #############################################################################
-kernel-mrproper: state/kernel-fetch kernel-clean-tmp
+kernel-mrproper: kernel-clean-tmp
 	@$(call makemrproper,${KERNELDIR})
 	@$(call leavestate,${STATEDIR},kernel-build)
 
 #############################################################################
-kernel-gcc-mrproper: state/kernel-gcc-fetch kernel-clean-tmp
+kernel-gcc-mrproper: kernel-clean-tmp
 	@$(call makemrproper,${KERNELGCC})
 	@$(call leavestate,${STATEDIR},kernel-gcc-build)
 
