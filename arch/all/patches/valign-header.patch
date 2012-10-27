@@ -1,5 +1,25 @@
+From 88b143ef7a6e5878a6b96f627bc0ade5474b7e10 Mon Sep 17 00:00:00 2001
+From: Behan Webster <behanw@converseincode.com>
+Date: Fri, 26 Oct 2012 19:57:44 -0400
+Subject: [PATCH 1/8] Helper macros used for replacing the use of VLAIS
+
+The use of variable length arrays in structs (VLAIS) in the Linux Kernel code
+precludes the use of compilers which don't implement VLAIS (for instance the
+Clang compiler). This new header file contains macros which can be used to
+calculate the size and offset of variables in an allocated buffer of memory
+taking into account alignment issues.
+
+Signed-off-by: Behan Webster <behanw@converseincode.com>
+---
+ include/linux/valign.h |   41 +++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 41 insertions(+)
+ create mode 100644 include/linux/valign.h
+
+diff --git a/include/linux/valign.h b/include/linux/valign.h
+new file mode 100644
+index 0000000..5798f87
 --- /dev/null
-+++ linux/include/linux/valign.h
++++ b/include/linux/valign.h
 @@ -0,0 +1,41 @@
 +/*
 + * Variable alignment macros used to break up a larger chunk of memory into
@@ -42,3 +62,6 @@
 +#define paddedstart(ptr,offset,type) (type *)padalign((long)ptr+(offset),__alignof__(type))
 +
 +#endif
+-- 
+1.7.9.5
+

@@ -1,25 +1,22 @@
-From 22d4881505f6722c0ec4765d85af58464a32fb9c Mon Sep 17 00:00:00 2001
+From c4be1d921cb69943aadf9a42c039062991656bc5 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Fri, 28 Sep 2012 15:18:18 -0400
-Subject: [PATCH 1/5] Remove VLAIS from gadget code
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Subject: [PATCH 3/8] Remove VLAIS usage from gadget code
 
 The use of variable length arrays in structs (VLAIS) in the Linux Kernel code
 precludes the use of compilers which don't implement VLAIS (for instance the
-Clang compiler). This patch reimplements the same functionality without the use
-of VLAIS.
+Clang compiler). This patch instead calculates offsets into the kmalloc-ed
+memory buffer using macros from valign.h.
 
-Signed-off-by: Bryce Adelstein-Lelbach <blelbach@cct.lsu.edu>
-Reviewed-by: Jan-Simon Möller <dl9pf@gmx.de>
-Reviewed-by: Behan Webster <behanw@converseincode.com>
+Signed-off-by: Behan Webster <behanw@converseincode.com>
 ---
- drivers/usb/gadget/f_fs.c |  204 +++++++++++++++++++++++++++++----------------
- 1 file changed, 134 insertions(+), 70 deletions(-)
+ drivers/usb/gadget/f_fs.c |  106 ++++++++++++++++++++++++++-------------------
+ 1 file changed, 61 insertions(+), 45 deletions(-)
 
---- linux.orig/drivers/usb/gadget/f_fs.c
-+++ linux/drivers/usb/gadget/f_fs.c
+diff --git a/drivers/usb/gadget/f_fs.c b/drivers/usb/gadget/f_fs.c
+index 64c4ec1..ca6cacc 100644
+--- a/drivers/usb/gadget/f_fs.c
++++ b/drivers/usb/gadget/f_fs.c
 @@ -22,6 +22,7 @@
  #include <linux/pagemap.h>
  #include <linux/export.h>
@@ -28,7 +25,7 @@ Reviewed-by: Behan Webster <behanw@converseincode.com>
  #include <asm/unaligned.h>
  
  #include <linux/usb/composite.h>
-@@ -1875,6 +1876,15 @@
+@@ -1875,6 +1876,15 @@ error:
  	return ret;
  }
  
@@ -44,7 +41,7 @@ Reviewed-by: Behan Webster <behanw@converseincode.com>
  static int __ffs_data_got_strings(struct ffs_data *ffs,
  				  char *const _data, size_t len)
  {
-@@ -1911,31 +1921,24 @@
+@@ -1911,31 +1921,26 @@ static int __ffs_data_got_strings(struct ffs_data *ffs,
  
  	/* Allocate everything in one chunk so there's less maintenance. */
  	{
@@ -54,15 +51,17 @@ Reviewed-by: Behan Webster <behanw@converseincode.com>
 -			struct usb_string strings[lang_count*(needed_count+1)];
 -		} *d;
 -		unsigned i = 0;
+-
+-		d = kmalloc(sizeof *d, GFP_KERNEL);
 +		int strtabslen = paddedsize(0, lang_count+1,
 +			struct usb_gadget_strings *, struct usb_gadget_strings);
 +		int strtablen = paddedsize(strtabslen, lang_count,
 +			struct usb_gadget_strings, struct usb_string);
 +		int strlen = paddedsize(strtabslen + strtablen,
 +			lang_count*(needed_count+1), struct usb_string, int);
- 
--		d = kmalloc(sizeof *d, GFP_KERNEL);
-+		stringtabs = kmalloc(strtabslen + strtablen + strlen, GFP_KERNEL);
++
++		stringtabs = kmalloc(strtabslen + strtablen + strlen,
++			GFP_KERNEL);
  		if (unlikely(!d)) {
  			kfree(_data);
  			return -ENOMEM;
@@ -79,7 +78,8 @@ Reviewed-by: Behan Webster <behanw@converseincode.com>
 -		stringtabs = d->stringtabs;
 -		t = d->stringtab;
 -		s = d->strings;
-+		t = paddedstart(stringtabs, strtabslen, struct usb_gadget_strings);
++		t = paddedstart(stringtabs, strtabslen,
++			struct usb_gadget_strings);
 +		s = paddedstart(t, strtablen, struct usb_string);
  		strings = s;
 +
@@ -87,7 +87,7 @@ Reviewed-by: Behan Webster <behanw@converseincode.com>
  	}
  
  	/* For each language */
-@@ -2209,17 +2212,23 @@
+@@ -2209,17 +2214,23 @@ static int ffs_func_bind(struct usb_configuration *c,
  
  	int ret;
  
@@ -122,24 +122,24 @@ Reviewed-by: Behan Webster <behanw@converseincode.com>
  
  	ENTER();
  
-@@ -2227,21 +2236,26 @@
+@@ -2227,21 +2238,28 @@ static int ffs_func_bind(struct usb_configuration *c,
  	if (unlikely(!(full | high)))
  		return -ENOTSUPP;
  
 -	/* Allocate */
 -	data = kmalloc(sizeof *data, GFP_KERNEL);
--	if (unlikely(!data))
--		return -ENOMEM;
 +	/* Allocate a single chunk, less management later on */
 +	eps = kmalloc(epslen+fsdlen+hsdlen+inumlen+rawlen, GFP_KERNEL);
-+	if (unlikely(!data)) return -ENOMEM;
-+
+ 	if (unlikely(!data))
+ 		return -ENOMEM;
+ 
 +	/* Calculate start of each variable in the allocated memory */
 +	fs_descs = paddedstart(eps, epslen, struct usb_descriptor_header *);
-+	hs_descs = paddedstart(fs_descs, fsdlen, struct usb_descriptor_header *);
++	hs_descs = paddedstart(fs_descs, fsdlen,
++		struct usb_descriptor_header *);
 +	inums = paddedstart(hs_descs, hsdlen, short);
 +	raw_descs = paddedstart(inums, inumlen, char);
- 
++
  	/* Zero */
 -	memset(data->eps, 0, sizeof data->eps);
 -	memcpy(data->raw_descs, ffs->raw_descs + 16, sizeof data->raw_descs);
@@ -159,7 +159,7 @@ Reviewed-by: Behan Webster <behanw@converseincode.com>
  
  	/*
  	 * Go through all the endpoint descriptors and allocate
-@@ -2249,10 +2263,9 @@
+@@ -2249,10 +2267,9 @@ static int ffs_func_bind(struct usb_configuration *c,
  	 * numbers without worrying that it may be described later on.
  	 */
  	if (likely(full)) {
@@ -172,7 +172,7 @@ Reviewed-by: Behan Webster <behanw@converseincode.com>
  				   __ffs_func_bind_do_descs, func);
  		if (unlikely(ret < 0))
  			goto error;
-@@ -2261,10 +2274,9 @@
+@@ -2261,10 +2278,9 @@ static int ffs_func_bind(struct usb_configuration *c,
  	}
  
  	if (likely(high)) {
@@ -185,7 +185,7 @@ Reviewed-by: Behan Webster <behanw@converseincode.com>
  				   __ffs_func_bind_do_descs, func);
  	}
  
-@@ -2275,7 +2287,7 @@
+@@ -2275,7 +2291,7 @@ static int ffs_func_bind(struct usb_configuration *c,
  	 */
  	ret = ffs_do_descs(ffs->fs_descs_count +
  			   (high ? ffs->hs_descs_count : 0),
@@ -194,3 +194,6 @@ Reviewed-by: Behan Webster <behanw@converseincode.com>
  			   __ffs_func_bind_do_nums, func);
  	if (unlikely(ret < 0))
  		goto error;
+-- 
+1.7.9.5
+

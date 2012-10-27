@@ -1,15 +1,18 @@
-From ba11518b0743f4d2984e988fb77a5818939310d1 Mon Sep 17 00:00:00 2001
-From: Behan Webster <behanw@converseincode.com>
+From 9049a57868737326f327d88ad92c9ab7f815e15d Mon Sep 17 00:00:00 2001
+From: Mark Charlebois <charlebm@gmail.com>
 Date: Fri, 28 Sep 2012 15:23:44 -0400
-Subject: [PATCH 3/5] Remove VLAIS from the JBD2 code
+Subject: [PATCH 5/8] Remove VLAIS usage from JBD2 code
 
-The use of variable length arrays in structures (VLAIS) in the Linux Kernel
-code precludes the use of compilers which don't implement VLAIS (for instance
-the Clang compiler). Since ctx is always 32-bit, hard coding a size of 4
-accomplishes the same thing without the use of VLAIS.
+From: Mark Charlebois <charlebm@gmail.com>
+
+The use of variable length arrays in structs (VLAIS) in the Linux Kernel code
+precludes the use of compilers which don't implement VLAIS (for instance the
+Clang compiler). Since ctx is always a 32-bit CRC, hard coding a size of 4
+bytes accomplishes the same thing without the use of VLAIS. This is the same
+technique already employed in fs/ext4/ext4.h
 
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
-Reviewed-by: Behan Webster <behanw@converseincode.com>
+Signed-off-by: Behan Webster <behanw@converseincode.com>
 ---
  include/linux/jbd2.h |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
