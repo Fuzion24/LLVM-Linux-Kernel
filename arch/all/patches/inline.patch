@@ -1,7 +1,7 @@
 Remove useless inline specifiers
 
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
-Signed-off-by: Bryce Lelbach aka "wash" <blelbach@cct.lsu.edu>
+Signed-off-by: Bryce Lelbach <blelbach@cct.lsu.edu>
 ---
  drivers/gpu/drm/i915/i915_drv.h |    2 +-
  fs/bio.c                        |    2 +-
@@ -15,7 +15,7 @@ Signed-off-by: Bryce Lelbach aka "wash" <blelbach@cct.lsu.edu>
 
 --- linux.orig/fs/bio.c
 +++ linux/fs/bio.c
-@@ -428,7 +428,7 @@
+@@ -400,7 +400,7 @@
  }
  EXPORT_SYMBOL(bio_put);
  
@@ -68,12 +68,13 @@ Signed-off-by: Bryce Lelbach aka "wash" <blelbach@cct.lsu.edu>
  	return (USEC_PER_SEC / HZ) * j;
 --- linux.orig/mm/filemap.c
 +++ linux/mm/filemap.c
-@@ -2073,7 +2073,7 @@
+@@ -2073,7 +2073,8 @@
   * Returns appropriate error code that caller should return or
   * zero in case that write should be allowed.
   */
 -inline int generic_write_checks(struct file *file, loff_t *pos, size_t *count, int isblk)
-+int generic_write_checks(struct file *file, loff_t *pos, size_t *count, int isblk)
++int generic_write_checks(struct file *file, loff_t *pos, size_t *count,
++	int isblk)
  {
  	struct inode *inode = file->f_mapping->host;
  	unsigned long limit = rlimit(RLIMIT_FSIZE);
@@ -90,7 +91,7 @@ Signed-off-by: Bryce Lelbach aka "wash" <blelbach@cct.lsu.edu>
  	iph->check = ip_fast_csum((unsigned char *)iph, iph->ihl);
 --- linux.orig/drivers/gpu/drm/i915/i915_drv.h
 +++ linux/drivers/gpu/drm/i915/i915_drv.h
-@@ -1543,7 +1543,7 @@
+@@ -1549,7 +1549,7 @@
  /* intel_i2c.c */
  extern int intel_setup_gmbus(struct drm_device *dev);
  extern void intel_teardown_gmbus(struct drm_device *dev);
@@ -99,7 +100,7 @@ Signed-off-by: Bryce Lelbach aka "wash" <blelbach@cct.lsu.edu>
  {
  	return (port >= GMBUS_PORT_SSC && port <= GMBUS_PORT_DPD);
  }
-@@ -1552,7 +1552,7 @@
+@@ -1558,7 +1558,7 @@
  		struct drm_i915_private *dev_priv, unsigned port);
  extern void intel_gmbus_set_speed(struct i2c_adapter *adapter, int speed);
  extern void intel_gmbus_force_bit(struct i2c_adapter *adapter, bool force_bit);

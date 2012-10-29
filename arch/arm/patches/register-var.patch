@@ -1,12 +1,18 @@
+Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+Signed-off-by: Behan Webster <behanw@converseincode.com>
+---
+
 --- linux.orig/arch/arm/include/asm/thread_info.h
 +++ linux/arch/arm/include/asm/thread_info.h
-@@ -95,8 +95,7 @@
+@@ -95,8 +95,9 @@
  
  static inline struct thread_info *current_thread_info(void)
  {
 -	register unsigned long sp asm ("sp");
 -	return (struct thread_info *)(sp & ~(THREAD_SIZE - 1));
-+	return (struct thread_info *)((unsigned long)(__builtin_frame_address(0)) & ~(THREAD_SIZE - 1));
++	return (struct thread_info *)
++		((unsigned long)(__builtin_frame_address(0))
++		& ~(THREAD_SIZE - 1));
  }
  
  #define thread_saved_pc(tsk)	\
@@ -62,13 +68,16 @@
  	} else {
 --- linux.orig/arch/arm/include/asm/ptrace.h
 +++ linux/arch/arm/include/asm/ptrace.h
-@@ -255,8 +255,7 @@
+@@ -134,9 +134,9 @@
+ 	return regs->ARM_sp;
  }
  
- #define current_pt_regs(void) ({				\
+-#define current_pt_regs(void) ({				\
 -	register unsigned long sp asm ("sp");			\
 -	(struct pt_regs *)((sp | (THREAD_SIZE - 1)) - 7) - 1;	\
-+	(struct pt_regs *)(((unsigned long)(__builtin_frame_address(0)) | (THREAD_SIZE - 1)) - 7) - 1;	\
++#define current_pt_regs(void) ({					\
++	(struct pt_regs *)(((unsigned long)(__builtin_frame_address(0))	\
++		| (THREAD_SIZE - 1)) - 7) - 1;				\
  })
  
- #endif /* __KERNEL__ */
+ #endif /* __ASSEMBLY__ */

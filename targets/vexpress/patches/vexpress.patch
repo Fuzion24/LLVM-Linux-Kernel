@@ -1,5 +1,6 @@
 Add __initdata to v2m_time for mach-vexpress
 
+Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 ---
  v2m.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)

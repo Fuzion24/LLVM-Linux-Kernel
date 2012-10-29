@@ -1,6 +1,8 @@
 Add Clang support to Kbuild
 
 Do not upstream this patch. Clang behavior is likely to change
+
+Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 ---
  Makefile.build |    1 +
  2 files changed, 18 insertions(+), 5 deletions(-)

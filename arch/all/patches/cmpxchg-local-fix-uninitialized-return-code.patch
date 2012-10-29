@@ -15,7 +15,7 @@ Index: linux/include/asm-generic/cmpxchg-local.h
  		break;
  	default:
  		wrong_size_cmpxchg(ptr);
-+		prev=0;
++		prev = 0;
  	}
  	local_irq_restore(flags);
  	return prev;

@@ -30,12 +30,13 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
  CHECKFLAGS	+= -D__arm__
 --- linux.orig/arch/arm/include/asm/ftrace.h
 +++ linux/arch/arm/include/asm/ftrace.h
-@@ -45,7 +45,7 @@
+@@ -45,7 +45,8 @@
  
  #else
  
 -extern inline void *return_address(unsigned int level)
-+extern inline __attribute__((gnu_inline)) void *return_address(unsigned int level)
++extern inline __attribute__((gnu_inline))
++void *return_address(unsigned int level)
  {
  	return NULL;
  }
