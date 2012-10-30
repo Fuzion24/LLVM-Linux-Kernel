@@ -120,9 +120,10 @@ test-gcc-boot-poweroff: state/prep state/kernel-gcc-build ${QEMUSTATE}/qemu-buil
 test2: state/prep ${QEMUSTATE}/qemu-build state/kernel-build initramfs-unpacked
 	@rm -rf ${INITBUILDFSDIR}/lib
 	(cd ${KERNELDIR} && make INSTALL_MOD_PATH=${INITBUILDFSDIR} ARCH=arm modules_install)
+	mkdir -p ${INITBUILDFSDIR}/usr/lib
 	@rm -f ${INITRAMFS}
 	@make ${INITRAMFS}
-	@$(call qemu_arm,${BOARD},${KERNELDIR},256,/dev/ram0,rdinit=/sbin/init,-initrd ${INITRAMFS})
+	@$(call qemu_arm,${BOARD},${KERNELDIR},256,/dev/ram0,rdinit=/bootstrap,-initrd ${INITRAMFS})
 
 test2-gcc: state/prep ${QEMUSTATE}/qemu-build state/kernel-gcc-build initramfs-unpacked
 	@rm -rf ${INITBUILDFSDIR}/lib
