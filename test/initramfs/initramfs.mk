@@ -36,11 +36,21 @@ INITBUILDFSDIR	= ${INITBUILDDIR}/initramfs
 INITCPIO	= ${INITBUILDFSDIR}.cpio
 
 LTPVER		= 20120104
-LTP			= ltp-full-${LTPVER}
+LTP		= ltp-full-${LTPVER}
 LTPURL		= http://prdownloads.sourceforge.net/ltp/${LTP}.bz2?download
 
-BUSYBOXURL	= "http://landley.net/aboriginal/downloads/binaries/extras/busybox-armv6l"
-STRACEURL	= "http://landley.net/aboriginal/downloads/binaries/extras/strace-armv6l"
+# Set the busybox URL depending on the target ARCH
+ifeq (${ARCH},)
+BUSYBOXURL	= "http://landley.net/aboriginal/downloads/binaries/extras/busybox-i586"
+STRACEURL	= "http://landley.net/aboriginal/downloads/binaries/extras/strace-i586"
+else
+ARCHSTR=${ARCH}
+ifeq (${ARCH},arm)
+ARCHSTR=armv6l
+endif
+BUSYBOXURL	= "http://landley.net/aboriginal/downloads/binaries/extras/busybox-${ARCHSTR}"
+STRACEURL	= "http://landley.net/aboriginal/downloads/binaries/extras/strace-${ARCHSTR}"
+endif
 
 GCC		= gcc
 

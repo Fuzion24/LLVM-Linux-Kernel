@@ -21,6 +21,9 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
+# ARCH must be defined before all.mk
+ARCH	= x86_64
+
 include ${ARCHDIR}/all/all.mk
 
 export HOST_TYPE=${HOST}
@@ -32,7 +35,6 @@ ARCH_X86_64_PATCHES	= ${ARCH_X86_64_DIR}/patches
 
 KERNEL_PATCH_DIR	+= ${ARCH_X86_64_PATCHES} ${ARCH_X86_64_PATCHES}/${KERNEL_REPO_PATCHES}
 
-ARCH		= x86_64
 #MAKE_FLAGS	= ARCH=${ARCH}
 MAKE_KERNEL	= ${ARCH_X86_64_BINDIR}/make-kernel.sh ${LLVMINSTALLDIR} ${EXTRAFLAGS}
 #HOST		= x86_64-none-linux-gnu
