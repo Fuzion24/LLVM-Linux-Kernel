@@ -49,6 +49,11 @@ CROSS_GCC=${CSCC_BINDIR}/${CROSS_COMPILE}gcc
 codesourcery-gcc arm-cc: ${ARCH_ARM_TOOLCHAIN_STATE}/codesourcery-gcc
 ${ARCH_ARM_TOOLCHAIN_STATE}/codesourcery-gcc: ${CSCC_TMPDIR}/${CSCC_TAR}
 	tar -x -j -C ${CSCC_TOPDIR} -f $<
+	(cd ${CSCC_DIR} && ln -s ${CSCC_CC_BINDIR}/arm-none-linux-gnueabi-ar ${CSCC_DIR}/bin/arm-eabi-ar)
+	(cd ${CSCC_DIR} && ln -s ${CSCC_CC_BINDIR}/arm-none-linux-gnueabi-as ${CSCC_DIR}/bin/arm-eabi-as)
+	(cd ${CSCC_DIR} && ln -s ${CSCC_CC_BINDIR}/arm-none-linux-gnueabi-strip ${CSCC_DIR}/bin/arm-eabi-strip)
+	(cd ${CSCC_DIR} && ln -s ${CSCC_CC_BINDIR}/arm-none-linux-gnueabi-ranlib ${CSCC_DIR}/bin/arm-eabi-ranlib)
+	(cd ${CSCC_DIR} && ln -s ${CSCC_CC_BINDIR}/arm-none-linux-gnueabi-ld ${CSCC_DIR}/bin/arm-eabi-ld)
 	$(call state,$@)
 
 state/arm-cc: ${ARCH_ARM_TOOLCHAIN_STATE}/codesourcery-gcc
