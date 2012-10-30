@@ -1,0 +1,7 @@
+#!/bin/bash
+export PATH=`dirname $0`/../arm-2011.03/bin:$PATH
+`dirname $0`/../../../../../toolchain/clang/install/bin/clang \
+	-ccc-host-triple arm-gnueabi \
+	-ccc-gcc-name arm-none-linux-gnueabi-gcc \
+	-march=armv7-a --sysroot=`dirname $0`/../arm-2011.03/arm-none-linux-gnueabi/libc $*
+

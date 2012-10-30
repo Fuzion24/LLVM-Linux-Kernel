@@ -59,6 +59,13 @@ ${ANDROID_DIR}-gcc: ${ANDROID_DIR}
 	@$(call banner,Installing Android compiler...)
 	(rm -rf ${ANDROID_CC_DIR})
 	(cd ${ANDROID_DIR} && git clone ${ANDROID_SDK_GIT} -b ${ANDROID_SDK_BRANCH})
+	(cd ${ANDROID_DIR} && ln -s ${TOPDIR}/toolchain/clang/install/include include)
+	(cd ${ANDROID_DIR} && ln -s ${TOPDIR}/toolchain/clang/install/lib lib)
+	(cd ${ANDROID_DIR} && ln -s ${ANDROID_CC_BINDIR}/arm-linux-androideabi-ar ${ANDROID_DIR}/bin/arm-eabi-ar)
+	(cd ${ANDROID_DIR} && ln -s ${ANDROID_CC_BINDIR}/arm-linux-androideabi-as ${ANDROID_DIR}/bin/arm-eabi-as)
+	(cd ${ANDROID_DIR} && ln -s ${ANDROID_CC_BINDIR}/arm-linux-androideabi-strip ${ANDROID_DIR}/bin/arm-eabi-strip)
+	(cd ${ANDROID_DIR} && ln -s ${ANDROID_CC_BINDIR}/arm-linux-androideabi-ranlib ${ANDROID_DIR}/bin/arm-eabi-ranlib)
+	(cd ${ANDROID_DIR} && ln -s ${ANDROID_CC_BINDIR}/arm-linux-androideabi-ld ${ANDROID_DIR}/bin/arm-eabi-ld)
 	$(call state,$@)
 
 android-gcc-sync: ${ANDROID_DIR}-gcc
