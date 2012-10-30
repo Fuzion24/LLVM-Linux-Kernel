@@ -38,13 +38,9 @@ INITCPIO	= ${INITBUILDFSDIR}.cpio
 LTPVER		= 20120104
 LTP			= ltp-full-${LTPVER}
 LTPURL		= http://prdownloads.sourceforge.net/ltp/${LTP}.bz2?download
-BUSYBOX		= ${INITBUILDDIR}/busybox/_install/bin/busybox
-BUSYBOXGIT	= git://busybox.net/busybox.git
 
-STRACEVER	= 4.7
-STRACE		= ${INITBUILDDIR}/strace-${STRACEVER}/strace
-STRACEURL	= "http://sourceforge.net/projects/strace/files/strace/${STRACEVER}/strace-${STRACEVER}.tar.xz/download"
-STRACETARXZ	= strace-${STRACEVER}.tar.xz
+BUSYBOXURL	= "http://landley.net/aboriginal/downloads/binaries/extras/busybox-armv6l"
+STRACEURL	= "http://landley.net/aboriginal/downloads/binaries/extras/strace-armv6l"
 
 GCC		= gcc
 
@@ -62,13 +58,16 @@ initramfs-settings:
 #	@$(call prsetting,LTP,${LTP})
 #	@$(call prsetting,LTPURL,${LTPURL})
 
-initramfs-unpacked: ${INITBUILDFSDIR}/etc
-${INITBUILDFSDIR}/etc: ${BUSYBOX} ${STRACE} ${KERNEL_MODULES}
+initramfs-unpacked: ${INITBUILDFSDIR}/etc 
+${INITBUILDFSDIR}/etc: ${INITBUILDDIR}/busybox ${INITBUILDDIR}/strace ${KERNEL_MODULES}
 	@rm -rf ${INITBUILDFSDIR}
-	@mkdir -p $(addprefix ${INITBUILDFSDIR}/,bin sys dev proc tmp usr/bin)
-	@cp -ar ${INITBUILDDIR}/busybox/_install/* ${INITBUILDFSDIR}
+	@mkdir -p $(addprefix ${INITBUILDFSDIR}/,bin sys dev proc tmp usr/bin sbin usr/sbin)
 	@cp -r ${INITRAMFSDIR}/etc ${INITBUILDFSDIR}
-	@cp ${STRACE} ${INITBUILDFSDIR}/usr/bin/strace
+	@cp -r ${INITRAMFSDIR}/bootstrap ${INITBUILDFSDIR}
+	@cp ${INITBUILDDIR}/strace ${INITBUILDFSDIR}/usr/bin/strace
+	@cp ${INITBUILDDIR}/busybox ${INITBUILDFSDIR}/bin/busybox
+	(cd ${INITBUILDFSDIR}/bin && ln -s busybox sh)
+
 
 initramfs initramfs-build: ${INITRAMFS}
 ${INITRAMFS}: ${INITBUILDFSDIR}/etc
@@ -86,22 +85,16 @@ initramfs-mrproper initramfs-raze:
 	rm -f ${INITRAMFS}
 	rm -rf ${INITBUILDDIR}
 
-busybox: ${BUSYBOX}
-${BUSYBOX}:
-	([ ! -d ${INITBUILDDIR} ] && mkdir -p ${INITBUILDDIR} || true)
-	([ ! -f ${INITBUILDDIR}/busybox/.git/config ] && (cd ${INITBUILDDIR} && git clone ${BUSYBOXGIT}) || \
-		(cd ${INITBUILDDIR}/busybox && git pull))
-	(cd ${INITBUILDDIR}/busybox && LDFLAGS="--static" make -j ${JOBS} CROSS_COMPILE="${HOST}-" defconfig)
-	(cd ${INITBUILDDIR}/busybox && LDFLAGS="--static" make -j ${JOBS} CROSS_COMPILE="${HOST}-")
-	(cd ${INITBUILDDIR}/busybox && LDFLAGS="--static" make -j ${JOBS} CROSS_COMPILE="${HOST}-" install)
+${INITBUILDDIR}:
+	mkdir -p ${INITBUILDDIR}
 
-strace: ${STRACE}
-${STRACE}:
-	([ ! -d ${INITBUILDDIR} ] && mkdir -p ${INITBUILDDIR} || true)
-	([ ! -f ${INITBUILDDIR}/${STRACETARXZ} ] && wget -O ${INITBUILDDIR}/${STRACETARXZ} -c ${STRACEURL} || true)
-	rm -rf ${INITBUILDDIR}/strace-${STRACEVER}.tar ${INITBUILDDIR}/strace-${STRACEVER}
-	(cd ${INITBUILDDIR} && unxz ${STRACETARXZ} && tar xvf strace-${STRACEVER}.tar)
-	(cd ${INITBUILDDIR}/strace-${STRACEVER} && CC=${CROSS_COMPILE}gcc ./configure --host=arm && make LDFLAGS=-static)
+${INITBUILDDIR}/strace: ${INITBUILDDIR}
+	@wget -O ${INITBUILDDIR}/strace -c ${STRACEURL}
+	@chmod +x ${INITBUILDDIR}/strace
+
+${INITBUILDDIR}/busybox: ${INITBUILDDIR}
+	wget -O ${INITBUILDDIR}/busybox -c ${BUSYBOXURL}
+	chmod +x ${INITBUILDDIR}/busybox
 
 
 ltp: ${INITBUILDDIR}/${LTP}/Version
