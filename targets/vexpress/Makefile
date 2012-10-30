@@ -70,7 +70,7 @@ vexpress-help:
 	@echo "* make test-gcc-boot-poweroff	- test boot gcc built kernel, then power off after init runs"
 	@echo
 	@echo "* make test		- simple boot to rootfs (make test-[gcc-]boot-poweroff *1)"
-	@echo "* make test2		- bsd userspace with toybox"
+	@echo "* make test2		- busybox based initramfs"
 	@echo "* make test3		- linaro/ubuntu rootfs"
 	@echo
 	@echo " Note: You currently have to do a 'killall qemu-system-arm' from another terminal"
