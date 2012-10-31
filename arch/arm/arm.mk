@@ -28,6 +28,9 @@ export MFLOAT
 
 STATE_TOOLCHAIN	= state/arm-cc
 
+# ARCH must be defined before all.mk
+ARCH	= arm
+
 include ${ARCHDIR}/all/all.mk
 
 FETCH_TARGETS	+= arm-cc
@@ -41,7 +44,6 @@ HELP_TARGETS	+= arm-help
 SETTINGS_TARGETS+= arm-settings
 VERSION_TARGETS	+= arm-cc-version
 
-ARCH		= arm
 MARCH		?= armv7-a
 MFLOAT		?= -mfloat-abi=softfp -mfpu=neon
 MAKE_FLAGS	= ARCH=${ARCH}

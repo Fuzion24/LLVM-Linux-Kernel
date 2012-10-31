@@ -10,7 +10,9 @@ test-clang-orig:
 	@CC=${CLANG} srctree=. make -f orig.mk
 
 test-gcc-patched:
+	@echo "==================================================="
 	@echo "Using patched Kbuild.include:"
+	@echo "==================================================="
 	@CC=${GCC} srctree=. make -f patched.mk
 
 test-clang-patched:

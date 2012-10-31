@@ -21,6 +21,9 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
+# ARCH must be defined before all.mk
+ARCH	= mips
+
 include ${ARCHDIR}/all/all.mk
 
 export HOST_TYPE=${HOST}
@@ -32,7 +35,6 @@ ARCH_MIPS_PATCHES	= ${ARCH_MIPS_DIR}/patches
 
 KERNEL_PATCH_DIR+= ${ARCH_MIPS_PATCHES} ${ARCH_MIPS_PATCHES}/${KERNEL_REPO_PATCHES}
 
-ARCH		= mips
 MAKE_FLAGS	= ARCH=${ARCH}
 MAKE_KERNEL	= ${ARCH_MIPS_BINDIR}/make-kernel.sh ${LLVMINSTALLDIR} ${EXTRAFLAGS}
 HOST		= mips-none-eabi

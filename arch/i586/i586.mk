@@ -21,6 +21,9 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
+# ARCH must be defined before all.mk
+ARCH	= i586
+
 include ${ARCHDIR}/all/all.mk
 
 export HOST_TYPE=${HOST}
@@ -32,7 +35,6 @@ ARCH_X86_32_PATCHES	= ${ARCH_X86_32_DIR}/patches
 
 KERNEL_PATCH_DIR	+= ${ARCH_X86_32_PATCHES} ${ARCH_X86_32_PATCHES}/${KERNEL_REPO_PATCHES}
 
-#ARCH		= i386
 #MAKE_FLAGS	= ARCH=${ARCH}
 MAKE_KERNEL	= ${ARCH_X86_32_BINDIR}/make-kernel.sh ${LLVMINSTALLDIR} ${EXTRAFLAGS}
 #HOST		= i386-none-linux-gnu
