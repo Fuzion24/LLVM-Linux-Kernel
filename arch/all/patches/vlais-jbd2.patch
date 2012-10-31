@@ -36,7 +36,7 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
  	int err;
  
 +	BUG_ON(crypto_shash_descsize(journal->j_chksum_driver) >
-+ 	       JBD_MAX_CHECKSUM_SIZE);
++		JBD_MAX_CHECKSUM_SIZE);
 +
  	desc.shash.tfm = journal->j_chksum_driver;
  	desc.shash.flags = 0;
