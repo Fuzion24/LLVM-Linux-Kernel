@@ -27,7 +27,6 @@ void test_mask(unsigned mask)
 	printf("test_aligned(16)        : 0x%x\n", test_aligned(mask, 16));
 	printf("test_aligned(32)        : 0x%x\n", test_aligned(mask, 32));
 
-#ifndef __clang__
 	printf("test_aligned_default-gcc: 0x%x\n", test_aligned_default(mask));
 	printf("test_aligned_gcc(1)     : 0x%x\n", test_aligned(mask, 1));
 	printf("test_aligned_gcc(2)     : 0x%x\n", test_aligned(mask, 2));
@@ -35,7 +34,6 @@ void test_mask(unsigned mask)
 	printf("test_aligned_gcc(8)     : 0x%x\n", test_aligned(mask, 8));
 	printf("test_aligned_gcc(16)    : 0x%x\n", test_aligned(mask, 16));
 	printf("test_aligned_gcc(32)    : 0x%x\n", test_aligned(mask, 32));
-#endif
 }
 
 int main()
@@ -45,5 +43,7 @@ int main()
 	test_mask(0x0000000f);
 	test_mask(0x0000ffff);
 	test_mask(0x00ffffff);
+
+	return 0;
 }
 
