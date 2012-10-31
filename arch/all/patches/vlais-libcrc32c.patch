@@ -19,16 +19,15 @@ by PaX Team.
 
 Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
 Cc: pageexec@freemail.hu
+[Use shash_desc_ctx() to calculate address of ctx]
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 ---
  lib/libcrc32c.c |   19 ++++++++++---------
  1 file changed, 10 insertions(+), 9 deletions(-)
 
-diff --git a/lib/libcrc32c.c b/lib/libcrc32c.c
-index 244f548..5d0bac8 100644
---- a/lib/libcrc32c.c
-+++ b/lib/libcrc32c.c
-@@ -41,20 +41,21 @@ static struct crypto_shash *tfm;
+--- linux.orig/lib/libcrc32c.c
++++ linux/lib/libcrc32c.c
+@@ -41,20 +41,20 @@
  
  u32 crc32c(u32 crc, const void *address, unsigned int length)
  {
@@ -39,8 +38,7 @@ index 244f548..5d0bac8 100644
 +	char desc[sizeof(struct shash_desc) + crypto_shash_descsize(tfm)
 +		+ CRYPTO_MINALIGN] CRYPTO_MINALIGN_ATTR;
 +	struct shash_desc *shash = (struct shash_desc *)desc;
-+	u32 *ctx = (u32 *)((unsigned long)(desc + sizeof(struct shash_desc)
-+		+ CRYPTO_MINALIGN - 1) & ~(CRYPTO_MINALIGN - 1));
++	u32 *ctx = (u32 *)shash_desc_ctx(shash);
  	int err;
  
 -	desc.shash.tfm = tfm;
@@ -59,6 +57,3 @@ index 244f548..5d0bac8 100644
  }
  
  EXPORT_SYMBOL(crc32c);
--- 
-1.7.9.5
-
