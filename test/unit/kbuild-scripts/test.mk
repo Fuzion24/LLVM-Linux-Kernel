@@ -17,8 +17,8 @@ all:
 	@echo "unsupported warning (bar): " $(call cc-option,-Wbar,)
 	@echo "--------------"
 	@echo "Testing for unsupported clang flags, these should be blank for clang, not for gcc:"
-	@echo "no-delete-pointer-checks:" $(call cc-option,-fno-delete-pointer-checks,)
-	@echo "unused-but-set-variable: " $(call cc-disable-warning,unused-but-set-variable,)
+	@echo "unused-but-set-variable(GCC 4.6+ only): " $(call cc-disable-warning,unused-but-set-variable,)
+	@echo "no-delete-pointer-checks:" $(call cc-option,-fno-delete-null-pointer-checks,)
 	@echo "conserve-stack:" $(call cc-option,-fconserve-stack,)
 	@echo "delete-null-pointer-checks:" $(call cc-option,-fdelete-null-pointer-checks,)
 	@echo "no-inline-functions-called-once:" $(call cc-option,-fno-inline-functions-called-once,)
