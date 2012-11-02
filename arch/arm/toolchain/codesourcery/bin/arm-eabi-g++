@@ -1,8 +1,10 @@
 #!/bin/bash
 export PATH=`dirname $0`/../arm-2011.03/bin:$PATH
-`dirname $0`/../../../../../toolchain/clang/install/bin/clang \
+strace `dirname $0`/../../../../../toolchain/clang/install/bin/clang \
 	-target arm-eabi \
-	-ccc-gcc-name "`dirname $0`/../arm-2011.03/bin/arm-none-linux-gnueabi-g++" \
+	-ccc-gcc-name "arm-none-linux-gnueabi-g++" \
 	-D__linux__ \
+	-I`dirname $0`/../arm-2011.03/arm-none-linux-gnueabi/include/c++/4.5.2/ \
+	-I`dirname $0`/../arm-2011.03/arm-none-linux-gnueabi/include/c++/4.5.2/arm-none-linux-gnueabi \
 	-Wa,-march=armv7-a --sysroot=`dirname $0`/../arm-2011.03/arm-none-linux-gnueabi/libc $*
 
