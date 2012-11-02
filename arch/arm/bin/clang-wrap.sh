@@ -9,6 +9,6 @@ export ARMGCCINCLUDE="${ARMGCCSYSROOT}/usr/include"
 
 CLANGFLAGS="-march=armv7-a -mfloat-abi=softfp -mfpu=neon -fcatch-undefined-behavior"
 
-CC="${LLVMINSTALLDIR}/bin/clang -ccc-host-triple ${HOST_TRIPLE} -ccc-gcc-name ${HOST}-gcc --sysroot=${ARMGCCSYSROOT} ${CLANGFLAGS}"
+CC="${LLVMINSTALLDIR}/bin/clang -target ${HOST_TRIPLE} -ccc-gcc-name ${HOST}-gcc --sysroot=${ARMGCCSYSROOT} ${CLANGFLAGS}"
 
 ${CC} $*
