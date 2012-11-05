@@ -32,13 +32,16 @@ CSCC_TMPDIR	= ${CSCC_TOPDIR}/tmp
 HOST		= arm-none-linux-gnueabi
 CSCC_DIR	= ${CSCC_TOPDIR}/${CSCC_NAME}
 CSCC_BINDIR	= ${CSCC_DIR}/bin
-HOST_TRIPLE	= arm-none-gnueabi
+HOST_TRIPLE	= arm-none-linux-gnueabi
 COMPILER_PATH	= ${CSCC_DIR}
 CC_FOR_BUILD	= ${CSCC_BINDIR}/${HOST}-gcc
-export HOST HOST_TRIPLE
+
+ARM_CROSS_GCC_TOOLCHAIN = ${CSCC_DIR}
+
+export HOST HOST_TRIPLE ARM_CROSS_GCC_TOOLCHAIN
 
 # Add path so that ${CROSS_COMPILE}${CC} is resolved
-PATH		:= ${CSCC_BINDIR}:${ARCH_ARM_BINDIR}:${PATH}
+PATH           := ${CSCC_BINDIR}:${ARCH_ARM_BINDIR}:${PATH}
 
 # Get ARM cross compiler
 ${CSCC_TMPDIR}/${CSCC_TAR}:
@@ -49,12 +52,22 @@ CROSS_GCC=${CSCC_BINDIR}/${CROSS_COMPILE}gcc
 codesourcery-gcc arm-cc: ${ARCH_ARM_TOOLCHAIN_STATE}/codesourcery-gcc
 ${ARCH_ARM_TOOLCHAIN_STATE}/codesourcery-gcc: ${CSCC_TMPDIR}/${CSCC_TAR}
 	tar -x -j -C ${CSCC_TOPDIR} -f $<
-	(cd ${CSCC_DIR} && ln -s ${CSCC_CC_BINDIR}/arm-none-linux-gnueabi-ar ${CSCC_DIR}/bin/arm-eabi-ar)
-	(cd ${CSCC_DIR} && ln -s ${CSCC_CC_BINDIR}/arm-none-linux-gnueabi-as ${CSCC_DIR}/bin/arm-eabi-as)
-	(cd ${CSCC_DIR} && ln -s ${CSCC_CC_BINDIR}/arm-none-linux-gnueabi-strip ${CSCC_DIR}/bin/arm-eabi-strip)
-	(cd ${CSCC_DIR} && ln -s ${CSCC_CC_BINDIR}/arm-none-linux-gnueabi-ranlib ${CSCC_DIR}/bin/arm-eabi-ranlib)
-	(cd ${CSCC_DIR} && ln -s ${CSCC_CC_BINDIR}/arm-none-linux-gnueabi-ld ${CSCC_DIR}/bin/arm-eabi-ld)
 	$(call state,$@)
+
+${CSCC_DIR}/bin/arm-eabi-ar: ${ARCH_ARM_TOOLCHAIN_STATE}/codesourcery-gcc
+	(cd ${CSCC_DIR} && ln -s ${CSCC_CC_BINDIR}/arm-none-linux-gnueabi-ar ${CSCC_DIR}/bin/arm-eabi-ar)
+
+${CSCC_DIR}/bin/arm-eabi-as: ${ARCH_ARM_TOOLCHAIN_STATE}/codesourcery-gcc
+	(cd ${CSCC_DIR} && ln -s ${CSCC_CC_BINDIR}/arm-none-linux-gnueabi-as ${CSCC_DIR}/bin/arm-eabi-as)
+
+${CSCC_DIR}/bin/arm-eabi-strip: ${ARCH_ARM_TOOLCHAIN_STATE}/codesourcery-gcc
+	(cd ${CSCC_DIR} && ln -s ${CSCC_CC_BINDIR}/arm-none-linux-gnueabi-strip ${CSCC_DIR}/bin/arm-eabi-strip)
+
+${CSCC_DIR}/bin/arm-eabi-ranlib: ${ARCH_ARM_TOOLCHAIN_STATE}/codesourcery-gcc
+	(cd ${CSCC_DIR} && ln -s ${CSCC_CC_BINDIR}/arm-none-linux-gnueabi-ranlib ${CSCC_DIR}/bin/arm-eabi-ranlib)
+
+${CSCC_DIR}/bin/arm-eabi-ld: ${ARCH_ARM_TOOLCHAIN_STATE}/codesourcery-gcc
+	(cd ${CSCC_DIR} && ln -s ${CSCC_CC_BINDIR}/arm-none-linux-gnueabi-ranlib ${CSCC_DIR}/bin/arm-eabi-ranlib)
 
 state/arm-cc: ${ARCH_ARM_TOOLCHAIN_STATE}/codesourcery-gcc
 	$(call state,$@)

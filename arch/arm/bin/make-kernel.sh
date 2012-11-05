@@ -53,7 +53,7 @@ if [ $USECLANG -eq "1" ]; then
 
 	# Must pass -mllvm -use-new-sroa=false or Clang will segfault on
 	export CLANGFLAGS="-march=$MARCH $MFLOAT -fno-builtin -Qunused-arguments -Wno-asm-operand-widths ${EXTRAFLAGS}"
-	export CC_FOR_BUILD="${INSTALLDIR}/bin/clang -target ${HOST_TRIPLE} -ccc-gcc-name ${HOST}-gcc ${CLANGFLAGS}"
+	export CC_FOR_BUILD="${INSTALLDIR}/bin/clang -target ${HOST_TRIPLE} -gcc-toolchain ${ARM_CROSS_GCC_TOOLCHAIN} ${CLANGFLAGS}"
 fi
 
 export LD=${CROSS_COMPILE}ld

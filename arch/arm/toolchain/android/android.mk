@@ -33,17 +33,19 @@ ANDROID_CC_VERSION	= arm-linux-androideabi-4.6
 ANDROID_CC_DIR		= ${ANDROID_DIR}/${ANDROID_CC_VERSION}
 ANDROID_CC_BINDIR	= ${ANDROID_CC_DIR}/bin
 
-# Add path so that ${CROSS_COMPILE}${CC} is resolved
-PATH		:= ${ANDROID_CC_BINDIR}:${PATH}
-
 HOST		= arm-linux-androideabi
 HOST_TRIPLE	= arm-linux-androideabi
 COMPILER_PATH	= ${ANDROID_CC_DIR}
 ANDROID_GCC	= ${ANDROID_CC_BINDIR}/${CROSS_COMPILE}gcc
 CC_FOR_BUILD	= ${ANDROID_GCC}
 
+ARM_CROSS_GCC_TOOLCHAIN = ${ANDROID_CC_DIR}
+
 # The following exports are required for make_kernel.sh
-export HOST HOST_TRIPLE
+export HOST HOST_TRIPLE ARM_CROSS_GCC_TOOLCHAIN
+
+# Add path so that ${CROSS_COMPILE}${CC} is resolved
+PATH		:= ${ANDROID_CC_BINDIR}:${PATH}
 
 # The Android toolchain supports only ARM cross compilation
 ${ANDROID_DIR}:
