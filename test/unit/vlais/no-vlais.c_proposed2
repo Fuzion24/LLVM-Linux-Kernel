@@ -6,9 +6,10 @@ extern void printHex(char *buffer, size_t size);
 #define VLAIS_STRUCT(structname) size_t next_##structname = 0
 #define VLAIS_STRUCT_SIZE(structname) next_##structname
 
+	//size_t pad_##structname##_##name = (~__alignof__(type)) & (next_##structname & (__alignof__(type)-1)); 
 #define VLAIS(structname, type, name, n) \
 	type * structname##_##name; \
-	size_t pad_##structname##_##name = (~__alignof__(type)) & (next_##structname % __alignof__(type)); \
+	size_t pad_##structname##_##name = (next_##structname & (__alignof__(type)-1)); \
 	size_t offset_##structname##_##name = next_##structname + pad_##structname##_##name; \
 	size_t sz_##structname##_##name = n * sizeof(type); \
 	next_##structname = next_##structname + pad_##structname##_##name + sz_##structname##_##name; 
