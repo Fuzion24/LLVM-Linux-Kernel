@@ -14,8 +14,6 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
  sound/arm/aaci.c                     |    9 +++++++--
  8 files changed, 21 insertions(+), 10 deletions(-)
 
-Index: rpi/drivers/input/serio/ambakmi.c
-===================================================================
 --- rpi.orig/drivers/input/serio/ambakmi.c
 +++ rpi/drivers/input/serio/ambakmi.c
 @@ -195,7 +195,7 @@
@@ -27,8 +25,6 @@ Index: rpi/drivers/input/serio/ambakmi.c
  	.drv		= {
  		.name	= "kmi-pl050",
  		.owner	= THIS_MODULE,
-Index: rpi/drivers/mmc/host/sdhci-pxav2.c
-===================================================================
 --- rpi.orig/drivers/mmc/host/sdhci-pxav2.c
 +++ rpi/drivers/mmc/host/sdhci-pxav2.c
 @@ -214,7 +214,7 @@
@@ -40,8 +36,6 @@ Index: rpi/drivers/mmc/host/sdhci-pxav2.c
  	.driver		= {
  		.name	= "sdhci-pxav2",
  		.owner	= THIS_MODULE,
-Index: rpi/drivers/mmc/host/sdhci-pxav3.c
-===================================================================
 --- rpi.orig/drivers/mmc/host/sdhci-pxav3.c
 +++ rpi/drivers/mmc/host/sdhci-pxav3.c
 @@ -260,7 +260,7 @@
@@ -53,8 +47,6 @@ Index: rpi/drivers/mmc/host/sdhci-pxav3.c
  	.driver		= {
  		.name	= "sdhci-pxav3",
  		.owner	= THIS_MODULE,
-Index: rpi/drivers/net/ethernet/smsc/smc91x.c
-===================================================================
 --- rpi.orig/drivers/net/ethernet/smsc/smc91x.c
 +++ rpi/drivers/net/ethernet/smsc/smc91x.c
 @@ -2406,7 +2406,7 @@
@@ -66,34 +58,24 @@ Index: rpi/drivers/net/ethernet/smsc/smc91x.c
  	.probe		= smc_drv_probe,
  	.remove		= __devexit_p(smc_drv_remove),
  	.driver		= {
-Index: rpi/drivers/mmc/host/mmci.c
-===================================================================
---- rpi.orig/drivers/mmc/host/mmci.c
-+++ rpi/drivers/mmc/host/mmci.c
-@@ -1502,7 +1502,7 @@
- 	{ 0, 0 },
- };
- 
--static struct amba_driver mmci_driver = {
-+static struct amba_driver mmci_driver __refdata = {
- 	.drv		= {
- 		.name	= DRIVER_NAME,
- 	},
-Index: rpi/sound/arm/aaci.c
-===================================================================
 --- rpi.orig/sound/arm/aaci.c
 +++ rpi/sound/arm/aaci.c
-@@ -1097,7 +1097,7 @@
+@@ -1097,7 +1097,14 @@
  	{ 0, 0 },
  };
  
 -static struct amba_driver aaci_driver = {
++// FIXME
++// MODULE_DEVICE_TABLE(amba, aaci_ids);
++// Which expands to:
++// extern const struct amba_device_id __mod_amba_device_table __attribute__ ((unused, __alias__("aaci_ids")));
++// causes the following error in LLVM:
++// ERROR: "__unnamed_1" [sound/arm/snd-aaci.ko] undefined!
++
 +static struct amba_driver aaci_driver __refdata = {
  	.drv		= {
  		.name	= DRIVER_NAME,
  	},
-Index: rpi/drivers/net/ethernet/smsc/smsc911x.c
-===================================================================
 --- rpi.orig/drivers/net/ethernet/smsc/smsc911x.c
 +++ rpi/drivers/net/ethernet/smsc/smsc911x.c
 @@ -2388,7 +2388,7 @@
@@ -105,8 +87,6 @@ Index: rpi/drivers/net/ethernet/smsc/smsc911x.c
  	.probe = smsc911x_drv_probe,
  	.remove = __devexit_p(smsc911x_drv_remove),
  	.driver = {
-Index: rpi/drivers/net/ethernet/smsc/smc911x.c
-===================================================================
 --- rpi.orig/drivers/net/ethernet/smsc/smc911x.c
 +++ rpi/drivers/net/ethernet/smsc/smc911x.c
 @@ -2185,7 +2185,7 @@
