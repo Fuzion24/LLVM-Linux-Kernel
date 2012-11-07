@@ -59,6 +59,7 @@ patches_dir = [ -e ${2} ] || ln -sf ${1} ${2}
 applied	= ( [ -d ${1} ] && cd ${1} && quilt applied || true )
 patch	= [ ! -d ${1} ] || (cd ${1} && if [ -e patches ] && $(call banner,"Applying patches to ${1}") && quilt unapplied ; then quilt push -a ; else >/dev/null ; fi)
 unpatch	= [ ! -d ${1} ] || (cd ${1} && if [ -e patches ] && $(call banner,"Unapplying patches from ${1}") && quilt applied ; then quilt pop -af ; else >/dev/null ; fi)
+apply_patch = (cd ${1} && cat ${2} | patch -s -p1)
 
 ##############################################################################
 # Git macros used by all subsystems
@@ -193,6 +194,14 @@ fetch-all:
 	${MAKE} ${FETCH_TARGETS}
 	@$(call banner,All external sources fetched!)
 
+##############################################################################
+gc-all:
+	@$(call banner,Running garbage collection for all git repos...)
+	@for DIR in `find -name \*.git | sort` ; do \
+		$(call banner,Garbage collection for $$DIR) ; \
+		(cd $$DIR; git gc) ; \
+	done
+	
 ##############################################################################
 mrproper-all: tmp-mrproper
 	@$(call banner,Scrubbing everything...)
