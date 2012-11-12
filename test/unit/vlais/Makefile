@@ -5,18 +5,23 @@ TARGET	= test-vlais
 
 .PHONY: all test clean
 
+OBJS		= test.o util.o
+DIFF_OBJS	= novlais novlais1 novlais2
+GCC_OBJS	= vlais-gcc.o ${addsuffix -gcc.o,${DIFF_OBJS}}
+CLANG_OBJS	= ${addsuffix -clang.o,${DIFF_OBJS}}
+
 all: $(TARGET)
 
-vlais-gcc.o no-vlais-gcc.o: %-gcc.o: %.c
-	$(GCC) -DNOVLAIS=novlais_gcc -c $^ -o $@
+${GCC_OBJS}: %-gcc.o: %.c
+	$(GCC) -DNOVLAIS=$*_gcc -c $^ -o $@
 
-no-vlais-clang.o: %-clang.o: %.c
-	$(CLANG) -g -DNOVLAIS=novlais_clang -c $^ -o $@
+${CLANG_OBJS}: %-clang.o: %.c
+	$(CLANG) -g -DNOVLAIS=$*_clang -c $^ -o $@
 
-test.o util.o: %.o: %.c
-	$(GCC) -g -c $^ -o $@
+${OBJS}: %.o: %.c
+	$(CLANG) -g -c $^ -o $@
 
-$(TARGET): test.o no-vlais-clang.o vlais-gcc.o no-vlais-gcc.o util.o
+$(TARGET): ${CLANG_OBJS} ${GCC_OBJS} ${OBJS}
 	$(GCC) -g -o $@ $^
 
 test: $(TARGET)
