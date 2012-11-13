@@ -16,7 +16,7 @@ extern void printHex(char *buffer, size_t size);
 
 #define VLAIS_SET_PTR(ptr,structname,name) structname##_##name = (typeof(structname##_##name))&ptr[offset_##structname##_##name]
 
-long NOVLAIS(int a, int b, int c, int d)
+long NOVLAIS(int a, int b, int c, int d, int p)
 {
 	VLAIS_STRUCT(foo);
 		VLAIS(foo, char,  vara, a);
@@ -33,14 +33,14 @@ long NOVLAIS(int a, int b, int c, int d)
 	VLAIS_SET_PTR(buffer, foo, vard);
 
 	long ret = 0 | offset_foo_varb<<16 | offset_foo_varc<<8 | offset_foo_vard;
-	printf("no-vlais: 0x%08X (%ld:%ld)\n", (int)ret, total, sizeof(buffer));
+	if(p) printf("no-vlais: 0x%08X (%ld:%ld)\n", (int)ret, total, sizeof(buffer));
 
 	memset(buffer, 0, sizeof(buffer));
 	memset(foo_vard, 4, d*sizeof(long));
 	memset(foo_varc, 3, c*sizeof(int));
 	memset(foo_varb, 2, b*sizeof(short));
 	memset(foo_vara, 1, a*sizeof(char));
-	printHex(buffer, sizeof(buffer));
+	if(p) printHex(buffer, sizeof(buffer));
 
 	return ret;
 }

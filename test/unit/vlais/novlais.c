@@ -9,7 +9,7 @@ extern void printHex(char *buffer, size_t size);
 //#define paddedsize(offset,n,type,nexttype) (padalign((offset) + (n) * sizeof(type), __alignof__(nexttype)) - (offset))
 //#define paddedstart(ptr,offset,type) (type *)padalign((long)ptr+(offset),__alignof__(type))
 
-long NOVLAIS(int a, int b, int c, int d)
+long NOVLAIS(int a, int b, int c, int d, int p)
 {
 	struct foo {
 		int a;
@@ -22,8 +22,8 @@ long NOVLAIS(int a, int b, int c, int d)
 	size_t sd = paddedsize(sa+sb+sc,d,long,long);
 	size_t total = sa+sb+sc+sd;
 	char buffer[total];
-	printf("real sizes: a:%ld b:%ld c:%ld d:%ld\n", a*sizeof(char), b*sizeof(short), c*sizeof(int), d*sizeof(long));
-	printf("calc sizes: a:%d b:%d c:%d d:%d\n", (int)sa, (int)sb, (int)sc, (int)sd);
+	//printf("real sizes: a:%ld b:%ld c:%ld d:%ld\n", a*sizeof(char), b*sizeof(short), c*sizeof(int), d*sizeof(long));
+	//printf("calc sizes: a:%d b:%d c:%d d:%d\n", (int)sa, (int)sb, (int)sc, (int)sd);
 
 	char *aa = paddedstart(buffer, 0, char);
 	short *bb = paddedstart(aa, sa, short);
@@ -39,14 +39,14 @@ long NOVLAIS(int a, int b, int c, int d)
 	//printf("Start d: 0x%04x\n", (int)paddedstart(NULL, sc, long));
 
 	long ret = 0 | sa<<16 | (sa+sb)<<8 | (sa+sb+sc);
-	printf("no-vlais: 0x%08X (%ld:%ld)\n", (int)ret, total, sizeof(buffer));
+	if(p) printf("no-vlais: 0x%08X (%ld:%ld)\n", (int)ret, total, sizeof(buffer));
 
 	memset(buffer, 0, sizeof(buffer));
 	memset(dd, 4, d*sizeof(long));
 	memset(cc, 3, c*sizeof(int));
 	memset(bb, 2, b*sizeof(short));
 	memset(aa, 1, a*sizeof(char));
-	printHex(buffer, sizeof(buffer));
+	if(p) printHex(buffer, sizeof(buffer));
 
 	return ret;
 }

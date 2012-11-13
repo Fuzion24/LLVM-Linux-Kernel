@@ -12,7 +12,7 @@ extern void printHex(char *buffer, size_t size);
 	
 #define paddedstart(ptr,name) name = (typeof(name))&ptr[offset_##name]
 
-long NOVLAIS(int a, int b, int c, int d)
+long NOVLAIS(int a, int b, int c, int d, int p)
 {
 	paddedsize(0,          var_a, char,  a);
 	paddedsize(next_var_a, var_b, short, b);
@@ -30,14 +30,14 @@ long NOVLAIS(int a, int b, int c, int d)
 	paddedstart(buffer, var_d);
 
 	long ret = 0 | offset_var_b<<16 | offset_var_c<<8 | offset_var_d;
-	printf("no-vlais: 0x%08X (%ld:%ld)\n", (int)ret, total, sizeof(buffer));
+	if(p) printf("no-vlais: 0x%08X (%ld:%ld)\n", (int)ret, total, sizeof(buffer));
 
 	memset(buffer, 0, sizeof(buffer));
 	memset(var_d, 4, d*sizeof(long));
 	memset(var_c, 3, c*sizeof(int));
 	memset(var_b, 2, b*sizeof(short));
 	memset(var_a, 1, a*sizeof(char));
-	printHex(buffer, sizeof(buffer));
+	if(p) printHex(buffer, sizeof(buffer));
 
 	return ret;
 }

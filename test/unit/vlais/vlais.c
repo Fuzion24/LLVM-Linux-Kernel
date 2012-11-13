@@ -4,7 +4,7 @@
 
 extern void printHex(char *buffer, size_t size);
 
-long vlais(int a, int b, int c, int d)
+long vlais(int a, int b, int c, int d, int p)
 {
 	struct vlais {
 		char a[a];
@@ -25,14 +25,14 @@ long vlais(int a, int b, int c, int d)
 	ret |= offsetof(struct vlais, b) << 16;
 	ret |= offsetof(struct vlais, c) << 8;
 	ret |= offsetof(struct vlais, d);
-	printf("vlais:    0x%08X (%ld)\n", (unsigned int)ret, sizeof(struct vlais));
+	if(p) printf("vlais:    0x%08X (%ld)\n", (unsigned int)ret, sizeof(struct vlais));
 
 	memset(&v, 0, sizeof(v));
 	memset(v.d, 4, d*sizeof(long));
 	memset(v.c, 3, c*sizeof(int));
 	memset(v.b, 2, b*sizeof(short));
 	memset(v.a, 1, a*sizeof(char));
-	printHex((char*)&v, sizeof(v));
+	if(p) printHex((char*)&v, sizeof(v));
 
 	return ret;
 }
