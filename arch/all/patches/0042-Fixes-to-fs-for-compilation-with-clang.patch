@@ -1,0 +1,62 @@
+From 7a61674f307f030133270a7d78eb72062c8e2e95 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
+Date: Wed, 14 Nov 2012 13:04:58 +0100
+Subject: [PATCH 42/51] Fixes to fs/ for compilation with clang
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Author:  PaX Team <pageexec at freemail.hu>
+ML-Post: http://lists.cs.uiuc.edu/pipermail/llvm-commits/Week-of-Mon-20120507/142707.html
+URL:     http://llvm.linuxfoundation.org
+
+Merge:   Jan-Simon Möller <dl9pf at gmx.de>
+
+Description:
+---
+ fs/cifs/cifsacl.c  |    2 +-
+ fs/cifs/cifsglob.h |    1 -
+ fs/compat_ioctl.c  |    2 +-
+ 3 Dateien geändert, 2 Zeilen hinzugefügt(+), 3 Zeilen entfernt(-)
+
+diff --git a/fs/cifs/cifsacl.c b/fs/cifs/cifsacl.c
+index 0fb15bb..b911930 100644
+--- a/fs/cifs/cifsacl.c
++++ b/fs/cifs/cifsacl.c
+@@ -903,7 +903,7 @@ static void parse_dacl(struct cifs_acl *pdacl, char *end_of_acl,
+ 		umode_t group_mask = S_IRWXG;
+ 		umode_t other_mask = S_IRWXU | S_IRWXG | S_IRWXO;
+ 
+-		if (num_aces > ULONG_MAX / sizeof(struct cifs_ace *))
++		if (num_aces > UINT_MAX / sizeof(struct cifs_ace *))
+ 			return;
+ 		ppace = kmalloc(num_aces * sizeof(struct cifs_ace *),
+ 				GFP_KERNEL);
+diff --git a/fs/cifs/cifsglob.h b/fs/cifs/cifsglob.h
+index f5af252..fe2ae84 100644
+--- a/fs/cifs/cifsglob.h
++++ b/fs/cifs/cifsglob.h
+@@ -123,7 +123,6 @@ struct session_key {
+ /* crypto security descriptor definition */
+ struct sdesc {
+ 	struct shash_desc shash;
+-	char ctx[];
+ };
+ 
+ /* crypto hashing related structure/fields, not specific to a sec mech */
+diff --git a/fs/compat_ioctl.c b/fs/compat_ioctl.c
+index 4c6285f..88da262 100644
+--- a/fs/compat_ioctl.c
++++ b/fs/compat_ioctl.c
+@@ -809,7 +809,7 @@ static int compat_ioctl_preallocate(struct file *file,
+  * simple reversible transform to make our table more evenly
+  * distributed after sorting.
+  */
+-#define XFORM(i) (((i) ^ ((i) << 27) ^ ((i) << 17)) & 0xffffffff)
++#define XFORM(i) (((i) ^ (((i) & 0x1f) << 27) ^ (((i) & 0x7fff) << 17)) & 0xffffffff)
+ 
+ #define COMPATIBLE_IOCTL(cmd) XFORM(cmd),
+ /* ioctl should not be warned about even if it's not implemented.
+-- 
+1.7.10.4
+

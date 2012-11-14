@@ -1,0 +1,57 @@
+From 9a37e7f1ba57558621d770664e22273870849834 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
+Date: Wed, 14 Nov 2012 09:26:33 +0100
+Subject: [PATCH 01/51] Toplevel Makefile adustments to compile with clang
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Author:  PaX Team <pageexec at freemail.hu>
+ML-Post: http://lists.cs.uiuc.edu/pipermail/llvm-commits/Week-of-Mon-20120507/142707.html
+URL:     http://llvm.linuxfoundation.org
+
+Merge:   Jan-Simon Möller <dl9pf at gmx.de>
+
+Description:
+Toplevel Makefile adustments to compile with clang
+* Disable noise
+* use -Qunused-arguments to silence warning
+---
+ Makefile |    7 ++++---
+ 1 Datei geändert, 4 Zeilen hinzugefügt(+), 3 Zeilen entfernt(-)
+
+diff --git a/Makefile b/Makefile
+index 6edac73..7c26c21 100644
+--- a/Makefile
++++ b/Makefile
+@@ -241,7 +241,7 @@ CONFIG_SHELL := $(shell if [ -x "$$BASH" ]; then echo $$BASH; \
+ 
+ HOSTCC       = gcc
+ HOSTCXX      = g++
+-HOSTCFLAGS   = -Wall -Wmissing-prototypes -Wstrict-prototypes -O2 -fomit-frame-pointer
++HOSTCFLAGS   = -Wall -W -Wno-unused-value -Wmissing-prototypes -Wstrict-prototypes -Wno-unused-parameter -Wno-missing-field-initializers -O2 -fomit-frame-pointer -fno-delete-null-pointer-checks
+ HOSTCXXFLAGS = -O2
+ 
+ # Decide whether to build built-in, modular, or both.
+@@ -370,7 +370,7 @@ LINUXINCLUDE    := \
+ KBUILD_CPPFLAGS := -D__KERNEL__
+ 
+ KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
+-		   -fno-strict-aliasing -fno-common \
++		   -fno-strict-aliasing -fno-common -Qunused-arguments \
+ 		   -Werror-implicit-function-declaration \
+ 		   -Wno-format-security \
+ 		   -fno-delete-null-pointer-checks
+@@ -598,7 +598,8 @@ endif
+ 
+ # This warning generated too much noise in a regular build.
+ # Use make W=1 to enable this warning (see scripts/Makefile.build)
+-KBUILD_CFLAGS += $(call cc-disable-warning, unused-but-set-variable)
++#KBUILD_CFLAGS += $(call cc-disable-warning, unused-but-set-variable)
++KBUILD_CFLAGS += $(call cc-disable-warning, unused-variable)
+ 
+ ifdef CONFIG_FRAME_POINTER
+ KBUILD_CFLAGS	+= -fno-omit-frame-pointer -fno-optimize-sibling-calls
+-- 
+1.7.10.4
+

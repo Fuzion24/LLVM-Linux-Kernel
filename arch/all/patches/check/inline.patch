@@ -3,6 +3,7 @@ Remove useless inline specifiers
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Bryce Lelbach <blelbach@cct.lsu.edu>
 ---
+ drivers/gpu/drm/i915/i915_drv.h |    2 +-
  fs/bio.c                        |    2 +-
  fs/block_dev.c                  |    2 +-
  fs/buffer.c                     |    2 +-
@@ -90,6 +91,15 @@ Signed-off-by: Bryce Lelbach <blelbach@cct.lsu.edu>
  	iph->check = ip_fast_csum((unsigned char *)iph, iph->ihl);
 --- linux.orig/drivers/gpu/drm/i915/i915_drv.h
 +++ linux/drivers/gpu/drm/i915/i915_drv.h
+@@ -1549,7 +1549,7 @@
+ /* intel_i2c.c */
+ extern int intel_setup_gmbus(struct drm_device *dev);
+ extern void intel_teardown_gmbus(struct drm_device *dev);
+-extern inline bool intel_gmbus_is_port_valid(unsigned port)
++extern bool intel_gmbus_is_port_valid(unsigned port)
+ {
+ 	return (port >= GMBUS_PORT_SSC && port <= GMBUS_PORT_DPD);
+ }
 @@ -1558,7 +1558,7 @@
  		struct drm_i915_private *dev_priv, unsigned port);
  extern void intel_gmbus_set_speed(struct i2c_adapter *adapter, int speed);

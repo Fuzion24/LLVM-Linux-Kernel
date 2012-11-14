@@ -27,7 +27,7 @@ TOPDIR		= $(realpath ${TARGETDIR}/../..)
 
 KERNEL_CFG	= ${TARGETDIR}/config_x86_64
 # override KERNEL_TAG to v3.3
-KERNEL_TAG = v3.3
+#KERNEL_TAG = v3.3
 
 #GDB_OPTS	= -gdb tcp::1234 -s -S
 GDB_OPTS	=
