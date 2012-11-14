@@ -48,6 +48,7 @@
 0049-Change-byte-to-word.patch
 0050-Add-cast-for-compilation-with-clang.patch
 0051-Change-from-DECLARE_PER_CPU-to-DECLARE_PER_CPU_SHARE.patch
+0052-Revert-x86-nmi-Clean-up-register_nmi_handler-usage.patch
 aligned-attribute.patch
 cmpxchg-local-fix-uninitialized-return-code.patch
 compiler-clang.patch
