@@ -10,3 +10,6 @@ diff-all: aligned-attribute-gcc aligned-attribute-clang
 	./aligned-attribute-gcc > gcc-log
 	./aligned-attribute-clang > clang-log
 	diff -y gcc-log clang-log || true
+
+clean:
+	rm -f aligned-attribute-* *-log
