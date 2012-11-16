@@ -1,16 +1,25 @@
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 --- linux.orig/arch/arm/Makefile
 +++ linux/arch/arm/Makefile
-@@ -47,7 +47,7 @@
+@@ -42,12 +42,15 @@
+ KBUILD_CFLAGS	+=-fstack-protector
+ endif
+ 
++# Quiet unused arguments warning from clang
++KBUILD_CPPFLAGS   += $(call cc-option,-Qunused-arguments)
++
+ ifeq ($(CONFIG_CPU_BIG_ENDIAN),y)
+-KBUILD_CPPFLAGS	+= -mbig-endian
++KBUILD_CPPFLAGS	+= $(call cc-option,-mbig-endian,)
  AS		+= -EB
  LD		+= -EB
  else
 -KBUILD_CPPFLAGS	+= -mlittle-endian
-+#KBUILD_CPPFLAGS	+= -mlittle-endian
++KBUILD_CPPFLAGS	+= $(call cc-option,-mlittle-endian,)
  AS		+= -EL
  LD		+= -EL
  endif
-@@ -91,7 +91,7 @@
+@@ -91,7 +94,7 @@
  tune-$(CONFIG_CPU_V6K)		:=$(call cc-option,-mtune=arm1136j-s,-mtune=strongarm)
  
  ifeq ($(CONFIG_AEABI),y)
@@ -19,7 +28,7 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
  else
  CFLAGS_ABI	:=$(call cc-option,-mapcs-32,-mabi=apcs-gnu) $(call cc-option,-mno-thumb-interwork,)
  endif
-@@ -115,7 +115,7 @@
+@@ -115,7 +118,7 @@
  endif
  
  # Need -Uarm for gcc < 3.x
@@ -28,26 +37,3 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
  KBUILD_AFLAGS	+=$(CFLAGS_ABI) $(AFLAGS_ISA) $(arch-y) $(tune-y) -include asm/unified.h -msoft-float
  
  CHECKFLAGS	+= -D__arm__
---- linux.orig/arch/arm/include/asm/ftrace.h
-+++ linux/arch/arm/include/asm/ftrace.h
-@@ -45,7 +45,8 @@
- 
- #else
- 
--extern inline void *return_address(unsigned int level)
-+extern inline __attribute__((gnu_inline))
-+void *return_address(unsigned int level)
- {
- 	return NULL;
- }
---- linux.orig/include/linux/netdevice.h
-+++ linux/include/linux/netdevice.h
-@@ -1238,7 +1238,7 @@
- 	enum {
- 		RTNL_LINK_INITIALIZED,
- 		RTNL_LINK_INITIALIZING,
--	} rtnl_link_state:16;
-+	} rtnl_link_state;
- 
- 	/* Called from unregister, can be used to call free_netdev */
- 	void (*destructor)(struct net_device *dev);
