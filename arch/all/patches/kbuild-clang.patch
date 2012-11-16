@@ -43,3 +43,24 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
  # cc-version
  # Usage gcc-ver := $(call cc-version)
  cc-version = $(shell $(CONFIG_SHELL) $(srctree)/scripts/gcc-version.sh $(CC))
+--- linux.orig/Makefile
++++ linux/Makefile
+@@ -376,7 +376,7 @@
+ 		   -fno-delete-null-pointer-checks
+ KBUILD_AFLAGS_KERNEL :=
+ KBUILD_CFLAGS_KERNEL :=
+-KBUILD_AFLAGS   := -D__ASSEMBLY__
++KBUILD_AFLAGS   := -D__ASSEMBLY__ $(call as-option,-no-integrated-as,)
+ KBUILD_AFLAGS_MODULE  := -DMODULE
+ KBUILD_CFLAGS_MODULE  := -DMODULE
+ KBUILD_LDFLAGS_MODULE := -T $(srctree)/scripts/module-common.lds
+@@ -657,6 +657,9 @@
+ # conserve stack if available
+ KBUILD_CFLAGS   += $(call cc-option,-fconserve-stack)
+ 
++# Quiet unused arguments warning from clang
++KBUILD_CFLAGS   += $(call cc-option,-Qunused-arguments)
++
+ # use the deterministic mode of AR if available
+ KBUILD_ARFLAGS := $(call ar-option,D)
+ 
