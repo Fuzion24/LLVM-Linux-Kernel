@@ -1,8 +1,6 @@
 compiler-clang.patch
 aligned-attribute.patch
 cmpxchg-local-fix-uninitialized-return-code.patch
-disable-clang-integrated-as.patch
-mm-hugepage-return-value.patch
 kbuild-clang.patch
 slab-builtin_contant_p.patch
 valign-header.patch
@@ -13,5 +11,4 @@ vlais-jbd2.patch
 vlais-libcrc32c.patch
 vlais-netfilter.patch
 vlais-testmgr.patch
-inline.patch
 refdata.patch
