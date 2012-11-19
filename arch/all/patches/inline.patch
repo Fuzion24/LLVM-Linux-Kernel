@@ -95,7 +95,7 @@ Signed-off-by: Bryce Lelbach <blelbach@cct.lsu.edu>
  extern void intel_gmbus_set_speed(struct i2c_adapter *adapter, int speed);
  extern void intel_gmbus_force_bit(struct i2c_adapter *adapter, bool force_bit);
 -extern inline bool intel_gmbus_is_forced_bit(struct i2c_adapter *adapter)
-+extern bool intel_gmbus_is_forced_bit(struct i2c_adapter *adapter)
++static bool intel_gmbus_is_forced_bit(struct i2c_adapter *adapter)
  {
  	return container_of(adapter, struct intel_gmbus, adapter)->force_bit;
  }
