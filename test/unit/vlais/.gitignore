@@ -1,0 +1,5 @@
+*.o
+novlais2-clang.txt
+novlais2-gcc.txt
+test-vlais
+vlais-gcc.txt
