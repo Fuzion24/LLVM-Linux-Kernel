@@ -1309,26 +1309,6 @@ Index: msm/drivers/leds/leds-pmic8058.c
  	.probe		= pmic8058_led_probe,
  	.remove		= __devexit_p(pmic8058_led_remove),
  	.driver		= {
-Index: msm/drivers/md/dm-crypt.c
-===================================================================
---- msm.orig/drivers/md/dm-crypt.c
-+++ msm/drivers/md/dm-crypt.c
-@@ -510,12 +510,14 @@
- 	struct iv_lmk_private *lmk = &cc->iv_gen_private.lmk;
- 	struct {
- 		struct shash_desc desc;
--		char ctx[crypto_shash_descsize(lmk->hash_tfm)];
-+		char *ctx;
- 	} sdesc;
-+        char sdesc_ctx[crypto_shash_descsize(lmk->hash_tfm)];
- 	struct md5_state md5state;
- 	u32 buf[4];
- 	int i, r;
- 
-+	sdesc.ctx = sdesc_ctx;
- 	sdesc.desc.tfm = lmk->hash_tfm;
- 	sdesc.desc.flags = CRYPTO_TFM_REQ_MAY_SLEEP;
- 
 Index: msm/drivers/media/radio/radio-tavarua.c
 ===================================================================
 --- msm.orig/drivers/media/radio/radio-tavarua.c
