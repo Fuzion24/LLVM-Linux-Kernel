@@ -25,6 +25,7 @@
 
 export MARCH
 export MFLOAT
+export KERNEL_MAKE_TARGETS
 
 STATE_TOOLCHAIN	= state/arm-cc
 
@@ -70,4 +71,5 @@ arm-settings:
 	@echo "# ARM settings"
 	@$(call prsetting,CROSS_ARM_TOOLCHAIN,${CROSS_ARM_TOOLCHAIN})
 	@$(call prsetting,EXTRAFLAGS,${EXTRAFLAGS})
+	@$(call prsetting,KERNEL_MAKE_TARGETS,${KERNEL_MAKE_TARGETS})
 
