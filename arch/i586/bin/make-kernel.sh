@@ -22,11 +22,19 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
+export LANG=C
+export LC_ALL=C
+
+INSTALLDIR=$1 ; shift
+EXTRAFLAGS=$*
+
 # Use clang by default
 USECLANG=${USECLANG:-1}
-DRYRUN=${DRYRUN:+echo}
-#V=${V:+V=1}
-export PATH=`echo $PATH | sed -E 's/(.*?) :(.*)/\2\1/g; s/(.*?) :(.*)/\2\1/g; s/(.*?) :(.*)/\2\1/g'`
+if [ $USECLANG -eq "1" ]; then
+	export PATH="$INSTALLDIR/bin:$PATH"
+	CC_FOR_BUILD="$INSTALLDIR/bin/clang $EXTRAFLAGS"
+	MAKE_FLAGS="CC='$CC_FOR_BUILD' HOSTCC='gcc'"
+fi
 
 JOBS=${JOBS:-`getconf _NPROCESSORS_ONLN`}
 if [ -z "$JOBS" ]; then
@@ -34,35 +42,6 @@ if [ -z "$JOBS" ]; then
 fi
 PARALLEL="-j$JOBS"
 
-export INSTALLDIR=$1 ; shift
-EXTRAFLAGS=$*
-
-export LANG=C
-export LC_ALL=C
-export HOSTCC_FOR_BUILD="gcc"
-
-if [ $USECLANG -eq "1" ]; then
-	export PATH="$INSTALLDIR/bin:$PATH"
-
-	#export CLANGFLAGS="-I ${INSTALLDIR}/lib/clang/*/include"
-	export CC_FOR_BUILD="$INSTALLDIR/bin/clang $EXTRAFLAGS $CLANGFLAGS -Qunused-arguments"
-else
-	export CC_FOR_BUILD=gcc
-fi
-
-if [ -n "$CHECKERDIR" ] ; then
-	mkdir -p "$CHECKERDIR"
-	CHECKER='scan-build -v -o "'$CHECKERDIR'" --use-cc="'${CC_FOR_BUILD/ */}'"'
-#	V="V=1"
-fi
-
-RUNMAKE="make \
-	CONFIG_DEBUG_SECTION_MISMATCH=y CONFIG_DEBUG_INFO=1 HOSTCC=$HOSTCC_FOR_BUILD"
-
-set -e
 echo "export PATH=$PATH"
-[ -n "$DRYRUN" ] || set -x
-$DRYRUN $CHECKER $RUNMAKE $V CC="$CC_FOR_BUILD" $PARALLEL \
-	|| ( echo "********************************************************************************" \
-	&& $RUNMAKE CC="$CC_FOR_BUILD" )
-[ -z "$DRYRUN" ] || exit 1
+make CONFIG_DEBUG_SECTION_MISMATCH=y CONFIG_DEBUG_INFO=1 \
+	$MAKE_FLAGS $PARALLEL $KERNEL_MAKE_TARGETS
