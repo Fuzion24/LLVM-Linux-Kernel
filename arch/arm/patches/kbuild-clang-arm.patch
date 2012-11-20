@@ -6,7 +6,7 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
  endif
  
 +# Quiet unused arguments warning from clang
-+KBUILD_CPPFLAGS   += $(call cc-option,-Qunused-arguments)
++KBUILD_CFLAGS   += $(call cc-option,-Qunused-arguments,)
 +
  ifeq ($(CONFIG_CPU_BIG_ENDIAN),y)
 -KBUILD_CPPFLAGS	+= -mbig-endian
