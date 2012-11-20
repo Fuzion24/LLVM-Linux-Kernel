@@ -1,0 +1,53 @@
+From e526dd168340fca67adb20d895ffbd005b4b0da9 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
+Date: Wed, 14 Nov 2012 13:01:55 +0100
+Subject: [PATCH 38/51] Fix location of '*' in script.
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Author:  PaX Team <pageexec at freemail.hu>
+ML-Post: http://lists.cs.uiuc.edu/pipermail/llvm-commits/Week-of-Mon-20120507/142707.html
+URL:     http://llvm.linuxfoundation.org
+
+Merge:   Jan-Simon Möller <dl9pf at gmx.de>
+
+Description:
+---
+ arch/x86/tools/gen-insn-attr-x86.awk |    6 +++---
+ 1 Datei geändert, 3 Zeilen hinzugefügt(+), 3 Zeilen entfernt(-)
+
+diff --git a/arch/x86/tools/gen-insn-attr-x86.awk b/arch/x86/tools/gen-insn-attr-x86.awk
+index ddcf39b..e6773dc 100644
+--- a/arch/x86/tools/gen-insn-attr-x86.awk
++++ b/arch/x86/tools/gen-insn-attr-x86.awk
+@@ -356,7 +356,7 @@ END {
+ 		exit 1
+ 	# print escape opcode map's array
+ 	print "/* Escape opcode map array */"
+-	print "const insn_attr_t const *inat_escape_tables[INAT_ESC_MAX + 1]" \
++	print "const insn_attr_t * const inat_escape_tables[INAT_ESC_MAX + 1]" \
+ 	      "[INAT_LSTPFX_MAX + 1] = {"
+ 	for (i = 0; i < geid; i++)
+ 		for (j = 0; j < max_lprefix; j++)
+@@ -365,7 +365,7 @@ END {
+ 	print "};\n"
+ 	# print group opcode map's array
+ 	print "/* Group opcode map array */"
+-	print "const insn_attr_t const *inat_group_tables[INAT_GRP_MAX + 1]"\
++	print "const insn_attr_t * const inat_group_tables[INAT_GRP_MAX + 1]"\
+ 	      "[INAT_LSTPFX_MAX + 1] = {"
+ 	for (i = 0; i < ggid; i++)
+ 		for (j = 0; j < max_lprefix; j++)
+@@ -374,7 +374,7 @@ END {
+ 	print "};\n"
+ 	# print AVX opcode map's array
+ 	print "/* AVX opcode map array */"
+-	print "const insn_attr_t const *inat_avx_tables[X86_VEX_M_MAX + 1]"\
++	print "const insn_attr_t * const inat_avx_tables[X86_VEX_M_MAX + 1]"\
+ 	      "[INAT_LSTPFX_MAX + 1] = {"
+ 	for (i = 0; i < gaid; i++)
+ 		for (j = 0; j < max_lprefix; j++)
+-- 
+1.7.10.4
+

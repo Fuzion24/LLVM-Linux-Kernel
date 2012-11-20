@@ -1,0 +1,71 @@
+From c7015a74c0ea0402274b4a55135c3d31da3b063b Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
+Date: Wed, 14 Nov 2012 12:49:59 +0100
+Subject: [PATCH 28/51] Misc changes to arch/x86/kernel/ to compile with
+ clang.
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Author:  PaX Team <pageexec at freemail.hu>
+ML-Post: http://lists.cs.uiuc.edu/pipermail/llvm-commits/Week-of-Mon-20120507/142707.html
+URL:     http://llvm.linuxfoundation.org
+
+Merge:   Jan-Simon Möller <dl9pf at gmx.de>
+
+Description:
+---
+ arch/x86/kernel/head.c        |    4 +++-
+ arch/x86/kernel/head_64.S     |    3 ++-
+ arch/x86/kernel/vmlinux.lds.S |    1 +
+ 3 Dateien geändert, 6 Zeilen hinzugefügt(+), 2 Zeilen entfernt(-)
+
+diff --git a/arch/x86/kernel/head.c b/arch/x86/kernel/head.c
+index 48d9d4e..552313b 100644
+--- a/arch/x86/kernel/head.c
++++ b/arch/x86/kernel/head.c
+@@ -20,6 +20,7 @@
+ void __init reserve_ebda_region(void)
+ {
+ 	unsigned int lowmem, ebda_addr;
++	unsigned char *p;
+ 
+ 	/* To determine the position of the EBDA and the */
+ 	/* end of conventional memory, we need to look at */
+@@ -31,7 +32,8 @@ void __init reserve_ebda_region(void)
+ 		return;
+ 
+ 	/* end of low (conventional) memory */
+-	lowmem = *(unsigned short *)__va(BIOS_LOWMEM_KILOBYTES);
++	p = __va(BIOS_LOWMEM_KILOBYTES);
++	lowmem = p[0] + 256 * p[1];
+ 	lowmem <<= 10;
+ 
+ 	/* start of EBDA area */
+diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
+index 94bf9cc..852c481 100644
+--- a/arch/x86/kernel/head_64.S
++++ b/arch/x86/kernel/head_64.S
+@@ -457,5 +457,6 @@ ENTRY(nmi_idt_table)
+ 
+ 	__PAGE_ALIGNED_BSS
+ 	.align PAGE_SIZE
+-ENTRY(empty_zero_page)
++.globl empty_zero_page
++empty_zero_page:
+ 	.skip PAGE_SIZE
+diff --git a/arch/x86/kernel/vmlinux.lds.S b/arch/x86/kernel/vmlinux.lds.S
+index 22a1530..ccb9125 100644
+--- a/arch/x86/kernel/vmlinux.lds.S
++++ b/arch/x86/kernel/vmlinux.lds.S
+@@ -304,6 +304,7 @@ SECTIONS
+ 		__bss_start = .;
+ 		*(.bss..page_aligned)
+ 		*(.bss)
++		*(.gnu.linkonce.b.*)
+ 		. = ALIGN(PAGE_SIZE);
+ 		__bss_stop = .;
+ 	}
+-- 
+1.7.10.4
+

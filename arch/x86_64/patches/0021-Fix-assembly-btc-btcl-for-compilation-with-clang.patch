@@ -1,0 +1,35 @@
+From 02041f04dff2d55dd3b9e9aa9147bbdb28f74e10 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
+Date: Wed, 14 Nov 2012 12:38:22 +0100
+Subject: [PATCH 21/51] Fix assembly  btc -> btcl for compilation with clang
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Author:  PaX Team <pageexec at freemail.hu>
+ML-Post: http://lists.cs.uiuc.edu/pipermail/llvm-commits/Week-of-Mon-20120507/142707.html
+URL:     http://llvm.linuxfoundation.org
+
+Merge:   Jan-Simon Möller <dl9pf at gmx.de>
+
+Description:
+---
+ arch/x86/include/asm/percpu.h |    2 +-
+ 1 Datei geändert, 1 Zeile hinzugefügt(+), 1 Zeile entfernt(-)
+
+diff --git a/arch/x86/include/asm/percpu.h b/arch/x86/include/asm/percpu.h
+index 1104afa..360b69e 100644
+--- a/arch/x86/include/asm/percpu.h
++++ b/arch/x86/include/asm/percpu.h
+@@ -493,7 +493,7 @@ do {									\
+ #define x86_test_and_clear_bit_percpu(bit, var)				\
+ ({									\
+ 	int old__;							\
+-	asm volatile("btr %2,"__percpu_arg(1)"\n\tsbbl %0,%0"		\
++	asm volatile("btrl %2,"__percpu_arg(1)"\n\tsbbl %0,%0"		\
+ 		     : "=r" (old__), "+m" (var)				\
+ 		     : "dIr" (bit));					\
+ 	old__;								\
+-- 
+1.7.10.4
+

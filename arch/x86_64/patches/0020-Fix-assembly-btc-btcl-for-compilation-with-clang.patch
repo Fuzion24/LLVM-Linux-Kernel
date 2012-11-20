@@ -1,0 +1,143 @@
+From 395e5589c04ce534e038e384595ebccd9dca5267 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
+Date: Wed, 14 Nov 2012 11:50:15 +0100
+Subject: [PATCH 20/51] Fix assembly  btc -> btcl for compilation with clang
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Author:  PaX Team <pageexec at freemail.hu>
+ML-Post: http://lists.cs.uiuc.edu/pipermail/llvm-commits/Week-of-Mon-20120507/142707.html
+URL:     http://llvm.linuxfoundation.org
+
+Merge:   Jan-Simon Möller <dl9pf at gmx.de>
+
+Description:
+---
+ arch/x86/include/asm/bitops.h |   26 +++++++++++++-------------
+ 1 Datei geändert, 13 Zeilen hinzugefügt(+), 13 Zeilen entfernt(-)
+
+diff --git a/arch/x86/include/asm/bitops.h b/arch/x86/include/asm/bitops.h
+index 6dfd019..7f6483e 100644
+--- a/arch/x86/include/asm/bitops.h
++++ b/arch/x86/include/asm/bitops.h
+@@ -67,7 +67,7 @@ set_bit(unsigned int nr, volatile unsigned long *addr)
+ 			: "iq" ((u8)CONST_MASK(nr))
+ 			: "memory");
+ 	} else {
+-		asm volatile(LOCK_PREFIX "bts %1,%0"
++		asm volatile(LOCK_PREFIX "btsl %1,%0"
+ 			: BITOP_ADDR(addr) : "Ir" (nr) : "memory");
+ 	}
+ }
+@@ -83,7 +83,7 @@ set_bit(unsigned int nr, volatile unsigned long *addr)
+  */
+ static inline void __set_bit(int nr, volatile unsigned long *addr)
+ {
+-	asm volatile("bts %1,%0" : ADDR : "Ir" (nr) : "memory");
++	asm volatile("btsl %1,%0" : ADDR : "Ir" (nr) : "memory");
+ }
+ 
+ /**
+@@ -104,7 +104,7 @@ clear_bit(int nr, volatile unsigned long *addr)
+ 			: CONST_MASK_ADDR(nr, addr)
+ 			: "iq" ((u8)~CONST_MASK(nr)));
+ 	} else {
+-		asm volatile(LOCK_PREFIX "btr %1,%0"
++		asm volatile(LOCK_PREFIX "btrl %1,%0"
+ 			: BITOP_ADDR(addr)
+ 			: "Ir" (nr));
+ 	}
+@@ -126,7 +126,7 @@ static inline void clear_bit_unlock(unsigned nr, volatile unsigned long *addr)
+ 
+ static inline void __clear_bit(int nr, volatile unsigned long *addr)
+ {
+-	asm volatile("btr %1,%0" : ADDR : "Ir" (nr));
++	asm volatile("btrl %1,%0" : ADDR : "Ir" (nr));
+ }
+ 
+ /*
+@@ -161,7 +161,7 @@ static inline void __clear_bit_unlock(unsigned nr, volatile unsigned long *addr)
+  */
+ static inline void __change_bit(int nr, volatile unsigned long *addr)
+ {
+-	asm volatile("btc %1,%0" : ADDR : "Ir" (nr));
++	asm volatile("btcl %1,%0" : ADDR : "Ir" (nr));
+ }
+ 
+ /**
+@@ -180,7 +180,7 @@ static inline void change_bit(int nr, volatile unsigned long *addr)
+ 			: CONST_MASK_ADDR(nr, addr)
+ 			: "iq" ((u8)CONST_MASK(nr)));
+ 	} else {
+-		asm volatile(LOCK_PREFIX "btc %1,%0"
++		asm volatile(LOCK_PREFIX "btcl %1,%0"
+ 			: BITOP_ADDR(addr)
+ 			: "Ir" (nr));
+ 	}
+@@ -198,7 +198,7 @@ static inline int test_and_set_bit(int nr, volatile unsigned long *addr)
+ {
+ 	int oldbit;
+ 
+-	asm volatile(LOCK_PREFIX "bts %2,%1\n\t"
++	asm volatile(LOCK_PREFIX "btsl %2,%1\n\t"
+ 		     "sbb %0,%0" : "=r" (oldbit), ADDR : "Ir" (nr) : "memory");
+ 
+ 	return oldbit;
+@@ -230,7 +230,7 @@ static inline int __test_and_set_bit(int nr, volatile unsigned long *addr)
+ {
+ 	int oldbit;
+ 
+-	asm("bts %2,%1\n\t"
++	asm("btsl %2,%1\n\t"
+ 	    "sbb %0,%0"
+ 	    : "=r" (oldbit), ADDR
+ 	    : "Ir" (nr));
+@@ -249,7 +249,7 @@ static inline int test_and_clear_bit(int nr, volatile unsigned long *addr)
+ {
+ 	int oldbit;
+ 
+-	asm volatile(LOCK_PREFIX "btr %2,%1\n\t"
++	asm volatile(LOCK_PREFIX "btrl %2,%1\n\t"
+ 		     "sbb %0,%0"
+ 		     : "=r" (oldbit), ADDR : "Ir" (nr) : "memory");
+ 
+@@ -276,7 +276,7 @@ static inline int __test_and_clear_bit(int nr, volatile unsigned long *addr)
+ {
+ 	int oldbit;
+ 
+-	asm volatile("btr %2,%1\n\t"
++	asm volatile("btrl %2,%1\n\t"
+ 		     "sbb %0,%0"
+ 		     : "=r" (oldbit), ADDR
+ 		     : "Ir" (nr));
+@@ -288,7 +288,7 @@ static inline int __test_and_change_bit(int nr, volatile unsigned long *addr)
+ {
+ 	int oldbit;
+ 
+-	asm volatile("btc %2,%1\n\t"
++	asm volatile("btcl %2,%1\n\t"
+ 		     "sbb %0,%0"
+ 		     : "=r" (oldbit), ADDR
+ 		     : "Ir" (nr) : "memory");
+@@ -308,7 +308,7 @@ static inline int test_and_change_bit(int nr, volatile unsigned long *addr)
+ {
+ 	int oldbit;
+ 
+-	asm volatile(LOCK_PREFIX "btc %2,%1\n\t"
++	asm volatile(LOCK_PREFIX "btcl %2,%1\n\t"
+ 		     "sbb %0,%0"
+ 		     : "=r" (oldbit), ADDR : "Ir" (nr) : "memory");
+ 
+@@ -325,7 +325,7 @@ static inline int variable_test_bit(int nr, volatile const unsigned long *addr)
+ {
+ 	int oldbit;
+ 
+-	asm volatile("bt %2,%1\n\t"
++	asm volatile("btl %2,%1\n\t"
+ 		     "sbb %0,%0"
+ 		     : "=r" (oldbit)
+ 		     : "m" (*(unsigned long *)addr), "Ir" (nr));
+-- 
+1.7.10.4
+
