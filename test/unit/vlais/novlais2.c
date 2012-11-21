@@ -3,36 +3,36 @@
 
 extern void printHex(char *buffer, size_t size);
 
-#define VLAIS_STRUCT(structname) size_t next_##structname = 0
-#define VLAIS_STRUCT_SIZE(structname) next_##structname
+#define vla_struct(structname) size_t structname##__##next = 0
+#define vla_struct_size(structname) structname##__##next
 
 	//size_t pad_##structname##_##name = (~__alignof__(type)) & (next_##structname & (__alignof__(type)-1)); 
-#define VLAIS(structname, type, name, n) \
+#define vla_item(structname, type, name, n) \
 	type * structname##_##name; \
-	size_t pad_##structname##_##name = (next_##structname & (__alignof__(type)-1)); \
-	size_t offset_##structname##_##name = next_##structname + pad_##structname##_##name; \
-	size_t sz_##structname##_##name = n * sizeof(type); \
-	next_##structname = next_##structname + pad_##structname##_##name + sz_##structname##_##name; 
+	size_t structname##_##name##__##pad = (structname##__##next & (__alignof__(type)-1)); \
+	size_t structname##_##name##__##offset = structname##__##next + structname##_##name##__##pad; \
+	size_t structname##_##name##__##sz = n * sizeof(type); \
+	structname##__##next = structname##__##next + structname##_##name##__##pad + structname##_##name##__##sz; 
 
-#define VLAIS_SET_PTR(ptr,structname,name) structname##_##name = (typeof(structname##_##name))&ptr[offset_##structname##_##name]
+#define vla_ptr(ptr,structname,name) structname##_##name = (typeof(structname##_##name))&ptr[structname##_##name##__##offset]
 
 long NOVLAIS(int a, int b, int c, int d, int p)
 {
-	VLAIS_STRUCT(foo);
-		VLAIS(foo, char,  vara, a);
-		VLAIS(foo, short, varb, b);
-		VLAIS(foo, int,   varc, c);
-		VLAIS(foo, long,  vard, d);
+	vla_struct(foo);
+		vla_item(foo, char,  vara, a);
+		vla_item(foo, short, varb, b);
+		vla_item(foo, int,   varc, c);
+		vla_item(foo, long,  vard, d);
 
-	size_t total = VLAIS_STRUCT_SIZE(foo);
+	size_t total = vla_struct_size(foo);
 	char buffer[total];
 
-	VLAIS_SET_PTR(buffer, foo, vara);
-	VLAIS_SET_PTR(buffer, foo, varb);
-	VLAIS_SET_PTR(buffer, foo, varc);
-	VLAIS_SET_PTR(buffer, foo, vard);
+	vla_ptr(buffer, foo, vara);
+	vla_ptr(buffer, foo, varb);
+	vla_ptr(buffer, foo, varc);
+	vla_ptr(buffer, foo, vard);
 
-	long ret = 0 | offset_foo_varb<<16 | offset_foo_varc<<8 | offset_foo_vard;
+	long ret = 0 | foo_varb__offset<<16 | foo_varc__offset<<8 | foo_vard__offset;
 	if(p) printf("no-vlais: 0x%08X (%ld:%ld)\n", (int)ret, total, sizeof(buffer));
 
 	memset(buffer, 0, sizeof(buffer));
