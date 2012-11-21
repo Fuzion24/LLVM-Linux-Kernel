@@ -27,7 +27,7 @@ TOPDIR		= $(realpath ${TARGETDIR}/../..)
 
 KERNEL_CFG	= ${TARGETDIR}/config_i586
 # override KERNEL_BRANCH to v3.3
-KERNEL_TAG = v3.3
+#KERNEL_TAG = v3.3
 
 #GDB_OPTS	= -gdb tcp::1234 -s -S
 GDB_OPTS	=
