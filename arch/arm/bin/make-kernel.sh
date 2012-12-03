@@ -36,7 +36,7 @@ export CROSS_COMPILE=${HOST}-
 USECLANG=${USECLANG:-1}
 if [ $USECLANG -eq "1" ]; then
 	export PATH="$INSTALLDIR/bin:$PATH"
-	CLANGFLAGS="-march=$MARCH $MFLOAT -fno-builtin -Qunused-arguments -Wno-asm-operand-widths $EXTRAFLAGS"
+	CLANGFLAGS="-march=$MARCH $MFLOAT -fno-builtin -Qunused-arguments -Wno-asm-operand-widths -Xassembler -mno-warn-deprecated $EXTRAFLAGS"
 	CC="$INSTALLDIR/bin/clang -target $HOST_TRIPLE -gcc-toolchain $ARM_CROSS_GCC_TOOLCHAIN $CLANGFLAGS"
 	HOSTCC="gcc"
 
