@@ -6,7 +6,6 @@ extern void printHex(char *buffer, size_t size);
 #define vla_struct(structname) size_t structname##__##next = 0
 #define vla_struct_size(structname) structname##__##next
 
-	//size_t pad_##structname##_##name = (~__alignof__(type)) & (next_##structname & (__alignof__(type)-1)); 
 #define vla_item(structname, type, name, n) \
 	type * structname##_##name; \
 	size_t structname##_##name##__##pad = (structname##__##next & (__alignof__(type)-1)); \
