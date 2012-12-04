@@ -20,13 +20,13 @@ index ef63422..cdab850 100644
 --- a/include/llvm/Target/TargetLowering.h
 +++ b/include/llvm/Target/TargetLowering.h
 @@ -26,6 +26,7 @@
+ #include "llvm/CodeGen/RuntimeLibcalls.h"
+ #include "llvm/CodeGen/SelectionDAGNodes.h"
  #include "llvm/InlineAsm.h"
- #include "llvm/Attributes.h"
- #include "llvm/ADT/DenseMap.h"
 +#include "llvm/ADT/SmallSet.h"
  #include "llvm/Support/CallSite.h"
- #include "llvm/CodeGen/SelectionDAGNodes.h"
- #include "llvm/CodeGen/RuntimeLibcalls.h"
+ #include "llvm/Support/DebugLoc.h"
+ #include "llvm/Target/TargetCallingConv.h"
 @@ -1574,6 +1575,20 @@ public:
      getRegForInlineAsmConstraint(const std::string &Constraint,
                                   EVT VT) const;
