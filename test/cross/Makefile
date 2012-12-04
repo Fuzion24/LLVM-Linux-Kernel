@@ -1,16 +1,19 @@
-all: test1-cs testcxx-cs test1-linaro testcxx-linaro
+all: bin/test1-cs bin/testcxx-cs bin/test1-linaro bin/testcxx-linaro
 
-test1-cs: test1.c
-	../../arch/arm/toolchain/codesourcery/bin/arm-eabi-gcc -static -integrated-as -o $@ $?
+bin/test1-cs: test1.c bin
+	../../arch/arm/toolchain/codesourcery/bin/arm-eabi-gcc -static -integrated-as -o $@ test1.c
 
-testcxx-cs: testcxx.cpp
-	../../arch/arm/toolchain/codesourcery/bin/arm-eabi-g++ -static -integrated-as -o $@ $?
+bin/testcxx-cs: testcxx.cpp bin
+	../../arch/arm/toolchain/codesourcery/bin/arm-eabi-g++ -static -integrated-as -o $@ testcxx.cpp
 
-test1-linaro: test1.c
-	../../arch/arm/toolchain/linaro/bin/arm-eabi-gcc -static -integrated-as -o $@ $?
+bin/test1-linaro: test1.c bin
+	../../arch/arm/toolchain/linaro/bin/arm-eabi-gcc -static -integrated-as -o $@ test1.c
 
-testcxx-linaro: testcxx.cpp
-	../../arch/arm/toolchain/linaro/bin/arm-eabi-g++ -static -integrated-as -o $@ $?
+bin/testcxx-linaro: testcxx.cpp bin
+	../../arch/arm/toolchain/linaro/bin/arm-eabi-g++ -static -integrated-as -o $@ testcxx.cpp
+
+bin:
+	mkdir -p bin
 
 clean:
-	rm -f test1-cs testcxx-cs test1-linaro testcxx-linaro
+	rm -rf bin
