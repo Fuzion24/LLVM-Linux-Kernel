@@ -41,13 +41,13 @@ LTPURL		= http://prdownloads.sourceforge.net/ltp/${LTP}.bz2?download
 
 # Set the busybox URL depending on the target ARCH
 ifeq (${ARCH},)
-BUSYBOXURL	= "http://busybox.net/downloads/binaries/1.16.1/busybox-i586"
+BUSYBOXURL	= "http://busybox.net/downloads/binaries/1.20.0/busybox-i586"
 else
 ARCHSTR=${ARCH}
 ifeq (${ARCH},arm)
 ARCHSTR=armv6l
 endif
-BUSYBOXURL	= "http://busybox.net/downloads/binaries/1.16.1/busybox-${ARCHSTR}"
+BUSYBOXURL	= "http://busybox.net/downloads/binaries/1.20.0/busybox-${ARCHSTR}"
 endif
 
 GCC		= gcc
