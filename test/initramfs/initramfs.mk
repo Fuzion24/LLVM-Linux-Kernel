@@ -38,6 +38,8 @@ INITCPIO	= ${INITBUILDFSDIR}.cpio
 LTPVER		= 20120104
 LTP		= ltp-full-${LTPVER}
 LTPURL		= http://prdownloads.sourceforge.net/ltp/${LTP}.bz2?download
+STRACEURL	=
+STRACEBIN 	=
 
 # Set the busybox URL depending on the target ARCH
 ifeq (${ARCH},)
@@ -46,8 +48,11 @@ else
 ARCHSTR=${ARCH}
 ifeq (${ARCH},arm)
 ARCHSTR=armv6l
+STRACEURL	= "http://android-group-korea.googlecode.com/files/strace"
+STRACEBIN	= ${INITBUILDDIR}/strace
 endif
 BUSYBOXURL	= "http://busybox.net/downloads/binaries/1.20.0/busybox-${ARCHSTR}"
+
 endif
 
 GCC		= gcc
@@ -67,7 +72,7 @@ initramfs-settings:
 #	@$(call prsetting,LTPURL,${LTPURL})
 
 initramfs-unpacked: ${INITBUILDFSDIR}/etc 
-${INITBUILDFSDIR}/etc: ${INITBUILDDIR}/busybox ${KERNEL_MODULES}
+${INITBUILDFSDIR}/etc: ${INITBUILDDIR}/busybox ${STRACEBIN} ${KERNEL_MODULES}
 	@rm -rf ${INITBUILDFSDIR}
 	@mkdir -p $(addprefix ${INITBUILDFSDIR}/,bin sys dev proc tmp usr/bin sbin usr/sbin)
 	@cp -r ${INITRAMFSDIR}/etc ${INITBUILDFSDIR}
@@ -94,6 +99,10 @@ initramfs-mrproper initramfs-raze:
 
 ${INITBUILDDIR}:
 	mkdir -p ${INITBUILDDIR}
+
+${INITBUILDDIR}/strace: ${INITBUILDDIR}
+	@wget -O ${INITBUILDDIR}/strace -c ${STRACEURL}
+	@chmod +x ${INITBUILDDIR}/strace
 
 ${INITBUILDDIR}/busybox: ${INITBUILDDIR}
 	wget -O ${INITBUILDDIR}/busybox ${BUSYBOXURL}
