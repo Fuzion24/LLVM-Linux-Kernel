@@ -41,15 +41,13 @@ LTPURL		= http://prdownloads.sourceforge.net/ltp/${LTP}.bz2?download
 
 # Set the busybox URL depending on the target ARCH
 ifeq (${ARCH},)
-BUSYBOXURL	= "http://landley.net/aboriginal/downloads/binaries/extras/busybox-i586"
-STRACEURL	= "http://landley.net/aboriginal/downloads/binaries/extras/strace-i586"
+BUSYBOXURL	= "http://busybox.net/downloads/binaries/1.16.1/busybox-i586"
 else
 ARCHSTR=${ARCH}
 ifeq (${ARCH},arm)
 ARCHSTR=armv6l
 endif
-BUSYBOXURL	= "http://landley.net/aboriginal/downloads/binaries/extras/busybox-${ARCHSTR}"
-STRACEURL	= "http://landley.net/aboriginal/downloads/binaries/extras/strace-${ARCHSTR}"
+BUSYBOXURL	= "http://busybox.net/downloads/binaries/1.16.1/busybox-${ARCHSTR}"
 endif
 
 GCC		= gcc
@@ -69,12 +67,11 @@ initramfs-settings:
 #	@$(call prsetting,LTPURL,${LTPURL})
 
 initramfs-unpacked: ${INITBUILDFSDIR}/etc 
-${INITBUILDFSDIR}/etc: ${INITBUILDDIR}/busybox ${INITBUILDDIR}/strace ${KERNEL_MODULES}
+${INITBUILDFSDIR}/etc: ${INITBUILDDIR}/busybox ${KERNEL_MODULES}
 	@rm -rf ${INITBUILDFSDIR}
 	@mkdir -p $(addprefix ${INITBUILDFSDIR}/,bin sys dev proc tmp usr/bin sbin usr/sbin)
 	@cp -r ${INITRAMFSDIR}/etc ${INITBUILDFSDIR}
 	@cp -r ${INITRAMFSDIR}/bootstrap ${INITBUILDFSDIR}
-	@cp ${INITBUILDDIR}/strace ${INITBUILDFSDIR}/usr/bin/strace
 	@cp ${INITBUILDDIR}/busybox ${INITBUILDFSDIR}/bin/busybox
 	(cd ${INITBUILDFSDIR}/bin && ln -s busybox sh)
 
@@ -98,12 +95,8 @@ initramfs-mrproper initramfs-raze:
 ${INITBUILDDIR}:
 	mkdir -p ${INITBUILDDIR}
 
-${INITBUILDDIR}/strace: ${INITBUILDDIR}
-	@wget -O ${INITBUILDDIR}/strace -c ${STRACEURL}
-	@chmod +x ${INITBUILDDIR}/strace
-
 ${INITBUILDDIR}/busybox: ${INITBUILDDIR}
-	wget -O ${INITBUILDDIR}/busybox -c ${BUSYBOXURL}
+	wget -O ${INITBUILDDIR}/busybox ${BUSYBOXURL}
 	chmod +x ${INITBUILDDIR}/busybox
 
 
