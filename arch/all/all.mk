@@ -360,7 +360,7 @@ kernel-gcc-reset:
 	@rm -f ${KERNELGCC}/arch/arm/boot/compressed/vmlinux
 	@$(call unpatch,${KERNELGCC})
 	@$(call optional_gitreset,${KERNELGCC})
-	@$(leavestate ${STATEDIR},kernel-gcc-configure kernel-gcc-patch kernel-gcc-build)
+	@$(call leavestate ${STATEDIR},kernel-gcc-configure kernel-gcc-patch kernel-gcc-build)
 
 #############################################################################
 kernel-mrproper: kernel-clean-tmp
