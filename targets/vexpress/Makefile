@@ -128,9 +128,10 @@ test2: state/prep ${QEMUSTATE}/qemu-build state/kernel-build initramfs-unpacked
 test2-gcc: state/prep ${QEMUSTATE}/qemu-build state/kernel-gcc-build initramfs-unpacked
 	@rm -rf ${INITBUILDFSDIR}/lib
 	(cd ${KERNELGCC} && make INSTALL_MOD_PATH=${INITBUILDFSDIR} ARCH=arm modules_install)
+	mkdir -p ${INITBUILDFSDIR}/usr/lib
 	@rm -f ${INITRAMFS}
 	@make ${INITRAMFS}
-	@$(call qemu_arm,${BOARD},${KERNELGCC},256,/dev/ram0,rdinit=/sbin/init,-initrd ${INITRAMFS})
+	@$(call qemu_arm,${BOARD},${KERNELGCC},256,/dev/ram0,rdinit=/bootstrap,-initrd ${INITRAMFS})
 
 # Get prebuilt vexpress image
 VEXPRESS_IMG_GZ	= ${TMPDIR}/${NANOIMG}.gz
