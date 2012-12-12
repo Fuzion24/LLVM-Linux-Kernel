@@ -155,8 +155,8 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
  	 * numbers without worrying that it may be described later on.
  	 */
  	if (likely(full)) {
--		func->function.descriptors = data->fs_descs;
-+		func->function.descriptors = data_fs_descs;
+-		func->function.fs_descriptors = data->fs_descs;
++		func->function.fs_descriptors = data_fs_descs;
  		ret = ffs_do_descs(ffs->fs_descs_count,
 -				   data->raw_descs,
 -				   sizeof data->raw_descs,
