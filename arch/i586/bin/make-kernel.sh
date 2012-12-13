@@ -30,10 +30,10 @@ EXTRAFLAGS=$*
 
 # Use clang by default
 USECLANG=${USECLANG:-1}
-if [ $USECLANG -eq "1" ]; then
+if [ "$USECLANG" -eq "1" ]; then
 	export PATH="$INSTALLDIR/bin:$PATH"
 	CC_FOR_BUILD="$INSTALLDIR/bin/clang $EXTRAFLAGS"
-	MAKE_FLAGS="CC='$CC_FOR_BUILD' HOSTCC='gcc'"
+	MAKE_FLAGS="CC=$CC_FOR_BUILD HOSTCC=gcc"
 fi
 
 JOBS=${JOBS:-`getconf _NPROCESSORS_ONLN`}
