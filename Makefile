@@ -46,7 +46,7 @@ TARGETS		+= build-dep install-build-dep
 HELP_TARGETS	+= toplevel-help
 include common.mk
 
-DEBDEP		= build-essential cmake flex git git-svn kpartx libglib2.0-dev patch quilt rsync sparse subversion zlib1g-dev
+DEBDEP		= build-essential cmake flex git git-svn kpartx libfdt-dev libglib2.0-dev patch quilt rsync sparse subversion zlib1g-dev
 DEBDEP_32	= libc6:i386 libncurses5:i386
 DEBDEP_EXTRAS	= linaro-image-tools
 debdep		= [ `dpkg -l $(1) | grep -c '^[pu]'` -eq 0 ] || ( echo "$(2)"; echo "  sudo apt-get install $(1)"; false )
