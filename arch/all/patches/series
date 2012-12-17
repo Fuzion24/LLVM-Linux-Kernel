@@ -7,7 +7,6 @@ valign-header.patch
 vlais-dm-crypt.patch
 vlais-gadget.patch
 vlais-hmac.patch
-vlais-jbd2.patch
 vlais-libcrc32c.patch
 vlais-netfilter.patch
 vlais-testmgr.patch
