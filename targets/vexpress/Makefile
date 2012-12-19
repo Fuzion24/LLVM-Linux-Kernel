@@ -26,7 +26,9 @@ TARGETDIR	= ${CURDIR}
 TOPDIR		= $(realpath ${TARGETDIR}/../..)
 CROSS_ARM_TOOLCHAIN = codesourcery
 
-KERNEL_CFG	= ${TARGETDIR}/config_vexpress
+#KERNEL_CFG	= ${TARGETDIR}/config_vexpress
+KERNEL_CFG	= ${KERNELDIR}/arch/arm/configs/vexpress_defconfig
+KERNEL_DTB	= ${KERNELDIR}/arch/arm/boot/dts/vexpress-v2p-ca9.dtb
 
 ifeq ('${GDBON}','1')
 GDB_OPTS=-gdb tcp::4321 -S
@@ -104,7 +106,7 @@ test: state/prep ${QEMUSTATE}/qemu-build state/kernel-build ${INITRAMIMG}
 # state/fetch-initrd
 test-kill: test-boot-poweroff
 test-boot-poweroff: state/prep state/kernel-build ${QEMUSTATE}/qemu-build ${INITRAMIMG}
-	( $(call qemu_arm,${BOARD},${KERNELDIR},256,/dev/ram0,ramdisk_size=65536 rw POWEROFF,-initrd ${INITRAMIMG} -net none) \
+	( $(call qemu_arm,${BOARD},${KERNELDIR},256,/dev/ram0,ramdisk_size=65536 rw POWEROFF,-dtb ${KERNEL_DTB} -initrd ${INITRAMIMG} -net none) \
 		| tee tmp/qemu_log ) &
 	( sleep 10 && killall -s 9 qemu-system-arm ) || exit 0
 	@grep -a "SUCCESS" tmp/qemu_log 
