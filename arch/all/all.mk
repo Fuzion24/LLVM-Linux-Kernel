@@ -335,7 +335,7 @@ kernel-sync: state/kernel-fetch kernel-shared-sync kernel-clean
 	fi
 
 #############################################################################
-kernel-gcc-sync: state/kernel-gcc-fetch kernel-shared-sync kernel-gcc-clean
+kernel-gcc-sync: state/kernel-gcc-fetch kernel-sync kernel-gcc-clean
 	@$(call banner, "Syncing gcc kernel...")
 	@if [ -n "${KERNEL_COMMIT}" ] ; then \
 		$(call gitcheckout,${KERNELGCC},${KERNEL_BRANCH},${KERNEL_COMMIT}) ; \
