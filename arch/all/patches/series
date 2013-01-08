@@ -18,7 +18,6 @@
 0044-Fix-bitoperation-for-compilation-with-clang.patch
 0046-Remove-unneeded-braces.patch
 0047-Fix-braces-for-compilation-with-clang.patch
-0048-Fix-braces-for-compilation-with-clang.patch
 0049-Change-byte-to-word.patch
 0050-Add-cast-for-compilation-with-clang.patch
 0051-Change-from-DECLARE_PER_CPU-to-DECLARE_PER_CPU_SHARE.patch
