@@ -48,5 +48,5 @@ KERNEL_SIZE_ARTIFACTS	= arch/arm/boot/zImage vmlinux*
 # Add path so that ${CROSS_COMPILE}${CC} is resolved
 PATH		:= ${ARCH_MIPS_BINDIR}:${PATH}
 
-# ${1}=Machine_type ${2}=kerneldir ${3}=RAM ${4}=rootfs ${5}=Kernel_opts ${6}=QEMU_opts
-qemu = $(call runqemu,${QEMUBINDIR}/qemu-system-mips,${1},${2}/arch/mips/boot/zImage,${3},${4},${KERNELOPTS} ${5},${QEMUOPTS} ${6})
+# ${1}=Machine_type ${2}=path_to_zImage ${3}=RAM ${4}=rootfs ${5}=Kernel_opts ${6}=QEMU_opts
+qemu = $(call runqemu,${QEMUBINDIR}/qemu-system-mips,${1},${2},${3},${4},${KERNELOPTS} ${5},${QEMUOPTS} ${6})

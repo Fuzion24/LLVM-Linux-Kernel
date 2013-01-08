@@ -101,19 +101,22 @@ ${INITRAMIMG}:
 
 # state/fetch-initrd
 test: state/prep ${QEMUSTATE}/qemu-build state/kernel-build ${INITRAMIMG}
-	@$(call qemu_arm,${BOARD},${KERNELDIR},768,/dev/ram0,ramdisk_size=65536 rw,-initrd ${INITRAMIMG} -net none)
+	$(cat ${KERNELDIR}/arch/arm/boot/zImage ${KERNEL_DTB} > ${TMPDIR}/kernel_dtb.img )
+	$(call qemu_arm,${BOARD},${TMPDIR}/kernel_dtb.img,768,/dev/ram0,rw,-initrd ${INITRAMIMG} -net none)
 
 # state/fetch-initrd
 test-kill: test-boot-poweroff
 test-boot-poweroff: state/prep state/kernel-build ${QEMUSTATE}/qemu-build ${INITRAMIMG}
-	( $(call qemu_arm,${BOARD},${KERNELDIR},256,/dev/ram0,ramdisk_size=65536 rw POWEROFF,-dtb ${KERNEL_DTB} -initrd ${INITRAMIMG} -net none) \
+	(cat ${KERNELDIR}/arch/arm/boot/zImage ${KERNEL_DTB} > ${TMPDIR}/kernel_dtb.img )
+	( $(call qemu_arm,${BOARD},${TMPDIR}/kernel_dtb.img,256,/dev/ram0,rw,-initrd ${INITRAMIMG} -net none ) \
 		| tee tmp/qemu_log ) &
 	( sleep 10 && killall -s 9 qemu-system-arm ) || exit 0
 	@grep -a "SUCCESS" tmp/qemu_log 
 
 test-gcc-kill: test-gcc-boot-poweroff
 test-gcc-boot-poweroff: state/prep state/kernel-gcc-build ${QEMUSTATE}/qemu-build ${INITRAMIMG}
-	( $(call qemu_arm,${BOARD},${KERNELGCC},256,/dev/ram0,ramdisk_size=65536 rw POWEROFF,-initrd ${INITRAMIMG} -net none) \
+	(cat ${KERNELGCC}/arch/arm/boot/zImage ${KERNEL_DTB} > ${TMPDIR}/kernelgcc_dtb.img )
+	( $(call qemu_arm,${BOARD},${TMPDIR}/kernelgcc_dtb.img,256,/dev/ram0,ramdisk_size=65536 rw POWEROFF,-initrd ${INITRAMIMG} -net none) \
 		| tee tmp/qemu_gcc_log ) &
 	( sleep 10 && killall -s 9 qemu-system-arm ) || exit 0
 	@grep -a "SUCCESS" tmp/qemu_gcc_log 

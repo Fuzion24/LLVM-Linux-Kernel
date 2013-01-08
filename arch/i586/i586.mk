@@ -53,5 +53,5 @@ gcc x86_64-cc: state/cross-gcc
 state/cross-gcc:
 	$(call state,$@)
 
-# ${1}=Machine_type ${2}=kerneldir ${3}=RAM ${4}=rootfs ${5}=Kernel_opts ${6}=QEMU_opts
-qemu = $(call runqemu,${QEMUBINDIR}/qemu-system-i386,${1},${2}/arch/x86/boot/bzImage,${3},${4},${KERNELOPTS} ${5},${QEMUOPTS} ${6})
+# ${1}=Machine_type ${2}=path_to_bzImage ${3}=RAM ${4}=rootfs ${5}=Kernel_opts ${6}=QEMU_opts
+qemu = $(call runqemu,${QEMUBINDIR}/qemu-system-i386,${1},${2},${3},${4},${KERNELOPTS} ${5},${QEMUOPTS} ${6})
