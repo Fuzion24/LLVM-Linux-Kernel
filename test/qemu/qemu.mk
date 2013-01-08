@@ -48,7 +48,8 @@ VERSION_TARGETS		+= qemu-version
 .PHONY:		${QEMU_TARGETS}
 
 QEMU_GIT	= "git://git.qemu.org/qemu.git"
-QEMU_BRANCH	= "stable-1.1"
+#QEMU_BRANCH	= "stable-1.1"
+QEMU_BRANCH	= "master"
 
 qemu-help:
 	@echo
@@ -58,6 +59,7 @@ qemu-help:
 qemu-settings:
 	@echo "# QEMU settings"
 	@$(call prsetting,QEMU_BRANCH,${QEMU_BRANCH})
+	@$(call prsetting,QEMU_TAG,${QEMU_TAG})
 	@$(call prsetting,QEMU_GIT,${QEMU_GIT})
 	@$(call gitcommit,${QEMUSRCDIR},QEMU_COMMIT)
 
