@@ -84,12 +84,22 @@ SETTINGS_TARGETS+= llvm-settings
 # Add clang to the path
 PATH		:= ${LLVMINSTALLDIR}/bin:${PATH}
 
+# Default bisect good date
+LLVM_CLANG_BISECT_START_DATE := 2012-11-01
+
 ##############################################################################
 llvm-help:
 	@echo
 	@echo "These are the make targets for building LLVM and Clang:"
 	@echo "* make llvm-[fetch,configure,build,sync,clean]"
 	@echo "* make clang-[fetch,configure,build,sync,clean]"
+	@echo "* make llvm-clang-bisect  LLVM_CLANG_BISECT_START_DATE=2012-11-01"
+	@echo "* make llvm-clang-bisect-good  - mark as good"
+	@echo "* make llvm-clang-bisect-bad   - mark as bad"
+	@echo "* make llvm-clang-bisect-skip  - skip revision"
+	@echo "* make llvm-clang-bisect-good[-llvm/-clang]  - mark as good (just llvm/clang)"
+	@echo "* make llvm-clang-bisect-bad[-llvm/-clang]   - mark as bad"
+	@echo "* make llvm-clang-bisect-skip[-llvm/-clang]  - skip revision"
 
 ##############################################################################
 llvm-settings:
@@ -344,3 +354,41 @@ clang-version:
 
 ##############################################################################
 clang-update-all: llvm-sync clang-sync compilerrt-sync llvm-build clang-build
+
+llvm-clang-bisect: llvm-mrproper clang-mrproper
+	@(cd ${LLVMDIR} ; git bisect reset ; git bisect start ; git bisect bad ; git bisect good `git log --pretty=format:'%ai §%H' | grep ${LLVM_CLANG_BISECT_START_DATE} | head -1 | cut -d"§" -f2` )
+	@(cd ${CLANGDIR} ; git bisect reset ; git bisect start ; git bisect bad ; git bisect good `git log --pretty=format:'%ai §%H' | grep ${LLVM_CLANG_BISECT_START_DATE} | head -1 | cut -d"§" -f2` )
+
+llvm-clang-bisect-good: llvm-clean clang-clean kernel-clean
+	@(cd ${LLVMDIR} ; git bisect good )
+	@(cd ${CLANGDIR} ; git bisect good )
+
+llvm-clang-bisect-good-llvm: llvm-clean clang-clean kernel-clean
+	@(cd ${LLVMDIR} ; git bisect good )
+
+llvm-clang-bisect-good-clang: clang-clean kernel-clean
+	@(cd ${CLANGDIR} ; git bisect good )
+
+llvm-clang-bisect-bad: llvm-clean clang-clean kernel-clean
+	@(cd ${LLVMDIR} ; git bisect bad)
+	@(cd ${CLANGDIR} ; git bisect bad)
+
+llvm-clang-bisect-bad-llvm: llvm-clean clang-clean kernel-clean
+	@(cd ${LLVMDIR} ; git bisect bad)
+
+llvm-clang-bisect-bad-clang: clang-clean kernel-clean
+	@(cd ${CLANGDIR} ; git bisect bad)
+
+llvm-clang-bisect-skip: llvm-clean clang-clean kernel-clean
+	@(cd ${LLVMDIR} ; git bisect skip)
+	@(cd ${CLANGDIR} ; git bisect skip)
+
+llvm-clang-bisect-skip-llvm: llvm-clean clang-clean kernel-clean
+	@(cd ${LLVMDIR} ; git bisect skip)
+
+llvm-clang-bisect-skip-clang: clang-clean kernel-clean
+	@(cd ${CLANGDIR} ; git bisect skip)
+
+llvm-clang-bisect-reset: llvm-mrproper clang-mrproper
+	@(cd ${LLVMDIR} ; git bisect reset)
+	@(cd ${CLANGDIR} ; git bisect reset)

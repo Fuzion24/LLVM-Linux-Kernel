@@ -121,6 +121,10 @@ KERNEL_TARGETS_CLEAN	= tmp-clean
 KERNEL_TARGETS_VERSION	= kernel-version kernel-gcc-version
 
 #############################################################################
+
+KERNEL_BISECT_START_DATE := 2012-11-01
+
+#############################################################################
 TARGETS_BUILD		+= ${KERNEL_TARGETS_CLANG} ${KERNEL_TARGETS_GCC} ${KERNEL_TARGETS_APPLIED} ${KERNEL_TARGETS_CLEAN}
 CLEAN_TARGETS		+= ${KERNEL_TARGETS_CLEAN}
 FETCH_TARGETS		+= kernel-fetch kernel-gcc-fetch
@@ -148,6 +152,11 @@ kernel-help:
 	@echo "               clean     - clean, unpatch kernel code"
 	@echo "* make kernel-gcc-sparse - build gcc kernel with sparse"
 	@echo "* make kernels		- build kernel with both clang and gcc"
+	@echo "* make kernel-bisect-start KERNEL_BISECT_START_DATE=2012-11-01"
+	@echo "                          - start bisect process at date ^^^"
+	@echo "* make kernel-bisect-good - mark as good"
+	@echo "* make kernel-bisect-bad  - mark as bad"
+	@echo "* make kernel-bisect-skip - skip revision"
 
 #############################################################################
 kernel-settings:
@@ -392,7 +401,30 @@ kernel-version:
 	@$(call get-kernel-version,${KERNELDIR})
 kernel-gcc-version:
 	@$(call get-kernel-version,${KERNELGCC})
+#############################################################################
+kernel-bisect-start: kernel-clean kernel-mrproper
+	@(cd ${KERNELDIR} ; git bisect reset ; git bisect start ; git bisect bad ; git bisect good `git log --pretty=format:'%ai §%H' | grep ${KERNEL_BISECT_START_DATE} | head -1 | cut -d"§" -f2` )
 
+kernel-bisect-skip: kernel-clean
+	@(cd ${KERNELDIR} ; git bisect skip )
+
+kernel-bisect-good: kernel-clean
+	@(cd ${KERNELDIR} ; git bisect good )
+
+kernel-bisect-bad: kernel-clean
+	@(cd ${KERNELDIR} ; git bisect bad)
+
+kernel-gcc-bisect: kernel-clean kernel-mrproper
+	@(cd ${KERNELGCC} ; git bisect reset ; git bisect start ; git bisect bad ; git bisect good `git log --pretty=format:'%ai §%H' | 
+
+kernel-gcc-bisect-skip: kernel-clean
+	@(cd ${KERNELGCC} ; git bisect skip )
+
+kernel-gcc-bisect-good: kernel-clean
+	@(cd ${KERNELGCC} ; git bisect good )
+
+kernel-gcc-bisect-bad: kernel-clean
+	@(cd ${KERNELGCC} ; git bisect bad)
 #############################################################################
 ${TMPDIR}:
 	@mkdir -p $@
