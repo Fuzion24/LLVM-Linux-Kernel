@@ -1,0 +1,30 @@
+From 7c8a6243ae6459e6b7ab579ce69941dc244cd283 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
+Date: Wed, 14 Nov 2012 13:03:57 +0100
+Subject: [PATCH 41/51] Fix statement in i915 driver.
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Author:  PaX Team <pageexec at freemail.hu>
+ML-Post: http://lists.cs.uiuc.edu/pipermail/llvm-commits/Week-of-Mon-20120507/142707.html
+URL:     http://llvm.linuxfoundation.org
+
+Merge:   Jan-Simon Möller <dl9pf at gmx.de>
+
+Description:
+---
+ drivers/gpu/drm/i915/i915_drv.h |    2 +-
+ 1 Datei geändert, 1 Zeile hinzugefügt(+), 1 Zeile entfernt(-)
+
+--- rpi.orig/drivers/gpu/drm/i915/i915_drv.h
++++ rpi/drivers/gpu/drm/i915/i915_drv.h
+@@ -1276,7 +1276,7 @@
+ extern void intel_teardown_gmbus(struct drm_device *dev);
+ extern void intel_gmbus_set_speed(struct i2c_adapter *adapter, int speed);
+ extern void intel_gmbus_force_bit(struct i2c_adapter *adapter, bool force_bit);
+-extern inline bool intel_gmbus_is_forced_bit(struct i2c_adapter *adapter)
++static bool intel_gmbus_is_forced_bit(struct i2c_adapter *adapter)
+ {
+ 	return container_of(adapter, struct intel_gmbus, adapter)->force_bit;
+ }
