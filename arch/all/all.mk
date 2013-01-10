@@ -82,9 +82,6 @@ endif
 ifeq "${KERNELDIR}" ""
 KERNELDIR	= ${SRCDIR}/linux
 endif
-ifeq "${KERNELCOPY}" ""
-KERNELCOPY	= ${KERNELDIR}-copy
-endif
 ifeq "${KERNELGCC}" ""
 KERNELGCC	= ${KERNELDIR}-gcc
 endif
@@ -193,7 +190,7 @@ ${SHARED_KERNEL}:
 #############################################################################
 kernel-raze:
 	@$(call banner,Razing kernel)
-	@rm -rf ${SHARED_KERNEL} ${KERNELDIR} ${KERNELCOPY} ${KERNELGCC}
+	@rm -rf ${SHARED_KERNEL} ${KERNELDIR} ${KERNELGCC}
 	@rm -f $(addsuffix /*,${LOGDIR} ${TMPDIR})
 	@$(call leavestate,${STATEDIR},*)
 
