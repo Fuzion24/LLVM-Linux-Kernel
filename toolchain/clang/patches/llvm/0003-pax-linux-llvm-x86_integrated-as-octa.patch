@@ -13,8 +13,8 @@ Patch from series at http://lists.cs.uiuc.edu/pipermail/llvm-commits/Week-of-Mon
 --- llvm.orig/include/llvm/MC/MCParser/MCAsmLexer.h
 +++ llvm/include/llvm/MC/MCParser/MCAsmLexer.h
 @@ -10,6 +10,7 @@
- #ifndef LLVM_MC_MCASMLEXER_H
- #define LLVM_MC_MCASMLEXER_H
+ #ifndef LLVM_MC_MCPARSER_MCASMLEXER_H
+ #define LLVM_MC_MCPARSER_MCASMLEXER_H
  
 +#include "llvm/ADT/APInt.h"
  #include "llvm/ADT/StringRef.h"
@@ -78,39 +78,29 @@ Patch from series at http://lists.cs.uiuc.edu/pipermail/llvm-commits/Week-of-Mon
    // Must be an octal number, it starts with 0.
 --- llvm.orig/lib/MC/MCParser/AsmParser.cpp
 +++ llvm/lib/MC/MCParser/AsmParser.cpp
-@@ -295,6 +295,7 @@
-   // ".ascii", ".asciiz", ".string"
+@@ -294,8 +294,8 @@
+   enum DirectiveKind {
+     DK_NO_DIRECTIVE, // Placeholder
+     DK_SET, DK_EQU, DK_EQUIV, DK_ASCII, DK_ASCIZ, DK_STRING, DK_BYTE, DK_SHORT,
+-    DK_VALUE, DK_2BYTE, DK_LONG, DK_INT, DK_4BYTE, DK_QUAD, DK_8BYTE, DK_SINGLE,
+-    DK_FLOAT, DK_DOUBLE, DK_ALIGN, DK_ALIGN32, DK_BALIGN, DK_BALIGNW,
++    DK_VALUE, DK_2BYTE, DK_LONG, DK_INT, DK_4BYTE, DK_QUAD, DK_8BYTE, DK_OCTA,
++    DK_SINGLE, DK_FLOAT, DK_DOUBLE, DK_ALIGN, DK_ALIGN32, DK_BALIGN, DK_BALIGNW,
+     DK_BALIGNL, DK_P2ALIGN, DK_P2ALIGNW, DK_P2ALIGNL, DK_ORG, DK_FILL, DK_ENDR,
+     DK_BUNDLE_ALIGN_MODE, DK_BUNDLE_LOCK, DK_BUNDLE_UNLOCK,
+     DK_ZERO, DK_EXTERN, DK_GLOBL, DK_GLOBAL, DK_INDIRECT_SYMBOL,
+@@ -312,6 +312,7 @@
+   // ".ascii", ".asciz", ".string"
    bool ParseDirectiveAscii(StringRef IDVal, bool ZeroTerminated);
    bool ParseDirectiveValue(unsigned Size); // ".byte", ".long", ...
 +  bool ParseDirectiveOctaValue(); // ".octa"
    bool ParseDirectiveRealValue(const fltSemantics &); // ".single", ...
    bool ParseDirectiveFill(); // ".fill"
-   bool ParseDirectiveSpace(); // ".space"
-@@ -1285,6 +1286,8 @@
-       return ParseDirectiveValue(8);
-     if (IDVal == ".8byte")
-       return ParseDirectiveValue(8);
-+    if (IDVal == ".octa")
-+      return ParseDirectiveOctaValue();
-     if (IDVal == ".single" || IDVal == ".float")
-       return ParseDirectiveRealValue(APFloat::IEEEsingle);
-     if (IDVal == ".double")
-@@ -2152,6 +2155,42 @@
+   bool ParseDirectiveZero(); // ".zero"
+@@ -2183,6 +2184,42 @@
+   return false;
+ }
  
-       if (getLexer().is(AsmToken::EndOfStatement))
-         break;
-+
-+      // FIXME: Improve diagnostic.
-+      if (getLexer().isNot(AsmToken::Comma))
-+        return TokError("unexpected token in directive");
-+      Lex();
-+    }
-+  }
-+
-+  Lex();
-+  return false;
-+}
-+
 +/// ParseDirectiveOctaValue
 +///  ::= .octa [ hexconstant (, hexconstant)* ]
 +bool AsmParser::ParseDirectiveOctaValue() {
@@ -135,6 +125,26 @@ Patch from series at http://lists.cs.uiuc.edu/pipermail/llvm-commits/Week-of-Mon
 +
 +      if (getLexer().is(AsmToken::EndOfStatement))
 +        break;
- 
-       // FIXME: Improve diagnostic.
-       if (getLexer().isNot(AsmToken::Comma))
++
++      // FIXME: Improve diagnostic.
++      if (getLexer().isNot(AsmToken::Comma))
++        return TokError("unexpected token in directive");
++      Lex();
++    }
++  }
++
++  Lex();
++  return false;
++}
++
+ /// ParseDirectiveRealValue
+ ///  ::= (.single | .double) [ expression (, expression)* ]
+ bool AsmParser::ParseDirectiveRealValue(const fltSemantics &Semantics) {
+@@ -2872,6 +2909,7 @@
+   DirectiveKindMapping[".4byte"] = DK_4BYTE;
+   DirectiveKindMapping[".quad"] = DK_QUAD;
+   DirectiveKindMapping[".8byte"] = DK_8BYTE;
++  DirectiveKindMapping[".octa"] = DK_OCTA;
+   DirectiveKindMapping[".single"] = DK_SINGLE;
+   DirectiveKindMapping[".float"] = DK_FLOAT;
+   DirectiveKindMapping[".double"] = DK_DOUBLE;
