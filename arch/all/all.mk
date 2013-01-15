@@ -294,6 +294,8 @@ state/kernel-gcc-build: ${CROSS_GCC} state/kernel-gcc-configure
 	$(call assert,-n "${MAKE_KERNEL}",MAKE_KERNEL undefined)
 	@$(MAKE) kernel-quilt-link-patches
 	@$(call banner, "Building kernel with gcc...")
+	(cd ${KERNELGCC} ; sed -i -e "s#-Qunused-arguments##g" Makefile)
+	(cd ${KERNELGCC} ; for ix in `git grep integrated-as | cut -d":" -f1 ` ; do sed -i -e "s#-no-integrated-as##g" $$ix ; done )
 	(cd ${KERNELGCC} && USECLANG=0 ${SPARSE} time ${MAKE_KERNEL})
 	@mkdir -p ${TOPLOGDIR}
 	( ${CROSS_GCC} --version | head -1 ; \
