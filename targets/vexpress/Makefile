@@ -29,6 +29,7 @@ CROSS_ARM_TOOLCHAIN = codesourcery
 #KERNEL_CFG	= ${TARGETDIR}/config_vexpress
 KERNEL_CFG	= ${KERNELDIR}/arch/arm/configs/vexpress_defconfig
 KERNEL_DTB	= ${KERNELDIR}/arch/arm/boot/dts/vexpress-v2p-ca9.dtb
+ZIMAGE		= arch/arm/boot/zImage
 
 ifeq ('${GDBON}','1')
 GDB_OPTS=-gdb tcp::4321 -S
@@ -101,13 +102,13 @@ ${INITRAMIMG}:
 
 # state/fetch-initrd
 test: state/prep ${QEMUSTATE}/qemu-build state/kernel-build ${INITRAMIMG}
-	$(cat ${KERNELDIR}/arch/arm/boot/zImage ${KERNEL_DTB} > ${TMPDIR}/kernel_dtb.img )
+	$(cat ${KERNELDIR}/${ZIMAGE} ${KERNEL_DTB} > ${TMPDIR}/kernel_dtb.img )
 	$(call qemu_arm,${BOARD},${TMPDIR}/kernel_dtb.img,768,/dev/ram0,rw,-initrd ${INITRAMIMG} -net none)
 
 # state/fetch-initrd
 test-kill: test-boot-poweroff
 test-boot-poweroff: state/prep state/kernel-build ${QEMUSTATE}/qemu-build ${INITRAMIMG}
-	(cat ${KERNELDIR}/arch/arm/boot/zImage ${KERNEL_DTB} > ${TMPDIR}/kernel_dtb.img )
+	(cat ${KERNEL_BUILD}/${ZIMAGE} ${KERNEL_DTB} > ${TMPDIR}/kernel_dtb.img )
 	( $(call qemu_arm,${BOARD},${TMPDIR}/kernel_dtb.img,256,/dev/ram0,rw,-initrd ${INITRAMIMG} -net none ) \
 		| tee tmp/qemu_log ) &
 	( sleep 10 && killall -s 9 qemu-system-arm ) || exit 0
@@ -115,7 +116,7 @@ test-boot-poweroff: state/prep state/kernel-build ${QEMUSTATE}/qemu-build ${INIT
 
 test-gcc-kill: test-gcc-boot-poweroff
 test-gcc-boot-poweroff: state/prep state/kernel-gcc-build ${QEMUSTATE}/qemu-build ${INITRAMIMG}
-	(cat ${KERNELGCC}/arch/arm/boot/zImage ${KERNEL_DTB} > ${TMPDIR}/kernelgcc_dtb.img )
+	(cat ${KERNELGCC_BUILD}/${ZIMAGE} ${KERNEL_DTB} > ${TMPDIR}/kernelgcc_dtb.img )
 	( $(call qemu_arm,${BOARD},${TMPDIR}/kernelgcc_dtb.img,256,/dev/ram0,ramdisk_size=65536 rw POWEROFF,-initrd ${INITRAMIMG} -net none) \
 		| tee tmp/qemu_gcc_log ) &
 	( sleep 10 && killall -s 9 qemu-system-arm ) || exit 0
@@ -128,7 +129,7 @@ test2: state/prep ${QEMUSTATE}/qemu-build state/kernel-build initramfs-unpacked
 	mkdir -p ${INITBUILDFSDIR}/usr/lib
 	@rm -f ${INITRAMFS}
 	@make ${INITRAMFS}
-	@$(call qemu_arm,${BOARD},${KERNELDIR},256,/dev/ram0,rdinit=/bootstrap,-initrd ${INITRAMFS})
+	@$(call qemu_arm,${BOARD},${KERNELDIR}/${ZIMAGE},256,/dev/ram0,rdinit=/bootstrap,-initrd ${INITRAMFS})
 
 test2-gcc: state/prep ${QEMUSTATE}/qemu-build state/kernel-gcc-build initramfs-unpacked
 	@rm -rf ${INITBUILDFSDIR}/lib
@@ -136,7 +137,7 @@ test2-gcc: state/prep ${QEMUSTATE}/qemu-build state/kernel-gcc-build initramfs-u
 	mkdir -p ${INITBUILDFSDIR}/usr/lib
 	@rm -f ${INITRAMFS}
 	@make ${INITRAMFS}
-	@$(call qemu_arm,${BOARD},${KERNELGCC},256,/dev/ram0,rdinit=/bootstrap,-initrd ${INITRAMFS})
+	@$(call qemu_arm,${BOARD},${KERNELGCC}/${ZIMAGE},256,/dev/ram0,rdinit=/bootstrap,-initrd ${INITRAMFS})
 
 # Get prebuilt vexpress image
 VEXPRESS_IMG_GZ	= ${TMPDIR}/${NANOIMG}.gz
@@ -148,7 +149,7 @@ ${VEXPRESS_IMG}: ${VEXPRESS_IMG_GZ}
 	gzip -dc $< > $@
 
 test3: state/prep ${QEMUSTATE}/qemu-build state/kernel-gcc-build ${VEXPRESS_IMG}
-	@$(call qemu_arm,${BOARD},${KERNELGCC},256,/dev/mmcblk0p2,rootfstype=ext4 init=/bin/bash,-sd ${VEXPRESS_IMG}) ${NET}
+	@$(call qemu_arm,${BOARD},${KERNELGCC}/${ZIMAGE},256,/dev/mmcblk0p2,rootfstype=ext4 init=/bin/bash,-sd ${VEXPRESS_IMG}) ${NET}
 
 vexpress-clean: kernel-clean kernel-gcc-clean
 	@$(call banner,Cleaning Vexpress)
@@ -168,4 +169,3 @@ clean: vexpress-clean vexpress-linaro-clean vexpress-ltp-clean
 
 mrproper: clean vexpress-mrproper vexpress-linaro-mrproper vexpress-ltp-mrproper tmp-mrproper
 	@$(call banner,Very Clean)
-
