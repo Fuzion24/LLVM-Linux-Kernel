@@ -24,6 +24,11 @@
 
 export JOBS
 
+# Look to see if we have a tmpfs mounted. If so use it. Use default if provided
+ifndef ${BUILDROOT}
+BUILDROOT	:= $(shell (mount | egrep "tmpfs.*${TOPDIR}.*/build" || echo . . ${TOPDIR}) | awk '{print $$3}' | head -1)
+endif
+
 TOOLCHAIN	= ${TOPDIR}/toolchain
 TOOLSDIR	= ${TOPDIR}/tools
 ARCHDIR		= ${TOPDIR}/arch
@@ -50,8 +55,8 @@ assert_found_in_path = which ${1} || (echo "${1}: Not found in PATH"; false)
 
 ##############################################################################
 # recursive Make macros
-makeclean = if [ -f ${1}/Makefile ]; then ${MAKE} --quiet -C ${1} clean ; fi
-makemrproper = if [ -f ${1}/Makefile ]; then ${MAKE} --quiet -C ${1} mrproper ; fi
+makeclean = if [ -f ${1}/Makefile ]; then ${3} make --quiet -C ${1} ${2} clean ; fi
+makemrproper = if [ -f ${1}/Makefile ]; then ${3} make --quiet -C ${1} ${2} mrproper ; fi
 
 ##############################################################################
 # Quilt patch macros used by all subsystems
@@ -65,6 +70,7 @@ apply_patch = (cd ${1} && cat ${2} | patch -s -p1)
 # Git macros used by all subsystems
 gitclone = [ -d ${2}/.git ] || (rm -rf ${2} && git clone ${1} ${2})
 gitcheckout = (cd ${1} && git checkout ${2} && ([ -z "${3}" ] || git pull && git checkout ${3}))
+gitcommit = [ ! -d ${1}/.git ] || (cd ${1} && $(call prsetting,${2},`git rev-parse HEAD`))
 gitmove = (cd ${1} && git branch --move ${2} $3 >/dev/null 2>&1)
 gitpull = (cd ${1} && git checkout ${2} && git pull origin ${2})
 gitreset = ([ -d ${1} ] && cd ${1} && $(call banner,"Reseting git tree ${1}") && git reset --hard HEAD && git clean -d -f) || true
@@ -78,7 +84,6 @@ endif
 # Settings macros used by all subsystems
 prsetting = (printf "%-24s= %s\n" "${1}" "${2}" | unexpand --all)
 praddsetting = (printf "%-23s+= %s\n" "${1}" "${2}" | unexpand --all)
-gitcommit = [ ! -d ${1}/.git ] || (cd ${1} && $(call prsetting,${2},`git rev-parse HEAD`))
 configfilter = sed -e 's|${TARGETDIR}|$${TARGETDIR}|g'
 
 ##############################################################################
@@ -226,3 +231,13 @@ tmp-mrproper:
 	rm -rf $(addsuffix /*,${TMPDIRS})
 	@$(call banner,All tmp dirs very clean!)
 
+##############################################################################
+list-buildroot:
+	@echo BUILDROOT=${BUILDROOT}
+tmpfs-build-setup:
+	@mkdir -p ${TOPDIR}/build
+	@sudo mount -t tmpfs tmpfs ${TOPDIR}/build
+	@echo "export BUILDROOT=${TOPDIR}/build"
+tmpfs-build-teardown:
+	@sudo umount ${TOPDIR}/build
+	@rmdir ${TOPDIR}/build

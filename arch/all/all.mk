@@ -52,23 +52,15 @@ $(shell echo ${seperator})\n\
 	System time (seconds): %S\n\
 	Percent of CPU this job got: %P\n\
 	Elapsed (wall clock) time (h:mm:ss or m:ss): %E\n\
-	Average shared text size (kbytes): %X\n\
-	Average unshared data size (kbytes): %D\n\
-	Average stack size (kbytes): %p\n\
-	Average total size (kbytes): %K\n\
 	Maximum resident set size (kbytes): %M\n\
-	Average resident set size (kbytes): %t\n\
 	Major (requiring I/O) page faults: %F\n\
 	Minor (reclaiming a frame) page faults: %R\n\
 	Voluntary context switches: %w\n\
 	Involuntary context switches: %c\n\
-	Socket messages received: %r\n\
 	Command being timed: "%C"\n\
 	Swaps: %W\n\
 	File system inputs: %I\n\
 	File system outputs: %O\n\
-	Socket messages sent: %s\n\
-	Signals delivered: %k\n\
 	Page size (bytes): %Z\n\
 	Exit status: %x
 
@@ -85,6 +77,18 @@ endif
 ifeq "${KERNELGCC}" ""
 KERNELGCC	= ${KERNELDIR}-gcc
 endif
+
+KERNEL_BUILD	= $(subst ${TOPDIR},${BUILDROOT},${KERNELDIR})
+KERNELGCC_BUILD	= $(subst ${TOPDIR},${BUILDROOT},${KERNELGCC})
+ifneq (${TOPDIR},${BUILDROOT})
+KERNEL_VAR	= KBUILD_OUTPUT=${KERNEL_BUILD}
+KERNELGCC_VAR	= KBUILD_OUTPUT=${KERNELGCC_BUILD}
+endif
+
+list-var: list-buildroot
+	@echo KERNELDIR=${KERNELDIR}
+	@echo KERNEL_BUILD=${KERNEL_BUILD}
+	@echo KERNEL_VAR=${KERNEL_VAR}
 
 TOPLOGDIR	= ${TOPDIR}/log
 
@@ -261,26 +265,29 @@ kernel-gcc-patch-applied:
 kernel-configure: state/kernel-configure
 state/kernel-configure: state/kernel-patch
 	@$(call banner, "Configuring kernel...")
-	@cp ${KERNEL_CFG} ${KERNELDIR}/.config
-	(cd ${KERNELDIR} && echo "" | make ${MAKE_FLAGS} oldconfig)
+	@mkdir -p ${KERNEL_BUILD}
+	@cp ${KERNEL_CFG} ${KERNEL_BUILD}/.config
+	(cd ${KERNELDIR} && echo "" | ${KERNEL_VAR} make ${MAKE_FLAGS} oldconfig)
 	$(call state,$@,kernel-build)
 
 #############################################################################
 kernel-gcc-configure: state/kernel-gcc-configure
 state/kernel-gcc-configure: state/kernel-gcc-patch
 	@$(call banner, "Configuring kernel (for gcc build)...")
-	@cp ${KERNEL_CFG} ${KERNELGCC}/.config
+	@mkdir -p ${KERNELGCC_BUILD}
+	@cp ${KERNEL_CFG} ${KERNELGCC_BUILD}/.config
 	@echo "CONFIG_ARM_UNWIND=y" >> ${KERNELGCC}/.config
-	(cd ${KERNELGCC} && echo "" | make ${MAKE_FLAGS} oldconfig)
+	(cd ${KERNELGCC} && echo "" | ${KERNELGCC_VAR} make ${MAKE_FLAGS} oldconfig)
 	$(call state,$@,kernel-gcc-build)
 
 #############################################################################
 kernel-build: state/kernel-build
 state/kernel-build: ${LLVMSTATE}/clang-build ${STATE_TOOLCHAIN} state/kernel-configure
 	$(call assert,-n "${MAKE_KERNEL}",MAKE_KERNEL undefined)
+	@[ -d ${KERNEL_BUILD} ] || ($(call leavestate,${STATEDIR},kernel-configure) && ${MAKE} kernel-configure)
 	@$(MAKE) kernel-quilt-link-patches
 	@$(call banner,"Building kernel with clang...")
-	(cd ${KERNELDIR} && time ${MAKE_KERNEL})
+	(cd ${KERNELDIR} && ${KERNEL_VAR} time ${MAKE_KERNEL})
 	@$(call banner,"Successfully Built kernel with clang!")
 	@mkdir -p ${TOPLOGDIR}
 	@( ${CLANG} --version | head -1 ; \
@@ -292,11 +299,12 @@ state/kernel-build: ${LLVMSTATE}/clang-build ${STATE_TOOLCHAIN} state/kernel-con
 kernel-gcc-build: ${STATE_TOOLCHAIN} state/kernel-gcc-build
 state/kernel-gcc-build: ${CROSS_GCC} state/kernel-gcc-configure
 	$(call assert,-n "${MAKE_KERNEL}",MAKE_KERNEL undefined)
+	@[ -d ${KERNELGCC_BUILD} ] || ($(call leavestate,${STATEDIR},kernel-gcc-configure) && ${MAKE} kernel-gcc-configure)
 	@$(MAKE) kernel-quilt-link-patches
 	@$(call banner, "Building kernel with gcc...")
 	(cd ${KERNELGCC} ; sed -i -e "s#-Qunused-arguments##g" Makefile)
 	(cd ${KERNELGCC} ; for ix in `git grep integrated-as | cut -d":" -f1 ` ; do sed -i -e "s#-no-integrated-as##g" $$ix ; done )
-	(cd ${KERNELGCC} && USECLANG=0 ${SPARSE} time ${MAKE_KERNEL})
+	(cd ${KERNELGCC} && USECLANG=0 ${SPARSE} {KERNELGCC_VAR} time ${MAKE_KERNEL})
 	@mkdir -p ${TOPLOGDIR}
 	( ${CROSS_GCC} --version | head -1 ; \
 		cd ${KERNELGCC} && wc -c ${KERNEL_SIZE_ARTIFACTS}) \
@@ -355,51 +363,35 @@ kernel-gcc-sync: state/kernel-gcc-fetch kernel-sync kernel-gcc-clean
 	fi
 
 #############################################################################
-kernel-reset:
-	@$(call makeclean,${KERNELDIR})
-	@rm -f ${KERNELDIR}/arch/arm/boot/compressed/vmlinux
+check-tmpfs = if [ "${1}" == "${2}" ] ; then \
+		[ -f ${1}/.config ] || ${MAKE} ${3} ; \
+	else \
+		[ -d ${2} ] || ${MAKE} ${3} ; \
+	fi
+
+#############################################################################
+kernel-clean kernel-mrproper:
+	@$(call makemrproper,${KERNELDIR})
+	@rm -f ${LOGDIR}/*.log
 	@$(call unpatch,${KERNELDIR})
 	@$(call optional_gitreset,${KERNELDIR})
-	@$(call leavestate,${STATEDIR},kernel-patch kernel-quilt kernel-configure kernel-build)
-
-#############################################################################
-kernel-gcc-reset:
-	@$(call makeclean,${KERNELGCC})
-	@rm -f ${KERNELGCC}/arch/arm/boot/compressed/vmlinux
-	@$(call unpatch,${KERNELGCC})
-	@$(call optional_gitreset,${KERNELGCC})
-	@$(call leavestate ${STATEDIR},kernel-gcc-configure kernel-gcc-patch kernel-gcc-build)
-
-#############################################################################
-kernel-mrproper: kernel-clean-tmp
-	@$(call makemrproper,${KERNELDIR})
-	@$(call leavestate,${STATEDIR},kernel-build)
-
-#############################################################################
-kernel-gcc-mrproper: kernel-clean-tmp
-	@$(call makemrproper,${KERNELGCC})
-	@$(call leavestate,${STATEDIR},kernel-gcc-build)
-
-#############################################################################
-kernel-clean-tmp:
-	@rm -f ${LOGDIR}/*.log
-	@$(call leavestate ${STATEDIR},kernel-quilt kernel-patch kernel-configure kernel-build)
+	@$(call leavestate,${STATEDIR},kernel-quilt kernel-patch kernel-configure kernel-build)
 	@$(call banner,"Clang compiled Kernel is now clean")
 
 #############################################################################
-kernel-gcc-clean-tmp:
-	@$(call leavestate ${STATEDIR},kernel-gcc-patch kernel-gcc-configure kernel-gcc-build)
+kernel-gcc-clean kernel-gcc-mrproper:
+	@$(call makemrproper,${KERNELGCC})
+	@$(call unpatch,${KERNELGCC})
+	@$(call optional_gitreset,${KERNELGCC})
+	@$(call leavestate ${STATEDIR},kernel-gcc-configure kernel-gcc-patch kernel-gcc-build)
 	@$(call banner,"Gcc compiled Kernel is now clean")
-
-#############################################################################
-kernel-clean kernel-gcc-clean: kernel-%clean: kernel-%reset kernel-%clean-tmp
-kernel-clean-noreset kernel-gcc-clean-noreset: kernel-%clean-noreset: kernel-%mrproper
 
 #############################################################################
 kernel-version:
 	@$(call get-kernel-version,${KERNELDIR})
 kernel-gcc-version:
 	@$(call get-kernel-version,${KERNELGCC})
+
 #############################################################################
 kernel-bisect-start: kernel-clean kernel-mrproper
 	@(cd ${KERNELDIR} ; git bisect reset ; git bisect start ; git bisect bad ; git bisect good `git log --pretty=format:'%ai §%H' | grep ${KERNEL_BISECT_START_DATE} | head -1 | cut -d"§" -f2` )
@@ -429,9 +421,6 @@ ${TMPDIR}:
 	@mkdir -p $@
 tmp-clean:
 	rm -rf ${TMPDIR}/*
-
-time:
-	(cd ${KERNELDIR} && time ls)
 
 #############################################################################
 # The order of these includes is important

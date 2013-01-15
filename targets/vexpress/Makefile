@@ -108,6 +108,7 @@ test: state/prep ${QEMUSTATE}/qemu-build state/kernel-build ${INITRAMIMG}
 # state/fetch-initrd
 test-kill: test-boot-poweroff
 test-boot-poweroff: state/prep state/kernel-build ${QEMUSTATE}/qemu-build ${INITRAMIMG}
+	@$(call check-tmpfs,${KERNELDIR},${KERNEL_BUILD},kernel-mrproper $^)
 	(cat ${KERNEL_BUILD}/${ZIMAGE} ${KERNEL_DTB} > ${TMPDIR}/kernel_dtb.img )
 	( $(call qemu_arm,${BOARD},${TMPDIR}/kernel_dtb.img,256,/dev/ram0,rw,-initrd ${INITRAMIMG} -net none ) \
 		| tee tmp/qemu_log ) &
@@ -116,6 +117,7 @@ test-boot-poweroff: state/prep state/kernel-build ${QEMUSTATE}/qemu-build ${INIT
 
 test-gcc-kill: test-gcc-boot-poweroff
 test-gcc-boot-poweroff: state/prep state/kernel-gcc-build ${QEMUSTATE}/qemu-build ${INITRAMIMG}
+	@$(call check-tmpfs,${KERNELGCC},${KERNELGCC_BUILD},kernel-gcc-mrproper $^)
 	(cat ${KERNELGCC_BUILD}/${ZIMAGE} ${KERNEL_DTB} > ${TMPDIR}/kernelgcc_dtb.img )
 	( $(call qemu_arm,${BOARD},${TMPDIR}/kernelgcc_dtb.img,256,/dev/ram0,ramdisk_size=65536 rw POWEROFF,-initrd ${INITRAMIMG} -net none) \
 		| tee tmp/qemu_gcc_log ) &
