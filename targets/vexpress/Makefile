@@ -31,6 +31,10 @@ KERNEL_CFG	= ${KERNELDIR}/arch/arm/configs/vexpress_defconfig
 KERNEL_DTB	= ${KERNELDIR}/arch/arm/boot/dts/vexpress-v2p-ca9.dtb
 ZIMAGE		= arch/arm/boot/zImage
 
+BUILDROOT_ARCH	= qemu_arm_vexpress
+BUILDROOT_CONFIG= config_vexpress_buildroot
+TOOLCHAINDIR	= $(ARM_CROSS_GCC_TOOLCHAIN)
+
 ifeq ('${GDBON}','1')
 GDB_OPTS=-gdb tcp::4321 -S
 else
@@ -152,6 +156,11 @@ ${VEXPRESS_IMG}: ${VEXPRESS_IMG_GZ}
 
 test3: state/prep ${QEMUSTATE}/qemu-build state/kernel-gcc-build ${VEXPRESS_IMG}
 	@$(call qemu_arm,${BOARD},${KERNELGCC}/${ZIMAGE},256,/dev/mmcblk0p2,rootfstype=ext4 init=/bin/bash,-sd ${VEXPRESS_IMG}) ${NET}
+
+BUILDROOT_IMG	= ${TMPDIR}/rootfs.squashfs
+test4: state/prep ${QEMUSTATE}/qemu-build state/kernel-build buildroot-build
+	@cp ${BUILDROOT_BUILDDIR}/images/rootfs.squashfs ${BUILDROOT_IMG}
+	@$(call qemu_arm,${BOARD},${KERNELDIR}/${ZIMAGE},256,/dev/ram0,rootfstype=squashfs init=/bin/bash,-sd ${BUILDROOT_IMG}) ${NET}
 
 vexpress-clean: kernel-clean kernel-gcc-clean
 	@$(call banner,Cleaning Vexpress)
