@@ -304,7 +304,7 @@ state/kernel-gcc-build: ${CROSS_GCC} state/kernel-gcc-configure
 	@$(call banner, "Building kernel with gcc...")
 	(cd ${KERNELGCC} ; sed -i -e "s#-Qunused-arguments##g" Makefile)
 	(cd ${KERNELGCC} ; for ix in `git grep integrated-as | cut -d":" -f1 ` ; do sed -i -e "s#-no-integrated-as##g" $$ix ; done )
-	(cd ${KERNELGCC} && USECLANG=0 ${SPARSE} {KERNELGCC_VAR} time ${MAKE_KERNEL})
+	(cd ${KERNELGCC} && USECLANG=0 ${SPARSE} ${KERNELGCC_VAR} time ${MAKE_KERNEL})
 	@mkdir -p ${TOPLOGDIR}
 	( ${CROSS_GCC} --version | head -1 ; \
 		cd ${KERNELGCC} && wc -c ${KERNEL_SIZE_ARTIFACTS}) \
