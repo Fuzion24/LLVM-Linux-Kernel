@@ -78,7 +78,7 @@ Patch from series at http://lists.cs.uiuc.edu/pipermail/llvm-commits/Week-of-Mon
    // Must be an octal number, it starts with 0.
 --- llvm.orig/lib/MC/MCParser/AsmParser.cpp
 +++ llvm/lib/MC/MCParser/AsmParser.cpp
-@@ -294,8 +294,8 @@
+@@ -284,8 +284,8 @@
    enum DirectiveKind {
      DK_NO_DIRECTIVE, // Placeholder
      DK_SET, DK_EQU, DK_EQUIV, DK_ASCII, DK_ASCIZ, DK_STRING, DK_BYTE, DK_SHORT,
@@ -89,7 +89,7 @@ Patch from series at http://lists.cs.uiuc.edu/pipermail/llvm-commits/Week-of-Mon
      DK_BALIGNL, DK_P2ALIGN, DK_P2ALIGNW, DK_P2ALIGNL, DK_ORG, DK_FILL, DK_ENDR,
      DK_BUNDLE_ALIGN_MODE, DK_BUNDLE_LOCK, DK_BUNDLE_UNLOCK,
      DK_ZERO, DK_EXTERN, DK_GLOBL, DK_GLOBAL, DK_INDIRECT_SYMBOL,
-@@ -312,6 +312,7 @@
+@@ -313,6 +313,7 @@
    // ".ascii", ".asciz", ".string"
    bool ParseDirectiveAscii(StringRef IDVal, bool ZeroTerminated);
    bool ParseDirectiveValue(unsigned Size); // ".byte", ".long", ...
@@ -97,7 +97,7 @@ Patch from series at http://lists.cs.uiuc.edu/pipermail/llvm-commits/Week-of-Mon
    bool ParseDirectiveRealValue(const fltSemantics &); // ".single", ...
    bool ParseDirectiveFill(); // ".fill"
    bool ParseDirectiveZero(); // ".zero"
-@@ -2183,6 +2184,42 @@
+@@ -2191,6 +2192,42 @@
    return false;
  }
  
@@ -140,11 +140,11 @@ Patch from series at http://lists.cs.uiuc.edu/pipermail/llvm-commits/Week-of-Mon
  /// ParseDirectiveRealValue
  ///  ::= (.single | .double) [ expression (, expression)* ]
  bool AsmParser::ParseDirectiveRealValue(const fltSemantics &Semantics) {
-@@ -2872,6 +2909,7 @@
-   DirectiveKindMapping[".4byte"] = DK_4BYTE;
-   DirectiveKindMapping[".quad"] = DK_QUAD;
-   DirectiveKindMapping[".8byte"] = DK_8BYTE;
-+  DirectiveKindMapping[".octa"] = DK_OCTA;
-   DirectiveKindMapping[".single"] = DK_SINGLE;
-   DirectiveKindMapping[".float"] = DK_FLOAT;
-   DirectiveKindMapping[".double"] = DK_DOUBLE;
+@@ -3544,6 +3581,7 @@
+   DirectiveKindMap[".4byte"] = DK_4BYTE;
+   DirectiveKindMap[".quad"] = DK_QUAD;
+   DirectiveKindMap[".8byte"] = DK_8BYTE;
++  DirectiveKindMap[".octa"] = DK_OCTA;
+   DirectiveKindMap[".single"] = DK_SINGLE;
+   DirectiveKindMap[".float"] = DK_FLOAT;
+   DirectiveKindMap[".double"] = DK_DOUBLE;
