@@ -23,6 +23,7 @@
 ##############################################################################
 
 TOPDIR=${CURDIR}
+TARGETDIR=${TOPDIR}
 
 all: help
 .PHONY: mrproper
