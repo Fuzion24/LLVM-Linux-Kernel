@@ -276,7 +276,7 @@ state/kernel-gcc-configure: state/kernel-gcc-patch
 	@$(call banner, "Configuring kernel (for gcc build)...")
 	@mkdir -p ${KERNELGCC_BUILD}
 	@cp ${KERNEL_CFG} ${KERNELGCC_BUILD}/.config
-	@echo "CONFIG_ARM_UNWIND=y" >> ${KERNELGCC}/.config
+	@echo "CONFIG_ARM_UNWIND=y" >> ${KERNELGCC_BUILD}/.config
 	(cd ${KERNELGCC} && echo "" | ${KERNELGCC_VAR} make ${MAKE_FLAGS} oldconfig)
 	$(call state,$@,kernel-gcc-build)
 
