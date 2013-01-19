@@ -271,6 +271,10 @@ state/kernel-configure: state/kernel-patch
 	$(call state,$@,kernel-build)
 
 #############################################################################
+kernel-menuconfig: state/kernel-configure
+	${KERNEL_VAR} make -C ${KERNELDIR} ${MAKE_FLAGS} menuconfig
+
+#############################################################################
 kernel-gcc-configure: state/kernel-gcc-configure
 state/kernel-gcc-configure: state/kernel-gcc-patch
 	@$(call banner, "Configuring kernel (for gcc build)...")
