@@ -34,3 +34,4 @@ vlais-hmac.patch
 vlais-libcrc32c.patch
 vlais-netfilter.patch
 vlais-testmgr.patch
+kbuild-clang.patch
