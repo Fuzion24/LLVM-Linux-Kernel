@@ -2,7 +2,7 @@
 # Unit test framwork for Kbuild
 #
 
-all: units
+all: run-tests
 
 TOPDIR		= $(realpath ../../..)
 TARGETDIR	= $(TOPDIR)/targets/vexpress
@@ -22,7 +22,11 @@ KBUILDS		= $(KBUILD_ORIG) $(KBUILD_PATCHED)
 # Read tests from unit tests file
 TESTS := $(shell grep '^[a-z-]*:' $(TESTFILE) | grep -v SKIP | cut -d: -f1)
 
-units: $(KBUILDS)
+unittests:
+	@for TEST in $(TESTS); do echo $$TEST ; done
+
+run-tests: $(KBUILDS)
+	@echo "# KBuild testcases"
 	@for TEST in $(TESTS); do \
 		RAWTEST=""; RESULT=""; \
 		for KBUILD in $(KBUILDS); do \
@@ -35,16 +39,6 @@ units: $(KBUILDS)
 		done ; \
 		egrep -q "^$$TEST: #$$RESULT" $(TESTFILE) && echo "PASS: $$TEST" \
 			|| (echo -n "FAIL: `egrep "^$$TEST:" $(TESTFILE)`"; echo $$RAWTEST) ; \
-	done ;
-
-units-verbose: $(KBUILDS)
-	@for TEST in $(TESTS); do \
-		RAWTEST=""; RESULT=""; \
-		for KBUILD in $(KBUILDS); do \
-			for CC in $(COMPILERS); do \
-				KBUILD=$$KBUILD CC=$$CC srctree=. make -n -f $(TESTFILE) $$TEST | grep -v '^make\[' ; \
-			done ; \
-		done ; \
 	done ;
 
 #================================================================================
@@ -62,6 +56,6 @@ $(KBUILD_ORIG):
 
 $(KBUILD_PATCHED): $(KBUILD_ORIG)
 
+#================================================================================
 clean:
 	@rm -rf $(TMPSCRIPTDIR)
-	@rm -f *.log
