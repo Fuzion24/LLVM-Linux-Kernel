@@ -236,7 +236,7 @@ list-buildroot:
 	@echo BUILDROOT=${BUILDROOT}
 tmpfs-build-setup:
 	@mkdir -p ${TOPDIR}/build
-	@sudo mount -t tmpfs tmpfs ${TOPDIR}/build
+	@sudo mount -o uid=`id -u`,gid=`id -g`,mode=775 -t tmpfs tmpfs ${TOPDIR}/build
 	@echo "export BUILDROOT=${TOPDIR}/build"
 tmpfs-build-teardown:
 	@sudo umount ${TOPDIR}/build
