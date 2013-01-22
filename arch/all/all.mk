@@ -295,7 +295,7 @@ state/kernel-build: ${LLVMSTATE}/clang-build ${STATE_TOOLCHAIN} state/kernel-con
 	@$(call banner,"Successfully Built kernel with clang!")
 	@mkdir -p ${TOPLOGDIR}
 	@( ${CLANG} --version | head -1 ; \
-		cd ${KERNELDIR} && wc -c ${KERNEL_SIZE_ARTIFACTS} ) \
+		cd ${KERNEL_BUILD} && wc -c ${KERNEL_SIZE_ARTIFACTS} ) \
 		| tee $(call sizelog,${TOPLOGDIR},clang)
 	$(call state,$@,done)
 
@@ -311,7 +311,7 @@ state/kernel-gcc-build: ${CROSS_GCC} state/kernel-gcc-configure
 	(cd ${KERNELGCC} && USECLANG=0 ${SPARSE} ${KERNELGCC_VAR} time ${MAKE_KERNEL})
 	@mkdir -p ${TOPLOGDIR}
 	( ${CROSS_GCC} --version | head -1 ; \
-		cd ${KERNELGCC} && wc -c ${KERNEL_SIZE_ARTIFACTS}) \
+		cd ${KERNELGCC_BUILD} && wc -c ${KERNEL_SIZE_ARTIFACTS}) \
 		| tee $(call sizelog,${TOPLOGDIR},gcc)
 	$(call state,$@,done)
 
