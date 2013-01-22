@@ -26,7 +26,7 @@
 
 QEMUSRCDIR	= ${QEMUDIR}/src/qemu
 QEMUINSTALLDIR	= ${QEMUDIR}/install
-QEMUBUILDDIR	= ${QEMUDIR}/build/qemu
+QEMUBUILDDIR	= $(subst ${TOPDIR},${BUILDROOT},${QEMUDIR}/build/qemu)
 QEMUSTATE	= ${QEMUDIR}/state
 QEMUPATCHES	= ${QEMUDIR}/patches
 
@@ -94,6 +94,7 @@ ${QEMUSTATE}/qemu-configure: ${QEMUSTATE}/qemu-patch
 
 qemu qemu-build: ${QEMUSTATE}/qemu-build
 ${QEMUSTATE}/qemu-build: ${QEMUSTATE}/qemu-configure
+	@[ -d ${QEMUBUILDDIR} ] || ${MAKE} qemu-clean $^ # build in tmpfs
 	@$(call banner, "Building QEMU...")
 	@mkdir -p ${QEMUINSTALLDIR}
 	make -C ${QEMUBUILDDIR} -j${JOBS} install
