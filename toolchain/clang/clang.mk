@@ -25,7 +25,7 @@
 # Assumes has been included from ../toolchain.mk
 
 LLVMSRCDIR	= ${LLVMTOP}/src
-LLVMBUILD	= ${LLVMTOP}/build
+LLVMBUILD	= $(subst ${TOPDIR},${BUILDROOT},${LLVMTOP}/build)
 LLVMINSTALLDIR	:= ${LLVMTOP}/install
 LLVMSTATE	= ${LLVMTOP}/state
 LLVMPATCHES	= ${LLVMTOP}/patches
@@ -225,26 +225,30 @@ llvmbuild = $(call banner, "Building ${1}...") ; \
 ##############################################################################
 llvm llvm-build: ${LLVMSTATE}/llvm-build
 ${LLVMSTATE}/llvm-build: ${LLVMSTATE}/llvm-configure
+	@[ -d ${LLVMBUILDDIR} ] || ${MAKE} llvm-clean $^ # build in tmpfs
 	@$(call llvmbuild,LLVM,${LLVMBUILDDIR})
 	$(call state,$@,clang-build)
 
 ##############################################################################
 clang clang-build: ${LLVMSTATE}/clang-build
 ${LLVMSTATE}/clang-build: ${LLVMSTATE}/llvm-build ${LLVMSTATE}/clang-configure
+	@[ -d ${LLVMBUILDDIR} ] || ${MAKE} llvm-clean llvm-build $^ # build in tmpfs
 	@$(call llvmbuild,Clang,${CLANGBUILDDIR})
 	cp -a ${CLANGDIR}/tools/scan-build/* ${LLVMINSTALLDIR}/bin
 	cp -a ${CLANGDIR}/tools/scan-view/* ${LLVMINSTALLDIR}/bin
 	$(call state,$@)
 
 ##############################################################################
-llvm llvm-unpatched-build: ${LLVMSTATE}/llvm-unpatched-build
+llvm-unpatched-build: ${LLVMSTATE}/llvm-unpatched-build
 ${LLVMSTATE}/llvm-unpatched-build: ${LLVMSTATE}/llvm-unpatched-configure
+	@[ -d ${LLVMBUILDDIR2} ] || (rm -f ${LLVMSTATE}/llvm-unpatched-configure; ${MAKE} $^) # build in tmpfs
 	@$(call llvmbuild,LLVM-unpatched,${LLVMBUILDDIR2})
 	$(call state,$@,clang-build)
 
 ##############################################################################
-clang clang-unpatched-build: ${LLVMSTATE}/clang-unpatched-build
+clang-unpatched-build: ${LLVMSTATE}/clang-unpatched-build
 ${LLVMSTATE}/clang-unpatched-build: ${LLVMSTATE}/llvm-unpatched-build ${LLVMSTATE}/clang-unpatched-configure
+	@[ -d ${LLVMBUILDDIR2} ] || (rm -f ${LLVMSTATE}/*-unpatched-configure; ${MAKE} $^) # build in tmpfs
 	@$(call llvmbuild,Clang-unpatched,${CLANGBUILDDIR2})
 	$(call state,$@)
 
