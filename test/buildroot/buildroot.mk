@@ -123,6 +123,7 @@ buildroot-raze: buildroot-clean-all
 buildroot-sync: ${BUILDROOT_STATE}/buildroot-fetch
 	@$(call banner, "Updating buildroot...")
 	@${MAKE} buildroot-clean
+	@$(call check_llvmlinux_commit,${CONFIG})
 	-@if [ -n "${BUILDROOT_COMMIT}" ] ; then \
 		$(call banner, "Syncing commit-ish buildroot...") ; \
 		$(call gitcheckout,${BUILDROOT_SRCDIR},${BUILDROOT_BRANCH},${BUILDROOT_COMMIT}) ; \

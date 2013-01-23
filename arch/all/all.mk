@@ -345,6 +345,7 @@ kernel-shared-sync:
 #############################################################################
 kernel-sync: state/kernel-fetch kernel-shared-sync kernel-clean
 	@$(call banner, "Syncing kernel...")
+	@$(call check_llvmlinux_commit,${CONFIG})
 	@if [ -n "${KERNEL_COMMIT}" ] ; then \
 		$(call gitcheckout,${KERNELDIR},${KERNEL_BRANCH},${KERNEL_COMMIT}) ; \
 	elif [ -n "${KERNEL_TAG}" ] ; then \
@@ -357,6 +358,7 @@ kernel-sync: state/kernel-fetch kernel-shared-sync kernel-clean
 #############################################################################
 kernel-gcc-sync: state/kernel-gcc-fetch kernel-sync kernel-gcc-clean
 	@$(call banner, "Syncing gcc kernel...")
+	@$(call check_llvmlinux_commit,${CONFIG})
 	@if [ -n "${KERNEL_COMMIT}" ] ; then \
 		$(call gitcheckout,${KERNELGCC},${KERNEL_BRANCH},${KERNEL_COMMIT}) ; \
 	elif [ -n "${KERNEL_TAG}" ] ; then \

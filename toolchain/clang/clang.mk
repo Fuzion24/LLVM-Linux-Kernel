@@ -330,17 +330,20 @@ llvmsync = $(call banner,Updating ${1}...) ; \
 
 ##############################################################################
 llvm-sync: llvm-clean
+	@$(call check_llvmlinux_commit,${CONFIG})
 	@$(call llvmsync,LLVM,${LLVMDIR},${LLVM_BRANCH},${LLVM_COMMIT})
 	@$(call llvmsync,unpatched LLVM,${LLVMDIR2},${LLVM_BRANCH},${LLVM_COMMIT})
 
 ##############################################################################
 clang-sync: clang-clean
+	@$(call check_llvmlinux_commit,${CONFIG})
 	@$(call llvmsync,Clang,${CLANGDIR},${CLANG_BRANCH},${CLANG_COMMIT})
 	@$(call llvmsync,Unpatched Clang,${CLANGDIR2},${CLANG_BRANCH},${CLANG_COMMIT})
 
 ##############################################################################
 compilerrt-sync: ${LLVMSTATE}/compilerrt-sync
 ${LLVMSTATE}/compilerrt-sync: ${LLVMSTATE}/llvm-fetch 
+	@$(call check_llvmlinux_commit,${CONFIG})
 	@$(call llvmsync,compiler-rt,${COMPILERRTDIR},${COMPILERRT_BRANCH},${COMPILERRT_COMMIT})
 	$(call state,$@)
 
