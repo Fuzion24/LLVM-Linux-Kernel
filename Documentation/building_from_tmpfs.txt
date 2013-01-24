@@ -25,8 +25,25 @@ However, you can force it to use your own custom build directory by setting
 BUILDROOT to your custom directory. So for instance to force the use of
 /tmp/build:
 
+ export BUILDROOT=/tmp/build
+ make clean all
+
+or
+
  make BUILDROOT=/tmp/build clean all
+
+To see which BUILDROOT is being used, you can do a:
+
+ make list-buildroot
 
 To unmount the tmpfs build directory, you can do a:
 
  make tmpfs-build-teardown
+
+Remounting the tmpfs (effectively clearing it) can be accomplished as follows:
+
+ make tmpfs-build-remount
+
+or
+
+ make tmpfs-clean
