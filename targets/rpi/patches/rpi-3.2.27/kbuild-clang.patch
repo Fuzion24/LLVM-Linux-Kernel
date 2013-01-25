@@ -9,10 +9,10 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 
 --- rpi.orig/scripts/Makefile.build
 +++ rpi/scripts/Makefile.build
-@@ -69,6 +69,7 @@
- warning-1 += -Wold-style-definition
- warning-1 += $(call cc-option, -Wmissing-include-dirs)
- warning-1 += $(call cc-option, -Wunused-but-set-variable)
+@@ -72,6 +72,7 @@
+ #warning-1 += $(call cc-option, -Wunused-but-set-variable)
+ warning-1 += -Wno-unused-value -Wno-format -Wno-unknown-warning-option -Wno-self-assign
+ warning-1 += -fcatch-undefined-behavior -Wno-sign-compare -Wno-format-zero-length -Wno-uninitialized
 +warning-1 += $(call cc-option, -Wunused-value)
  
  warning-2 := -Waggregate-return
@@ -45,16 +45,7 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
  cc-version = $(shell $(CONFIG_SHELL) $(srctree)/scripts/gcc-version.sh $(CC))
 --- rpi.orig/Makefile
 +++ rpi/Makefile
-@@ -371,7 +371,7 @@
- 		   -fno-delete-null-pointer-checks
- KBUILD_AFLAGS_KERNEL :=
- KBUILD_CFLAGS_KERNEL :=
--KBUILD_AFLAGS   := -D__ASSEMBLY__
-+KBUILD_AFLAGS   := -D__ASSEMBLY__ $(call as-option,-no-integrated-as,)
- KBUILD_AFLAGS_MODULE  := -DMODULE
- KBUILD_CFLAGS_MODULE  := -DMODULE
- KBUILD_LDFLAGS_MODULE := -T $(srctree)/scripts/module-common.lds
-@@ -632,6 +632,9 @@
+@@ -633,6 +633,9 @@
  # conserve stack if available
  KBUILD_CFLAGS   += $(call cc-option,-fconserve-stack)
  
