@@ -25,8 +25,7 @@
 TARGETDIR	= ${CURDIR}
 TOPDIR		= $(realpath ${TARGETDIR}/../..)
 
-#KERNEL_CFG	= ${SRCDIR}/rpi/arch/arm/configs/bcmrpi_cutdown_defconfig
-KERNEL_CFG	= ${TARGETDIR}/bcmrpi_cutdown_defconfig
+KERNEL_CFG	= ${TARGETDIR}/config_rpi
 KERNEL_BRANCH	= rpi-3.2.27
 KERNEL_GIT	= https://github.com/raspberrypi/linux.git
 KERNELDIR	= ${SRCDIR}/rpi
