@@ -25,23 +25,44 @@
 export LANG=C
 export LC_ALL=C
 
-INSTALLDIR=$1 ; shift
 EXTRAFLAGS=$*
 
 # Use clang by default
-USECLANG=${USECLANG:-1}
-if [ "$USECLANG" -eq "1" ]; then
-	export PATH="$INSTALLDIR/bin:$PATH"
-	CC_FOR_BUILD="$INSTALLDIR/bin/clang $EXTRAFLAGS"
-	MAKE_FLAGS="CC=$CC_FOR_BUILD HOSTCC=gcc"
+if [ -z "$USEGCC" ]; then
+	CC="clang"
 fi
 
 JOBS=${JOBS:-`getconf _NPROCESSORS_ONLN`}
-if [ -z "$JOBS" ]; then
-  JOBS=2
-fi
-PARALLEL="-j$JOBS"
+[ -n "$JOBS" ] || JOBS=2
 
-echo "export PATH=$PATH"
-make CONFIG_DEBUG_SECTION_MISMATCH=y CONFIG_DEBUG_INFO=1 \
-	$MAKE_FLAGS $PARALLEL $KERNEL_MAKE_TARGETS
+CCOPTS="CONFIG_DEBUG_SECTION_MISMATCH=y CONFIG_DEBUG_INFO=1 ${JOBS:+-j$JOBS} $MAKE_FLAGS $EXTRAFLAGS"
+
+function build_env() {
+	echo "---------------------------------------------------------------------"
+	echo Build environment
+	echo "---------------------------------------------------------------------"
+	echo $0 $INSTALLDIR $*
+	echo "---------------------------------------------------------------------"
+	which gcc clang
+	echo "ARCH=$ARCH"
+	echo "ARM_CROSS_GCC_TOOLCHAIN=$ARM_CROSS_GCC_TOOLCHAIN"
+	echo "CC=$CC"
+	echo "COMPILER_PATH=$COMPILER_PATH"
+	echo "CROSS_COMPILE=$CROSS_COMPILE"
+	echo "HOST=$HOST"
+	echo "HOST_TRIPLE=$HOST_TRIPLE"
+	echo "JOBS=$JOBS"
+	echo "KBUILD_OUTPUT=$KBUILD_OUTPUT"
+	echo "LD=$LD"
+	echo "MARCH=$MARCH"
+	echo "MFLOAT=$MFLOAT"
+	echo "PATH=$PATH"
+	echo "USE_CCACHE=$USE_CCACHE"
+	echo "V=$V"
+	echo "---------------------------------------------------------------------"
+	echo make $CCOPTS CC="$CC" $KERNEL_MAKE_TARGETS
+}
+build_env
+[ -z "$MAKE_KERNEL_STOP" ] || exit 1
+
+make $CCOPTS ${CC:+CC="$CC"} $KERNEL_MAKE_TARGETS

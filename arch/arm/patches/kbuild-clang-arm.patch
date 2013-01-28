@@ -1,13 +1,25 @@
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 --- linux.orig/arch/arm/Makefile
 +++ linux/arch/arm/Makefile
-@@ -42,12 +42,15 @@
- KBUILD_CFLAGS	+=-fstack-protector
+@@ -22,6 +22,15 @@
+ GZFLAGS		:=-9
+ #KBUILD_CFLAGS	+=-pipe
+ 
++#ifeq ($(COMPILER),clang)
++# Clang options
++KBUILD_CPPFLAGS	+= $(call cc-option,-target $(CROSS_COMPILE:-=),)
++KBUILD_CFLAGS   += $(call cc-option,-fno-builtin,)
++KBUILD_CFLAGS   += $(call cc-disable-warning,asm-operand-widths)
++KBUILD_CFLAGS   += $(call cc-option,-Xassembler,)
++KBUILD_CFLAGS   += $(call cc-option,-mno-warn-deprecated,)
++#endif
++
+ # Never generate .eh_frame
+ KBUILD_CFLAGS	+= $(call cc-option,-fno-dwarf2-cfi-asm)
+ 
+@@ -44,11 +53,11 @@
  endif
  
-+# Quiet unused arguments warning from clang
-+KBUILD_CFLAGS   += $(call cc-option,-Qunused-arguments,)
-+
  ifeq ($(CONFIG_CPU_BIG_ENDIAN),y)
 -KBUILD_CPPFLAGS	+= -mbig-endian
 +KBUILD_CPPFLAGS	+= $(call cc-option,-mbig-endian,)
@@ -19,7 +31,19 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
  AS		+= -EL
  LD		+= -EL
  endif
-@@ -91,7 +94,7 @@
+@@ -59,7 +68,11 @@
+ # Note that GCC does not numerically define an architecture version
+ # macro, but instead defines a whole series of macros which makes
+ # testing for a specific architecture or later rather impossible.
++ifeq ($(COMPILER),clang)
+ arch-$(CONFIG_CPU_32v7)		:=-D__LINUX_ARM_ARCH__=7 $(call cc-option,-march=armv7-a,-march=armv5t -Wa$(comma)-march=armv7-a)
++else
++arch-$(CONFIG_CPU_32v7)		:=-D__LINUX_ARM_ARCH__=7 -march=armv7-a
++endif
+ arch-$(CONFIG_CPU_32v6)		:=-D__LINUX_ARM_ARCH__=6 $(call cc-option,-march=armv6,-march=armv5t -Wa$(comma)-march=armv6)
+ # Only override the compiler option if ARMv6. The ARMv6K extensions are
+ # always available in ARMv7
+@@ -92,7 +105,7 @@
  tune-$(CONFIG_CPU_V6K)		:=$(call cc-option,-mtune=arm1136j-s,-mtune=strongarm)
  
  ifeq ($(CONFIG_AEABI),y)
@@ -28,7 +52,7 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
  else
  CFLAGS_ABI	:=$(call cc-option,-mapcs-32,-mabi=apcs-gnu) $(call cc-option,-mno-thumb-interwork,)
  endif
-@@ -115,7 +118,7 @@
+@@ -116,7 +129,7 @@
  endif
  
  # Need -Uarm for gcc < 3.x

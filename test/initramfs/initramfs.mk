@@ -56,6 +56,7 @@ BUSYBOXURL	= "http://busybox.net/downloads/binaries/1.20.0/busybox-${ARCHSTR}"
 endif
 
 GCC		= gcc
+CPP		= ${CC} -E
 
 HELP_TARGETS	+= initramfs-help
 SETTINGS_TARGETS+= initramfs-settings
@@ -71,7 +72,7 @@ initramfs-settings:
 #	@$(call prsetting,LTP,${LTP})
 #	@$(call prsetting,LTPURL,${LTPURL})
 
-initramfs-unpacked: ${INITBUILDFSDIR}/etc 
+initramfs-unpacked: ${INITBUILDFSDIR}/etc
 ${INITBUILDFSDIR}/etc: ${INITBUILDDIR}/busybox ${STRACEBIN} ${KERNEL_MODULES}
 	@rm -rf ${INITBUILDFSDIR}
 	@mkdir -p $(addprefix ${INITBUILDFSDIR}/,bin sys dev proc tmp usr/bin sbin usr/sbin)

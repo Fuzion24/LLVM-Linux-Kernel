@@ -41,9 +41,6 @@ CC_FOR_BUILD	= ${ANDROID_GCC}
 
 ARM_CROSS_GCC_TOOLCHAIN = ${ANDROID_CC_DIR}
 
-# The following exports are required for make_kernel.sh
-export HOST HOST_TRIPLE ARM_CROSS_GCC_TOOLCHAIN
-
 # Add path so that ${CROSS_COMPILE}${CC} is resolved
 PATH		:= ${ANDROID_CC_BINDIR}:${PATH}
 

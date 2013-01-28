@@ -21,12 +21,8 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
-ARCH_ARM_DIR	= ${ARCHDIR}/arm
-ARCH_ARM_BINDIR	= ${ARCH_ARM_DIR}/bin
-ARCH_ARM_PATCHES= ${ARCH_ARM_DIR}/patches
-
-ARCH_ARM_TOOLCHAIN = ${ARCH_ARM_DIR}/toolchain
-ARCH_ARM_TOOLCHAIN_STATE = ${ARCH_ARM_TOOLCHAIN}/state
+# The following exports are required for make_kernel.sh
+export COMPILER_PATH HOST HOST_TRIPLE ARM_CROSS_GCC_TOOLCHAIN
 
 ARCH_ARM_TMPDIR	= ${ARCH_ARM_DIR}/toolchain/tmp
 TMPDIRS		+= ${ARCH_ARM_TMPDIR}

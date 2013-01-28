@@ -45,11 +45,8 @@ CC_FOR_BUILD		= ${LINARO_GCC}
 
 ARM_CROSS_GCC_TOOLCHAIN = ${LINARO_CC_DIR}
 
-# The following exports are required for make_kernel.sh
-export HOST HOST_TRIPLE ARM_CROSS_GCC_TOOLCHAIN
-
 # Add path so that ${CROSS_COMPILE}${CC} is resolved
-PATH		:= ${LINARO_CC_BINDIR}:${ARCH_ARM_BINDIR}:${PATH}
+PATH			:= ${LINARO_CC_BINDIR}:${PATH}
 
 # Get Linaro cross compiler
 ${LINARO_TMPDIR}/${LINARO_CC_TAR}:

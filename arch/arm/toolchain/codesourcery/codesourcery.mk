@@ -38,10 +38,8 @@ CC_FOR_BUILD	= ${CSCC_BINDIR}/${HOST}-gcc
 
 ARM_CROSS_GCC_TOOLCHAIN = ${CSCC_DIR}
 
-export HOST HOST_TRIPLE ARM_CROSS_GCC_TOOLCHAIN
-
 # Add path so that ${CROSS_COMPILE}${CC} is resolved
-PATH           := ${CSCC_BINDIR}:${ARCH_ARM_BINDIR}:${PATH}
+PATH           := ${CSCC_BINDIR}:${PATH}
 
 # Get ARM cross compiler
 ${CSCC_TMPDIR}/${CSCC_TAR}:
@@ -55,19 +53,19 @@ ${ARCH_ARM_TOOLCHAIN_STATE}/codesourcery-gcc: ${CSCC_TMPDIR}/${CSCC_TAR}
 	$(call state,$@)
 
 ${CSCC_DIR}/bin/arm-eabi-ar: ${ARCH_ARM_TOOLCHAIN_STATE}/codesourcery-gcc
-	(cd ${CSCC_DIR} && ln -s ${CSCC_CC_BINDIR}/arm-none-linux-gnueabi-ar ${CSCC_DIR}/bin/arm-eabi-ar)
+	(cd ${CSCC_DIR} && ln -s ${CSCC_CC_BINDIR}/arm-none-linux-gnueabi-ar $@)
 
 ${CSCC_DIR}/bin/arm-eabi-as: ${ARCH_ARM_TOOLCHAIN_STATE}/codesourcery-gcc
-	(cd ${CSCC_DIR} && ln -s ${CSCC_CC_BINDIR}/arm-none-linux-gnueabi-as ${CSCC_DIR}/bin/arm-eabi-as)
+	(cd ${CSCC_DIR} && ln -s ${CSCC_CC_BINDIR}/arm-none-linux-gnueabi-as $@)
 
 ${CSCC_DIR}/bin/arm-eabi-strip: ${ARCH_ARM_TOOLCHAIN_STATE}/codesourcery-gcc
-	(cd ${CSCC_DIR} && ln -s ${CSCC_CC_BINDIR}/arm-none-linux-gnueabi-strip ${CSCC_DIR}/bin/arm-eabi-strip)
+	(cd ${CSCC_DIR} && ln -s ${CSCC_CC_BINDIR}/arm-none-linux-gnueabi-strip $@)
 
 ${CSCC_DIR}/bin/arm-eabi-ranlib: ${ARCH_ARM_TOOLCHAIN_STATE}/codesourcery-gcc
-	(cd ${CSCC_DIR} && ln -s ${CSCC_CC_BINDIR}/arm-none-linux-gnueabi-ranlib ${CSCC_DIR}/bin/arm-eabi-ranlib)
+	(cd ${CSCC_DIR} && ln -s ${CSCC_CC_BINDIR}/arm-none-linux-gnueabi-ranlib $@)
 
 ${CSCC_DIR}/bin/arm-eabi-ld: ${ARCH_ARM_TOOLCHAIN_STATE}/codesourcery-gcc
-	(cd ${CSCC_DIR} && ln -s ${CSCC_CC_BINDIR}/arm-none-linux-gnueabi-ranlib ${CSCC_DIR}/bin/arm-eabi-ranlib)
+	(cd ${CSCC_DIR} && ln -s ${CSCC_CC_BINDIR}/arm-none-linux-gnueabi-ld $@)
 
 state/arm-cc: ${ARCH_ARM_TOOLCHAIN_STATE}/codesourcery-gcc
 	$(call state,$@)

@@ -33,7 +33,6 @@
 #   - KERNEL_PATCH_DIR += ${PATCHDIR} ${PATCHDIR}/${KERNEL_REPO_PATCHES}
 
 export V
-export CHECKERDIR
 
 ARCH_ALL_DIR	= ${ARCHDIR}/all
 ARCH_ALL_BINDIR	= ${ARCH_ALL_DIR}/bin
@@ -92,7 +91,6 @@ list-var: list-buildroot
 
 TOPLOGDIR	= ${TOPDIR}/log
 
-CHECKERDIR	= ${TARGETDIR}/checker
 LOGDIR		= ${TARGETDIR}/log
 PATCHDIR	= ${TARGETDIR}/patches
 SRCDIR		= ${TARGETDIR}/src
@@ -116,7 +114,7 @@ get-kernel-version	= [ ! -d ${1} ] || (cd ${1} && echo "src/$(notdir ${1}) versi
 
 #############################################################################
 KERNEL_TARGETS_CLANG	= kernel-[fetch,patch,configure,build,clean,sync]
-KERNEL_TARGETS_GCC	= kernel-gcc-[fetch,patch,configure,build,clean,sync] kernel-gcc-sparse 
+KERNEL_TARGETS_GCC	= kernel-gcc-[fetch,patch,configure,build,clean,sync] kernel-gcc-sparse
 KERNEL_TARGETS_APPLIED	= kernel-patch-applied kernel-gcc-patch-applied
 KERNEL_TARGETS_CLEAN	= tmp-clean
 KERNEL_TARGETS_VERSION	= kernel-version kernel-gcc-version
@@ -308,7 +306,7 @@ state/kernel-gcc-build: ${CROSS_GCC} state/kernel-gcc-configure
 	@$(call banner, "Building kernel with gcc...")
 	(cd ${KERNELGCC} ; sed -i -e "s#-Qunused-arguments##g" Makefile)
 	(cd ${KERNELGCC} ; for ix in `git grep integrated-as | cut -d":" -f1 ` ; do sed -i -e "s#-no-integrated-as##g" $$ix ; done )
-	(cd ${KERNELGCC} && USECLANG=0 ${SPARSE} ${KERNELGCC_VAR} time ${MAKE_KERNEL})
+	(cd ${KERNELGCC} && USEGCC=1 ${SPARSE} ${KERNELGCC_VAR} time ${MAKE_KERNEL})
 	@mkdir -p ${TOPLOGDIR}
 	( ${CROSS_GCC} --version | head -1 ; \
 		cd ${KERNELGCC_BUILD} && wc -c ${KERNEL_SIZE_ARTIFACTS}) \
@@ -391,6 +389,16 @@ kernel-gcc-clean kernel-gcc-mrproper:
 	@$(call banner,"Gcc compiled Kernel is now clean")
 
 #############################################################################
+kernel-rebuild kernel-gcc-rebuild: kernel-%rebuild:
+	@$(call leavestate,${STATEDIR},kernel-$*build)
+	@$(MAKE) kernel-$*build
+
+#############################################################################
+kernel-rebuild-verbose kernel-gcc-rebuild-verbose: kernel-%rebuild-verbose:
+	@$(call leavestate,${STATEDIR},kernel-$*build)
+	@$(MAKE) JOBS=1 V=1 kernel-$*build
+
+#############################################################################
 kernel-version:
 	@$(call get-kernel-version,${KERNELDIR})
 kernel-gcc-version:
@@ -410,7 +418,7 @@ kernel-bisect-bad: kernel-clean
 	@(cd ${KERNELDIR} ; git bisect bad)
 
 kernel-gcc-bisect: kernel-clean kernel-mrproper
-	@(cd ${KERNELGCC} ; git bisect reset ; git bisect start ; git bisect bad ; git bisect good `git log --pretty=format:'%ai §%H' | 
+	@(cd ${KERNELGCC} ; git bisect reset ; git bisect start ; git bisect bad ; git bisect good `git log --pretty=format:'%ai §%H' |
 
 kernel-gcc-bisect-skip: kernel-clean
 	@(cd ${KERNELGCC} ; git bisect skip )

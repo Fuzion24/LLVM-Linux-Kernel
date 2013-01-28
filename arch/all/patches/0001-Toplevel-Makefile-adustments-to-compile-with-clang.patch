@@ -20,38 +20,23 @@ Toplevel Makefile adustments to compile with clang
  Makefile |    7 ++++---
  1 Datei geändert, 4 Zeilen hinzugefügt(+), 3 Zeilen entfernt(-)
 
-diff --git a/Makefile b/Makefile
-index 6edac73..7c26c21 100644
---- a/Makefile
-+++ b/Makefile
-@@ -241,7 +241,7 @@ CONFIG_SHELL := $(shell if [ -x "$$BASH" ]; then echo $$BASH; \
- 
- HOSTCC       = gcc
- HOSTCXX      = g++
--HOSTCFLAGS   = -Wall -Wmissing-prototypes -Wstrict-prototypes -O2 -fomit-frame-pointer
-+HOSTCFLAGS   = -Wall -W -Wno-unused-value -Wmissing-prototypes -Wstrict-prototypes -Wno-unused-parameter -Wno-missing-field-initializers -O2 -fomit-frame-pointer -fno-delete-null-pointer-checks
+--- linux.orig/Makefile
++++ linux/Makefile
+@@ -244,6 +244,17 @@
+ HOSTCFLAGS   = -Wall -Wmissing-prototypes -Wstrict-prototypes -O2 -fomit-frame-pointer
  HOSTCXXFLAGS = -O2
  
++ifeq ($(shell $(HOSTCC) -v 2>&1 | grep -c "clang version"), 1)
++HOSTCOMPILER := clang
++else
++HOSTCOMPILER := gcc
++endif
++
++ifeq ($(HOSTCOMPILER),clang)
++HOSTCFLAGS  += -Wno-unused-value -Wno-unused-parameter -Wno-missing-field-initializers \
++		-fno-delete-null-pointer-checks
++endif
++
  # Decide whether to build built-in, modular, or both.
-@@ -370,7 +370,7 @@ LINUXINCLUDE    := \
- KBUILD_CPPFLAGS := -D__KERNEL__
+ # Normally, just do built-in.
  
- KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
--		   -fno-strict-aliasing -fno-common \
-+		   -fno-strict-aliasing -fno-common -Qunused-arguments \
- 		   -Werror-implicit-function-declaration \
- 		   -Wno-format-security \
- 		   -fno-delete-null-pointer-checks
-@@ -598,7 +598,8 @@ endif
- 
- # This warning generated too much noise in a regular build.
- # Use make W=1 to enable this warning (see scripts/Makefile.build)
--KBUILD_CFLAGS += $(call cc-disable-warning, unused-but-set-variable)
-+#KBUILD_CFLAGS += $(call cc-disable-warning, unused-but-set-variable)
-+KBUILD_CFLAGS += $(call cc-disable-warning, unused-variable)
- 
- ifdef CONFIG_FRAME_POINTER
- KBUILD_CFLAGS	+= -fno-omit-frame-pointer -fno-optimize-sibling-calls
--- 
-1.7.10.4
-

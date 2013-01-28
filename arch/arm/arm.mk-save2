@@ -23,32 +23,21 @@
 
 # Note: This file must be included after ${TOPDIR}/common.mk
 
-export ARCH
 export MARCH
 export MFLOAT
 export KERNEL_MAKE_TARGETS
-export CROSS_COMPILE
 
 STATE_TOOLCHAIN	= state/arm-cc
 
 # ARCH must be defined before all.mk
-ARCH		= arm
+ARCH	= arm
 
 include ${ARCHDIR}/all/all.mk
 
 FETCH_TARGETS	+= arm-cc
 RAZE_TARGETS	+= arm-cc-clean
 
-ARCH_ARM_DIR	= ${ARCHDIR}/arm
-ARCH_ARM_BINDIR	= ${ARCH_ARM_DIR}/bin
-ARCH_ARM_PATCHES= ${ARCH_ARM_DIR}/patches
-
-ARCH_ARM_TOOLCHAIN	= ${ARCH_ARM_DIR}/toolchain
-ARCH_ARM_TOOLCHAIN_STATE= ${ARCH_ARM_TOOLCHAIN}/state
-
-PATH		:= ${ARCH_ARM_BINDIR}:${PATH}
-
-include ${ARCH_ARM_TOOLCHAIN}/toolchain.mk
+include ${ARCHDIR}/arm/toolchain/toolchain.mk
 
 KERNEL_PATCH_DIR+= ${ARCH_ARM_PATCHES} ${ARCH_ARM_PATCHES}/${KERNEL_REPO_PATCHES}
 
@@ -59,18 +48,19 @@ VERSION_TARGETS	+= arm-cc-version
 MARCH		?= armv7-a
 MFLOAT		?= -mfloat-abi=softfp -mfpu=neon
 MAKE_FLAGS	= ARCH=${ARCH}
-MAKE_KERNEL	= ${ARCH_ARM_BINDIR}/make-kernel.sh ${EXTRAFLAGS}
+MAKE_KERNEL	= ${ARCH_ARM_BINDIR}/make-kernel.sh ${LLVMINSTALLDIR} ${EXTRAFLAGS}
 CROSS_COMPILE	= ${HOST}-
-#CC		= clang-wrap.sh
-#CPP		= ${CC} -E
+CC		= clang-wrap.sh
+GCC_CC		= ${HOST}-gcc
+CPP		= ${CC} -E
 
 KERNEL_SIZE_ARTIFACTS	= arch/arm/boot/zImage vmlinux*
 
-#KERNELOPTS	= console=earlycon console=ttyAMA0,38400n8 earlyprintk
-KERNELOPTS	= console=ttyAMA0
+KERNELOPTS	= console=earlycon console=ttyAMA0,38400n8 earlyprintk
 
-# ${1}=Machine_type ${2}=path_zImage ${3}=RAM ${4}=rootfs ${5}=Kernel_opts ${6}=QEMU_opts
-qemu_arm = $(call runqemu,${QEMUBINDIR}/qemu-system-arm,${1},${2},${3},${4},${KERNELOPTS} ${5},${6})
+# ${1}=Machine_type ${2}=kerneldir ${3}=RAM ${4}=rootfs ${5}=Kernel_opts ${6}=QEMU_opts
+qemu_arm = $(call runqemu,${QEMUBINDIR}/qemu-system-arm,${1},${2}/arch/arm/boot/zImage,${3},${4},${KERNELOPTS} ${5},${6})
+qemu_arm2 = $(call runqemu,${QEMUBINDIR}/qemu-system-arm,${1},${2},${3},${4},${KERNELOPTS} ${5},${6})
 
 arm-help:
 	@echo

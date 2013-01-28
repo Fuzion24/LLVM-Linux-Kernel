@@ -25,38 +25,45 @@
 export LANG=C
 export LC_ALL=C
 
-INSTALLDIR=$1 ; shift
 EXTRAFLAGS=$*
 
-MARCH=${MARCH:-armv7-a}
-MFLOAT=${MFLOAT:-"-mfloat-abi=hard -mfpu=neon"}
-export CROSS_COMPILE=${HOST}-
-
 # Use clang by default
-USECLANG=${USECLANG:-1}
-if [ $USECLANG -eq "1" ]; then
-	export PATH="$INSTALLDIR/bin:$PATH"
-	CLANGFLAGS="-march=$MARCH $MFLOAT -fno-builtin -Qunused-arguments -Wno-asm-operand-widths -Xassembler -mno-warn-deprecated $EXTRAFLAGS"
-	CC="$INSTALLDIR/bin/clang -target $HOST_TRIPLE -gcc-toolchain $ARM_CROSS_GCC_TOOLCHAIN $CLANGFLAGS"
-	HOSTCC="gcc"
-
-	# The gcc toolchain for assembler and linker must be defined
-	# even if Clang is being used until LLVM has its own linker
-	export LD=${CROSS_COMILE}ld
-else
-	export CC=${CROSS_COMPILE}gcc
+if [ -z "$USEGCC" ]; then
+	CC="clang -gcc-toolchain $COMPILER_PATH" # $CLANGFLAGS"
 fi
 
 JOBS=${JOBS:-`getconf _NPROCESSORS_ONLN`}
-if [ -z "$JOBS" ]; then
-  JOBS=2
-fi
+[ -n "$JOBS" ] || JOBS=2
 
-echo "export PATH=$PATH"
-echo make CONFIG_DEBUG_SECTION_MISMATCH=y CONFIG_DEBUG_INFO=1 \
-	ARCH=arm KALLSYMS_EXTRA_PASS=1 CROSS_COMPILE=$CROSS_COMPILE \
-	CC="$CC" ${HOSTCC:+HOSTCC=$HOSTCC} ${JOBS:+-j$JOBS} $KERNEL_MAKE_TARGETS
-set -e
-make CONFIG_DEBUG_SECTION_MISMATCH=y CONFIG_DEBUG_INFO=1 \
-	ARCH=arm KALLSYMS_EXTRA_PASS=1 CROSS_COMPILE=$CROSS_COMPILE \
-	CC="$CC" ${HOSTCC:+HOSTCC=$HOSTCC} ${JOBS:+-j$JOBS} $KERNEL_MAKE_TARGETS
+CCOPTS="CONFIG_DEBUG_SECTION_MISMATCH=y CONFIG_DEBUG_INFO=1 ${JOBS:+-j$JOBS} $MAKE_FLAGS $EXTRAFLAGS"
+#CCOPTS+=" KALLSYMS_EXTRA_PASS=1"
+
+function build_env() {
+	echo "---------------------------------------------------------------------"
+	echo Build environment
+	echo "---------------------------------------------------------------------"
+	echo $0 $INSTALLDIR $*
+	echo "---------------------------------------------------------------------"
+	which gcc clang
+	echo "ARCH=$ARCH"
+	echo "ARM_CROSS_GCC_TOOLCHAIN=$ARM_CROSS_GCC_TOOLCHAIN"
+	echo "CC=$CC"
+	echo "COMPILER_PATH=$COMPILER_PATH"
+	echo "CROSS_COMPILE=$CROSS_COMPILE"
+	echo "HOST=$HOST"
+	echo "HOST_TRIPLE=$HOST_TRIPLE"
+	echo "JOBS=$JOBS"
+	echo "KBUILD_OUTPUT=$KBUILD_OUTPUT"
+	echo "LD=$LD"
+	echo "MARCH=$MARCH"
+	echo "MFLOAT=$MFLOAT"
+	echo "PATH=$PATH"
+	echo "USE_CCACHE=$USE_CCACHE"
+	echo "V=$V"
+	echo "---------------------------------------------------------------------"
+	echo make $CCOPTS ${ARCH:+ARCH=$ARCH} ${CROSS_COMPILE:+CROSS_COMPILE=$CROSS_COMPILE} ${CC:+CC="$CC"} $KERNEL_MAKE_TARGETS
+}
+build_env
+[ -z "$MAKE_KERNEL_STOP" ] || exit 1
+
+make $CCOPTS ${ARCH:+ARCH=$ARCH} ${CROSS_COMPILE:+CROSS_COMPILE=$CROSS_COMPILE} ${CC:+CC="$CC"} $KERNEL_MAKE_TARGETS

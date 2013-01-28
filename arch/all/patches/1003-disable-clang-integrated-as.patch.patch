@@ -16,19 +16,14 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
  Makefile |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Makefile b/Makefile
-index af037cf..c56fc2a 100644
---- a/Makefile
-+++ b/Makefile
-@@ -376,7 +376,7 @@ KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
+--- linux.orig/Makefile
++++ linux/Makefile
+@@ -376,7 +381,7 @@
  		   -fno-delete-null-pointer-checks
  KBUILD_AFLAGS_KERNEL :=
  KBUILD_CFLAGS_KERNEL :=
 -KBUILD_AFLAGS   := -D__ASSEMBLY__
-+KBUILD_AFLAGS   := -D__ASSEMBLY__ -no-integrated-as
++KBUILD_AFLAGS   := -D__ASSEMBLY__ $(call cc-option,-no-integrated-as,)
  KBUILD_AFLAGS_MODULE  := -DMODULE
  KBUILD_CFLAGS_MODULE  := -DMODULE
  KBUILD_LDFLAGS_MODULE := -T $(srctree)/scripts/module-common.lds
--- 
-1.7.10.4
-
