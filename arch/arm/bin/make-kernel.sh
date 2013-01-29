@@ -36,7 +36,9 @@ JOBS=${JOBS:-`getconf _NPROCESSORS_ONLN`}
 [ -n "$JOBS" ] || JOBS=2
 
 CCOPTS="CONFIG_DEBUG_SECTION_MISMATCH=y CONFIG_DEBUG_INFO=1 ${JOBS:+-j$JOBS} $MAKE_FLAGS $EXTRAFLAGS"
+CCOPTS+=" CONFIG_NO_ERROR_ON_MISMATCH=y"
 #CCOPTS+=" KALLSYMS_EXTRA_PASS=1"
+CCOPTS+=" ${ARCH:+ARCH=$ARCH} ${CROSS_COMPILE:+CROSS_COMPILE=$CROSS_COMPILE}"
 
 function build_env() {
 	echo "---------------------------------------------------------------------"
@@ -45,25 +47,27 @@ function build_env() {
 	echo $0 $INSTALLDIR $*
 	echo "---------------------------------------------------------------------"
 	which gcc clang
-	echo "ARCH=$ARCH"
-	echo "ARM_CROSS_GCC_TOOLCHAIN=$ARM_CROSS_GCC_TOOLCHAIN"
-	echo "CC=$CC"
-	echo "COMPILER_PATH=$COMPILER_PATH"
-	echo "CROSS_COMPILE=$CROSS_COMPILE"
-	echo "HOST=$HOST"
-	echo "HOST_TRIPLE=$HOST_TRIPLE"
-	echo "JOBS=$JOBS"
-	echo "KBUILD_OUTPUT=$KBUILD_OUTPUT"
-	echo "LD=$LD"
-	echo "MARCH=$MARCH"
-	echo "MFLOAT=$MFLOAT"
-	echo "PATH=$PATH"
-	echo "USE_CCACHE=$USE_CCACHE"
-	echo "V=$V"
+	echo "export ARCH=$ARCH"
+	echo "export ARM_CROSS_GCC_TOOLCHAIN=$ARM_CROSS_GCC_TOOLCHAIN"
+	echo "export CC=$CC"
+	echo "export CFLAGS=$CFLAGS"
+	echo "export COMPILER_PATH=$COMPILER_PATH"
+	echo "export CROSS_COMPILE=$CROSS_COMPILE"
+	echo "export HOST=$HOST"
+	echo "export HOST_TRIPLE=$HOST_TRIPLE"
+	echo "export JOBS=$JOBS"
+	echo "export KBUILD_OUTPUT=$KBUILD_OUTPUT"
+	echo "export LD=$LD"
+	echo "export MARCH=$MARCH"
+	echo "export MFLOAT=$MFLOAT"
+	echo "export PATH=$PATH"
+	echo "export USE_CCACHE=$USE_CCACHE"
+	echo "export V=$V"
 	echo "---------------------------------------------------------------------"
-	echo make $CCOPTS ${ARCH:+ARCH=$ARCH} ${CROSS_COMPILE:+CROSS_COMPILE=$CROSS_COMPILE} ${CC:+CC="$CC"} $KERNEL_MAKE_TARGETS
+	$CC -print-file-name=include
+	echo make $CCOPTS ${CC:+CC=\"$CC\"} ${CFLAGS:+CFLAGS_KERNEL=\"$CFLAGS\"} ${CFLAGS:+CFLAGS_MODULE=\"$CFLAGS\"} $KERNEL_MAKE_TARGETS
 }
 build_env
 [ -z "$MAKE_KERNEL_STOP" ] || exit 1
 
-make $CCOPTS ${ARCH:+ARCH=$ARCH} ${CROSS_COMPILE:+CROSS_COMPILE=$CROSS_COMPILE} ${CC:+CC="$CC"} $KERNEL_MAKE_TARGETS
+make $CCOPTS ${CC:+CC="$CC"} ${CFLAGS:+CFLAGS_KERNEL="$CFLAGS"} ${CFLAGS:+CFLAGS_MODULE="$CFLAGS"} $KERNEL_MAKE_TARGETS
