@@ -117,6 +117,7 @@ qemu-raze: qemu-clean-all
 qemu-sync: ${QEMUSTATE}/qemu-fetch
 	@$(call banner, "Updating QEMU...")
 	@${MAKE} qemu-clean
+	@$(call check_llvmlinux_commit,${CONFIG})
 	-@if [ -n "${QEMU_COMMIT}" ] ; then \
 		$(call banner, "Syncing commit-ish QEMU...") ; \
 		$(call gitcheckout,${QEMUSRCDIR},${QEMU_BRANCH},${QEMU_COMMIT}) ; \

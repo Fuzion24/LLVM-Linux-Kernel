@@ -68,6 +68,15 @@ unpatch	= [ ! -d ${1} ] || (cd ${1} && if [ -e patches ] && $(call banner,"Unapp
 apply_patch = (cd ${1} && cat ${2} | patch -s -p1)
 
 ##############################################################################
+# Check LLVMLinux commit macros used by all subsystems
+check_llvmlinux_commit = [ -z "${FORCE_LLVMLINUX_COMMIT}" ] \
+	|| ( $(call banner,"Forcing LLVMLinux commit specified at ${1}") \
+	&& [ "${LLVMLINUX_COMMIT}" = "`(cd ${TOPDIR} && git rev-parse HEAD)`" ] \
+	|| $(call check_llvmlinux_commit_error_msg,${1}))
+check_llvmlinux_commit_error_msg = (echo "Current HEAD does not match with checkpoint ${1}. Please run:" \
+	&& echo "    git checkout ${LLVMLINUX_COMMIT}" && false)
+
+##############################################################################
 # Git macros used by all subsystems
 gitclone = [ -d ${2}/.git ] || (rm -rf ${2} && git clone ${1} ${2})
 gitcheckout = (cd ${1} && git checkout ${2} && ([ -z "${3}" ] || git pull && git checkout ${3}))
