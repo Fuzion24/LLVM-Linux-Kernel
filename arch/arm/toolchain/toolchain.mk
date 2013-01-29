@@ -22,7 +22,7 @@
 ##############################################################################
 
 # The following exports are required for make_kernel.sh
-export COMPILER_PATH HOST HOST_TRIPLE ARM_CROSS_GCC_TOOLCHAIN
+export CFLAGS COMPILER_PATH HOST HOST_TRIPLE ARM_CROSS_GCC_TOOLCHAIN
 
 ARCH_ARM_TMPDIR	= ${ARCH_ARM_DIR}/toolchain/tmp
 TMPDIRS		+= ${ARCH_ARM_TMPDIR}

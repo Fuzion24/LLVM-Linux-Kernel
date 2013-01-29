@@ -40,6 +40,7 @@ ANDROID_GCC	= ${ANDROID_CC_BINDIR}/${CROSS_COMPILE}gcc
 CC_FOR_BUILD	= ${ANDROID_GCC}
 
 ARM_CROSS_GCC_TOOLCHAIN = ${ANDROID_CC_DIR}
+CFLAGS		= -isystem ${ANDROID_DIR}/arm-linux-androideabi-4.6/lib/gcc/arm-linux-androideabi/4.6.x-google/include
 
 # Add path so that ${CROSS_COMPILE}${CC} is resolved
 PATH		:= ${ANDROID_CC_BINDIR}:${PATH}
@@ -48,23 +49,22 @@ PATH		:= ${ANDROID_CC_BINDIR}:${PATH}
 ${ANDROID_DIR}:
 	@mkdir -p $@
 
-android-gcc arm-cc: ${ANDROID_DIR}-gcc
-${ANDROID_DIR}-gcc: ${ANDROID_DIR}
+android-gcc arm-cc: ${ARCH_ARM_TOOLCHAIN_STATE}/android-gcc
+${ARCH_ARM_TOOLCHAIN_STATE}/android-gcc: ${ANDROID_DIR}
 	@if [ ! `uname -i | grep -v i386` ]; then \
 		echo "Android compiler only supported on x86_64"; \
 		echo "set CROSS_ARM_TOOLCHAIN=codesourcery for i386"; \
 		false; \
 	fi
 	@$(call banner,Installing Android compiler...)
-	(rm -rf ${ANDROID_CC_DIR})
-	(cd ${ANDROID_DIR} && git clone ${ANDROID_SDK_GIT} -b ${ANDROID_SDK_BRANCH})
+	@$(call gitclone,${ANDROID_SDK_GIT},${ANDROID_CC_DIR},-b ${ANDROID_SDK_BRANCH})
 	$(call state,$@)
 
-android-gcc-sync: ${ANDROID_DIR}-gcc
+android-gcc-sync: ${ARCH_ARM_TOOLCHAIN_STATE}/android-gcc
 	@$(call banner,Updating Android compiler...)
 	(cd ${ANDROID_CC_DIR} && git pull && git checkout ${ANDROID_SDK_BRANCH})
 
-state/arm-cc: ${ANDROID_DIR}-gcc
+state/arm-cc: ${ARCH_ARM_TOOLCHAIN_STATE}/android-gcc
 	$(call state,$@)
 
 android-gcc-clean arm-cc-clean:
@@ -72,6 +72,6 @@ android-gcc-clean arm-cc-clean:
 	@rm -f state/arm-cc ${ARCH_ARM_TOOLCHAIN_STATE}/android-gcc
 	@rm -rf ${LINARO_CC_DIR}
 
-arm-cc-version: ${ANDROID_DIR}-gcc
+arm-cc-version: ${ARCH_ARM_TOOLCHAIN_STATE}/android-gcc
 	@${ANDROID_GCC} --version | head -1
 
