@@ -19,8 +19,7 @@
 0032-Fix-include-asm-strings-for-compilation-with-clang.patch
 0033-Various-fixes-in-arch-x86-include-asm.patch
 0034-CFI_STARTPROC32-takes-a-parameter-which-has-no-defau.patch
-0035-Fix-assembly-for-KVM-build-with-clang.patch
 0036-Various-fixes-to-arch-x86-lib-for-compilation-with-c.patch
-0038-Fix-location-of-in-script.patch
+0037-CHECK-fixes-to-realmode-for-compilation-with-clang.patch
 0039-Workaround-build-error-with-clang.patch
 0052-Revert-x86-nmi-Clean-up-register_nmi_handler-usage.patch
