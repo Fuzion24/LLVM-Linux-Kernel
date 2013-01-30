@@ -230,7 +230,7 @@ raze-all: tmp-mrproper
 	@$(call banner,All external sources razed!)
 
 ##############################################################################
-sync-all:
+sync-all: prep
 	@$(call banner,Syncing everything...)
 	${MAKE} ${SYNC_TARGETS}
 	@$(call banner,All external sources synced!)
