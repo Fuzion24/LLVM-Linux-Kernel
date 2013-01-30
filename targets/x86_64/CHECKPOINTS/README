@@ -1,6 +1,3 @@
-config_x86_64             is a working distro config
-config_x86_64_default     is minimal and boots to shell
-
 CHECKPOINT/               is a folder containing known working configurations
 
 Usage:
