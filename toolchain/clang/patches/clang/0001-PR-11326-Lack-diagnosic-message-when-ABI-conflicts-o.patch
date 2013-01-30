@@ -10,11 +10,9 @@ ABI value.
  lib/Frontend/CompilerInvocation.cpp          |   23 +++++++++++++++++++++--
  2 files changed, 22 insertions(+), 2 deletions(-)
 
-diff --git a/include/clang/Basic/DiagnosticCommonKinds.td b/include/clang/Basic/DiagnosticCommonKinds.td
-index f859287..ee0e7ca 100644
---- a/include/clang/Basic/DiagnosticCommonKinds.td
-+++ b/include/clang/Basic/DiagnosticCommonKinds.td
-@@ -101,6 +101,7 @@ def err_target_unknown_cpu : Error<"unknown target CPU '%0'">;
+--- clang.orig/include/clang/Basic/DiagnosticCommonKinds.td
++++ clang/include/clang/Basic/DiagnosticCommonKinds.td
+@@ -107,6 +107,7 @@
  def err_target_unknown_abi : Error<"unknown target ABI '%0'">;
  def err_target_unknown_cxxabi : Error<"unknown C++ ABI '%0'">;
  def err_target_invalid_feature : Error<"invalid target feature '%0'">;
@@ -22,11 +20,9 @@ index f859287..ee0e7ca 100644
  
  // Source manager
  def err_cannot_open_file : Error<"cannot open file '%0': %1">, DefaultFatal;
-diff --git a/lib/Frontend/CompilerInvocation.cpp b/lib/Frontend/CompilerInvocation.cpp
-index 6d6dbfc..7037b67 100644
---- a/lib/Frontend/CompilerInvocation.cpp
-+++ b/lib/Frontend/CompilerInvocation.cpp
-@@ -2277,7 +2277,8 @@ static void ParsePreprocessorOutputArgs(PreprocessorOutputOptions &Opts,
+--- clang.orig/lib/Frontend/CompilerInvocation.cpp
++++ clang/lib/Frontend/CompilerInvocation.cpp
+@@ -1444,7 +1444,8 @@
    Opts.RewriteIncludes = Args.hasArg(OPT_frewrite_includes);
  }
  
@@ -36,7 +32,7 @@ index 6d6dbfc..7037b67 100644
    using namespace options;
    Opts.ABI = Args.getLastArgValue(OPT_target_abi);
    Opts.CXXABI = Args.getLastArgValue(OPT_cxx_abi);
-@@ -2289,6 +2290,24 @@ static void ParseTargetArgs(TargetOptions &Opts, ArgList &Args) {
+@@ -1456,6 +1457,24 @@
    // Use the default target triple if unspecified.
    if (Opts.Triple.empty())
      Opts.Triple = llvm::sys::getDefaultTargetTriple();
@@ -61,15 +57,12 @@ index 6d6dbfc..7037b67 100644
  }
  
  //
-@@ -2351,7 +2370,7 @@ bool CompilerInvocation::CreateFromArgs(CompilerInvocation &Res,
-   FileManager FileMgr(Res.getFileSystemOpts());
+@@ -1519,7 +1538,7 @@
    ParsePreprocessorArgs(Res.getPreprocessorOpts(), *Args, FileMgr, Diags);
-   ParsePreprocessorOutputArgs(Res.getPreprocessorOutputOpts(), *Args);
+   ParsePreprocessorOutputArgs(Res.getPreprocessorOutputOpts(), *Args,
+                               Res.getFrontendOpts().ProgramAction);
 -  ParseTargetArgs(Res.getTargetOpts(), *Args);
 +  ParseTargetArgs(Res.getTargetOpts(), *Args, Diags);
  
    return Success;
  }
--- 
-1.7.8.3
-
