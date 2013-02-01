@@ -24,12 +24,6 @@
 
 export JOBS
 
-# Look to see if we have a tmpfs mounted. If so use it. Use default if provided
-ifndef ${BUILDROOT}
-BUILDROOT	:= $(shell (mount | egrep "tmpfs on ${TOPDIR}.*/build .* tmpfs" \
-			|| echo . . ${TOPDIR}) | head -1 | awk '{print $$3}')
-endif
-
 TOOLCHAIN	= ${TOPDIR}/toolchain
 TOOLSDIR	= ${TOPDIR}/tools
 ARCHDIR		= ${TOPDIR}/arch
@@ -137,11 +131,12 @@ list-jobs:
 	@echo "-j${JOBS}"
 
 # The order of these includes is important
+include ${TOPDIR}/arch/all/tmpfs-build.mk
 include ${TOOLCHAIN}/toolchain.mk
 
 ##############################################################################
 help:
-	@${MAKE} --silent ${HELP_TARGETS}
+	@${MAKE} --silent ${HELP_TARGETS} | less
 
 ##############################################################################
 list-targets:
@@ -240,21 +235,3 @@ tmp-mrproper:
 	@$(call banner,Scrubbing tmp dirs...)
 	rm -rf $(addsuffix /*,${TMPDIRS})
 	@$(call banner,All tmp dirs very clean!)
-
-##############################################################################
-list-buildroot:
-	@echo BUILDROOT=${BUILDROOT}
-tmpfs-build-setup:
-	@mkdir -p ${TOPDIR}/build
-	@mount | egrep -q "tmpfs on ${TOPDIR}/build .* tmpfs" \
-		&& echo "${TOPDIR}/build already mounted" \
-		|| ( sudo mount -o uid=`id -u`,gid=`id -g`,mode=775 -t tmpfs tmpfs ${TOPDIR}/build ; \
-			echo "The build will automatically look for this build directory." ; \
-			echo "However, if you want to force the use of this directory," ; \
-			echo "run the following once before building:" ; \
-			echo ; \
-			echo "export BUILDROOT=${TOPDIR}/build" )
-tmpfs-build-teardown:
-	-@[ ! -d ${TOPDIR}/build ] || sudo umount ${TOPDIR}/build
-	@[ ! -d ${TOPDIR}/build ] || rmdir ${TOPDIR}/build
-tmpfs-build-remount tmpfs-build-clean tmpfs-clean : tmpfs-build-teardown tmpfs-build-setup
