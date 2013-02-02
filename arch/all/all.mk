@@ -262,6 +262,7 @@ kernel-gcc-patch-applied:
 #############################################################################
 kernel-configure: state/kernel-configure
 state/kernel-configure: state/kernel-patch
+	@make -s build-dep-check
 	@$(call banner, "Configuring kernel...")
 	@mkdir -p ${KERNEL_BUILD}
 	@cp ${KERNEL_CFG} ${KERNEL_BUILD}/.config
@@ -271,10 +272,18 @@ state/kernel-configure: state/kernel-patch
 #############################################################################
 kernel-menuconfig: state/kernel-configure
 	${KERNEL_VAR} make -C ${KERNELDIR} ${MAKE_FLAGS} menuconfig
+	@$(call leavestate,state,kernel-build)
+
+kernel-cmpconfig: state/kernel-configure
+	diff -Nau ${KERNEL_CFG} ${KERNEL_BUILD}/.config
+
+kernel-cpconfig: state/kernel-configure
+	@cp -v ${KERNEL_BUILD}/.config ${KERNEL_CFG}
 
 #############################################################################
 kernel-gcc-configure: state/kernel-gcc-configure
 state/kernel-gcc-configure: state/kernel-gcc-patch
+	@make -s build-dep-check
 	@$(call banner, "Configuring kernel (for gcc build)...")
 	@mkdir -p ${KERNELGCC_BUILD}
 	@cp ${KERNEL_CFG} ${KERNELGCC_BUILD}/.config

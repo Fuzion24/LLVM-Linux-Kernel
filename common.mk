@@ -131,6 +131,7 @@ list-jobs:
 	@echo "-j${JOBS}"
 
 # The order of these includes is important
+include ${TOPDIR}/arch/all/dependency.mk
 include ${TOPDIR}/arch/all/tmpfs-build.mk
 include ${TOOLCHAIN}/toolchain.mk
 

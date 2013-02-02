@@ -28,6 +28,8 @@ LINARORELEASEURL	= http://releases.linaro.org/images/12.03/oneiric/nano
 NANOBOARD		= ${BOARD}-nano
 NANOIMG			= ${NANOBOARD}.img
 
+DEBDEP_EXTRAS		+= linaro-image-tools
+
 get_linaro_prebuilt	= mkdir -p $(dir ${1}) && wget -P $(dir ${1}) -c ${LINARORELEASEURL}/$(notdir ${1})
 
 TARGETS			+= 

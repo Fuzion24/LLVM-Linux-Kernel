@@ -30,6 +30,9 @@ LLVMINSTALLDIR	:= ${LLVMTOP}/install
 LLVMSTATE	= ${LLVMTOP}/state
 LLVMPATCHES	= ${LLVMTOP}/patches
 
+DEBDEP		+= cmake flex g++ git-svn subversion zlib1g-dev
+RPMDEP		+= cmake flex gcc-g++ git-svn subversion zlib-devel
+
 # The following export is needed by clang_wrap.sh
 export LLVMINSTALLDIR
 
@@ -197,6 +200,7 @@ llvmconfig = $(call banner, "Configure ${1}...") ; \
 ##############################################################################
 llvm-configure: ${LLVMSTATE}/llvm-configure
 ${LLVMSTATE}/llvm-configure: ${LLVMSTATE}/llvm-patch
+	@make -s build-dep-check
 	@$(call llvmconfig,LLVM,${LLVMBUILDDIR},${LLVMINSTALLDIR},,${LLVMDIR})
 	$(call state,$@,llvm-build)
 

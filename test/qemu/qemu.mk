@@ -34,6 +34,9 @@ QEMUBINDIR	= ${QEMUINSTALLDIR}/bin
 
 QEMU_TARGETS	= qemu qemu-[fetch,configure,build,clean,sync] qemu-patch-applied qemu-version
 
+DEBDEP		+= libfdt-dev libglib2.0-dev
+RPMDEP		+= 
+
 TARGETS_TEST		+= ${QEMU_TARGETS}
 CLEAN_TARGETS		+= qemu-clean
 FETCH_TARGETS		+= qemu-fetch
@@ -84,6 +87,7 @@ qemu-patch-applied: %-patch-applied:
 
 qemu-configure: ${QEMUSTATE}/qemu-configure
 ${QEMUSTATE}/qemu-configure: ${QEMUSTATE}/qemu-patch
+	@make -s build-dep-check
 	@$(call banner, "Configure QEMU...")
 	@mkdir -p ${QEMUBUILDDIR}
 	(cd ${QEMUBUILDDIR} && ${QEMUSRCDIR}/configure \
