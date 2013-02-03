@@ -61,6 +61,7 @@ function build_env() {
 	echo "export MARCH=$MARCH"
 	echo "export MFLOAT=$MFLOAT"
 	echo "export PATH=$PATH"
+	echo "export TMPDIR=$TMPDIR"
 	echo "export USE_CCACHE=$USE_CCACHE"
 	echo "export V=$V"
 	echo "---------------------------------------------------------------------"
