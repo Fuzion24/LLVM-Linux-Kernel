@@ -32,7 +32,7 @@
 #   - KERNEL_CFG
 #   - KERNEL_PATCH_DIR += ${PATCHDIR} ${PATCHDIR}/${KERNEL_REPO_PATCHES}
 
-export V
+export TMPDIR V
 
 ARCH_ALL_DIR	= ${ARCHDIR}/all
 ARCH_ALL_BINDIR	= ${ARCH_ALL_DIR}/bin
@@ -353,27 +353,13 @@ kernel-shared-sync:
 kernel-sync: state/kernel-fetch kernel-shared-sync kernel-clean
 	@$(call banner, "Syncing kernel...")
 	@$(call check_llvmlinux_commit,${CONFIG})
-	@if [ -n "${KERNEL_COMMIT}" ] ; then \
-		$(call gitcheckout,${KERNELDIR},${KERNEL_BRANCH},${KERNEL_COMMIT}) ; \
-	elif [ -n "${KERNEL_TAG}" ] ; then \
-		$(call gitmove,${KERNELDIR},${KERNEL_TAG},tag-${KERNEL_TAG}) ; \
-		$(call gitpull,${KERNELDIR},${KERNEL_TAG}) ; \
-	else \
-		$(call gitpull,${KERNELDIR},${KERNEL_BRANCH}) ; \
-	fi
+	@$(call gitsync,${KERNELDIR},${KERNEL_COMMIT},${KERNEL_BRANCH},${KERNEL_TAG})
 
 #############################################################################
 kernel-gcc-sync: state/kernel-gcc-fetch kernel-sync kernel-gcc-clean
 	@$(call banner, "Syncing gcc kernel...")
 	@$(call check_llvmlinux_commit,${CONFIG})
-	@if [ -n "${KERNEL_COMMIT}" ] ; then \
-		$(call gitcheckout,${KERNELGCC},${KERNEL_BRANCH},${KERNEL_COMMIT}) ; \
-	elif [ -n "${KERNEL_TAG}" ] ; then \
-		$(call gitmove,${KERNELGCC},${KERNEL_TAG},tag-${KERNEL_TAG}) ; \
-		$(call gitpull,${KERNELGCC},${KERNEL_TAG}) ; \
-	else \
-		$(call gitpull,${KERNELGCC},${KERNEL_BRANCH}) ; \
-	fi
+	@$(call gitsync,${KERNELGCC},${KERNEL_COMMIT},${KERNEL_BRANCH},${KERNEL_TAG})
 
 #############################################################################
 check-tmpfs = if [ "${1}" == "${2}" ] ; then \

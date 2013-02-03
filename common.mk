@@ -84,6 +84,15 @@ else
 optional_gitreset =
 endif
 
+gitsync = if [ -n "${2}" ] ; then \
+		$(call gitcheckout,${1},${3},${2}) ; \
+	elif [ -n "${4}" ] ; then \
+		$(call gitmove,${1},${4},tag-${4}) ; \
+		$(call gitpull,${1},${4}) ; \
+	else \
+		$(call gitpull,${1},${3}) ; \
+	fi
+
 ##############################################################################
 # Settings macros used by all subsystems
 prsetting = (printf "%-24s= %s\n" "${1}" "${2}" | unexpand --all)
