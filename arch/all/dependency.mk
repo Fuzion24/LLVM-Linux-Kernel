@@ -20,11 +20,12 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
-DEBDEP		= build-essential git patch quilt sparse
-DEBDEP_32	= libc6:i386 libncurses5:i386
-DEBDEP_EXTRAS	=
+DEBDEP		+= build-essential git patch quilt sparse
+DEBDEP_32	+= libc6:i386 libncurses5:i386
+DEBDEP_EXTRAS	+= sparse
 
-RPMDEP		= gcc git make patch quilt sparse
+RPMDEP		+= gcc git make patch quilt
+RPMDEP_EXTRAS	+= sparse
 
 ##############################################################################
 isdeb		= if [ -f /etc/debian_version ] ; then
@@ -80,7 +81,9 @@ build-dep-check-unkown:
 build-dep-install-unkown:
 	@echo "This build system doesn't know how to install packages for this platform"
 
-DEPMSG	= "Missing build dependencies:"
+DEPMSG		= "Missing build dependencies:"
+DEPMSG_32	= "You likely need to install..."
+DEPMSG_EXTRAS	= "Not necessary. But you may want..."
 
 ##############################################################################
 debdep	= DEBS=`dpkg -l $(1) | awk '/^[pu]/ {print $$2}'` ; \
@@ -90,8 +93,8 @@ build-dep-check-deb:
 build-dep-install-deb:
 	@[ -n "${DEPLIST}" ] && sudo apt-get install ${DEPLIST} || echo "Already installed"
 build-dep-install-deb-extras:
-	@[ `uname -p | grep -c 64` -eq 0 ] || $(call debdep,${DEBDEP_32},You likely need to install...)
-	@$(call debdep,${DEBDEP_EXTRAS},Not necessary. But you may want...) || true
+	@[ `uname -p | grep -c 64` -eq 0 ] || $(call debdep,${DEBDEP_32},${DEPMSG_32})
+	@$(call debdep,${DEBDEP_EXTRAS},${DEPMSG_EXTRAS}) || true
 	
 ##############################################################################
 rpmdep	= RPMS=`rpm -q $(1) | awk '/is not installed/ {print $$2}'` ; \
@@ -100,14 +103,17 @@ build-dep-check-rpm:
 	@$(call rpmdep,${RPMDEP},${DEPMSG})
 build-dep-install-rpm:
 	[ -n "${DEPLIST}" ] && sudo yum install ${DEPLIST} || echo "Already installed"
+build-dep-install-rpm-extras:
+	@[ `uname -p | grep -c 64` -eq 0 ] || $(call rpmdep,${RPMDEP_32},${DEPMSG_32})
+	@$(call rpmdep,${RPMDEP_EXTRAS},${DEPMSG_EXTRAS}) || true
 
 ##############################################################################
 # Deprecated
 build-dep-old:
 	@$(call isdeb) \
-		$(call debdep,${DEBDEP},You must install...) ; \
-		[ `uname -p | grep -c 64` -eq 0 ] || $(call debdep,${DEBDEP_32},You likely need to install...) ; \
-		$(call debdep,${DEBDEP_EXTRAS},Not necessary. But you may want...) || true ; \
+		$(call debdep,${DEBDEP},${DEPMSG}) ; \
+		[ `uname -p | grep -c 64` -eq 0 ] || $(call debdep,${DEBDEP_32},${DEPMSG_32}) ; \
+		$(call debdep,${DEBDEP_EXTRAS},${DEPMSG_EXTRAS}) || true ; \
 	$(call isrpm) \
 		rpm -q $(RPMDEP) >/dev/null 2>&1 || ( echo "sudo yum install $(RPMDEP)"; false ) ; \
 	$(call otherwise,"This build system doesn't know how check for dependencies on this platform")

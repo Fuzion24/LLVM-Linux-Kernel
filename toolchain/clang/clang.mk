@@ -31,7 +31,7 @@ LLVMSTATE	= ${LLVMTOP}/state
 LLVMPATCHES	= ${LLVMTOP}/patches
 
 DEBDEP		+= cmake flex g++ git-svn subversion zlib1g-dev
-RPMDEP		+= cmake flex gcc-g++ git-svn subversion zlib-devel
+RPMDEP		+= cmake flex subversion zlib-devel
 
 # The following export is needed by clang_wrap.sh
 export LLVMINSTALLDIR
