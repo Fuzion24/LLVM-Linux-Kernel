@@ -28,8 +28,10 @@ BUILDROOTDIR=${TESTDIR}/buildroot
 INITRAMFSDIR=${TESTDIR}/initramfs
 LTPDIR=${TESTDIR}/ltp
 QEMUDIR=${TESTDIR}/qemu
+UNITDIR=${TESTDIR}/unit
 
 include ${BUILDROOTDIR}/buildroot.mk
 include ${INITRAMFSDIR}/initramfs.mk
 include ${LTPDIR}/ltp.mk
 include ${QEMUDIR}/qemu.mk
+include ${UNITDIR}/unit.mk
