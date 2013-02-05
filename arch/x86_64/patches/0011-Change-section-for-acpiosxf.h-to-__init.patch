@@ -1,0 +1,36 @@
+From 90bc8fc333196bb41db19a5b46a8f6a0d29bec27 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
+Date: Wed, 14 Nov 2012 11:22:05 +0100
+Subject: [PATCH 11/51] Change section for acpiosxf.h to __init .
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Author:  PaX Team <pageexec at freemail.hu>
+ML-Post: http://lists.cs.uiuc.edu/pipermail/llvm-commits/Week-of-Mon-20120507/142707.html
+URL:     http://llvm.linuxfoundation.org
+
+Merge:   Jan-Simon Möller <dl9pf at gmx.de>
+
+Description:
+Change section for acpiosxf.h to __init .
+---
+ include/acpi/acpiosxf.h |    2 +-
+ 1 Datei geändert, 1 Zeile hinzugefügt(+), 1 Zeile entfernt(-)
+
+diff --git a/include/acpi/acpiosxf.h b/include/acpi/acpiosxf.h
+index 1222ba9..5da61ca 100644
+--- a/include/acpi/acpiosxf.h
++++ b/include/acpi/acpiosxf.h
+@@ -78,7 +78,7 @@ struct acpi_signal_fatal_info {
+ /*
+  * OSL Initialization and shutdown primitives
+  */
+-acpi_status __initdata acpi_os_initialize(void);
++acpi_status __init acpi_os_initialize(void);
+ 
+ acpi_status acpi_os_terminate(void);
+ 
+-- 
+1.7.10.4
+

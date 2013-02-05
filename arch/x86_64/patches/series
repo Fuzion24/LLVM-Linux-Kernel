@@ -23,3 +23,7 @@
 0037-CHECK-fixes-to-realmode-for-compilation-with-clang.patch
 0039-Workaround-build-error-with-clang.patch
 0052-Revert-x86-nmi-Clean-up-register_nmi_handler-usage.patch
+0003-Add-fcatch-undefined-behavior-for-build-with-clang.patch
+0011-Change-section-for-acpiosxf.h-to-__init.patch
+0040-Change-comparison-statement-for-build-with-clang.patch
+0041-Fix-statement-in-i915-driver.patch

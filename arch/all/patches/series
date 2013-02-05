@@ -1,6 +1,5 @@
 0001-Toplevel-Makefile-adustments-to-compile-with-clang.patch
 0002-Adapt-warnings-for-compilation-with-clang.patch
-0003-Add-fcatch-undefined-behavior-for-build-with-clang.patch
 0004-Add-fcatch-undefined-behavior-for-build-of-dmi_scan..patch
 0005-Add-noinline_for_stack-to-sound-pci-ac97-ac97_codec..patch
 0006-Add-noinline_for_stack-to-not-core-ethtool.c.patch
@@ -8,11 +7,8 @@
 0008-Add-noinline_for_stack-to-drivers-block-loop.c.patch
 0009-Update-Documentation-dontdiff.patch
 0010-Fix-LINUX_COMPILER-definition-script-for-compilation.patch
-0011-Change-section-for-acpiosxf.h-to-__init.patch
 0012-Add-extra-checks-for-shifts-in-bitops.h.patch
 0013-Add-nobits-to-include-linux-linkage.h.patch
-0040-Change-comparison-statement-for-build-with-clang.patch
-0041-Fix-statement-in-i915-driver.patch
 0042-Fixes-to-fs-for-compilation-with-clang.patch
 0043-Fix-section-mismatch-issues-on-alias-usage.patch
 0044-Fix-bitoperation-for-compilation-with-clang.patch
