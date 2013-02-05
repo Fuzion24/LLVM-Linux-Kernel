@@ -26,7 +26,6 @@ unittests:
 	@for TEST in $(TESTS); do echo $$TEST ; done
 
 run-tests: $(KBUILDS)
-	@echo "# KBuild testcases"
 	@for TEST in $(TESTS); do \
 		RAWTEST=""; RESULT=""; \
 		for KBUILD in $(KBUILDS); do \

@@ -34,3 +34,4 @@ unittests:
 #	${CLANG} -gcc-toolchain ${LINARO_CC_DIR} -print-file-name=include
 #	${LINARO_CC_DIR} -print-file-name=include
 
+clean:
