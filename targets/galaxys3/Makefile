@@ -32,7 +32,7 @@ KERNELDIR	= ${SRCDIR}/android_kernel_samsung_d2
 KERNEL_CFG	= ${KERNELDIR}/arch/arm/configs/cyanogen_d2_defconfig
 
 #Use the branch name for the dir containing target specific patch overrides
-#KERNEL_REPO_PATCHES=${KERNEL_BRANCH}
+KERNEL_REPO_PATCHES=${KERNEL_BRANCH}
 
 EXTRAFLAGS	= 
 
@@ -49,7 +49,7 @@ TARGETS+= check-dups kernel-autopatch clean mrproper
 
 prep: state/prep
 state/prep:
-	@mkdir -p ${LOGDIR} ${TMPDIR}
+	@mkdir -p ${LOGDIR} ${TMPDIR} ${TARGETDIR}/patches
 	$(call state,$@)
 
 check-dups:
