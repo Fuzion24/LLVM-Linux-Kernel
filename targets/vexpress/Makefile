@@ -104,46 +104,50 @@ INITRAMIMG	= ${TMPDIR}/initramfs.img
 ${INITRAMIMG}:
 	$(call get_prebuilt, $@)
 
+KERNELDTB_IMG = ${TMPDIR}/kernel_dtb.img
+KERNELGCCDTB_IMG = ${TMPDIR}/kernelgcc_dtb.img
+${KERNELDTB_IMG}: state/kernel-build
+	@$(call check-tmpfs,${KERNELDIR},${KERNEL_BUILD},kernel-mrproper $^)
+	cat ${KERNEL_BUILD}/${ZIMAGE} ${KERNEL_BUILD}/${KERNEL_DTB} > $@
+${KERNELGCCDTB_IMG}: state/kernel-gcc-build
+	@$(call check-tmpfs,${KERNELGCC},${KERNELGCC_BUILD},kernel-gcc-mrproper $^)
+	cat ${KERNELGCC_BUILD}/${ZIMAGE} ${KERNELGCC_BUILD}/${KERNEL_DTB} > $@
+
 # state/fetch-initrd
-test: state/prep ${QEMUSTATE}/qemu-build state/kernel-build ${INITRAMIMG}
-	$(cat ${KERNELDIR}/${ZIMAGE} ${KERNELDIR}/${KERNEL_DTB} > ${TMPDIR}/kernel_dtb.img )
-	$(call qemu_arm,${BOARD},${TMPDIR}/kernel_dtb.img,768,/dev/ram0,rw,-initrd ${INITRAMIMG} -net none)
+test: state/prep ${QEMUSTATE}/qemu-build ${KERNELDTB_IMG} ${INITRAMIMG}
+	$(call qemu_arm,${BOARD},${KERNELDTB_IMG},768,/dev/ram0,rw,-initrd ${INITRAMIMG} -net none -sd ${BUILDROOT_IMG})
 
 # state/fetch-initrd
 test-kill: test-boot-poweroff
-test-boot-poweroff: state/prep state/kernel-build ${QEMUSTATE}/qemu-build ${INITRAMIMG}
-	@$(call check-tmpfs,${KERNELDIR},${KERNEL_BUILD},kernel-mrproper $^)
-	(cat ${KERNEL_BUILD}/${ZIMAGE} ${KERNEL_BUILD}/${KERNEL_DTB} > ${TMPDIR}/kernel_dtb.img )
-	( $(call qemu_arm,${BOARD},${TMPDIR}/kernel_dtb.img,256,/dev/ram0,rw,-initrd ${INITRAMIMG} -net none ) \
+test-boot-poweroff: state/prep ${KERNELDTB_IMG} ${QEMUSTATE}/qemu-build ${INITRAMIMG}
+	( $(call qemu_arm,${BOARD},${KERNELDTB_IMG},256,/dev/ram0,rw,-initrd ${INITRAMIMG} -net none ) \
 		| tee tmp/qemu_log ) &
 	( sleep 10 && killall -s 9 qemu-system-arm ) || exit 0
-	@grep -a "SUCCESS" tmp/qemu_log 
+	@grep -a "SUCCESS" tmp/qemu_log
 
 test-gcc-kill: test-gcc-boot-poweroff
-test-gcc-boot-poweroff: state/prep state/kernel-gcc-build ${QEMUSTATE}/qemu-build ${INITRAMIMG}
-	@$(call check-tmpfs,${KERNELGCC},${KERNELGCC_BUILD},kernel-gcc-mrproper $^)
-	(cat ${KERNELGCC_BUILD}/${ZIMAGE} ${KERNEL_BUILD}/${KERNEL_DTB} > ${TMPDIR}/kernelgcc_dtb.img )
-	( $(call qemu_arm,${BOARD},${TMPDIR}/kernelgcc_dtb.img,256,/dev/ram0,ramdisk_size=65536 rw POWEROFF,-initrd ${INITRAMIMG} -net none) \
+test-gcc-boot-poweroff: state/prep ${KERNELGCCDTB_IMG} ${QEMUSTATE}/qemu-build ${INITRAMIMG}
+	( $(call qemu_arm,${BOARD},${KERNELGCCDTB_IMG},256,/dev/ram0,ramdisk_size=65536 rw POWEROFF,-initrd ${INITRAMIMG} -net none) \
 		| tee tmp/qemu_gcc_log ) &
 	( sleep 10 && killall -s 9 qemu-system-arm ) || exit 0
-	@grep -a "SUCCESS" tmp/qemu_gcc_log 
+	@grep -a "SUCCESS" tmp/qemu_gcc_log
 
 # Create the generic initramfs, add in the kernel modules, then create the cpio
-test2: state/prep ${QEMUSTATE}/qemu-build state/kernel-build initramfs-unpacked
+test2: state/prep ${QEMUSTATE}/qemu-build ${KERNELDTB_IMG} initramfs-unpacked
 	@rm -rf ${INITBUILDFSDIR}/lib
 	(cd ${KERNELDIR} && make INSTALL_MOD_PATH=${INITBUILDFSDIR} ARCH=arm modules_install)
 	mkdir -p ${INITBUILDFSDIR}/usr/lib
 	@rm -f ${INITRAMFS}
 	@make ${INITRAMFS}
-	@$(call qemu_arm,${BOARD},${KERNELDIR}/${ZIMAGE},256,/dev/ram0,rdinit=/bootstrap,-initrd ${INITRAMFS})
+	@$(call qemu_arm,${BOARD},${KERNELDTB_IMG},256,/dev/ram0,rdinit=/bootstrap,-initrd ${INITRAMFS})
 
-test2-gcc: state/prep ${QEMUSTATE}/qemu-build state/kernel-gcc-build initramfs-unpacked
+test2-gcc: state/prep ${QEMUSTATE}/qemu-build ${KERNELGCCDTB_IMG} initramfs-unpacked
 	@rm -rf ${INITBUILDFSDIR}/lib
 	(cd ${KERNELGCC} && make INSTALL_MOD_PATH=${INITBUILDFSDIR} ARCH=arm modules_install)
 	mkdir -p ${INITBUILDFSDIR}/usr/lib
 	@rm -f ${INITRAMFS}
 	@make ${INITRAMFS}
-	@$(call qemu_arm,${BOARD},${KERNELGCC}/${ZIMAGE},256,/dev/ram0,rdinit=/bootstrap,-initrd ${INITRAMFS})
+	@$(call qemu_arm,${BOARD},${KERNELGCCDTB_IMG},256,/dev/ram0,rdinit=/bootstrap,-initrd ${INITRAMFS})
 
 # Get prebuilt vexpress image
 VEXPRESS_IMG_GZ	= ${TMPDIR}/${NANOIMG}.gz
@@ -154,13 +158,20 @@ VEXPRESS_IMG	= ${TMPDIR}/vexpress.img
 ${VEXPRESS_IMG}: ${VEXPRESS_IMG_GZ}
 	gzip -dc $< > $@
 
-test3: state/prep ${QEMUSTATE}/qemu-build state/kernel-gcc-build ${VEXPRESS_IMG}
-	@$(call qemu_arm,${BOARD},${KERNELGCC}/${ZIMAGE},256,/dev/mmcblk0p2,rootfstype=ext4 init=/bin/bash,-sd ${VEXPRESS_IMG}) ${NET}
+test3: state/prep ${QEMUSTATE}/qemu-build ${KERNELDTB_IMG} ${VEXPRESS_IMG}
+	$(call qemu_arm,${BOARD},${KERNELDTB_IMG},256,/dev/mmcblk0p2,rootfstype=ext4 init=/bin/bash,-sd ${VEXPRESS_IMG}) ${NET}
 
-BUILDROOT_IMG	= ${TMPDIR}/rootfs.squashfs
-test4: state/prep ${QEMUSTATE}/qemu-build state/kernel-build buildroot-build
-	@cp ${BUILDROOT_BUILDDIR}/images/rootfs.squashfs ${BUILDROOT_IMG}
-	@$(call qemu_arm,${BOARD},${KERNELDIR}/${ZIMAGE},256,/dev/ram0,rootfstype=squashfs init=/bin/bash,-sd ${BUILDROOT_IMG}) ${NET}
+test3-gcc: state/prep ${QEMUSTATE}/qemu-build ${KERNELGCCDTB_IMG} ${VEXPRESS_IMG}
+	@$(call qemu_arm,${BOARD},${KERNELGCCDTB_IMG},256,/dev/mmcblk0p2,rootfstype=ext4 init=/bin/bash,-sd ${VEXPRESS_IMG}) ${NET}
+
+BUILDROOT_IMG	= ${TMPDIR}/sd-rootfs-squashfs.img
+${BUILDROOT_IMG}: buildroot-build
+	@$(call banner,Building SD card for buildroot rootfs)
+	$(call buildroot-sdcard,images/rootfs.squashfs,$@)
+
+test4: state/prep ${QEMUSTATE}/qemu-build ${KERNELDTB_IMG} ${BUILDROOT_IMG}
+	$(call qemu_arm,${BOARD},${KERNELDTB_IMG},256,/dev/ram0,ramdisk_size=64M rw POWEROFF,-initrd ${BUILDROOT_CPIO}) ${NET}
+#	$(call qemu_arm,${BOARD},${KERNELDTB_IMG},256,/dev/mtdblock1,rootfstype=squashfs rootwait init=/bin/bash,-sd ${BUILDROOT_IMG}) ${NET}
 
 vexpress-clean: kernel-clean kernel-gcc-clean
 	@$(call banner,Cleaning Vexpress)
