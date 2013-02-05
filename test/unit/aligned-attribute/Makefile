@@ -7,9 +7,9 @@ aligned-attribute-clang: aligned-attribute.c
 	../../../toolchain/clang/install/bin/clang $< -o $@
 
 diff-all: aligned-attribute-gcc aligned-attribute-clang
-	./aligned-attribute-gcc > gcc-log
-	./aligned-attribute-clang > clang-log
-	diff -y gcc-log clang-log || true
+	@./aligned-attribute-gcc > gcc-log
+	@./aligned-attribute-clang > clang-log
+	@printf "%s: aligned-attribute\n" `diff -q gcc-log clang-log && echo PASS || echo FAIL`
 
 clean:
 	rm -f aligned-attribute-* *-log
