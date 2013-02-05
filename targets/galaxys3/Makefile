@@ -26,13 +26,13 @@ TARGETDIR	= ${CURDIR}
 TOPDIR		= $(realpath ${TARGETDIR}/../..)
 CROSS_ARM_TOOLCHAIN = android
 
-KERNEL_BRANCH	= msm-3.4
+KERNEL_BRANCH	= cm-10.1
 KERNEL_GIT	= git://github.com/CyanogenMod/android_kernel_samsung_d2.git
 KERNELDIR	= ${SRCDIR}/android_kernel_samsung_d2
 KERNEL_CFG	= ${KERNELDIR}/arch/arm/configs/cyanogen_d2_defconfig
 
 #Use the branch name for the dir containing target specific patch overrides
-KERNEL_REPO_PATCHES=${KERNEL_BRANCH}
+#KERNEL_REPO_PATCHES=${KERNEL_BRANCH}
 
 EXTRAFLAGS	= 
 
