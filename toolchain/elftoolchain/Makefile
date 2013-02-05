@@ -2,7 +2,7 @@
 # Copyright (c) 2012 Mark Charlebois
 #               2012 Jan-Simon Möller
 #               2012 Behan Webster
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to 
 # deal in the Software without restriction, including without limitation the 
@@ -22,11 +22,17 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
-# Assumes has been included from ../common.mk
+#LLVMTOP	= ${CURDIR}
+TOPDIR	= $(realpath ${CURDIR}/../..)
 
-LLVMTOP	= ${TOOLCHAIN}/clang
-ETCTOP	= ${TOOLCHAIN}/elftoolchain
+# This Makefile is for convenience only.
+# Normally the toolchain would be built from one of the target directories
+all: warning elftoolchain-build
 
-include ${LLVMTOP}/clang.mk
-#include ${ETCTOP}/elftoolchain.mk
+warning:
+	@$(call banner,Convenience Makefile. Normally this is run from one of the target directories)
 
+include ${TOPDIR}/common.mk
+include ${TOPDIR}/arch/all/all.mk
+
+# clang.mk is included by toolchain.mk which is included by common.mk
