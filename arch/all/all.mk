@@ -284,7 +284,7 @@ kernel-cpconfig: state/kernel-configure
 kernel-gcc-configure: state/kernel-gcc-configure
 state/kernel-gcc-configure: state/kernel-gcc-patch
 	@make -s build-dep-check
-	@$(call banner,Configuring kernel (for gcc build)...)
+	@$(call banner,Configuring gcc kernel...)
 	@mkdir -p ${KERNELGCC_BUILD}
 	@cp ${KERNEL_CFG} ${KERNELGCC_BUILD}/.config
 	@echo "CONFIG_ARM_UNWIND=y" >> ${KERNELGCC_BUILD}/.config
