@@ -77,7 +77,7 @@ buildroot-settings:
 
 buildroot-fetch: ${BUILDROOT_STATE}/buildroot-fetch
 ${BUILDROOT_STATE}/buildroot-fetch:
-	@$(call banner, "Fetching buildroot...")
+	@$(call banner,Fetching buildroot...)
 	@mkdir -p ${BUILDROOT_SRCDIR}
 	$(call gitclone,${BUILDROOT_GIT} -b ${BUILDROOT_BRANCH},${BUILDROOT_SRCDIR})
 	@[ -z "${BUILDROOT_COMMIT}" ] || $(call gitcheckout,${BUILDROOT_SRCDIR},${BUILDROOT_BRANCH},${BUILDROOT_COMMIT})
@@ -85,20 +85,20 @@ ${BUILDROOT_STATE}/buildroot-fetch:
 
 buildroot-patch: ${BUILDROOT_STATE}/buildroot-patch
 ${BUILDROOT_STATE}/buildroot-patch: ${BUILDROOT_STATE}/buildroot-fetch
-	@$(call banner, "Patching buildroot...")
+	@$(call banner,Patching buildroot...)
 	@$(call patches_dir,${BUILDROOT_PATCHES},${BUILDROOT_SRCDIR}/patches)
 	@$(call patch,${BUILDROOT_SRCDIR})
 	$(call state,$@)
 	@$(call leavestate,${BUILDROOT_BUILDDIR},buildroot-configure)
 
 buildroot-patch-applied: %-patch-applied:
-	@$(call banner,"Patches applied for $*")
+	@$(call banner,Patches applied for $*)
 	@$(call applied,${BUILDROOT_SRCDIR})
 
 buildroot-configure: ${BUILDROOT_BUILDDIR}/buildroot-configure
 ${BUILDROOT_BUILDDIR}/buildroot-configure: ${BUILDROOT_STATE}/buildroot-patch
 	@make -s build-dep-check
-	@$(call banner, "Configure buildroot...")
+	@$(call banner,Configure buildroot...)
 	@mkdir -p ${BUILDROOT_BUILDDIR}
 	cp -v ${BUILDROOT_CONFIG} ${BUILDROOT_BUILDDIR}/.config
 	echo "" | make -C ${BUILDROOT_SRCDIR} O=${BUILDROOT_BUILDDIR} oldconfig
@@ -117,7 +117,7 @@ buildroot-cpconfig: ${BUILDROOT_BUILDDIR}/buildroot-configure
 buildroot buildroot-build: ${BUILDROOT_BUILDDIR}/buildroot-build
 ${BUILDROOT_BUILDDIR}/buildroot-build: ${BUILDROOT_BUILDDIR}/buildroot-configure
 	@[ -d ${BUILDROOT_BUILDDIR} ] || ($(call leavestate,${BUILDROOT_BUILDDIR},kernel-configure) && ${MAKE} kernel-configure)
-	@$(call banner, "Building buildroot...")
+	@$(call banner,Building buildroot...)
 	TOOLCHAINDIR=${TOOLCHAINDIR} make -C ${BUILDROOT_SRCDIR} O=${BUILDROOT_BUILDDIR} -j${JOBS}
 	$(call state,$@)
 
@@ -127,7 +127,7 @@ buildroot-sdcard = (dd if=/dev/zero of="${2}" bs=1048576 count=32 ; \
 	dd if="${BUILDROOT_BUILDDIR}/${1}" of="${2}" bs=512 seek=1 conv=notrunc) >/dev/null 2>&1
 	
 buildroot-clean-all:
-	@$(call banner, "Cleaning buildroot...")
+	@$(call banner,Cleaning buildroot...)
 	@$(call leavestate,${BUILDROOT_BUILDDIR},buildroot-configure buildroot-build)
 	rm -rf ${BUILDROOT_BUILDDIR} ${BUILDROOT_INSTALLDIR}
 	@$(call leavestate,${BUILDROOT_STATE},buildroot-patch)
@@ -137,16 +137,16 @@ buildroot-clean buildroot-mrproper: buildroot-clean-all ${BUILDROOT_STATE}/build
 	@$(call optional_gitreset,${BUILDROOT_SRCDIR})
 	
 buildroot-raze: buildroot-clean-all
-	@$(call banner, "Razing buildroot...")
+	@$(call banner,Razing buildroot...)
 	rm -rf ${BUILDROOT_SRCDIR}
 	@$(call leavestate,${BUILDROOT_STATE},builtroot-fetch)
 	
 buildroot-sync: ${BUILDROOT_STATE}/buildroot-fetch
-	@$(call banner, "Updating buildroot...")
+	@$(call banner,Updating buildroot...)
 	@${MAKE} buildroot-clean
 	@$(call check_llvmlinux_commit,${CONFIG})
 	-@if [ -n "${BUILDROOT_COMMIT}" ] ; then \
-		$(call banner, "Syncing commit-ish buildroot...") ; \
+		$(call banner,Syncing commit-ish buildroot...) ; \
 		$(call gitcheckout,${BUILDROOT_SRCDIR},${BUILDROOT_BRANCH},${BUILDROOT_COMMIT}) ; \
 	else \
 		$(call gitpull,${BUILDROOT_SRCDIR},${BUILDROOT_BRANCH}) ; \

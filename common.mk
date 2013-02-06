@@ -39,9 +39,11 @@ HELP_TARGETS	+= common-help
 
 ##############################################################################
 seperator = ---------------------------------------------------------------------
-banner	= $(info ${seperator}) $(info ${1}) $(info ${seperator})
+#banner	= ($(info ${seperator}) $(info ${1}) $(info ${seperator}))
+banner	= (echo ${seperator}; echo ${1}; echo ${seperator})
+echo	= (echo ${seperator}; echo ${1}; echo ${seperator})
 state	= @mkdir -p $(dir ${1}) && touch ${1} \
-	  && $(call banner,Finished state $(notdir ${1})) \
+	  && $(call echo,Finished state $(notdir ${1})) \
 	  && ( [ -d $(dir ${1})${2} ] || rm -f $(dir ${1})${2} )
 leavestate = rm -f $(wildcard $(addprefix ${1}/,${2}))
 error1	= ( echo Error: ${1}; false )
@@ -57,14 +59,14 @@ makemrproper = if [ -f ${1}/Makefile ]; then ${3} make --quiet -C ${1} ${2} mrpr
 # Quilt patch macros used by all subsystems
 patches_dir = [ -e ${2} ] || ln -sf ${1} ${2}
 applied	= ( [ -d ${1} ] && cd ${1} && quilt applied || true )
-patch	= [ ! -d ${1} ] || (cd ${1} && if [ -e patches ] && $(call banner,Applying patches to ${1}) && quilt unapplied ; then quilt push -a ; else >/dev/null ; fi)
-unpatch	= [ ! -d ${1} ] || (cd ${1} && if [ -e patches ] && $(call banner,Unapplying patches from ${1}) && quilt applied ; then quilt pop -af ; else >/dev/null ; fi)
+patch	= [ ! -d ${1} ] || (cd ${1} && if [ -e patches ] && $(call echo,Applying patches to ${1}) && quilt unapplied ; then quilt push -a ; else >/dev/null ; fi)
+unpatch	= [ ! -d ${1} ] || (cd ${1} && if [ -e patches ] && $(call echo,Unapplying patches from ${1}) && quilt applied ; then quilt pop -af ; else >/dev/null ; fi)
 apply_patch = (cd ${1} && cat ${2} | patch -s -p1)
 
 ##############################################################################
 # Check LLVMLinux commit macros used by all subsystems
 check_llvmlinux_commit = [ -z "${FORCE_LLVMLINUX_COMMIT}" ] \
-	|| ( $(call banner,Forcing LLVMLinux commit specified at ${1}) \
+	|| ( $(call echo,Forcing LLVMLinux commit specified at ${1}) \
 	&& [ "${LLVMLINUX_COMMIT}" = "`(cd ${TOPDIR} && git rev-parse HEAD)`" ] \
 	|| $(call check_llvmlinux_commit_error_msg,${1}))
 check_llvmlinux_commit_error_msg = (echo "Current HEAD does not match with checkpoint ${1}. Please run:" \
@@ -77,7 +79,7 @@ gitcheckout = (cd ${1} && git checkout ${2} && ([ -z "${3}" ] || git pull && git
 gitcommit = [ ! -d ${1}/.git ] || (cd ${1} && $(call prsetting,${2},`git rev-parse HEAD`))
 gitmove = (cd ${1} && git branch --move ${2} $3 >/dev/null 2>&1)
 gitpull = (cd ${1} && git checkout ${2} && git pull origin ${2})
-gitreset = ([ -d ${1} ] && cd ${1} && $(call banner,Reseting git tree ${1}) && git reset --hard HEAD && git clean -d -f) || true
+gitreset = ([ -d ${1} ] && cd ${1} && $(call echo,Reseting git tree ${1}) && git reset --hard HEAD && git clean -d -f) || true
 ifneq "${GIT_HARD_RESET}" ""
 optional_gitreset = $(call gitreset,${1})
 else
@@ -101,7 +103,7 @@ svnupdate = (cd ${1} && svn update)
 ##############################################################################
 # general download macros
 wget = mkdir -p ${2} && wget -P ${2} -c ${1}
-untgz = $(call banner,Unpacking $(notdir ${1}) into ${2}) \
+untgz = $(call echo,Unpacking $(notdir ${1}) into ${2}) \
 		&& mkdir -p ${2} && tar --extract --gunzip --file ${1} --directory ${2}
 
 ##############################################################################

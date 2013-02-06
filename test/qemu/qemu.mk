@@ -68,7 +68,7 @@ qemu-settings:
 
 qemu-fetch: ${QEMUSTATE}/qemu-fetch
 ${QEMUSTATE}/qemu-fetch:
-	@$(call banner, "Fetching QEMU...")
+	@$(call banner,Fetching QEMU...)
 	@mkdir -p ${QEMUSRCDIR}
 	$(call gitclone,${QEMU_GIT} -b ${QEMU_BRANCH},${QEMUSRCDIR})
 	@[ -z "${QEMU_COMMIT}" ] || $(call gitcheckout,${QEMUSRCDIR},${QEMU_BRANCH},${QEMU_COMMIT})
@@ -76,7 +76,7 @@ ${QEMUSTATE}/qemu-fetch:
 
 qemu-patch: ${QEMUSTATE}/qemu-patch
 ${QEMUSTATE}/qemu-patch: ${QEMUSTATE}/qemu-fetch
-	@$(call banner, "Patching QEMU...")
+	@$(call banner,Patching QEMU...)
 	@$(call patches_dir,${QEMUPATCHES},${QEMUSRCDIR}/patches)
 	@$(call patch,${QEMUSRCDIR})
 	$(call state,$@,qemu-configure)
@@ -88,7 +88,7 @@ qemu-patch-applied: %-patch-applied:
 qemu-configure: ${QEMUSTATE}/qemu-configure
 ${QEMUSTATE}/qemu-configure: ${QEMUSTATE}/qemu-patch
 	@make -s build-dep-check
-	@$(call banner, "Configure QEMU...")
+	@$(call banner,Configure QEMU...)
 	@mkdir -p ${QEMUBUILDDIR}
 	(cd ${QEMUBUILDDIR} && ${QEMUSRCDIR}/configure \
 		--target-list=arm-softmmu,mips-softmmu,i386-softmmu,x86_64-softmmu --disable-kvm --disable-vnc \
@@ -99,13 +99,13 @@ ${QEMUSTATE}/qemu-configure: ${QEMUSTATE}/qemu-patch
 qemu qemu-build: ${QEMUSTATE}/qemu-build
 ${QEMUSTATE}/qemu-build: ${QEMUSTATE}/qemu-configure
 	@[ -d ${QEMUBUILDDIR} ] || ${MAKE} qemu-clean $^ # build in tmpfs
-	@$(call banner, "Building QEMU...")
+	@$(call banner,Building QEMU...)
 	@mkdir -p ${QEMUINSTALLDIR}
 	make -C ${QEMUBUILDDIR} -j${JOBS} install
 	$(call state,$@)
 	
 qemu-clean-all:
-	@$(call banner, "Cleaning QEMU...")
+	@$(call banner,Cleaning QEMU...)
 	rm -rf ${QEMUBUILDDIR} ${QEMUINSTALLDIR} 
 	rm -f $(addprefix ${QEMUSTATE}/,qemu-patch qemu-configure qemu-build)
 
@@ -114,16 +114,16 @@ qemu-clean qemu-mrproper: qemu-clean-all ${QEMUSTATE}/qemu-fetch
 	@$(call optional_gitreset,${QEMUSRCDIR})
 	
 qemu-raze: qemu-clean-all
-	@$(call banner, "Razing QEMU...")
+	@$(call banner,Razing QEMU...)
 	rm -rf ${QEMUSRCDIR}
 	rm -f ${QEMUSTATE}/qemu-*
 	
 qemu-sync: ${QEMUSTATE}/qemu-fetch
-	@$(call banner, "Updating QEMU...")
+	@$(call banner,Updating QEMU...)
 	@${MAKE} qemu-clean
 	@$(call check_llvmlinux_commit,${CONFIG})
 	-@if [ -n "${QEMU_COMMIT}" ] ; then \
-		$(call banner, "Syncing commit-ish QEMU...") ; \
+		$(call banner,Syncing commit-ish QEMU...) ; \
 		$(call gitcheckout,${QEMUSRCDIR},${QEMU_BRANCH},${QEMU_COMMIT}) ; \
 	else \
 		$(call gitpull,${QEMUSRCDIR},${QEMU_BRANCH}) ; \

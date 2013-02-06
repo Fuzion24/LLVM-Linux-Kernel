@@ -65,6 +65,7 @@ function build_env() {
 	echo "export USE_CCACHE=$USE_CCACHE"
 	echo "export V=$V"
 	echo "---------------------------------------------------------------------"
+	echo "$CC -print-file-name=include"
 	$CC -print-file-name=include
 	echo make $CCOPTS ${CC:+CC=\"$CC\"} ${CFLAGS:+CFLAGS_KERNEL=\"$CFLAGS\"} ${CFLAGS:+CFLAGS_MODULE=\"$CFLAGS\"} $KERNEL_MAKE_TARGETS
 }

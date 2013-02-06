@@ -92,7 +92,7 @@ kernel-quilt-settings:
 QUILTRC	= ${HOME}/.quiltrc
 kernel-quiltrc: ${QUILTRC}
 ${QUILTRC}:
-	@$(call banner, "Setting up quilt rc file...")
+	@$(call banner,Setting up quilt rc file...)
 	@touch $@
 	@$(call checkfilefor,$@,QUILT_NO_DIFF_INDEX,=1)
 	@$(call checkfilefor,$@,QUILT_NO_DIFF_TIMESTAMPS,=1)
@@ -105,7 +105,7 @@ ${QUILTRC}:
 # Handle the case of renaming target/%/series -> target/%/series.target
 kernel-quilt-series-dot-target: ${SERIES_DOT_TARGET}
 ${SERIES_DOT_TARGET}:
-	@$(call banner, "Updating quilt series.target file for kernel...")
+	@$(call banner,Updating quilt series.target file for kernel...)
 	@mkdir -p ${PATCHDIR}
 	@[ -f ${TARGET_PATCH_SERIES} ] || touch ${TARGET_PATCH_SERIES}
 # Rename target series file to series.target (we will be generating the new series file)
@@ -116,7 +116,7 @@ ${SERIES_DOT_TARGET}:
 kernel-quilt-update-series-dot-target: ${SERIES_DOT_TARGET}
 	-@[ ! -d ${TARGET_PATCH_SERIES} ] \
 		|| [ `stat -c %Z ${TARGET_PATCH_SERIES}` -le `stat -c %Z ${SERIES_DOT_TARGET}` ] \
-		|| ($(call banner, "Saving quilt changes to series.target file for kernel...") ; \
+		|| ($(call echo,Saving quilt changes to series.target file for kernel...) ; \
 		diff ${TARGET_PATCH_SERIES} ${SERIES_DOT_TARGET} \
 		| perl -ne 'print "$$1\n" if $$hunk>1 && /^< (.*)$$/; $$hunk++ if /^[^<>]/' \
 		>> ${SERIES_DOT_TARGET}; touch ${SERIES_DOT_TARGET})
@@ -126,7 +126,7 @@ kernel-quilt-update-series-dot-target: ${SERIES_DOT_TARGET}
 kernel-quilt-generate-series: ${TARGET_PATCH_SERIES}
 ${TARGET_PATCH_SERIES}: ${ALL_PATCH_SERIES}
 	@$(MAKE) kernel-quilt-update-series-dot-target
-	@$(call banner, "Building quilt series file for kernel...")
+	@$(call banner,Building quilt series file for kernel...)
 	@cat ${ALL_PATCH_SERIES} > $@
 
 ##############################################################################
@@ -134,7 +134,7 @@ ${TARGET_PATCH_SERIES}: ${ALL_PATCH_SERIES}
 QUILT_GITIGNORE	= ${PATCHDIR}/.gitignore
 kernel-quilt-ignore-links: ${QUILT_GITIGNORE}
 ${QUILT_GITIGNORE}: ${GENERIC_PATCH_SERIES}
-	@$(call banner, "Ignore symbolic linked quilt patches for kernel...")
+	@$(call banner,Ignore symbolic linked quilt patches for kernel...)
 	@echo .gitignore > $@
 	@echo series >> $@
 	@cat ${GENERIC_PATCH_SERIES} >> $@
@@ -142,14 +142,14 @@ ${QUILT_GITIGNORE}: ${GENERIC_PATCH_SERIES}
 ##############################################################################
 # Remove broken symbolic links to old patches
 kernel-quilt-clean-broken-symlinks:
-	@$(call banner, "Removing broken symbolic linked quilt patches for kernel...")
+	@$(call banner,Removing broken symbolic linked quilt patches for kernel...)
 	@[ -d ${PATCHDIR} ] && file ${PATCHDIR}/* | awk -F: '/broken symbolic link to/ {print $$1}' | xargs --no-run-if-empty rm
 
 ##############################################################################
 # Move updated patches back to their proper place, and link patch files into target patches dir
 kernel-quilt-link-patches: ${QUILT_GITIGNORE}
 	$(MAKE) kernel-quilt-update-series-dot-target kernel-quilt-clean-broken-symlinks
-	@$(call banner, "Linking quilt patches for kernel...")
+	@$(call banner,Linking quilt patches for kernel...)
 	@REVDIRS=`$(call reverselist,${KERNEL_PATCH_DIR})` ; \
 	for PATCH in `cat ${GENERIC_PATCH_SERIES}` ; do \
 		PATCHLINK="${PATCHDIR}/$$PATCH" ; \
@@ -173,7 +173,7 @@ QUILT_STATE	= state/kernel-quilt
 kernel-quilt: ${QUILT_STATE}
 ${QUILT_STATE}: state/kernel-fetch
 	@$(MAKE) ${QUILTRC} kernel-quilt-link-patches
-	@$(call banner, "Quilted kernel...")
+	@$(call banner,Quilted kernel...)
 	$(call state,$@,kernel-patch)
 
 ##############################################################################
@@ -206,7 +206,7 @@ list-kernel-checkpatch list-kernel-get_maintainer: list-kernel-%:
 	for PATCH in `cat ${ALL_PATCH_SERIES} | grep "${PATCH_FILTER_REGEX}"` ; do \
 		for DIR in $$REVDIRS ; do \
 			if [ -f "$$DIR/$$PATCH" -a ! -L "$$DIR/$$PATCH" ] ; then \
-				$(call banner,$$DIR/$$PATCH) ; \
+				$(call echo,$$DIR/$$PATCH) ; \
 				./scripts/$*.pl "$$DIR/$$PATCH" ; \
 				break; \
 			fi ; \
@@ -215,7 +215,7 @@ list-kernel-checkpatch list-kernel-get_maintainer: list-kernel-%:
 
 ##############################################################################
 kernel-quilt-clean: ${SERIES_DOT_TARGET}
-	@$(call banner, "Removing symbolic linked quilt patches for kernel...")
+	@$(call banner,Removing symbolic linked quilt patches for kernel...)
 	@rm -f ${QUILT_GITIGNORE}
 	@[ ! -f ${SERIES_DOT_TARGET} ] || rm -f ${TARGET_PATCH_SERIES}
 	@for FILE in ${PATCHDIR}/* ; do \

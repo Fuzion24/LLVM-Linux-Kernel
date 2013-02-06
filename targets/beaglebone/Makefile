@@ -102,7 +102,7 @@ state/beaglebone-fetch:
 	@$(call state,$@)
 
 beaglebone-sync: state/beaglebone-fetch beaglebone-clean
-	@$(call banner, "Syncing beaglebone...")
+	@$(call banner,Syncing beaglebone...)
 	@$(call gitsync,${BBONE_DIR},${BBONE_COMMIT},${BBONE_BRANCH},${BBONE_TAG})
 
 beaglebone-build: beaglebone-fetch kernel-build

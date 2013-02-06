@@ -76,14 +76,14 @@ elftoolchain-settings:
 ##############################################################################
 elftoolchain-fetch: ${ETCSTATE}/elftoolchain-fetch
 ${ETCSTATE}/elftoolchain-fetch:
-	@$(call banner,"Fetch Elf Toolchain")
+	@$(call banner,Fetch Elf Toolchain)
 	@$(call svncheckout,${ETC_SVN},${ETC_DIR},${ETC_SVN_REV})
 	$(call state,$@,elftoolchain-patch)
 
 ##############################################################################
 tet-fetch: ${ETCSTATE}/tet-fetch
 ${ETCSTATE}/tet-fetch: ${ETCSTATE}/elftoolchain-fetch
-	@$(call banner,"Fetch Test Environment Toolkit")
+	@$(call banner,Fetch Test Environment Toolkit)
 	@$(call wget,${TET_URL},$(dir ${TET_FILE}))
 	@$(call untgz,${TET_FILE},$(dir ${TET_DIR}))
 	$(call state,$@,elftoolchain-patch)
@@ -91,13 +91,14 @@ ${ETCSTATE}/tet-fetch: ${ETCSTATE}/elftoolchain-fetch
 ##############################################################################
 elftoolchain-patch: ${ETCSTATE}/elftoolchain-patch
 ${ETCSTATE}/elftoolchain-patch: ${ETCSTATE}/tet-fetch
+	@$(call banner,Patch ElfToolChain)
 	@$(call patches_dir,${ETCPATCHES},${ETC_DIR}/patches)
 	@$(call patch,${ETC_DIR})
 	$(call state,$@,elftoolchain-build)
 
 ##############################################################################
 elftoolchain-patch-applied: ${ETCSTATE}/elftoolchain-patch
-	@$(call banner,"Patches applied for ElfToolChain")
+	@$(call banner,Patches applied for ElfToolChain)
 	@$(call applied,${ETCSRCDIR}/$*)
 
 ##############################################################################
@@ -105,9 +106,9 @@ elftoolchain elftoolchain-build: ${ETCSTATE}/elftoolchain-build
 ${ETCSTATE}/elftoolchain-build: ${ETCSTATE}/elftoolchain-patch
 	@make -s build-dep-check
 	@[ -d ${ETCBUILDDIR} ] || ${MAKE} elftoolchain-clean $^ # build in tmpfs
-	@$(call banner,"Building ElfToolChain")
+	@$(call banner,Building ElfToolChain)
 	@(cd ${ETC_DIR} && pmake)
-	@$(call banner,"Installing ElfToolChain")
+	@$(call banner,Installing ElfToolChain)
 	@mkdir -p $(addprefix ${ETCINSTALLDIR}/,usr/bin usr/include usr/lib/x86_64-linux-gnu usr/share/man/man1 usr/share/man/man3 usr/share/man/man5)
 	@(cd ${ETC_DIR} && fakeroot pmake DESTDIR=${ETCINSTALLDIR} install)
 	$(call state,$@,elftoolchain-build)

@@ -177,9 +177,9 @@ include ${ARCHDIR}/all/quilt.mk
 # This is purely meant as a disk space saving effort.
 kernel-shared: ${SHARED_KERNEL}
 ${SHARED_KERNEL}:
-	@$(call banner, "Cloning shared kernel repo...")
+	@$(call banner,Cloning shared kernel repo...)
 	@[ -d ${@:.git=} ] && ( \
-		$(call banner, "Moving kernel/.git to kernel.git"); \
+		$(call echo,Moving kernel/.git to kernel.git); \
 		mv ${@:.git=}/.git $@; \
 		echo -e "[core]\n\trepositoryformatversion = 0\n\tfilemode = true\n\tbare = true" > $@/config; \
 		echo -e "[remote \"origin\"]\n\turl = ${MAINLINEURI}" >> $@/config; \
@@ -199,15 +199,15 @@ kernel-raze:
 #############################################################################
 kernel-fetch: state/kernel-fetch
 state/kernel-fetch: ${SHARED_KERNEL}
-	@$(call banner, "Cloning kernel...")
+	@$(call banner,Cloning kernel...)
 	@mkdir -p ${SRCDIR}
-	@[ -z "${KERNEL_BRANCH}" ] || $(call banner, "Checking out kernel branch...")
+	@[ -z "${KERNEL_BRANCH}" ] || $(call echo,Checking out kernel branch...)
 	$(call gitclone,--reference $< ${KERNEL_GIT} -b ${KERNEL_BRANCH},${KERNELDIR})
 	@if [ -n "${KERNEL_COMMIT}" ] ; then \
-		$(call banner, "Checking out commit-ish kernel...") ; \
+		$(call echo,Checking out commit-ish kernel...) ; \
 		$(call gitcheckout,${KERNELDIR},${KERNEL_BRANCH},${KERNEL_COMMIT}) ; \
 	elif [ -n "${KERNEL_TAG}" ] ; then \
-		$(call banner, "Checking out tagged kernel...") ; \
+		$(call echo,Checking out tagged kernel...) ; \
 		$(call gitmove,${KERNELDIR},${KERNEL_TAG},tag-${KERNEL_TAG}) ; \
 		$(call gitcheckout,${KERNELDIR},${KERNEL_TAG}) ; \
 	fi
@@ -216,17 +216,17 @@ state/kernel-fetch: ${SHARED_KERNEL}
 #############################################################################
 kernel-gcc-fetch: state/kernel-gcc-fetch
 state/kernel-gcc-fetch: state/kernel-fetch
-	@$(call banner, "Cloning kernel for gcc...")
+	@$(call banner,Cloning kernel for gcc...)
 	$(call gitclone,${KERNELDIR},${KERNELGCC})
 	@if [ -n "${KERNEL_COMMIT}" ] ; then \
-		$(call banner, "Checking out commit-ish kernel for gcc...") ; \
+		$(call echo,Checking out commit-ish kernel for gcc...) ; \
 		$(call gitcheckout,${KERNELGCC},${KERNEL_BRANCH},${KERNEL_COMMIT}) ; \
 	elif [ -n "${KERNEL_TAG}" ] ; then \
-		$(call banner, "Checking out tagged kernel for gcc...") ; \
+		$(call echo,Checking out tagged kernel for gcc...) ; \
 		$(call gitmove,${KERNELGCC},${KERNEL_TAG},tag-${KERNEL_TAG}) ; \
 		$(call gitcheckout,${KERNELGCC},${KERNEL_TAG}) ; \
 	elif [ -n "${KERNEL_BRANCH}" ] ; then \
-		$(call banner, "Checking out kernel branch for gcc...") ; \
+		$(call echo,Checking out kernel branch for gcc...) ; \
 		$(call gitcheckout,${KERNELGCC},${KERNEL_BRANCH}) ; \
 	fi
 	$(call state,$@,kernel-gcc-patch)
@@ -234,7 +234,7 @@ state/kernel-gcc-fetch: state/kernel-fetch
 #############################################################################
 kernel-patch: state/kernel-patch
 state/kernel-patch: state/kernel-fetch state/kernel-quilt
-	@$(call banner, "Patching kernel...")
+	@$(call banner,Patching kernel...)
 	@$(call patches_dir,${PATCHDIR},${KERNELDIR}/patches)
 	@$(call optional_gitreset,${KERNELDIR})
 	@$(call patch,${KERNELDIR})
@@ -243,7 +243,7 @@ state/kernel-patch: state/kernel-fetch state/kernel-quilt
 #############################################################################
 kernel-gcc-patch: state/kernel-gcc-patch
 state/kernel-gcc-patch: state/kernel-gcc-fetch state/kernel-quilt
-	@$(call banner, "Patching kernel for gcc...")
+	@$(call banner,Patching kernel for gcc...)
 	@$(call patches_dir,${PATCHDIR},${KERNELGCC}/patches)
 	@$(call optional_gitreset,${KERNELGCC})
 	@$(call patch,${KERNELGCC})
@@ -251,19 +251,19 @@ state/kernel-gcc-patch: state/kernel-gcc-fetch state/kernel-quilt
 
 #############################################################################
 kernel-patch-applied:
-	@$(call banner,"Patches applied for Clang kernel")
+	@$(call banner,Patches applied for Clang kernel)
 	@$(call applied,${KERNELDIR})
 
 #############################################################################
 kernel-gcc-patch-applied:
-	@$(call banner,"Patches applied for gcc kernel")
+	@$(call banner,Patches applied for gcc kernel)
 	@$(call applied,${KERNELGCC})
 
 #############################################################################
 kernel-configure: state/kernel-configure
 state/kernel-configure: state/kernel-patch
 	@make -s build-dep-check
-	@$(call banner, "Configuring kernel...")
+	@$(call banner,Configuring kernel...)
 	@mkdir -p ${KERNEL_BUILD}
 	@cp ${KERNEL_CFG} ${KERNEL_BUILD}/.config
 	(cd ${KERNELDIR} && echo "" | ${KERNEL_VAR} make ${MAKE_FLAGS} oldconfig)
@@ -284,7 +284,7 @@ kernel-cpconfig: state/kernel-configure
 kernel-gcc-configure: state/kernel-gcc-configure
 state/kernel-gcc-configure: state/kernel-gcc-patch
 	@make -s build-dep-check
-	@$(call banner, "Configuring kernel (for gcc build)...")
+	@$(call banner,Configuring kernel (for gcc build)...)
 	@mkdir -p ${KERNELGCC_BUILD}
 	@cp ${KERNEL_CFG} ${KERNELGCC_BUILD}/.config
 	@echo "CONFIG_ARM_UNWIND=y" >> ${KERNELGCC_BUILD}/.config
@@ -297,9 +297,9 @@ state/kernel-build: ${LLVMSTATE}/clang-build ${STATE_TOOLCHAIN} state/kernel-con
 	$(call assert,-n "${MAKE_KERNEL}",MAKE_KERNEL undefined)
 	@[ -d ${KERNEL_BUILD} ] || ($(call leavestate,${STATEDIR},kernel-configure) && ${MAKE} kernel-configure)
 	@$(MAKE) kernel-quilt-link-patches
-	@$(call banner,"Building kernel with clang...")
+	@$(call banner,Building kernel with clang...)
 	(cd ${KERNELDIR} && ${KERNEL_VAR} time ${MAKE_KERNEL})
-	@$(call banner,"Successfully Built kernel with clang!")
+	@$(call banner,Successfully Built kernel with clang!)
 	@mkdir -p ${TOPLOGDIR}
 	@( ${CLANG} --version | head -1 ; \
 		cd ${KERNEL_BUILD} && wc -c ${KERNEL_SIZE_ARTIFACTS} ) \
@@ -312,7 +312,7 @@ state/kernel-gcc-build: ${CROSS_GCC} state/kernel-gcc-configure
 	$(call assert,-n "${MAKE_KERNEL}",MAKE_KERNEL undefined)
 	@[ -d ${KERNELGCC_BUILD} ] || ($(call leavestate,${STATEDIR},kernel-gcc-configure) && ${MAKE} kernel-gcc-configure)
 	@$(MAKE) kernel-quilt-link-patches
-	@$(call banner, "Building kernel with gcc...")
+	@$(call banner,Building kernel with gcc...)
 	(cd ${KERNELGCC} ; sed -i -e "s#-Qunused-arguments##g" Makefile)
 	(cd ${KERNELGCC} ; for ix in `git grep integrated-as | cut -d":" -f1 ` ; do sed -i -e "s#-no-integrated-as##g" $$ix ; done )
 	(cd ${KERNELGCC} && USEGCC=1 ${SPARSE} ${KERNELGCC_VAR} time ${MAKE_KERNEL})
@@ -332,10 +332,10 @@ kernel-gcc-sparse:
 	@$(call assert_found_in_path,sparse)
 	${MAKE} kernel-gcc-configure
 	@$(call patches_dir,${PATCHDIR},${KERNELGCC}/patches)
-	@$(call banner, "Building unpatched gcc kernel for eventual analysis with sparse...")
+	@$(call banner,Building unpatched gcc kernel for eventual analysis with sparse...)
 	@$(call unpatch,${KERNELGCC})
 	${MAKE} kernel-gcc-build-force
-	@$(call banner, "Rebuilding patched gcc kernel with sparse (changed files only)...")
+	@$(call banner,Rebuilding patched gcc kernel with sparse (changed files only)...)
 	@$(call patch,${KERNELGCC})
 	${MAKE} SPARSE=C=1 kernel-gcc-build-force
 
@@ -346,18 +346,18 @@ kernels-clean: kernel-clean kernel-gcc-clean
 
 #############################################################################
 kernel-shared-sync:
-	@$(call banner, "Syncing shared kernel.org kernel...")
+	@$(call banner,Syncing shared kernel.org kernel...)
 	@(cd ${SHARED_KERNEL} && git fetch origin +refs/heads/*:refs/heads/*)
 
 #############################################################################
 kernel-sync: state/kernel-fetch kernel-shared-sync kernel-clean
-	@$(call banner, "Syncing kernel...")
+	@$(call banner,Syncing kernel...)
 	@$(call check_llvmlinux_commit,${CONFIG})
 	@$(call gitsync,${KERNELDIR},${KERNEL_COMMIT},${KERNEL_BRANCH},${KERNEL_TAG})
 
 #############################################################################
 kernel-gcc-sync: state/kernel-gcc-fetch kernel-sync kernel-gcc-clean
-	@$(call banner, "Syncing gcc kernel...")
+	@$(call banner,Syncing gcc kernel...)
 	@$(call check_llvmlinux_commit,${CONFIG})
 	@$(call gitsync,${KERNELGCC},${KERNEL_COMMIT},${KERNEL_BRANCH},${KERNEL_TAG})
 
@@ -375,7 +375,7 @@ kernel-clean kernel-mrproper:
 	@$(call unpatch,${KERNELDIR})
 	@$(call optional_gitreset,${KERNELDIR})
 	@$(call leavestate,${STATEDIR},kernel-quilt kernel-patch kernel-configure kernel-build)
-	@$(call banner,"Clang compiled Kernel is now clean")
+	@$(call banner,Clang compiled Kernel is now clean)
 
 #############################################################################
 kernel-gcc-clean kernel-gcc-mrproper:
@@ -383,7 +383,7 @@ kernel-gcc-clean kernel-gcc-mrproper:
 	@$(call unpatch,${KERNELGCC})
 	@$(call optional_gitreset,${KERNELGCC})
 	@$(call leavestate ${STATEDIR},kernel-gcc-configure kernel-gcc-patch kernel-gcc-build)
-	@$(call banner,"Gcc compiled Kernel is now clean")
+	@$(call banner,Gcc compiled Kernel is now clean)
 
 #############################################################################
 kernel-rebuild kernel-gcc-rebuild: kernel-%rebuild:

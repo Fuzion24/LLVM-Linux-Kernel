@@ -120,11 +120,11 @@ llvm-settings:
 	@$(call gitcommit,${COMPILERRTDIR},COMPILERRT_COMMIT)
 
 ##############################################################################
-llvmfetch = $(call banner, "Fetching ${1}...") ; \
+llvmfetch = $(call banner,Fetching ${1}...) ; \
 	mkdir -p $(dir ${2}) ; \
 	$(call gitclone,${4} -b ${5},${3}) ; \
 	if [ -n "${6}" ] ; then \
-		$(call banner, "Fetching commit-ish ${1}...") ; \
+		$(call banner,Fetching commit-ish ${1}...) ; \
 		$(call gitcheckout,${3},${5},${6}) ; \
 	fi ;
 
@@ -165,7 +165,7 @@ ${LLVMSTATE}/clang-unpatched-fetch: ${LLVMSTATE}/clang-fetch
 	$(call state,$@,clang-unpatched-configure)
 
 ##############################################################################
-llvmpatch = $(call banner, "Patching ${1}...") ; \
+llvmpatch = $(call banner,Patching ${1}...) ; \
 	$(call patches_dir,${2},${3}/patches) ; \
 	$(call patch,${3})
 
@@ -189,11 +189,11 @@ ${LLVMSTATE}/compilerrt-patch: ${LLVMSTATE}/compilerrt-fetch
 
 ##############################################################################
 ${LLVM_TARGETS_APPLIED}: %-patch-applied:
-	@$(call banner,"Patches applied for $*")
+	@$(call banner,Patches applied for $*)
 	@$(call applied,${LLVMSRCDIR}/$*)
 
 ##############################################################################
-llvmconfig = $(call banner, "Configure ${1}...") ; \
+llvmconfig = $(call banner,Configure ${1}...) ; \
 	mkdir -p ${2} ${3} && \
 	(cd ${2} && cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${3} ${4} ${5})
 
@@ -223,7 +223,7 @@ ${LLVMSTATE}/clang-unpatched-configure: ${LLVMSTATE}/clang-unpatched-fetch
 	$(call state,$@,clang-unpatched-build)
 
 ##############################################################################
-llvmbuild = $(call banner, "Building ${1}...") ; \
+llvmbuild = $(call banner,Building ${1}...) ; \
 	make -C ${2} -j${JOBS} install
 
 ##############################################################################
@@ -326,7 +326,7 @@ clang-raze: clang-clean-noreset
 llvmsync = $(call banner,Updating ${1}...) ; \
 	$(call unpatch,${2}) ; \
 	[ ! -d ${2} ] || if [ -n "${4}" ] ; then \
-		$(call banner, "Syncing commit-ish ${1}...") ; \
+		$(call banner,Syncing commit-ish ${1}...) ; \
 		$(call gitcheckout,${2},${3},${4}) ; \
 	else \
 		$(call gitpull,${2},${3}) ; \

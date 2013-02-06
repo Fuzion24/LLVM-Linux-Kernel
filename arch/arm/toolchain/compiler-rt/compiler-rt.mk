@@ -35,7 +35,7 @@ TARGETS_TOOLCHAIN	+= compilerrt-arm-[clone,patch,configure,build,clean,sync]
 
 compilerrt-arm-clone: ${ARMCOMPILERRTSTATE}/compilerrt-arm-clone
 ${ARMCOMPILERRTSTATE}/compilerrt-arm-clone: ${LLVMSTATE}/compilerrt-fetch
-	@$(call banner, "Cloning Compiler-rt for ARM build...")
+	@$(call banner,Cloning Compiler-rt for ARM build...)
 	@mkdir -p ${ARMCOMPILERRTBUILDDIR}
 	$(call gitclone,${COMPILERRT_LOCALGIT} -b ${COMPILERRT_BRANCH},${ARMCOMPILERRTSRCDIR})
 	[ -z "${COMPILERRT_COMMIT}" ] || $(call gitcheckout,${ARMCOMPILERRTSRCDIR},${COMPILERRT_BRANCH},${COMPILERRT_COMMIT})
@@ -43,7 +43,7 @@ ${ARMCOMPILERRTSTATE}/compilerrt-arm-clone: ${LLVMSTATE}/compilerrt-fetch
 
 compilerrt-arm-patch: ${ARMCOMPILERRTSTATE}/compilerrt-arm-patch
 ${ARMCOMPILERRTSTATE}/compilerrt-arm-patch: ${ARMCOMPILERRTSTATE}/compilerrt-arm-clone
-	@$(call banner, "Patching Compiler-rt...")
+	@$(call banner,Patching Compiler-rt...)
 #	@ln -sf ${ARMCOMPILERRTPATCHES} ${ARMCOMPILERRTSRCDIR}/patches
 	@$(call patches_dir,${ARMCOMPILERRTPATCHES},${ARMCOMPILERRTSRCDIR}/patches)
 	@$(call patch,${ARMCOMPILERRTSRCDIR})
@@ -51,17 +51,17 @@ ${ARMCOMPILERRTSTATE}/compilerrt-arm-patch: ${ARMCOMPILERRTSTATE}/compilerrt-arm
 
 compilerrt-arm-build: ${ARMCOMPILERRTSTATE}/compilerrt-arm-build
 ${ARMCOMPILERRTSTATE}/compilerrt-arm-build: ${ARMCOMPILERRTSTATE}/compilerrt-arm-patch
-	@$(call banner, "Building Compiler-rt...")
+	@$(call banner,Building Compiler-rt...)
 	@mkdir -p ${ARMCOMPILERRTINSTALLDIR}
 	(cd ${ARMCOMPILERRTSRCDIR} && make ARMGCCHOME=${ARCH_ARM_TOOLCHAIN}/codesourcery/arm-2011.03 linux_armv7)
 	@cp -r ${ARMCOMPILERRTSRCDIR}/linux_armv7/full-arm/* ${ARMCOMPILERRTINSTALLDIR}
 	$(call state,$@)
 
 compilerrt-arm-clean:
-	@$(call banner, "Reseting Compiler-rt...")
+	@$(call banner,Reseting Compiler-rt...)
 	@rm -rf ${ARMCOMPILERRTSRCDIR}/*
 	@rm -rf ${ARMCOMPILERRTINSTALLDIR}/*
 	@rm -f ${ARMCOMPILERRTSTATE}/compilerrt-arm-*
 
 compilerrt-arm-sync: ${LLVMSTATE}/compilerrt-sync compilerrt-arm-clean compilerrt-arm-clone
-	@$(call banner, "Updated Compiler-rt for ARM...")
+	@$(call banner,Updated Compiler-rt for ARM...)
