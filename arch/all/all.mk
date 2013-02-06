@@ -382,7 +382,7 @@ kernel-gcc-clean kernel-gcc-mrproper:
 	@$(call makemrproper,${KERNELGCC})
 	@$(call unpatch,${KERNELGCC})
 	@$(call optional_gitreset,${KERNELGCC})
-	@$(call leavestate ${STATEDIR},kernel-gcc-configure kernel-gcc-patch kernel-gcc-build)
+	@$(call leavestate,${STATEDIR},kernel-gcc-configure kernel-gcc-patch kernel-gcc-build)
 	@$(call banner,Gcc compiled Kernel is now clean)
 
 #############################################################################
