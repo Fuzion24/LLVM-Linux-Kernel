@@ -1,5 +1,7 @@
 ##############################################################################
-# Copyright (c) 2012 Mark Charlebois
+# Copyright (c) 2013 Mark Charlebois
+#               2012 Jan-Simon Möller
+#               2012 Behan Webster
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to 
@@ -20,13 +22,43 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
-# This makefile allows the various ATM toolkits to be built independent of a 
-# specific ARM target
-
-TOPDIR		= $(realpath ${CURDIR}/../..)
+TARGETDIR	= ${CURDIR}
+TOPDIR		= $(realpath ${TARGETDIR}/../..)
 CROSS_ARM_TOOLCHAIN = android
+
+KERNEL_BRANCH	= cm-10.1
+KERNEL_GIT	= git://github.com/CyanogenMod/android_kernel_samsung_d2.git
+KERNELDIR	= ${SRCDIR}/android_kernel_samsung_d2
+KERNEL_CFG	= ${KERNELDIR}/arch/arm/configs/cyanogen_d2_defconfig
+
+#Use the branch name for the dir containing target specific patch overrides
+KERNEL_REPO_PATCHES=${KERNEL_BRANCH}
+
+EXTRAFLAGS	= 
+
+all: prep kernel-build
 
 include ${TOPDIR}/common.mk
 include ${ARCHDIR}/arm/arm.mk
 include ${CONFIG}
+
+KERNEL_PATCH_DIR+= ${TARGETDIR}/patches ${TARGETDIR}/patches/${KERNEL_REPO_PATCHES}
+
+TARGETS+= check-dups kernel-autopatch clean mrproper
+.PHONY: kernel-copy clean mrproper
+
+prep: state/prep
+state/prep:
+	@mkdir -p ${LOGDIR} ${TMPDIR} ${TARGETDIR}/patches
+	$(call state,$@)
+
+check-dups:
+	${TOOLSDIR}/checkduplicates.py $(shell ${MAKE} list-kernel-patches)
+
+clean: kernel-clean kernel-gcc-clean
+	@$(call banner,Clean)
+
+mrproper: clean kernel-mrproper kernel-gcc-mrproper tmp-mrproper
+	@rm -rf ${LOGDIR}/*
+	@$(call banner,Very Clean)
 

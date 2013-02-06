@@ -25,7 +25,7 @@
 
 TARGETS_TOOLCHAIN	+= android-gcc
 
-ANDROID_SDK_BRANCH 	= aosp-new/jb-release
+ANDROID_SDK_BRANCH 	= jb_rel_rb6.1
 ANDROID_SDK_GIT 	= git://codeaurora.org/platform/prebuilts/gcc/linux-x86/arm/${ANDROID_CC_VERSION}.git
 
 ANDROID_DIR		= ${ARCH_ARM_TOOLCHAIN}/android
