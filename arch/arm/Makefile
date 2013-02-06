@@ -26,9 +26,7 @@
 TOPDIR		= $(realpath ${CURDIR}/../..)
 CROSS_ARM_TOOLCHAIN = android
 
-all: prep kernel-build
-
 include ${TOPDIR}/common.mk
-include ${ARCHDIR}/arm/toolchain/toolchain.mk
+include ${ARCHDIR}/arm/arm.mk
 include ${CONFIG}
 
