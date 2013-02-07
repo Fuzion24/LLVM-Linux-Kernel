@@ -195,7 +195,8 @@ ${LLVM_TARGETS_APPLIED}: %-patch-applied:
 ##############################################################################
 llvmconfig = $(call banner,Configure ${1}...) ; \
 	mkdir -p ${2} ${3} && \
-	(cd ${2} && cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${3} ${4} ${5})
+	(cd ${2} && cmake -DCMAKE_BUILD_TYPE=Release \
+	-DLLVM_TARGETS_TO_BUILD="AArch64;ARM;X86" -DCMAKE_INSTALL_PREFIX=${3} ${4} ${5})
 
 ##############################################################################
 llvm-configure: ${LLVMSTATE}/llvm-configure
