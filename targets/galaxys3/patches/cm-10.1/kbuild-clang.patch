@@ -1,6 +1,6 @@
---- msm.orig/scripts/Kbuild.include
-+++ msm/scripts/Kbuild.include
-@@ -106,9 +106,32 @@
+--- android_kernel_samsung_d2.orig/scripts/Kbuild.include
++++ android_kernel_samsung_d2/scripts/Kbuild.include
+@@ -102,9 +102,32 @@
  as-instr = $(call try-run,\
  	printf "%b\n" "$(1)" | $(CC) $(KBUILD_AFLAGS) -c -xassembler -o "$$TMP" -,$(2),$(3))
  
@@ -33,7 +33,7 @@
  cc-option = $(call try-run,\
  	$(CC) $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) $(1) -c -x c /dev/null -o "$$TMP",$(1),$(2))
  
-@@ -117,16 +140,18 @@
+@@ -113,16 +136,18 @@
  cc-option-yn = $(call try-run,\
  	$(CC) $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) $(1) -c -x c /dev/null -o "$$TMP",y,n)
  
@@ -57,3 +57,39 @@
  # cc-version
  # Usage gcc-ver := $(call cc-version)
  cc-version = $(shell $(CONFIG_SHELL) $(srctree)/scripts/gcc-version.sh $(CC))
+--- android_kernel_samsung_d2.orig/Makefile
++++ android_kernel_samsung_d2/Makefile
+@@ -331,6 +331,11 @@
+ 
+ export quiet Q KBUILD_VERBOSE
+ 
++ifeq ($(shell $(CC) -v 2>&1 | grep -c "clang version"), 1)
++COMPILER := clang
++else
++COMPILER := gcc
++endif
+ 
+ # Look for make include files relative to root of kernel src
+ MAKEFLAGS += --include-dir=$(srctree)
+@@ -577,6 +582,9 @@
+ # Defaults to vmlinux, but the arch makefile usually adds further targets
+ all: vmlinux
+ 
++# Quiet unused arguments warning from clang
++KBUILD_CPPFLAGS   += $(call cc-option,-Qunused-arguments,)
++
+ ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
+ KBUILD_CFLAGS	+= -Os
+ else
+@@ -596,7 +604,11 @@
+ 
+ # This warning generated too much noise in a regular build.
+ # Use make W=1 to enable this warning (see scripts/Makefile.build)
++ifeq ($(COMPILER),clang)
++KBUILD_CFLAGS += $(call cc-disable-warning, unused-variable)
++else
+ KBUILD_CFLAGS += $(call cc-disable-warning, unused-but-set-variable)
++endif
+ 
+ ifdef CONFIG_FRAME_POINTER
+ KBUILD_CFLAGS	+= -fno-omit-frame-pointer -fno-optimize-sibling-calls
