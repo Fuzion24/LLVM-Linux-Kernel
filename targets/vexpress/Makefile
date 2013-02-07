@@ -68,6 +68,8 @@ include ${TARGETDIR}/vexpress-linaro.mk
 include ${TARGETDIR}/vexpress-ltp.mk
 include ${CONFIG}
 
+LLVM_COMMIT	= "baabdecbb9bf5b32fa81b1e2830ab13076d549f1"
+
 KERNEL_PATCH_DIR+= ${TARGETDIR}/patches
 
 vexpress-help:
