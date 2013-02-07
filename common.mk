@@ -72,7 +72,7 @@ check_llvmlinux_commit_error_msg = (echo "Current HEAD does not match with check
 
 ##############################################################################
 # Git macros used by all subsystems
-gitclone = [ -d ${2}/.git ] || (rm -rf ${2} && git clone ${1} ${2})
+gitclone = [ -d ${2}/.git ] || (rm -rf ${2} && git clone ${1} ${2} ${3})
 gitcheckout = (cd ${1} && git checkout ${2} && ([ -z "${3}" ] || git pull && git checkout ${3}))
 gitcommit = [ ! -d ${1}/.git ] || (cd ${1} && $(call prsetting,${2},`git rev-parse HEAD`))
 gitmove = (cd ${1} && git branch --move ${2} $3 >/dev/null 2>&1)
