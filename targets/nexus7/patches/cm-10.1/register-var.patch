@@ -1,0 +1,68 @@
+Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+Signed-off-by: Behan Webster <behanw@converseincode.com>
+---
+
+--- android_kernel_nexus7.orig/arch/arm/include/asm/thread_info.h
++++ android_kernel_nexus7/arch/arm/include/asm/thread_info.h
+@@ -93,8 +93,9 @@
+ 
+ static inline struct thread_info *current_thread_info(void)
+ {
+-	register unsigned long sp asm ("sp");
+-	return (struct thread_info *)(sp & ~(THREAD_SIZE - 1));
++	return (struct thread_info *)
++		((unsigned long)(__builtin_frame_address(0))
++		& ~(THREAD_SIZE - 1));
+ }
+ 
+ #define thread_saved_pc(tsk)	\
+--- android_kernel_nexus7.orig/arch/arm/kernel/return_address.c
++++ android_kernel_nexus7/arch/arm/kernel/return_address.c
+@@ -39,12 +39,11 @@
+ {
+ 	struct return_address_data data;
+ 	struct stackframe frame;
+-	register unsigned long current_sp asm ("sp");
+ 
+ 	data.level = level + 1;
+ 
+ 	frame.fp = (unsigned long)__builtin_frame_address(0);
+-	frame.sp = current_sp;
++	asm ("mov %0, r13" : "=r" (frame.sp));
+ 	frame.lr = (unsigned long)__builtin_return_address(0);
+ 	frame.pc = (unsigned long)return_address;
+ 
+--- android_kernel_nexus7.orig/arch/arm/kernel/stacktrace.c
++++ android_kernel_nexus7/arch/arm/kernel/stacktrace.c
+@@ -109,11 +109,9 @@
+ 		frame.pc = thread_saved_pc(tsk);
+ #endif
+ 	} else {
+-		register unsigned long current_sp asm ("sp");
+-
+ 		data.no_sched_functions = 0;
+ 		frame.fp = (unsigned long)__builtin_frame_address(0);
+-		frame.sp = current_sp;
++		asm ("mov %0, r13" : "=r" (frame.sp));
+ 		frame.lr = (unsigned long)__builtin_return_address(0);
+ 		frame.pc = (unsigned long)save_stack_trace_tsk;
+ 	}
+--- android_kernel_nexus7.orig/arch/arm/kernel/unwind.c
++++ android_kernel_nexus7/arch/arm/kernel/unwind.c
+@@ -352,7 +352,6 @@
+ void unwind_backtrace(struct pt_regs *regs, struct task_struct *tsk)
+ {
+ 	struct stackframe frame;
+-	register unsigned long current_sp asm ("sp");
+ 
+ 	pr_debug("%s(regs = %p tsk = %p)\n", __func__, regs, tsk);
+ 
+@@ -368,7 +367,7 @@
+ 			 ? regs->ARM_pc : regs->ARM_lr;
+ 	} else if (tsk == current) {
+ 		frame.fp = (unsigned long)__builtin_frame_address(0);
+-		frame.sp = current_sp;
++		asm ("mov %0, r13" : "=r" (frame.sp));
+ 		frame.lr = (unsigned long)__builtin_return_address(0);
+ 		frame.pc = (unsigned long)unwind_backtrace;
+ 	} else {
