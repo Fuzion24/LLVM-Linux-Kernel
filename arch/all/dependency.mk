@@ -29,13 +29,22 @@ RPMDEP_EXTRAS	+= sparse
 
 ##############################################################################
 isdeb		= if [ -f /etc/debian_version ] ; then
-isrpm		= elif [ -f /etc/redhat-release ] ; then
+isrpm		= elif [ -f /etc/redhat-release -o -f /etc/SuSE-release ] ; then
+
+isredhat	= if [ -f /etc/redhat-release ] ; then
+issuse		= elif [ -f /etc/SuSE-release ] ; then
+
 otherwise	= else echo $(1); fi
 
 PKGSYS		:= $(shell \
 	$(call isdeb) echo deb; \
 	$(call isrpm) echo rpm; \
 	$(call otherwise,unkown))
+
+PACKAGER	:= $(shell \
+	$(call isredhat) echo yum; \
+	$(call issuse) echo zypper; \
+	$(call otherwise,unknown))
 
 DEPLISTSTATE	= state/build-dep
 DEPLIST		= $(shell \
@@ -98,11 +107,11 @@ build-dep-install-deb-extras:
 	
 ##############################################################################
 rpmdep	= RPMS=`rpm -q $(1) | awk '/is not installed/ {print $$2}'` ; \
-	[ -z "$$RPMS" ] || ( echo "$(2)"; echo "  sudo yum install" $$RPMS; false )
+	[ -z "$$RPMS" ] || ( echo "$(2)"; echo "  sudo ${PACKAGER} install" $$RPMS; false )
 build-dep-check-rpm:
 	@$(call rpmdep,${RPMDEP},${DEPMSG})
 build-dep-install-rpm:
-	[ -n "${DEPLIST}" ] && sudo yum install ${DEPLIST} || echo "Already installed"
+	[ -n "${DEPLIST}" ] && sudo ${PACKAGER} install ${DEPLIST} || echo "Already installed"
 build-dep-install-rpm-extras:
 	@[ `uname -p | grep -c 64` -eq 0 ] || $(call rpmdep,${RPMDEP_32},${DEPMSG_32})
 	@$(call rpmdep,${RPMDEP_EXTRAS},${DEPMSG_EXTRAS}) || true
@@ -115,7 +124,7 @@ build-dep-old:
 		[ `uname -p | grep -c 64` -eq 0 ] || $(call debdep,${DEBDEP_32},${DEPMSG_32}) ; \
 		$(call debdep,${DEBDEP_EXTRAS},${DEPMSG_EXTRAS}) || true ; \
 	$(call isrpm) \
-		rpm -q $(RPMDEP) >/dev/null 2>&1 || ( echo "sudo yum install $(RPMDEP)"; false ) ; \
+		rpm -q $(RPMDEP) >/dev/null 2>&1 || ( echo "sudo $(PACKAGER) install $(RPMDEP)"; false ) ; \
 	$(call otherwise,"This build system doesn't know how check for dependencies on this platform")
 
 ##############################################################################
@@ -124,6 +133,6 @@ build-dep-install-old:
 	@$(call isdeb) \
 		sudo apt-get install ${DEBDEP}; \
 	$(call isrpm) \
-		sudo yum install ${RPMDEP}; \
+		sudo ${PACKAGER} install ${RPMDEP}; \
 	$(call otherwise,"This build system doesn't know how to install packages for this platform")
 
