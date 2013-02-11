@@ -1,6 +1,6 @@
 --- linux.orig/Makefile
 +++ linux/Makefile
-@@ -314,6 +314,11 @@
+@@ -325,6 +325,11 @@
  
  export quiet Q KBUILD_VERBOSE
  
@@ -12,7 +12,7 @@
  
  # Look for make include files relative to root of kernel src
  MAKEFLAGS += --include-dir=$(srctree)
-@@ -569,6 +574,9 @@
+@@ -580,6 +585,9 @@
  # Defaults to vmlinux, but the arch makefile usually adds further targets
  all: vmlinux
  
@@ -22,16 +22,18 @@
  ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
  KBUILD_CFLAGS	+= -Os
  else
-@@ -598,7 +606,12 @@
+@@ -609,7 +617,14 @@
  
  # This warning generated too much noise in a regular build.
  # Use make W=1 to enable this warning (see scripts/Makefile.build)
-+
 +ifeq ($(COMPILER),clang)
 +KBUILD_CFLAGS += $(call cc-disable-warning, unused-variable)
 +else
  KBUILD_CFLAGS += $(call cc-disable-warning, unused-but-set-variable)
 +endif
++
++# Quiet clang warning: comparison of unsigned expression < 0 is always false
++KBUILD_CFLAGS += $(call cc-disable-warning, tautological-compare)
  
  ifdef CONFIG_FRAME_POINTER
  KBUILD_CFLAGS	+= -fno-omit-frame-pointer -fno-optimize-sibling-calls
