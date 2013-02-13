@@ -1,5 +1,14 @@
 --- android_kernel_samsung_d2.orig/arch/arm/mach-msm/board-m2_att.c
 +++ android_kernel_samsung_d2/arch/arm/mach-msm/board-m2_att.c
+@@ -1577,7 +1577,7 @@
+ 	}
+ 	if (i == 10) {
+ 		pr_err("%s: fail to get battery ps\n", __func__);
+-		return;
++		return CABLE_TYPE_NONE;
+ 	}
+ #endif
+ 
 @@ -5129,7 +5129,7 @@
  	if (ret) {
  		pr_err("%s: ldo bias gpio %d request"
