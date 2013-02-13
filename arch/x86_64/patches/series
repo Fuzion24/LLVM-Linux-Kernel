@@ -27,3 +27,4 @@
 0011-Change-section-for-acpiosxf.h-to-__init.patch
 0040-Change-comparison-statement-for-build-with-clang.patch
 0041-Fix-statement-in-i915-driver.patch
+thinkpad-acpi-nested-functions.patch
