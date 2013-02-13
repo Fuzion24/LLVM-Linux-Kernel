@@ -1,8 +1,20 @@
-Signed-off-by: Behan Webster <behanw@converseincode.com>
+From 49d67f06712572fcdd07644abf1516cebde417f1 Mon Sep 17 00:00:00 2001
+From: Behan Webster <behanw@converseincode.com>
+Date: Tue, 12 Feb 2013 22:25:57 -0500
+Subject: Remove nested functions from the Thinkpad ACPI driver.
 
---- linux.orig/drivers/platform/x86/thinkpad_acpi.c
-+++ linux/drivers/platform/x86/thinkpad_acpi.c
-@@ -2328,53 +2328,55 @@
+Remove the use of nested functions from the Thinkpad ACPI driver.
+
+Signed-off-by: Behan Webster <behanw@converseincode.com>
+---
+ drivers/platform/x86/thinkpad_acpi.c |   86 ++++++++++++++++++----------------
+ 1 file changed, 45 insertions(+), 41 deletions(-)
+
+diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
+index f946ca7..b85fec0 100644
+--- a/drivers/platform/x86/thinkpad_acpi.c
++++ b/drivers/platform/x86/thinkpad_acpi.c
+@@ -2328,53 +2328,55 @@ static void hotkey_read_nvram(struct tp_nvram_state *n, const u32 m)
  	}
  }
  
@@ -28,12 +40,21 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
 -		if (event_mask & (1 << __scancode)) \
 -			tpacpi_hotkey_send_key(__scancode); \
 -	} while (0)
--
++do { \
++	if (event_mask & (1 << __scancode)) \
++		tpacpi_hotkey_send_key(__scancode); \
++} while (0)
+ 
 -	void issue_volchange(const unsigned int oldvol,
 -			     const unsigned int newvol)
 -	{
 -		unsigned int i = oldvol;
--
++static void issue_volchange(const unsigned int oldvol,
++			    const unsigned int newvol,
++			    const u32 event_mask)
++{
++	unsigned int i = oldvol;
+ 
 -		while (i > newvol) {
 -			TPACPI_MAY_SEND_KEY(TP_ACPI_HOTKEYSCAN_VOLUMEDOWN);
 -			i--;
@@ -42,17 +63,6 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
 -			TPACPI_MAY_SEND_KEY(TP_ACPI_HOTKEYSCAN_VOLUMEUP);
 -			i++;
 -		}
-+do { \
-+	if (event_mask & (1 << __scancode)) \
-+		tpacpi_hotkey_send_key(__scancode); \
-+} while (0)
-+
-+static void issue_volchange(const unsigned int oldvol,
-+			    const unsigned int newvol,
-+			    const u32 event_mask)
-+{
-+	unsigned int i = oldvol;
-+
 +	while (i > newvol) {
 +		TPACPI_MAY_SEND_KEY(TP_ACPI_HOTKEYSCAN_VOLUMEDOWN);
 +		i--;
@@ -67,7 +77,12 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
 -				    const unsigned int newbrt)
 -	{
 -		unsigned int i = oldbrt;
--
++static void issue_brightnesschange(const unsigned int oldbrt,
++				   const unsigned int newbrt,
++				   const u32 event_mask)
++{
++	unsigned int i = oldbrt;
+ 
 -		while (i > newbrt) {
 -			TPACPI_MAY_SEND_KEY(TP_ACPI_HOTKEYSCAN_FNEND);
 -			i--;
@@ -76,20 +91,14 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
 -			TPACPI_MAY_SEND_KEY(TP_ACPI_HOTKEYSCAN_FNHOME);
 -			i++;
 -		}
-+static void issue_brightnesschange(const unsigned int oldbrt,
-+				   const unsigned int newbrt,
-+				   const u32 event_mask)
-+{
-+	unsigned int i = oldbrt;
-+
 +	while (i > newbrt) {
 +		TPACPI_MAY_SEND_KEY(TP_ACPI_HOTKEYSCAN_FNEND);
 +		i--;
-+	}
+ 	}
 +	while (i < newbrt) {
 +		TPACPI_MAY_SEND_KEY(TP_ACPI_HOTKEYSCAN_FNHOME);
 +		i++;
- 	}
++	}
 +}
 +
 +static void hotkey_compare_and_issue_event(struct tp_nvram_state *oldn,
@@ -99,7 +108,7 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
  
  	TPACPI_COMPARE_KEY(TP_ACPI_HOTKEYSCAN_THINKPAD, thinkpad_toggle);
  	TPACPI_COMPARE_KEY(TP_ACPI_HOTKEYSCAN_FNSPACE, zoom_toggle);
-@@ -2409,7 +2411,8 @@
+@@ -2409,7 +2411,8 @@ static void hotkey_compare_and_issue_event(struct tp_nvram_state *oldn,
  		    oldn->volume_level != newn->volume_level) {
  			/* recently muted, or repeated mute keypress, or
  			 * multiple presses ending in mute */
@@ -109,7 +118,7 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
  			TPACPI_MAY_SEND_KEY(TP_ACPI_HOTKEYSCAN_MUTE);
  		}
  	} else {
-@@ -2419,7 +2422,8 @@
+@@ -2419,7 +2422,8 @@ static void hotkey_compare_and_issue_event(struct tp_nvram_state *oldn,
  			TPACPI_MAY_SEND_KEY(TP_ACPI_HOTKEYSCAN_VOLUMEUP);
  		}
  		if (oldn->volume_level != newn->volume_level) {
@@ -119,7 +128,7 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
  		} else if (oldn->volume_toggle != newn->volume_toggle) {
  			/* repeated vol up/down keypress at end of scale ? */
  			if (newn->volume_level == 0)
-@@ -2432,7 +2436,7 @@
+@@ -2432,7 +2436,7 @@ static void hotkey_compare_and_issue_event(struct tp_nvram_state *oldn,
  	/* handle brightness */
  	if (oldn->brightness_level != newn->brightness_level) {
  		issue_brightnesschange(oldn->brightness_level,
@@ -128,3 +137,6 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
  	} else if (oldn->brightness_toggle != newn->brightness_toggle) {
  		/* repeated key presses that didn't change state */
  		if (newn->brightness_level == 0)
+-- 
+1.7.10.4
+
