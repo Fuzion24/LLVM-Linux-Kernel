@@ -95,7 +95,7 @@ LOGDIR		= ${TARGETDIR}/log
 PATCHDIR	= ${TARGETDIR}/patches
 SRCDIR		= ${TARGETDIR}/src
 STATEDIR	= ${TARGETDIR}/state
-TMPDIR		= ${TARGETDIR}/tmp
+TMPDIR		= $(subst ${TOPDIR},${BUILDROOT},${TARGETDIR}/tmp)
 
 TMPDIRS		+= ${TMPDIR}
 
@@ -293,7 +293,7 @@ state/kernel-gcc-configure: state/kernel-gcc-patch
 
 #############################################################################
 kernel-build: state/kernel-build
-state/kernel-build: ${LLVMSTATE}/clang-build ${STATE_TOOLCHAIN} state/kernel-configure
+state/kernel-build: ${TMPDIR} ${LLVMSTATE}/clang-build ${STATE_TOOLCHAIN} state/kernel-configure
 	$(call assert,-n "${MAKE_KERNEL}",MAKE_KERNEL undefined)
 	@[ -d ${KERNEL_BUILD} ] || ($(call leavestate,${STATEDIR},kernel-configure) && ${MAKE} kernel-configure)
 	@$(MAKE) kernel-quilt-link-patches
@@ -307,8 +307,8 @@ state/kernel-build: ${LLVMSTATE}/clang-build ${STATE_TOOLCHAIN} state/kernel-con
 	$(call state,$@,done)
 
 #############################################################################
-kernel-gcc-build: ${STATE_TOOLCHAIN} state/kernel-gcc-build
-state/kernel-gcc-build: ${CROSS_GCC} state/kernel-gcc-configure
+kernel-gcc-build: state/kernel-gcc-build
+state/kernel-gcc-build: ${TMPDIR} ${CROSS_GCC} ${STATE_TOOLCHAIN} state/kernel-gcc-configure
 	$(call assert,-n "${MAKE_KERNEL}",MAKE_KERNEL undefined)
 	@[ -d ${KERNELGCC_BUILD} ] || ($(call leavestate,${STATEDIR},kernel-gcc-configure) && ${MAKE} kernel-gcc-configure)
 	@$(MAKE) kernel-quilt-link-patches
