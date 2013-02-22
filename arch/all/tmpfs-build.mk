@@ -40,6 +40,13 @@ tmpfs-build-help:
 	@echo "* make tmpfs-build-teardown  - Unmount tmpfs build directory"
 	@echo "* make tmpfs-build-clean     - Remount tmpfs build directory"
 
+#############################################################################
+check-tmpfs = if [ "${1}" == "${2}" ] ; then \
+		[ -f ${1}/.config ] || ${MAKE} ${3} ; \
+	else \
+		[ -d ${2} ] || ${MAKE} ${3} ; \
+	fi
+
 ##############################################################################
 tmpfs-build-setup:
 	@mkdir -p ${TOPDIR}/build

@@ -362,13 +362,6 @@ kernel-gcc-sync: state/kernel-gcc-fetch kernel-sync kernel-gcc-clean
 	@$(call gitsync,${KERNELGCC},${KERNEL_COMMIT},${KERNEL_BRANCH},${KERNEL_TAG})
 
 #############################################################################
-check-tmpfs = if [ "${1}" == "${2}" ] ; then \
-		[ -f ${1}/.config ] || ${MAKE} ${3} ; \
-	else \
-		[ -d ${2} ] || ${MAKE} ${3} ; \
-	fi
-
-#############################################################################
 kernel-clean kernel-mrproper:
 	@$(call makemrproper,${KERNELDIR})
 	@rm -f ${LOGDIR}/*.log
