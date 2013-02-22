@@ -147,7 +147,7 @@ kernel-quilt-clean-broken-symlinks:
 
 ##############################################################################
 # Move updated patches back to their proper place, and link patch files into target patches dir
-kernel-quilt-link-patches: ${QUILT_GITIGNORE}
+kernel-quilt-link-patches refresh: ${QUILT_GITIGNORE}
 	$(MAKE) kernel-quilt-update-series-dot-target kernel-quilt-clean-broken-symlinks
 	@$(call banner,Linking quilt patches for kernel...)
 	@REVDIRS=`$(call reverselist,${KERNEL_PATCH_DIR})` ; \
