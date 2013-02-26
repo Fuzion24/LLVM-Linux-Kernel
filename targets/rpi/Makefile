@@ -24,6 +24,7 @@
 
 TARGETDIR	= ${CURDIR}
 TOPDIR		= $(realpath ${TARGETDIR}/../..)
+CROSS_ARM_TOOLCHAIN = codesourcery
 
 KERNEL_CFG	= ${TARGETDIR}/config_rpi
 KERNEL_BRANCH	= rpi-3.2.27
@@ -32,6 +33,10 @@ KERNELDIR	= ${SRCDIR}/rpi
 
 MARCH		= armv6
 MFLOAT		= -mfloat-abi=hard -mfpu=vfp
+
+BUILDROOT_ARCH  = rpi
+BUILDROOT_CONFIG= config_rpi_buildroot
+TOOLCHAINDIR    = $(ARM_CROSS_GCC_TOOLCHAIN)
 
 all: prep kernel-build
 
