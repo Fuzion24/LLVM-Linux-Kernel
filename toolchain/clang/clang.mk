@@ -33,6 +33,7 @@ LLVMPATCHES	= ${LLVMTOP}/patches
 # Workaround for LLVM breakage
 # undefined reference to `.Lline_table_start0'
 LLVM_COMMIT	= "baabdecbb9bf5b32fa81b1e2830ab13076d549f1"
+CLANG_COMMIT	= "953a61f26bf79932b9699b09add4c388764de170"
 
 DEBDEP		+= cmake flex g++ git-svn subversion zlib1g-dev
 RPMDEP		+= cmake flex subversion zlib-devel
