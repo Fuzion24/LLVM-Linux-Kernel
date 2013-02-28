@@ -26,8 +26,9 @@ TARGETDIR	= ${CURDIR}
 TOPDIR		= $(realpath ${TARGETDIR}/../..)
 CROSS_ARM_TOOLCHAIN = codesourcery
 
-#KERNEL_CFG	= ${TARGETDIR}/config_vexpress
-KERNEL_CFG	= ${KERNELDIR}/arch/arm/configs/vexpress_defconfig
+# Need to add EXT4 support to vexpress_defconfig
+KERNEL_CFG	= ${TARGETDIR}/config_vexpress
+#KERNEL_CFG	= ${KERNELDIR}/arch/arm/configs/vexpress_defconfig
 KERNEL_DTB	= arch/arm/boot/dts/vexpress-v2p-ca9.dtb
 ZIMAGE		= arch/arm/boot/zImage
 
