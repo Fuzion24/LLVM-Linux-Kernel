@@ -105,7 +105,7 @@ Patch from series at http://lists.cs.uiuc.edu/pipermail/llvm-commits/Week-of-Mon
 +///  ::= .octa [ hexconstant (, hexconstant)* ]
 +bool AsmParser::ParseDirectiveOctaValue() {
 +  if (getLexer().isNot(AsmToken::EndOfStatement)) {
-+    CheckForValidSection();
++    checkForValidSection();
 +
 +    for (;;) {
 +      if (Lexer.getKind() != AsmToken::Integer)
