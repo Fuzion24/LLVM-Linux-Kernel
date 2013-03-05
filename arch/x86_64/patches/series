@@ -28,3 +28,5 @@
 0040-Change-comparison-statement-for-build-with-clang.patch
 0041-Fix-statement-in-i915-driver.patch
 thinkpad-acpi-nested-functions.patch
+0001-updates-to-latest-patchset-unsplit.-TODO.patch
+remove_perf_event_intel_uncore_to_fix_boot_crash.patch
