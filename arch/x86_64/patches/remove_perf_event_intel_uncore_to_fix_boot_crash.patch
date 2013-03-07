@@ -1,0 +1,8 @@
+--- linux.orig/arch/x86/kernel/cpu/perf_event_intel_uncore.c
++++ linux/arch/x86/kernel/cpu/perf_event_intel_uncore.c
+@@ -2954,4 +2954,4 @@
+ fail:
+ 	return ret;
+ }
+-device_initcall(intel_uncore_init);
++//device_initcall(intel_uncore_init);

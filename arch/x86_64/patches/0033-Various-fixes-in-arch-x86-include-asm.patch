@@ -21,10 +21,8 @@ Description:
  arch/x86/include/asm/processor.h |    2 +-
  5 Dateien geändert, 15 Zeilen hinzugefügt(+), 4 Zeilen entfernt(-)
 
-diff --git a/arch/x86/include/asm/dwarf2.h b/arch/x86/include/asm/dwarf2.h
-index f6f1598..8c4ae73 100644
---- a/arch/x86/include/asm/dwarf2.h
-+++ b/arch/x86/include/asm/dwarf2.h
+--- linux.orig/arch/x86/include/asm/dwarf2.h
++++ linux/arch/x86/include/asm/dwarf2.h
 @@ -53,7 +53,7 @@
   * Due to the structure of pre-exisiting code, don't use assembler line
   * comment character # to ignore the arguments. Instead, use a dummy macro.
@@ -34,10 +32,8 @@ index f6f1598..8c4ae73 100644
  .endm
  
  #define CFI_STARTPROC		cfi_ignore
-diff --git a/arch/x86/include/asm/ftrace.h b/arch/x86/include/asm/ftrace.h
-index 9a25b52..6c7ee90 100644
---- a/arch/x86/include/asm/ftrace.h
-+++ b/arch/x86/include/asm/ftrace.h
+--- linux.orig/arch/x86/include/asm/ftrace.h
++++ linux/arch/x86/include/asm/ftrace.h
 @@ -32,6 +32,17 @@
  	addq $(SS+8-\skip), %rsp
  	.endm
@@ -56,23 +52,8 @@ index 9a25b52..6c7ee90 100644
  #endif
  
  #ifdef CONFIG_FUNCTION_TRACER
-diff --git a/arch/x86/include/asm/init.h b/arch/x86/include/asm/init.h
-index adcc0ae..ddf6871 100644
---- a/arch/x86/include/asm/init.h
-+++ b/arch/x86/include/asm/init.h
-@@ -7,7 +7,7 @@ extern void __init early_ioremap_page_table_range_init(void);
- 
- extern void __init zone_sizes_init(void);
- 
--extern unsigned long __init
-+extern unsigned long __meminit
- kernel_physical_mapping_init(unsigned long start,
- 			     unsigned long end,
- 			     unsigned long page_size_mask);
-diff --git a/arch/x86/include/asm/mmconfig.h b/arch/x86/include/asm/mmconfig.h
-index 9b119da..7052c3e 100644
---- a/arch/x86/include/asm/mmconfig.h
-+++ b/arch/x86/include/asm/mmconfig.h
+--- linux.orig/arch/x86/include/asm/mmconfig.h
++++ linux/arch/x86/include/asm/mmconfig.h
 @@ -3,7 +3,7 @@
  
  #ifdef CONFIG_PCI_MMCONFIG
@@ -82,11 +63,9 @@ index 9b119da..7052c3e 100644
  #else
  static inline void fam10h_check_enable_mmcfg(void) { }
  static inline void check_enable_amd_mmconf_dmi(void) { }
-diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
-index ad1fc85..208a744 100644
---- a/arch/x86/include/asm/processor.h
-+++ b/arch/x86/include/asm/processor.h
-@@ -108,7 +108,7 @@ struct cpuinfo_x86 {
+--- linux.orig/arch/x86/include/asm/processor.h
++++ linux/arch/x86/include/asm/processor.h
+@@ -107,7 +107,7 @@
  	__u32			extended_cpuid_level;
  	/* Maximum supported CPUID level, -1=no CPUID: */
  	int			cpuid_level;
@@ -95,6 +74,3 @@ index ad1fc85..208a744 100644
  	char			x86_vendor_id[16];
  	char			x86_model_id[64];
  	/* in KB - valid for CPUS which support this call: */
--- 
-1.7.10.4
-
