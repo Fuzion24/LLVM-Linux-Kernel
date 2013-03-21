@@ -1,3 +1,7 @@
+# FIX: unintended variable name reuse
+# Signed-off-by: PaX Team <pageexec@freemail.hu>
+# Signed-off-by: Jan-Simon Moeller <dl9pf@gmx.de>
+#
 diff --git a/arch/x86/kernel/cpu/perf_event_intel_uncore.c b/arch/x86/kernel/cpu/perf_event_intel_uncore.c
 index b43200d..e878b26 100644
 --- a/arch/x86/kernel/cpu/perf_event_intel_uncore.c
@@ -7,7 +11,7 @@ index b43200d..e878b26 100644
  {
  	struct intel_uncore_pmu *pmus;
 -	struct attribute_group *events_group;
-+       struct attribute_group *attr_group;
++	struct attribute_group *attr_group;
  	struct attribute **attrs;
  	int i, j;
  
@@ -18,23 +22,23 @@ index b43200d..e878b26 100644
 -		events_group = kzalloc(sizeof(struct attribute *) * (i + 1) +
 -					sizeof(*events_group), GFP_KERNEL);
 -		if (!events_group)
-+               attr_group = kzalloc(sizeof(struct attribute *) * (i + 1) +
-+                                       sizeof(*attr_group), GFP_KERNEL);
-+               if (!attr_group)
++		attr_group = kzalloc(sizeof(struct attribute *) * (i + 1) +
++					sizeof(*attr_group), GFP_KERNEL);
++		if (!attr_group)
  			goto fail;
  
 -		attrs = (struct attribute **)(events_group + 1);
 -		events_group->name = "events";
 -		events_group->attrs = attrs;
-+               attrs = (struct attribute **)(attr_group + 1);
-+               attr_group->name = "events";
-+               attr_group->attrs = attrs;
++		attrs = (struct attribute **)(attr_group + 1);
++		attr_group->name = "events";
++		attr_group->attrs = attrs;
  
  		for (j = 0; j < i; j++)
  			attrs[j] = &type->event_descs[j].attr.attr;
  
 -		type->events_group = events_group;
-+               type->events_group = attr_group;
++		type->events_group = attr_group;
  	}
  
  	type->pmu_group = &uncore_pmu_attr_group;
