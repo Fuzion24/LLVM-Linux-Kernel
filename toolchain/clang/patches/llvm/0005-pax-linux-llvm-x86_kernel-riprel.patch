@@ -1,3 +1,8 @@
+#[21:27:48] <pipacs> it's an optimization to make use of rip relative addressing for kernel mode 
+#                    (something that gcc also does when mcmodel=kernel is active)
+#[21:28:31] <pipacs> it reduces the number of relocations that probably nobody cares about 
+#                    'cos reloctable kernel support works differently on amd64 than on i386
+###
 From c1f164857e997249b885141cc6e2df7832395b90 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
 Date: Tue, 10 Jul 2012 13:44:13 +0200

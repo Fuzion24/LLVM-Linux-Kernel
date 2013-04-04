@@ -1,3 +1,9 @@
+#[21:38:01] <pipacs> that's a correctness fix, it's not adding new opcodes
+#           but enforces a certain relocation type for some additional 
+#           insns that need it
+#[21:39:11] <pipacs> now it's probably not the optimal implementation 
+#           but i couldn't find a way to get the needed metadata out 
+#           of llvm to reduce the big if into a few conditionals
 From 666bfad7055f0cfad8608f27898bab150df1edbc Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
 Date: Tue, 10 Jul 2012 12:35:25 +0200
