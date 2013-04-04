@@ -1,3 +1,26 @@
+# WAS ALREADY MERGED BUT REVERTED AGAIN !
+#
+##commit 360355db57d15ce3c90051b05cca993a4c5ee8db                                                                      
+#Author: Weiming Zhao <weimingz@codeaurora.org>                                                                       
+#Date:   Wed Mar 6 02:08:54 2013 +0000                                                                                
+#                                                                                                                     
+#    revert r176531 due to clan-native-arm fails                                                                      
+#                                                                                                                     
+#                                                                                                                                   
+#                                                                                                                                   
+#    git-svn-id: https://llvm.org/svn/llvm-project/cfe/trunk@176544 91177308-0d34-0410-b5e6-96231b3b80d8                            
+#                                                                                                                                   
+##commit 46a2290c030597e26022fe2b535c8e4b0d30a765                                                                                    
+#Author: Weiming Zhao <weimingz@codeaurora.org>                                                                                     
+#Date:   Tue Mar 5 23:27:21 2013 +0000                                                                                              
+#                                                                                                                                   
+#    PR 11326: Lack diagnosic message when ABI conflicts on ARM                                                                     
+#                                                                                                                                   
+#    When both Triple and -mabi are used, it may result into conflicting ABI value.                                                 
+#                                                                                                                                                      
+#                                                                                                                                                      
+#    git-svn-id: https://llvm.org/svn/llvm-project/cfe/trunk@176531 91177308-0d34-0410-b5e6-96231b3b80d8     
+
 From 792f3a195c3ff42614a064f8a2ba45cd7ec62eac Mon Sep 17 00:00:00 2001
 From: Weiming Zhao <weimingz@codeaurora.org>
 Date: Tue, 18 Sep 2012 23:09:56 -0700
