@@ -52,7 +52,7 @@ tmpfs-build-setup:
 	@mkdir -p ${TOPDIR}/build
 	@mount | egrep -q "tmpfs on ${TOPDIR}/build .* tmpfs" \
 		&& echo "${TOPDIR}/build already mounted" \
-		|| ( sudo mount -o uid=`id -u`,gid=`id -g`,mode=775 -t tmpfs tmpfs ${TOPDIR}/build ; \
+		|| ( sudo mount -o uid=`id -u`,gid=`id -g`,mode=775 -t tmpfs -o size=16G tmpfs ${TOPDIR}/build ; \
 			echo "The build will automatically look for this build directory." ; \
 			echo "However, if you want to force the use of this directory," ; \
 			echo "run the following once before building:" ; \
