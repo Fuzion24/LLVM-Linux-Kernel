@@ -29,6 +29,8 @@ TOPDIR	= $(realpath ${CURDIR}/../..)
 # Normally the toolchain would be built from one of the target directories
 all: warning clang-build
 
+clean: llvm-clean
+
 warning:
 	@$(call banner,Convenience Makefile. Normally this is run from one of the target directories)
 
