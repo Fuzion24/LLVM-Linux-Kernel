@@ -17,19 +17,14 @@ Description:
  lib/dynamic_debug.c |    2 +-
  1 Datei geändert, 1 Zeile hinzugefügt(+), 1 Zeile entfernt(-)
 
-diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
-index e7f7d99..a2090b3 100644
---- a/lib/dynamic_debug.c
-+++ b/lib/dynamic_debug.c
-@@ -1008,7 +1008,7 @@ static int __init dynamic_debug_init(void)
+--- linux.orig/lib/dynamic_debug.c
++++ linux/lib/dynamic_debug.c
+@@ -1033,7 +1033,7 @@
  	int n = 0, entries = 0, modct = 0;
  	int verbose_bytes = 0;
  
 -	if (__start___verbose == __stop___verbose) {
 +	if (&__start___verbose == &__stop___verbose) {
- 		pr_warn("_ddebug table is empty in a "
- 			"CONFIG_DYNAMIC_DEBUG build");
+ 		pr_warn("_ddebug table is empty in a CONFIG_DYNAMIC_DEBUG build\n");
  		return 1;
--- 
-1.7.10.4
-
+ 	}
