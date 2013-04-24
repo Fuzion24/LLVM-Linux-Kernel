@@ -31,6 +31,8 @@ KERNEL_BRANCH	= rpi-3.2.27
 KERNEL_GIT	= https://github.com/raspberrypi/linux.git
 KERNELDIR	= ${SRCDIR}/rpi
 
+KERNEL_REPO_PATCHES=${KERNEL_BRANCH}
+
 MARCH		= armv6
 MFLOAT		= -mfloat-abi=hard -mfpu=vfp
 
@@ -41,7 +43,6 @@ TOOLCHAINDIR    = $(ARM_CROSS_GCC_TOOLCHAIN)
 all: prep kernel-build
 
 .PHONY: clean mrproper
-
 
 include ${TOPDIR}/common.mk
 include ${ARCHDIR}/arm/arm.mk
