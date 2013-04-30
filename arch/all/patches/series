@@ -7,7 +7,6 @@
 0044-Fix-bitoperation-for-compilation-with-clang.patch
 0046-Remove-unneeded-braces.patch
 0047-Fix-braces-for-compilation-with-clang.patch
-0050-Add-cast-for-compilation-with-clang.patch
 1000-aligned-attribute.patch
 1001-cmpxchg-local-fix-uninitialized-return-code.patch
 1002-compiler-clang.patch
