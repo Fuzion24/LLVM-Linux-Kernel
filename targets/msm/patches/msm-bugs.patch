@@ -64,3 +64,42 @@
 +#define TRACE_INCLUDE_PATH ../mach-msm
  #define TRACE_INCLUDE_FILE trace_rpm_smd
  #include <trace/define_trace.h>
+--- msm.orig/arch/arm/configs/msm8974-perf_defconfig
++++ msm/arch/arm/configs/msm8974-perf_defconfig
+@@ -443,15 +443,7 @@
+ CONFIG_IOMMU_PGTABLES_L2=y
+ CONFIG_MOBICORE_SUPPORT=m
+ CONFIG_MOBICORE_API=m
+-CONFIG_CORESIGHT=y
+-CONFIG_CORESIGHT_TMC=y
+-CONFIG_CORESIGHT_TPIU=y
+-CONFIG_CORESIGHT_FUNNEL=y
+-CONFIG_CORESIGHT_REPLICATOR=y
+-CONFIG_CORESIGHT_STM=y
+-CONFIG_CORESIGHT_ETM=y
+-CONFIG_CORESIGHT_ETM_PCSAVE_DEFAULT_ENABLE=y
+-CONFIG_CORESIGHT_EVENT=m
++CONFIG_CORESIGHT=n
+ CONFIG_BIF=y
+ CONFIG_BIF_QPNP=y
+ CONFIG_EXT2_FS=y
+--- msm.orig/drivers/gpu/msm/kgsl_iommu.c
++++ msm/drivers/gpu/msm/kgsl_iommu.c
+@@ -954,7 +954,7 @@
+  *
+  * Return - int - number of commands.
+  */
+-inline unsigned int kgsl_iommu_sync_lock(struct kgsl_mmu *mmu,
++unsigned int kgsl_iommu_sync_lock(struct kgsl_mmu *mmu,
+ 						unsigned int *cmds)
+ {
+ 	struct kgsl_device *device = mmu->device;
+@@ -1012,7 +1012,7 @@
+  *
+  * Return - int - number of commands.
+  */
+-inline unsigned int kgsl_iommu_sync_unlock(struct kgsl_mmu *mmu,
++unsigned int kgsl_iommu_sync_unlock(struct kgsl_mmu *mmu,
+ 					unsigned int *cmds)
+ {
+ 	struct kgsl_device *device = mmu->device;
