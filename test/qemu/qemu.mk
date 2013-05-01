@@ -34,7 +34,7 @@ QEMUBINDIR	= ${QEMUINSTALLDIR}/bin
 
 QEMU_TARGETS	= qemu qemu-[fetch,configure,build,clean,sync] qemu-patch-applied qemu-version
 
-DEBDEP		+= libfdt-dev libglib2.0-dev
+DEBDEP		+= libfdt-dev libglib2.0-dev libpixman-1-dev
 RPMDEP		+= 
 
 TARGETS_TEST		+= ${QEMU_TARGETS}
@@ -50,9 +50,11 @@ VERSION_TARGETS		+= qemu-version
 
 .PHONY:		${QEMU_TARGETS}
 
+#QEMU_GIT	= "git://git.linaro.org/qemu/qemu-linaro.git"
 QEMU_GIT	= "git://git.qemu.org/qemu.git"
 #QEMU_BRANCH	= "stable-1.1"
 QEMU_BRANCH	= "master"
+#QEMU_COMMIT	= 6d6c9f59ca1b1a76ade7ad868bef191818f58819
 
 qemu-help:
 	@echo
@@ -91,8 +93,8 @@ ${QEMUSTATE}/qemu-configure: ${QEMUSTATE}/qemu-patch
 	@$(call banner,Configure QEMU...)
 	@mkdir -p ${QEMUBUILDDIR}
 	(cd ${QEMUBUILDDIR} && ${QEMUSRCDIR}/configure \
-		--target-list=arm-softmmu,mips-softmmu,i386-softmmu,x86_64-softmmu --disable-kvm --disable-vnc \
-		--disable-sdl --audio-drv-list="" --audio-card-list="" --enable-fdt \
+		--target-list=arm-softmmu,i386-softmmu,x86_64-softmmu --disable-kvm --disable-vnc \
+		--audio-drv-list="" --audio-card-list="" --enable-fdt --enable-sdl \
 		--disable-docs --prefix=${QEMUINSTALLDIR})
 	$(call state,$@,qemu-build)
 
