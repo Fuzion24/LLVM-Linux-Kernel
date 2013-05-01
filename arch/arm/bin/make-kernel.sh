@@ -31,7 +31,7 @@ EXTRAFLAGS=$*
 if [ -z "$USEGCC" ]; then
 	CC="clang -gcc-toolchain $COMPILER_PATH" # $CLANGFLAGS"
 else
-	CC=gcc
+	CC=${CROSS_COMPILE}gcc
 fi
 
 JOBS=${JOBS:-`getconf _NPROCESSORS_ONLN`}
@@ -67,8 +67,8 @@ function build_env() {
 	echo "export USE_CCACHE=$USE_CCACHE"
 	echo "export V=$V"
 	echo "---------------------------------------------------------------------"
-	echo "${CROSS_COMPILE}$CC -print-file-name=include"
-	${CROSS_COMPILE}$CC -print-file-name=include
+	echo "$CC -print-file-name=include"
+	$CC -print-file-name=include
 	echo make $CCOPTS ${CC:+CC=\"$CC\"} ${CFLAGS:+CFLAGS_KERNEL=\"$CFLAGS\"} ${CFLAGS:+CFLAGS_MODULE=\"$CFLAGS\"} $KERNEL_MAKE_TARGETS
 }
 build_env
