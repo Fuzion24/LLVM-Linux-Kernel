@@ -50,19 +50,6 @@ Index: msm/arch/arm/mach-msm/pil-gss.c
  	.probe = pil_gss_probe,
  	.remove = __devexit_p(pil_gss_remove),
  	.driver = {
-Index: msm/arch/arm/mach-msm/pil-q6v4.c
-===================================================================
---- msm.orig/arch/arm/mach-msm/pil-q6v4.c
-+++ msm/arch/arm/mach-msm/pil-q6v4.c
-@@ -441,7 +441,7 @@
- 	return 0;
- }
- 
--static struct platform_driver pil_q6v4_driver = {
-+static struct platform_driver pil_q6v4_driver  __refdata =  {
- 	.probe = pil_q6v4_driver_probe,
- 	.remove = __devexit_p(pil_q6v4_driver_exit),
- 	.driver = {
 Index: msm/arch/arm/mach-msm/pil-riva.c
 ===================================================================
 --- msm.orig/arch/arm/mach-msm/pil-riva.c
@@ -245,58 +232,6 @@ Index: msm/drivers/media/radio/radio-iris.c
  	.driver = {
  		.owner  = THIS_MODULE,
  		.name   = "iris_fm",
-Index: msm/drivers/media/video/msm/csi/msm_csid.c
-===================================================================
---- msm.orig/drivers/media/video/msm/csi/msm_csid.c
-+++ msm/drivers/media/video/msm/csi/msm_csid.c
-@@ -624,7 +624,7 @@
- 
- MODULE_DEVICE_TABLE(of, msm_csid_dt_match);
- 
--static struct platform_driver csid_driver = {
-+static struct platform_driver csid_driver  __initdata =  {
- 	.probe = csid_probe,
- 	.driver = {
- 		.name = MSM_CSID_DRV_NAME,
-Index: msm/drivers/media/video/msm/csi/msm_csiphy.c
-===================================================================
---- msm.orig/drivers/media/video/msm/csi/msm_csiphy.c
-+++ msm/drivers/media/video/msm/csi/msm_csiphy.c
-@@ -440,7 +440,7 @@
- 
- MODULE_DEVICE_TABLE(of, msm_csiphy_dt_match);
- 
--static struct platform_driver csiphy_driver = {
-+static struct platform_driver csiphy_driver  __initdata =  {
- 	.probe = csiphy_probe,
- 	.driver = {
- 		.name = MSM_CSIPHY_DRV_NAME,
-Index: msm/drivers/media/video/msm/csi/msm_ispif.c
-===================================================================
---- msm.orig/drivers/media/video/msm/csi/msm_ispif.c
-+++ msm/drivers/media/video/msm/csi/msm_ispif.c
-@@ -903,7 +903,7 @@
- 
- MODULE_DEVICE_TABLE(of, msm_ispif_dt_match);
- 
--static struct platform_driver ispif_driver = {
-+static struct platform_driver ispif_driver  __initdata =  {
- 	.probe = ispif_probe,
- 	.driver = {
- 		.name = MSM_ISPIF_DRV_NAME,
-Index: msm/drivers/media/video/msm/io/msm_camera_i2c_mux.c
-===================================================================
---- msm.orig/drivers/media/video/msm/io/msm_camera_i2c_mux.c
-+++ msm/drivers/media/video/msm/io/msm_camera_i2c_mux.c
-@@ -163,7 +163,7 @@
- 	return 0;
- }
- 
--static struct platform_driver i2c_mux_driver = {
-+static struct platform_driver i2c_mux_driver  __initdata =  {
- 	.probe = i2c_mux_probe,
- 	.driver = {
- 		.name = MSM_I2C_MUX_DRV_NAME,
 Index: msm/drivers/mfd/pm8038-core.c
 ===================================================================
 --- msm.orig/drivers/mfd/pm8038-core.c
@@ -505,19 +440,6 @@ Index: msm/drivers/thermal/msm_tsens.c
  	.probe	= tsens_tm_probe,
  	.remove	= __devexit_p(tsens_tm_remove),
  	.driver	= {
-Index: msm/drivers/usb/host/ehci-msm-hsic.c
-===================================================================
---- msm.orig/drivers/usb/host/ehci-msm-hsic.c
-+++ msm/drivers/usb/host/ehci-msm-hsic.c
-@@ -1842,7 +1842,7 @@
- };
- #endif
- 
--static struct platform_driver ehci_msm_hsic_driver = {
-+static struct platform_driver ehci_msm_hsic_driver  __refdata =  {
- 	.probe	= ehci_hsic_msm_probe,
- 	.remove	= __devexit_p(ehci_hsic_msm_remove),
- 	.driver = {
 Index: msm/drivers/video/msm/lvds_chimei_wxga.c
 ===================================================================
 --- msm.orig/drivers/video/msm/lvds_chimei_wxga.c
@@ -3188,19 +3110,6 @@ Index: msm/arch/arm/mach-msm/rpm_log.c
  	.probe		= msm_rpm_log_probe,
  	.remove		= __devexit_p(msm_rpm_log_remove),
  	.driver		= {
-Index: msm/arch/arm/mach-msm/rpm_stats.c
-===================================================================
---- msm.orig/arch/arm/mach-msm/rpm_stats.c
-+++ msm/arch/arm/mach-msm/rpm_stats.c
-@@ -222,7 +222,7 @@
- 	platform_set_drvdata(pdev, NULL);
- 	return 0;
- }
--static struct platform_driver msm_rpmstats_driver = {
-+static struct platform_driver msm_rpmstats_driver __refdata = {
- 	.probe	= msm_rpmstats_probe,
- 	.remove = __devexit_p(msm_rpmstats_remove),
- 	.driver = {
 Index: msm/arch/arm/mach-msm/saw-regulator.c
 ===================================================================
 --- msm.orig/arch/arm/mach-msm/saw-regulator.c
@@ -3284,19 +3193,6 @@ Index: msm/drivers/net/wireless/wcnss/wcnss_wlan.c
  	.driver = {
  		.name	= DEVICE,
  		.owner	= THIS_MODULE,
-Index: msm/drivers/media/video/msm/vfe/msm_vfe32.c
-===================================================================
---- msm.orig/drivers/media/video/msm/vfe/msm_vfe32.c
-+++ msm/drivers/media/video/msm/vfe/msm_vfe32.c
-@@ -6730,7 +6730,7 @@
- 	return 0;
- }
- 
--static struct platform_driver vfe32_driver = {
-+static struct platform_driver vfe32_driver  __initdata =  {
- 	.probe = vfe32_probe,
- 	.driver = {
- 		.name = MSM_VFE_DRV_NAME,
 Index: msm/sound/soc/msm/msm-lowlatency-pcm-q6.c
 ===================================================================
 --- msm.orig/sound/soc/msm/msm-lowlatency-pcm-q6.c
@@ -3362,19 +3258,6 @@ Index: msm/drivers/thermal/msm_thermal.c
  	.probe = msm_thermal_dev_probe,
  	.driver = {
  		.name = "msm-thermal",
-Index: msm/arch/arm/mach-msm/pm-8x60.c
-===================================================================
---- msm.orig/arch/arm/mach-msm/pm-8x60.c
-+++ msm/arch/arm/mach-msm/pm-8x60.c
-@@ -980,7 +980,7 @@
- 	{},
- };
- 
--static struct platform_driver msm_pc_counter_driver = {
-+static struct platform_driver msm_pc_counter_driver  __initdata =  {
- 	.probe = msm_pc_debug_probe,
- 	.driver = {
- 		.name = "pc-cntr",
 Index: msm/arch/arm/mach-msm/rpm_rbcpr_stats.c
 ===================================================================
 --- msm.orig/arch/arm/mach-msm/rpm_rbcpr_stats.c
@@ -3414,29 +3297,3 @@ Index: msm/drivers/mfd/wcd9xxx-core.c
  	.driver                 = {
  		.owner          =       THIS_MODULE,
  		.name           =       "tabla-i2c-core",
-Index: msm/drivers/media/video/msm_wfd/wfd-ioctl.c
-===================================================================
---- msm.orig/drivers/media/video/msm_wfd/wfd-ioctl.c
-+++ msm/drivers/media/video/msm_wfd/wfd-ioctl.c
-@@ -1625,7 +1625,7 @@
- 	kfree(wfd_dev);
- 	return 0;
- }
--static struct platform_driver wfd_driver = {
-+static struct platform_driver wfd_driver __refdata = {
- 	.probe =  __wfd_probe,
- 	.remove = __wfd_remove,
- 	.driver = {
-Index: msm/drivers/net/ethernet/micrel/ks8851.c
-===================================================================
---- msm.orig/drivers/net/ethernet/micrel/ks8851.c
-+++ msm/drivers/net/ethernet/micrel/ks8851.c
-@@ -1655,7 +1655,7 @@
- 	{}
- };
- 
--static struct spi_driver ks8851_driver = {
-+static struct spi_driver ks8851_driver __refdata = {
- 	.driver = {
- 		.name = "ks8851",
- 		.of_match_table = ks8851_match_table,

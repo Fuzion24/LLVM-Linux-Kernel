@@ -1,5 +1,3 @@
-Index: msm/arch/arm/mach-msm/vreg.c
-===================================================================
 --- msm.orig/arch/arm/mach-msm/vreg.c
 +++ msm/arch/arm/mach-msm/vreg.c
 @@ -299,7 +299,7 @@
@@ -11,8 +9,6 @@ Index: msm/arch/arm/mach-msm/vreg.c
  #endif
  
  static int __init vreg_init(void)
-Index: msm/arch/arm/mach-msm/perf_event_msm_krait_l2.c
-===================================================================
 --- msm.orig/arch/arm/mach-msm/perf_event_msm_krait_l2.c
 +++ msm/arch/arm/mach-msm/perf_event_msm_krait_l2.c
 @@ -18,6 +18,10 @@
@@ -26,41 +22,45 @@ Index: msm/arch/arm/mach-msm/perf_event_msm_krait_l2.c
  #define MAX_L2_PERIOD	((1ULL << 32) - 1)
  #define MAX_KRAIT_L2_CTRS 10
  
-Index: msm/arch/arm/mach-msm/peripheral-loader.c
-===================================================================
---- msm.orig/arch/arm/mach-msm/peripheral-loader.c
-+++ msm/arch/arm/mach-msm/peripheral-loader.c
-@@ -576,7 +576,7 @@
- }
- #else
- static int __init msm_pil_debugfs_init(void) { return 0; };
--static void __exit msm_pil_debugfs_exit(void) { return 0; };
-+static void __exit msm_pil_debugfs_exit(void) { return; };
- static int msm_pil_debugfs_add(struct pil_device *pil) { return 0; }
- static void msm_pil_debugfs_remove(struct pil_device *pil) { }
+--- msm.orig/arch/arm/mach-msm/perf_trace_counters.h
++++ msm/arch/arm/mach-msm/perf_trace_counters.h
+@@ -121,7 +121,7 @@
+ 
  #endif
-Index: msm/drivers/media/video/msm/Makefile
-===================================================================
---- msm.orig/drivers/media/video/msm/Makefile
-+++ msm/drivers/media/video/msm/Makefile
-@@ -4,6 +4,7 @@
- ccflags-y += -Idrivers/media/video/msm/vfe
- obj-$(CONFIG_MSM_CAMERA) += io/
- ifeq ($(CONFIG_MSM_CAMERA_V4L2),y)
-+  EXTRA_CFLAGS += -Idrivers/media/video/msm
-   EXTRA_CFLAGS += -Idrivers/media/video/msm/cci
-   EXTRA_CFLAGS += -Idrivers/media/video/msm/csi
-   EXTRA_CFLAGS += -Idrivers/media/video/msm/eeprom
-Index: msm/arch/arm/configs/msm8960_defconfig
-===================================================================
---- msm.orig/arch/arm/configs/msm8960_defconfig
-+++ msm/arch/arm/configs/msm8960_defconfig
-@@ -472,8 +472,6 @@
- CONFIG_MSM_IOMMU=y
- CONFIG_MOBICORE_SUPPORT=m
- CONFIG_MOBICORE_API=m
--CONFIG_MSM_QDSS=y
--CONFIG_MSM_QDSS_ETM_DEFAULT_ENABLE=y
- CONFIG_EXT2_FS=y
- CONFIG_EXT2_FS_XATTR=y
- CONFIG_EXT3_FS=y
+ #undef TRACE_INCLUDE_PATH
+-#define TRACE_INCLUDE_PATH .
++#define TRACE_INCLUDE_PATH ../mach-msm
+ #define TRACE_INCLUDE_FILE perf_trace_counters
+ #include <trace/define_trace.h>
+ 
+--- msm.orig/arch/arm/mach-msm/trace_msm_low_power.h
++++ msm/arch/arm/mach-msm/trace_msm_low_power.h
+@@ -149,6 +149,6 @@
+ );
+ #endif
+ #undef TRACE_INCLUDE_PATH
+-#define TRACE_INCLUDE_PATH .
++#define TRACE_INCLUDE_PATH ../mach-msm
+ #define TRACE_INCLUDE_FILE trace_msm_low_power
+ #include <trace/define_trace.h>
+--- msm.orig/drivers/video/msm/Makefile
++++ msm/drivers/video/msm/Makefile
+@@ -173,7 +173,7 @@
+ 
+ obj-$(CONFIG_FB_MSM_TVOUT) += tvout_msm.o
+ 
+-ccflags-y := -I$(src)/mhl
++ccflags-y := -I$(src)/mhl -I$(src)
+ obj-$(CONFIG_FB_MSM_HDMI_MHL_8334) += mhl-8334.o
+ mhl-8334-objs  += mhl/mhl_8334.o
+ mhl-8334-objs  += mhl/mhl_i2c_utils.o
+--- msm.orig/arch/arm/mach-msm/trace_rpm_smd.h
++++ msm/arch/arm/mach-msm/trace_rpm_smd.h
+@@ -74,6 +74,6 @@
+ );
+ #endif
+ #undef TRACE_INCLUDE_PATH
+-#define TRACE_INCLUDE_PATH .
++#define TRACE_INCLUDE_PATH ../mach-msm
+ #define TRACE_INCLUDE_FILE trace_rpm_smd
+ #include <trace/define_trace.h>
