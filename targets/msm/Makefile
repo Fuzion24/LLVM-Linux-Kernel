@@ -29,8 +29,8 @@ CROSS_ARM_TOOLCHAIN = android
 KERNEL_BRANCH	= msm-3.4
 KERNEL_GIT	= git://codeaurora.org/kernel/msm.git
 KERNELDIR	= ${SRCDIR}/msm
-KERNEL_TAG	= AU_LINUX_BASE_TARGET_ALL.01.00.461
-KERNEL_CFG	= ${KERNELDIR}/arch/arm/configs/msm8960_defconfig
+#KERNEL_TAG	= AU_LINUX_BASE_TARGET_ALL.01.00.461
+KERNEL_CFG	= ${KERNELDIR}/arch/arm/configs/msm8974-perf_defconfig
 
 #Use the branch name for the dir containing MSM specific patch overrides
 KERNEL_REPO_PATCHES=${KERNEL_BRANCH}
