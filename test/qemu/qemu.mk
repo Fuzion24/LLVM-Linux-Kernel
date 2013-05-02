@@ -94,7 +94,7 @@ ${QEMUSTATE}/qemu-configure: ${QEMUSTATE}/qemu-patch
 	@mkdir -p ${QEMUBUILDDIR}
 	(cd ${QEMUBUILDDIR} && ${QEMUSRCDIR}/configure \
 		--target-list=arm-softmmu,i386-softmmu,x86_64-softmmu --disable-kvm --disable-vnc \
-		--audio-drv-list="" --enable-fdt --enable-sdl \
+		--audio-drv-list="" --enable-fdt \
 		--disable-docs --prefix=${QEMUINSTALLDIR})
 	$(call state,$@,qemu-build)
 
