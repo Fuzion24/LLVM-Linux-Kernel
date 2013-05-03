@@ -3,9 +3,6 @@
 0016-Ad-no-integrated-as-to-arch-x86-realmode-rm-Makefile.patch
 0018-Add-no-integrated-as-to-arch-x86-boot-compressed-Mak.patch
 0019-Fix-kernel-acpi-wakeup_32.S-for-compilation-with-cla.patch
-0020-Fix-assembly-btc-btcl-for-compilation-with-clang.patch
-0021-Fix-assembly-btc-btcl-for-compilation-with-clang.patch
-0022-Fix-assembly-btc-btcl-for-compilation-with-clang.patch
 0023-Remove-unneeded-braces.patch
 0025-Add-option-for-clang-in-export-of-memcpy.patch
 0026-Add-own-versions-of-memcpy-and-memset-for-compilatio.patch
@@ -25,3 +22,4 @@
 thinkpad-acpi-nested-functions.patch
 0001-updates-to-latest-patchset-unsplit.-TODO.patch
 change_var_in_perf_event_intel_uncore_to_fix_boot_crash.patch
+002x-Changes-to-BT-operations.-Mostly-BTC-BTCL.patch

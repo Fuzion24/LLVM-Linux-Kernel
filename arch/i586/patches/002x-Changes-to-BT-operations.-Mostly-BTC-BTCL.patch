@@ -1,21 +1,17 @@
-From 395e5589c04ce534e038e384595ebccd9dca5267 Mon Sep 17 00:00:00 2001
+From cab282503646b964227401c899d55ca791e078e1 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
-Date: Wed, 14 Nov 2012 11:50:15 +0100
-Subject: [PATCH 20/51] Fix assembly  btc -> btcl for compilation with clang
+Date: Fri, 3 May 2013 15:13:35 +0200
+Subject: [PATCH] Changes to BT operations. Mostly BTC->BTCL .
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Author:  PaX Team <pageexec at freemail.hu>
-ML-Post: http://lists.cs.uiuc.edu/pipermail/llvm-commits/Week-of-Mon-20120507/142707.html
-URL:     http://llvm.linuxfoundation.org
-
-Merge:   Jan-Simon Möller <dl9pf at gmx.de>
-
-Description:
+Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
 ---
- arch/x86/include/asm/bitops.h |   26 +++++++++++++-------------
- 1 Datei geändert, 13 Zeilen hinzugefügt(+), 13 Zeilen entfernt(-)
+ arch/x86/include/asm/bitops.h | 26 +++++++++++++-------------
+ arch/x86/include/asm/percpu.h |  2 +-
+ arch/x86/kernel/entry_64.S    |  2 +-
+ 3 files changed, 15 insertions(+), 15 deletions(-)
 
 diff --git a/arch/x86/include/asm/bitops.h b/arch/x86/include/asm/bitops.h
 index 6dfd019..7f6483e 100644
@@ -138,6 +134,32 @@ index 6dfd019..7f6483e 100644
  		     "sbb %0,%0"
  		     : "=r" (oldbit)
  		     : "m" (*(unsigned long *)addr), "Ir" (nr));
+diff --git a/arch/x86/include/asm/percpu.h b/arch/x86/include/asm/percpu.h
+index 0da5200..fda54c9 100644
+--- a/arch/x86/include/asm/percpu.h
++++ b/arch/x86/include/asm/percpu.h
+@@ -490,7 +490,7 @@ do {									\
+ #define x86_test_and_clear_bit_percpu(bit, var)				\
+ ({									\
+ 	int old__;							\
+-	asm volatile("btr %2,"__percpu_arg(1)"\n\tsbbl %0,%0"		\
++	asm volatile("btrl %2,"__percpu_arg(1)"\n\tsbbl %0,%0"		\
+ 		     : "=r" (old__), "+m" (var)				\
+ 		     : "dIr" (bit));					\
+ 	old__;								\
+diff --git a/arch/x86/kernel/entry_64.S b/arch/x86/kernel/entry_64.S
+index 7272089..a6d4671 100644
+--- a/arch/x86/kernel/entry_64.S
++++ b/arch/x86/kernel/entry_64.S
+@@ -542,7 +542,7 @@ END(save_paranoid)
+ ENTRY(ret_from_fork)
+ 	DEFAULT_FRAME
+ 
+-	LOCK ; btr $TIF_FORK,TI_flags(%r8)
++	LOCK ; btrl $TIF_FORK,TI_flags(%r8)
+ 
+ 	pushq_cfi $0x0002
+ 	popfq_cfi				# reset kernel eflags
 -- 
-1.7.10.4
+1.8.1.4
 
