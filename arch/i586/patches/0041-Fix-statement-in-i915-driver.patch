@@ -1,27 +1,30 @@
-From 7c8a6243ae6459e6b7ab579ce69941dc244cd283 Mon Sep 17 00:00:00 2001
-From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
-Date: Wed, 14 Nov 2012 13:03:57 +0100
-Subject: [PATCH 41/51] Fix statement in i915 driver.
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+commit 82ac7e83c71669a57333c4b8ff57fa7ce006921c
+Author: Jan-Simon Möller <dl9pf@gmx.de>
+Date:   Wed Nov 14 13:03:57 2012 +0100
 
-Author:  PaX Team <pageexec at freemail.hu>
-ML-Post: http://lists.cs.uiuc.edu/pipermail/llvm-commits/Week-of-Mon-20120507/142707.html
-URL:     http://llvm.linuxfoundation.org
-
-Merge:   Jan-Simon Möller <dl9pf at gmx.de>
-
-Description:
----
- drivers/gpu/drm/i915/i915_drv.h |    2 +-
- 1 Datei geändert, 1 Zeile hinzugefügt(+), 1 Zeile entfernt(-)
+    [TRIVIAL] Fix declaration of intel_gmbus_{is_forced_bit/is_port_falid} in i915 driver.
+    
+    Description:
+    intel_gmbus_is_forced_bit is no extern as its body is right below.
+    Likewise for intel_gmbus_is_port_valid.
+    
+    This fixes a compilation issue with clang. An initial version of this patch
+    was developed by PaX Team <pageexec at freemail.hu>.
+    This is respin of this patch.
+    
+    Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
+    CC: pageexec@freemail.hu
+    CC: daniel.vetter@ffwll.ch
+    CC: airlied@linux.ie
+    CC: intel-gfx@lists.freedesktop.org
+    CC: dri-devel@lists.freedesktop.org
+    CC: linux-kernel@vger.kernel.org
 
 diff --git a/drivers/gpu/drm/i915/i915_drv.h b/drivers/gpu/drm/i915/i915_drv.h
-index f511fa2..697d242 100644
+index 3ac71db..3c9ebc1 100644
 --- a/drivers/gpu/drm/i915/i915_drv.h
 +++ b/drivers/gpu/drm/i915/i915_drv.h
-@@ -1549,7 +1549,7 @@ void i915_teardown_sysfs(struct drm_device *dev_priv);
+@@ -1806,7 +1806,7 @@ void i915_teardown_sysfs(struct drm_device *dev_priv);
  /* intel_i2c.c */
  extern int intel_setup_gmbus(struct drm_device *dev);
  extern void intel_teardown_gmbus(struct drm_device *dev);
@@ -30,9 +33,7 @@ index f511fa2..697d242 100644
  {
  	return (port >= GMBUS_PORT_SSC && port <= GMBUS_PORT_DPD);
  }
---- linux.orig/drivers/gpu/drm/i915/i915_drv.h
-+++ linux/drivers/gpu/drm/i915/i915_drv.h
-@@ -1558,7 +1558,7 @@
+@@ -1815,7 +1815,7 @@ extern struct i2c_adapter *intel_gmbus_get_adapter(
  		struct drm_i915_private *dev_priv, unsigned port);
  extern void intel_gmbus_set_speed(struct i2c_adapter *adapter, int speed);
  extern void intel_gmbus_force_bit(struct i2c_adapter *adapter, bool force_bit);
@@ -41,7 +42,3 @@ index f511fa2..697d242 100644
  {
  	return container_of(adapter, struct intel_gmbus, adapter)->force_bit;
  }
-
--- 
-1.7.10.4
-
