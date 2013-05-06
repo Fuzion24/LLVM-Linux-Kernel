@@ -15,6 +15,8 @@
 0036-Various-fixes-to-arch-x86-lib-for-compilation-with-c.patch
 0037-CHECK-fixes-to-realmode-for-compilation-with-clang.patch
 0039-Workaround-build-error-with-clang.patch
+0046-Remove-unneeded-braces.patch
+0047-Fix-braces-for-compilation-with-clang.patch
 0052-Revert-x86-nmi-Clean-up-register_nmi_handler-usage.patch
 0011-Change-section-for-acpiosxf.h-to-__init.patch
 0041-Fix-statement-in-i915-driver.patch
