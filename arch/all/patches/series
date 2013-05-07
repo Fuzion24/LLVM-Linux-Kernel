@@ -10,7 +10,6 @@
 1002-compiler-clang.patch
 1003-disable-clang-integrated-as.patch
 1004-mm-hugepage-return-value.patch
-1005-slab-builtin_contant_p.patch
 valign-header.patch
 vlais-dm-crypt.patch
 vlais-gadget.patch
