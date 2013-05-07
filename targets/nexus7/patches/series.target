@@ -1,3 +1,4 @@
 remove-return-value-on-void-in-tps6591x.patch
 fix-unsupported-processor-feature-smc.patch
 rcupdate-builtin_contant_p.patch
+force-even-register-for-tf-comm.patch
