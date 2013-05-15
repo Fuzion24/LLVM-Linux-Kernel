@@ -19,3 +19,9 @@ void printHex(char *buffer, size_t size)
 		printf("\n");
 	}
 }
+
+void NOVLAIS(char *buffer, size_t size)
+{
+	printHex(buffer, size);
+}
+

@@ -1,5 +1,3 @@
 *.o
-novlais2-clang.txt
-novlais2-gcc.txt
+*.o.asm
 test-vlais
-vlais-gcc.txt

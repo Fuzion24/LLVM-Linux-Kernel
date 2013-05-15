@@ -1,38 +1,29 @@
 #include <stdio.h>
 #include <stddef.h>
 #include <string.h>
+#include "util.h"
 
-extern void printHex(char *buffer, size_t size);
-
-long vlais(int a, int b, int c, int d, int p)
+TESTFUNC(vlais)
 {
 	struct vlais {
-		char a[a];
-		short b[b];
-		int c[c];
-		long d[d];
-	} v;
+		TYPEA a[a];
+		TYPEB b[b];
+		TYPEC c[c];
+		TYPED d[d];
+	};
+	struct vlais *v = (struct vlais*)&(ptr->buffer[0]);
 
-/*
-	long ret1 = ((long)&v.a - (long)&v) << 24;
-	ret1 |= ((long)&v.b - (long)&v) << 16;
-	ret1 |= ((long)&v.c - (long)&v) << 8;
-	ret1 |= ((long)&v.d - (long)&v);
-	printf("vlais: 0x%08X (%d)\n", (unsigned int)ret1, sizeof(struct vlais));
-*/
+	ptr->size = sizeof(struct vlais);
+	ptr->offsets = offsets(
+		offsetof(struct vlais, a),
+		offsetof(struct vlais, b),
+		offsetof(struct vlais, c),
+		offsetof(struct vlais, d)
+	);
 
-	long ret = offsetof(struct vlais, a) << 24;
-	ret |= offsetof(struct vlais, b) << 16;
-	ret |= offsetof(struct vlais, c) << 8;
-	ret |= offsetof(struct vlais, d);
-	if(p) printf("vlais:    0x%08X (%ld)\n", (unsigned int)ret, sizeof(struct vlais));
-
-	memset(&v, 0, sizeof(v));
-	memset(v.d, 4, d*sizeof(long));
-	memset(v.c, 3, c*sizeof(int));
-	memset(v.b, 2, b*sizeof(short));
-	memset(v.a, 1, a*sizeof(char));
-	if(p) printHex((char*)&v, sizeof(v));
-
-	return ret;
+	memset(v, 0, ptr->size);
+	memset(v->d, 4, sizeof(v->d));
+	memset(v->c, 3, sizeof(v->c));
+	memset(v->b, 2, sizeof(v->b));
+	memset(v->a, 1, sizeof(v->a));
 }
