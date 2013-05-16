@@ -1,3 +1,5 @@
 *.o
 *.o.asm
 test-vlais
+*.log
+*.dat
