@@ -22,5 +22,4 @@
 0041-Fix-statement-in-i915-driver.patch
 thinkpad-acpi-nested-functions.patch
 0001-updates-to-latest-patchset-unsplit.-TODO.patch
-change_var_in_perf_event_intel_uncore_to_fix_boot_crash.patch
 002x-Changes-to-BT-operations.-Mostly-BTC-BTCL.patch
