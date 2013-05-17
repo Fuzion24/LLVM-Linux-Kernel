@@ -1,5 +1,6 @@
+*.dat
+*.log
 *.o
 *.o.asm
+*.svg
 test-vlais
-*.log
-*.dat
