@@ -54,5 +54,16 @@ mrproper: clean kernel-mrproper kernel-gcc-mrproper tmp-mrproper
 	@$(call banner,Very Clean)
 
 test: ${QEMUSTATE}/qemu-build initramfs state/kernel-build
-	@$(call qemu,${BOARD},${KERNELDIR},768,/dev/ram0,init=/init,-initrd initramfs.img)
+	@$(call qemu,${BOARD},${KERNELDIR}/arch/x86/boot/bzImage,768,/dev/ram0,init=/init,-initrd initramfs.img.gz)
 
+# Create the generic initramfs, add in the kernel modules, then create the cpio
+test2: state/prep ${QEMUSTATE}/qemu-build initramfs-unpacked
+	@rm -rf ${INITBUILDFSDIR}/lib
+	(cd ${KERNELDIR} && make INSTALL_MOD_PATH=${INITBUILDFSDIR} modules_install)
+	mkdir -p ${INITBUILDFSDIR}/usr/lib
+	@rm -f ${INITRAMFS}
+	@make ${INITRAMFS}
+	@$(call qemu,${BOARD},${KERNELDIR}/arch/x86/boot/bzImage,2048,/dev/ram0,ramdisk_size=512000 rdinit=/init console=ttyS0 earlyprintk,-initrd ${INITRAMFS})
+
+qemu2:
+	@$(call qemu,${BOARD},${KERNELDIR}/arch/x86/boot/bzImage,2048,/dev/ram0,ramdisk_size=512000 rdinit=/init console=ttyS0 earlyprintk,-initrd ${INITRAMFS})
