@@ -16,7 +16,6 @@
 0037-CHECK-fixes-to-realmode-for-compilation-with-clang.patch
 0039-Workaround-build-error-with-clang.patch
 0052-Revert-x86-nmi-Clean-up-register_nmi_handler-usage.patch
-0011-Change-section-for-acpiosxf.h-to-__init.patch
 0041-Fix-statement-in-i915-driver.patch
 thinkpad-acpi-nested-functions.patch
 0001-updates-to-latest-patchset-unsplit.-TODO.patch
