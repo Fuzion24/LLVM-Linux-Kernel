@@ -1,3 +1,4 @@
+# 1 "context-parsed.c" 1
 # 1 "arch/arm/mm/context.c" 1
 /*
  *  linux/arch/arm/mm/context.c
@@ -11,44 +12,12 @@
  * it under the terms of the GNU General Public License version 2 as
  * published by the Free Software Foundation.
  */
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/init.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/init.h" 1
 #ifndef _LINUX_INIT_H
 #define _LINUX_INIT_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/compiler.h>
-#endif /* expanded by -frewrite-includes */
-# 1 "include/linux/compiler.h" 1
-#ifndef __LINUX_COMPILER_H
-#define __LINUX_COMPILER_H
-
 #ifndef __ASSEMBLY__
 
-#ifdef __CHECKER__
-# define __user		__attribute__((noderef, address_space(1)))
-# define __kernel	__attribute__((address_space(0)))
-# define __safe		__attribute__((safe))
-# define __force	__attribute__((force))
-# define __nocast	__attribute__((nocast))
-# define __iomem	__attribute__((noderef, address_space(2)))
-# define __must_hold(x)	__attribute__((context(x,1,1)))
-# define __acquires(x)	__attribute__((context(x,0,1)))
-# define __releases(x)	__attribute__((context(x,1,0)))
-# define __acquire(x)	__context__(x,1)
-# define __release(x)	__context__(x,-1)
-# define __cond_lock(x,c)	((c) ? ({ __acquire(x); 1; }) : 0)
-# define __percpu	__attribute__((noderef, address_space(3)))
-#ifdef CONFIG_SPARSE_RCU_POINTER
-# define __rcu		__attribute__((noderef, address_space(4)))
-#else
-# define __rcu
-#endif
-extern void __chk_user_ptr(const volatile void __user *);
-extern void __chk_io_ptr(const volatile void __iomem *);
-#else
 # define __user
 # define __kernel
 # define __safe
@@ -66,7 +35,6 @@ extern void __chk_io_ptr(const volatile void __iomem *);
 # define __cond_lock(x,c) (c)
 # define __percpu
 # define __rcu
-#endif
 
 /* Indirect macros required for expanded argument pasting, eg. __LINE__. */
 #define ___PASTE(a,b) a##b
@@ -75,13 +43,7 @@ extern void __chk_io_ptr(const volatile void __iomem *);
 #ifdef __KERNEL__
 
 #ifdef __GNUC__
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/compiler-gcc.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/compiler-gcc.h" 1
-#ifndef __LINUX_COMPILER_H
-#error "Please don't include <linux/compiler-gcc.h> directly, include <linux/compiler.h> instead."
-#endif
 
 /*
  * Common definitions for all gcc versions go here.
@@ -118,28 +80,16 @@ extern void __chk_io_ptr(const volatile void __iomem *);
     __asm__ ("" : "=r"(__ptr) : "0"(ptr));		\
     (typeof(ptr)) (__ptr + (off)); })
 
-#ifdef __CHECKER__
-#define __must_be_array(arr) 0
-#else
 /* &a[0] degrades to a pointer: a different type from an array */
 #define __must_be_array(a) BUILD_BUG_ON_ZERO(__same_type((a), &(a)[0]))
-#endif
 
 /*
  * Force always-inline if the user requests it so via the .config,
  * or if gcc is too old:
  */
-#if !defined(CONFIG_ARCH_SUPPORTS_OPTIMIZED_INLINING) || \
-    !defined(CONFIG_OPTIMIZE_INLINING) || (__GNUC__ < 4)
 # define inline		inline		__attribute__((always_inline)) notrace
 # define __inline__	__inline__	__attribute__((always_inline)) notrace
 # define __inline	__inline	__attribute__((always_inline)) notrace
-#else
-/* A lot of inline functions can cause havoc with function tracing */
-# define inline		inline		notrace
-# define __inline__	__inline__	notrace
-# define __inline	__inline	notrace
-#endif
 
 #define __deprecated			__attribute__((deprecated))
 #define __packed			__attribute__((packed))
@@ -181,13 +131,7 @@ extern void __chk_io_ptr(const volatile void __iomem *);
 #define __gcc_header(x) #x
 #define _gcc_header(x) __gcc_header(linux/compiler-gcc##x.h)
 #define gcc_header(x) _gcc_header(x)
-#if 0 /* expanded by -frewrite-includes */
-#include gcc_header(__GNUC__)
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/compiler-gcc4.h" 1
-#ifndef __LINUX_COMPILER_H
-#error "Please don't include <linux/compiler-gcc4.h> directly, include <linux/compiler.h> instead."
-#endif
 
 /* GCC 4.1.[01] miscompiles __weak */
 #ifdef __KERNEL__
@@ -284,9 +228,6 @@ extern void __chk_io_ptr(const volatile void __iomem *);
  * coming from above header files here
  */
 #ifdef __INTEL_COMPILER
-#if 0 /* expanded by -frewrite-includes */
-# include <linux/compiler-intel.h>
-#endif /* expanded by -frewrite-includes */
 # 64 "include/linux/compiler.h"
 #endif
 
@@ -294,13 +235,7 @@ extern void __chk_io_ptr(const volatile void __iomem *);
  * coming from above header files here
  */
 #ifdef __clang__
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/compiler-clang.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/compiler-clang.h" 1
-#ifndef __LINUX_COMPILER_H
-#error "Please don't include <linux/compiler-clang.h> directly, include <linux/compiler.h> instead."
-#endif
 
 /* Some compiler specific definitions are overwritten here
  * for Clang compiler
@@ -601,30 +536,17 @@ void ftrace_likely_update(struct ftrace_branch_data *f, int val, int expect);
  */
 #define ACCESS_ONCE(x) (*(volatile typeof(x) *)&(x))
 
-#endif /* __LINUX_COMPILER_H */
 # 5 "include/linux/init.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/types.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/types.h" 1
 #ifndef _LINUX_TYPES_H
 #define _LINUX_TYPES_H
 
 #define __EXPORTED_HEADERS__
-#if 0 /* expanded by -frewrite-includes */
-#include <uapi/linux/types.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/uapi/linux/types.h" 1
 #ifndef _UAPI_LINUX_TYPES_H
 #define _UAPI_LINUX_TYPES_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/types.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "arch/arm/include/generated/asm/types.h" 1
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/types.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/include/uapi/asm-generic/types.h" 1
 #ifndef _ASM_GENERIC_TYPES_H
 #define _ASM_GENERIC_TYPES_H
@@ -632,9 +554,6 @@ void ftrace_likely_update(struct ftrace_branch_data *f, int val, int expect);
  * int-ll64 is used practically everywhere now,
  * so use it as a reasonable default.
  */
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/int-ll64.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/asm-generic/int-ll64.h" 1
 /*
  * asm-generic/int-ll64.h
@@ -645,9 +564,6 @@ void ftrace_likely_update(struct ftrace_branch_data *f, int val, int expect);
 #ifndef _ASM_GENERIC_INT_LL64_H
 #define _ASM_GENERIC_INT_LL64_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <uapi/asm-generic/int-ll64.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/uapi/asm-generic/int-ll64.h" 1
 /*
  * asm-generic/int-ll64.h
@@ -659,20 +575,11 @@ void ftrace_likely_update(struct ftrace_branch_data *f, int val, int expect);
 #ifndef _UAPI_ASM_GENERIC_INT_LL64_H
 #define _UAPI_ASM_GENERIC_INT_LL64_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/bitsperlong.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "arch/arm/include/generated/asm/bitsperlong.h" 1
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/bitsperlong.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/asm-generic/bitsperlong.h" 1
 #ifndef __ASM_GENERIC_BITS_PER_LONG
 #define __ASM_GENERIC_BITS_PER_LONG
 
-#if 0 /* expanded by -frewrite-includes */
-#include <uapi/asm-generic/bitsperlong.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/uapi/asm-generic/bitsperlong.h" 1
 #ifndef _UAPI__ASM_GENERIC_BITS_PER_LONG
 #define _UAPI__ASM_GENERIC_BITS_PER_LONG
@@ -702,9 +609,6 @@ void ftrace_likely_update(struct ftrace_branch_data *f, int val, int expect);
  * FIXME: The check currently breaks x86-64 build, so it's
  * temporarily disabled. Please fix x86-64 and reenable
  */
-#if 0 && BITS_PER_LONG != __BITS_PER_LONG
-#error Inconsistent word size. Check asm/bitsperlong.h
-#endif
 
 #ifndef BITS_PER_LONG_LONG
 #define BITS_PER_LONG_LONG 64
@@ -714,7 +618,6 @@ void ftrace_likely_update(struct ftrace_branch_data *f, int val, int expect);
 # 2 "arch/arm/include/generated/asm/bitsperlong.h" 2
 # 12 "include/uapi/asm-generic/int-ll64.h" 2
 
-#ifndef __ASSEMBLY__
 /*
  * __xx is ok: it doesn't pollute the POSIX namespace. Use these in the
  * header files exported to user space
@@ -737,14 +640,10 @@ typedef __signed__ long long __s64;
 typedef unsigned long long __u64;
 #endif
 
-#endif /* __ASSEMBLY__ */
-
 
 #endif /* _UAPI_ASM_GENERIC_INT_LL64_H */
 # 11 "include/asm-generic/int-ll64.h" 2
 
-
-#ifndef __ASSEMBLY__
 
 typedef signed char s8;
 typedef unsigned char u8;
@@ -767,19 +666,6 @@ typedef unsigned long long u64;
 #define S64_C(x) x ## LL
 #define U64_C(x) x ## ULL
 
-#else /* __ASSEMBLY__ */
-
-#define S8_C(x)  x
-#define U8_C(x)  x
-#define S16_C(x) x
-#define U16_C(x) x
-#define S32_C(x) x
-#define U32_C(x) x
-#define S64_C(x) x
-#define U64_C(x) x
-
-#endif /* __ASSEMBLY__ */
-
 #endif /* _ASM_GENERIC_INT_LL64_H */
 # 8 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/include/uapi/asm-generic/types.h" 2
 
@@ -794,27 +680,15 @@ typedef unsigned long long u64;
 #endif /* __EXPORTED_HEADERS__ */
 #endif
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/posix_types.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/include/uapi/linux/posix_types.h" 1
 #ifndef _LINUX_POSIX_TYPES_H
 #define _LINUX_POSIX_TYPES_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/stddef.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/stddef.h" 1
 #ifndef _LINUX_STDDEF_H
 #define _LINUX_STDDEF_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <uapi/linux/stddef.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/uapi/linux/stddef.h" 1
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/compiler.h>
-#endif /* expanded by -frewrite-includes */
 # 2 "include/uapi/linux/stddef.h"
 # 5 "include/linux/stddef.h" 2
 
@@ -865,9 +739,6 @@ typedef void (*__kernel_sighandler_t)(int);
 typedef int __kernel_key_t;
 typedef int __kernel_mqd_t;
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/posix_types.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/uapi/asm/posix_types.h" 1
 /*
  *  arch/arm/include/asm/posix_types.h
@@ -903,20 +774,11 @@ typedef unsigned short		__kernel_gid_t;
 typedef unsigned short		__kernel_old_dev_t;
 #define __kernel_old_dev_t __kernel_old_dev_t
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/posix_types.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/include/uapi/asm-generic/posix_types.h" 1
 #ifndef __ASM_GENERIC_POSIX_TYPES_H
 #define __ASM_GENERIC_POSIX_TYPES_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/bitsperlong.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "arch/arm/include/generated/asm/bitsperlong.h" 1
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/bitsperlong.h>
-#endif /* expanded by -frewrite-includes */
 # 2 "arch/arm/include/generated/asm/bitsperlong.h"
 # 5 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/include/uapi/asm-generic/posix_types.h" 2
 /*
@@ -1609,16 +1471,10 @@ void __init parse_early_options(char *cmdline);
 
 #endif /* _LINUX_INIT_H */
 # 14 "arch/arm/mm/context.c" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/sched.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/sched.h" 1
 #ifndef _LINUX_SCHED_H
 #define _LINUX_SCHED_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <uapi/linux/sched.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/uapi/linux/sched.h" 1
 #ifndef _UAPI_LINUX_SCHED_H
 #define _UAPI_LINUX_SCHED_H
@@ -1673,20 +1529,11 @@ struct sched_param {
 	int sched_priority;
 };
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/param.h>	/* for HZ */
-#endif /* expanded by -frewrite-includes */
 # 1 "arch/arm/include/generated/asm/param.h" 1
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/param.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/asm-generic/param.h" 1
 #ifndef __ASM_GENERIC_PARAM_H
 #define __ASM_GENERIC_PARAM_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <uapi/asm-generic/param.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/uapi/asm-generic/param.h" 1
 #ifndef _UAPI__ASM_GENERIC_PARAM_H
 #define _UAPI__ASM_GENERIC_PARAM_H
@@ -1717,9 +1564,6 @@ struct sched_param {
 # 2 "arch/arm/include/generated/asm/param.h" 2
 # 12 "include/linux/sched.h" 2
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/capability.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/capability.h" 1
 /*
  * This is <linux/capability.h>
@@ -1735,9 +1579,6 @@ struct sched_param {
 #ifndef _LINUX_CAPABILITY_H
 #define _LINUX_CAPABILITY_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <uapi/linux/capability.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/uapi/linux/capability.h" 1
 /*
  * This is <linux/capability.h>
@@ -1754,9 +1595,6 @@ struct sched_param {
 #ifndef _UAPI_LINUX_CAPABILITY_H
 #define _UAPI_LINUX_CAPABILITY_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/types.h>
-#endif /* expanded by -frewrite-includes */
 # 17 "include/uapi/linux/capability.h"
 
 struct task_struct;
@@ -2305,9 +2143,6 @@ extern int get_vfs_caps_from_disk(const struct dentry *dentry, struct cpu_vfs_ca
 
 #endif /* !_LINUX_CAPABILITY_H */
 # 14 "include/linux/sched.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/threads.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/threads.h" 1
 #ifndef _LINUX_THREADS_H
 #define _LINUX_THREADS_H
@@ -2355,17 +2190,11 @@ extern int get_vfs_caps_from_disk(const struct dentry *dentry, struct cpu_vfs_ca
 
 #endif
 # 15 "include/linux/sched.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/kernel.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/kernel.h" 1
 #ifndef _LINUX_KERNEL_H
 #define _LINUX_KERNEL_H
 
 
-#if 0 /* expanded by -frewrite-includes */
-#include <stdarg.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/toolchain/clang/install/bin/../lib/clang/3.3/include/stdarg.h" 1 3
 /*===---- stdarg.h - Variable argument handling ----------------------------===
  *
@@ -2418,20 +2247,11 @@ typedef __builtin_va_list __gnuc_va_list;
 
 #endif /* __STDARG_H */
 # 6 "include/linux/kernel.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/linkage.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/linkage.h" 1
 #ifndef _LINUX_LINKAGE_H
 #define _LINUX_LINKAGE_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/compiler.h>
-#endif /* expanded by -frewrite-includes */
 # 5 "include/linux/linkage.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/linkage.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/linkage.h" 1
 #ifndef __ASM_LINKAGE_H
 #define __ASM_LINKAGE_H
@@ -2532,31 +2352,13 @@ typedef __builtin_va_list __gnuc_va_list;
 
 #endif
 # 7 "include/linux/kernel.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/stddef.h>
-#endif /* expanded by -frewrite-includes */
 # 8 "include/linux/kernel.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/types.h>
-#endif /* expanded by -frewrite-includes */
 # 9 "include/linux/kernel.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/compiler.h>
-#endif /* expanded by -frewrite-includes */
 # 10 "include/linux/kernel.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/bitops.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/bitops.h" 1
 #ifndef _LINUX_BITOPS_H
 #define _LINUX_BITOPS_H
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/types.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "arch/arm/include/generated/asm/types.h" 1
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/types.h>
-#endif /* expanded by -frewrite-includes */
 # 2 "arch/arm/include/generated/asm/types.h"
 # 4 "include/linux/bitops.h" 2
 
@@ -2577,9 +2379,6 @@ extern unsigned long __sw_hweight64(__u64 w);
  * Include this here because some architectures need generic_ffs/fls in
  * scope
  */
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/bitops.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/bitops.h" 1
 /*
  * Copyright 1995, Russell King.
@@ -2606,13 +2405,7 @@ extern unsigned long __sw_hweight64(__u64 w);
 #error only <linux/bitops.h> can be included directly
 #endif
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/compiler.h>
-#endif /* expanded by -frewrite-includes */
 # 27 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/bitops.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/irqflags.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/irqflags.h" 1
 /*
  * include/linux/irqflags.h
@@ -2627,9 +2420,6 @@ extern unsigned long __sw_hweight64(__u64 w);
 #ifndef _LINUX_TRACE_IRQFLAGS_H
 #define _LINUX_TRACE_IRQFLAGS_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/typecheck.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/typecheck.h" 1
 #ifndef TYPECHECK_H_INCLUDED
 #define TYPECHECK_H_INCLUDED
@@ -2656,18 +2446,12 @@ extern unsigned long __sw_hweight64(__u64 w);
 
 #endif		/* TYPECHECK_H_INCLUDED */
 # 15 "include/linux/irqflags.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/irqflags.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/irqflags.h" 1
 #ifndef __ASM_ARM_IRQFLAGS_H
 #define __ASM_ARM_IRQFLAGS_H
 
 #ifdef __KERNEL__
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/ptrace.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/ptrace.h" 1
 /*
  *  arch/arm/include/asm/ptrace.h
@@ -2681,9 +2465,6 @@ extern unsigned long __sw_hweight64(__u64 w);
 #ifndef __ASM_ARM_PTRACE_H
 #define __ASM_ARM_PTRACE_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <uapi/asm/ptrace.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/uapi/asm/ptrace.h" 1
 /*
  *  arch/arm/include/asm/ptrace.h
@@ -2697,16 +2478,10 @@ extern unsigned long __sw_hweight64(__u64 w);
 #ifndef _UAPI__ASM_ARM_PTRACE_H
 #define _UAPI__ASM_ARM_PTRACE_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/hwcap.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/hwcap.h" 1
 #ifndef __ASMARM_HWCAP_H
 #define __ASMARM_HWCAP_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <uapi/asm/hwcap.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/uapi/asm/hwcap.h" 1
 #ifndef _UAPI__ASMARM_HWCAP_H
 #define _UAPI__ASMARM_HWCAP_H
@@ -2961,13 +2736,7 @@ extern unsigned long profile_pc(struct pt_regs *regs);
 /*
  * kprobe-based event tracer support
  */
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/stddef.h>
-#endif /* expanded by -frewrite-includes */
 # 100 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/ptrace.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/types.h>
-#endif /* expanded by -frewrite-includes */
 # 101 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/ptrace.h"
 #define MAX_REG_OFFSET (offsetof(struct pt_regs, ARM_ORIG_r0))
 
@@ -3395,20 +3164,11 @@ ____atomic_test_and_change_bit(unsigned int bit, volatile unsigned long *p)
 	return (res & mask) != 0;
 }
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/bitops/non-atomic.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/asm-generic/bitops/non-atomic.h" 1
 #ifndef _ASM_GENERIC_BITOPS_NON_ATOMIC_H_
 #define _ASM_GENERIC_BITOPS_NON_ATOMIC_H_
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/types.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "arch/arm/include/generated/asm/types.h" 1
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/types.h>
-#endif /* expanded by -frewrite-includes */
 # 2 "arch/arm/include/generated/asm/types.h"
 # 5 "include/asm-generic/bitops/non-atomic.h" 2
 
@@ -3610,25 +3370,10 @@ extern int _find_next_bit_be(const unsigned long *p, int size, int offset);
 
 #if __LINUX_ARM_ARCH__ < 5
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/bitops/ffz.h>
-#endif /* expanded by -frewrite-includes */
 # 220 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/bitops.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/bitops/__fls.h>
-#endif /* expanded by -frewrite-includes */
 # 221 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/bitops.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/bitops/__ffs.h>
-#endif /* expanded by -frewrite-includes */
 # 222 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/bitops.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/bitops/fls.h>
-#endif /* expanded by -frewrite-includes */
 # 223 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/bitops.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/bitops/ffs.h>
-#endif /* expanded by -frewrite-includes */
 # 224 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/bitops.h"
 
 #else
@@ -3686,20 +3431,11 @@ static inline int fls(int x)
 
 #endif
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/bitops/fls64.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/asm-generic/bitops/fls64.h" 1
 #ifndef _ASM_GENERIC_BITOPS_FLS64_H_
 #define _ASM_GENERIC_BITOPS_FLS64_H_
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/types.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "arch/arm/include/generated/asm/types.h" 1
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/types.h>
-#endif /* expanded by -frewrite-includes */
 # 2 "arch/arm/include/generated/asm/types.h"
 # 5 "include/asm-generic/bitops/fls64.h" 2
 
@@ -3736,24 +3472,12 @@ static __always_inline int fls64(__u64 x)
 #endif /* _ASM_GENERIC_BITOPS_FLS64_H_ */
 # 281 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/bitops.h" 2
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/bitops/sched.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/asm-generic/bitops/sched.h" 1
 #ifndef _ASM_GENERIC_BITOPS_SCHED_H_
 #define _ASM_GENERIC_BITOPS_SCHED_H_
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/compiler.h>	/* unlikely() */
-#endif /* expanded by -frewrite-includes */
 # 5 "include/asm-generic/bitops/sched.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/types.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "arch/arm/include/generated/asm/types.h" 1
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/types.h>
-#endif /* expanded by -frewrite-includes */
 # 2 "arch/arm/include/generated/asm/types.h"
 # 6 "include/asm-generic/bitops/sched.h" 2
 
@@ -3783,27 +3507,15 @@ static inline int sched_find_first_bit(const unsigned long *b)
 
 #endif /* _ASM_GENERIC_BITOPS_SCHED_H_ */
 # 283 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/bitops.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/bitops/hweight.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/asm-generic/bitops/hweight.h" 1
 #ifndef _ASM_GENERIC_BITOPS_HWEIGHT_H_
 #define _ASM_GENERIC_BITOPS_HWEIGHT_H_
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/bitops/arch_hweight.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/asm-generic/bitops/arch_hweight.h" 1
 #ifndef _ASM_GENERIC_BITOPS_ARCH_HWEIGHT_H_
 #define _ASM_GENERIC_BITOPS_ARCH_HWEIGHT_H_
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/types.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "arch/arm/include/generated/asm/types.h" 1
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/types.h>
-#endif /* expanded by -frewrite-includes */
 # 2 "arch/arm/include/generated/asm/types.h"
 # 5 "include/asm-generic/bitops/arch_hweight.h" 2
 
@@ -3828,9 +3540,6 @@ static inline unsigned long __arch_hweight64(__u64 w)
 }
 #endif /* _ASM_GENERIC_BITOPS_HWEIGHT_H_ */
 # 5 "include/asm-generic/bitops/hweight.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/bitops/const_hweight.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/asm-generic/bitops/const_hweight.h" 1
 #ifndef _ASM_GENERIC_BITOPS_CONST_HWEIGHT_H_
 #define _ASM_GENERIC_BITOPS_CONST_HWEIGHT_H_
@@ -3878,9 +3587,6 @@ static inline unsigned long __arch_hweight64(__u64 w)
 
 #endif /* _ASM_GENERIC_BITOPS_HWEIGHT_H_ */
 # 284 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/bitops.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/bitops/lock.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/asm-generic/bitops/lock.h" 1
 #ifndef _ASM_GENERIC_BITOPS_LOCK_H_
 #define _ASM_GENERIC_BITOPS_LOCK_H_
@@ -3951,25 +3657,13 @@ static inline int find_next_bit_le(const void *p, int size, int offset)
 
 #endif
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/bitops/le.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/asm-generic/bitops/le.h" 1
 #ifndef _ASM_GENERIC_BITOPS_LE_H_
 #define _ASM_GENERIC_BITOPS_LE_H_
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/types.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "arch/arm/include/generated/asm/types.h" 1
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/types.h>
-#endif /* expanded by -frewrite-includes */
 # 2 "arch/arm/include/generated/asm/types.h"
 # 5 "include/asm-generic/bitops/le.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/byteorder.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/uapi/asm/byteorder.h" 1
 /*
  *  arch/arm/include/asm/byteorder.h
@@ -3989,21 +3683,12 @@ static inline int find_next_bit_le(const void *p, int size, int offset)
 #define __ASM_ARM_BYTEORDER_H
 
 #ifdef __ARMEB__
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/byteorder/big_endian.h>
-#endif /* expanded by -frewrite-includes */
 # 20 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/uapi/asm/byteorder.h"
 #else
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/byteorder/little_endian.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/byteorder/little_endian.h" 1
 #ifndef _LINUX_BYTEORDER_LITTLE_ENDIAN_H
 #define _LINUX_BYTEORDER_LITTLE_ENDIAN_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <uapi/linux/byteorder/little_endian.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/uapi/linux/byteorder/little_endian.h" 1
 #ifndef _UAPI_LINUX_BYTEORDER_LITTLE_ENDIAN_H
 #define _UAPI_LINUX_BYTEORDER_LITTLE_ENDIAN_H
@@ -4015,35 +3700,17 @@ static inline int find_next_bit_le(const void *p, int size, int offset)
 #define __LITTLE_ENDIAN_BITFIELD
 #endif
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/types.h>
-#endif /* expanded by -frewrite-includes */
 # 12 "include/uapi/linux/byteorder/little_endian.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/swab.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/swab.h" 1
 #ifndef _LINUX_SWAB_H
 #define _LINUX_SWAB_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <uapi/linux/swab.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/uapi/linux/swab.h" 1
 #ifndef _UAPI_LINUX_SWAB_H
 #define _UAPI_LINUX_SWAB_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/types.h>
-#endif /* expanded by -frewrite-includes */
 # 5 "include/uapi/linux/swab.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/compiler.h>
-#endif /* expanded by -frewrite-includes */
 # 6 "include/uapi/linux/swab.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/swab.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/swab.h" 1
 /*
  *  arch/arm/include/asm/byteorder.h
@@ -4062,9 +3729,6 @@ static inline int find_next_bit_le(const void *p, int size, int offset)
 #ifndef __ASM_ARM_SWAB_H
 #define __ASM_ARM_SWAB_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <uapi/asm/swab.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/uapi/asm/swab.h" 1
 /*
  *  arch/arm/include/asm/byteorder.h
@@ -4083,13 +3747,7 @@ static inline int find_next_bit_le(const void *p, int size, int offset)
 #ifndef _UAPI__ASM_ARM_SWAB_H
 #define _UAPI__ASM_ARM_SWAB_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/compiler.h>
-#endif /* expanded by -frewrite-includes */
 # 19 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/uapi/asm/swab.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/types.h>
-#endif /* expanded by -frewrite-includes */
 # 20 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/uapi/asm/swab.h"
 
 #if !defined(__STRICT_ANSI__) || defined(__KERNEL__)
@@ -4543,9 +4201,6 @@ static inline __u16 __be16_to_cpup(const __be16 *p)
 #endif /* _UAPI_LINUX_BYTEORDER_LITTLE_ENDIAN_H */
 # 5 "include/linux/byteorder/little_endian.h" 2
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/byteorder/generic.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/byteorder/generic.h" 1
 #ifndef _LINUX_BYTEORDER_GENERIC_H
 #define _LINUX_BYTEORDER_GENERIC_H
@@ -4825,9 +4480,6 @@ static inline int __test_and_clear_bit_le(int nr, void *addr)
 /*
  * Ext2 is defined to use little-endian byte ordering.
  */
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/bitops/ext2-atomic-setbit.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/asm-generic/bitops/ext2-atomic-setbit.h" 1
 #ifndef _ASM_GENERIC_BITOPS_EXT2_ATOMIC_SETBIT_H_
 #define _ASM_GENERIC_BITOPS_EXT2_ATOMIC_SETBIT_H_
@@ -5044,9 +4696,6 @@ extern unsigned long find_last_bit(const unsigned long *addr,
 #endif /* __KERNEL__ */
 #endif
 # 11 "include/linux/kernel.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/log2.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/log2.h" 1
 /* Integer base 2 logarithm calculation
  *
@@ -5062,13 +4711,7 @@ extern unsigned long find_last_bit(const unsigned long *addr,
 #ifndef _LINUX_LOG2_H
 #define _LINUX_LOG2_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/types.h>
-#endif /* expanded by -frewrite-includes */
 # 16 "include/linux/log2.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/bitops.h>
-#endif /* expanded by -frewrite-includes */
 # 17 "include/linux/log2.h"
 
 /*
@@ -5263,24 +4906,12 @@ unsigned long __rounddown_pow_of_two(unsigned long n)
 
 #endif /* _LINUX_LOG2_H */
 # 12 "include/linux/kernel.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/typecheck.h>
-#endif /* expanded by -frewrite-includes */
 # 13 "include/linux/kernel.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/printk.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/printk.h" 1
 #ifndef __KERNEL_PRINTK__
 #define __KERNEL_PRINTK__
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/init.h>
-#endif /* expanded by -frewrite-includes */
 # 5 "include/linux/printk.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/kern_levels.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/kern_levels.h" 1
 #ifndef __KERN_LEVELS_H__
 #define __KERN_LEVELS_H__
@@ -5675,9 +5306,6 @@ static inline void print_hex_dump_bytes(const char *prefix_str, int prefix_type,
 
 #endif
 # 14 "include/linux/kernel.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/dynamic_debug.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/dynamic_debug.h" 1
 #ifndef _DYNAMIC_DEBUG_H
 #define _DYNAMIC_DEBUG_H
@@ -5789,33 +5417,15 @@ do {								\
 
 #else
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/string.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/string.h" 1
 #ifndef _LINUX_STRING_H_
 #define _LINUX_STRING_H_
 
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/compiler.h>	/* for inline */
-#endif /* expanded by -frewrite-includes */
 # 6 "include/linux/string.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/types.h>	/* for size_t */
-#endif /* expanded by -frewrite-includes */
 # 7 "include/linux/string.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/stddef.h>	/* for NULL */
-#endif /* expanded by -frewrite-includes */
 # 8 "include/linux/string.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <stdarg.h>
-#endif /* expanded by -frewrite-includes */
 # 9 "include/linux/string.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <uapi/linux/string.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/uapi/linux/string.h" 1
 #ifndef _UAPI_LINUX_STRING_H_
 #define _UAPI_LINUX_STRING_H_
@@ -5823,9 +5433,6 @@ do {								\
 /* We don't want strings.h stuff being used by user stuff by accident */
 
 #ifndef __KERNEL__
-#if 0 /* expanded by -frewrite-includes */
-#include <string.h>
-#endif /* expanded by -frewrite-includes */
 # 8 "include/uapi/linux/string.h"
 #endif /* __KERNEL__ */
 #endif /* _UAPI_LINUX_STRING_H_ */
@@ -5837,9 +5444,6 @@ extern void *memdup_user(const void __user *, size_t);
 /*
  * Include machine specific inline routines
  */
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/string.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/string.h" 1
 #ifndef __ASM_ARM_STRING_H
 #define __ASM_ARM_STRING_H
@@ -6024,31 +5628,16 @@ static inline const char *kbasename(const char *path)
 
 #endif /* _LINUX_STRING_H_ */
 # 112 "include/linux/dynamic_debug.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/errno.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/errno.h" 1
 #ifndef _LINUX_ERRNO_H
 #define _LINUX_ERRNO_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <uapi/linux/errno.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/uapi/linux/errno.h" 1
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/errno.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "arch/arm/include/generated/asm/errno.h" 1
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/errno.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/include/uapi/asm-generic/errno.h" 1
 #ifndef _ASM_GENERIC_ERRNO_H
 #define _ASM_GENERIC_ERRNO_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/errno-base.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/include/uapi/asm-generic/errno-base.h" 1
 #ifndef _ASM_GENERIC_ERRNO_BASE_H
 #define _ASM_GENERIC_ERRNO_BASE_H
@@ -6258,27 +5847,15 @@ static inline int ddebug_dyndbg_module_param_cb(char *param, char *val,
 
 #endif
 # 15 "include/linux/kernel.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/byteorder.h>
-#endif /* expanded by -frewrite-includes */
 # 16 "include/linux/kernel.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <uapi/linux/kernel.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/uapi/linux/kernel.h" 1
 #ifndef _UAPI_LINUX_KERNEL_H
 #define _UAPI_LINUX_KERNEL_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/sysinfo.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/include/uapi/linux/sysinfo.h" 1
 #ifndef _LINUX_SYSINFO_H
 #define _LINUX_SYSINFO_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/types.h>
-#endif /* expanded by -frewrite-includes */
 # 5 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/include/uapi/linux/sysinfo.h"
 
 #define SI_LOAD_SHIFT	16
@@ -6405,9 +5982,6 @@ struct sysinfo {
 #define _THIS_IP_  ({ __label__ __here; __here: (unsigned long)&&__here; })
 
 #ifdef CONFIG_LBDAF
-#if 0 /* expanded by -frewrite-includes */
-# include <asm/div64.h>
-#endif /* expanded by -frewrite-includes */
 # 112 "include/linux/kernel.h"
 # define sector_div(a, b) do_div(a, b)
 #else
@@ -7039,13 +6613,7 @@ extern int do_sysinfo(struct sysinfo *info);
 
 #endif
 # 16 "include/linux/sched.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/types.h>
-#endif /* expanded by -frewrite-includes */
 # 17 "include/linux/sched.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/timex.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/timex.h" 1
 /*****************************************************************************
  *                                                                           *
@@ -7102,9 +6670,6 @@ extern int do_sysinfo(struct sysinfo *info);
 #ifndef _LINUX_TIMEX_H
 #define _LINUX_TIMEX_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <uapi/linux/timex.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/uapi/linux/timex.h" 1
 /*****************************************************************************
  *                                                                           *
@@ -7161,27 +6726,15 @@ extern int do_sysinfo(struct sysinfo *info);
 #ifndef _UAPI_LINUX_TIMEX_H
 #define _UAPI_LINUX_TIMEX_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/time.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/time.h" 1
 #ifndef _LINUX_TIME_H
 #define _LINUX_TIME_H
 
-#if 0 /* expanded by -frewrite-includes */
-# include <linux/cache.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/cache.h" 1
 #ifndef __LINUX_CACHE_H
 #define __LINUX_CACHE_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/kernel.h>
-#endif /* expanded by -frewrite-includes */
 # 5 "include/linux/cache.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/cache.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/cache.h" 1
 /*
  *  arch/arm/include/asm/cache.h
@@ -7275,9 +6828,6 @@ extern int do_sysinfo(struct sysinfo *info);
 
 #endif /* __LINUX_CACHE_H */
 # 5 "include/linux/time.h" 2
-#if 0 /* expanded by -frewrite-includes */
-# include <linux/seqlock.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/seqlock.h" 1
 #ifndef __LINUX_SEQLOCK_H
 #define __LINUX_SEQLOCK_H
@@ -7307,9 +6857,6 @@ extern int do_sysinfo(struct sysinfo *info);
  * by Keith Owens and Andrea Arcangeli
  */
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/spinlock.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/spinlock.h" 1
 #ifndef __LINUX_SPINLOCK_H
 #define __LINUX_SPINLOCK_H
@@ -7359,13 +6906,7 @@ extern int do_sysinfo(struct sysinfo *info);
  *  linux/spinlock.h:     builds the final spin_*() APIs.
  */
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/typecheck.h>
-#endif /* expanded by -frewrite-includes */
 # 50 "include/linux/spinlock.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/preempt.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/preempt.h" 1
 #ifndef __LINUX_PREEMPT_H
 #define __LINUX_PREEMPT_H
@@ -7375,9 +6916,6 @@ extern int do_sysinfo(struct sysinfo *info);
  * preempt_count (used for kernel preemption, interrupt count, etc.)
  */
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/thread_info.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/thread_info.h" 1
 /* thread_info.h: common low-level thread information accessors
  *
@@ -7388,27 +6926,15 @@ extern int do_sysinfo(struct sysinfo *info);
 #ifndef _LINUX_THREAD_INFO_H
 #define _LINUX_THREAD_INFO_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/types.h>
-#endif /* expanded by -frewrite-includes */
 # 11 "include/linux/thread_info.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/bug.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/bug.h" 1
 #ifndef _LINUX_BUG_H
 #define _LINUX_BUG_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/bug.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/bug.h" 1
 #ifndef _ASMARM_BUG_H
 #define _ASMARM_BUG_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/linkage.h>
-#endif /* expanded by -frewrite-includes */
 # 5 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/bug.h"
 
 #ifdef CONFIG_BUG
@@ -7464,16 +6990,10 @@ do {								\
 #define HAVE_ARCH_BUG
 #endif  /* CONFIG_BUG */
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/bug.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/asm-generic/bug.h" 1
 #ifndef _ASM_GENERIC_BUG_H
 #define _ASM_GENERIC_BUG_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/compiler.h>
-#endif /* expanded by -frewrite-includes */
 # 5 "include/asm-generic/bug.h"
 
 #ifdef CONFIG_GENERIC_BUG
@@ -7483,9 +7003,6 @@ do {								\
 #endif
 
 #ifndef __ASSEMBLY__
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/kernel.h>
-#endif /* expanded by -frewrite-includes */
 # 14 "include/asm-generic/bug.h"
 
 #ifdef CONFIG_BUG
@@ -7714,9 +7231,6 @@ extern void __show_regs(struct pt_regs *);
 
 #endif
 # 5 "include/linux/bug.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/compiler.h>
-#endif /* expanded by -frewrite-includes */
 # 6 "include/linux/bug.h"
 
 enum bug_trap_type {
@@ -7801,9 +7315,6 @@ struct pt_regs;
 #endif	/* __CHECKER__ */
 
 #ifdef CONFIG_GENERIC_BUG
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/bug.h>
-#endif /* expanded by -frewrite-includes */
 # 90 "include/linux/bug.h"
 
 static inline int is_warning_bug(const struct bug_entry *bug)
@@ -7870,13 +7381,7 @@ struct restart_block {
 
 extern long do_no_restart_syscall(struct restart_block *parm);
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/bitops.h>
-#endif /* expanded by -frewrite-includes */
 # 54 "include/linux/thread_info.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/thread_info.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/thread_info.h" 1
 /*
  *  arch/arm/include/asm/thread_info.h
@@ -7892,13 +7397,7 @@ extern long do_no_restart_syscall(struct restart_block *parm);
 
 #ifdef __KERNEL__
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/compiler.h>
-#endif /* expanded by -frewrite-includes */
 # 16 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/thread_info.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/fpstate.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/fpstate.h" 1
 /*
  *  arch/arm/include/asm/fpstate.h
@@ -8004,18 +7503,9 @@ struct crunch_state {
 struct task_struct;
 struct exec_domain;
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/types.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "arch/arm/include/generated/asm/types.h" 1
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/types.h>
-#endif /* expanded by -frewrite-includes */
 # 2 "arch/arm/include/generated/asm/types.h"
 # 28 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/thread_info.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/domain.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/domain.h" 1
 /*
  *  arch/arm/include/asm/domain.h
@@ -8030,17 +7520,11 @@ struct exec_domain;
 #define __ASM_PROC_DOMAIN_H
 
 #ifndef __ASSEMBLY__
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/barrier.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/barrier.h" 1
 #ifndef __ASM_BARRIER_H
 #define __ASM_BARRIER_H
 
 #ifndef __ASSEMBLY__
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/outercache.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/outercache.h" 1
 /*
  * arch/arm/include/asm/outercache.h
@@ -8065,9 +7549,6 @@ struct exec_domain;
 #ifndef __ASM_OUTERCACHE_H
 #define __ASM_OUTERCACHE_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/types.h>
-#endif /* expanded by -frewrite-includes */
 # 25 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/outercache.h"
 
 struct outer_cache_fns {
@@ -8191,9 +7672,6 @@ static inline void outer_sync(void)
 #endif
 
 #ifdef CONFIG_ARCH_HAS_BARRIERS
-#if 0 /* expanded by -frewrite-includes */
-#include <mach/barriers.h>
-#endif /* expanded by -frewrite-includes */
 # 42 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/barrier.h"
 #elif defined(CONFIG_ARM_DMA_MEM_BUFFERABLE) || defined(CONFIG_SMP)
 #define mb()		do { dsb(); outer_sync(); } while (0)
@@ -8572,28 +8050,13 @@ static inline bool test_and_clear_restore_sigmask(void)
 
 #endif /* _LINUX_THREAD_INFO_H */
 # 10 "include/linux/preempt.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/linkage.h>
-#endif /* expanded by -frewrite-includes */
 # 11 "include/linux/preempt.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/list.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/list.h" 1
 #ifndef _LINUX_LIST_H
 #define _LINUX_LIST_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/types.h>
-#endif /* expanded by -frewrite-includes */
 # 5 "include/linux/list.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/stddef.h>
-#endif /* expanded by -frewrite-includes */
 # 6 "include/linux/list.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/poison.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/poison.h" 1
 #ifndef _LINUX_POISON_H
 #define _LINUX_POISON_H
@@ -8685,9 +8148,6 @@ static inline bool test_and_clear_restore_sigmask(void)
 
 #endif
 # 7 "include/linux/list.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/const.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/include/uapi/linux/const.h" 1
 /* const.h: Macros for dealing with constants.  */
 
@@ -9567,29 +9027,11 @@ static inline void preempt_notifier_init(struct preempt_notifier *notifier,
 
 #endif /* __LINUX_PREEMPT_H */
 # 51 "include/linux/spinlock.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/linkage.h>
-#endif /* expanded by -frewrite-includes */
 # 52 "include/linux/spinlock.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/compiler.h>
-#endif /* expanded by -frewrite-includes */
 # 53 "include/linux/spinlock.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/irqflags.h>
-#endif /* expanded by -frewrite-includes */
 # 54 "include/linux/spinlock.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/thread_info.h>
-#endif /* expanded by -frewrite-includes */
 # 55 "include/linux/spinlock.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/kernel.h>
-#endif /* expanded by -frewrite-includes */
 # 56 "include/linux/spinlock.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/stringify.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/stringify.h" 1
 #ifndef __LINUX_STRINGIFY_H
 #define __LINUX_STRINGIFY_H
@@ -9604,9 +9046,6 @@ static inline void preempt_notifier_init(struct preempt_notifier *notifier,
 
 #endif	/* !__LINUX_STRINGIFY_H */
 # 57 "include/linux/spinlock.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/bottom_half.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/bottom_half.h" 1
 #ifndef _LINUX_BH_H
 #define _LINUX_BH_H
@@ -9618,9 +9057,6 @@ extern void local_bh_enable_ip(unsigned long ip);
 
 #endif /* _LINUX_BH_H */
 # 58 "include/linux/spinlock.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/barrier.h>
-#endif /* expanded by -frewrite-includes */
 # 59 "include/linux/spinlock.h"
 
 
@@ -9644,9 +9080,6 @@ extern void local_bh_enable_ip(unsigned long ip);
 /*
  * Pull the arch_spinlock_t and arch_rwlock_t definitions:
  */
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/spinlock_types.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/spinlock_types.h" 1
 #ifndef __LINUX_SPINLOCK_TYPES_H
 #define __LINUX_SPINLOCK_TYPES_H
@@ -9660,9 +9093,6 @@ extern void local_bh_enable_ip(unsigned long ip);
  */
 
 #if defined(CONFIG_SMP)
-#if 0 /* expanded by -frewrite-includes */
-# include <asm/spinlock_types.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/spinlock_types.h" 1
 #ifndef __ASM_SPINLOCK_TYPES_H
 #define __ASM_SPINLOCK_TYPES_H
@@ -9699,15 +9129,9 @@ typedef struct {
 #endif
 # 14 "include/linux/spinlock_types.h" 2
 #else
-#if 0 /* expanded by -frewrite-includes */
-# include <linux/spinlock_types_up.h>
-#endif /* expanded by -frewrite-includes */
 # 16 "include/linux/spinlock_types.h"
 #endif
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/lockdep.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/lockdep.h" 1
 /*
  * Runtime locking correctness validator
@@ -9729,21 +9153,9 @@ extern int lock_stat;
 
 #ifdef CONFIG_LOCKDEP
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/linkage.h>
-#endif /* expanded by -frewrite-includes */
 # 22 "include/linux/lockdep.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/list.h>
-#endif /* expanded by -frewrite-includes */
 # 23 "include/linux/lockdep.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/debug_locks.h>
-#endif /* expanded by -frewrite-includes */
 # 24 "include/linux/lockdep.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/stacktrace.h>
-#endif /* expanded by -frewrite-includes */
 # 25 "include/linux/lockdep.h"
 
 /*
@@ -10370,9 +9782,6 @@ typedef struct spinlock {
 
 #define DEFINE_SPINLOCK(x)	spinlock_t x = __SPIN_LOCK_UNLOCKED(x)
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/rwlock_types.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/rwlock_types.h" 1
 #ifndef __LINUX_RWLOCK_TYPES_H
 #define __LINUX_RWLOCK_TYPES_H
@@ -10431,9 +9840,6 @@ typedef struct {
  * Pull the arch_spin*() functions/declarations (UP-nondebug doesn't need them):
  */
 #ifdef CONFIG_SMP
-#if 0 /* expanded by -frewrite-includes */
-# include <asm/spinlock.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/spinlock.h" 1
 #ifndef __ASM_SPINLOCK_H
 #define __ASM_SPINLOCK_H
@@ -10442,9 +9848,6 @@ typedef struct {
 #error SMP not supported on pre-ARMv6 CPUs
 #endif
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/processor.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/processor.h" 1
 /*
  *  arch/arm/include/asm/processor.h
@@ -10467,9 +9870,6 @@ typedef struct {
 
 #ifdef __KERNEL__
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/hw_breakpoint.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/hw_breakpoint.h" 1
 #ifndef _ARM_HW_BREAKPOINT_H
 #define _ARM_HW_BREAKPOINT_H
@@ -10610,17 +10010,8 @@ static inline void clear_ptrace_hw_breakpoint(struct task_struct *tsk) {}
 #endif	/* __KERNEL__ */
 #endif	/* _ARM_HW_BREAKPOINT_H */
 # 23 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/processor.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/ptrace.h>
-#endif /* expanded by -frewrite-includes */
 # 24 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/processor.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/types.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "arch/arm/include/generated/asm/types.h" 1
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/types.h>
-#endif /* expanded by -frewrite-includes */
 # 2 "arch/arm/include/generated/asm/types.h"
 # 25 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/processor.h" 2
 
@@ -10993,9 +10384,6 @@ static inline int arch_read_trylock(arch_rwlock_t *rw)
 #endif /* __ASM_SPINLOCK_H */
 # 88 "include/linux/spinlock.h" 2
 #else
-#if 0 /* expanded by -frewrite-includes */
-# include <linux/spinlock_up.h>
-#endif /* expanded by -frewrite-includes */
 # 90 "include/linux/spinlock.h"
 #endif
 
@@ -11164,9 +10552,6 @@ static inline void do_raw_spin_unlock(raw_spinlock_t *lock) __releases(lock)
 #define raw_spin_can_lock(lock)	(!raw_spin_is_locked(lock))
 
 /* Include rwlock functions */
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/rwlock.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/rwlock.h" 1
 #ifndef __LINUX_RWLOCK_H
 #define __LINUX_RWLOCK_H
@@ -11299,9 +10684,6 @@ do {								\
  * Pull the _spin_*()/_read_*()/_write_*() functions/declarations:
  */
 #if defined(CONFIG_SMP) || defined(CONFIG_DEBUG_SPINLOCK)
-#if 0 /* expanded by -frewrite-includes */
-# include <linux/spinlock_api_smp.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/spinlock_api_smp.h" 1
 #ifndef __LINUX_SPINLOCK_API_SMP_H
 #define __LINUX_SPINLOCK_API_SMP_H
@@ -11496,9 +10878,6 @@ static inline int __raw_spin_trylock_bh(raw_spinlock_t *lock)
 	return 0;
 }
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/rwlock_api_smp.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/rwlock_api_smp.h" 1
 #ifndef __LINUX_RWLOCK_API_SMP_H
 #define __LINUX_RWLOCK_API_SMP_H
@@ -11787,9 +11166,6 @@ static inline void __raw_write_unlock_bh(rwlock_t *lock)
 #endif /* __LINUX_SPINLOCK_API_SMP_H */
 # 264 "include/linux/spinlock.h" 2
 #else
-#if 0 /* expanded by -frewrite-includes */
-# include <linux/spinlock_api_up.h>
-#endif /* expanded by -frewrite-includes */
 # 266 "include/linux/spinlock.h"
 #endif
 
@@ -11909,16 +11285,10 @@ static inline int spin_can_lock(spinlock_t *lock)
  * Pull the atomic_t declaration:
  * (asm-mips/atomic.h needs above definitions)
  */
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/atomic.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/atomic.h" 1
 /* Atomic operations usable in machine independent code */
 #ifndef _LINUX_ATOMIC_H
 #define _LINUX_ATOMIC_H
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/atomic.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/atomic.h" 1
 /*
  *  arch/arm/include/asm/atomic.h
@@ -11933,36 +11303,15 @@ static inline int spin_can_lock(spinlock_t *lock)
 #ifndef __ASM_ARM_ATOMIC_H
 #define __ASM_ARM_ATOMIC_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/compiler.h>
-#endif /* expanded by -frewrite-includes */
 # 15 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/atomic.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/types.h>
-#endif /* expanded by -frewrite-includes */
 # 16 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/atomic.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/irqflags.h>
-#endif /* expanded by -frewrite-includes */
 # 17 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/atomic.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/barrier.h>
-#endif /* expanded by -frewrite-includes */
 # 18 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/atomic.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/cmpxchg.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/cmpxchg.h" 1
 #ifndef __ASM_ARM_CMPXCHG_H
 #define __ASM_ARM_CMPXCHG_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/irqflags.h>
-#endif /* expanded by -frewrite-includes */
 # 5 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/cmpxchg.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/barrier.h>
-#endif /* expanded by -frewrite-includes */
 # 6 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/cmpxchg.h"
 
 #if defined(CONFIG_CPU_SA1100) || defined(CONFIG_CPU_SA110)
@@ -12064,20 +11413,11 @@ static inline unsigned long __xchg(unsigned long x, volatile void *ptr, int size
 #define xchg(ptr,x) \
 	((__typeof__(*(ptr)))__xchg((unsigned long)(x),(ptr),sizeof(*(ptr))))
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/cmpxchg-local.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/asm-generic/cmpxchg-local.h" 1
 #ifndef __ASM_GENERIC_CMPXCHG_LOCAL_H
 #define __ASM_GENERIC_CMPXCHG_LOCAL_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/types.h>
-#endif /* expanded by -frewrite-includes */
 # 5 "include/asm-generic/cmpxchg-local.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/irqflags.h>
-#endif /* expanded by -frewrite-includes */
 # 6 "include/asm-generic/cmpxchg-local.h"
 
 extern unsigned long wrong_size_cmpxchg(volatile void *ptr);
@@ -12160,9 +11500,6 @@ static inline u64 __cmpxchg64_local_generic(volatile void *ptr,
 #define cmpxchg64_local(ptr, o, n) __cmpxchg64_local_generic((ptr), (o), (n))
 
 #ifndef CONFIG_SMP
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/cmpxchg.h>
-#endif /* expanded by -frewrite-includes */
 # 126 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/cmpxchg.h"
 #endif
 
@@ -12859,9 +12196,6 @@ static inline void atomic_or(int i, atomic_t *v)
 }
 #endif /* #ifndef CONFIG_ARCH_HAS_ATOMIC_OR */
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/atomic-long.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/asm-generic/atomic-long.h" 1
 #ifndef _ASM_GENERIC_ATOMIC_LONG_H
 #define _ASM_GENERIC_ATOMIC_LONG_H
@@ -12873,13 +12207,7 @@ static inline void atomic_or(int i, atomic_t *v)
  * edit all arch specific atomic.h files.
  */
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/types.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "arch/arm/include/generated/asm/types.h" 1
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/types.h>
-#endif /* expanded by -frewrite-includes */
 # 2 "arch/arm/include/generated/asm/types.h"
 # 12 "include/asm-generic/atomic-long.h" 2
 
@@ -13131,9 +12459,6 @@ static inline long atomic_long_add_unless(atomic_long_t *l, long a, long u)
 #endif  /*  _ASM_GENERIC_ATOMIC_LONG_H  */
 # 128 "include/linux/atomic.h" 2
 #ifdef CONFIG_GENERIC_ATOMIC64
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/atomic64.h>
-#endif /* expanded by -frewrite-includes */
 # 130 "include/linux/atomic.h"
 #endif
 #endif /* _LINUX_ATOMIC_H */
@@ -13152,13 +12477,7 @@ extern int _atomic_dec_and_lock(atomic_t *atomic, spinlock_t *lock);
 
 #endif /* __LINUX_SPINLOCK_H */
 # 30 "include/linux/seqlock.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/preempt.h>
-#endif /* expanded by -frewrite-includes */
 # 31 "include/linux/seqlock.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/processor.h>
-#endif /* expanded by -frewrite-includes */
 # 32 "include/linux/seqlock.h"
 
 /*
@@ -13401,31 +12720,16 @@ write_sequnlock_irqrestore(seqlock_t *sl, unsigned long flags)
 
 #endif /* __LINUX_SEQLOCK_H */
 # 6 "include/linux/time.h" 2
-#if 0 /* expanded by -frewrite-includes */
-# include <linux/math64.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/math64.h" 1
 #ifndef _LINUX_MATH64_H
 #define _LINUX_MATH64_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/types.h>
-#endif /* expanded by -frewrite-includes */
 # 5 "include/linux/math64.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/div64.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/div64.h" 1
 #ifndef __ASM_ARM_DIV64
 #define __ASM_ARM_DIV64
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/types.h>
-#endif /* expanded by -frewrite-includes */
 # 5 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/div64.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/compiler.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/compiler.h" 1
 #ifndef __ASM_ARM_COMPILER_H
 #define __ASM_ARM_COMPILER_H
@@ -13500,9 +12804,6 @@ write_sequnlock_irqrestore(seqlock_t *sl, unsigned long flags)
 
 #elif __GNUC__ >= 4
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/bug.h>
-#endif /* expanded by -frewrite-includes */
 # 64 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/div64.h"
 
 /*
@@ -13786,16 +13087,10 @@ __iter_div_u64_rem(u64 dividend, u32 divisor, u64 *remainder)
 
 #endif /* _LINUX_MATH64_H */
 # 7 "include/linux/time.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <uapi/linux/time.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/uapi/linux/time.h" 1
 #ifndef _UAPI_LINUX_TIME_H
 #define _UAPI_LINUX_TIME_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/types.h>
-#endif /* expanded by -frewrite-includes */
 # 5 "include/uapi/linux/time.h"
 
 
@@ -14245,37 +13540,19 @@ struct timex {
 #define ADJ_ADJTIME		0x8000	/* switch between adjtime/adjtimex modes */
 #define ADJ_OFFSET_SINGLESHOT	0x0001	/* old-fashioned adjtime */
 #define ADJ_OFFSET_READONLY	0x2000	/* read-only adjtime */
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/compiler.h>
-#endif /* expanded by -frewrite-includes */
 # 62 "include/linux/timex.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/types.h>
-#endif /* expanded by -frewrite-includes */
 # 63 "include/linux/timex.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/param.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/include/uapi/linux/param.h" 1
 #ifndef _LINUX_PARAM_H
 #define _LINUX_PARAM_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/param.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "arch/arm/include/generated/asm/param.h" 1
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/param.h>
-#endif /* expanded by -frewrite-includes */
 # 2 "arch/arm/include/generated/asm/param.h"
 # 5 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/include/uapi/linux/param.h" 2
 
 #endif
 # 64 "include/linux/timex.h" 2
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/timex.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/timex.h" 1
 /*
  *  arch/arm/include/asm/timex.h
@@ -14294,9 +13571,6 @@ struct timex {
 #ifdef CONFIG_ARCH_MULTIPLATFORM
 #define CLOCK_TICK_RATE 1000000
 #else
-#if 0 /* expanded by -frewrite-includes */
-#include <mach/timex.h>
-#endif /* expanded by -frewrite-includes */
 # 19 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/timex.h"
 #endif
 
@@ -14396,40 +13670,16 @@ int read_current_timer(unsigned long *timer_val);
 
 #endif /* LINUX_TIMEX_H */
 # 18 "include/linux/sched.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/jiffies.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/jiffies.h" 1
 #ifndef _LINUX_JIFFIES_H
 #define _LINUX_JIFFIES_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/math64.h>
-#endif /* expanded by -frewrite-includes */
 # 5 "include/linux/jiffies.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/kernel.h>
-#endif /* expanded by -frewrite-includes */
 # 6 "include/linux/jiffies.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/types.h>
-#endif /* expanded by -frewrite-includes */
 # 7 "include/linux/jiffies.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/time.h>
-#endif /* expanded by -frewrite-includes */
 # 8 "include/linux/jiffies.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/timex.h>
-#endif /* expanded by -frewrite-includes */
 # 9 "include/linux/jiffies.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/param.h>			/* for HZ */
-#endif /* expanded by -frewrite-includes */
 # 1 "arch/arm/include/generated/asm/param.h" 1
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/param.h>
-#endif /* expanded by -frewrite-includes */
 # 2 "arch/arm/include/generated/asm/param.h"
 # 10 "include/linux/jiffies.h" 2
 
@@ -14741,9 +13991,6 @@ extern unsigned long nsecs_to_jiffies(u64 n);
 
 #endif
 # 19 "include/linux/sched.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/rbtree.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/rbtree.h" 1
 /*
   Red Black Trees
@@ -14776,13 +14023,7 @@ extern unsigned long nsecs_to_jiffies(u64 n);
 #ifndef	_LINUX_RBTREE_H
 #define	_LINUX_RBTREE_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/kernel.h>
-#endif /* expanded by -frewrite-includes */
 # 33 "include/linux/rbtree.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/stddef.h>
-#endif /* expanded by -frewrite-includes */
 # 34 "include/linux/rbtree.h"
 
 struct rb_node {
@@ -14836,13 +14077,7 @@ static inline void rb_link_node(struct rb_node * node, struct rb_node * parent,
 
 #endif	/* _LINUX_RBTREE_H */
 # 20 "include/linux/sched.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/thread_info.h>
-#endif /* expanded by -frewrite-includes */
 # 21 "include/linux/sched.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/cpumask.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/cpumask.h" 1
 #ifndef __LINUX_CPUMASK_H
 #define __LINUX_CPUMASK_H
@@ -14852,38 +14087,17 @@ static inline void rb_link_node(struct rb_node * node, struct rb_node * parent,
  * set of CPU's in a system, one bit position per CPU number.  In general,
  * only nr_cpu_ids (<= NR_CPUS) bits are valid.
  */
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/kernel.h>
-#endif /* expanded by -frewrite-includes */
 # 10 "include/linux/cpumask.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/threads.h>
-#endif /* expanded by -frewrite-includes */
 # 11 "include/linux/cpumask.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/bitmap.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/bitmap.h" 1
 #ifndef __LINUX_BITMAP_H
 #define __LINUX_BITMAP_H
 
 #ifndef __ASSEMBLY__
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/types.h>
-#endif /* expanded by -frewrite-includes */
 # 7 "include/linux/bitmap.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/bitops.h>
-#endif /* expanded by -frewrite-includes */
 # 8 "include/linux/bitmap.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/string.h>
-#endif /* expanded by -frewrite-includes */
 # 9 "include/linux/bitmap.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/kernel.h>
-#endif /* expanded by -frewrite-includes */
 # 10 "include/linux/bitmap.h"
 
 /*
@@ -15186,9 +14400,6 @@ static inline int bitmap_parse(const char *buf, unsigned int buflen,
 
 #endif /* __LINUX_BITMAP_H */
 # 12 "include/linux/cpumask.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/bug.h>
-#endif /* expanded by -frewrite-includes */
 # 13 "include/linux/cpumask.h"
 
 typedef struct cpumask { DECLARE_BITMAP(bits, NR_CPUS); } cpumask_t;
@@ -16127,13 +15338,7 @@ static inline void __cpus_shift_left(cpumask_t *dstp,
 
 #endif /* __LINUX_CPUMASK_H */
 # 22 "include/linux/sched.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/errno.h>
-#endif /* expanded by -frewrite-includes */
 # 23 "include/linux/sched.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/nodemask.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/nodemask.h" 1
 #ifndef __LINUX_NODEMASK_H
 #define __LINUX_NODEMASK_H
@@ -16227,21 +15432,9 @@ static inline void __cpus_shift_left(cpumask_t *dstp,
  * for such situations. See below and CPUMASK_ALLOC also.
  */
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/kernel.h>
-#endif /* expanded by -frewrite-includes */
 # 94 "include/linux/nodemask.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/threads.h>
-#endif /* expanded by -frewrite-includes */
 # 95 "include/linux/nodemask.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/bitmap.h>
-#endif /* expanded by -frewrite-includes */
 # 96 "include/linux/nodemask.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/numa.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/numa.h" 1
 #ifndef _LINUX_NUMA_H
 #define _LINUX_NUMA_H
@@ -16684,34 +15877,19 @@ struct nodemask_scratch {
 
 #endif /* __LINUX_NODEMASK_H */
 # 24 "include/linux/sched.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/mm_types.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/mm_types.h" 1
 #ifndef _LINUX_MM_TYPES_H
 #define _LINUX_MM_TYPES_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/auxvec.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/auxvec.h" 1
 #ifndef _LINUX_AUXVEC_H
 #define _LINUX_AUXVEC_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <uapi/linux/auxvec.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/uapi/linux/auxvec.h" 1
 #ifndef _UAPI_LINUX_AUXVEC_H
 #define _UAPI_LINUX_AUXVEC_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/auxvec.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "arch/arm/include/generated/asm/auxvec.h" 1
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/auxvec.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/include/uapi/asm-generic/auxvec.h" 1
 #ifndef __ASM_GENERIC_AUXVEC_H
 #define __ASM_GENERIC_AUXVEC_H
@@ -16760,29 +15938,11 @@ struct nodemask_scratch {
   /* number of "#define AT_.*" above, minus {AT_NULL, AT_IGNORE, AT_NOTELF} */
 #endif /* _LINUX_AUXVEC_H */
 # 5 "include/linux/mm_types.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/types.h>
-#endif /* expanded by -frewrite-includes */
 # 6 "include/linux/mm_types.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/threads.h>
-#endif /* expanded by -frewrite-includes */
 # 7 "include/linux/mm_types.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/list.h>
-#endif /* expanded by -frewrite-includes */
 # 8 "include/linux/mm_types.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/spinlock.h>
-#endif /* expanded by -frewrite-includes */
 # 9 "include/linux/mm_types.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/rbtree.h>
-#endif /* expanded by -frewrite-includes */
 # 10 "include/linux/mm_types.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/rwsem.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/rwsem.h" 1
 /* rwsem.h: R/W semaphores, public interface
  *
@@ -16793,39 +15953,18 @@ struct nodemask_scratch {
 #ifndef _LINUX_RWSEM_H
 #define _LINUX_RWSEM_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/linkage.h>
-#endif /* expanded by -frewrite-includes */
 # 11 "include/linux/rwsem.h"
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/types.h>
-#endif /* expanded by -frewrite-includes */
 # 13 "include/linux/rwsem.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/kernel.h>
-#endif /* expanded by -frewrite-includes */
 # 14 "include/linux/rwsem.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/list.h>
-#endif /* expanded by -frewrite-includes */
 # 15 "include/linux/rwsem.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/spinlock.h>
-#endif /* expanded by -frewrite-includes */
 # 16 "include/linux/rwsem.h"
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/atomic.h>
-#endif /* expanded by -frewrite-includes */
 # 18 "include/linux/rwsem.h"
 
 struct rw_semaphore;
 
 #ifdef CONFIG_RWSEM_GENERIC_SPINLOCK
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/rwsem-spinlock.h> /* use a generic implementation */
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/rwsem-spinlock.h" 1
 /* rwsem-spinlock.h: fallback C implementation
  *
@@ -16890,9 +16029,6 @@ extern struct rw_semaphore *rwsem_wake(struct rw_semaphore *);
 extern struct rw_semaphore *rwsem_downgrade_wake(struct rw_semaphore *sem);
 
 /* Include the arch specific part */
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/rwsem.h>
-#endif /* expanded by -frewrite-includes */
 # 41 "include/linux/rwsem.h"
 
 /* In all implementations count != 0 means locked */
@@ -16997,9 +16133,6 @@ do {								\
 
 #endif /* _LINUX_RWSEM_H */
 # 11 "include/linux/mm_types.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/completion.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/completion.h" 1
 #ifndef __LINUX_COMPLETION_H
 #define __LINUX_COMPLETION_H
@@ -17011,40 +16144,19 @@ do {								\
  * See kernel/sched.c for details.
  */
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/wait.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/wait.h" 1
 #ifndef _LINUX_WAIT_H
 #define _LINUX_WAIT_H
 
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/list.h>
-#endif /* expanded by -frewrite-includes */
 # 6 "include/linux/wait.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/stddef.h>
-#endif /* expanded by -frewrite-includes */
 # 7 "include/linux/wait.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/spinlock.h>
-#endif /* expanded by -frewrite-includes */
 # 8 "include/linux/wait.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/current.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "arch/arm/include/generated/asm/current.h" 1
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/current.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/asm-generic/current.h" 1
 #ifndef __ASM_GENERIC_CURRENT_H
 #define __ASM_GENERIC_CURRENT_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/thread_info.h>
-#endif /* expanded by -frewrite-includes */
 # 5 "include/asm-generic/current.h"
 
 #define get_current() (current_thread_info()->task)
@@ -17053,9 +16165,6 @@ do {								\
 #endif /* __ASM_GENERIC_CURRENT_H */
 # 2 "arch/arm/include/generated/asm/current.h" 2
 # 9 "include/linux/wait.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <uapi/linux/wait.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/uapi/linux/wait.h" 1
 #ifndef _UAPI_LINUX_WAIT_H
 #define _UAPI_LINUX_WAIT_H
@@ -17982,13 +17091,7 @@ extern void complete_all(struct completion *);
 
 #endif
 # 12 "include/linux/mm_types.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/cpumask.h>
-#endif /* expanded by -frewrite-includes */
 # 13 "include/linux/mm_types.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/page-debug-flags.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/page-debug-flags.h" 1
 #ifndef LINUX_PAGE_DEBUG_FLAGS_H
 #define  LINUX_PAGE_DEBUG_FLAGS_H
@@ -18023,9 +17126,6 @@ enum page_debug_flags {
 
 #endif /* LINUX_PAGE_DEBUG_FLAGS_H */
 # 14 "include/linux/mm_types.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/uprobes.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/uprobes.h" 1
 #ifndef _LINUX_UPROBES_H
 #define _LINUX_UPROBES_H
@@ -18053,13 +17153,7 @@ enum page_debug_flags {
  * Copyright (C) 2011-2012 Red Hat, Inc., Peter Zijlstra <pzijlstr@redhat.com>
  */
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/errno.h>
-#endif /* expanded by -frewrite-includes */
 # 28 "include/linux/uprobes.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/rbtree.h>
-#endif /* expanded by -frewrite-includes */
 # 29 "include/linux/uprobes.h"
 
 struct vm_area_struct;
@@ -18067,9 +17161,6 @@ struct mm_struct;
 struct inode;
 
 #ifdef CONFIG_ARCH_SUPPORTS_UPROBES
-#if 0 /* expanded by -frewrite-includes */
-# include <asm/uprobes.h>
-#endif /* expanded by -frewrite-includes */
 # 36 "include/linux/uprobes.h"
 #endif
 
@@ -18213,20 +17304,11 @@ static inline void uprobe_clear_state(struct mm_struct *mm)
 #endif /* !CONFIG_UPROBES */
 #endif	/* _LINUX_UPROBES_H */
 # 15 "include/linux/mm_types.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/page-flags-layout.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/page-flags-layout.h" 1
 #ifndef PAGE_FLAGS_LAYOUT_H
 #define PAGE_FLAGS_LAYOUT_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/numa.h>
-#endif /* expanded by -frewrite-includes */
 # 5 "include/linux/page-flags-layout.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <generated/bounds.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/generated/bounds.h" 1
 #ifndef __LINUX_BOUNDS_H__
 #define __LINUX_BOUNDS_H__
@@ -18262,9 +17344,6 @@ static inline void uprobe_clear_state(struct mm_struct *mm)
 #endif
 
 #ifdef CONFIG_SPARSEMEM
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/sparsemem.h>
-#endif /* expanded by -frewrite-includes */
 # 26 "include/linux/page-flags-layout.h"
 
 /* SECTION_SHIFT	#bits space required to store a section # */
@@ -18330,9 +17409,6 @@ static inline void uprobe_clear_state(struct mm_struct *mm)
 
 #endif /* _LINUX_PAGE_FLAGS_LAYOUT */
 # 16 "include/linux/mm_types.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/page.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/page.h" 1
 /*
  *  arch/arm/include/asm/page.h
@@ -18355,16 +17431,10 @@ static inline void uprobe_clear_state(struct mm_struct *mm)
 
 #ifndef CONFIG_MMU
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/page-nommu.h>
-#endif /* expanded by -frewrite-includes */
 # 23 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/page.h"
 
 #else
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/glue.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/glue.h" 1
 /*
  *  arch/arm/include/asm/glue.h
@@ -18513,14 +17583,8 @@ extern void copy_page(void *to, const void *from);
 #define __HAVE_ARCH_GATE_AREA 1
 
 #ifdef CONFIG_ARM_LPAE
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/pgtable-3level-types.h>
-#endif /* expanded by -frewrite-includes */
 # 149 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/page.h"
 #else
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/pgtable-2level-types.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/pgtable-2level-types.h" 1
 /*
  * arch/arm/include/asm/pgtable-2level-types.h
@@ -18543,13 +17607,7 @@ extern void copy_page(void *to, const void *from);
 #ifndef _ASM_PGTABLE_2LEVEL_TYPES_H
 #define _ASM_PGTABLE_2LEVEL_TYPES_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/types.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "arch/arm/include/generated/asm/types.h" 1
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/types.h>
-#endif /* expanded by -frewrite-includes */
 # 2 "arch/arm/include/generated/asm/types.h"
 # 23 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/pgtable-2level-types.h" 2
 
@@ -18608,9 +17666,6 @@ typedef struct page *pgtable_t;
 extern int pfn_valid(unsigned long);
 #endif
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/memory.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/memory.h" 1
 /*
  *  arch/arm/include/asm/memory.h
@@ -18627,21 +17682,9 @@ extern int pfn_valid(unsigned long);
 #ifndef __ASM_ARM_MEMORY_H
 #define __ASM_ARM_MEMORY_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/compiler.h>
-#endif /* expanded by -frewrite-includes */
 # 17 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/memory.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/const.h>
-#endif /* expanded by -frewrite-includes */
 # 18 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/memory.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/types.h>
-#endif /* expanded by -frewrite-includes */
 # 19 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/memory.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/sizes.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/sizes.h" 1
 /*
  * include/linux/sizes.h
@@ -18693,9 +17736,6 @@ extern int pfn_valid(unsigned long);
 # 20 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/memory.h" 2
 
 #ifdef CONFIG_NEED_MACH_MEMORY_H
-#if 0 /* expanded by -frewrite-includes */
-#include <mach/memory.h>
-#endif /* expanded by -frewrite-includes */
 # 23 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/memory.h"
 #endif
 
@@ -18956,9 +17996,6 @@ static inline __deprecated void *bus_to_virt(unsigned long x)
 
 #endif
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/memory_model.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/asm-generic/memory_model.h" 1
 #ifndef __ASM_MEMORY_MODEL_H
 #define __ASM_MEMORY_MODEL_H
@@ -19048,22 +18085,13 @@ static inline __deprecated void *bus_to_virt(unsigned long x)
 	(((current->personality & READ_IMPLIES_EXEC) ? VM_EXEC : 0) | \
 	 VM_READ | VM_WRITE | VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/getorder.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/asm-generic/getorder.h" 1
 #ifndef __ASM_GENERIC_GETORDER_H
 #define __ASM_GENERIC_GETORDER_H
 
 #ifndef __ASSEMBLY__
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/compiler.h>
-#endif /* expanded by -frewrite-includes */
 # 7 "include/asm-generic/getorder.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/log2.h>
-#endif /* expanded by -frewrite-includes */
 # 8 "include/asm-generic/getorder.h"
 
 /*
@@ -19123,9 +18151,6 @@ int __get_order(unsigned long size)
 
 #endif
 # 17 "include/linux/mm_types.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/mmu.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/mmu.h" 1
 #ifndef __ARM_MMU_H
 #define __ARM_MMU_H
@@ -19606,38 +18631,17 @@ static inline cpumask_t *mm_cpumask(struct mm_struct *mm)
 #endif /* _LINUX_MM_TYPES_H */
 # 25 "include/linux/sched.h" 2
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/page.h>
-#endif /* expanded by -frewrite-includes */
 # 27 "include/linux/sched.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/ptrace.h>
-#endif /* expanded by -frewrite-includes */
 # 28 "include/linux/sched.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/cputime.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "arch/arm/include/generated/asm/cputime.h" 1
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/cputime.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/asm-generic/cputime.h" 1
 #ifndef _ASM_GENERIC_CPUTIME_H
 #define _ASM_GENERIC_CPUTIME_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/time.h>
-#endif /* expanded by -frewrite-includes */
 # 5 "include/asm-generic/cputime.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/jiffies.h>
-#endif /* expanded by -frewrite-includes */
 # 6 "include/asm-generic/cputime.h"
 
 #ifndef CONFIG_VIRT_CPU_ACCOUNTING
-#if 0 /* expanded by -frewrite-includes */
-# include <asm-generic/cputime_jiffies.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/asm-generic/cputime_jiffies.h" 1
 #ifndef _ASM_GENERIC_CPUTIME_JIFFIES_H
 #define _ASM_GENERIC_CPUTIME_JIFFIES_H
@@ -19715,9 +18719,6 @@ typedef u64 __nocast cputime64_t;
 #endif
 
 #ifdef CONFIG_VIRT_CPU_ACCOUNTING_GEN
-#if 0 /* expanded by -frewrite-includes */
-# include <asm-generic/cputime_nsecs.h>
-#endif /* expanded by -frewrite-includes */
 # 13 "include/asm-generic/cputime.h"
 #endif
 
@@ -19725,9 +18726,6 @@ typedef u64 __nocast cputime64_t;
 # 2 "arch/arm/include/generated/asm/cputime.h" 2
 # 29 "include/linux/sched.h" 2
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/smp.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/smp.h" 1
 #ifndef __LINUX_SMP_H
 #define __LINUX_SMP_H
@@ -19737,25 +18735,10 @@ typedef u64 __nocast cputime64_t;
  *		Alan Cox. <alan@redhat.com>
  */
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/errno.h>
-#endif /* expanded by -frewrite-includes */
 # 10 "include/linux/smp.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/types.h>
-#endif /* expanded by -frewrite-includes */
 # 11 "include/linux/smp.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/list.h>
-#endif /* expanded by -frewrite-includes */
 # 12 "include/linux/smp.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/cpumask.h>
-#endif /* expanded by -frewrite-includes */
 # 13 "include/linux/smp.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/init.h>
-#endif /* expanded by -frewrite-includes */
 # 14 "include/linux/smp.h"
 
 extern void cpu_idle(void);
@@ -19777,25 +18760,10 @@ int smp_call_function_single(int cpuid, smp_call_func_t func, void *info,
 
 #ifdef CONFIG_SMP
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/preempt.h>
-#endif /* expanded by -frewrite-includes */
 # 35 "include/linux/smp.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/kernel.h>
-#endif /* expanded by -frewrite-includes */
 # 36 "include/linux/smp.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/compiler.h>
-#endif /* expanded by -frewrite-includes */
 # 37 "include/linux/smp.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/thread_info.h>
-#endif /* expanded by -frewrite-includes */
 # 38 "include/linux/smp.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/smp.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/smp.h" 1
 /*
  *  arch/arm/include/asm/smp.h
@@ -19809,17 +18777,8 @@ int smp_call_function_single(int cpuid, smp_call_func_t func, void *info,
 #ifndef __ASM_ARM_SMP_H
 #define __ASM_ARM_SMP_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/threads.h>
-#endif /* expanded by -frewrite-includes */
 # 14 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/smp.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/cpumask.h>
-#endif /* expanded by -frewrite-includes */
 # 15 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/smp.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/thread_info.h>
-#endif /* expanded by -frewrite-includes */
 # 16 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/smp.h"
 
 #ifndef CONFIG_SMP
@@ -20117,20 +19076,11 @@ void smp_setup_processor_id(void);
 
 #endif /* __LINUX_SMP_H */
 # 31 "include/linux/sched.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/sem.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/sem.h" 1
 #ifndef _LINUX_SEM_H
 #define _LINUX_SEM_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/atomic.h>
-#endif /* expanded by -frewrite-includes */
 # 5 "include/linux/sem.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/rcupdate.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/rcupdate.h" 1
 /*
  * Read-Copy Update mechanism for mutual exclusion
@@ -20167,52 +19117,19 @@ void smp_setup_processor_id(void);
 #ifndef __LINUX_RCUPDATE_H
 #define __LINUX_RCUPDATE_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/types.h>
-#endif /* expanded by -frewrite-includes */
 # 37 "include/linux/rcupdate.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/cache.h>
-#endif /* expanded by -frewrite-includes */
 # 38 "include/linux/rcupdate.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/spinlock.h>
-#endif /* expanded by -frewrite-includes */
 # 39 "include/linux/rcupdate.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/threads.h>
-#endif /* expanded by -frewrite-includes */
 # 40 "include/linux/rcupdate.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/cpumask.h>
-#endif /* expanded by -frewrite-includes */
 # 41 "include/linux/rcupdate.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/seqlock.h>
-#endif /* expanded by -frewrite-includes */
 # 42 "include/linux/rcupdate.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/lockdep.h>
-#endif /* expanded by -frewrite-includes */
 # 43 "include/linux/rcupdate.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/completion.h>
-#endif /* expanded by -frewrite-includes */
 # 44 "include/linux/rcupdate.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/debugobjects.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/debugobjects.h" 1
 #ifndef _LINUX_DEBUGOBJECTS_H
 #define _LINUX_DEBUGOBJECTS_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/list.h>
-#endif /* expanded by -frewrite-includes */
 # 5 "include/linux/debugobjects.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/spinlock.h>
-#endif /* expanded by -frewrite-includes */
 # 6 "include/linux/debugobjects.h"
 
 enum debug_obj_state {
@@ -20320,13 +19237,7 @@ debug_check_no_obj_freed(const void *address, unsigned long size) { }
 
 #endif
 # 45 "include/linux/rcupdate.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/bug.h>
-#endif /* expanded by -frewrite-includes */
 # 46 "include/linux/rcupdate.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/compiler.h>
-#endif /* expanded by -frewrite-includes */
 # 47 "include/linux/rcupdate.h"
 
 #ifdef CONFIG_RCU_TORTURE_TEST
@@ -20559,9 +19470,6 @@ typedef void call_rcu_func_t(struct rcu_head *head,
 void wait_rcu_gp(call_rcu_func_t crf);
 
 #if defined(CONFIG_TREE_RCU) || defined(CONFIG_TREE_PREEMPT_RCU)
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/rcutree.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/rcutree.h" 1
 /*
  * Read-Copy Update mechanism for mutual exclusion (tree-based version)
@@ -20657,9 +19565,6 @@ extern int rcu_scheduler_active __read_mostly;
 #endif /* __LINUX_RCUTREE_H */
 # 279 "include/linux/rcupdate.h" 2
 #elif defined(CONFIG_TINY_RCU) || defined(CONFIG_TINY_PREEMPT_RCU)
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/rcutiny.h>
-#endif /* expanded by -frewrite-includes */
 # 281 "include/linux/rcupdate.h"
 #else
 #error "Unknown RCU implementation specified to kernel configuration"
@@ -21384,31 +20289,16 @@ static inline notrace void rcu_read_unlock_sched_notrace(void)
 
 #endif /* __LINUX_RCUPDATE_H */
 # 6 "include/linux/sem.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/cache.h>
-#endif /* expanded by -frewrite-includes */
 # 7 "include/linux/sem.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <uapi/linux/sem.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/uapi/linux/sem.h" 1
 #ifndef _UAPI_LINUX_SEM_H
 #define _UAPI_LINUX_SEM_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/ipc.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/ipc.h" 1
 #ifndef _LINUX_IPC_H
 #define _LINUX_IPC_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/spinlock.h>
-#endif /* expanded by -frewrite-includes */
 # 5 "include/linux/ipc.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/uidgid.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/uidgid.h" 1
 #ifndef _LINUX_UIDGID_H
 #define _LINUX_UIDGID_H
@@ -21423,20 +20313,11 @@ static inline notrace void rcu_read_unlock_sched_notrace(void)
  * to detect when we overlook these differences.
  *
  */
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/types.h>
-#endif /* expanded by -frewrite-includes */
 # 15 "include/linux/uidgid.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/highuid.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/highuid.h" 1
 #ifndef _LINUX_HIGHUID_H
 #define _LINUX_HIGHUID_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/types.h>
-#endif /* expanded by -frewrite-includes */
 # 5 "include/linux/highuid.h"
 
 /*
@@ -21718,16 +20599,10 @@ static inline bool kgid_has_mapping(struct user_namespace *ns, kgid_t gid)
 
 #endif /* _LINUX_UIDGID_H */
 # 6 "include/linux/ipc.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <uapi/linux/ipc.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/uapi/linux/ipc.h" 1
 #ifndef _UAPI_LINUX_IPC_H
 #define _UAPI_LINUX_IPC_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/types.h>
-#endif /* expanded by -frewrite-includes */
 # 5 "include/uapi/linux/ipc.h"
 
 #define IPC_PRIVATE ((__kernel_key_t) 0)  
@@ -21745,13 +20620,7 @@ struct ipc_perm
 };
 
 /* Include the definition of ipc64_perm */
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/ipcbuf.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "arch/arm/include/generated/asm/ipcbuf.h" 1
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/ipcbuf.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/include/uapi/asm-generic/ipcbuf.h" 1
 #ifndef __ASM_GENERIC_IPCBUF_H
 #define __ASM_GENERIC_IPCBUF_H
@@ -21901,24 +20770,12 @@ struct semid_ds {
 };
 
 /* Include the definition of semid64_ds */
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/sembuf.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "arch/arm/include/generated/asm/sembuf.h" 1
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/sembuf.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/include/uapi/asm-generic/sembuf.h" 1
 #ifndef __ASM_GENERIC_SEMBUF_H
 #define __ASM_GENERIC_SEMBUF_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/bitsperlong.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "arch/arm/include/generated/asm/bitsperlong.h" 1
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/bitsperlong.h>
-#endif /* expanded by -frewrite-includes */
 # 2 "arch/arm/include/generated/asm/bitsperlong.h"
 # 5 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/include/uapi/asm-generic/sembuf.h" 2
 
@@ -22047,41 +20904,23 @@ static inline void exit_sem(struct task_struct *tsk)
 
 #endif /* _LINUX_SEM_H */
 # 32 "include/linux/sched.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/signal.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/signal.h" 1
 #ifndef _LINUX_SIGNAL_H
 #define _LINUX_SIGNAL_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/list.h>
-#endif /* expanded by -frewrite-includes */
 # 5 "include/linux/signal.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <uapi/linux/signal.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/uapi/linux/signal.h" 1
 #ifndef _UAPI_LINUX_SIGNAL_H
 #define _UAPI_LINUX_SIGNAL_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/signal.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/signal.h" 1
 #ifndef _ASMARM_SIGNAL_H
 #define _ASMARM_SIGNAL_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <uapi/asm/signal.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/uapi/asm/signal.h" 1
 #ifndef _UAPI_ASMARM_SIGNAL_H
 #define _UAPI_ASMARM_SIGNAL_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/types.h>
-#endif /* expanded by -frewrite-includes */
 # 5 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/uapi/asm/signal.h"
 
 /* Avoid too many header ordering problems.  */
@@ -22171,16 +21010,10 @@ typedef unsigned long sigset_t;
 #define MINSIGSTKSZ	2048
 #define SIGSTKSZ	8192
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/signal-defs.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/include/uapi/asm-generic/signal-defs.h" 1
 #ifndef __ASM_GENERIC_SIGNAL_DEFS_H
 #define __ASM_GENERIC_SIGNAL_DEFS_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/compiler.h>
-#endif /* expanded by -frewrite-includes */
 # 5 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/include/uapi/asm-generic/signal-defs.h"
 
 #ifndef SIG_BLOCK
@@ -22251,9 +21084,6 @@ typedef struct {
 
 #define __ARCH_HAS_SA_RESTORER
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/sigcontext.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/uapi/asm/sigcontext.h" 1
 #ifndef _ASMARM_SIGCONTEXT_H
 #define _ASMARM_SIGCONTEXT_H
@@ -22292,31 +21122,16 @@ struct sigcontext {
 # 22 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/signal.h" 2
 #endif
 # 5 "include/uapi/linux/signal.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/siginfo.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "arch/arm/include/generated/asm/siginfo.h" 1
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/siginfo.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/asm-generic/siginfo.h" 1
 #ifndef _ASM_GENERIC_SIGINFO_H
 #define _ASM_GENERIC_SIGINFO_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <uapi/asm-generic/siginfo.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/uapi/asm-generic/siginfo.h" 1
 #ifndef _UAPI_ASM_GENERIC_SIGINFO_H
 #define _UAPI_ASM_GENERIC_SIGINFO_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/compiler.h>
-#endif /* expanded by -frewrite-includes */
 # 5 "include/uapi/asm-generic/siginfo.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/types.h>
-#endif /* expanded by -frewrite-includes */
 # 6 "include/uapi/asm-generic/siginfo.h"
 
 typedef union sigval {
@@ -22629,9 +21444,6 @@ void do_schedule_next_timer(struct siginfo *info);
 
 #ifndef HAVE_ARCH_COPY_SIGINFO
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/string.h>
-#endif /* expanded by -frewrite-includes */
 # 23 "include/asm-generic/siginfo.h"
 
 static inline void copy_siginfo(struct siginfo *to, struct siginfo *from)
@@ -22685,9 +21497,6 @@ struct sigpending {
  */
 
 #ifndef __HAVE_ARCH_SIG_BITOPS
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/bitops.h>
-#endif /* expanded by -frewrite-includes */
 # 36 "include/linux/signal.h"
 
 /* We don't use <linux/bitops.h> for these because there is no need to
@@ -22746,9 +21555,6 @@ static inline int sigisemptyset(sigset_t *set)
 #define sigmask(sig)	(1UL << ((sig) - 1))
 
 #ifndef __HAVE_ARCH_SIG_SETOPS
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/string.h>
-#endif /* expanded by -frewrite-includes */
 # 94 "include/linux/signal.h"
 
 #define _SIG_SET_BINOP(name, op)					\
@@ -23095,24 +21901,12 @@ int __save_altstack(stack_t __user *, unsigned long);
 
 #endif /* _LINUX_SIGNAL_H */
 # 33 "include/linux/sched.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/compiler.h>
-#endif /* expanded by -frewrite-includes */
 # 34 "include/linux/sched.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/completion.h>
-#endif /* expanded by -frewrite-includes */
 # 35 "include/linux/sched.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/pid.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/pid.h" 1
 #ifndef _LINUX_PID_H
 #define _LINUX_PID_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/rcupdate.h>
-#endif /* expanded by -frewrite-includes */
 # 5 "include/linux/pid.h"
 
 enum pid_type
@@ -23313,36 +22107,18 @@ pid_t pid_vnr(struct pid *pid);
 	} while_each_pid_task(pid, type, task)
 #endif /* _LINUX_PID_H */
 # 36 "include/linux/sched.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/percpu.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/percpu.h" 1
 #ifndef __LINUX_PERCPU_H
 #define __LINUX_PERCPU_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/preempt.h>
-#endif /* expanded by -frewrite-includes */
 # 5 "include/linux/percpu.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/smp.h>
-#endif /* expanded by -frewrite-includes */
 # 6 "include/linux/percpu.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/cpumask.h>
-#endif /* expanded by -frewrite-includes */
 # 7 "include/linux/percpu.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/pfn.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/pfn.h" 1
 #ifndef _LINUX_PFN_H_
 #define _LINUX_PFN_H_
 
 #ifndef __ASSEMBLY__
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/types.h>
-#endif /* expanded by -frewrite-includes */
 # 6 "include/linux/pfn.h"
 #endif
 
@@ -23353,14 +22129,8 @@ pid_t pid_vnr(struct pid *pid);
 
 #endif
 # 8 "include/linux/percpu.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/init.h>
-#endif /* expanded by -frewrite-includes */
 # 9 "include/linux/percpu.h"
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/percpu.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/percpu.h" 1
 /*
  * Copyright 2012 Calxeda, Inc.
@@ -23404,24 +22174,12 @@ static inline unsigned long __my_cpu_offset(void)
 
 #endif /* CONFIG_SMP */
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/percpu.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/asm-generic/percpu.h" 1
 #ifndef _ASM_GENERIC_PERCPU_H_
 #define _ASM_GENERIC_PERCPU_H_
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/compiler.h>
-#endif /* expanded by -frewrite-includes */
 # 5 "include/asm-generic/percpu.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/threads.h>
-#endif /* expanded by -frewrite-includes */
 # 6 "include/asm-generic/percpu.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/percpu-defs.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/percpu-defs.h" 1
 #ifndef _LINUX_PERCPU_DEFS_H
 #define _LINUX_PERCPU_DEFS_H
@@ -24459,9 +23217,6 @@ do {									\
 
 #endif /* __LINUX_PERCPU_H */
 # 37 "include/linux/sched.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/topology.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/topology.h" 1
 /*
  * include/linux/topology.h
@@ -24492,17 +23247,8 @@ do {									\
 #ifndef _LINUX_TOPOLOGY_H
 #define _LINUX_TOPOLOGY_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/cpumask.h>
-#endif /* expanded by -frewrite-includes */
 # 31 "include/linux/topology.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/bitops.h>
-#endif /* expanded by -frewrite-includes */
 # 32 "include/linux/topology.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/mmzone.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/mmzone.h" 1
 #ifndef _LINUX_MMZONE_H
 #define _LINUX_MMZONE_H
@@ -24510,49 +23256,16 @@ do {									\
 #ifndef __ASSEMBLY__
 #ifndef __GENERATING_BOUNDS_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/spinlock.h>
-#endif /* expanded by -frewrite-includes */
 # 8 "include/linux/mmzone.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/list.h>
-#endif /* expanded by -frewrite-includes */
 # 9 "include/linux/mmzone.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/wait.h>
-#endif /* expanded by -frewrite-includes */
 # 10 "include/linux/mmzone.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/bitops.h>
-#endif /* expanded by -frewrite-includes */
 # 11 "include/linux/mmzone.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/cache.h>
-#endif /* expanded by -frewrite-includes */
 # 12 "include/linux/mmzone.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/threads.h>
-#endif /* expanded by -frewrite-includes */
 # 13 "include/linux/mmzone.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/numa.h>
-#endif /* expanded by -frewrite-includes */
 # 14 "include/linux/mmzone.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/init.h>
-#endif /* expanded by -frewrite-includes */
 # 15 "include/linux/mmzone.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/seqlock.h>
-#endif /* expanded by -frewrite-includes */
 # 16 "include/linux/mmzone.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/nodemask.h>
-#endif /* expanded by -frewrite-includes */
 # 17 "include/linux/mmzone.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/pageblock-flags.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/pageblock-flags.h" 1
 /*
  * Macros for manipulating and testing flags related to a
@@ -24579,9 +23292,6 @@ do {									\
 #ifndef PAGEBLOCK_FLAGS_H
 #define PAGEBLOCK_FLAGS_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/types.h>
-#endif /* expanded by -frewrite-includes */
 # 27 "include/linux/pageblock-flags.h"
 
 /* Bit indices that affect a whole block of pages */
@@ -24647,17 +23357,8 @@ void set_pageblock_flags_group(struct page *page, unsigned long flags,
 
 #endif	/* PAGEBLOCK_FLAGS_H */
 # 18 "include/linux/mmzone.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/page-flags-layout.h>
-#endif /* expanded by -frewrite-includes */
 # 19 "include/linux/mmzone.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/atomic.h>
-#endif /* expanded by -frewrite-includes */
 # 20 "include/linux/mmzone.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/page.h>
-#endif /* expanded by -frewrite-includes */
 # 21 "include/linux/mmzone.h"
 
 /* Free memory management - zoned buddy allocator.  */
@@ -25409,16 +24110,10 @@ static inline bool pgdat_is_empty(pg_data_t *pgdat)
 	return !pgdat->node_start_pfn && !pgdat->node_spanned_pages;
 }
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/memory_hotplug.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/memory_hotplug.h" 1
 #ifndef __LINUX_MEMORY_HOTPLUG_H
 #define __LINUX_MEMORY_HOTPLUG_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/mmzone.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/mmzone.h" 1
 #ifndef _LINUX_MMZONE_H
 #define _LINUX_MMZONE_H
@@ -25426,61 +24121,19 @@ static inline bool pgdat_is_empty(pg_data_t *pgdat)
 #ifndef __ASSEMBLY__
 #ifndef __GENERATING_BOUNDS_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/spinlock.h>
-#endif /* expanded by -frewrite-includes */
 # 8 "include/linux/mmzone.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/list.h>
-#endif /* expanded by -frewrite-includes */
 # 9 "include/linux/mmzone.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/wait.h>
-#endif /* expanded by -frewrite-includes */
 # 10 "include/linux/mmzone.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/bitops.h>
-#endif /* expanded by -frewrite-includes */
 # 11 "include/linux/mmzone.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/cache.h>
-#endif /* expanded by -frewrite-includes */
 # 12 "include/linux/mmzone.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/threads.h>
-#endif /* expanded by -frewrite-includes */
 # 13 "include/linux/mmzone.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/numa.h>
-#endif /* expanded by -frewrite-includes */
 # 14 "include/linux/mmzone.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/init.h>
-#endif /* expanded by -frewrite-includes */
 # 15 "include/linux/mmzone.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/seqlock.h>
-#endif /* expanded by -frewrite-includes */
 # 16 "include/linux/mmzone.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/nodemask.h>
-#endif /* expanded by -frewrite-includes */
 # 17 "include/linux/mmzone.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/pageblock-flags.h>
-#endif /* expanded by -frewrite-includes */
 # 18 "include/linux/mmzone.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/page-flags-layout.h>
-#endif /* expanded by -frewrite-includes */
 # 19 "include/linux/mmzone.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/atomic.h>
-#endif /* expanded by -frewrite-includes */
 # 20 "include/linux/mmzone.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/page.h>
-#endif /* expanded by -frewrite-includes */
 # 21 "include/linux/mmzone.h"
 
 /* Free memory management - zoned buddy allocator.  */
@@ -26232,9 +24885,6 @@ static inline bool pgdat_is_empty(pg_data_t *pgdat)
 	return !pgdat->node_start_pfn && !pgdat->node_spanned_pages;
 }
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/memory_hotplug.h>
-#endif /* expanded by -frewrite-includes */
 # 772 "include/linux/mmzone.h"
 
 extern struct mutex zonelists_mutex;
@@ -26383,9 +25033,6 @@ extern struct pglist_data contig_page_data;
 
 #else /* CONFIG_NEED_MULTIPLE_NODES */
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/mmzone.h>
-#endif /* expanded by -frewrite-includes */
 # 920 "include/linux/mmzone.h"
 
 #endif /* !CONFIG_NEED_MULTIPLE_NODES */
@@ -26510,9 +25157,6 @@ static inline struct zoneref *first_zones_zonelist(struct zonelist *zonelist,
 	for_each_zone_zonelist_nodemask(zone, z, zlist, highidx, NULL)
 
 #ifdef CONFIG_SPARSEMEM
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/sparsemem.h>
-#endif /* expanded by -frewrite-includes */
 # 1044 "include/linux/mmzone.h"
 #endif
 
@@ -26747,13 +25391,7 @@ static inline int memmap_valid_within(unsigned long pfn,
 #endif /* !__ASSEMBLY__ */
 #endif /* _LINUX_MMZONE_H */
 # 5 "include/linux/memory_hotplug.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/spinlock.h>
-#endif /* expanded by -frewrite-includes */
 # 6 "include/linux/memory_hotplug.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/notifier.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/notifier.h" 1
 /*
  *	Routines to manage notifier chains for passing status changes to any
@@ -26766,13 +25404,7 @@ static inline int memmap_valid_within(unsigned long pfn,
  
 #ifndef _LINUX_NOTIFIER_H
 #define _LINUX_NOTIFIER_H
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/errno.h>
-#endif /* expanded by -frewrite-includes */
 # 13 "include/linux/notifier.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/mutex.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/mutex.h" 1
 /*
  * Mutexes: blocking mutual exclusion locks
@@ -26786,26 +25418,11 @@ static inline int memmap_valid_within(unsigned long pfn,
 #ifndef __LINUX_MUTEX_H
 #define __LINUX_MUTEX_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/list.h>
-#endif /* expanded by -frewrite-includes */
 # 14 "include/linux/mutex.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/spinlock_types.h>
-#endif /* expanded by -frewrite-includes */
 # 15 "include/linux/mutex.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/linkage.h>
-#endif /* expanded by -frewrite-includes */
 # 16 "include/linux/mutex.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/lockdep.h>
-#endif /* expanded by -frewrite-includes */
 # 17 "include/linux/mutex.h"
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/atomic.h>
-#endif /* expanded by -frewrite-includes */
 # 19 "include/linux/mutex.h"
 
 /*
@@ -26866,9 +25483,6 @@ struct mutex_waiter {
 };
 
 #ifdef CONFIG_DEBUG_MUTEXES
-#if 0 /* expanded by -frewrite-includes */
-# include <linux/mutex-debug.h>
-#endif /* expanded by -frewrite-includes */
 # 79 "include/linux/mutex.h"
 #else
 # define __DEBUG_MUTEX_INITIALIZER(lockname)
@@ -26969,13 +25583,7 @@ extern int atomic_dec_and_mutex_lock(atomic_t *cnt, struct mutex *lock);
 
 #endif
 # 14 "include/linux/notifier.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/rwsem.h>
-#endif /* expanded by -frewrite-includes */
 # 15 "include/linux/notifier.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/srcu.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/srcu.h" 1
 /*
  * Sleepable Read-Copy Update mechanism for mutual exclusion
@@ -27008,17 +25616,8 @@ extern int atomic_dec_and_mutex_lock(atomic_t *cnt, struct mutex *lock);
 #ifndef _LINUX_SRCU_H
 #define _LINUX_SRCU_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/mutex.h>
-#endif /* expanded by -frewrite-includes */
 # 33 "include/linux/srcu.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/rcupdate.h>
-#endif /* expanded by -frewrite-includes */
 # 34 "include/linux/srcu.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/workqueue.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/workqueue.h" 1
 /*
  * workqueue.h --- work queue handling for Linux.
@@ -27027,20 +25626,11 @@ extern int atomic_dec_and_mutex_lock(atomic_t *cnt, struct mutex *lock);
 #ifndef _LINUX_WORKQUEUE_H
 #define _LINUX_WORKQUEUE_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/timer.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/timer.h" 1
 #ifndef _LINUX_TIMER_H
 #define _LINUX_TIMER_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/list.h>
-#endif /* expanded by -frewrite-includes */
 # 5 "include/linux/timer.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/ktime.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/ktime.h" 1
 /*
  *  include/linux/ktime.h
@@ -27065,13 +25655,7 @@ extern int atomic_dec_and_mutex_lock(atomic_t *cnt, struct mutex *lock);
 #ifndef _LINUX_KTIME_H
 #define _LINUX_KTIME_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/time.h>
-#endif /* expanded by -frewrite-includes */
 # 25 "include/linux/ktime.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/jiffies.h>
-#endif /* expanded by -frewrite-includes */
 # 26 "include/linux/ktime.h"
 
 /*
@@ -27403,17 +25987,8 @@ static inline ktime_t ns_to_ktime(u64 ns)
 
 #endif
 # 6 "include/linux/timer.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/stddef.h>
-#endif /* expanded by -frewrite-includes */
 # 7 "include/linux/timer.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/debugobjects.h>
-#endif /* expanded by -frewrite-includes */
 # 8 "include/linux/timer.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/stringify.h>
-#endif /* expanded by -frewrite-includes */
 # 9 "include/linux/timer.h"
 
 struct tvec_base;
@@ -27675,25 +26250,10 @@ unsigned long round_jiffies_up_relative(unsigned long j);
 
 #endif
 # 9 "include/linux/workqueue.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/linkage.h>
-#endif /* expanded by -frewrite-includes */
 # 10 "include/linux/workqueue.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/bitops.h>
-#endif /* expanded by -frewrite-includes */
 # 11 "include/linux/workqueue.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/lockdep.h>
-#endif /* expanded by -frewrite-includes */
 # 12 "include/linux/workqueue.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/threads.h>
-#endif /* expanded by -frewrite-includes */
 # 13 "include/linux/workqueue.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/atomic.h>
-#endif /* expanded by -frewrite-includes */
 # 14 "include/linux/workqueue.h"
 
 struct workqueue_struct;
@@ -28614,9 +27174,6 @@ extern struct blocking_notifier_head reboot_notifier_list;
 #endif /* __KERNEL__ */
 #endif /* _LINUX_NOTIFIER_H */
 # 7 "include/linux/memory_hotplug.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/bug.h>
-#endif /* expanded by -frewrite-includes */
 # 8 "include/linux/memory_hotplug.h"
 
 struct page;
@@ -29020,9 +27577,6 @@ extern struct pglist_data contig_page_data;
 
 #else /* CONFIG_NEED_MULTIPLE_NODES */
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/mmzone.h>
-#endif /* expanded by -frewrite-includes */
 # 920 "include/linux/mmzone.h"
 
 #endif /* !CONFIG_NEED_MULTIPLE_NODES */
@@ -29147,9 +27701,6 @@ static inline struct zoneref *first_zones_zonelist(struct zonelist *zonelist,
 	for_each_zone_zonelist_nodemask(zone, z, zlist, highidx, NULL)
 
 #ifdef CONFIG_SPARSEMEM
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/sparsemem.h>
-#endif /* expanded by -frewrite-includes */
 # 1044 "include/linux/mmzone.h"
 #endif
 
@@ -29384,26 +27935,14 @@ static inline int memmap_valid_within(unsigned long pfn,
 #endif /* !__ASSEMBLY__ */
 #endif /* _LINUX_MMZONE_H */
 # 33 "include/linux/topology.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/smp.h>
-#endif /* expanded by -frewrite-includes */
 # 34 "include/linux/topology.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/percpu.h>
-#endif /* expanded by -frewrite-includes */
 # 35 "include/linux/topology.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/topology.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/topology.h" 1
 #ifndef _ASM_ARM_TOPOLOGY_H
 #define _ASM_ARM_TOPOLOGY_H
 
 #ifdef CONFIG_ARM_CPU_TOPOLOGY
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/cpumask.h>
-#endif /* expanded by -frewrite-includes */
 # 7 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/topology.h"
 
 struct cputopo_arm {
@@ -29435,9 +27974,6 @@ static inline void store_cpu_topology(unsigned int cpuid) { }
 
 #endif
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/topology.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/asm-generic/topology.h" 1
 /*
  * linux/include/asm-generic/topology.h
@@ -29777,9 +28313,6 @@ static inline int cpu_to_mem(int cpu)
 
 #endif /* _LINUX_TOPOLOGY_H */
 # 38 "include/linux/sched.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/proportions.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/proportions.h" 1
 /*
  * FLoating proportions
@@ -29792,9 +28325,6 @@ static inline int cpu_to_mem(int cpu)
 #ifndef _LINUX_PROPORTIONS_H
 #define _LINUX_PROPORTIONS_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/percpu_counter.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/percpu_counter.h" 1
 #ifndef _LINUX_PERCPU_COUNTER_H
 #define _LINUX_PERCPU_COUNTER_H
@@ -29804,29 +28334,11 @@ static inline int cpu_to_mem(int cpu)
  * WARNING: these things are HUGE.  4 kbytes per counter on 32-way P4.
  */
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/spinlock.h>
-#endif /* expanded by -frewrite-includes */
 # 10 "include/linux/percpu_counter.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/smp.h>
-#endif /* expanded by -frewrite-includes */
 # 11 "include/linux/percpu_counter.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/list.h>
-#endif /* expanded by -frewrite-includes */
 # 12 "include/linux/percpu_counter.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/threads.h>
-#endif /* expanded by -frewrite-includes */
 # 13 "include/linux/percpu_counter.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/percpu.h>
-#endif /* expanded by -frewrite-includes */
 # 14 "include/linux/percpu_counter.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/types.h>
-#endif /* expanded by -frewrite-includes */
 # 15 "include/linux/percpu_counter.h"
 
 #ifdef CONFIG_SMP
@@ -29992,13 +28504,7 @@ static inline void percpu_counter_sub(struct percpu_counter *fbc, s64 amount)
 
 #endif /* _LINUX_PERCPU_COUNTER_H */
 # 13 "include/linux/proportions.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/spinlock.h>
-#endif /* expanded by -frewrite-includes */
 # 14 "include/linux/proportions.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/mutex.h>
-#endif /* expanded by -frewrite-includes */
 # 15 "include/linux/proportions.h"
 
 struct prop_global {
@@ -30123,27 +28629,15 @@ void prop_inc_single(struct prop_descriptor *pd, struct prop_local_single *pl)
 
 #endif /* _LINUX_PROPORTIONS_H */
 # 39 "include/linux/sched.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/seccomp.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/seccomp.h" 1
 #ifndef _LINUX_SECCOMP_H
 #define _LINUX_SECCOMP_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <uapi/linux/seccomp.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/uapi/linux/seccomp.h" 1
 #ifndef _UAPI_LINUX_SECCOMP_H
 #define _UAPI_LINUX_SECCOMP_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/compiler.h>
-#endif /* expanded by -frewrite-includes */
 # 5 "include/uapi/linux/seccomp.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/types.h>
-#endif /* expanded by -frewrite-includes */
 # 6 "include/uapi/linux/seccomp.h"
 
 
@@ -30191,13 +28685,7 @@ struct seccomp_data {
 
 #ifdef CONFIG_SECCOMP
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/thread_info.h>
-#endif /* expanded by -frewrite-includes */
 # 9 "include/linux/seccomp.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/seccomp.h>
-#endif /* expanded by -frewrite-includes */
 # 10 "include/linux/seccomp.h"
 
 struct seccomp_filter;
@@ -30241,9 +28729,6 @@ static inline int seccomp_mode(struct seccomp *s)
 
 #else /* CONFIG_SECCOMP */
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/errno.h>
-#endif /* expanded by -frewrite-includes */
 # 53 "include/linux/seccomp.h"
 
 struct seccomp { };
@@ -30284,13 +28769,7 @@ static inline void get_seccomp_filter(struct task_struct *tsk)
 #endif /* CONFIG_SECCOMP_FILTER */
 #endif /* _LINUX_SECCOMP_H */
 # 40 "include/linux/sched.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/rcupdate.h>
-#endif /* expanded by -frewrite-includes */
 # 41 "include/linux/sched.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/rculist.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/rculist.h" 1
 #ifndef _LINUX_RCULIST_H
 #define _LINUX_RCULIST_H
@@ -30300,13 +28779,7 @@ static inline void get_seccomp_filter(struct task_struct *tsk)
 /*
  * RCU-protected list version
  */
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/list.h>
-#endif /* expanded by -frewrite-includes */
 # 10 "include/linux/rculist.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/rcupdate.h>
-#endif /* expanded by -frewrite-includes */
 # 11 "include/linux/rculist.h"
 
 /*
@@ -30805,9 +29278,6 @@ static inline void hlist_add_after_rcu(struct hlist_node *prev,
 #endif	/* __KERNEL__ */
 #endif
 # 42 "include/linux/sched.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/rtmutex.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/rtmutex.h" 1
 /*
  * RT Mutexes: blocking mutual exclusion locks with PI support
@@ -30823,13 +29293,7 @@ static inline void hlist_add_after_rcu(struct hlist_node *prev,
 #ifndef __LINUX_RT_MUTEX_H
 #define __LINUX_RT_MUTEX_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/linkage.h>
-#endif /* expanded by -frewrite-includes */
 # 16 "include/linux/rtmutex.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/plist.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/plist.h" 1
 /*
  * Descending-priority-sorted double-linked list
@@ -30908,13 +29372,7 @@ static inline void hlist_add_after_rcu(struct hlist_node *prev,
 #ifndef _LINUX_PLIST_H_
 #define _LINUX_PLIST_H_
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/kernel.h>
-#endif /* expanded by -frewrite-includes */
 # 79 "include/linux/plist.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/list.h>
-#endif /* expanded by -frewrite-includes */
 # 80 "include/linux/plist.h"
 
 struct plist_head {
@@ -31093,9 +29551,6 @@ static inline struct plist_node *plist_last(const struct plist_head *head)
 
 #endif
 # 17 "include/linux/rtmutex.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/spinlock_types.h>
-#endif /* expanded by -frewrite-includes */
 # 18 "include/linux/rtmutex.h"
 
 extern int max_lock_depth; /* for sysctl */
@@ -31191,35 +29646,17 @@ extern void rt_mutex_unlock(struct rt_mutex *lock);
 #endif
 # 43 "include/linux/sched.h" 2
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/time.h>
-#endif /* expanded by -frewrite-includes */
 # 45 "include/linux/sched.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/param.h>
-#endif /* expanded by -frewrite-includes */
 # 46 "include/linux/sched.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/resource.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/resource.h" 1
 #ifndef _LINUX_RESOURCE_H
 #define _LINUX_RESOURCE_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <uapi/linux/resource.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/uapi/linux/resource.h" 1
 #ifndef _UAPI_LINUX_RESOURCE_H
 #define _UAPI_LINUX_RESOURCE_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/time.h>
-#endif /* expanded by -frewrite-includes */
 # 5 "include/uapi/linux/resource.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/types.h>
-#endif /* expanded by -frewrite-includes */
 # 6 "include/uapi/linux/resource.h"
 
 /*
@@ -31292,20 +29729,11 @@ struct rlimit64 {
  * Due to binary compatibility, the actual resource numbers
  * may be different for different linux versions..
  */
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/resource.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "arch/arm/include/generated/asm/resource.h" 1
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/resource.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/asm-generic/resource.h" 1
 #ifndef _ASM_GENERIC_RESOURCE_H
 #define _ASM_GENERIC_RESOURCE_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <uapi/asm-generic/resource.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/uapi/asm-generic/resource.h" 1
 #ifndef _UAPI_ASM_GENERIC_RESOURCE_H
 #define _UAPI_ASM_GENERIC_RESOURCE_H
@@ -31418,13 +29846,7 @@ int do_prlimit(struct task_struct *tsk, unsigned int resource,
 
 #endif
 # 47 "include/linux/sched.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/timer.h>
-#endif /* expanded by -frewrite-includes */
 # 48 "include/linux/sched.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/hrtimer.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/hrtimer.h" 1
 /*
  *  include/linux/hrtimer.h
@@ -31443,48 +29865,18 @@ int do_prlimit(struct task_struct *tsk, unsigned int resource,
 #ifndef _LINUX_HRTIMER_H
 #define _LINUX_HRTIMER_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/rbtree.h>
-#endif /* expanded by -frewrite-includes */
 # 19 "include/linux/hrtimer.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/ktime.h>
-#endif /* expanded by -frewrite-includes */
 # 20 "include/linux/hrtimer.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/init.h>
-#endif /* expanded by -frewrite-includes */
 # 21 "include/linux/hrtimer.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/list.h>
-#endif /* expanded by -frewrite-includes */
 # 22 "include/linux/hrtimer.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/wait.h>
-#endif /* expanded by -frewrite-includes */
 # 23 "include/linux/hrtimer.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/percpu.h>
-#endif /* expanded by -frewrite-includes */
 # 24 "include/linux/hrtimer.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/timer.h>
-#endif /* expanded by -frewrite-includes */
 # 25 "include/linux/hrtimer.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/timerqueue.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/timerqueue.h" 1
 #ifndef _LINUX_TIMERQUEUE_H
 #define _LINUX_TIMERQUEUE_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/rbtree.h>
-#endif /* expanded by -frewrite-includes */
 # 5 "include/linux/timerqueue.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/ktime.h>
-#endif /* expanded by -frewrite-includes */
 # 6 "include/linux/timerqueue.h"
 
 
@@ -31969,9 +30361,6 @@ extern void sysrq_timer_list_show(void);
 
 #endif
 # 49 "include/linux/sched.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/task_io_accounting.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/task_io_accounting.h" 1
 /*
  * task_io_accounting: a structure which is used for recording a single task's
@@ -32019,9 +30408,6 @@ struct task_io_accounting {
 #endif /* CONFIG_TASK_IO_ACCOUNTING */
 };
 # 50 "include/linux/sched.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/latencytop.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/latencytop.h" 1
 /*
  * latencytop.h: Infrastructure for displaying latency
@@ -32034,9 +30420,6 @@ struct task_io_accounting {
 #ifndef _INCLUDE_GUARD_LATENCYTOP_H_
 #define _INCLUDE_GUARD_LATENCYTOP_H_
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/compiler.h>
-#endif /* expanded by -frewrite-includes */
 # 13 "include/linux/latencytop.h"
 struct task_struct;
 
@@ -32080,9 +30463,6 @@ static inline void clear_all_latency_tracing(struct task_struct *p)
 
 #endif
 # 51 "include/linux/sched.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/cred.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/cred.h" 1
 /* Credentials management - see Documentation/security/credentials.txt
  *
@@ -32098,17 +30478,8 @@ static inline void clear_all_latency_tracing(struct task_struct *p)
 #ifndef _LINUX_CRED_H
 #define _LINUX_CRED_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/capability.h>
-#endif /* expanded by -frewrite-includes */
 # 16 "include/linux/cred.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/init.h>
-#endif /* expanded by -frewrite-includes */
 # 17 "include/linux/cred.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/key.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/key.h" 1
 /* Authentication token and access key management
  *
@@ -32127,25 +30498,10 @@ static inline void clear_all_latency_tracing(struct task_struct *p)
 #ifndef _LINUX_KEY_H
 #define _LINUX_KEY_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/types.h>
-#endif /* expanded by -frewrite-includes */
 # 19 "include/linux/key.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/list.h>
-#endif /* expanded by -frewrite-includes */
 # 20 "include/linux/key.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/rbtree.h>
-#endif /* expanded by -frewrite-includes */
 # 21 "include/linux/key.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/rcupdate.h>
-#endif /* expanded by -frewrite-includes */
 # 22 "include/linux/key.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/sysctl.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/sysctl.h" 1
 /*
  * sysctl.h: General linux system control interface
@@ -32170,25 +30526,10 @@ static inline void clear_all_latency_tracing(struct task_struct *p)
 #ifndef _LINUX_SYSCTL_H
 #define _LINUX_SYSCTL_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/list.h>
-#endif /* expanded by -frewrite-includes */
 # 25 "include/linux/sysctl.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/rcupdate.h>
-#endif /* expanded by -frewrite-includes */
 # 26 "include/linux/sysctl.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/wait.h>
-#endif /* expanded by -frewrite-includes */
 # 27 "include/linux/sysctl.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/rbtree.h>
-#endif /* expanded by -frewrite-includes */
 # 28 "include/linux/sysctl.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <uapi/linux/sysctl.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/uapi/linux/sysctl.h" 1
 /*
  * sysctl.h: General linux system control interface
@@ -32214,17 +30555,8 @@ static inline void clear_all_latency_tracing(struct task_struct *p)
 #ifndef _UAPI_LINUX_SYSCTL_H
 #define _UAPI_LINUX_SYSCTL_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/kernel.h>
-#endif /* expanded by -frewrite-includes */
 # 26 "include/uapi/linux/sysctl.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/types.h>
-#endif /* expanded by -frewrite-includes */
 # 27 "include/uapi/linux/sysctl.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/compiler.h>
-#endif /* expanded by -frewrite-includes */
 # 28 "include/uapi/linux/sysctl.h"
 
 struct completion;
@@ -33322,19 +31654,10 @@ static inline void setup_sysctl_set(struct ctl_table_set *p,
 
 #endif /* _LINUX_SYSCTL_H */
 # 23 "include/linux/key.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/rwsem.h>
-#endif /* expanded by -frewrite-includes */
 # 24 "include/linux/key.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/atomic.h>
-#endif /* expanded by -frewrite-includes */
 # 25 "include/linux/key.h"
 
 #ifdef __KERNEL__
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/uidgid.h>
-#endif /* expanded by -frewrite-includes */
 # 28 "include/linux/key.h"
 
 /* key handle serial number */
@@ -33651,9 +31974,6 @@ extern void key_init(void);
 #endif /* __KERNEL__ */
 #endif /* _LINUX_KEY_H */
 # 18 "include/linux/cred.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/selinux.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/selinux.h" 1
 /*
  * SELinux services exported to the rest of the kernel.
@@ -33691,13 +32011,7 @@ static inline bool selinux_is_enabled(void)
 
 #endif /* _LINUX_SELINUX_H */
 # 19 "include/linux/cred.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/atomic.h>
-#endif /* expanded by -frewrite-includes */
 # 20 "include/linux/cred.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/uidgid.h>
-#endif /* expanded by -frewrite-includes */
 # 21 "include/linux/cred.h"
 
 struct user_struct;
@@ -34055,9 +32369,6 @@ do {						\
 
 #endif /* _LINUX_CRED_H */
 # 52 "include/linux/sched.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/llist.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/llist.h" 1
 #ifndef LLIST_H
 #define LLIST_H
@@ -34116,13 +32427,7 @@ do {						\
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/kernel.h>
-#endif /* expanded by -frewrite-includes */
 # 59 "include/linux/llist.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/cmpxchg.h>
-#endif /* expanded by -frewrite-includes */
 # 60 "include/linux/llist.h"
 
 struct llist_head {
@@ -34252,36 +32557,15 @@ extern struct llist_node *llist_del_first(struct llist_head *head);
 
 #endif /* LLIST_H */
 # 53 "include/linux/sched.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/uidgid.h>
-#endif /* expanded by -frewrite-includes */
 # 54 "include/linux/sched.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/gfp.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/gfp.h" 1
 #ifndef __LINUX_GFP_H
 #define __LINUX_GFP_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/mmzone.h>
-#endif /* expanded by -frewrite-includes */
 # 5 "include/linux/gfp.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/stddef.h>
-#endif /* expanded by -frewrite-includes */
 # 6 "include/linux/gfp.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/linkage.h>
-#endif /* expanded by -frewrite-includes */
 # 7 "include/linux/gfp.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/topology.h>
-#endif /* expanded by -frewrite-includes */
 # 8 "include/linux/gfp.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/mmdebug.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/mmdebug.h" 1
 #ifndef LINUX_MM_DEBUG_H
 #define LINUX_MM_DEBUG_H 1
@@ -34711,9 +32995,6 @@ extern void init_cma_reserved_pageblock(struct page *page);
 #endif /* __LINUX_GFP_H */
 # 55 "include/linux/sched.h" 2
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/processor.h>
-#endif /* expanded by -frewrite-includes */
 # 57 "include/linux/sched.h"
 
 struct exec_domain;
@@ -34878,9 +33159,6 @@ extern char ___assert_task_state[1 - 2*!!(
 /* Task command name length */
 #define TASK_COMM_LEN 16
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/spinlock.h>
-#endif /* expanded by -frewrite-includes */
 # 221 "include/linux/sched.h"
 
 /*
@@ -34989,24 +33267,12 @@ extern int mutex_spin_on_owner(struct mutex *lock, struct task_struct *owner);
 struct nsproxy;
 struct user_namespace;
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/aio.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/aio.h" 1
 #ifndef __LINUX__AIO_H
 #define __LINUX__AIO_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/list.h>
-#endif /* expanded by -frewrite-includes */
 # 5 "include/linux/aio.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/workqueue.h>
-#endif /* expanded by -frewrite-includes */
 # 6 "include/linux/aio.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/aio_abi.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/include/uapi/linux/aio_abi.h" 1
 /* include/linux/aio_abi.h
  *
@@ -35037,13 +33303,7 @@ struct user_namespace;
 #ifndef __LINUX__AIO_ABI_H
 #define __LINUX__AIO_ABI_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/types.h>
-#endif /* expanded by -frewrite-includes */
 # 31 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/include/uapi/linux/aio_abi.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/byteorder.h>
-#endif /* expanded by -frewrite-includes */
 # 32 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/include/uapi/linux/aio_abi.h"
 
 typedef __kernel_ulong_t aio_context_t;
@@ -35126,9 +33386,6 @@ struct iocb {
 #endif /* __LINUX__AIO_ABI_H */
 
 # 7 "include/linux/aio.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/uio.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/uio.h" 1
 /*
  *	Berkeley style UIO structures	-	Alan Cox 1994.
@@ -35141,9 +33398,6 @@ struct iocb {
 #ifndef __LINUX_UIO_H
 #define __LINUX_UIO_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <uapi/linux/uio.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/uapi/linux/uio.h" 1
 /*
  *	Berkeley style UIO structures	-	Alan Cox 1994.
@@ -35156,13 +33410,7 @@ struct iocb {
 #ifndef _UAPI__LINUX_UIO_H
 #define _UAPI__LINUX_UIO_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/compiler.h>
-#endif /* expanded by -frewrite-includes */
 # 13 "include/uapi/linux/uio.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/types.h>
-#endif /* expanded by -frewrite-includes */
 # 14 "include/uapi/linux/uio.h"
 
 
@@ -35209,14 +33457,8 @@ static inline size_t iov_length(const struct iovec *iov, unsigned long nr_segs)
 unsigned long iov_shorten(struct iovec *iov, unsigned long nr_segs, size_t to);
 #endif
 # 8 "include/linux/aio.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/rcupdate.h>
-#endif /* expanded by -frewrite-includes */
 # 9 "include/linux/aio.h"
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/atomic.h>
-#endif /* expanded by -frewrite-includes */
 # 11 "include/linux/aio.h"
 
 #define AIO_MAXSEGS		4
@@ -35601,9 +33843,6 @@ struct thread_group_cputimer {
 	raw_spinlock_t lock;
 };
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/rwsem.h>
-#endif /* expanded by -frewrite-includes */
 # 480 "include/linux/sched.h"
 struct autogroup;
 
@@ -35907,15 +34146,9 @@ enum cpu_idle_type {
  * when BITS_PER_LONG <= 32 are pretty high and the returns do not justify the
  * increased costs.
  */
-#if 0 /* BITS_PER_LONG > 32 -- currently broken: it increases power usage under light load  */
-# define SCHED_LOAD_RESOLUTION	10
-# define scale_load(w)		((w) << SCHED_LOAD_RESOLUTION)
-# define scale_load_down(w)	((w) >> SCHED_LOAD_RESOLUTION)
-#else
 # define SCHED_LOAD_RESOLUTION	0
 # define scale_load(w)		(w)
 # define scale_load_down(w)	(w)
-#endif
 
 #define SCHED_LOAD_SHIFT	(10 + SCHED_LOAD_RESOLUTION)
 #define SCHED_LOAD_SCALE	(1L << SCHED_LOAD_SHIFT)
@@ -37247,13 +35480,7 @@ static inline struct user_struct *get_uid(struct user_struct *u)
 }
 extern void free_uid(struct user_struct *);
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/current.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "arch/arm/include/generated/asm/current.h" 1
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/current.h>
-#endif /* expanded by -frewrite-includes */
 # 2 "arch/arm/include/generated/asm/current.h"
 # 2123 "include/linux/sched.h" 2
 
@@ -37923,62 +36150,26 @@ static inline unsigned long rlimit_max(unsigned int limit)
 
 #endif
 # 15 "arch/arm/mm/context.c" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/mm.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/mm.h" 1
 #ifndef _LINUX_MM_H
 #define _LINUX_MM_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/errno.h>
-#endif /* expanded by -frewrite-includes */
 # 5 "include/linux/mm.h"
 
 #ifdef __KERNEL__
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/gfp.h>
-#endif /* expanded by -frewrite-includes */
 # 9 "include/linux/mm.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/bug.h>
-#endif /* expanded by -frewrite-includes */
 # 10 "include/linux/mm.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/list.h>
-#endif /* expanded by -frewrite-includes */
 # 11 "include/linux/mm.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/mmzone.h>
-#endif /* expanded by -frewrite-includes */
 # 12 "include/linux/mm.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/rbtree.h>
-#endif /* expanded by -frewrite-includes */
 # 13 "include/linux/mm.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/atomic.h>
-#endif /* expanded by -frewrite-includes */
 # 14 "include/linux/mm.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/debug_locks.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/debug_locks.h" 1
 #ifndef __LINUX_DEBUG_LOCKING_H
 #define __LINUX_DEBUG_LOCKING_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/kernel.h>
-#endif /* expanded by -frewrite-includes */
 # 5 "include/linux/debug_locks.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/atomic.h>
-#endif /* expanded by -frewrite-includes */
 # 6 "include/linux/debug_locks.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/bug.h>
-#endif /* expanded by -frewrite-includes */
 # 7 "include/linux/debug_locks.h"
 
 struct task_struct;
@@ -38050,13 +36241,7 @@ debug_check_no_locks_held(void)
 
 #endif
 # 15 "include/linux/mm.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/mm_types.h>
-#endif /* expanded by -frewrite-includes */
 # 16 "include/linux/mm.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/range.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/range.h" 1
 #ifndef _LINUX_RANGE_H
 #define _LINUX_RANGE_H
@@ -38089,32 +36274,14 @@ static inline resource_size_t cap_resource(u64 val)
 }
 #endif
 # 17 "include/linux/mm.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/pfn.h>
-#endif /* expanded by -frewrite-includes */
 # 18 "include/linux/mm.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/bit_spinlock.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/bit_spinlock.h" 1
 #ifndef __LINUX_BIT_SPINLOCK_H
 #define __LINUX_BIT_SPINLOCK_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/kernel.h>
-#endif /* expanded by -frewrite-includes */
 # 5 "include/linux/bit_spinlock.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/preempt.h>
-#endif /* expanded by -frewrite-includes */
 # 6 "include/linux/bit_spinlock.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/atomic.h>
-#endif /* expanded by -frewrite-includes */
 # 7 "include/linux/bit_spinlock.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/bug.h>
-#endif /* expanded by -frewrite-includes */
 # 8 "include/linux/bit_spinlock.h"
 
 /*
@@ -38210,9 +36377,6 @@ static inline int bit_spin_is_locked(int bitnum, unsigned long *addr)
 #endif /* __LINUX_BIT_SPINLOCK_H */
 
 # 19 "include/linux/mm.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/shrinker.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/shrinker.h" 1
 #ifndef _LINUX_SHRINKER_H
 #define _LINUX_SHRINKER_H
@@ -38280,13 +36444,7 @@ extern int sysctl_legacy_va_layout;
 #define sysctl_legacy_va_layout 0
 #endif
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/page.h>
-#endif /* expanded by -frewrite-includes */
 # 44 "include/linux/mm.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/pgtable.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/pgtable.h" 1
 /*
  *  arch/arm/include/asm/pgtable.h
@@ -38300,13 +36458,7 @@ extern int sysctl_legacy_va_layout;
 #ifndef _ASMARM_PGTABLE_H
 #define _ASMARM_PGTABLE_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/const.h>
-#endif /* expanded by -frewrite-includes */
 # 14 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/pgtable.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/proc-fns.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/proc-fns.h" 1
 /*
  *  arch/arm/include/asm/proc-fns.h
@@ -38323,9 +36475,6 @@ extern int sysctl_legacy_va_layout;
 
 #ifdef __KERNEL__
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/glue-proc.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/glue-proc.h" 1
 /*
  *  arch/arm/include/asm/glue-proc.h
@@ -38340,9 +36489,6 @@ extern int sysctl_legacy_va_layout;
 #ifndef ASM_GLUE_PROC_H
 #define ASM_GLUE_PROC_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/glue.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/glue.h" 1
 /*
  *  arch/arm/include/asm/glue.h
@@ -38603,9 +36749,6 @@ extern int sysctl_legacy_va_layout;
 
 #endif
 # 17 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/proc-fns.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/page.h>
-#endif /* expanded by -frewrite-includes */
 # 18 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/proc-fns.h"
 
 #ifndef __ASSEMBLY__
@@ -38701,9 +36844,6 @@ extern void cpu_do_resume(void *);
 
 extern void cpu_resume(void);
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/memory.h>
-#endif /* expanded by -frewrite-includes */
 # 113 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/proc-fns.h"
 
 #ifdef CONFIG_MMU
@@ -38741,20 +36881,11 @@ extern void cpu_resume(void);
 
 #ifndef CONFIG_MMU
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/4level-fixup.h>
-#endif /* expanded by -frewrite-includes */
 # 19 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/pgtable.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/pgtable-nommu.h>
-#endif /* expanded by -frewrite-includes */
 # 20 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/pgtable.h"
 
 #else
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/pgtable-nopud.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/asm-generic/pgtable-nopud.h" 1
 #ifndef _PGTABLE_NOPUD_H
 #define _PGTABLE_NOPUD_H
@@ -38818,13 +36949,7 @@ static inline pud_t * pud_offset(pgd_t * pgd, unsigned long address)
 #endif /* __ASSEMBLY__ */
 #endif /* _PGTABLE_NOPUD_H */
 # 24 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/pgtable.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/memory.h>
-#endif /* expanded by -frewrite-includes */
 # 25 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/pgtable.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/pgtable-hwdef.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/pgtable-hwdef.h" 1
 /*
  *  arch/arm/include/asm/pgtable-hwdef.h
@@ -38839,14 +36964,8 @@ static inline pud_t * pud_offset(pgd_t * pgd, unsigned long address)
 #define _ASMARM_PGTABLE_HWDEF_H
 
 #ifdef CONFIG_ARM_LPAE
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/pgtable-3level-hwdef.h>
-#endif /* expanded by -frewrite-includes */
 # 15 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/pgtable-hwdef.h"
 #else
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/pgtable-2level-hwdef.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/pgtable-2level-hwdef.h" 1
 /*
  *  arch/arm/include/asm/pgtable-2level-hwdef.h
@@ -38948,14 +37067,8 @@ static inline pud_t * pud_offset(pgd_t * pgd, unsigned long address)
 # 26 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/pgtable.h" 2
 
 #ifdef CONFIG_ARM_LPAE
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/pgtable-3level.h>
-#endif /* expanded by -frewrite-includes */
 # 29 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/pgtable.h"
 #else
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/pgtable-2level.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/pgtable-2level.h" 1
 /*
  *  arch/arm/include/asm/pgtable-2level.h
@@ -39416,9 +37529,6 @@ static inline pte_t pte_modify(pte_t pte, pgprot_t newprot)
 /* FIXME: this is not correct */
 #define kern_addr_valid(addr)	(1)
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/pgtable.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/asm-generic/pgtable.h" 1
 #ifndef _ASM_GENERIC_PGTABLE_H
 #define _ASM_GENERIC_PGTABLE_H
@@ -39426,13 +37536,7 @@ static inline pte_t pte_modify(pte_t pte, pgprot_t newprot)
 #ifndef __ASSEMBLY__
 #ifdef CONFIG_MMU
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/mm_types.h>
-#endif /* expanded by -frewrite-includes */
 # 8 "include/asm-generic/pgtable.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/bug.h>
-#endif /* expanded by -frewrite-includes */
 # 9 "include/asm-generic/pgtable.h"
 
 #ifndef __HAVE_ARCH_PTEP_SET_ACCESS_FLAGS
@@ -40134,9 +38238,6 @@ static inline pmd_t pmd_mknuma(pmd_t pmd)
 
 #endif /* _ASMARM_PGTABLE_H */
 # 45 "include/linux/mm.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/processor.h>
-#endif /* expanded by -frewrite-includes */
 # 46 "include/linux/mm.h"
 
 #define nth_page(page,n) pfn_to_page(page_to_pfn((page)) + (n))
@@ -40350,9 +38451,6 @@ static inline int get_freepage_migratetype(struct page *page)
  * FIXME: take this include out, include page-flags.h in
  * files which need it (119 of them)
  */
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/page-flags.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/page-flags.h" 1
 /*
  * Macros for manipulating and testing page->flags
@@ -40361,28 +38459,9 @@ static inline int get_freepage_migratetype(struct page *page)
 #ifndef PAGE_FLAGS_H
 #define PAGE_FLAGS_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/types.h>
-#endif /* expanded by -frewrite-includes */
 # 9 "include/linux/page-flags.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/bug.h>
-#endif /* expanded by -frewrite-includes */
 # 10 "include/linux/page-flags.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/mmdebug.h>
-#endif /* expanded by -frewrite-includes */
 # 11 "include/linux/page-flags.h"
-#ifndef __GENERATING_BOUNDS_H
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/mm_types.h>
-#endif /* expanded by -frewrite-includes */
-# 13 "include/linux/page-flags.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <generated/bounds.h>
-#endif /* expanded by -frewrite-includes */
-# 14 "include/linux/page-flags.h"
-#endif /* !__GENERATING_BOUNDS_H */
 
 /*
  * Various page->flags bits:
@@ -40900,9 +38979,6 @@ static inline int page_has_private(struct page *page)
 
 #endif	/* PAGE_FLAGS_H */
 # 259 "include/linux/mm.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/huge_mm.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/huge_mm.h" 1
 #ifndef _LINUX_HUGE_MM_H
 #define _LINUX_HUGE_MM_H
@@ -41626,82 +39702,31 @@ static inline void set_page_links(struct page *page, enum zone_type zone,
 /*
  * Some inline functions in vmstat.h depend on page_zone()
  */
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/vmstat.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/vmstat.h" 1
 #ifndef _LINUX_VMSTAT_H
 #define _LINUX_VMSTAT_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/types.h>
-#endif /* expanded by -frewrite-includes */
 # 5 "include/linux/vmstat.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/percpu.h>
-#endif /* expanded by -frewrite-includes */
 # 6 "include/linux/vmstat.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/mm.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/mm.h" 1
 #ifndef _LINUX_MM_H
 #define _LINUX_MM_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/errno.h>
-#endif /* expanded by -frewrite-includes */
 # 5 "include/linux/mm.h"
 
 #ifdef __KERNEL__
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/gfp.h>
-#endif /* expanded by -frewrite-includes */
 # 9 "include/linux/mm.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/bug.h>
-#endif /* expanded by -frewrite-includes */
 # 10 "include/linux/mm.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/list.h>
-#endif /* expanded by -frewrite-includes */
 # 11 "include/linux/mm.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/mmzone.h>
-#endif /* expanded by -frewrite-includes */
 # 12 "include/linux/mm.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/rbtree.h>
-#endif /* expanded by -frewrite-includes */
 # 13 "include/linux/mm.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/atomic.h>
-#endif /* expanded by -frewrite-includes */
 # 14 "include/linux/mm.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/debug_locks.h>
-#endif /* expanded by -frewrite-includes */
 # 15 "include/linux/mm.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/mm_types.h>
-#endif /* expanded by -frewrite-includes */
 # 16 "include/linux/mm.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/range.h>
-#endif /* expanded by -frewrite-includes */
 # 17 "include/linux/mm.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/pfn.h>
-#endif /* expanded by -frewrite-includes */
 # 18 "include/linux/mm.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/bit_spinlock.h>
-#endif /* expanded by -frewrite-includes */
 # 19 "include/linux/mm.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/shrinker.h>
-#endif /* expanded by -frewrite-includes */
 # 20 "include/linux/mm.h"
 
 struct mempolicy;
@@ -41726,17 +39751,8 @@ extern int sysctl_legacy_va_layout;
 #define sysctl_legacy_va_layout 0
 #endif
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/page.h>
-#endif /* expanded by -frewrite-includes */
 # 44 "include/linux/mm.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/pgtable.h>
-#endif /* expanded by -frewrite-includes */
 # 45 "include/linux/mm.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/processor.h>
-#endif /* expanded by -frewrite-includes */
 # 46 "include/linux/mm.h"
 
 #define nth_page(page,n) pfn_to_page(page_to_pfn((page)) + (n))
@@ -41950,13 +39966,7 @@ static inline int get_freepage_migratetype(struct page *page)
  * FIXME: take this include out, include page-flags.h in
  * files which need it (119 of them)
  */
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/page-flags.h>
-#endif /* expanded by -frewrite-includes */
 # 259 "include/linux/mm.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/huge_mm.h>
-#endif /* expanded by -frewrite-includes */
 # 260 "include/linux/mm.h"
 
 /*
@@ -42453,9 +40463,6 @@ static inline void set_page_links(struct page *page, enum zone_type zone,
 /*
  * Some inline functions in vmstat.h depend on page_zone()
  */
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/vmstat.h>
-#endif /* expanded by -frewrite-includes */
 # 756 "include/linux/mm.h"
 
 static __always_inline void *lowmem_page_address(const struct page *page)
@@ -43480,13 +41487,7 @@ static inline bool page_is_guard(struct page *page) { return false; }
 #endif /* __KERNEL__ */
 #endif /* _LINUX_MM_H */
 # 7 "include/linux/vmstat.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/mmzone.h>
-#endif /* expanded by -frewrite-includes */
 # 8 "include/linux/vmstat.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/vm_event_item.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/vm_event_item.h" 1
 #ifndef VM_EVENT_ITEM_H_INCLUDED
 #define VM_EVENT_ITEM_H_INCLUDED
@@ -43565,9 +41566,6 @@ enum vm_event_item { PGPGIN, PGPGOUT, PSWPIN, PSWPOUT,
 
 #endif		/* VM_EVENT_ITEM_H_INCLUDED */
 # 9 "include/linux/vmstat.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/atomic.h>
-#endif /* expanded by -frewrite-includes */
 # 10 "include/linux/vmstat.h"
 
 extern int sysctl_stat_interval;
@@ -44862,18 +42860,9 @@ static inline bool page_is_guard(struct page *page) { return false; }
 #endif /* __KERNEL__ */
 #endif /* _LINUX_MM_H */
 # 16 "arch/arm/mm/context.c" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/smp.h>
-#endif /* expanded by -frewrite-includes */
 # 17 "arch/arm/mm/context.c"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/percpu.h>
-#endif /* expanded by -frewrite-includes */
 # 18 "arch/arm/mm/context.c"
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/mmu_context.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/mmu_context.h" 1
 /*
  *  arch/arm/include/asm/mmu_context.h
@@ -44890,17 +42879,8 @@ static inline bool page_is_guard(struct page *page) { return false; }
 #ifndef __ASM_ARM_MMU_CONTEXT_H
 #define __ASM_ARM_MMU_CONTEXT_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/compiler.h>
-#endif /* expanded by -frewrite-includes */
 # 17 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/mmu_context.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/sched.h>
-#endif /* expanded by -frewrite-includes */
 # 18 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/mmu_context.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/cacheflush.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/cacheflush.h" 1
 /*
  *  arch/arm/include/asm/cacheflush.h
@@ -44914,14 +42894,8 @@ static inline bool page_is_guard(struct page *page) { return false; }
 #ifndef _ASMARM_CACHEFLUSH_H
 #define _ASMARM_CACHEFLUSH_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/mm.h>
-#endif /* expanded by -frewrite-includes */
 # 14 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/cacheflush.h"
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/glue-cache.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/glue-cache.h" 1
 /*
  *  arch/arm/include/asm/glue-cache.h
@@ -44935,9 +42909,6 @@ static inline bool page_is_guard(struct page *page) { return false; }
 #ifndef ASM_GLUE_CACHE_H
 #define ASM_GLUE_CACHE_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/glue.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/glue.h" 1
 /*
  *  arch/arm/include/asm/glue.h
@@ -45100,9 +43071,6 @@ static inline bool page_is_guard(struct page *page) { return false; }
 
 #endif
 # 16 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/cacheflush.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/shmparam.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/shmparam.h" 1
 #ifndef _ASMARM_SHMPARAM_H
 #define _ASMARM_SHMPARAM_H
@@ -45121,9 +43089,6 @@ static inline bool page_is_guard(struct page *page) { return false; }
 
 #endif /* _ASMARM_SHMPARAM_H */
 # 17 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/cacheflush.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/cachetype.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/cachetype.h" 1
 #ifndef __ASM_ARM_CACHETYPE_H
 #define __ASM_ARM_CACHETYPE_H
@@ -45185,9 +43150,6 @@ static inline unsigned int __attribute__((pure)) cacheid_is(unsigned int mask)
 
 #endif
 # 18 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/cacheflush.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/outercache.h>
-#endif /* expanded by -frewrite-includes */
 # 19 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/cacheflush.h"
 
 #define CACHE_COLOUR(vaddr)	((vaddr & (SHMLBA - 1)) >> PAGE_SHIFT)
@@ -45538,17 +43500,8 @@ static inline void flush_cache_vunmap(unsigned long start, unsigned long end)
 
 #endif
 # 19 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/mmu_context.h" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/cachetype.h>
-#endif /* expanded by -frewrite-includes */
 # 20 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/mmu_context.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/proc-fns.h>
-#endif /* expanded by -frewrite-includes */
 # 21 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/mmu_context.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/mm_hooks.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/asm-generic/mm_hooks.h" 1
 /*
  * Define generic no-op hooks for arch_dup_mmap and arch_exit_mmap, to
@@ -45664,9 +43617,6 @@ switch_mm(struct mm_struct *prev, struct mm_struct *next,
 
 #endif
 # 20 "arch/arm/mm/context.c" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/smp_plat.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/smp_plat.h" 1
 /*
  * ARM specific SMP header, this contains our implementation
@@ -45675,29 +43625,14 @@ switch_mm(struct mm_struct *prev, struct mm_struct *next,
 #ifndef __ASMARM_SMP_PLAT_H
 #define __ASMARM_SMP_PLAT_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/cpumask.h>
-#endif /* expanded by -frewrite-includes */
 # 9 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/smp_plat.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/err.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "include/linux/err.h" 1
 #ifndef _LINUX_ERR_H
 #define _LINUX_ERR_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/compiler.h>
-#endif /* expanded by -frewrite-includes */
 # 5 "include/linux/err.h"
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/errno.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "arch/arm/include/generated/asm/errno.h" 1
-#if 0 /* expanded by -frewrite-includes */
-#include <asm-generic/errno.h>
-#endif /* expanded by -frewrite-includes */
 # 2 "arch/arm/include/generated/asm/errno.h"
 # 7 "include/linux/err.h" 2
 
@@ -45761,20 +43696,11 @@ static inline int __must_check PTR_RET(const void *ptr)
 #endif /* _LINUX_ERR_H */
 # 10 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/smp_plat.h" 2
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/cputype.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/cputype.h" 1
 #ifndef __ASM_ARM_CPUTYPE_H
 #define __ASM_ARM_CPUTYPE_H
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/stringify.h>
-#endif /* expanded by -frewrite-includes */
 # 5 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/cputype.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/kernel.h>
-#endif /* expanded by -frewrite-includes */
 # 6 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/cputype.h"
 
 #define CPUID_ID	0
@@ -45982,9 +43908,6 @@ static inline int get_logical_index(u32 mpidr)
 
 #endif
 # 21 "arch/arm/mm/context.c" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/thread_notify.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/thread_notify.h" 1
 /*
  *  arch/arm/include/asm/thread_notify.h
@@ -46002,13 +43925,7 @@ static inline int get_logical_index(u32 mpidr)
 
 #ifndef __ASSEMBLY__
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/notifier.h>
-#endif /* expanded by -frewrite-includes */
 # 18 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/thread_notify.h"
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/thread_info.h>
-#endif /* expanded by -frewrite-includes */
 # 19 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/thread_notify.h"
 
 static inline int thread_register_notifier(struct notifier_block *n)
@@ -46042,9 +43959,6 @@ static inline void thread_notify(unsigned long rc, struct thread_info *thread)
 #endif
 #endif
 # 22 "arch/arm/mm/context.c" 2
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/tlbflush.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/tlbflush.h" 1
 /*
  *  arch/arm/include/asm/tlbflush.h
@@ -46060,9 +43974,6 @@ static inline void thread_notify(unsigned long rc, struct thread_info *thread)
 
 #ifdef CONFIG_MMU
 
-#if 0 /* expanded by -frewrite-includes */
-#include <asm/glue.h>
-#endif /* expanded by -frewrite-includes */
 # 1 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/glue.h" 1
 /*
  *  arch/arm/include/asm/glue.h
@@ -46275,9 +44186,6 @@ static inline void thread_notify(unsigned long rc, struct thread_info *thread)
 
 #ifndef __ASSEMBLY__
 
-#if 0 /* expanded by -frewrite-includes */
-#include <linux/sched.h>
-#endif /* expanded by -frewrite-includes */
 # 202 "/local2/mnt/workspace/llvmlinux/targets/vexpress/src/linux/arch/arm/include/asm/tlbflush.h"
 
 struct cpu_tlb_fns {
@@ -46569,21 +44477,10 @@ extern void flush_tlb_range(struct vm_area_struct *vma, unsigned long start, uns
 extern void flush_tlb_kernel_range(unsigned long start, unsigned long end);
 #endif
 
-/*
- * If PG_dcache_clean is not set for the page, we need to ensure that any
- * cache entries for the kernels virtual memory range are written
- * back to the page. On ARMv6 and later, the cache coherency is handled via
- * the set_pte_at() function.
- */
-#if __LINUX_ARM_ARCH__ < 6
-extern void update_mmu_cache(struct vm_area_struct *vma, unsigned long addr,
-	pte_t *ptep);
-#else
 static inline void update_mmu_cache(struct vm_area_struct *vma,
 				    unsigned long addr, pte_t *ptep)
 {
 }
-#endif
 
 #endif
 
@@ -46615,31 +44512,19 @@ static inline void update_mmu_cache(struct vm_area_struct *vma,
 #define ASID_TO_IDX(asid)	((asid & ~ASID_MASK) - 1)
 #define IDX_TO_ASID(idx)	((idx + 1) & ~ASID_MASK)
 
+#if 0
 static DEFINE_RAW_SPINLOCK(cpu_asid_lock);
+#endif
 static atomic64_t asid_generation = ATOMIC64_INIT(ASID_FIRST_VERSION);
+#if 0
 static DECLARE_BITMAP(asid_map, NUM_USER_ASIDS);
 
 static DEFINE_PER_CPU(atomic64_t, active_asids);
+#endif
 static DEFINE_PER_CPU(u64, reserved_asids);
+#if 0
 static cpumask_t tlb_flush_pending;
 
-#ifdef CONFIG_ARM_LPAE
-static void cpu_set_reserved_ttbr0(void)
-{
-	unsigned long ttbl = __pa(swapper_pg_dir);
-	unsigned long ttbh = 0;
-
-	/*
-	 * Set TTBR0 to swapper_pg_dir which contains only global entries. The
-	 * ASID is set to 0.
-	 */
-	asm volatile(
-	"	mcrr	p15, 0, %0, %1, c2		@ set TTBR0\n"
-	:
-	: "r" (ttbl), "r" (ttbh));
-	isb();
-}
-#else
 static void cpu_set_reserved_ttbr0(void)
 {
 	u32 ttb;
@@ -46649,70 +44534,6 @@ static void cpu_set_reserved_ttbr0(void)
 	"	mcr	p15, 0, %0, c2, c0, 0		@ set TTBR0\n"
 	: "=r" (ttb));
 	isb();
-}
-#endif
-
-#ifdef CONFIG_PID_IN_CONTEXTIDR
-static int contextidr_notifier(struct notifier_block *unused, unsigned long cmd,
-			       void *t)
-{
-	u32 contextidr;
-	pid_t pid;
-	struct thread_info *thread = t;
-
-	if (cmd != THREAD_NOTIFY_SWITCH)
-		return NOTIFY_DONE;
-
-	pid = task_pid_nr(thread->task) << ASID_BITS;
-	asm volatile(
-	"	mrc	p15, 0, %0, c13, c0, 1\n"
-	"	and	%0, %0, %2\n"
-	"	orr	%0, %0, %1\n"
-	"	mcr	p15, 0, %0, c13, c0, 1\n"
-	: "=r" (contextidr), "+r" (pid)
-	: "I" (~ASID_MASK));
-	isb();
-
-	return NOTIFY_OK;
-}
-
-static struct notifier_block contextidr_notifier_block = {
-	.notifier_call = contextidr_notifier,
-};
-
-static int __init contextidr_notifier_init(void)
-{
-	return thread_register_notifier(&contextidr_notifier_block);
-}
-arch_initcall(contextidr_notifier_init);
-#endif
-
-#if 0
-static void flush_context(unsigned int cpu)
-{
-	int i;
-	u64 asid;
-
-	/* Update the list of reserved ASIDs and the ASID bitmap. */
-	bitmap_clear(asid_map, 0, NUM_USER_ASIDS);
-	for_each_possible_cpu(i) {
-		if (i == cpu) {
-			asid = 0;
-		} else {
-			asid = atomic64_xchg(&per_cpu(active_asids, i), 0);
-			__set_bit(ASID_TO_IDX(asid), asid_map);
-		}
-		per_cpu(reserved_asids, i) = asid;
-	}
-
-	/* Queue a TLB invalidate and flush the I-cache if necessary. */
-	if (!tlb_ops_need_broadcast())
-		cpumask_set_cpu(cpu, &tlb_flush_pending);
-	else
-		cpumask_setall(&tlb_flush_pending);
-
-	if (icache_is_vivt_asid_tagged())
-		__flush_icache_all();
 }
 #endif
 
@@ -46736,6 +44557,7 @@ static void new_context(struct mm_struct *mm, unsigned int cpu)
 
 void check_and_switch_context(struct mm_struct *mm, struct task_struct *tsk)
 {
+#if 0
 	unsigned long flags;
 	unsigned int cpu = smp_processor_id();
 
@@ -46755,8 +44577,10 @@ void check_and_switch_context(struct mm_struct *mm, struct task_struct *tsk)
 	raw_spin_lock_irqsave(&cpu_asid_lock, flags);
 	/* Check that our ASID belongs to the current generation. */
 	if ((mm->context.id ^ atomic64_read(&asid_generation)) >> ASID_BITS)
-		new_context(mm, cpu);
+#endif
+		new_context(mm, 0);
 
+#if 0
 	atomic64_set(&per_cpu(active_asids, cpu), mm->context.id);
 	cpumask_set_cpu(cpu, mm_cpumask(mm));
 
@@ -46766,4 +44590,5 @@ void check_and_switch_context(struct mm_struct *mm, struct task_struct *tsk)
 
 switch_mm_fastpath:
 	cpu_switch_mm(mm->pgd, mm);
+#endif
 }
