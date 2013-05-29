@@ -25,3 +25,6 @@
 # Assumes has been included from ../common.mk
 
 PATH	:= ${PATH}:${TOOLSDIR}
+
+PATCHSTATUS = ${TOOLSDIR}/patchstatus
+patchseriesstatus = ${PATCHSTATUS} `cat $(1)/series`

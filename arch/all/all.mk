@@ -260,6 +260,11 @@ kernel-gcc-patch-applied:
 	@$(call applied,${KERNELGCC})
 
 #############################################################################
+kernel-patch-status:
+	@$(call banner,Patch status for the kernel)
+	@$(call patchseriesstatus,${PATCHDIR})
+
+#############################################################################
 kernel-configure: state/kernel-configure
 state/kernel-configure: state/kernel-patch
 	@make -s build-dep-check

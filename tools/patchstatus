@@ -1,0 +1,99 @@
+#!/usr/bin/python
+#
+# Written by: Behan Webster <behanw@converseincode.com>
+#
+
+import ConfigParser
+from optparse import OptionParser
+import re, os
+
+import gdata.docs
+import gdata.docs.service
+import gdata.spreadsheet.service
+
+import prettytable
+
+#-------------------------------------------------------------------------------
+parser = OptionParser()
+parser.add_option("-f", "--file", dest="filename",
+                  help="write report to FILE", metavar="FILE")
+parser.add_option("-q", "--quiet",
+                  action="store_false", dest="verbose", default=True,
+                  help="don't print status messages to stdout")
+
+(options, args) = parser.parse_args()
+
+#-------------------------------------------------------------------------------
+config = ConfigParser.RawConfigParser()
+config.read(['patchstatus.conf', os.path.expanduser('~/.patchstatus.conf'), os.path.expanduser('~/.config/patchstatus/patchstatus.conf')])
+
+#-------------------------------------------------------------------------------
+# Connect to Google Drive
+gd_client = gdata.spreadsheet.service.SpreadsheetsService()
+gd_client.email = config.get('spreadsheet', 'userid')
+gd_client.password = config.get('spreadsheet', 'password')
+gd_client.source = 'LLVMLinux patch script'
+gd_client.ProgrammaticLogin()
+
+#-------------------------------------------------------------------------------
+# Query spreadsheet by name
+q = gdata.spreadsheet.service.DocumentQuery()
+q['title'] = config.get('spreadsheet', 'filename')
+q['title-exact'] = 'true'
+feed = gd_client.GetSpreadsheetsFeed(query=q)
+spreadsheet_id = feed.entry[0].id.text.rsplit('/',1)[1]
+feed = gd_client.GetWorksheetsFeed(spreadsheet_id)
+worksheet_id = feed.entry[0].id.text.rsplit('/',1)[1]
+
+#-------------------------------------------------------------------------------
+# Get row iterator for spreadsheet
+rows = gd_client.GetListFeed(spreadsheet_id, worksheet_id).entry
+
+#-------------------------------------------------------------------------------
+# Build lists of table headers for later
+# ['arch', 'boots', 'conclusion', 'done', 'handledby', 'inout', 'patchinspection', 'patchname', 'remarks', 'summarytodo']
+headers = sorted(rows[0].custom)
+headers.remove('patchname')
+fixedhdr = ('arch', 'boots', 'inout', 'summarytodo', 'handledby', 'done')
+[headers.remove(x) for x in fixedhdr]
+
+#-------------------------------------------------------------------------------
+# Initialize the pretty table
+table = prettytable.PrettyTable(['patchname'] + list(fixedhdr))
+table.align = "l"
+
+#-------------------------------------------------------------------------------
+# Print out the rows and build the pretty table
+for row in rows:
+    patchname = row.custom['patchname'].text
+    if patchname in args:
+	print patchname,
+
+	vals = [patchname]
+        for key in fixedhdr:
+            print "  %s: %s" % (key, row.custom[key].text),
+            vals.append(row.custom[key].text)
+        print
+        table.add_row(vals)
+
+        for key in headers:
+            val = row.custom[key].text
+            if val:
+                print "  %s: %s" % (key, val)
+
+	args.remove(patchname)
+
+#-------------------------------------------------------------------------------
+print
+print table
+
+#-------------------------------------------------------------------------------
+if args:
+    print "Patches not found: ",
+    print args
+    print "Adding missing patches to spreadsheet:"
+    for patch in args:
+	print "  "+patch
+	data = {'patchname':patch, 'inout':'In', 'done':'N'}
+        gd_client.InsertRow(data, spreadsheet_id, worksheet_id)
+
