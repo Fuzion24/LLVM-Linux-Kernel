@@ -1,5 +1,4 @@
 eabi.patch
 ftrace.patch
 kbuild-clang-arm.patch
-netdevice.patch
 register-var.patch
