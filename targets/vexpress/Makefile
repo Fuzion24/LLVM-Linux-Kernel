@@ -90,8 +90,8 @@ vexpress-help:
 	@echo "* make mrproper		- Remove all downloaded and built files"
 
 prep: state/prep
-state/prep:
-	@mkdir -p ${LOGDIR} ${TMPDIR}
+state/prep: ${TMPDIR}
+	@mkdir -p ${LOGDIR}
 	$(call state,$@)
 
 #fetch-initrd: state/fetch-initrd
