@@ -63,7 +63,7 @@ LLVM_TARGETS 		= llvm llvm-[fetch,patch,configure,build,clean,sync]
 CLANG_TARGETS 		= clang clang-[fetch,patch,configure,build,sync] clang-update-all
 COMPILERRT_TARGETS 	= compilerrt-fetch 
 LLVM_TARGETS_APPLIED	= llvm-patch-applied clang-patch-applied
-LLVM_VERSION_TARGETS	= llvm-version clang-version
+LLVM_VERSION_TARGETS	= llvm-version clang-version compilerrt-version
 
 TARGETS_TOOLCHAIN	+= ${LLVM_TARGETS} ${CLANG_TARGETS} ${COMPILERRT_TARGETS}
 FETCH_TARGETS		+= llvm-fetch compilerrt-fetch clang-fetch
@@ -370,6 +370,11 @@ clang-version:
 	@(cd ${CLANGDIR} && [ -f "${CLANG}" ] \
 		&& echo "`${CLANG} --version | grep version | xargs echo` commit `git rev-parse HEAD`" \
 		|| echo "clang version ? commit `git rev-parse HEAD`")
+
+##############################################################################
+compilerrt-version:
+	@(cd ${COMPILERRTDIR} && [ -f "${CLANG}" ] \
+		&& echo "compiler-rt version ? commit `git rev-parse HEAD`")
 
 ##############################################################################
 clang-update-all: llvm-sync clang-sync compilerrt-sync llvm-build clang-build
