@@ -373,8 +373,7 @@ clang-version:
 
 ##############################################################################
 compilerrt-version:
-	@(cd ${COMPILERRTDIR} && [ -f "${CLANG}" ] \
-		&& echo "compiler-rt version ? commit `git rev-parse HEAD`")
+	@(cd ${COMPILERRTDIR} && echo "compiler-rt version ? commit `git rev-parse HEAD`")
 
 ##############################################################################
 clang-update-all: llvm-sync clang-sync compilerrt-sync llvm-build clang-build
