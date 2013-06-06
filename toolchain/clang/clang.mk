@@ -54,7 +54,7 @@ CLANGBUILDDIR	= ${LLVMBUILD}/clang
 
 LLVMDIR2	= ${LLVMSRCDIR}/llvm-unpatched
 CLANGDIR2	= ${LLVMSRCDIR}/clang-unpatched
-COMPILERRTDIR2	= ${LLVMDIR}/projects/compiler-rt-unpatched
+COMPILERRTDIR2	= ${LLVMDIR2}/projects/compiler-rt
 LLVMBUILDDIR2	= ${LLVMBUILD}/llvm-unpatched
 CLANGBUILDDIR2	= ${LLVMBUILD}/clang-unpatched
 LLVMINSTALLDIR2	:= ${LLVMTOP}/install-unpatched
@@ -353,11 +353,10 @@ clang-sync: clang-clean
 	@$(call llvmsync,Unpatched Clang,${CLANGDIR2},${CLANG_BRANCH},${CLANG_COMMIT})
 
 ##############################################################################
-compilerrt-sync: ${LLVMSTATE}/compilerrt-sync
-${LLVMSTATE}/compilerrt-sync: ${LLVMSTATE}/llvm-fetch 
+compilerrt-sync: llvm-clean
 	@$(call check_llvmlinux_commit,${CONFIG})
 	@$(call llvmsync,compiler-rt,${COMPILERRTDIR},${COMPILERRT_BRANCH},${COMPILERRT_COMMIT})
-	$(call state,$@)
+	@$(call llvmsync,Unpatched compiler-rt,${COMPILERRTDIR2},${COMPILERRT_BRANCH},${COMPILERRT_COMMIT})
 
 ##############################################################################
 llvm-version:
