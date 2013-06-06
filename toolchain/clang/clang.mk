@@ -67,7 +67,7 @@ LLVM_VERSION_TARGETS	= llvm-version clang-version
 
 TARGETS_TOOLCHAIN	+= ${LLVM_TARGETS} ${CLANG_TARGETS} ${COMPILERRT_TARGETS}
 FETCH_TARGETS		+= llvm-fetch compilerrt-fetch clang-fetch
-SYNC_TARGETS		+= llvm-sync clang-sync
+SYNC_TARGETS		+= llvm-sync clang-sync compilerrt-sync
 CLEAN_TARGETS		+= llvm-clean
 MRPROPER_TARGETS	+= llvm-mrproper
 RAZE_TARGETS		+= llvm-raze
