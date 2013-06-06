@@ -153,4 +153,4 @@ buildroot-sync: ${BUILDROOT_STATE}/buildroot-fetch
 	fi
 
 buildroot-version: ${BUILDROOT_STATE}/buildroot-fetch
-	@(cd ${BUILDROOT_SRCDIR} && echo "buildroot version `cat VERSION` commit `git rev-parse HEAD`")
+	@(cd ${BUILDROOT_SRCDIR} && echo "buildroot version `awk -F= '/^export BR2_VERSION:=/ {print $$2}' Makefile` commit `git rev-parse HEAD`")
