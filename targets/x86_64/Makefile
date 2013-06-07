@@ -60,7 +60,7 @@ test: state/prep ${QEMUSTATE}/qemu-build initramfs-unpacked
 	mkdir -p ${INITBUILDFSDIR}/usr/lib
 	@rm -f ${INITRAMFS}
 	@make ${INITRAMFS}
-	@$(call qemu,${BOARD},${KERNELDIR}/arch/x86/boot/bzImage,2048,/dev/ram0,ramdisk_size=512000 rdinit=/init console=ttyS0 earlyprintk,-smp 4 -initrd ${INITRAMFS})
+	@$(call qemu,${BOARD},${KERNELDIR}/arch/x86/boot/bzImage,2048,/dev/ram0,ramdisk_size=512000 rdinit=/init console=ttyS0 earlyprintk,-smp 4 -nodefconfig -nodefaults -initrd ${INITRAMFS})
 
-qemu2:
-	@$(call qemu,${BOARD},${KERNELDIR}/arch/x86/boot/bzImage,2048,/dev/ram0,ramdisk_size=512000 rdinit=/init console=ttyS0 earlyprintk,-initrd ${INITRAMFS})
+test-qemu:
+	@$(call qemu,${BOARD},${KERNELDIR}/arch/x86/boot/bzImage,2048,/dev/ram0,ramdisk_size=512000 rdinit=/init console=ttyS0 earlyprintk,-smp 2 -initrd ${INITRAMFS})
