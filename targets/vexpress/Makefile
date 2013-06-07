@@ -115,7 +115,7 @@ ${KERNELGCCDTB_IMG}: state/kernel-gcc-build
 	cat ${KERNELGCC_BUILD}/${ZIMAGE} ${KERNELGCC_BUILD}/${KERNEL_DTB} > $@
 
 # state/fetch-initrd
-test: state/prep ${QEMUSTATE}/qemu-build ${KERNELDTB_IMG} ${INITRAMIMG}
+test: state/prep ${QEMUSTATE}/qemu-build ${KERNELDTB_IMG} ${INITRAMIMG} buildroot-build
 	$(call qemu_arm,${BOARD},${KERNELDTB_IMG},768,/dev/ram0,rw,-initrd ${INITRAMIMG} -net none -sd ${BUILDROOT_IMG})
 
 # state/fetch-initrd
@@ -140,7 +140,7 @@ test2: state/prep ${QEMUSTATE}/qemu-build ${KERNELDTB_IMG} initramfs-unpacked
 	mkdir -p ${INITBUILDFSDIR}/usr/lib
 	@rm -f ${INITRAMFS}
 	@make ${INITRAMFS}
-	@$(call qemu_arm,${BOARD},${KERNELDTB_IMG},256,/dev/ram0,rdinit=/bootstrap,-initrd ${INITRAMFS})
+	@$(call qemu_arm,${BOARD},${KERNELDTB_IMG},256,/dev/ram0,rdinit=/init,-initrd ${INITRAMFS})
 
 test2-gcc: state/prep ${QEMUSTATE}/qemu-build ${KERNELGCCDTB_IMG} initramfs-unpacked
 	@rm -rf ${INITBUILDFSDIR}/lib
@@ -148,7 +148,7 @@ test2-gcc: state/prep ${QEMUSTATE}/qemu-build ${KERNELGCCDTB_IMG} initramfs-unpa
 	mkdir -p ${INITBUILDFSDIR}/usr/lib
 	@rm -f ${INITRAMFS}
 	@make ${INITRAMFS}
-	@$(call qemu_arm,${BOARD},${KERNELGCCDTB_IMG},256,/dev/ram0,rdinit=/bootstrap,-initrd ${INITRAMFS})
+	@$(call qemu_arm,${BOARD},${KERNELGCCDTB_IMG},256,/dev/ram0,rdinit=/init,-initrd ${INITRAMFS})
 
 # Get prebuilt vexpress image
 VEXPRESS_IMG_GZ	= ${TMPDIR}/${NANOIMG}.gz

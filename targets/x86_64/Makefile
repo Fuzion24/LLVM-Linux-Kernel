@@ -39,7 +39,7 @@ include ${ARCHDIR}/x86_64/x86_64.mk
 include ${CONFIG}
 
 TARGETS+= clean mrproper test test2
-.PHONY: test test2 fetch-initrd prep clean mrproper
+.PHONY: test test2 fetch-initrd prep clean mrproper test
 
 prep: state/prep
 state/prep:
@@ -53,17 +53,14 @@ mrproper: clean kernel-mrproper kernel-gcc-mrproper tmp-mrproper
 	@rm -rf ${LOGDIR}/*
 	@$(call banner,Very Clean)
 
-test: ${QEMUSTATE}/qemu-build initramfs state/kernel-build
-	@$(call qemu,${BOARD},${KERNELDIR}/arch/x86/boot/bzImage,768,/dev/ram0,init=/init,-initrd initramfs.img.gz)
-
 # Create the generic initramfs, add in the kernel modules, then create the cpio
-test2: state/prep ${QEMUSTATE}/qemu-build initramfs-unpacked
-	@rm -rf ${INITBUILDFSDIR}/lib
-	(cd ${KERNELDIR} && make INSTALL_MOD_PATH=${INITBUILDFSDIR} modules_install)
+test: state/prep ${QEMUSTATE}/qemu-build initramfs-unpacked
+	@rm -rf ${INITBUILDFSDIR}/lib/modules
+	(cd ${KERNELDIR} && make V=0 INSTALL_MOD_PATH=${INITBUILDFSDIR} modules_install 2>&1 > /dev/null)
 	mkdir -p ${INITBUILDFSDIR}/usr/lib
 	@rm -f ${INITRAMFS}
 	@make ${INITRAMFS}
-	@$(call qemu,${BOARD},${KERNELDIR}/arch/x86/boot/bzImage,2048,/dev/ram0,ramdisk_size=512000 rdinit=/init console=ttyS0 earlyprintk,-initrd ${INITRAMFS})
+	@$(call qemu,${BOARD},${KERNELDIR}/arch/x86/boot/bzImage,2048,/dev/ram0,ramdisk_size=512000 rdinit=/init console=ttyS0 earlyprintk,-smp 4 -initrd ${INITRAMFS})
 
 qemu2:
 	@$(call qemu,${BOARD},${KERNELDIR}/arch/x86/boot/bzImage,2048,/dev/ram0,ramdisk_size=512000 rdinit=/init console=ttyS0 earlyprintk,-initrd ${INITRAMFS})

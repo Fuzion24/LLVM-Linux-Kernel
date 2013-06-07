@@ -28,11 +28,12 @@ CLEAN_TARGETS	+= initramfs-clean
 MRPROPER_TARGETS+= initramfs-mrproper
 RAZE_TARGETS	+= initramfs-raze
 
-.PHONY: initramfs-prep initramfs initramfs-clean ltp busybox
+.PHONY: initramfs-prep initramfs initramfs-clean ltp
 
 INITRAMFS	= initramfs.img.gz
 INITBUILDDIR	= ${TARGETDIR}/initramfs
-INITBUILDFSDIR	= ${INITBUILDDIR}/initramfs
+INITDOWNLOADDIR	= ${INITBUILDDIR}/initramfs_download
+INITBUILDFSDIR	= ${INITBUILDDIR}/initramfs_root
 INITCPIO	= ${INITBUILDFSDIR}.cpio
 
 LTPVER		= 20120104
@@ -77,7 +78,7 @@ ${INITBUILDFSDIR}/etc: ${INITBUILDDIR}/busybox ${STRACEBIN} ${KERNEL_MODULES}
 	@rm -rf ${INITBUILDFSDIR}
 	@mkdir -p $(addprefix ${INITBUILDFSDIR}/,bin sys dev proc tmp usr/bin sbin usr/sbin)
 	@cp -r ${INITRAMFSDIR}/etc ${INITBUILDFSDIR}
-	@cp -r ${INITRAMFSDIR}/bootstrap ${INITBUILDFSDIR}
+	@cp -r ${INITRAMFSDIR}/bootstrap ${INITBUILDFSDIR}/init
 	@cp ${INITBUILDDIR}/busybox ${INITBUILDFSDIR}/bin/busybox
 	(cd ${INITBUILDFSDIR}/bin && ln -s busybox sh)
 
@@ -85,30 +86,46 @@ ${INITBUILDFSDIR}/etc: ${INITBUILDDIR}/busybox ${STRACEBIN} ${KERNEL_MODULES}
 initramfs initramfs-build: ${INITRAMFS}
 ${INITRAMFS}: ${INITBUILDFSDIR}/etc
 	@(cd ${INITBUILDFSDIR} && find . | cpio -H newc -o > ${INITCPIO})
-	@cat ${INITCPIO} | gzip -9c > $@
+	@(if test -e /usr/bin/pigz; then cat ${INITCPIO} | pigz -9c > $@ ; else cat ${INITCPIO} | gzip -9c > $@ ; fi )
 	@echo "Created $@: Done."
 
 initramfs-clean:
 	@$(call banner,Clean initramfs...)
 	rm -rf ${INITRAMFS} $(addprefix ${INITBUILDDIR}/,initramfs initramfs-build ${LTP}*)
-	([ -f ${INITBUILDDIR}/busybox/Makefile ] && cd ${INITBUILDDIR}/busybox && make clean || rm -rf ${INITBUILDDIR}/busybox)
+
+#	([ -f ${INITBUILDDIR}/busybox/Makefile ] && cd ${INITBUILDDIR}/busybox && make clean || rm -rf ${INITBUILDDIR}/busybox)
 
 initramfs-mrproper initramfs-raze:
 	@$(call banner,Scrub initramfs...)
+	@$(call initramfs-busybox-clean, removing busybox)
 	rm -f ${INITRAMFS}
 	rm -rf ${INITBUILDDIR}
+	rm -rf ${INITDOWNLOADDIR}
 
 ${INITBUILDDIR}:
 	mkdir -p ${INITBUILDDIR}
 
-${INITBUILDDIR}/strace: ${INITBUILDDIR}
-	@wget -O ${INITBUILDDIR}/strace -c ${STRACEURL}
+${INITDOWNLOADDIR}:
+	mkdir -p ${INITDOWNLOADDIR}
+
+${INITBUILDDIR}/strace: ${INITDOWNLOADDIR}/strace
+	cp ${INITDOWNLOADDIR}/strace ${INITBUILDDIR}/strace
 	@chmod +x ${INITBUILDDIR}/strace
 
-${INITBUILDDIR}/busybox: ${INITBUILDDIR}
-	wget -O ${INITBUILDDIR}/busybox ${BUSYBOXURL}
-	chmod +x ${INITBUILDDIR}/busybox
+${INITDOWNLOADDIR}/strace: ${INITDOWNLOADDIR} ${INITBUILDDIR}
+	(if test ! -e ${INITDOWNLOADDIR}/strace ; then wget -O ${INITDOWNLOADDIR}/strace ${STRACEURL} ; fi )
 
+${INITBUILDDIR}/busybox: ${INITDOWNLOADDIR}/busybox
+	cp ${INITDOWNLOADDIR}/busybox ${INITBUILDDIR}/busybox
+	@chmod +x ${INITBUILDDIR}/busybox
+
+${INITDOWNLOADDIR}/busybox: ${INITDOWNLOADDIR} ${INITBUILDDIR}
+	mkdir -p ${INITDOWNLOADDIR}
+	(if test ! -e ${INITDOWNLOADDIR}/busybox ; then wget -O ${INITDOWNLOADDIR}/busybox ${BUSYBOXURL} ; fi )
+
+initramfs-busybox-clean:
+	rm -f ${INITDOWNLOADDIR}/busybox ${INITBUILDDIR}/busybox
+	rm state/busybox
 
 ltp: ${INITBUILDDIR}/${LTP}/Version
 ${INITBUILDDIR}/${LTP}/Version:
