@@ -92,7 +92,7 @@ beaglebone-settings:
 beaglebone-fetch: state/beaglebone-fetch
 state/beaglebone-fetch:
 	@$(call banner,Fetching beaglebone meta-repo)
-	@$(call gitclone,${BBONE_GIT},${BBONE_DIR},${BBONE_BRANCH})
+	@$(call gitclone,${BBONE_GIT},${BBONE_DIR})
 	@$(call banner,Checkout beaglebone ${BBONE_BRANCH})
 	@$(call gitcheckout,${BBONE_DIR},${BBONE_BRANCH})
 	@$(call banner,Patch beaglebone script)
