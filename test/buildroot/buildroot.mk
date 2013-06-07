@@ -118,7 +118,7 @@ buildroot buildroot-build: ${BUILDROOT_BUILDDIR}/buildroot-build
 ${BUILDROOT_BUILDDIR}/buildroot-build: ${BUILDROOT_BUILDDIR}/buildroot-configure
 	@[ -d ${BUILDROOT_BUILDDIR} ] || ($(call leavestate,${BUILDROOT_BUILDDIR},kernel-configure) && ${MAKE} kernel-configure)
 	@$(call banner,Building buildroot...)
-	TOOLCHAINDIR=${TOOLCHAINDIR} make -C ${BUILDROOT_SRCDIR} O=${BUILDROOT_BUILDDIR} -j${JOBS}
+	TOOLCHAINDIR=${TOOLCHAINDIR} make -C ${BUILDROOT_SRCDIR} O=${BUILDROOT_BUILDDIR}
 	$(call state,$@)
 
 #buildroot-sdcard = (dd if=/dev/zero of="${2}" bs=1048576 count=`du -m "${BUILDROOT_BUILDDIR}/${1}" | cut -f1` ;
