@@ -1,0 +1,75 @@
+diff --git a/drivers/gpu/msm/kgsl_iommu.c b/drivers/gpu/msm/kgsl_iommu.c
+index 629cfc3..96f57c4 100644
+--- a/drivers/gpu/msm/kgsl_iommu.c
++++ b/drivers/gpu/msm/kgsl_iommu.c
+@@ -575,7 +575,7 @@ static int kgsl_iommu_init_sync_lock(struct kgsl_mmu *mmu)
+  *
+  * Return - int - number of commands.
+  */
+-inline unsigned int kgsl_iommu_sync_lock(struct kgsl_mmu *mmu,
++unsigned int kgsl_iommu_sync_lock(struct kgsl_mmu *mmu,
+ 						unsigned int *cmds)
+ {
+ 	struct kgsl_device *device = mmu->device;
+@@ -633,7 +633,7 @@ inline unsigned int kgsl_iommu_sync_lock(struct kgsl_mmu *mmu,
+  *
+  * Return - int - number of commands.
+  */
+-inline unsigned int kgsl_iommu_sync_unlock(struct kgsl_mmu *mmu,
++unsigned int kgsl_iommu_sync_unlock(struct kgsl_mmu *mmu,
+ 					unsigned int *cmds)
+ {
+ 	struct kgsl_device *device = mmu->device;
+diff --git a/drivers/staging/prima/CORE/HDD/inc/wlan_hdd_assoc.h b/drivers/staging/prima/CORE/HDD/inc/wlan_hdd_assoc.h
+index f3945f6..8743f20 100644
+--- a/drivers/staging/prima/CORE/HDD/inc/wlan_hdd_assoc.h
++++ b/drivers/staging/prima/CORE/HDD/inc/wlan_hdd_assoc.h
+@@ -101,7 +101,7 @@ extern eHalStatus hdd_smeRoamCallback( void *pContext, tCsrRoamInfo *pRoamInfo,
+ 
+ extern v_VOID_t hdd_connSaveConnectInfo( hdd_adapter_t *pAdapter, tCsrRoamInfo *pRoamInfo, eCsrRoamBssType eBssType );
+ 
+-inline v_BOOL_t hdd_connGetConnectedBssType( hdd_station_ctx_t *pHddCtx, 
++v_BOOL_t hdd_connGetConnectedBssType( hdd_station_ctx_t *pHddCtx, 
+         eMib_dot11DesiredBssType *pConnectedBssType );
+ 
+ int hdd_SetGENIEToCsr( hdd_adapter_t *pAdapter, eCsrAuthType *RSNAuthType );
+diff --git a/drivers/staging/prima/CORE/WDI/CP/inc/wlan_qct_wdi_i.h b/drivers/staging/prima/CORE/WDI/CP/inc/wlan_qct_wdi_i.h
+index 268edd4..84a8c56 100644
+--- a/drivers/staging/prima/CORE/WDI/CP/inc/wlan_qct_wdi_i.h
++++ b/drivers/staging/prima/CORE/WDI/CP/inc/wlan_qct_wdi_i.h
+@@ -4516,7 +4516,7 @@ WDI_FindAssocSessionByIdx
+  @see
+  @return 
+ */
+-WPT_INLINE void 
++void 
+ WDI_DS_AssignDatapathContext 
+ (
+   void *pContext, 
+@@ -4532,7 +4532,7 @@ WDI_DS_AssignDatapathContext
+  @see
+  @return pointer to Datapath context
+ */
+-WPT_INLINE void * 
++void * 
+ WDI_DS_GetDatapathContext 
+ (
+   void *pContext
+@@ -4548,7 +4548,7 @@ WDI_DS_GetDatapathContext
+  @see
+  @return void
+ */
+-WPT_INLINE void  
++void  
+ WDT_AssignTransportDriverContext 
+ (
+   void *pContext, 
+@@ -4564,7 +4564,7 @@ WDT_AssignTransportDriverContext
+  @see
+  @return pointer to datapath context 
+ */
+-WPT_INLINE void * 
++void * 
+ WDT_GetTransportDriverContext 
+ (
+   void *pContext
