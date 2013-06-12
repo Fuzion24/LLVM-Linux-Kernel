@@ -47,27 +47,31 @@ CLANG		= ${LLVMINSTALLDIR}/bin/clang
 
 LLVMDIR		= ${LLVMSRCDIR}/llvm
 CLANGDIR	= ${LLVMSRCDIR}/clang
-COMPILERRTDIR	= ${LLVMDIR}/projects/compiler-rt
+#COMPILERRTDIR	= ${LLVMDIR}/projects/compiler-rt
 
 LLVMBUILDDIR	= ${LLVMBUILD}/llvm
 CLANGBUILDDIR	= ${LLVMBUILD}/clang
 
 LLVMDIR2	= ${LLVMSRCDIR}/llvm-unpatched
 CLANGDIR2	= ${LLVMSRCDIR}/clang-unpatched
-COMPILERRTDIR2	= ${LLVMDIR2}/projects/compiler-rt
+#COMPILERRTDIR2	= ${LLVMDIR2}/projects/compiler-rt
 LLVMBUILDDIR2	= ${LLVMBUILD}/llvm-unpatched
 CLANGBUILDDIR2	= ${LLVMBUILD}/clang-unpatched
 LLVMINSTALLDIR2	:= ${LLVMTOP}/install-unpatched
 
 LLVM_TARGETS 		= llvm llvm-[fetch,patch,configure,build,clean,sync]
 CLANG_TARGETS 		= clang clang-[fetch,patch,configure,build,sync] clang-update-all
-COMPILERRT_TARGETS 	= compilerrt-fetch 
+#COMPILERRT_TARGETS 	= compilerrt-fetch
 LLVM_TARGETS_APPLIED	= llvm-patch-applied clang-patch-applied
-LLVM_VERSION_TARGETS	= llvm-version clang-version compilerrt-version
+LLVM_VERSION_TARGETS	= llvm-version clang-version
+#compilerrt-version
 
-TARGETS_TOOLCHAIN	+= ${LLVM_TARGETS} ${CLANG_TARGETS} ${COMPILERRT_TARGETS}
-FETCH_TARGETS		+= llvm-fetch compilerrt-fetch clang-fetch
-SYNC_TARGETS		+= llvm-sync clang-sync compilerrt-sync
+TARGETS_TOOLCHAIN	+= ${LLVM_TARGETS} ${CLANG_TARGETS}
+#${COMPILERRT_TARGETS}
+FETCH_TARGETS		+= llvm-fetch clang-fetch
+#compilerrt-fetch
+SYNC_TARGETS		+= llvm-sync clang-sync
+#compilerrt-sync
 CLEAN_TARGETS		+= llvm-clean
 MRPROPER_TARGETS	+= llvm-mrproper
 RAZE_TARGETS		+= llvm-raze
@@ -77,14 +81,14 @@ VERSION_TARGETS		+= ${LLVM_VERSION_TARGETS}
 
 LLVM_GIT	= "http://llvm.org/git/llvm.git"
 CLANG_GIT	= "http://llvm.org/git/clang.git"
-COMPILERRT_GIT	= "http://llvm.org/git/compiler-rt.git"
+#COMPILERRT_GIT	= "http://llvm.org/git/compiler-rt.git"
 
 #LLVM_BRANCH	= "release_30"
 LLVM_BRANCH	= "master"
 CLANG_BRANCH	= "master"
-COMPILERRT_BRANCH = "master"
+#COMPILERRT_BRANCH = "master"
 # The buildbot takes quite long to build the debug-version of clang (debug+asserts).
-# Introducing this option to switch between debug and optimized. 
+# Introducing this option to switch between debug and optimized.
 #LLVM_OPTIMIZED	= ""
 LLVM_OPTIMIZED	= --enable-optimized --enable-assertions
 
@@ -122,9 +126,9 @@ llvm-settings:
 	@$(call prsetting,CLANG_GIT,${CLANG_GIT})
 	@$(call prsetting,CLANG_BRANCH,${CLANG_BRANCH})
 	@$(call gitcommit,${CLANGDIR},CLANG_COMMIT)
-	@$(call prsetting,COMPILERRT_GIT,${COMPILERRT_GIT})
-	@$(call prsetting,COMPILERRT_BRANCH,${COMPILERRT_BRANCH})
-	@$(call gitcommit,${COMPILERRTDIR},COMPILERRT_COMMIT)
+#	@$(call prsetting,COMPILERRT_GIT,${COMPILERRT_GIT})
+#	@$(call prsetting,COMPILERRT_BRANCH,${COMPILERRT_BRANCH})
+#	@$(call gitcommit,${COMPILERRTDIR},COMPILERRT_COMMIT)
 
 ##############################################################################
 llvmfetch = $(call banner,Fetching ${1}...) ; \
@@ -142,10 +146,10 @@ ${LLVMSTATE}/llvm-fetch:
 	$(call state,$@,llvm-patch)
 
 ##############################################################################
-compilerrt-fetch: ${LLVMSTATE}/compilerrt-fetch
-${LLVMSTATE}/compilerrt-fetch: ${LLVMSTATE}/llvm-fetch 
-	@$(call llvmfetch,compiler-rt,${LLVMSRCDIR},${COMPILERRTDIR},${COMPILERRT_GIT},${COMPILERRT_BRANCH},${COMPILERRT_COMMIT})
-	$(call state,$@)
+#compilerrt-fetch: ${LLVMSTATE}/compilerrt-fetch
+#${LLVMSTATE}/compilerrt-fetch: ${LLVMSTATE}/llvm-fetch
+#	@$(call llvmfetch,compiler-rt,${LLVMSRCDIR},${COMPILERRTDIR},${COMPILERRT_GIT},${COMPILERRT_BRANCH},${COMPILERRT_COMMIT})
+#	$(call state,$@)
 
 ##############################################################################
 clang-fetch: ${LLVMSTATE}/clang-fetch
@@ -160,10 +164,10 @@ ${LLVMSTATE}/llvm-unpatched-fetch: ${LLVMSTATE}/llvm-fetch
 	$(call state,$@,llvm-unpatched-configure)
 
 ##############################################################################
-compilerrt-unpatched-fetch: ${LLVMSTATE}/compilerrt-unpatched-fetch
-${LLVMSTATE}/compilerrt-unpatched-fetch: ${LLVMSTATE}/llvm-unpatched-fetch 
-	@$(call llvmfetch,compiler-rt-unpatched,${LLVMSRCDIR},${COMPILERRTDIR2},${COMPILERRTDIR}/.git,${COMPILERRT_BRANCH},${COMPILERRT_COMMIT})
-	$(call state,$@)
+#compilerrt-unpatched-fetch: ${LLVMSTATE}/compilerrt-unpatched-fetch
+#${LLVMSTATE}/compilerrt-unpatched-fetch: ${LLVMSTATE}/llvm-unpatched-fetch
+#	@$(call llvmfetch,compiler-rt-unpatched,${LLVMSRCDIR},${COMPILERRTDIR2},${COMPILERRTDIR}/.git,${COMPILERRT_BRANCH},${COMPILERRT_COMMIT})
+#	$(call state,$@)
 
 ##############################################################################
 clang-unpatched-fetch: ${LLVMSTATE}/clang-unpatched-fetch
@@ -189,10 +193,10 @@ ${LLVMSTATE}/clang-patch: ${LLVMSTATE}/clang-fetch
 	$(call state,$@,clang-configure)
 
 ##############################################################################
-compilerrt-patch: ${LLVMSTATE}/compilerrt-patch
-${LLVMSTATE}/compilerrt-patch: ${LLVMSTATE}/compilerrt-fetch
-	@$(call llvmpatch,Compiler-rt,${LLVMPATCHES}/compiler-rt,${COMPILERRTDIR})
-	$(call state,$@)
+#compilerrt-patch: ${LLVMSTATE}/compilerrt-patch
+#${LLVMSTATE}/compilerrt-patch: ${LLVMSTATE}/compilerrt-fetch
+#	@$(call llvmpatch,Compiler-rt,${LLVMPATCHES}/compiler-rt,${COMPILERRTDIR})
+#	$(call state,$@)
 
 ##############################################################################
 ${LLVM_TARGETS_APPLIED}: %-patch-applied:
@@ -265,18 +269,19 @@ ${LLVMSTATE}/clang-unpatched-build: ${LLVMSTATE}/llvm-unpatched-build ${LLVMSTAT
 	$(call state,$@)
 
 ##############################################################################
-llvm-reset: ${LLVMSTATE}/clang-fetch ${LLVMSTATE}/compilerrt-fetch
+llvm-reset: ${LLVMSTATE}/clang-fetch
+#${LLVMSTATE}/compilerrt-fetch
 # Patched LLVM
 	@$(call banner,Cleaning LLVM...)
 	@$(call makeclean,${LLVMBUILDDIR})
 	@$(call banner,Removing LLVM patches...)
 	@$(call unpatch,${LLVMDIR})
-	@$(call optional_gitreset,${COMPILERRTDIR})
+#	@$(call optional_gitreset,${COMPILERRTDIR})
 	@$(call optional_gitreset,${LLVMDIR})
 # Unpatched LLVM
 	@$(call banner,Cleaning unpatched LLVM...)
 	@$(call makeclean,${LLVMBUILDDIR2})
-	@$(call optional_gitreset,${COMPILERRTDIR2})
+#	@$(call optional_gitreset,${COMPILERRTDIR2})
 	@$(call optional_gitreset,${LLVMDIR2})
 	@$(call leavestate,${LLVMSTATE},llvm-patch llvm-configure llvm-build llvm-unpatched-configure llvm-unpatched-build)
 
@@ -296,7 +301,7 @@ llvm-mrproper: llvm-clean clang-mrproper
 llvm-raze: llvm-clean-noreset clang-raze
 	@$(call banner,Razing LLVM...)
 	@rm -rf ${LLVMDIR}
-	@$(call leavestate,${LLVMSTATE},llvm-*,compilerrt-*)
+	@$(call leavestate,${LLVMSTATE},llvm-*)
 
 ##############################################################################
 clang-reset: ${LLVMSTATE}/clang-fetch
@@ -353,10 +358,10 @@ clang-sync: clang-clean
 	@$(call llvmsync,Unpatched Clang,${CLANGDIR2},${CLANG_BRANCH},${CLANG_COMMIT})
 
 ##############################################################################
-compilerrt-sync: llvm-clean
-	@$(call check_llvmlinux_commit,${CONFIG})
-	@$(call llvmsync,compiler-rt,${COMPILERRTDIR},${COMPILERRT_BRANCH},${COMPILERRT_COMMIT})
-	@$(call llvmsync,Unpatched compiler-rt,${COMPILERRTDIR2},${COMPILERRT_BRANCH},${COMPILERRT_COMMIT})
+#compilerrt-sync: llvm-clean
+#	@$(call check_llvmlinux_commit,${CONFIG})
+#	@$(call llvmsync,compiler-rt,${COMPILERRTDIR},${COMPILERRT_BRANCH},${COMPILERRT_COMMIT})
+#	@$(call llvmsync,Unpatched compiler-rt,${COMPILERRTDIR2},${COMPILERRT_BRANCH},${COMPILERRT_COMMIT})
 
 ##############################################################################
 llvm-version:
@@ -371,11 +376,12 @@ clang-version:
 		|| echo "clang version ? commit `git rev-parse HEAD`")
 
 ##############################################################################
-compilerrt-version:
-	@(cd ${COMPILERRTDIR} && echo "compiler-rt version ? commit `git rev-parse HEAD`")
+#compilerrt-version:
+#	@(cd ${COMPILERRTDIR} && echo "compiler-rt version ? commit `git rev-parse HEAD`")
 
 ##############################################################################
-clang-update-all: llvm-sync clang-sync compilerrt-sync llvm-build clang-build
+clang-update-all: llvm-sync clang-sync llvm-build clang-build
+#compilerrt-sync
 
 llvm-clang-bisect: llvm-mrproper clang-mrproper
 	@(cd ${LLVMDIR} ; git bisect reset ; git bisect start ; git bisect bad ; git bisect good `git log --pretty=format:'%ai §%H' | grep ${LLVM_CLANG_BISECT_START_DATE} | head -1 | cut -d"§" -f2` )
