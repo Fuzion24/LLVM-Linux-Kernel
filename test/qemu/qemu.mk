@@ -74,7 +74,6 @@ ${QEMUSTATE}/qemu-fetch:
 	@mkdir -p ${QEMUSRCDIR}
 	$(call gitclone,${QEMU_GIT} -b ${QEMU_BRANCH},${QEMUSRCDIR})
 	@[ -z "${QEMU_COMMIT}" ] || $(call gitcheckout,${QEMUSRCDIR},${QEMU_BRANCH},${QEMU_COMMIT})
-	@(cd ${QEMUSRCDIR} ; git submodule update --init dtc )
 	$(call state,$@,qemu-patch)
 
 qemu-patch: ${QEMUSTATE}/qemu-patch
@@ -88,8 +87,13 @@ qemu-patch-applied: %-patch-applied:
 	@$(call banner,"Patches applied for $*")
 	@$(call applied,${QEMUSRCDIR})
 
-qemu-configure: ${QEMUSTATE}/qemu-configure
-${QEMUSTATE}/qemu-configure: ${QEMUSTATE}/qemu-patch
+qemu-dtc-submodule: ${QEMUSTATE}/qemu-dtc-submodule
+${QEMUSTATE}/qemu-dtc-submodule: ${QEMUSTATE}/qemu-fetch
+	@(cd ${QEMUSRCDIR} ; git submodule update --init dtc )
+	$(call state,$@,qemu-configure) 
+
+qemu-configure: ${QEMUSTATE}/qemu-configure 
+${QEMUSTATE}/qemu-configure: ${QEMUSTATE}/qemu-dtc-submodule ${QEMUSTATE}/qemu-patch
 	@make -s build-dep-check
 	@$(call banner,Configure QEMU...)
 	@mkdir -p ${QEMUBUILDDIR}
