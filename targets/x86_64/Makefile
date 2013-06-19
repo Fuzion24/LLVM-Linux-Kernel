@@ -42,8 +42,8 @@ TARGETS+= clean mrproper test test2
 .PHONY: test test2 fetch-initrd prep clean mrproper test
 
 prep: state/prep
-state/prep:
-	@mkdir -p ${LOGDIR} ${TMPDIR}
+state/prep: ${TMPDIR}
+	@mkdir -p ${LOGDIR}
 	$(call state,$@)
 
 clean: kernel-clean kernel-gcc-clean
