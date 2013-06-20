@@ -2,6 +2,7 @@ eabi.patch
 ftrace.patch
 kbuild-clang-arm.patch
 get_current_stack_pointer_for_arm.patch
+named_register-percpu.patch
 named_register-ptrace.patch
 named_register-return_address.patch
 named_register-stacktrace.patch
