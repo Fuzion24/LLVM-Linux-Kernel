@@ -138,7 +138,7 @@ buildroot-clean buildroot-mrproper: buildroot-clean-all ${BUILDROOT_STATE}/build
 	
 buildroot-raze: buildroot-clean-all
 	@$(call banner,Razing buildroot...)
-	rm -rf ${BUILDROOT_SRCDIR}
+	rm -rf ${BUILDROOT_SRCDIR} ${BUILDROOT_STATE}
 	@$(call leavestate,${BUILDROOT_STATE},builtroot-fetch)
 	
 buildroot-sync: ${BUILDROOT_STATE}/buildroot-fetch
@@ -153,4 +153,6 @@ buildroot-sync: ${BUILDROOT_STATE}/buildroot-fetch
 	fi
 
 buildroot-version: ${BUILDROOT_STATE}/buildroot-fetch
-	@(cd ${BUILDROOT_SRCDIR} && echo "buildroot version `awk -F= '/^export BR2_VERSION:=/ {print $$2}' Makefile` commit `git rev-parse HEAD`")
+	@[ -d ${BUILDROOT_SRCDIR} ] \
+	&& (cd ${BUILDROOT_SRCDIR} \
+	&& echo "buildroot version `awk -F= '/^export BR2_VERSION:=/ {print $$2}' Makefile` commit `git rev-parse HEAD`")
