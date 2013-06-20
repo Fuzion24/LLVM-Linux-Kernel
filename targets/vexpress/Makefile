@@ -122,16 +122,16 @@ test: state/prep ${QEMUSTATE}/qemu-build ${KERNELDTB_IMG} ${INITRAMIMG} buildroo
 test-kill: test-boot-poweroff
 test-boot-poweroff: state/prep ${KERNELDTB_IMG} ${QEMUSTATE}/qemu-build ${INITRAMIMG}
 	( $(call qemu_arm,${BOARD},${KERNELDTB_IMG},256,/dev/ram0,rw,-initrd ${INITRAMIMG} -net none ) \
-		| tee tmp/qemu_log ) &
+		| tee ${TMPDIR}/qemu_log ) &
 	( sleep 10 && killall -s 9 qemu-system-arm ) || exit 0
-	@grep -a "SUCCESS" tmp/qemu_log
+	@grep -a "SUCCESS" ${TMPDIR}/qemu_log
 
 test-gcc-kill: test-gcc-boot-poweroff
 test-gcc-boot-poweroff: state/prep ${KERNELGCCDTB_IMG} ${QEMUSTATE}/qemu-build ${INITRAMIMG}
 	( $(call qemu_arm,${BOARD},${KERNELGCCDTB_IMG},256,/dev/ram0,ramdisk_size=65536 rw POWEROFF,-initrd ${INITRAMIMG} -net none) \
-		| tee tmp/qemu_gcc_log ) &
+		| tee ${TMPDIR}/qemu_gcc_log ) &
 	( sleep 10 && killall -s 9 qemu-system-arm ) || exit 0
-	@grep -a "SUCCESS" tmp/qemu_gcc_log
+	@grep -a "SUCCESS" ${TMPDIR}/qemu_gcc_log
 
 # Create the generic initramfs, add in the kernel modules, then create the cpio
 test2: state/prep ${QEMUSTATE}/qemu-build ${KERNELDTB_IMG} initramfs-unpacked

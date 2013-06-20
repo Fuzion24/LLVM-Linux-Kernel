@@ -90,8 +90,13 @@ qemu-patch-applied: %-patch-applied:
 	@$(call banner,"Patches applied for $*")
 	@$(call applied,${QEMUSRCDIR})
 
-qemu-configure: ${QEMUSTATE}/qemu-configure
-${QEMUSTATE}/qemu-configure: ${QEMUSTATE}/qemu-patch
+qemu-dtc-submodule: ${QEMUSTATE}/qemu-dtc-submodule
+${QEMUSTATE}/qemu-dtc-submodule: ${QEMUSTATE}/qemu-fetch
+	@(cd ${QEMUSRCDIR} ; git submodule update --init dtc )
+	$(call state,$@,qemu-configure) 
+
+qemu-configure: ${QEMUSTATE}/qemu-configure 
+${QEMUSTATE}/qemu-configure: ${QEMUSTATE}/qemu-dtc-submodule ${QEMUSTATE}/qemu-patch
 	@make -s build-dep-check
 	@$(call banner,Configure QEMU...)
 	@mkdir -p ${QEMUBUILDDIR}

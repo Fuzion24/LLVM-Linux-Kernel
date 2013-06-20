@@ -18,7 +18,12 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 
 --- linux.orig/Makefile
 +++ linux/Makefile
-@@ -376,7 +381,7 @@
+@@ -383,11 +383,11 @@
+ KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
+ 		   -fno-strict-aliasing -fno-common \
+ 		   -Werror-implicit-function-declaration \
+-		   -Wno-format-security \
++		   -Wno-format-security $(call cc-option,-no-integrated-as,)\
  		   -fno-delete-null-pointer-checks
  KBUILD_AFLAGS_KERNEL :=
  KBUILD_CFLAGS_KERNEL :=

@@ -1,7 +1,4 @@
 0014-Remove-unsupported-options-from-Kconfig-file-on-x86.patch
-0015-Add-no-integrated-as-to-arch-x86-boot-Makefile-for-c.patch
-0016-Ad-no-integrated-as-to-arch-x86-realmode-rm-Makefile.patch
-0018-Add-no-integrated-as-to-arch-x86-boot-compressed-Mak.patch
 0019-Fix-kernel-acpi-wakeup_32.S-for-compilation-with-cla.patch
 0023-Remove-unneeded-braces.patch
 0025-Add-option-for-clang-in-export-of-memcpy.patch
@@ -21,4 +18,5 @@
 0041-Fix-statement-in-i915-driver.patch
 thinkpad-acpi-nested-functions.patch
 0001-updates-to-latest-patchset-unsplit.-TODO.patch
-002x-Changes-to-BT-operations.-Mostly-BTC-BTCL.patch
+0016-Ad-no-integrated-as-to-arch-x86-realmode-rm-Makefile.patch
+0015-Add-no-integrated-as-to-arch-x86-boot-Makefile-for-c.patch
