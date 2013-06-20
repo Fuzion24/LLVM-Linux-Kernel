@@ -76,8 +76,11 @@ ${QEMUSTATE}/qemu-fetch:
 	@[ -z "${QEMU_COMMIT}" ] || $(call gitcheckout,${QEMUSRCDIR},${QEMU_BRANCH},${QEMU_COMMIT})
 	$(call state,$@,qemu-patch)
 
+${QEMUSRCDIR}/dtc:
+	(cd ${QEMUSRCDIR} && git submodule update --init dtc)
+
 qemu-patch: ${QEMUSTATE}/qemu-patch
-${QEMUSTATE}/qemu-patch: ${QEMUSTATE}/qemu-fetch
+${QEMUSTATE}/qemu-patch: ${QEMUSTATE}/qemu-fetch ${QEMUSRCDIR}/dtc
 	@$(call banner,Patching QEMU...)
 	@$(call patches_dir,${QEMUPATCHES},${QEMUSRCDIR}/patches)
 	@$(call patch,${QEMUSRCDIR})
