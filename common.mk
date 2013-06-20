@@ -252,6 +252,8 @@ sync-all: prep
 	@$(call banner,Syncing everything...)
 	${MAKE} ${SYNC_TARGETS}
 	@$(call banner,All external sources synced!)
+list-sync:
+	@echo ${SYNC_TARGETS}
 
 ##############################################################################
 tmp-mrproper:
