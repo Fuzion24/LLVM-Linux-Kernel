@@ -29,7 +29,10 @@ EXTRAFLAGS=$*
 
 # Use clang by default
 if [ -z "$USEGCC" ]; then
-	CC="clang -gcc-toolchain $COMPILER_PATH" # $CLANGFLAGS"
+	if [ -z "$CC" ]; then
+		CC="clang"
+	fi
+	CFLAGS="-gcc-toolchain $COMPILER_PATH" # $CLANGFLAGS"
 else
 	CC=${CROSS_COMPILE}gcc
 fi

@@ -32,6 +32,9 @@ KERNEL_CFG	= ${TARGETDIR}/config_x86_64
 #GDB_OPTS	= -gdb tcp::1234 -s -S
 GDB_OPTS	=
 
+ENABLE_CHECKERS	=
+DISABLE_CHECKERS =
+
 all: prep kernel-build
 
 include ${TOPDIR}/common.mk
