@@ -34,6 +34,9 @@ KERNEL_COMMIT = "4300a0f8bdcce5a03b88bfa16fc9827e15c52dc4"
 #GDB_OPTS	= -gdb tcp::1234 -s -S
 GDB_OPTS	=
 
+ENABLE_CHECKERS	=
+DISABLE_CHECKERS =
+
 all: prep kernel-build
 
 include ${TOPDIR}/common.mk

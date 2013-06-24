@@ -138,6 +138,16 @@ VERSION_TARGETS		+= ${KERNEL_TARGETS_VERSION}
 .PHONY:			${KERNEL_TARGETS_CLANG} ${KERNEL_TARGETS_GCC} ${KERNEL_TARGETS_APPLIED} ${KERNEL_TARGETS_CLEAN} ${KERNEL_TARGETS_VERSION}
 
 #############################################################################
+SCAN_BUILD		:= scan-build
+SCAN_BUILD_FLAGS	:= --use-cc=clang
+ifdef ENABLE_CHECKERS
+	SCAN_BUILD_FLAGS += -enable-checker ${ENABLE_CHECKERS}
+endif
+ifdef DISABLE_CHECKERS
+	SCAN_BUILD_FLAGS += -disable-checker ${DISABLE_CHECKERS}
+endif
+
+#############################################################################
 kernel-help:
 	@echo
 	@echo "These are the kernel make targets:"
@@ -309,7 +319,7 @@ state/kernel-build: ${TMPDIR} ${STATE_CLANG_TOOLCHAIN} ${STATE_TOOLCHAIN} state/
 	@[ -d ${KERNEL_BUILD} ] || ($(call leavestate,${STATEDIR},kernel-configure) && ${MAKE} kernel-configure)
 	@$(MAKE) kernel-quilt-link-patches
 	@$(call banner,Building kernel with clang...)
-	(cd ${KERNELDIR} && ${KERNEL_VAR} time ${MAKE_KERNEL})
+	(cd ${KERNELDIR} && ${KERNEL_VAR} time ${CHECKER} ${MAKE_KERNEL})
 	@$(call banner,Successfully Built kernel with clang!)
 	@mkdir -p ${TOPLOGDIR}
 	@( ${CLANG} --version | head -1 ; \
@@ -332,6 +342,12 @@ state/kernel-gcc-build: ${TMPDIR} ${CROSS_GCC} ${STATE_TOOLCHAIN} state/kernel-g
 		cd ${KERNELGCC_BUILD} && wc -c ${KERNEL_SIZE_ARTIFACTS}) \
 		| tee $(call sizelog,${TOPLOGDIR},gcc)
 	$(call state,$@,done)
+
+#############################################################################
+kernel-scan-build: ${TMPDIR} ${LLVMSTATE}/clang-build ${STATE_TOOLCHAIN} state/kernel-configure
+	@$(eval CHECKER := ${SCAN_BUILD} ${SCAN_BUILD_FLAGS})
+	@$(call banner,Enabling clang static analyzer: ${CHECKER})
+	${MAKE} CHECKER="${CHECKER}" kernel-build
 
 #############################################################################
 kernel-build-force kernel-gcc-build-force: %-force:
