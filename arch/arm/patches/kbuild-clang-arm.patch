@@ -31,10 +31,10 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
  AS		+= -EL
  LD		+= -EL
  endif
-@@ -60,7 +69,11 @@
+@@ -59,7 +68,11 @@
+ # Note that GCC does not numerically define an architecture version
  # macro, but instead defines a whole series of macros which makes
  # testing for a specific architecture or later rather impossible.
- arch-$(CONFIG_CPU_32v7M)	:=-D__LINUX_ARM_ARCH__=7 -march=armv7-m -Wa,-march=armv7-m
 +ifeq ($(COMPILER),clang)
  arch-$(CONFIG_CPU_32v7)		:=-D__LINUX_ARM_ARCH__=7 $(call cc-option,-march=armv7-a,-march=armv5t -Wa$(comma)-march=armv7-a)
 +else
@@ -43,7 +43,7 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
  arch-$(CONFIG_CPU_32v6)		:=-D__LINUX_ARM_ARCH__=6 $(call cc-option,-march=armv6,-march=armv5t -Wa$(comma)-march=armv6)
  # Only override the compiler option if ARMv6. The ARMv6K extensions are
  # always available in ARMv7
-@@ -93,7 +106,11 @@
+@@ -92,7 +105,11 @@
  tune-$(CONFIG_CPU_V6K)		:=$(call cc-option,-mtune=arm1136j-s,-mtune=strongarm)
  
  ifeq ($(CONFIG_AEABI),y)
@@ -56,7 +56,7 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
  else
  CFLAGS_ABI	:=$(call cc-option,-mapcs-32,-mabi=apcs-gnu) $(call cc-option,-mno-thumb-interwork,)
  endif
-@@ -117,7 +134,11 @@
+@@ -116,7 +133,11 @@
  endif
  
  # Need -Uarm for gcc < 3.x
