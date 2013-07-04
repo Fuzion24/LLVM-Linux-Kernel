@@ -4,8 +4,12 @@
 
 all: testcase1
 
-CLANG=/home/behanw/src/kernel/llvmlinux/toolchain/clang/install/bin/clang
-COMPILER_PATH=/home/behanw/src/kernel/llvmlinux/arch/arm/toolchain/codesourcery/arm-2011.03
+TOPDIR         = $(realpath ../../..)
+TARGETDIR      = $(TOPDIR)/targets/vexpress
+
+include ${TOPDIR}/common.mk
+# We need one arch, this is as good as any
+include ${ARCHDIR}/arm/arm.mk
 
 #================================================================================
 
