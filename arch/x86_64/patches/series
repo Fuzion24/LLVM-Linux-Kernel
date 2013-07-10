@@ -15,7 +15,6 @@
 0046-Remove-unneeded-braces.patch
 0047-Fix-braces-for-compilation-with-clang.patch
 0052-Revert-x86-nmi-Clean-up-register_nmi_handler-usage.patch
-0041-Fix-statement-in-i915-driver.patch
 thinkpad-acpi-nested-functions.patch
 0001-updates-to-latest-patchset-unsplit.-TODO.patch
 0016-Ad-no-integrated-as-to-arch-x86-realmode-rm-Makefile.patch
