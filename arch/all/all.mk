@@ -271,6 +271,12 @@ state/kernel-configure: state/kernel-patch
 	@$(call banner,Configuring kernel...)
 	@mkdir -p ${KERNEL_BUILD}
 	@cp ${KERNEL_CFG} ${KERNEL_BUILD}/.config
+	if [ -n "${CLANGDIR}" ] ; then \
+		(cd ${CLANGDIR} ; xx=$$(git log -1 --oneline | cut -d" " -f1) ; sed -i -e "s#-llvmlinux#-llvmlinux-C.$$xx#g" ${KERNEL_BUILD}/.config) ; \
+	fi
+	if [ -n "${LLVMDIR}" ] ; then \
+		(cd ${LLVMDIR} ; xx=$$(git log -1 --oneline | cut -d" " -f1) ; sed -i -e "s#-llvmlinux#-llvmlinux-L.$$xx#g" ${KERNEL_BUILD}/.config) ; \
+	fi
 	(cd ${KERNELDIR} && echo "" | ${KERNEL_VAR} make ${MAKE_FLAGS} oldconfig)
 	$(call state,$@,kernel-build)
 
