@@ -29,7 +29,11 @@ EXTRAFLAGS=$*
 
 # Use clang by default
 if [ -z "$USEGCC" ]; then
-	CC="clang -gcc-toolchain $COMPILER_PATH" # $CLANGFLAGS"
+	if [ -n "$COMPILER_PATH" ] ; then 
+		CC="${CLANG} $COMPILER_PATH" # $CLANGFLAGS"
+	else
+		CC="${CLANG}" # $CLANGFLAGS"
+	fi
 else
 	CC=${CROSS_COMPILE}gcc
 fi
@@ -53,7 +57,7 @@ function build_env() {
 	echo "export ARM_CROSS_GCC_TOOLCHAIN=$ARM_CROSS_GCC_TOOLCHAIN"
 	echo "export CC=$CC"
 	echo "export CFLAGS=$CFLAGS"
-	echo "export COMPILER_PATH=$COMPILER_PATH"
+	echo "export COMPILER_PATH='$COMPILER_PATH'"
 	echo "export CROSS_COMPILE=$CROSS_COMPILE"
 	echo "export HOST=$HOST"
 	echo "export HOST_TRIPLE=$HOST_TRIPLE"

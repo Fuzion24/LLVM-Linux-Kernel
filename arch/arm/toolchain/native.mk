@@ -21,31 +21,21 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
-# The following exports are required for make_kernel.sh
-export CFLAGS COMPILER_PATH HOST HOST_TRIPLE ARM_CROSS_GCC_TOOLCHAIN
+# Note: use CROSS_ARM_TOOLCHAIN=codesourcery to include this file
 
-ARCH_ARM_TMPDIR	= ${ARCH_ARM_DIR}/toolchain/tmp
-TMPDIRS		+= ${ARCH_ARM_TMPDIR}
+HOST		= arm-linux-gnueabi
+HOST_TRIPLE	= ${HOST}
+#COMPILER_PATH	= /usr/${HOST}
+COMPILER_BIN	= /usr/bin
 
-# Configure the requested ARM cross compiler
-# Sets CROSS_GCC, PATH, HOST, HOST_TRIPLE
-# and state/arm-cc
-# This is required whether or not clang is the
-# compiler being used. These files must define
-# arm-cc which will be a build dep for ARM
-ifeq (${CROSS_ARM_TOOLCHAIN},android)
-  include ${ARCH_ARM_TOOLCHAIN}/android/android.mk
-else
-  ifeq (${CROSS_ARM_TOOLCHAIN},linaro)
-    include ${ARCH_ARM_TOOLCHAIN}/linaro/linaro.mk
-  else
-    ifeq (${CROSS_ARM_TOOLCHAIN},native)
-      include ${ARCH_ARM_TOOLCHAIN}/native.mk
-    else
-      include ${ARCH_ARM_TOOLCHAIN}/codesourcery/codesourcery.mk
-    endif
-  endif
-endif
+#ARM_CROSS_GCC_TOOLCHAIN = ${COMPILER_PATH}
 
-include ${ARCHDIR}/arm/toolchain/compiler-rt/compiler-rt.mk
+# Add path so that ${CROSS_COMPILE}${CC} is resolved
+# /usr/bin is already in the path
+#PATH		:= ${COMPILER_BIN}:${PATH}
 
+CROSS_GCC	= ${COMPILER_BIN}/${HOST}-gcc
+arm-cc: ${CROSS_GCC}
+
+state/arm-cc: arm-cc
+	$(call state,$@)
