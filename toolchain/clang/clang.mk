@@ -269,7 +269,7 @@ ${LLVMSTATE}/clang-unpatched-build: ${LLVMSTATE}/llvm-unpatched-build ${LLVMSTAT
 	$(call state,$@)
 
 ##############################################################################
-llvm-reset: ${LLVMSTATE}/clang-fetch
+llvm-reset: ${LLVMSTATE}/llvm-fetch
 #${LLVMSTATE}/compilerrt-fetch
 # Patched LLVM
 	@$(call banner,Cleaning LLVM...)
