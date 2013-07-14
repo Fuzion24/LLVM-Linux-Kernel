@@ -47,7 +47,7 @@ mv_n_ln		= mv "${1}" "${2}" ; ln -sv "${2}" "${1}"
 
 #############################################################################
 QUILT_TARGETS		= kernel-quilt kernel-quilt-clean kernel-quilt-generate-series kernel-quilt-update-series-dot-target \
-				kernel-quilt-link-patches kernel-quilt-clean-broken-symlinks \
+				kernel-quilt-link-patches kernel-patches-tar kernel-quilt-clean-broken-symlinks \
 				list-kernel-patches list-kernel-patches-path list-kernel-maintainer list-kernel-checkpatch
 TARGETS_BUILD		+= ${QUILT_TARGETS}
 CLEAN_TARGETS		+= kernel-quilt-clean
@@ -69,6 +69,8 @@ kernel-quilt-help:
 	@echo "			- Save updates from kernel quilt series file to series.target file"
 	@echo "* make kernel-quilt-link-patches"
 	@echo "			- Link kernel patches to target patches directory"
+	@echo "* make kernel-patches-tar"
+	@echo "			- build a patches.tar.bz2 file containing all the patches for this target"
 	@echo "* make kernel-quilt-clean-broken-symlinks"
 	@echo "			- Remove links to deleted kernel patches from target patches directory"
 	@echo "* make list-kernel-patches-path"
@@ -167,6 +169,12 @@ kernel-quilt-link-patches refresh: ${QUILT_GITIGNORE}
 		done ; \
 	done | sed -e 's|${TARGETDIR}|.|g; s|${TOPDIR}|...|g'
 	@$(MAKE) ${TARGET_PATCH_SERIES}
+
+##############################################################################
+KERNEL_PATCHES_TAR = patches.tar.bz2
+kernel-patches-tar: ${KERNEL_PATCHES_TAR}
+${KERNEL_PATCHES_TAR}: kernel-quilt-link-patches
+	tar chfj $@ patches/series `sed -e 's|^|patches/|' patches/series`
 
 ##############################################################################
 QUILT_STATE	= state/kernel-quilt
