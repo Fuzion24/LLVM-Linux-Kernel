@@ -1,7 +1,5 @@
 ##############################################################################
-# Copyright (c) 2012 Mark Charlebois
-#               2012 Jan-Simon Möller
-#               2012 Behan Webster
+# Copyright (c) 2013 Behan Webster
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to 
@@ -22,34 +20,34 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
-# Assumes has been included from ../toolchain.mk
+# Assumes has been included from clang.mk
 
-LLVMSTATE	= ${LLVMTOP}/state
+CLANG_TMPDIR	= ${LLVMTOP}/tmp
+TMPDIRS		+= ${CLANG_TMPDIR}
+RAZE_TARGETS	+= clang-raze
 
-# The following export is needed by make_kernel.sh and clang_wrap.sh
-export CLANG
+CLANG_DIR	= clang+llvm-3.3-Ubuntu-13.04-x86_64-linux-gnu
+CLANG_PATH	= ${LLVMTOP}/${CLANG_DIR}
+CLANG_BINDIR	= ${CLANG_PATH}/bin
+CLANG_TAR	= ${CLANG_DIR}.tar.bz2
+CLANG_URL	= http://llvm.org/releases/3.3/${CLANG_TAR}
 
-HELP_TARGETS	+= clang-toolchain-help
-SETTINGS_TARGETS+= clang-toolchain-settings
+CLANG			= ${CLANG_BINDIR}/clang
+STATE_CLANG_TOOLCHAIN	= ${CLANG}
 
-clang-toolchain-help:
-	@echo
-	@echo "You can choose your clang by setting the CLANG_TOOLCHAIN variable."
-	@echo "  CLANG_TOOLCHAIN=prebuilt     Download and use llvm.org clang"
-	@echo "  CLANG_TOOLCHAIN=native       Use distro installed clang"
-	@echo "  CLANG_TOOLCHAIN=from-source  Download and build from source (Default)"
+# Add clang to the path
+PATH		:= ${CLANG_BINDIR}:${PATH}
 
-clang-toolchain-settings:
-	@$(call prsetting,CLANG_TOOLCHAIN,${CLANG_TOOLCHAIN})
+${CLANG}: ${LLVMSTATE}/clang-prebuild
 
-CLANG_TOOLCHAIN = from-source
+clang-get: ${CLANG_TMPDIR}/${CLANG_TAR}
+${CLANG_TMPDIR}/${CLANG_TAR}:
+	@$(call wget,${CLANG_URL},${CLANG_TMPDIR})
 
-ifeq (${CLANG_TOOLCHAIN},prebuilt)
-  include ${LLVMTOP}/clang-prebuilt.mk
-else
-  ifeq (${CLANG_TOOLCHAIN},native)
-    include ${LLVMTOP}/clang-native.mk
-  else
-    include ${LLVMTOP}/clang-from-source.mk
-  endif
-endif
+clang-unpack: ${LLVMSTATE}/clang-prebuild
+${LLVMSTATE}/clang-prebuild: ${CLANG_TMPDIR}/${CLANG_TAR}
+	@$(call unbz2,$<,${LLVMTOP})
+	$(call state,$@)
+
+clang-raze:
+	@rm -rf ${LLVMSTATE}/clang-prebuild ${CLANG_PATH} ${CLANG_TMPDIR}/${CLANG_TAR}
