@@ -27,11 +27,12 @@ TARGETS		+= linaro-gcc
 
 LINARO_VER_MONTH	= 2012.10
 LINARO_VERSION		= ${LINARO_VER_MONTH}-20121022
-https://launchpad.net/linaro-toolchain-binaries/trunk/2012.10/+download/gcc-linaro-arm-linux-gnueabihf-4.7-2012.10-20121022_linux.tar.bz2
+#https://launchpad.net/linaro-toolchain-binaries/trunk/2012.10/+download/gcc-linaro-arm-linux-gnueabihf-4.7-2012.10-20121022_linux.tar.bz2
 LINARO_CC_URL		= https://launchpad.net/linaro-toolchain-binaries/trunk/${LINARO_VER_MONTH}/+download/gcc-linaro-arm-linux-gnueabihf-4.7-${LINARO_VERSION}_linux.tar.bz2
 LINARO_CC_NAME		= gcc-linaro-arm-linux-gnueabihf-4.7-${LINARO_VERSION}_linux
 LINARO_DIR		= ${ARCH_ARM_TOOLCHAIN}/linaro
 LINARO_TMPDIR		= ${LINARO_DIR}/tmp
+TMPDIRS			+= ${LINARO_TMPDIR}
 
 LINARO_CC_TAR		= ${notdir ${LINARO_CC_URL}}
 LINARO_CC_DIR		= ${LINARO_DIR}/${LINARO_CC_NAME}
@@ -50,9 +51,7 @@ PATH			:= ${LINARO_CC_BINDIR}:${PATH}
 
 # Get Linaro cross compiler
 ${LINARO_TMPDIR}/${LINARO_CC_TAR}:
-	@mkdir -p ${LINARO_TMPDIR}
-	wget -c -P ${LINARO_TMPDIR} "${LINARO_CC_URL}"
-
+	@$(call wget,"${LINARO_CC_URL}",${LINARO_TMPDIR})
 
 linaro-gcc arm-cc: ${ARCH_ARM_TOOLCHAIN_STATE}/linaro-gcc
 ${ARCH_ARM_TOOLCHAIN_STATE}/linaro-gcc: ${LINARO_TMPDIR}/${LINARO_CC_TAR}
