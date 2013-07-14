@@ -29,7 +29,7 @@ EXTRAFLAGS=$*
 
 # Use clang by default
 if [ -z "$USEGCC" ]; then
-	CC="clang"
+	CC=${CLANG}
 fi
 
 JOBS=${JOBS:-`getconf _NPROCESSORS_ONLN`}

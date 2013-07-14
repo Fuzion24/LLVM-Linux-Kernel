@@ -304,7 +304,7 @@ state/kernel-gcc-configure: state/kernel-gcc-patch
 
 #############################################################################
 kernel-build: state/kernel-build
-state/kernel-build: ${TMPDIR} ${LLVMSTATE}/clang-build ${STATE_TOOLCHAIN} state/kernel-configure
+state/kernel-build: ${TMPDIR} ${STATE_CLANG_TOOLCHAIN} ${STATE_TOOLCHAIN} state/kernel-configure
 	$(call assert,-n "${MAKE_KERNEL}",MAKE_KERNEL undefined)
 	@[ -d ${KERNEL_BUILD} ] || ($(call leavestate,${STATEDIR},kernel-configure) && ${MAKE} kernel-configure)
 	@$(MAKE) kernel-quilt-link-patches

@@ -41,8 +41,9 @@ DEBDEP		+= cmake flex g++ git-svn subversion zlib1g-dev
 RPMDEP		+= cmake flex subversion zlib-devel
 
 # The following export is needed by clang_wrap.sh
-export LLVMINSTALLDIR
+export LLVMINSTALLDIR CLANG
 
+STATE_CLANG_TOOLCHAIN = ${LLVMSTATE}/clang-build
 CLANG		= ${LLVMINSTALLDIR}/bin/clang
 
 LLVMDIR		= ${LLVMSRCDIR}/llvm
