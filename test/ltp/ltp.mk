@@ -39,6 +39,8 @@ LTPSCRIPTS	= ${LTPDIR}/scripts
 FETCH_TARGETS	+= ltp-fetch
 #SYNC_TARGETS	+= ltp-sync
 
+TMPDIRS		+= ${LTPTMPDIR}
+
 LTP_TARGETS	= ltp-fetch ltp-configure ltp-build ltp-sync ltp-clean ltp-mrproper ltp-raze ltp-version
 TARGETS_TEST	+= ltp-[fetch,configure,build,sync,settings,clean,mrproper,raze]
 CLEAN_TARGETS	+= ltp-clean
