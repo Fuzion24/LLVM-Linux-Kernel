@@ -27,6 +27,15 @@ export CFLAGS COMPILER_PATH HOST HOST_TRIPLE ARM_CROSS_GCC_TOOLCHAIN
 ARCH_ARM_TMPDIR	= ${ARCH_ARM_DIR}/toolchain/tmp
 TMPDIRS		+= ${ARCH_ARM_TMPDIR}
 
+HELP_TARGETS	+= arm-gcc-toolchain-help
+arm-gcc-toolchain-help:
+	@echo
+	@echo "You can choose your cross-gcc by setting the CROSS_ARM_TOOLCHAIN variable."
+	@echo "  CROSS_ARM_TOOLCHAIN=android       Download and use Android gcc cross-toolchain"
+	@echo "  CROSS_ARM_TOOLCHAIN=codesourcery  Download and use Code sourcery toolchain (Default)"
+	@echo "  CROSS_ARM_TOOLCHAIN=linaro        Download and use Linaro gcc cross-toolchain"
+	@echo "  CROSS_ARM_TOOLCHAIN=native        Use distro installed gcc cross-toolchain"
+
 # Configure the requested ARM cross compiler
 # Sets CROSS_GCC, PATH, HOST, HOST_TRIPLE
 # and state/arm-cc
