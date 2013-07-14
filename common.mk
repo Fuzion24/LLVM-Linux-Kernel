@@ -105,6 +105,8 @@ svnupdate = (cd ${1} && svn update)
 wget = mkdir -p ${2} && wget -P ${2} -c ${1}
 untgz = $(call echo,Unpacking $(notdir ${1}) into ${2}) \
 		&& mkdir -p ${2} && tar --extract --gunzip --file ${1} --directory ${2}
+unbz2 = $(call echo,Unpacking $(notdir ${1}) into ${2}) \
+		&& mkdir -p ${2} && tar --extract --bzip2 --file ${1} --directory ${2}
 
 ##############################################################################
 # Settings macros used by all subsystems
@@ -256,7 +258,12 @@ list-sync:
 	@echo ${SYNC_TARGETS}
 
 ##############################################################################
+list-tmpdir:
+	@echo ${TMPDIRS}
+
+##############################################################################
 tmp-mrproper:
 	@$(call banner,Scrubbing tmp dirs...)
 	rm -rf $(addsuffix /*,${TMPDIRS})
 	@$(call banner,All tmp dirs very clean!)
+
