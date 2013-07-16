@@ -30,9 +30,9 @@ KERNEL_CFG	= ${TARGETDIR}/config_malta
 all: prep kernel-build
 .PHONY: clean mrproper
 
+include ${CONFIG}
 include ${TOPDIR}/common.mk
 include ${ARCHDIR}/mips/mips.mk
-include ${CONFIG}
 
 prep: state/prep
 state/prep:

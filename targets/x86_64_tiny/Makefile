@@ -34,9 +34,9 @@ GDB_OPTS	=
 
 all: prep kernel-build
 
+include ${CONFIG}
 include ${TOPDIR}/common.mk
 include ${ARCHDIR}/x86_64/x86_64.mk
-include ${CONFIG}
 
 TARGETS+= clean mrproper test test2
 .PHONY: test test2 fetch-initrd prep clean mrproper test

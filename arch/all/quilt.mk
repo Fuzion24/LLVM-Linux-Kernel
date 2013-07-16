@@ -32,7 +32,11 @@ endif
 endif
 
 #############################################################################
+ifeq "${KERNEL_PINNED}" ""
 GENERIC_PATCH_DIR	= $(filter-out %${KERNEL_REPO_PATCHES},$(filter-out ${TARGETDIR}/%,${KERNEL_PATCH_DIR}))
+else
+GENERIC_PATCH_DIR	= ${KERNEL_PATCH_DIR}
+endif
 GENERIC_PATCH_SERIES	= $(addsuffix /series,$(GENERIC_PATCH_DIR))
 TARGET_PATCH_SERIES	= ${PATCHDIR}/series
 SERIES_DOT_TARGET	= ${TARGET_PATCH_SERIES}.target
@@ -84,10 +88,19 @@ kernel-quilt-help:
 	@echo "			- List which kernel maintainers should be contacted for each patch"
 
 #############################################################################
+
+ifeq "${KERNEL_PINNED}" ""
 kernel-quilt-settings:
 	@($(call prsetting,KERNEL_REPO_PATCHES,${KERNEL_REPO_PATCHES}) ; \
 	$(call praddsetting,KERNEL_PATCH_DIR,${PATCHDIR} ${PATCHDIR}/${KERNEL_REPO_PATCHES}) ; \
 	) | $(call configfilter)
+else
+kernel-quilt-settings:
+	@($(call prsetting,KERNEL_REPO_PATCHES,${KERNEL_REPO_PATCHES}) ; \
+	$(call praddsetting,KERNEL_PATCH_DIR,${KERNEL_PATCH_DIR} ) ; \
+	) | $(call configfilter)
+endif
+
 
 ##############################################################################
 # Tweak quilt setup to make diffs-of-diffs easier to read

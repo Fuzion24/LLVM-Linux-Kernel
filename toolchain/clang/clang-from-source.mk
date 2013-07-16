@@ -27,14 +27,15 @@
 LLVMSRCDIR	= ${LLVMTOP}/src
 LLVMBUILD	= $(subst ${TOPDIR},${BUILDROOT},${LLVMTOP}/build)
 LLVMINSTALLDIR	:= ${LLVMTOP}/install
-LLVMPATCHES	= ${LLVMTOP}/patches
+LLVMPATCHES	?= ${LLVMTOP}/patches
 
 # Workaround for LLVM breakage
 # undefined reference to `.Lline_table_start0'
-#LLVM_COMMIT	= master
-#CLANG_COMMIT	= master
-LLVM_COMMIT	= "4010e438100fedeacd36ecd2385adabc02b6f236"
-CLANG_COMMIT	= "cac18add73d095eaab600aefe27ea7174aec4922"
+# use ?= to not override CHECKPOINTS !
+LLVM_COMMIT	?= master
+CLANG_COMMIT	?= master
+#LLVM_COMMIT	= "4010e438100fedeacd36ecd2385adabc02b6f236"
+#CLANG_COMMIT	= "cac18add73d095eaab600aefe27ea7174aec4922"
 
 DEBDEP		+= cmake flex g++ git-svn subversion zlib1g-dev
 RPMDEP		+= cmake flex subversion zlib-devel
@@ -62,6 +63,8 @@ CLANG_TARGETS 		= clang clang-[fetch,patch,configure,build,sync] clang-update-al
 LLVM_TARGETS_APPLIED	= llvm-patch-applied clang-patch-applied
 LLVM_VERSION_TARGETS	= llvm-version clang-version
 #compilerrt-version
+
+LLVM_TARGETS_TO_BUILD	?= 'AArch64;ARM;X86'
 
 TARGETS_TOOLCHAIN	+= ${LLVM_TARGETS} ${CLANG_TARGETS}
 #${COMPILERRT_TARGETS}
@@ -123,6 +126,7 @@ llvm-settings:
 	@$(call prsetting,CLANG_GIT,${CLANG_GIT})
 	@$(call prsetting,CLANG_BRANCH,${CLANG_BRANCH})
 	@$(call gitcommit,${CLANGDIR},CLANG_COMMIT)
+	@$(call prsetting,LLVMPATCHES,${LLVMPATCHES})
 #	@$(call prsetting,COMPILERRT_GIT,${COMPILERRT_GIT})
 #	@$(call prsetting,COMPILERRT_BRANCH,${COMPILERRT_BRANCH})
 #	@$(call gitcommit,${COMPILERRTDIR},COMPILERRT_COMMIT)
@@ -204,7 +208,7 @@ ${LLVM_TARGETS_APPLIED}: %-patch-applied:
 llvmconfig = $(call banner,Configure ${1}...) ; \
 	mkdir -p ${2} ${3} && \
 	(cd ${2} && cmake -DCMAKE_BUILD_TYPE=Release -DLLVM_BINUTILS_INCDIR=/usr/include/ \
-	-DLLVM_TARGETS_TO_BUILD="AArch64;ARM;X86" -DCMAKE_INSTALL_PREFIX=${3} ${4} ${5})
+	-DLLVM_TARGETS_TO_BUILD="${LLVM_TARGETS_TO_BUILD}" -DCMAKE_INSTALL_PREFIX=${3} ${4} ${5})
 
 ##############################################################################
 llvm-configure: ${LLVMSTATE}/llvm-configure
