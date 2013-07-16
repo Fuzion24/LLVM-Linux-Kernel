@@ -61,10 +61,11 @@ function build_env() {
 	echo "PATH=$PATH"
 	echo "USE_CCACHE=$USE_CCACHE"
 	echo "V=$V"
+	echo "CHECK_VARS=$CHECK_VARS"
 	echo "---------------------------------------------------------------------"
 	echo make $CCOPTS CC="$CC" $KERNEL_MAKE_TARGETS
 }
 build_env
 [ -z "$MAKE_KERNEL_STOP" ] || exit 1
 
-make $CCOPTS ${CC:+CC="$CC"} $KERNEL_MAKE_TARGETS
+make $CCOPTS ${CC:+CC="$CC"} $CHECK_VARS $KERNEL_MAKE_TARGETS

@@ -139,7 +139,7 @@ VERSION_TARGETS		+= ${KERNEL_TARGETS_VERSION}
 
 #############################################################################
 SCAN_BUILD		:= scan-build
-SCAN_BUILD_FLAGS	:= --use-cc=clang
+SCAN_BUILD_FLAGS	:= --use-cc=${CLANG}
 ifdef ENABLE_CHECKERS
 	SCAN_BUILD_FLAGS += -enable-checker ${ENABLE_CHECKERS}
 endif
@@ -319,7 +319,7 @@ state/kernel-build: ${TMPDIR} ${STATE_CLANG_TOOLCHAIN} ${STATE_TOOLCHAIN} state/
 	@[ -d ${KERNEL_BUILD} ] || ($(call leavestate,${STATEDIR},kernel-configure) && ${MAKE} kernel-configure)
 	@$(MAKE) kernel-quilt-link-patches
 	@$(call banner,Building kernel with clang...)
-	(cd ${KERNELDIR} && ${KERNEL_VAR} time ${CHECKER} ${MAKE_KERNEL})
+	(cd ${KERNELDIR} && time ${KERNEL_VAR} ${CHECK_VARS} ${CHECKER} ${MAKE_KERNEL})
 	@$(call banner,Successfully Built kernel with clang!)
 	@mkdir -p ${TOPLOGDIR}
 	@( ${CLANG} --version | head -1 ; \
@@ -348,6 +348,13 @@ kernel-scan-build: ${TMPDIR} ${LLVMSTATE}/clang-build ${STATE_TOOLCHAIN} state/k
 	@$(eval CHECKER := ${SCAN_BUILD} ${SCAN_BUILD_FLAGS})
 	@$(call banner,Enabling clang static analyzer: ${CHECKER})
 	${MAKE} CHECKER="${CHECKER}" kernel-build
+
+
+#############################################################################
+kernel-check-build: ${TMPDIR} ${LLVMSTATE}/clang-build ${STATE_TOOLCHAIN} state/kernel-configure
+	@$(eval CHECK_VARS := C=1 CHECK=${CLANG} CHECKFLAGS=--analyze)
+	@$(call banner,Enabling clang static analyzer as you go: ${CLANG} --analyze)
+	${MAKE} CHECK_VARS="${CHECK_VARS}" kernel-build
 
 #############################################################################
 kernel-build-force kernel-gcc-build-force: %-force:
