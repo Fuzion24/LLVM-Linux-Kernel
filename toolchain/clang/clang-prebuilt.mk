@@ -38,16 +38,16 @@ STATE_CLANG_TOOLCHAIN	= ${CLANG}
 # Add clang to the path
 PATH		:= ${CLANG_BINDIR}:${PATH}
 
-${CLANG}: ${LLVMSTATE}/clang-prebuild
+${CLANG}: ${LLVMSTATE}/clang-prebuilt
 
 clang-get: ${CLANG_TMPDIR}/${CLANG_TAR}
 ${CLANG_TMPDIR}/${CLANG_TAR}:
 	@$(call wget,${CLANG_URL},${CLANG_TMPDIR})
 
-clang-unpack: ${LLVMSTATE}/clang-prebuild
-${LLVMSTATE}/clang-prebuild: ${CLANG_TMPDIR}/${CLANG_TAR}
+clang-unpack: ${LLVMSTATE}/clang-prebuilt
+${LLVMSTATE}/clang-prebuilt: ${CLANG_TMPDIR}/${CLANG_TAR}
 	@$(call unbz2,$<,${LLVMTOP})
 	$(call state,$@)
 
 clang-raze:
-	@rm -rf ${LLVMSTATE}/clang-prebuild ${CLANG_PATH} ${CLANG_TMPDIR}/${CLANG_TAR}
+	@rm -rf ${LLVMSTATE}/clang-prebuilt ${CLANG_PATH} ${CLANG_TMPDIR}/${CLANG_TAR}
