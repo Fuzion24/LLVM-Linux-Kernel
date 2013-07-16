@@ -44,14 +44,11 @@ all: prep kernel-build
 
 .PHONY: clean mrproper
 
-include ${CONFIG}
 include ${TOPDIR}/common.mk
 include ${ARCHDIR}/arm/arm.mk
+include ${CONFIG}
 
-ifeq "${KERNEL_PINNED}" ""
 KERNEL_PATCH_DIR+= ${PATCHDIR} ${PATCHDIR}/${KERNEL_REPO_PATCHES}
-endif
-
 prep: state/prep
 state/prep:
 	@mkdir -p ${LOGDIR} ${TMPDIR}

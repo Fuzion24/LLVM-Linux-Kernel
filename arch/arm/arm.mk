@@ -50,9 +50,7 @@ PATH		:= ${ARCH_ARM_BINDIR}:${PATH}
 
 include ${ARCH_ARM_TOOLCHAIN}/toolchain.mk
 
-ifeq "${KERNEL_PINNED}" ""
 KERNEL_PATCH_DIR+= ${ARCH_ARM_PATCHES} ${ARCH_ARM_PATCHES}/${KERNEL_REPO_PATCHES}
-endif
 
 HELP_TARGETS	+= arm-help
 SETTINGS_TARGETS+= arm-settings

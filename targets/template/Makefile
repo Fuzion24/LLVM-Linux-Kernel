@@ -62,14 +62,11 @@ remove_me_when_configured:
 	@echo "Not configured yet"
 	@exit 1
 
-include ${CONFIG}
 include ${TOPDIR}/common.mk
 include ${ARCHDIR}/${ARCH}/${ARCH}.mk
+include ${CONFIG}
 
-ifeq "${KERNEL_PINNED}" ""
 KERNEL_PATCH_DIR	+= ${PATCHDIR} ${PATCHDIR}/${KERNEL_REPO_PATCHES}
-endif
-
 prep: state/prep
 state/prep:
 	@mkdir -p ${LOGDIR} ${TMPDIR}

@@ -38,13 +38,11 @@ EXTRAFLAGS	=
 
 all: prep kernel-build
 
-include ${CONFIG}
 include ${TOPDIR}/common.mk
 include ${ARCHDIR}/arm/arm.mk
+include ${CONFIG}
 
-ifeq "${KERNEL_PINNED}" ""
 KERNEL_PATCH_DIR+= ${TARGETDIR}/patches ${TARGETDIR}/patches/${KERNEL_REPO_PATCHES}
-endif
 
 TARGETS+= check-dups kernel-autopatch clean mrproper
 .PHONY: kernel-copy clean mrproper

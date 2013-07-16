@@ -102,9 +102,7 @@ TMPDIRS		+= ${TMPDIR}
 #############################################################################
 catfile		= ([ -f ${1} ] && cat ${1})
 add_patches	= $(addprefix ${1}/,$(shell $(call catfile,${1}/series.target) || $(call catfile,${1}/series)))
-ifeq "${KERNEL_PINNED}" ""
 KERNEL_PATCH_DIR+= ${ARCH_ALL_PATCHES} ${ARCH_ALL_PATCHES}/${KERNEL_REPO_PATCHES}
-endif
 
 # ${1}=logdir ${2}=toolchain ${3}=testname
 sizelog	= ${1}/${2}-${ARCH}-`date +%Y-%m-%d_%H:%M:%S`-kernel-size.log

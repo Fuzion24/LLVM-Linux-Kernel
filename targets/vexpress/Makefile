@@ -63,15 +63,13 @@ MRPROPER_TARGETS	+= vexpress-mrproper
 RAZE_TARGETS		+= vexpress-raze
 .PHONY:			${VEXPRESS_TARGETS}
 
-include ${CONFIG}
 include ${TOPDIR}/common.mk
 include ${ARCHDIR}/arm/arm.mk
 include ${TARGETDIR}/vexpress-linaro.mk
 include ${TARGETDIR}/vexpress-ltp.mk
+include ${CONFIG}
 
-ifeq "${KERNEL_PINNED}" ""
 KERNEL_PATCH_DIR+= ${TARGETDIR}/patches
-endif
 
 vexpress-help:
 	@echo "targets/vexpress has these options:"
