@@ -182,7 +182,7 @@ ${KERNEL_PATCHES_TAR}: kernel-quilt-link-patches
 ##############################################################################
 QUILT_STATE	= state/kernel-quilt
 kernel-quilt: ${QUILT_STATE}
-${QUILT_STATE}: state/kernel-fetch
+${QUILT_STATE}: prep state/kernel-fetch 
 	@$(MAKE) ${QUILTRC} kernel-quilt-link-patches
 	@$(call banner,Quilted kernel...)
 	$(call state,$@,kernel-patch)
