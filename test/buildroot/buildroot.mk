@@ -1,6 +1,6 @@
 ##############################################################################
 # Copyright (c) 2012 Mark Charlebois
-#               2012 Jan-Simon Möller
+#               2012 Jan-Simon MÃ¶ller
 #               2012 Behan Webster
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -74,6 +74,7 @@ buildroot-settings:
 	@$(call prsetting,BUILDROOT_TAG,${BUILDROOT_TAG})
 	@$(call prsetting,BUILDROOT_GIT,${BUILDROOT_GIT})
 	@$(call gitcommit,${BUILDROOT_SRCDIR},BUILDROOT_COMMIT)
+	@$(call prsetting,BUILDROOT_CONFIG,${BUILDROOT_CONFIG})
 
 buildroot-fetch: ${BUILDROOT_STATE}/buildroot-fetch
 ${BUILDROOT_STATE}/buildroot-fetch:
@@ -118,7 +119,7 @@ buildroot buildroot-build: ${BUILDROOT_BUILDDIR}/buildroot-build
 ${BUILDROOT_BUILDDIR}/buildroot-build: ${BUILDROOT_BUILDDIR}/buildroot-configure
 	@[ -d ${BUILDROOT_BUILDDIR} ] || ($(call leavestate,${BUILDROOT_BUILDDIR},kernel-configure) && ${MAKE} kernel-configure)
 	@$(call banner,Building buildroot...)
-	TOOLCHAINDIR=${TOOLCHAINDIR} make -C ${BUILDROOT_SRCDIR} O=${BUILDROOT_BUILDDIR}
+	TOOLCHAINDIR=${TOOLCHAINDIR} make -C ${BUILDROOT_SRCDIR} O=${BUILDROOT_BUILDDIR} -j${JOBS}
 	$(call state,$@)
 
 #buildroot-sdcard = (dd if=/dev/zero of="${2}" bs=1048576 count=`du -m "${BUILDROOT_BUILDDIR}/${1}" | cut -f1` ;
