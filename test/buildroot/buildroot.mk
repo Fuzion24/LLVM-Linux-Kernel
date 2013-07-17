@@ -38,6 +38,7 @@ BUILDROOTBINDIR		= ${BUILDROOT_INSTALLDIR}/bin
 
 BUILDROOT_TARGETS	= buildroot buildroot-[fetch,configure,build,clean,sync] buildroot-patch-applied buildroot-version
 
+##############################################################################
 TARGETS_TEST		+= ${BUILDROOT_TARGETS}
 CLEAN_TARGETS		+= buildroot-clean
 FETCH_TARGETS		+= buildroot-fetch
@@ -51,6 +52,7 @@ VERSION_TARGETS		+= buildroot-version
 
 .PHONY:		${BUILDROOT_TARGETS}
 
+##############################################################################
 BUILDROOT_GIT		= "http://git.buildroot.net/git/buildroot.git"
 BUILDROOT_BRANCH	= "master"
 
@@ -59,6 +61,7 @@ BUILDROOT_SQUASHFS	= ${BUILDROOT_BUILDDIR}/images/rootfs.squashfs
 BUILDROOT_TAR		= ${BUILDROOT_BUILDDIR}/images/rootfs.tar
 BUILDROOT_TAR_BZ2	= ${BUILDROOT_BUILDDIR}/images/rootfs.tar.bz2
 
+##############################################################################
 buildroot-help:
 	@echo
 	@echo "These are the make targets for buildroot:"
@@ -67,6 +70,7 @@ buildroot-help:
 	@echo "* make buildroot-cmpconfig   - Compare .config with config_target_buildroot"
 	@echo "* make buildroot-cpconfig    - Copy .config to config_target_buildroot"
 
+##############################################################################
 buildroot-settings:
 	@echo "# buildroot settings"
 	@$(call prsetting,BUILDROOT_ARCH,${BUILDROOT_ARCH})
@@ -76,6 +80,7 @@ buildroot-settings:
 	@$(call gitcommit,${BUILDROOT_SRCDIR},BUILDROOT_COMMIT)
 	@$(call prsetting,BUILDROOT_CONFIG,${BUILDROOT_CONFIG})
 
+##############################################################################
 buildroot-fetch: ${BUILDROOT_STATE}/buildroot-fetch
 ${BUILDROOT_STATE}/buildroot-fetch:
 	@$(call banner,Fetching buildroot...)
@@ -84,6 +89,7 @@ ${BUILDROOT_STATE}/buildroot-fetch:
 	@[ -z "${BUILDROOT_COMMIT}" ] || $(call gitcheckout,${BUILDROOT_SRCDIR},${BUILDROOT_BRANCH},${BUILDROOT_COMMIT})
 	$(call state,$@,buildroot-patch)
 
+##############################################################################
 buildroot-patch: ${BUILDROOT_STATE}/buildroot-patch
 ${BUILDROOT_STATE}/buildroot-patch: ${BUILDROOT_STATE}/buildroot-fetch
 	@$(call banner,Patching buildroot...)
@@ -92,10 +98,12 @@ ${BUILDROOT_STATE}/buildroot-patch: ${BUILDROOT_STATE}/buildroot-fetch
 	$(call state,$@)
 	@$(call leavestate,${BUILDROOT_BUILDDIR},buildroot-configure)
 
+##############################################################################
 buildroot-patch-applied: %-patch-applied:
 	@$(call banner,Patches applied for $*)
 	@$(call applied,${BUILDROOT_SRCDIR})
 
+##############################################################################
 buildroot-configure: ${BUILDROOT_BUILDDIR}/buildroot-configure
 ${BUILDROOT_BUILDDIR}/buildroot-configure: ${BUILDROOT_STATE}/buildroot-patch
 	@make -s build-dep-check
@@ -105,16 +113,20 @@ ${BUILDROOT_BUILDDIR}/buildroot-configure: ${BUILDROOT_STATE}/buildroot-patch
 	echo "" | make -C ${BUILDROOT_SRCDIR} O=${BUILDROOT_BUILDDIR} oldconfig
 	$(call state,$@,buildroot-build)
 
+##############################################################################
 buildroot-menuconfig: ${BUILDROOT_BUILDDIR}/buildroot-configure
 	@make -C ${BUILDROOT_SRCDIR} O=${BUILDROOT_BUILDDIR} menuconfig
 	@$(call leavestate,${BUILDROOT_BUILDDIR},buildroot-build)
 
+##############################################################################
 buildroot-cmpconfig: ${BUILDROOT_BUILDDIR}/buildroot-configure
 	diff -Nau ${BUILDROOT_CONFIG} ${BUILDROOT_BUILDDIR}/.config
 
+##############################################################################
 buildroot-cpconfig: ${BUILDROOT_BUILDDIR}/buildroot-configure
 	@cp -v ${BUILDROOT_BUILDDIR}/.config ${BUILDROOT_CONFIG}
 
+##############################################################################
 buildroot buildroot-build: ${BUILDROOT_BUILDDIR}/buildroot-build
 ${BUILDROOT_BUILDDIR}/buildroot-build: ${BUILDROOT_BUILDDIR}/buildroot-configure
 	@[ -d ${BUILDROOT_BUILDDIR} ] || ($(call leavestate,${BUILDROOT_BUILDDIR},kernel-configure) && ${MAKE} kernel-configure)
@@ -122,26 +134,31 @@ ${BUILDROOT_BUILDDIR}/buildroot-build: ${BUILDROOT_BUILDDIR}/buildroot-configure
 	TOOLCHAINDIR=${TOOLCHAINDIR} make -C ${BUILDROOT_SRCDIR} O=${BUILDROOT_BUILDDIR} -j${JOBS}
 	$(call state,$@)
 
+##############################################################################
 #buildroot-sdcard = (dd if=/dev/zero of="${2}" bs=1048576 count=`du -m "${BUILDROOT_BUILDDIR}/${1}" | cut -f1` ;
 buildroot-sdcard = (dd if=/dev/zero of="${2}" bs=1048576 count=32 ; \
 	echo '0,,L' | sfdisk --quiet --no-reread -C 4 -H 255 -S 63 "${2}" ; \
 	dd if="${BUILDROOT_BUILDDIR}/${1}" of="${2}" bs=512 seek=1 conv=notrunc) >/dev/null 2>&1
 	
+##############################################################################
 buildroot-clean-all:
 	@$(call banner,Cleaning buildroot...)
 	@$(call leavestate,${BUILDROOT_BUILDDIR},buildroot-configure buildroot-build)
 	rm -rf ${BUILDROOT_BUILDDIR} ${BUILDROOT_INSTALLDIR}
 	@$(call leavestate,${BUILDROOT_STATE},buildroot-patch)
 
+##############################################################################
 buildroot-clean buildroot-mrproper: buildroot-clean-all ${BUILDROOT_STATE}/buildroot-fetch
 	@$(call unpatch,${BUILDROOT_SRCDIR})
 	@$(call optional_gitreset,${BUILDROOT_SRCDIR})
 	
+##############################################################################
 buildroot-raze: buildroot-clean-all
 	@$(call banner,Razing buildroot...)
 	rm -rf ${BUILDROOT_SRCDIR} ${BUILDROOT_STATE}
 	@$(call leavestate,${BUILDROOT_STATE},builtroot-fetch)
 	
+##############################################################################
 buildroot-sync: ${BUILDROOT_STATE}/buildroot-fetch
 	@$(call banner,Updating buildroot...)
 	@${MAKE} buildroot-clean
@@ -153,6 +170,7 @@ buildroot-sync: ${BUILDROOT_STATE}/buildroot-fetch
 		$(call gitpull,${BUILDROOT_SRCDIR},${BUILDROOT_BRANCH}) ; \
 	fi
 
+##############################################################################
 buildroot-version: ${BUILDROOT_STATE}/buildroot-fetch
 	@[ -d ${BUILDROOT_SRCDIR} ] \
 	&& (cd ${BUILDROOT_SRCDIR} \
