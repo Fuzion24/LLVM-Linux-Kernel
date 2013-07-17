@@ -207,7 +207,7 @@ kernel-raze:
 	@$(call leavestate,${STATEDIR},*)
 
 #############################################################################
-kernel-fetch: state/kernel-fetch
+kernel-fetch: state/kernel-fetch prep
 state/kernel-fetch: ${SHARED_KERNEL}
 	@$(call banner,Cloning kernel...)
 	@mkdir -p ${SRCDIR}
