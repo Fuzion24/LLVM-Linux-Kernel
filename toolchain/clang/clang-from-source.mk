@@ -132,6 +132,7 @@ llvm-settings:
 	$(call gitcommit,${LLVMDIR},LLVM_COMMIT) ; \
 	$(call prsetting,LLVM_OPTIMIZED,${LLVM_OPTIMIZED}) ; \
 	[ -z "${CHECKPOINT}" ] || $(call prsetting,LLVMPATCHES,${CHECKPOINT_PATCHES}) ; \
+	$(call prsetting,LLVM_TARGETS_TO_BUILD,${LLVM_TARGETS_TO_BUILD}) ; \
 	echo "# Clang settings" ; \
 	$(call prsetting,CLANG_GIT,${CLANG_GIT}) ; \
 	$(call prsetting,CLANG_BRANCH,${CLANG_BRANCH}) ; \
