@@ -37,6 +37,7 @@ QEMU_TARGETS	= qemu qemu-[fetch,configure,build,clean,sync] qemu-patch-applied q
 DEBDEP		+= libfdt-dev libglib2.0-dev libpixman-1-dev
 RPMDEP		+= 
 
+##############################################################################
 TARGETS_TEST		+= ${QEMU_TARGETS}
 CLEAN_TARGETS		+= qemu-clean
 FETCH_TARGETS		+= qemu-fetch
@@ -50,17 +51,20 @@ VERSION_TARGETS		+= qemu-version
 
 .PHONY:		${QEMU_TARGETS}
 
+##############################################################################
 #QEMU_GIT	= "git://git.linaro.org/qemu/qemu-linaro.git"
 QEMU_GIT	= "git://git.qemu.org/qemu.git"
 #QEMU_BRANCH	= "stable-1.1"
 QEMU_BRANCH	= "master"
 #QEMU_COMMIT	= 6d6c9f59ca1b1a76ade7ad868bef191818f58819
 
+##############################################################################
 qemu-help:
 	@echo
 	@echo "These are the make targets for QEMU:"
 	@echo "* make qemu-[fetch,patch,configure,build,sync,clean]"
 
+##############################################################################
 qemu-settings:
 	@echo "# QEMU settings"
 	@$(call prsetting,QEMU_BRANCH,${QEMU_BRANCH})
@@ -68,6 +72,7 @@ qemu-settings:
 	@$(call prsetting,QEMU_GIT,${QEMU_GIT})
 	@$(call gitcommit,${QEMUSRCDIR},QEMU_COMMIT)
 
+##############################################################################
 qemu-fetch: ${QEMUSTATE}/qemu-fetch
 ${QEMUSTATE}/qemu-fetch:
 	@$(call banner,Fetching QEMU...)
@@ -76,9 +81,11 @@ ${QEMUSTATE}/qemu-fetch:
 	@[ -z "${QEMU_COMMIT}" ] || $(call gitcheckout,${QEMUSRCDIR},${QEMU_BRANCH},${QEMU_COMMIT})
 	$(call state,$@,qemu-patch)
 
+##############################################################################
 ${QEMUSRCDIR}/dtc:
 	(cd ${QEMUSRCDIR} && git submodule update --init dtc)
 
+##############################################################################
 qemu-patch: ${QEMUSTATE}/qemu-patch
 ${QEMUSTATE}/qemu-patch: ${QEMUSTATE}/qemu-fetch ${QEMUSRCDIR}/dtc
 	@$(call banner,Patching QEMU...)
@@ -86,15 +93,18 @@ ${QEMUSTATE}/qemu-patch: ${QEMUSTATE}/qemu-fetch ${QEMUSRCDIR}/dtc
 	@$(call patch,${QEMUSRCDIR})
 	$(call state,$@,qemu-configure)
 
+##############################################################################
 qemu-patch-applied: %-patch-applied:
 	@$(call banner,"Patches applied for $*")
 	@$(call applied,${QEMUSRCDIR})
 
+##############################################################################
 qemu-dtc-submodule: ${QEMUSTATE}/qemu-dtc-submodule
 ${QEMUSTATE}/qemu-dtc-submodule: ${QEMUSTATE}/qemu-fetch
 	@(cd ${QEMUSRCDIR} ; git submodule update --init dtc )
 	$(call state,$@,qemu-configure) 
 
+##############################################################################
 qemu-configure: ${QEMUSTATE}/qemu-configure 
 ${QEMUSTATE}/qemu-configure: ${QEMUSTATE}/qemu-dtc-submodule ${QEMUSTATE}/qemu-patch
 	@make -s build-dep-check
@@ -106,6 +116,7 @@ ${QEMUSTATE}/qemu-configure: ${QEMUSTATE}/qemu-dtc-submodule ${QEMUSTATE}/qemu-p
 		--disable-docs --prefix=${QEMUINSTALLDIR})
 	$(call state,$@,qemu-build)
 
+##############################################################################
 qemu qemu-build: ${QEMUSTATE}/qemu-build
 ${QEMUSTATE}/qemu-build: ${QEMUSTATE}/qemu-configure
 	@[ -d ${QEMUBUILDDIR} ] || ${MAKE} qemu-clean $^ # build in tmpfs
@@ -114,20 +125,24 @@ ${QEMUSTATE}/qemu-build: ${QEMUSTATE}/qemu-configure
 	make -C ${QEMUBUILDDIR} -j${JOBS} install
 	$(call state,$@)
 	
+##############################################################################
 qemu-clean-all:
 	@$(call banner,Cleaning QEMU...)
 	rm -rf ${QEMUBUILDDIR} ${QEMUINSTALLDIR} 
 	rm -f $(addprefix ${QEMUSTATE}/,qemu-patch qemu-configure qemu-build)
 
+##############################################################################
 qemu-clean qemu-mrproper: qemu-clean-all ${QEMUSTATE}/qemu-fetch
 	@$(call unpatch,${QEMUSRCDIR})
 	@$(call optional_gitreset,${QEMUSRCDIR})
 	
+##############################################################################
 qemu-raze: qemu-clean-all
 	@$(call banner,Razing QEMU...)
 	rm -rf ${QEMUSRCDIR}
 	rm -f ${QEMUSTATE}/qemu-*
 	
+##############################################################################
 qemu-sync: ${QEMUSTATE}/qemu-fetch
 	@$(call banner,Updating QEMU...)
 	@${MAKE} qemu-clean
@@ -139,11 +154,14 @@ qemu-sync: ${QEMUSTATE}/qemu-fetch
 		$(call gitpull,${QEMUSRCDIR},${QEMU_BRANCH}) ; \
 	fi
 
+##############################################################################
 qemu-version: ${QEMUSTATE}/qemu-fetch
 	@(cd ${QEMUSRCDIR} && echo "QEMU version `cat VERSION` commit `git rev-parse HEAD`")
 
+##############################################################################
 QEMUOPTS	= -nographic ${GDB_OPTS}
 
+##############################################################################
 # The runqemu command is called from the the specific <arch>.mk file with the appropriate arch specific param
 # ${1}=qemu-system-<arch> ${2}=Machine_type ${3}=kernel ${4}=RAM ${5}=rootfs ${6}=Kernel_opts ${7}=QEMU_opts
 runqemu = ${DRYRUN} ${1} -M ${2} -kernel ${3} -m ${4} -append "mem=${4}M root=${5} ${6}" ${7} ${QEMUOPTS}
