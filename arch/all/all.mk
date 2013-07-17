@@ -161,7 +161,7 @@ kernel-help:
 CHECKPOINT_TARGETS		+= kernel-checkpoint
 CHECKPOINT_KERNEL_CONFIG	= ${CHECKPOINT_DIR}/kernel.config
 CHECKPOINT_KERNEL_PATCHES	= ${CHECKPOINT_PATCHES}/kernel
-kernel-checkpoint:
+kernel-checkpoint: kernel-quilt
 	@$(call banner,Checkpointing kernel)
 	@cp ${KERNEL_CFG} ${CHECKPOINT_KERNEL_CONFIG}
 	@$(call checkpoint-patches,${PATCHDIR},${CHECKPOINT_KERNEL_PATCHES})
