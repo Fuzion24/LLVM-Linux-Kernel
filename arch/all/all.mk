@@ -157,6 +157,15 @@ kernel-help:
 	@echo "* make kernel-bisect-bad  - mark as bad"
 	@echo "* make kernel-bisect-skip - skip revision"
 
+##############################################################################
+CHECKPOINT_TARGETS		+= kernel-checkpoint
+CHECKPOINT_KERNEL_CONFIG	= ${CHECKPOINT_DIR}/kernel.config
+CHECKPOINT_KERNEL_PATCHES	= ${CHECKPOINT_PATCHES}/kernel
+kernel-checkpoint:
+	@$(call banner,Checkpointing kernel)
+	@cp ${KERNEL_CFG} ${CHECKPOINT_KERNEL_CONFIG}
+	@$(call checkpoint-patches,${PATCHDIR},${CHECKPOINT_KERNEL_PATCHES})
+
 #############################################################################
 kernel-settings:
 	@(echo "# Kernel settings" ; \
@@ -166,7 +175,8 @@ kernel-settings:
 	$(call gitcommit,${KERNELDIR},KERNEL_COMMIT) ; \
 	$(call prsetting,KERNELDIR,${KERNELDIR}) ; \
 	$(call prsetting,KERNELGCC,${KERNELGCC}) ; \
-	$(call prsetting,KERNEL_CFG,${KERNEL_CFG}) ; \
+	[ -n "${CHECKPOINT}" ] && $(call prsetting,KERNEL_CFG,${CHECKPOINT_KERNEL_CONFIG}) \
+	|| $(call prsetting,KERNEL_CFG,${KERNEL_CFG}) ; \
 	) | $(call configfilter)
 
 include ${ARCHDIR}/all/quilt.mk
@@ -235,7 +245,8 @@ state/kernel-gcc-fetch: state/kernel-fetch
 kernel-patch: state/kernel-patch
 state/kernel-patch: state/kernel-fetch state/kernel-quilt
 	@$(call banner,Patching kernel...)
-	@$(call patches_dir,${PATCHDIR},${KERNELDIR}/patches)
+	@echo ${PATCHDIR}
+	$(call patches_dir,${PATCHDIR},${KERNELDIR}/patches)
 	@$(call optional_gitreset,${KERNELDIR})
 	@$(call patch,${KERNELDIR})
 	$(call state,$@,kernel-configure)

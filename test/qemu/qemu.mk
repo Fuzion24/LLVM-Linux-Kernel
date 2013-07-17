@@ -65,12 +65,21 @@ qemu-help:
 	@echo "* make qemu-[fetch,patch,configure,build,sync,clean]"
 
 ##############################################################################
+CHECKPOINT_TARGETS		+= qemu-checkpoint
+CHECKPOINT_QEMU_PATCHES	= ${CHECKPOINT_PATCHES}/qemu
+qemu-checkpoint:
+	@$(call banner,Checkpointing qemu)
+	@$(call checkpoint-patches,${QEMUPATCHES},${CHECKPOINT_QEMU_PATCHES})
+
+##############################################################################
 qemu-settings:
-	@echo "# QEMU settings"
-	@$(call prsetting,QEMU_BRANCH,${QEMU_BRANCH})
-	@$(call prsetting,QEMU_TAG,${QEMU_TAG})
-	@$(call prsetting,QEMU_GIT,${QEMU_GIT})
-	@$(call gitcommit,${QEMUSRCDIR},QEMU_COMMIT)
+	@(echo "# QEMU settings" ; \
+	$(call prsetting,QEMU_BRANCH,${QEMU_BRANCH}) ; \
+	$(call prsetting,QEMU_TAG,${QEMU_TAG}) ; \
+	$(call prsetting,QEMU_GIT,${QEMU_GIT}) ; \
+	$(call gitcommit,${QEMUSRCDIR},QEMU_COMMIT) ; \
+	[ -z "${CHECKPOINT}" ] || $(call prsetting,QEMUPATCHES,${CHECKPOINT_QEMU_PATCHES}) \
+	) | $(call configfilter)
 
 ##############################################################################
 qemu-fetch: ${QEMUSTATE}/qemu-fetch

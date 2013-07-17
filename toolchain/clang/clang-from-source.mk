@@ -116,17 +116,27 @@ llvm-help:
 	@echo "* make llvm-clang-bisect-skip[-llvm/-clang]  - skip revision"
 
 ##############################################################################
+CHECKPOINT_TARGETS	+= clang-checkpoint
+CHECKPOINT_LLVM_PATCHES  = ${CHECKPOINT_PATCHES}/llvm
+CHECKPOINT_CLANG_PATCHES = ${CHECKPOINT_PATCHES}/clang
+clang-checkpoint:
+	@$(call banner,Checkpointing clang)
+	@$(call checkpoint-patches,${LLVMPATCHES}/llvm,${CHECKPOINT_LLVM_PATCHES})
+	@$(call checkpoint-patches,${LLVMPATCHES}/clang,${CHECKPOINT_CLANG_PATCHES})
+
+##############################################################################
 llvm-settings:
-	@echo "# LLVM settings"
-	@$(call prsetting,LLVM_GIT,${LLVM_GIT})
-	@$(call prsetting,LLVM_BRANCH,${LLVM_BRANCH})
-	@$(call gitcommit,${LLVMDIR},LLVM_COMMIT)
-	@$(call prsetting,LLVM_OPTIMIZED,${LLVM_OPTIMIZED})
-	@echo "# Clang settings"
-	@$(call prsetting,CLANG_GIT,${CLANG_GIT})
-	@$(call prsetting,CLANG_BRANCH,${CLANG_BRANCH})
-	@$(call gitcommit,${CLANGDIR},CLANG_COMMIT)
-	@$(call prsetting,LLVMPATCHES,${LLVMPATCHES})
+	@(echo "# LLVM settings" ; \
+	$(call prsetting,LLVM_GIT,${LLVM_GIT}) ; \
+	$(call prsetting,LLVM_BRANCH,${LLVM_BRANCH}) ; \
+	$(call gitcommit,${LLVMDIR},LLVM_COMMIT) ; \
+	$(call prsetting,LLVM_OPTIMIZED,${LLVM_OPTIMIZED}) ; \
+	[ -z "${CHECKPOINT}" ] || $(call prsetting,LLVMPATCHES,${CHECKPOINT_PATCHES}) ; \
+	echo "# Clang settings" ; \
+	$(call prsetting,CLANG_GIT,${CLANG_GIT}) ; \
+	$(call prsetting,CLANG_BRANCH,${CLANG_BRANCH}) ; \
+	$(call gitcommit,${CLANGDIR},CLANG_COMMIT) ; \
+	) | $(call configfilter)
 #	@$(call prsetting,COMPILERRT_GIT,${COMPILERRT_GIT})
 #	@$(call prsetting,COMPILERRT_BRANCH,${COMPILERRT_BRANCH})
 #	@$(call gitcommit,${COMPILERRTDIR},COMPILERRT_COMMIT)

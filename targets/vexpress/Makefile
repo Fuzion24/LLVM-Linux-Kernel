@@ -67,9 +67,10 @@ include ${TOPDIR}/common.mk
 include ${ARCHDIR}/arm/arm.mk
 include ${TARGETDIR}/vexpress-linaro.mk
 include ${TARGETDIR}/vexpress-ltp.mk
-include ${CONFIG}
 
 KERNEL_PATCH_DIR+= ${TARGETDIR}/patches
+
+include ${CONFIG}
 
 vexpress-help:
 	@echo "targets/vexpress has these options:"
