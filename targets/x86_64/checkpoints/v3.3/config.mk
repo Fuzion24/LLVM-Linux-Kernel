@@ -1,33 +1,39 @@
-LLVMLINUX_COMMIT	= 2a38c62b17834671eeb1fafa7ebd76bb27bd2b86
+CHECKPOINT		= v3.3
+CLANG_TOOLCHAIN		= from-source
 # LLVM settings
 LLVM_GIT		= http://llvm.org/git/llvm.git
 LLVM_BRANCH		= release_32
 LLVM_COMMIT		= 9171fb9cfb25b2e2db64131c15b497de459f69fc
 LLVM_OPTIMIZED		= --enable-optimized --enable-assertions
+LLVMPATCHES		= ${CHECKPOINT_DIR}/patches
+LLVM_TARGETS_TO_BUILD   = 'ARM;X86'
 # Clang settings
 CLANG_GIT		= http://llvm.org/git/clang.git
 CLANG_BRANCH		= release_32
 CLANG_COMMIT		= 29573b0a825b888c233d7859a257e866ffc5276e
-COMPILERRT_GIT		= http://llvm.org/git/compiler-rt.git
-COMPILERRT_BRANCH	= master
-COMPILERRT_COMMIT	= 22881ec8c8a3c01f9b993b186040444b0b5caa50
 # Kernel settings
 KERNEL_GIT		= git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-KERNEL_BRANCH		= master
-KERNEL_TAG		= v3.3
 KERNEL_COMMIT		= c16fa4f2ad19908a47c63d8fa436a1178438c7e7
 KERNELDIR		= ${TARGETDIR}/src/linux
 KERNELGCC		= ${TARGETDIR}/src/linux-gcc
-KERNEL_CFG		= ${TARGETDIR}/config_x86_64
-KERNEL_REPO_PATCHES	= v3.3
-KERNEL_PATCH_DIR       += ${TARGETDIR}/patches ${TARGETDIR}/patches/v3.3
+KERNEL_CFG		= ${CHECKPOINT_DIR}/kernel.config
+PATCHDIR		= ${CHECKPOINT_DIR}/patches/kernel
+KERNEL_PATCH_DIR	= ${CHECKPOINT_DIR}/patches/kernel
+# buildroot settings
+BUILDROOT_ARCH		= qemu_arm_vexpress
+BUILDROOT_BRANCH	= master
+BUILDROOT_TAG		= 
+BUILDROOT_GIT		= http://git.buildroot.net/git/buildroot.git
+BUILDROOT_COMMIT	= d2dc7be318557412a553fae6647495de66dd0e66
+BUILDROOT_CONFIG	= ${TESTDIR}/buildroot/src/buildroot/configs/qemu_arm_vexpress_defconfig
 # initramfs settings
 # LTP settings
 LTPSF_RELEASE		= 20120614
 LTPSF_TAR		= ltp-full-20120614.bz2
 LTPSF_URI		= http://downloads.sourceforge.net/project/ltp/LTP%20Source/ltp-20120614/ltp-full-20120614.bz2
 # QEMU settings
-QEMU_BRANCH		= stable-1.0
+QEMU_BRANCH		= master
+QEMU_TAG		= 
 QEMU_GIT		= git://git.qemu.org/qemu.git
-QEMU_COMMIT		= 0893d46014b0300fb8aec92df94effea34d04b61
-FORCE_LLVMLINUX_COMMIT	= 1
+QEMU_COMMIT		= 6453a3a69488196f26d12654c6b148446abdf3d6
+QEMUPATCHES		= ${CHECKPOINT_DIR}/patches/qemu

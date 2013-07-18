@@ -29,7 +29,7 @@ KERNEL_CFG	= ${TARGETDIR}/config_x86_64
 # override KERNEL_TAG to v3.3
 #KERNEL_TAG = v3.3
 # around 3.10-rc7
-KERNEL_COMMIT = "4300a0f8bdcce5a03b88bfa16fc9827e15c52dc4"
+#KERNEL_COMMIT = "4300a0f8bdcce5a03b88bfa16fc9827e15c52dc4"
 
 #GDB_OPTS	= -gdb tcp::1234 -s -S
 GDB_OPTS	=
