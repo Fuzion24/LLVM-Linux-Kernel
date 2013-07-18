@@ -166,6 +166,11 @@ kernel-help:
 	@echo "* make kernel-bisect-good - mark as good"
 	@echo "* make kernel-bisect-bad  - mark as bad"
 	@echo "* make kernel-bisect-skip - skip revision"
+	@echo "These also include static analysis:"
+	@echo "* make kernel-scan-build  - Run build through scan-build and generate"
+	@echo "                            HTML output to trace the found issue"
+	@echo "* make kernel-check-build - Use the kbuild's \$CHECK to run clang's"
+	@echo "                            static analyzer"
 
 #############################################################################
 kernel-settings:
