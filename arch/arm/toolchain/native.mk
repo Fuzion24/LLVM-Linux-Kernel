@@ -25,14 +25,7 @@
 
 HOST		= arm-linux-gnueabi
 HOST_TRIPLE	= ${HOST}
-#COMPILER_PATH	= /usr/${HOST}
 COMPILER_BIN	= /usr/bin
-
-#ARM_CROSS_GCC_TOOLCHAIN = ${COMPILER_PATH}
-
-# Add path so that ${CROSS_COMPILE}${CC} is resolved
-# /usr/bin is already in the path
-#PATH		:= ${COMPILER_BIN}:${PATH}
 
 CROSS_GCC	= ${COMPILER_BIN}/${HOST}-gcc
 arm-cc: ${CROSS_GCC}
