@@ -30,7 +30,7 @@ EXTRAFLAGS=$*
 # Use clang by default
 if [ -z "$USEGCC" ]; then
 	if [ -n "$COMPILER_PATH" ] ; then 
-		CC="${CLANG} $COMPILER_PATH" # $CLANGFLAGS"
+		CC="${CLANG} -gcc-toolchain $COMPILER_PATH" # $CLANGFLAGS"
 	else
 		CC="${CLANG}" # $CLANGFLAGS"
 	fi
@@ -79,3 +79,4 @@ build_env
 [ -z "$MAKE_KERNEL_STOP" ] || exit 1
 
 make $CCOPTS ${CC:+CC="$CC"} ${CFLAGS:+CFLAGS_KERNEL="$CFLAGS"} ${CFLAGS:+CFLAGS_MODULE="$CFLAGS"} $KERNEL_MAKE_TARGETS
+
