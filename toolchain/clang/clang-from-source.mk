@@ -32,10 +32,10 @@ LLVMPATCHES	?= ${LLVMTOP}/patches
 # Workaround for LLVM breakage
 # undefined reference to `.Lline_table_start0'
 # use ?= to not override CHECKPOINTS !
-LLVM_COMMIT	?= master
-CLANG_COMMIT	?= master
-#LLVM_COMMIT	= "4010e438100fedeacd36ecd2385adabc02b6f236"
-#CLANG_COMMIT	= "cac18add73d095eaab600aefe27ea7174aec4922"
+#LLVM_COMMIT	?= master
+#CLANG_COMMIT	?= master
+LLVM_COMMIT	?= "4010e438100fedeacd36ecd2385adabc02b6f236"
+CLANG_COMMIT	?= "cac18add73d095eaab600aefe27ea7174aec4922"
 
 DEBDEP		+= cmake flex g++ git-svn subversion zlib1g-dev
 RPMDEP		+= cmake flex subversion zlib-devel
