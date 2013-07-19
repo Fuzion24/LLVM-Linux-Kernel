@@ -56,5 +56,9 @@ else
   endif
 endif
 
+ifneq (${COMPILER_PATH}, "")
+CCOPTS	= -gcc-toolchain ${COMPILER_PATH}
+endif
+
 include ${ARCHDIR}/arm/toolchain/compiler-rt/compiler-rt.mk
 

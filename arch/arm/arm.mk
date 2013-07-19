@@ -34,8 +34,6 @@ STATE_TOOLCHAIN	= state/arm-cc
 # ARCH must be defined before all.mk
 ARCH		= arm
 
-include ${ARCHDIR}/all/all.mk
-
 FETCH_TARGETS	+= arm-cc
 RAZE_TARGETS	+= arm-cc-clean
 
@@ -49,6 +47,7 @@ ARCH_ARM_TOOLCHAIN_STATE= ${ARCH_ARM_TOOLCHAIN}/state
 PATH		:= ${ARCH_ARM_BINDIR}:${PATH}
 
 include ${ARCH_ARM_TOOLCHAIN}/toolchain.mk
+include ${ARCHDIR}/all/all.mk
 
 KERNEL_PATCH_DIR+= ${ARCH_ARM_PATCHES} ${ARCH_ARM_PATCHES}/${KERNEL_REPO_PATCHES}
 
@@ -58,7 +57,7 @@ VERSION_TARGETS	+= arm-cc-version
 
 MARCH		?= armv7-a
 MFLOAT		?= -mfloat-abi=softfp -mfpu=neon
-MAKE_FLAGS	= ARCH=${ARCH}
+#MAKE_FLAGS	= ARCH=${ARCH}
 MAKE_KERNEL	= ${ARCH_ARM_BINDIR}/make-kernel.sh ${EXTRAFLAGS}
 CROSS_COMPILE	= ${HOST}-
 #CC		= clang-wrap.sh
