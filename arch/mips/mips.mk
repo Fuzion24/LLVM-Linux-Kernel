@@ -22,7 +22,10 @@
 ##############################################################################
 
 # ARCH must be defined before all.mk
-ARCH	= mips
+ARCH		= mips
+HOST		= mips-none-eabi
+HOST_TRIPLE	= mips
+CROSS_COMPILE	= ${HOST}-
 
 include ${ARCHDIR}/all/all.mk
 
@@ -34,14 +37,6 @@ ARCH_MIPS_BINDIR	= ${ARCH_MIPS_DIR}/bin
 ARCH_MIPS_PATCHES	= ${ARCH_MIPS_DIR}/patches
 
 KERNEL_PATCH_DIR+= ${ARCH_MIPS_PATCHES} ${ARCH_MIPS_PATCHES}/${KERNEL_REPO_PATCHES}
-
-#MAKE_FLAGS	= ARCH=${ARCH}
-MAKE_KERNEL	= ${ARCH_MIPS_BINDIR}/make-kernel.sh ${EXTRAFLAGS}
-HOST		= mips-none-eabi
-HOST_TRIPLE	= mips
-CROSS_COMPILE	= ${HOST}-
-CC		= clang-wrap.sh
-CPP		= ${CC} -E
 
 KERNEL_SIZE_ARTIFACTS	= arch/arm/boot/zImage vmlinux*
 

@@ -85,7 +85,7 @@ endif
 CLANGCC		= ${CLANG} ${CCOPTS}
 
 ifneq ("${CROSS_COMPILE}", "")
-MAKE_FLAGS	+= ARCH=${ARCH}	CROSS_COMPILE=${CROSS_COMPILE}
+MAKE_FLAGS	+= ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE}
 endif
 ifneq ("${JOBS}", "")
 KERNEL_VAR	+= -j${JOBS}
@@ -101,10 +101,9 @@ KERNEL_VAR	+= ${EXTRAFLAGS}
 
 list-var: list-buildroot
 	@which gcc clang
-	@echo ${SEPERATOR}
+	@echo ${seperator}
 	@echo "ARCH=${ARCH}"
 	@echo "CC=${CC}"
-	@echo "CFLAGS=${CFLAGS}"
 	@echo "CFLAGS=${CFLAGS}"
 	@echo "CLANGCC=${CLANGCC}"
 	@echo "COMPILER_PATH='${COMPILER_PATH}'"
@@ -125,7 +124,8 @@ list-var: list-buildroot
 	@echo "TMPDIR=${TMPDIR}"
 	@echo "USE_CCACHE=${USE_CCACHE}"
 	@echo "V=${V}"
-	@echo ${SEPERATOR}
+	@echo ${seperator}
+	@echo "${CLANG} -print-file-name=include"
 	@${CLANG} -print-file-name=include
 
 	@echo '$(call make-kernel,${KERNELDIR},${KERNEL_ENV},CC="${CLANGCC}")'
@@ -366,7 +366,6 @@ state/kernel-build: ${TMPDIR} ${STATE_CLANG_TOOLCHAIN} ${STATE_TOOLCHAIN} state/
 	@[ -d ${KERNEL_BUILD} ] || ($(call leavestate,${STATEDIR},kernel-configure) && ${MAKE} kernel-configure)
 	@$(MAKE) kernel-quilt-link-patches
 	@$(call banner,Building kernel with clang...)
-#	(cd ${KERNELDIR} && ${KERNEL_ENV} time ${MAKE_KERNEL})
 	$(call make-kernel,${KERNELDIR},${KERNEL_ENV},CC="${CLANGCC}")
 	@$(call banner,Successfully Built kernel with clang!)
 	@$(call get-kernel-size,clang,${CLANG},${KERNEL_BUILD})
@@ -380,7 +379,6 @@ state/kernel-gcc-build: ${TMPDIR} ${STATE_TOOLCHAIN} state/kernel-gcc-configure
 	@$(call banner,Building kernel with gcc...)
 #	(cd ${KERNELGCC} ; sed -i -e "s#-Qunused-arguments##g" Makefile)
 #	(cd ${KERNELGCC} ; for ix in `git grep integrated-as | cut -d":" -f1 ` ; do sed -i -e "s#-no-integrated-as##g" $$ix ; done )
-#	(cd ${KERNELGCC} && USEGCC=1 ${SPARSE} ${KERNELGCC_ENV} time ${MAKE_KERNEL})
 	@$(call make-kernel,${KERNELGCC},${KERNELGCC_ENV} ${SPARSE})
 	@$(call get-kernel-size,gcc,${CROSS_GCC},${KERNELGCC_BUILD})
 	$(call state,$@,done)

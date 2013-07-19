@@ -33,6 +33,9 @@ STATE_TOOLCHAIN	= state/arm-cc
 
 # ARCH must be defined before all.mk
 ARCH		= arm
+CROSS_COMPILE	= ${HOST}-
+MARCH		?= armv7-a
+MFLOAT		?= -mfloat-abi=softfp -mfpu=neon
 
 FETCH_TARGETS	+= arm-cc
 RAZE_TARGETS	+= arm-cc-clean
@@ -54,14 +57,6 @@ KERNEL_PATCH_DIR+= ${ARCH_ARM_PATCHES} ${ARCH_ARM_PATCHES}/${KERNEL_REPO_PATCHES
 HELP_TARGETS	+= arm-help
 SETTINGS_TARGETS+= arm-settings
 VERSION_TARGETS	+= arm-cc-version
-
-MARCH		?= armv7-a
-MFLOAT		?= -mfloat-abi=softfp -mfpu=neon
-#MAKE_FLAGS	= ARCH=${ARCH}
-MAKE_KERNEL	= ${ARCH_ARM_BINDIR}/make-kernel.sh ${EXTRAFLAGS}
-CROSS_COMPILE	= ${HOST}-
-#CC		= clang-wrap.sh
-#CPP		= ${CC} -E
 
 KERNEL_SIZE_ARTIFACTS	= arch/arm/boot/zImage vmlinux*
 
