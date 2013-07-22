@@ -86,7 +86,9 @@ kernel-quilt-help:
 #############################################################################
 kernel-quilt-settings:
 	@($(call prsetting,KERNEL_REPO_PATCHES,${KERNEL_REPO_PATCHES}) ; \
-	$(call praddsetting,KERNEL_PATCH_DIR,${PATCHDIR} ${PATCHDIR}/${KERNEL_REPO_PATCHES}) ; \
+	[ -n "${CHECKPOINT}" ] && $(call prsetting,PATCHDIR,${CHECKPOINT_KERNEL_PATCHES}) \
+	&& $(call prsetting,KERNEL_PATCH_DIR,${CHECKPOINT_KERNEL_PATCHES}) \
+	|| $(call praddsetting,KERNEL_PATCH_DIR,${PATCHDIR} ${PATCHDIR}/${KERNEL_REPO_PATCHES}) ; \
 	) | $(call configfilter)
 
 ##############################################################################
@@ -150,10 +152,11 @@ kernel-quilt-clean-broken-symlinks:
 ##############################################################################
 # Move updated patches back to their proper place, and link patch files into target patches dir
 kernel-quilt-link-patches refresh: ${QUILT_GITIGNORE}
-	$(MAKE) kernel-quilt-update-series-dot-target kernel-quilt-clean-broken-symlinks
-	@$(call banner,Linking quilt patches for kernel...)
-	@REVDIRS=`$(call reverselist,${KERNEL_PATCH_DIR})` ; \
-	for PATCH in `cat ${GENERIC_PATCH_SERIES}` ; do \
+	@[ -z "${GENERIC_PATCH_SERIES}" ] \
+	|| ($(MAKE) kernel-quilt-update-series-dot-target kernel-quilt-clean-broken-symlinks \
+	&& $(call banner,Linking quilt patches for kernel...) \
+	&& REVDIRS=`$(call reverselist,${KERNEL_PATCH_DIR})` \
+	&& for PATCH in `cat ${GENERIC_PATCH_SERIES}` ; do \
 		PATCHLINK="${PATCHDIR}/$$PATCH" ; \
 		for DIR in $$REVDIRS ; do \
 			[ "$$DIR" != "${PATCHDIR}" ] || continue ; \
@@ -167,8 +170,8 @@ kernel-quilt-link-patches refresh: ${QUILT_GITIGNORE}
 				break; \
 			fi ; \
 		done ; \
-	done | sed -e 's|${TARGETDIR}|.|g; s|${TOPDIR}|...|g'
-	@$(MAKE) ${TARGET_PATCH_SERIES}
+	done | sed -e 's|${TARGETDIR}|.|g; s|${TOPDIR}|...|g' ; \
+	$(MAKE) ${TARGET_PATCH_SERIES})
 
 ##############################################################################
 KERNEL_PATCHES_TAR = patches.tar.bz2
@@ -179,7 +182,7 @@ ${KERNEL_PATCHES_TAR}: kernel-quilt-link-patches
 ##############################################################################
 QUILT_STATE	= state/kernel-quilt
 kernel-quilt: ${QUILT_STATE}
-${QUILT_STATE}: state/kernel-fetch
+${QUILT_STATE}: prep state/kernel-fetch 
 	@$(MAKE) ${QUILTRC} kernel-quilt-link-patches
 	@$(call banner,Quilted kernel...)
 	$(call state,$@,kernel-patch)

@@ -21,11 +21,7 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
-# NOTE: MAKE_KERNEL must also be defined in the calling Makefile
-#
 # The ARCH makefile must provide the following:
-#   - MAKE_FLAGS
-#   - MAKE_KERNEL
 #   - KERNEL_PATCH_DIR += ${ARCH_xxx_PATCHES} ${ARCH_xxx_PATCHES}/${KERNEL_REPO_PATCHES}
 #   
 # The target makefile must provide the following:
@@ -77,18 +73,64 @@ ifeq "${KERNELGCC}" ""
 KERNELGCC	= ${KERNELDIR}-gcc
 endif
 
+#############################################################################
 KERNEL_BUILD	= $(subst ${TOPDIR},${BUILDROOT},${KERNELDIR})
 KERNELGCC_BUILD	= $(subst ${TOPDIR},${BUILDROOT},${KERNELGCC})
 ifneq (${TOPDIR},${BUILDROOT})
-KERNEL_VAR	= KBUILD_OUTPUT=${KERNEL_BUILD}
-KERNELGCC_VAR	= KBUILD_OUTPUT=${KERNELGCC_BUILD}
+KERNEL_ENV	+= KBUILD_OUTPUT=${KERNEL_BUILD}
+KERNELGCC_ENV	+= KBUILD_OUTPUT=${KERNELGCC_BUILD}
 endif
 
-list-var: list-buildroot
-	@echo KERNELDIR=${KERNELDIR}
-	@echo KERNEL_BUILD=${KERNEL_BUILD}
-	@echo KERNEL_VAR=${KERNEL_VAR}
+#############################################################################
+CLANGCC		= ${CLANG} ${CCOPTS}
 
+ifneq ("${CROSS_COMPILE}", "")
+MAKE_FLAGS	+= ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE}
+endif
+ifneq ("${JOBS}", "")
+KERNEL_VAR	+= -j${JOBS}
+endif
+ifneq ("${CFLAGS}", "")
+KERNEL_VAR	+= CFLAGS_KERNEL="${CFLAGS}" CFLAGS_MODULE="${CFLAGS}"
+endif
+KERNEL_VAR	+= CONFIG_DEBUG_INFO=1
+KERNEL_VAR	+= CONFIG_DEBUG_SECTION_MISMATCH=y
+KERNEL_VAR	+= CONFIG_NO_ERROR_ON_MISMATCH=y
+#KERNEL_VAR	+= KALLSYMS_EXTRA_PASS=1
+KERNEL_VAR	+= ${EXTRAFLAGS}
+
+list-var: list-buildroot
+	@which gcc clang
+	@echo ${seperator}
+	@echo "ARCH=${ARCH}"
+	@echo "CC=${CC}"
+	@echo "CFLAGS=${CFLAGS}"
+	@echo "CLANGCC=${CLANGCC}"
+	@echo "COMPILER_PATH='${COMPILER_PATH}'"
+	@echo "CROSS_COMPILE=${CROSS_COMPILE}"
+	@echo "CROSS_GCC=${CROSS_GCC}"
+	@echo "HOST=${HOST}"
+	@echo "HOST_TRIPLE=${HOST_TRIPLE}"
+	@echo "JOBS=${JOBS}"
+	@echo "KBUILD_OUTPUT=${KBUILD_OUTPUT}"
+	@echo "KERNELDIR=${KERNELDIR}"
+	@echo "KERNEL_BUILD=${KERNEL_BUILD}"
+	@echo "KERNEL_ENV=${KERNEL_ENV}"
+	@echo "KERNEL_VAR=${KERNEL_VAR}"
+	@echo "MAKE_FLAGS=${MAKE_FLAGS}"
+	@echo "MARCH=${MARCH}"
+	@echo "MFLOAT=${MFLOAT}"
+	@echo "PATH=${PATH}"
+	@echo "TMPDIR=${TMPDIR}"
+	@echo "USE_CCACHE=${USE_CCACHE}"
+	@echo "V=${V}"
+	@echo ${seperator}
+	@echo "${CLANG} -print-file-name=include"
+	@${CLANG} -print-file-name=include
+
+	@echo '$(call make-kernel,${KERNELDIR},${KERNEL_ENV},CC="${CLANGCC}")'
+
+#############################################################################
 TOPLOGDIR	= ${TOPDIR}/log
 
 LOGDIR		= ${TARGETDIR}/log
@@ -111,6 +153,11 @@ KERNEL_SIZE_CLANG_LOG	= clang-`date +%Y-%m-%d_%H:%M:%S`-kernel-size.log
 KERNEL_SIZE_GCC_LOG	= gcc-`date +%Y-%m-%d_%H:%M:%S`-kernel-size.log
 
 get-kernel-version	= [ ! -d ${1} ] || (cd ${1} && echo "src/$(notdir ${1}) version `make kernelversion 2>/dev/null | grep -v ^make` commit `git rev-parse HEAD`")
+get-kernel-size		= mkdir -p ${TOPLOGDIR} ; \
+			( ${2} --version | head -1 ; \
+			cd ${3} && wc -c ${KERNEL_SIZE_ARTIFACTS} ) \
+			| tee $(call sizelog,${TOPLOGDIR},{1})
+make-kernel		= (cd ${1} && ${2} time ${3} make ${MAKE_FLAGS} ${KERNEL_VAR} ${4} ${5} ${KERNEL_MAKE_TARGETS} ${6})
 
 #############################################################################
 KERNEL_TARGETS_CLANG	= kernel-[fetch,patch,configure,build,clean,sync]
@@ -172,6 +219,15 @@ kernel-help:
 	@echo "* make kernel-check-build - Use the kbuild's \$CHECK to run clang's"
 	@echo "                            static analyzer"
 
+##############################################################################
+CHECKPOINT_TARGETS		+= kernel-checkpoint
+CHECKPOINT_KERNEL_CONFIG	= ${CHECKPOINT_DIR}/kernel.config
+CHECKPOINT_KERNEL_PATCHES	= ${CHECKPOINT_PATCHES}/kernel
+kernel-checkpoint: kernel-quilt
+	@$(call banner,Checkpointing kernel)
+	@cp ${KERNEL_CFG} ${CHECKPOINT_KERNEL_CONFIG}
+	@$(call checkpoint-patches,${PATCHDIR},${CHECKPOINT_KERNEL_PATCHES})
+
 #############################################################################
 kernel-settings:
 	@(echo "# Kernel settings" ; \
@@ -181,7 +237,8 @@ kernel-settings:
 	$(call gitcommit,${KERNELDIR},KERNEL_COMMIT) ; \
 	$(call prsetting,KERNELDIR,${KERNELDIR}) ; \
 	$(call prsetting,KERNELGCC,${KERNELGCC}) ; \
-	$(call prsetting,KERNEL_CFG,${KERNEL_CFG}) ; \
+	[ -n "${CHECKPOINT}" ] && $(call prsetting,KERNEL_CFG,${CHECKPOINT_KERNEL_CONFIG}) \
+	|| $(call prsetting,KERNEL_CFG,${KERNEL_CFG}) ; \
 	) | $(call configfilter)
 
 include ${ARCHDIR}/all/quilt.mk
@@ -212,7 +269,7 @@ kernel-raze:
 	@$(call leavestate,${STATEDIR},*)
 
 #############################################################################
-kernel-fetch: state/kernel-fetch
+kernel-fetch: state/kernel-fetch prep
 state/kernel-fetch: ${SHARED_KERNEL}
 	@$(call banner,Cloning kernel...)
 	@mkdir -p ${SRCDIR}
@@ -250,7 +307,8 @@ state/kernel-gcc-fetch: state/kernel-fetch
 kernel-patch: state/kernel-patch
 state/kernel-patch: state/kernel-fetch state/kernel-quilt
 	@$(call banner,Patching kernel...)
-	@$(call patches_dir,${PATCHDIR},${KERNELDIR}/patches)
+	@echo ${PATCHDIR}
+	$(call patches_dir,${PATCHDIR},${KERNELDIR}/patches)
 	@$(call optional_gitreset,${KERNELDIR})
 	@$(call patch,${KERNELDIR})
 	$(call state,$@,kernel-configure)
@@ -292,12 +350,12 @@ state/kernel-configure: state/kernel-patch
 	if [ -n "${LLVMDIR}" ] ; then \
 		(cd ${LLVMDIR} ; xx=$$(git log -1 --oneline | cut -d" " -f1) ; sed -i -e "s#-llvmlinux#-llvmlinux-L.$$xx#g" ${KERNEL_BUILD}/.config) ; \
 	fi
-	(cd ${KERNELDIR} && echo "" | ${KERNEL_VAR} make ${MAKE_FLAGS} oldconfig)
+	(cd ${KERNELDIR} && echo "" | ${KERNEL_ENV} make ${MAKE_FLAGS} oldconfig)
 	$(call state,$@,kernel-build)
 
 #############################################################################
 kernel-menuconfig: state/kernel-configure
-	${KERNEL_VAR} make -C ${KERNELDIR} ${MAKE_FLAGS} menuconfig
+	${KERNEL_ENV} make -C ${KERNELDIR} ${MAKE_FLAGS} menuconfig
 	@$(call leavestate,state,kernel-build)
 
 kernel-cmpconfig: state/kernel-configure
@@ -314,46 +372,37 @@ state/kernel-gcc-configure: state/kernel-gcc-patch
 	@mkdir -p ${KERNELGCC_BUILD}
 	@cp ${KERNEL_CFG} ${KERNELGCC_BUILD}/.config
 	@echo "CONFIG_ARM_UNWIND=y" >> ${KERNELGCC_BUILD}/.config
-	(cd ${KERNELGCC} && echo "" | ${KERNELGCC_VAR} make ${MAKE_FLAGS} oldconfig)
+	(cd ${KERNELGCC} && echo "" | ${KERNELGCC_ENV} make ${MAKE_FLAGS} oldconfig)
 	$(call state,$@,kernel-gcc-build)
 
 #############################################################################
 kernel-build: state/kernel-build
 state/kernel-build: ${TMPDIR} ${STATE_CLANG_TOOLCHAIN} ${STATE_TOOLCHAIN} state/kernel-configure
-	$(call assert,-n "${MAKE_KERNEL}",MAKE_KERNEL undefined)
 	@[ -d ${KERNEL_BUILD} ] || ($(call leavestate,${STATEDIR},kernel-configure) && ${MAKE} kernel-configure)
 	@$(MAKE) kernel-quilt-link-patches
 	@$(call banner,Building kernel with clang...)
-	(cd ${KERNELDIR} && time ${KERNEL_VAR} ${CHECK_VARS} ${CHECKER} ${MAKE_KERNEL})
+	$(call make-kernel,${KERNELDIR},${KERNEL_ENV},${CHECKER},${CHECK_VARS},CC?="${CLANGCC}")
 	@$(call banner,Successfully Built kernel with clang!)
-	@mkdir -p ${TOPLOGDIR}
-	@( ${CLANG} --version | head -1 ; \
-		cd ${KERNEL_BUILD} && wc -c ${KERNEL_SIZE_ARTIFACTS} ) \
-		| tee $(call sizelog,${TOPLOGDIR},clang)
+	@$(call get-kernel-size,clang,${CLANG},${KERNEL_BUILD})
 	$(call state,$@,done)
 
 #############################################################################
 kernel-gcc-build: state/kernel-gcc-build
-state/kernel-gcc-build: ${TMPDIR} ${CROSS_GCC} ${STATE_TOOLCHAIN} state/kernel-gcc-configure
-	$(call assert,-n "${MAKE_KERNEL}",MAKE_KERNEL undefined)
+state/kernel-gcc-build: ${TMPDIR} ${STATE_TOOLCHAIN} state/kernel-gcc-configure
 	@[ -d ${KERNELGCC_BUILD} ] || ($(call leavestate,${STATEDIR},kernel-gcc-configure) && ${MAKE} kernel-gcc-configure)
 	@$(MAKE) kernel-quilt-link-patches
 	@$(call banner,Building kernel with gcc...)
-	(cd ${KERNELGCC} ; sed -i -e "s#-Qunused-arguments##g" Makefile)
-	(cd ${KERNELGCC} ; for ix in `git grep integrated-as | cut -d":" -f1 ` ; do sed -i -e "s#-no-integrated-as##g" $$ix ; done )
-	(cd ${KERNELGCC} && USEGCC=1 ${SPARSE} ${KERNELGCC_VAR} time ${MAKE_KERNEL})
-	@mkdir -p ${TOPLOGDIR}
-	( ${CROSS_GCC} --version | head -1 ; \
-		cd ${KERNELGCC_BUILD} && wc -c ${KERNEL_SIZE_ARTIFACTS}) \
-		| tee $(call sizelog,${TOPLOGDIR},gcc)
+#	(cd ${KERNELGCC} ; sed -i -e "s#-Qunused-arguments##g" Makefile)
+#	(cd ${KERNELGCC} ; for ix in `git grep integrated-as | cut -d":" -f1 ` ; do sed -i -e "s#-no-integrated-as##g" $$ix ; done )
+	@$(call make-kernel,${KERNELGCC},${KERNELGCC_ENV} ${SPARSE})
+	@$(call get-kernel-size,gcc,${CROSS_GCC},${KERNELGCC_BUILD})
 	$(call state,$@,done)
 
 #############################################################################
 kernel-scan-build: ${TMPDIR} ${LLVMSTATE}/clang-build ${STATE_TOOLCHAIN} state/kernel-configure
 	@$(eval CHECKER := ${SCAN_BUILD} ${SCAN_BUILD_FLAGS})
 	@$(call banner,Enabling clang static analyzer: ${CHECKER})
-	${MAKE} CHECKER="${CHECKER}" kernel-build
-
+	${MAKE} CHECKER="${CHECKER}" CC=ccc-analyzer kernel-build
 
 #############################################################################
 kernel-check-build: ${TMPDIR} ${LLVMSTATE}/clang-build ${STATE_TOOLCHAIN} state/kernel-configure

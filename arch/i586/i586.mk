@@ -35,14 +35,6 @@ ARCH_X86_32_PATCHES	= ${ARCH_X86_32_DIR}/patches
 
 KERNEL_PATCH_DIR	+= ${ARCH_X86_32_PATCHES} ${ARCH_X86_32_PATCHES}/${KERNEL_REPO_PATCHES}
 
-#MAKE_FLAGS	= ARCH=${ARCH}
-MAKE_KERNEL	= ${ARCH_X86_32_BINDIR}/make-kernel.sh ${EXTRAFLAGS}
-#HOST		= i386-none-linux-gnu
-#HOST_TRIPLE	= i386-pc-linux-gnu
-CROSS_COMPILE	=
-#CC		= clang-wrap.sh
-#CPP		= ${CC} -E
-
 KERNEL_SIZE_ARTIFACTS	= arch/x86/boot/bzImage vmlinux*
 BOARD	= pc
 

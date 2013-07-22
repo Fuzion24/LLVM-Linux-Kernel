@@ -27,14 +27,15 @@
 LLVMSRCDIR	= ${LLVMTOP}/src
 LLVMBUILD	= $(subst ${TOPDIR},${BUILDROOT},${LLVMTOP}/build)
 LLVMINSTALLDIR	:= ${LLVMTOP}/install
-LLVMPATCHES	= ${LLVMTOP}/patches
+LLVMPATCHES	?= ${LLVMTOP}/patches
 
 # Workaround for LLVM breakage
 # undefined reference to `.Lline_table_start0'
-#LLVM_COMMIT	= master
-#CLANG_COMMIT	= master
-LLVM_COMMIT	= "4010e438100fedeacd36ecd2385adabc02b6f236"
-CLANG_COMMIT	= "cac18add73d095eaab600aefe27ea7174aec4922"
+# use ?= to not override CHECKPOINTS !
+#LLVM_COMMIT	?= master
+#CLANG_COMMIT	?= master
+LLVM_COMMIT	?= "4010e438100fedeacd36ecd2385adabc02b6f236"
+CLANG_COMMIT	?= "cac18add73d095eaab600aefe27ea7174aec4922"
 
 DEBDEP		+= cmake flex g++ git-svn subversion zlib1g-dev
 RPMDEP		+= cmake flex subversion zlib-devel
@@ -62,6 +63,8 @@ CLANG_TARGETS 		= clang clang-[fetch,patch,configure,build,sync] clang-update-al
 LLVM_TARGETS_APPLIED	= llvm-patch-applied clang-patch-applied
 LLVM_VERSION_TARGETS	= llvm-version clang-version
 #compilerrt-version
+
+LLVM_TARGETS_TO_BUILD	?= 'AArch64;ARM;X86'
 
 TARGETS_TOOLCHAIN	+= ${LLVM_TARGETS} ${CLANG_TARGETS}
 #${COMPILERRT_TARGETS}
@@ -113,16 +116,28 @@ llvm-help:
 	@echo "* make llvm-clang-bisect-skip[-llvm/-clang]  - skip revision"
 
 ##############################################################################
+CHECKPOINT_TARGETS	+= clang-checkpoint
+CHECKPOINT_LLVM_PATCHES  = ${CHECKPOINT_PATCHES}/llvm
+CHECKPOINT_CLANG_PATCHES = ${CHECKPOINT_PATCHES}/clang
+clang-checkpoint:
+	@$(call banner,Checkpointing clang)
+	@$(call checkpoint-patches,${LLVMPATCHES}/llvm,${CHECKPOINT_LLVM_PATCHES})
+	@$(call checkpoint-patches,${LLVMPATCHES}/clang,${CHECKPOINT_CLANG_PATCHES})
+
+##############################################################################
 llvm-settings:
-	@echo "# LLVM settings"
-	@$(call prsetting,LLVM_GIT,${LLVM_GIT})
-	@$(call prsetting,LLVM_BRANCH,${LLVM_BRANCH})
-	@$(call gitcommit,${LLVMDIR},LLVM_COMMIT)
-	@$(call prsetting,LLVM_OPTIMIZED,${LLVM_OPTIMIZED})
-	@echo "# Clang settings"
-	@$(call prsetting,CLANG_GIT,${CLANG_GIT})
-	@$(call prsetting,CLANG_BRANCH,${CLANG_BRANCH})
-	@$(call gitcommit,${CLANGDIR},CLANG_COMMIT)
+	@(echo "# LLVM settings" ; \
+	$(call prsetting,LLVM_GIT,${LLVM_GIT}) ; \
+	$(call prsetting,LLVM_BRANCH,${LLVM_BRANCH}) ; \
+	$(call gitcommit,${LLVMDIR},LLVM_COMMIT) ; \
+	$(call prsetting,LLVM_OPTIMIZED,${LLVM_OPTIMIZED}) ; \
+	[ -z "${CHECKPOINT}" ] || $(call prsetting,LLVMPATCHES,${CHECKPOINT_PATCHES}) ; \
+	$(call prsetting,LLVM_TARGETS_TO_BUILD,${LLVM_TARGETS_TO_BUILD}) ; \
+	echo "# Clang settings" ; \
+	$(call prsetting,CLANG_GIT,${CLANG_GIT}) ; \
+	$(call prsetting,CLANG_BRANCH,${CLANG_BRANCH}) ; \
+	$(call gitcommit,${CLANGDIR},CLANG_COMMIT) ; \
+	) | $(call configfilter)
 #	@$(call prsetting,COMPILERRT_GIT,${COMPILERRT_GIT})
 #	@$(call prsetting,COMPILERRT_BRANCH,${COMPILERRT_BRANCH})
 #	@$(call gitcommit,${COMPILERRTDIR},COMPILERRT_COMMIT)
@@ -204,7 +219,7 @@ ${LLVM_TARGETS_APPLIED}: %-patch-applied:
 llvmconfig = $(call banner,Configure ${1}...) ; \
 	mkdir -p ${2} ${3} && \
 	(cd ${2} && cmake -DCMAKE_BUILD_TYPE=Release -DLLVM_BINUTILS_INCDIR=/usr/include/ \
-	-DLLVM_TARGETS_TO_BUILD="AArch64;ARM;X86" -DCMAKE_INSTALL_PREFIX=${3} ${4} ${5})
+	-DLLVM_TARGETS_TO_BUILD="${LLVM_TARGETS_TO_BUILD}" -DCMAKE_INSTALL_PREFIX=${3} ${4} ${5})
 
 ##############################################################################
 llvm-configure: ${LLVMSTATE}/llvm-configure

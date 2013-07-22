@@ -37,7 +37,7 @@ HOST		= arm-linux-androideabi
 HOST_TRIPLE	= arm-linux-androideabi
 COMPILER_PATH	= ${ANDROID_CC_DIR}
 ANDROID_GCC	= ${ANDROID_CC_BINDIR}/${CROSS_COMPILE}gcc
-CC_FOR_BUILD	= ${ANDROID_GCC}
+CROSS_GCC	= ${ANDROID_GCC}
 
 ARM_CROSS_GCC_TOOLCHAIN = ${ANDROID_CC_DIR}
 CFLAGS		= -isystem ${ANDROID_DIR}/arm-linux-androideabi-4.6/lib/gcc/arm-linux-androideabi/4.6.x-google/include

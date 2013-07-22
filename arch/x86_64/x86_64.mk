@@ -35,14 +35,6 @@ ARCH_X86_64_PATCHES	= ${ARCH_X86_64_DIR}/patches
 
 KERNEL_PATCH_DIR	+= ${ARCH_X86_64_PATCHES} ${ARCH_X86_64_PATCHES}/${KERNEL_REPO_PATCHES}
 
-#MAKE_FLAGS	= ARCH=${ARCH}
-MAKE_KERNEL	= ${ARCH_X86_64_BINDIR}/make-kernel.sh ${EXTRAFLAGS}
-#HOST		= x86_64-none-linux-gnu
-#HOST_TRIPLE	= x86_64-pc-linux-gnu
-CROSS_COMPILE	=
-#CC		= clang-wrap.sh
-#CPP		= ${CC} -E
-
 KERNEL_SIZE_ARTIFACTS	= arch/x86_64/boot/bzImage vmlinux*
 BOARD		= pc
 

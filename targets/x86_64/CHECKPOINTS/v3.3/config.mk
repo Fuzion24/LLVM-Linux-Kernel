@@ -1,0 +1,36 @@
+CHECKPOINTNAME		= v3.3
+LLVMLINUX_COMMIT	= 2a38c62b17834671eeb1fafa7ebd76bb27bd2b86
+# LLVM settings
+LLVM_GIT		= http://llvm.org/git/llvm.git
+LLVM_BRANCH		= release_32
+LLVM_COMMIT		= 9171fb9cfb25b2e2db64131c15b497de459f69fc
+LLVM_OPTIMIZED		= --enable-optimized --enable-assertions
+# Clang settings
+CLANG_GIT		= http://llvm.org/git/clang.git
+CLANG_BRANCH		= release_32
+CLANG_COMMIT		= 29573b0a825b888c233d7859a257e866ffc5276e
+COMPILERRT_GIT		= http://llvm.org/git/compiler-rt.git
+COMPILERRT_BRANCH	= master
+COMPILERRT_COMMIT	= 22881ec8c8a3c01f9b993b186040444b0b5caa50
+# Kernel settings
+KERNEL_GIT		= git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+KERNEL_BRANCH		= master
+KERNEL_TAG		= v3.3
+KERNEL_COMMIT		= c16fa4f2ad19908a47c63d8fa436a1178438c7e7
+KERNELDIR		= ${TARGETDIR}/src/linux
+KERNELGCC		= ${TARGETDIR}/src/linux-gcc
+KERNEL_CFG		= ${TARGETDIR}/CHECKPOINTS/${CHECKPOINTNAME}/config.kernel
+KERNEL_PATCH_DIR	= ${TARGETDIR}/CHECKPOINTS/${CHECKPOINTNAME}/kernel/
+# initramfs settings
+# LTP settings
+LTPSF_RELEASE		= 20120614
+LTPSF_TAR		= ltp-full-20120614.bz2
+LTPSF_URI		= http://downloads.sourceforge.net/project/ltp/LTP%20Source/ltp-20120614/ltp-full-20120614.bz2
+# QEMU settings
+QEMU_BRANCH		= stable-1.0
+QEMU_GIT		= git://git.qemu.org/qemu.git
+QEMU_COMMIT		= 0893d46014b0300fb8aec92df94effea34d04b61
+# NEW
+LLVM_TARGETS_TO_BUILD	= 'ARM;X86'
+KERNEL_PINNED		= 1
+LLVMPATCHES		= ${TARGETDIR}/CHECKPOINTS/${CHECKPOINTNAME}/
