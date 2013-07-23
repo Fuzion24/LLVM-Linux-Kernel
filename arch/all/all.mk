@@ -187,6 +187,8 @@ VERSION_TARGETS		+= ${KERNEL_TARGETS_VERSION}
 #############################################################################
 SCAN_BUILD		:= scan-build
 SCAN_BUILD_FLAGS	:= --use-cc=${CLANG}
+ENABLE_CHECKERS		?=
+DISABLE_CHECKERS	?=
 ifdef ENABLE_CHECKERS
 	SCAN_BUILD_FLAGS += -enable-checker ${ENABLE_CHECKERS}
 endif
