@@ -22,8 +22,6 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
-export JOBS
-
 TOOLCHAIN	= ${TOPDIR}/toolchain
 TOOLSDIR	= ${TOPDIR}/tools
 ARCHDIR		= ${TOPDIR}/arch
@@ -251,7 +249,7 @@ raze-all: tmp-mrproper
 	@$(call banner,All external sources razed!)
 
 ##############################################################################
-sync-all: prep
+sync-all: state/prep
 	@$(call banner,Syncing everything...)
 	${MAKE} ${SYNC_TARGETS}
 	@$(call banner,All external sources synced!)
