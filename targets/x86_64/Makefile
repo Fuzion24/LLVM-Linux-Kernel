@@ -44,7 +44,8 @@ TARGETS+= clean mrproper test test2
 .PHONY: test test2 fetch-initrd prep clean mrproper test
 
 prep: state/prep
-state/prep: ${TMPDIR}
+state/prep:
+	$(MAKE) ${TMPDIR}
 	@mkdir -p ${LOGDIR}
 	$(call state,$@)
 

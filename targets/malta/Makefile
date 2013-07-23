@@ -36,7 +36,8 @@ include ${CONFIG}
 
 prep: state/prep
 state/prep:
-	@mkdir -p ${LOGDIR} ${TMPDIR}
+	$(MAKE) ${TMPDIR}
+	@mkdir -p ${LOGDIR}
 	$(call state,$@)
 
 clean: kernel-clean kernel-gcc-clean
