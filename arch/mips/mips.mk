@@ -29,9 +29,6 @@ CROSS_COMPILE	= ${HOST}-
 
 include ${ARCHDIR}/all/all.mk
 
-export HOST_TYPE=${HOST}
-export HOST_TRIPLE
-
 ARCH_MIPS_DIR		= ${ARCHDIR}/mips
 ARCH_MIPS_BINDIR	= ${ARCH_MIPS_DIR}/bin
 ARCH_MIPS_PATCHES	= ${ARCH_MIPS_DIR}/patches

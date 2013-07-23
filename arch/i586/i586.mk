@@ -26,9 +26,6 @@ ARCH	= i586
 
 include ${ARCHDIR}/all/all.mk
 
-export HOST_TYPE=${HOST}
-export HOST_TRIPLE
-
 ARCH_X86_32_DIR		= ${ARCHDIR}/i586
 ARCH_X86_32_BINDIR	= ${ARCH_X86_32_DIR}/bin
 ARCH_X86_32_PATCHES	= ${ARCH_X86_32_DIR}/patches

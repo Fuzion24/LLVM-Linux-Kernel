@@ -23,11 +23,8 @@
 
 # Note: This file must be included after ${TOPDIR}/common.mk
 
-export ARCH
-export MARCH
-export MFLOAT
-export KERNEL_MAKE_TARGETS
-export CROSS_COMPILE
+#export MARCH
+#export MFLOAT
 
 STATE_TOOLCHAIN	= state/arm-cc
 

@@ -26,9 +26,6 @@ ARCH	= x86_64
 
 include ${ARCHDIR}/all/all.mk
 
-export HOST_TYPE=${HOST}
-export HOST_TRIPLE
-
 ARCH_X86_64_DIR		= ${ARCHDIR}/x86_64
 ARCH_X86_64_BINDIR	= ${ARCH_X86_64_DIR}/bin
 ARCH_X86_64_PATCHES	= ${ARCH_X86_64_DIR}/patches
