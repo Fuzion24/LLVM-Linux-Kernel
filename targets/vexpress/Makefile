@@ -91,7 +91,8 @@ vexpress-help:
 	@echo "* make mrproper		- Remove all downloaded and built files"
 
 prep: state/prep
-state/prep: ${TMPDIR}
+state/prep:
+	$(MAKE) ${TMPDIR}
 	@mkdir -p ${LOGDIR}
 	$(call state,$@)
 

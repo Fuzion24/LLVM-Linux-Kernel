@@ -100,7 +100,7 @@ KERNEL_VAR	+= CONFIG_NO_ERROR_ON_MISMATCH=y
 KERNEL_VAR	+= ${EXTRAFLAGS}
 
 list-var: list-buildroot
-	@which gcc clang
+	@which clang gcc ${CROSS_COMPILE}gcc
 	@echo ${seperator}
 	@echo "ARCH=${ARCH}"
 	@echo "CC=${CC}"
@@ -127,8 +127,8 @@ list-var: list-buildroot
 	@echo ${seperator}
 	@echo "${CLANG} -print-file-name=include"
 	@${CLANG} -print-file-name=include
-
-	@echo '$(call make-kernel,${KERNELDIR},${KERNEL_ENV},CC="${CLANGCC}")'
+	@echo 'kernel-build -> $(call make-kernel,${KERNELDIR},${KERNEL_ENV},CC="${CLANGCC}")'
+	@echo 'kernel-gcc-build -> $(call make-kernel,${KERNELGCC},${KERNELGCC_ENV} ${SPARSE})'
 
 #############################################################################
 TOPLOGDIR	= ${TOPDIR}/log
@@ -254,8 +254,8 @@ kernel-raze:
 	@$(call leavestate,${STATEDIR},*)
 
 #############################################################################
-kernel-fetch: state/kernel-fetch prep
-state/kernel-fetch: ${SHARED_KERNEL}
+kernel-fetch: state/kernel-fetch
+state/kernel-fetch: ${SHARED_KERNEL} state/prep
 	@$(call banner,Cloning kernel...)
 	@mkdir -p ${SRCDIR}
 	@[ -z "${KERNEL_BRANCH}" ] || $(call echo,Checking out kernel branch...)
@@ -291,6 +291,7 @@ state/kernel-gcc-fetch: state/kernel-fetch
 #############################################################################
 kernel-patch: state/kernel-patch
 state/kernel-patch: state/kernel-fetch state/kernel-quilt
+	@make -s ${TMPDIR}
 	@$(call banner,Patching kernel...)
 	@echo ${PATCHDIR}
 	$(call patches_dir,${PATCHDIR},${KERNELDIR}/patches)
@@ -301,6 +302,7 @@ state/kernel-patch: state/kernel-fetch state/kernel-quilt
 #############################################################################
 kernel-gcc-patch: state/kernel-gcc-patch
 state/kernel-gcc-patch: state/kernel-gcc-fetch state/kernel-quilt
+	@make -s ${TMPDIR}
 	@$(call banner,Patching kernel for gcc...)
 	@$(call patches_dir,${PATCHDIR},${KERNELGCC}/patches)
 	@$(call optional_gitreset,${KERNELGCC})
@@ -362,7 +364,7 @@ state/kernel-gcc-configure: state/kernel-gcc-patch
 
 #############################################################################
 kernel-build: state/kernel-build
-state/kernel-build: ${TMPDIR} ${STATE_CLANG_TOOLCHAIN} ${STATE_TOOLCHAIN} state/kernel-configure
+state/kernel-build: ${STATE_CLANG_TOOLCHAIN} ${STATE_TOOLCHAIN} state/kernel-configure
 	@[ -d ${KERNEL_BUILD} ] || ($(call leavestate,${STATEDIR},kernel-configure) && ${MAKE} kernel-configure)
 	@$(MAKE) kernel-quilt-link-patches
 	@$(call banner,Building kernel with clang...)
@@ -379,7 +381,7 @@ state/kernel-gcc-build: ${TMPDIR} ${STATE_TOOLCHAIN} state/kernel-gcc-configure
 	@$(call banner,Building kernel with gcc...)
 #	(cd ${KERNELGCC} ; sed -i -e "s#-Qunused-arguments##g" Makefile)
 #	(cd ${KERNELGCC} ; for ix in `git grep integrated-as | cut -d":" -f1 ` ; do sed -i -e "s#-no-integrated-as##g" $$ix ; done )
-	@$(call make-kernel,${KERNELGCC},${KERNELGCC_ENV} ${SPARSE})
+	$(call make-kernel,${KERNELGCC},${KERNELGCC_ENV} ${SPARSE})
 	@$(call get-kernel-size,gcc,${CROSS_GCC},${KERNELGCC_BUILD})
 	$(call state,$@,done)
 

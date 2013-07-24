@@ -78,7 +78,8 @@ REFREPO			= ${SHARED_KERNEL}
 KERNEL_PATCH_DIR	+= ${PATCHDIR} ${PATCHDIR}/${KERNEL_REPO_PATCHES}
 prep: state/prep
 state/prep:
-	@mkdir -p ${LOGDIR} ${TMPDIR}
+	$(MAKE) ${TMPDIR}
+	@mkdir -p ${LOGDIR}
 	$(call state,$@)
 
 beaglebone-help:

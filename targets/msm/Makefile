@@ -51,7 +51,8 @@ TARGETS+= check-dups kernel-autopatch clean mrproper
 
 prep: state/prep
 state/prep:
-	@mkdir -p ${LOGDIR} ${TMPDIR}
+	$(MAKE) ${TMPDIR}
+	@mkdir -p ${LOGDIR}
 	$(call state,$@)
 
 check-dups:

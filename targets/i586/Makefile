@@ -43,7 +43,8 @@ TARGETS+= clean mrproper test test2
 
 prep: state/prep
 state/prep:
-	@mkdir -p ${LOGDIR} ${TMPDIR}
+	$(MAKE) ${TMPDIR}
+	@mkdir -p ${LOGDIR}
 	$(call state,$@)
 
 clean: kernel-clean kernel-gcc-clean

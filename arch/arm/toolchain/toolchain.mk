@@ -21,9 +21,6 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
-# The following exports are required for make_kernel.sh
-export CFLAGS COMPILER_PATH HOST HOST_TRIPLE ARM_CROSS_GCC_TOOLCHAIN
-
 ARCH_ARM_TMPDIR	= ${ARCH_ARM_DIR}/toolchain/tmp
 TMPDIRS		+= ${ARCH_ARM_TMPDIR}
 
@@ -56,7 +53,7 @@ else
   endif
 endif
 
-ifneq (${COMPILER_PATH}, "")
+ifneq ("${COMPILER_PATH}", "")
 CCOPTS	= -gcc-toolchain ${COMPILER_PATH}
 endif
 
