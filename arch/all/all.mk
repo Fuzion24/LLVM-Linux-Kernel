@@ -188,7 +188,7 @@ VERSION_TARGETS		+= ${KERNEL_TARGETS_VERSION}
 SCAN_BUILD		:= scan-build
 SCAN_BUILD_FLAGS	:= --use-cc=${CLANG}
 ENABLE_CHECKERS		?=
-DISABLE_CHECKERS	?=
+DISABLE_CHECKERS	?= core.CallAndMessage,core.UndefinedBinaryOperatorResult,core.uninitialized.Assign,cplusplus.NewDelete,deadcode.DeadStores,security.insecureAPI.getpw,security.insecureAPI.gets,security.insecureAPI.mktemp,security.insecureAPI.mktemp,unix.MismatchedDeallocator
 ifdef ENABLE_CHECKERS
 	SCAN_BUILD_FLAGS += -enable-checker ${ENABLE_CHECKERS}
 endif
