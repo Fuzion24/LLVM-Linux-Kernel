@@ -17,25 +17,23 @@ Description:
  arch/x86/realmode/rm/Makefile |   12 ++++++++++--
  1 Datei geändert, 10 Zeilen hinzugefügt(+), 2 Zeilen entfernt(-)
 
-diff --git a/arch/x86/realmode/rm/Makefile b/arch/x86/realmode/rm/Makefile
-index 8869287..8e29781 100644
---- a/arch/x86/realmode/rm/Makefile
-+++ b/arch/x86/realmode/rm/Makefile
-@@ -19,6 +19,13 @@ wakeup-objs	+= video-vga.o
+--- linux-gcc.orig/arch/x86/realmode/rm/Makefile
++++ linux-gcc/arch/x86/realmode/rm/Makefile
+@@ -19,6 +19,13 @@
  wakeup-objs	+= video-vesa.o
  wakeup-objs	+= video-bios.o
  
-+AFLAGS_wakeup_asm.o	= -no-integrated-as
-+AFLAGS_bioscall.o	= -no-integrated-as
-+AFLAGS_copy.o		= -no-integrated-as
-+AFLAGS_trampoline_32.o	= -no-integrated-as
-+AFLAGS_trampoline_64.o	= -no-integrated-as
-+AFLAGS_reboot_32.o	= -no-integrated-as
++AFLAGS_wakeup_asm.o	= $(call cc-option,-no-integrated-as,)
++AFLAGS_bioscall.o	= $(call cc-option,-no-integrated-as,)
++AFLAGS_copy.o		= $(call cc-option,-no-integrated-as,)
++AFLAGS_trampoline_32.o	= $(call cc-option,-no-integrated-as,)
++AFLAGS_trampoline_64.o	= $(call cc-option,-no-integrated-as,)
++AFLAGS_reboot_32.o	= $(call cc-option,-no-integrated-as,)
 +
  realmode-y			+= header.o
  realmode-y			+= trampoline_$(BITS).o
  realmode-y			+= stack.o
-@@ -70,13 +77,14 @@ KBUILD_CFLAGS	:= $(LINUXINCLUDE) -m32 -g -Os -D_SETUP -D__KERNEL__ -D_WAKEUP \
+@@ -70,13 +77,14 @@
  		   -I$(srctree)/arch/x86/boot \
  		   -DDISABLE_BRANCH_PROFILING \
  		   -Wall -Wstrict-prototypes \
@@ -49,9 +47,6 @@ index 8869287..8e29781 100644
  		   $(call cc-option, -fno-stack-protector) \
 -		   $(call cc-option, -mpreferred-stack-boundary=2)
 +		   $(call cc-option, -mpreferred-stack-boundary=2) \
-+		   -no-integrated-as
++		   $(call cc-option,-no-integrated-as,)
  KBUILD_AFLAGS	:= $(KBUILD_CFLAGS) -D__ASSEMBLY__
  GCOV_PROFILE := n
--- 
-1.7.10.4
-
