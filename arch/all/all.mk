@@ -291,7 +291,6 @@ state/kernel-gcc-fetch: state/kernel-fetch
 #############################################################################
 kernel-patch: state/kernel-patch
 state/kernel-patch: state/kernel-fetch state/kernel-quilt
-	@make -s ${TMPDIR}
 	@$(call banner,Patching kernel...)
 	@echo ${PATCHDIR}
 	$(call patches_dir,${PATCHDIR},${KERNELDIR}/patches)
@@ -302,7 +301,6 @@ state/kernel-patch: state/kernel-fetch state/kernel-quilt
 #############################################################################
 kernel-gcc-patch: state/kernel-gcc-patch
 state/kernel-gcc-patch: state/kernel-gcc-fetch state/kernel-quilt
-	@make -s ${TMPDIR}
 	@$(call banner,Patching kernel for gcc...)
 	@$(call patches_dir,${PATCHDIR},${KERNELGCC}/patches)
 	@$(call optional_gitreset,${KERNELGCC})
@@ -375,7 +373,7 @@ state/kernel-build: ${STATE_CLANG_TOOLCHAIN} ${STATE_TOOLCHAIN} state/kernel-con
 
 #############################################################################
 kernel-gcc-build: state/kernel-gcc-build
-state/kernel-gcc-build: ${TMPDIR} ${STATE_TOOLCHAIN} state/kernel-gcc-configure
+state/kernel-gcc-build: ${STATE_TOOLCHAIN} state/kernel-gcc-configure
 	@[ -d ${KERNELGCC_BUILD} ] || ($(call leavestate,${STATEDIR},kernel-gcc-configure) && ${MAKE} kernel-gcc-configure)
 	@$(MAKE) kernel-quilt-link-patches
 	@$(call banner,Building kernel with gcc...)
@@ -482,6 +480,7 @@ kernel-gcc-bisect-good: kernel-clean
 kernel-gcc-bisect-bad: kernel-clean
 	@(cd ${KERNELGCC} ; git bisect bad)
 #############################################################################
+tmp tmpdir: ${TMPDIR}
 ${TMPDIR}:
 	@mkdir -p $@
 tmp-clean:

@@ -57,8 +57,8 @@ makemrproper = if [ -f ${1}/Makefile ]; then ${3} make --quiet -C ${1} ${2} mrpr
 # Quilt patch macros used by all subsystems
 patches_dir = [ "`stat -c "%N" ${2}`" = "'${2}' -> '${1}'" ] || (rm -f ${2}; ln -sf ${1} ${2})
 applied	= ( [ -d ${1} ] && cd ${1} && quilt applied || true )
-patch	= [ ! -d ${1} ] || (cd ${1} && if [ -e patches ] && $(call echo,Applying patches to ${1}) && quilt unapplied ; then quilt push -a ; else >/dev/null ; fi)
-unpatch	= [ ! -d ${1} ] || (cd ${1} && if [ -e patches ] && $(call echo,Unapplying patches from ${1}) && quilt applied ; then quilt pop -af ; else >/dev/null ; fi)
+patch	= mkdir -p ${TMPDIR}; [ ! -d ${1} ] || (cd ${1} && if [ -e patches ] && $(call echo,Applying patches to ${1}) && quilt unapplied ; then quilt push -a ; else >/dev/null ; fi)
+unpatch	= mkdir -p ${TMPDIR}; [ ! -d ${1} ] || (cd ${1} && if [ -e patches ] && $(call echo,Unapplying patches from ${1}) && quilt applied ; then quilt pop -af ; else >/dev/null ; fi)
 apply_patch = (cd ${1} && cat ${2} | patch -s -p1)
 
 ##############################################################################
