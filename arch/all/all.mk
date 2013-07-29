@@ -401,13 +401,13 @@ state/kernel-gcc-build: ${STATE_TOOLCHAIN} state/kernel-gcc-configure
 	$(call state,$@,done)
 
 #############################################################################
-kernel-scan-build: ${TMPDIR} ${LLVMSTATE}/clang-build ${STATE_TOOLCHAIN} state/kernel-configure
+kernel-scan-build: ${STATE_CLANG_TOOLCHAIN} ${STATE_TOOLCHAIN} state/kernel-configure
 	@$(eval CHECKER := ${SCAN_BUILD} ${SCAN_BUILD_FLAGS})
 	@$(call banner,Enabling clang static analyzer: ${CHECKER})
 	${MAKE} CHECKER="${CHECKER}" CC=ccc-analyzer kernel-build
 
 #############################################################################
-kernel-check-build: ${TMPDIR} ${LLVMSTATE}/clang-build ${STATE_TOOLCHAIN} state/kernel-configure
+kernel-check-build: ${STATE_CLANG_TOOLCHAIN} ${STATE_TOOLCHAIN} state/kernel-configure
 	@$(eval CHECK_VARS := C=1 CHECK=${CLANG} CHECKFLAGS=--analyze)
 	@$(call banner,Enabling clang static analyzer as you go: ${CLANG} --analyze)
 	${MAKE} CHECK_VARS="${CHECK_VARS}" kernel-build
