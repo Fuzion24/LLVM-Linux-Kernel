@@ -402,6 +402,7 @@ state/kernel-gcc-build: ${STATE_TOOLCHAIN} state/kernel-gcc-configure
 
 #############################################################################
 kernel-scan-build: ${STATE_CLANG_TOOLCHAIN} ${STATE_TOOLCHAIN} state/kernel-configure
+	@$(call assert_found_in_path,ccc-analyzer,"(prebuilt and native clang doesn't always provide ccc-analyzer)")
 	@$(eval CHECKER := ${SCAN_BUILD} ${SCAN_BUILD_FLAGS})
 	@$(call banner,Enabling clang static analyzer: ${CHECKER})
 	${MAKE} CHECKER="${CHECKER}" CC=ccc-analyzer kernel-build

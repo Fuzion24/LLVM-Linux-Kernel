@@ -46,7 +46,7 @@ state	= @mkdir -p $(dir ${1}) && touch ${1} \
 leavestate = rm -f $(wildcard $(addprefix ${1}/,${2}))
 error1	= ( echo Error: ${1}; false )
 assert	= [ ${1} ] || $(call error1,${2})
-assert_found_in_path = which ${1} || (echo "${1}: Not found in PATH"; false)
+assert_found_in_path = which ${1} || (echo "${1}: Not found in PATH" ${2}; false)
 
 ##############################################################################
 # recursive Make macros
