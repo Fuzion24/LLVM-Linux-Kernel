@@ -157,7 +157,7 @@ get-kernel-size		= mkdir -p ${TOPLOGDIR} ; \
 			( ${2} --version | head -1 ; \
 			cd ${3} && wc -c ${KERNEL_SIZE_ARTIFACTS} ) \
 			| tee $(call sizelog,${TOPLOGDIR},{1})
-make-kernel		= (cd ${1} && ${2} time make ${MAKE_FLAGS} ${KERNEL_VAR} ${3} ${KERNEL_MAKE_TARGETS} ${4})
+make-kernel		= (cd ${1} && ${2} time ${3} make ${MAKE_FLAGS} ${KERNEL_VAR} ${4} ${5} ${KERNEL_MAKE_TARGETS} ${6})
 
 #############################################################################
 KERNEL_TARGETS_CLANG	= kernel-[fetch,patch,configure,build,clean,sync]
@@ -185,6 +185,18 @@ VERSION_TARGETS		+= ${KERNEL_TARGETS_VERSION}
 .PHONY:			${KERNEL_TARGETS_CLANG} ${KERNEL_TARGETS_GCC} ${KERNEL_TARGETS_APPLIED} ${KERNEL_TARGETS_CLEAN} ${KERNEL_TARGETS_VERSION}
 
 #############################################################################
+SCAN_BUILD		:= scan-build
+SCAN_BUILD_FLAGS	:= --use-cc=${CLANG}
+ENABLE_CHECKERS		?=
+DISABLE_CHECKERS	?= core.CallAndMessage,core.UndefinedBinaryOperatorResult,core.uninitialized.Assign,cplusplus.NewDelete,deadcode.DeadStores,security.insecureAPI.getpw,security.insecureAPI.gets,security.insecureAPI.mktemp,security.insecureAPI.mktemp,unix.MismatchedDeallocator
+ifdef ENABLE_CHECKERS
+	SCAN_BUILD_FLAGS += -enable-checker ${ENABLE_CHECKERS}
+endif
+ifdef DISABLE_CHECKERS
+	SCAN_BUILD_FLAGS += -disable-checker ${DISABLE_CHECKERS}
+endif
+
+#############################################################################
 kernel-help:
 	@echo
 	@echo "These are the kernel make targets:"
@@ -203,6 +215,11 @@ kernel-help:
 	@echo "* make kernel-bisect-good - mark as good"
 	@echo "* make kernel-bisect-bad  - mark as bad"
 	@echo "* make kernel-bisect-skip - skip revision"
+	@echo "These also include static analysis:"
+	@echo "* make kernel-scan-build  - Run build through scan-build and generate"
+	@echo "                            HTML output to trace the found issue"
+	@echo "* make kernel-check-build - Use the kbuild's \$CHECK to run clang's"
+	@echo "                            static analyzer"
 
 ##############################################################################
 CHECKPOINT_TARGETS		+= kernel-checkpoint
@@ -366,7 +383,7 @@ state/kernel-build: ${STATE_CLANG_TOOLCHAIN} ${STATE_TOOLCHAIN} state/kernel-con
 	@[ -d ${KERNEL_BUILD} ] || ($(call leavestate,${STATEDIR},kernel-configure) && ${MAKE} kernel-configure)
 	@$(MAKE) kernel-quilt-link-patches
 	@$(call banner,Building kernel with clang...)
-	$(call make-kernel,${KERNELDIR},${KERNEL_ENV},CC="${CLANGCC}")
+	$(call make-kernel,${KERNELDIR},${KERNEL_ENV},${CHECKER},${CHECK_VARS},CC?="${CLANGCC}")
 	@$(call banner,Successfully Built kernel with clang!)
 	@$(call get-kernel-size,clang,${CLANG},${KERNEL_BUILD})
 	$(call state,$@,done)
@@ -382,6 +399,18 @@ state/kernel-gcc-build: ${STATE_TOOLCHAIN} state/kernel-gcc-configure
 	$(call make-kernel,${KERNELGCC},${KERNELGCC_ENV} ${SPARSE})
 	@$(call get-kernel-size,gcc,${CROSS_GCC},${KERNELGCC_BUILD})
 	$(call state,$@,done)
+
+#############################################################################
+kernel-scan-build: ${TMPDIR} ${LLVMSTATE}/clang-build ${STATE_TOOLCHAIN} state/kernel-configure
+	@$(eval CHECKER := ${SCAN_BUILD} ${SCAN_BUILD_FLAGS})
+	@$(call banner,Enabling clang static analyzer: ${CHECKER})
+	${MAKE} CHECKER="${CHECKER}" CC=ccc-analyzer kernel-build
+
+#############################################################################
+kernel-check-build: ${TMPDIR} ${LLVMSTATE}/clang-build ${STATE_TOOLCHAIN} state/kernel-configure
+	@$(eval CHECK_VARS := C=1 CHECK=${CLANG} CHECKFLAGS=--analyze)
+	@$(call banner,Enabling clang static analyzer as you go: ${CLANG} --analyze)
+	${MAKE} CHECK_VARS="${CHECK_VARS}" kernel-build
 
 #############################################################################
 kernel-build-force kernel-gcc-build-force: %-force:
