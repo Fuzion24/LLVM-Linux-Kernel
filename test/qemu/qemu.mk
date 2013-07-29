@@ -96,7 +96,8 @@ ${QEMUSRCDIR}/dtc:
 
 ##############################################################################
 qemu-patch: ${QEMUSTATE}/qemu-patch
-${QEMUSTATE}/qemu-patch: ${QEMUSTATE}/qemu-fetch ${QEMUSRCDIR}/dtc
+${QEMUSTATE}/qemu-patch: ${QEMUSTATE}/qemu-fetch
+# ${QEMUSRCDIR}/dtc
 	@$(call banner,Patching QEMU...)
 	@$(call patches_dir,${QEMUPATCHES},${QEMUSRCDIR}/patches)
 	@$(call patch,${QEMUSRCDIR})
@@ -115,7 +116,8 @@ ${QEMUSTATE}/qemu-dtc-submodule: ${QEMUSTATE}/qemu-fetch
 
 ##############################################################################
 qemu-configure: ${QEMUSTATE}/qemu-configure 
-${QEMUSTATE}/qemu-configure: ${QEMUSTATE}/qemu-dtc-submodule ${QEMUSTATE}/qemu-patch
+${QEMUSTATE}/qemu-configure: ${QEMUSTATE}/qemu-patch
+#${QEMUSTATE}/qemu-dtc-submodule 
 	@make -s build-dep-check
 	@$(call banner,Configure QEMU...)
 	@mkdir -p ${QEMUBUILDDIR}

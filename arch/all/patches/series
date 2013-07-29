@@ -17,14 +17,3 @@ vlais-libcrc32c.patch
 vlais-netfilter.patch
 vlais-testmgr.patch
 kbuild-clang.patch
-2001-Revert-mm-sched-Allow-uaccess-in-atomic-with-pagefau.patch
-2002-Revert-mm-sched-Drop-voluntary-schedule-from-might_f.patch
-2003-Revert-x86-uaccess-s-might_sleep-might_fault.patch
-2004-Revert-tile-uaccess-s-might_sleep-might_fault.patch
-2005-Revert-powerpc-uaccess-s-might_sleep-might_fault.patch
-2006-Revert-mn10300-uaccess-s-might_sleep-might_fault.patch
-2007-Revert-microblaze-uaccess-s-might_sleep-might_fault.patch
-2008-Revert-m32r-uaccess-s-might_sleep-might_fault.patch
-2009-Revert-frv-uaccess-s-might_sleep-might_fault.patch
-2010-Revert-arm64-uaccess-s-might_sleep-might_fault.patch
-2011-Revert-asm-generic-uaccess-s-might_sleep-might_fault.patch
