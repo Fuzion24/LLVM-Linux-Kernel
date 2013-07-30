@@ -88,6 +88,7 @@ test-boot-poweroff: state/prep ${QEMUSTATE}/qemu-build initramfs-unpacked
 	@rm -rf ${INITBUILDFSDIR}/lib/modules
 #	(cd ${KERNEL_BUILD} && make V=0 INSTALL_MOD_PATH=${INITBUILDFSDIR} modules_install 2>&1 > /dev/null)
 	mkdir -p ${INITBUILDFSDIR}/usr/lib
+	echo 'echo "### SUCCESS ### "' >> ${INITBUILDFSDIR}/etc/init.d/rcS
 	@rm -f ${INITRAMFS}
 	@make ${INITRAMFS}
 	mv ${INITRAMFS} ${INITRAMFS}.clang
