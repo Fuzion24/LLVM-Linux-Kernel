@@ -23,8 +23,10 @@
 
 # Note: use CROSS_ARM_TOOLCHAIN=codesourcery to include this file
 
-CSCC_URL	= https://sourcery.mentor.com/GNUToolchain/package8739/public/arm-none-linux-gnueabi/arm-2011.03-41-arm-none-linux-gnueabi-i686-pc-linux-gnu.tar.bz2
-CSCC_NAME	= arm-2011.03
+#CSCC_URL	= https://sourcery.mentor.com/GNUToolchain/package8739/public/arm-none-linux-gnueabi/arm-2011.03-41-arm-none-linux-gnueabi-i686-pc-linux-gnu.tar.bz2
+#CSCC_NAME	= arm-2011.03
+CSCC_URL	= https://sourcery.mentor.com/GNUToolchain/package11447/public/arm-none-linux-gnueabi/arm-2013.05-24-arm-none-linux-gnueabi-i686-pc-linux-gnu.tar.bz2
+CSCC_NAME	= arm-2013.05
 CSCC_TAR	= ${notdir ${CSCC_URL}}
 CSCC_TOPDIR	= ${ARCH_ARM_TOOLCHAIN}/codesourcery
 CSCC_TMPDIR	= ${CSCC_TOPDIR}/tmp
