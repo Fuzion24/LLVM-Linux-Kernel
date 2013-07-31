@@ -1,0 +1,40 @@
+diff --git a/kernel/mutex.c b/kernel/mutex.c
+index ff05f4b..0ea6eb9 100644
+--- a/kernel/mutex.c
++++ b/kernel/mutex.c
+@@ -448,7 +448,7 @@ __mutex_lock_common(struct mutex *lock, long state, unsigned int subclass,
+ 		struct task_struct *owner;
+ 		struct mspin_node  node;
+ 
+-		if (!__builtin_constant_p(ww_ctx == NULL) && ww_ctx->acquired > 0) {
++		if (!(ww_ctx == NULL) && ww_ctx->acquired > 0) {
+ 			struct ww_mutex *ww;
+ 
+ 			ww = container_of(lock, struct ww_mutex, base);
+@@ -478,7 +478,7 @@ __mutex_lock_common(struct mutex *lock, long state, unsigned int subclass,
+ 		if ((atomic_read(&lock->count) == 1) &&
+ 		    (atomic_cmpxchg(&lock->count, 1, 0) == 1)) {
+ 			lock_acquired(&lock->dep_map, ip);
+-			if (!__builtin_constant_p(ww_ctx == NULL)) {
++			if (!(ww_ctx == NULL)) {
+ 				struct ww_mutex *ww;
+ 				ww = container_of(lock, struct ww_mutex, base);
+ 
+@@ -548,7 +548,7 @@ slowpath:
+ 			goto err;
+ 		}
+ 
+-		if (!__builtin_constant_p(ww_ctx == NULL) && ww_ctx->acquired > 0) {
++		if (!(ww_ctx == NULL) && ww_ctx->acquired > 0) {
+ 			ret = __mutex_lock_check_stamp(lock, ww_ctx);
+ 			if (ret)
+ 				goto err;
+@@ -568,7 +568,7 @@ done:
+ 	mutex_remove_waiter(lock, &waiter, current_thread_info());
+ 	mutex_set_owner(lock);
+ 
+-	if (!__builtin_constant_p(ww_ctx == NULL)) {
++	if (!(ww_ctx == NULL)) {
+ 		struct ww_mutex *ww = container_of(lock,
+ 						      struct ww_mutex,
+ 						      base);
