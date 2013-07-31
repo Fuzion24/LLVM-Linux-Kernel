@@ -5,6 +5,7 @@ export RUNNING=true
 
 while $RUNNING; do
 
+    patched=0
     result=""
     
     rm tmp/qemu_log
@@ -18,6 +19,7 @@ while $RUNNING; do
 
     if test -f state/kernel-patch ; then
 	result="$result patched"
+	patched=1
     fi
 
     if test -f state/kernel-build ; then
@@ -67,4 +69,8 @@ while $RUNNING; do
 echo "$result" >> _single
 echo "############" >> _single
 
+    if test x"$patched" == x"0" ; then
+	echo "Patching failed - still continue?"
+	read aw
+    fi
 done
