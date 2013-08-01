@@ -49,35 +49,35 @@ ${CSCC_TMPDIR}/${CSCC_TAR}:
 	wget -c -P ${CSCC_TMPDIR} "${CSCC_URL}"
 
 CROSS_GCC=${CSCC_BINDIR}/${CROSS_COMPILE}gcc
-codesourcery-gcc arm-cc: ${ARCH_ARM_TOOLCHAIN_STATE}/codesourcery-gcc
-${ARCH_ARM_TOOLCHAIN_STATE}/codesourcery-gcc: ${CSCC_TMPDIR}/${CSCC_TAR}
+codesourcery-gcc arm-cc: ${ARCH_ARM_TOOLCHAIN_STATE}/codesourcery-gcc-${CSCC_NAME}
+${ARCH_ARM_TOOLCHAIN_STATE}/codesourcery-gcc-${CSCC_NAME}: ${CSCC_TMPDIR}/${CSCC_TAR}
 	tar -x -j -C ${CSCC_TOPDIR} -f $<
 	$(call state,$@)
 
-${CSCC_DIR}/bin/arm-eabi-ar: ${ARCH_ARM_TOOLCHAIN_STATE}/codesourcery-gcc
+${CSCC_DIR}/bin/arm-eabi-ar: ${ARCH_ARM_TOOLCHAIN_STATE}/codesourcery-gcc-${CSCC_NAME}
 	(cd ${CSCC_DIR} && ln -s ${CSCC_CC_BINDIR}/arm-none-linux-gnueabi-ar $@)
 
-${CSCC_DIR}/bin/arm-eabi-as: ${ARCH_ARM_TOOLCHAIN_STATE}/codesourcery-gcc
+${CSCC_DIR}/bin/arm-eabi-as: ${ARCH_ARM_TOOLCHAIN_STATE}/codesourcery-gcc-${CSCC_NAME}
 	(cd ${CSCC_DIR} && ln -s ${CSCC_CC_BINDIR}/arm-none-linux-gnueabi-as $@)
 
-${CSCC_DIR}/bin/arm-eabi-strip: ${ARCH_ARM_TOOLCHAIN_STATE}/codesourcery-gcc
+${CSCC_DIR}/bin/arm-eabi-strip: ${ARCH_ARM_TOOLCHAIN_STATE}/codesourcery-gcc-${CSCC_NAME}
 	(cd ${CSCC_DIR} && ln -s ${CSCC_CC_BINDIR}/arm-none-linux-gnueabi-strip $@)
 
-${CSCC_DIR}/bin/arm-eabi-ranlib: ${ARCH_ARM_TOOLCHAIN_STATE}/codesourcery-gcc
+${CSCC_DIR}/bin/arm-eabi-ranlib: ${ARCH_ARM_TOOLCHAIN_STATE}/codesourcery-gcc-${CSCC_NAME}
 	(cd ${CSCC_DIR} && ln -s ${CSCC_CC_BINDIR}/arm-none-linux-gnueabi-ranlib $@)
 
-${CSCC_DIR}/bin/arm-eabi-ld: ${ARCH_ARM_TOOLCHAIN_STATE}/codesourcery-gcc
+${CSCC_DIR}/bin/arm-eabi-ld: ${ARCH_ARM_TOOLCHAIN_STATE}/codesourcery-gcc-${CSCC_NAME}
 	(cd ${CSCC_DIR} && ln -s ${CSCC_CC_BINDIR}/arm-none-linux-gnueabi-ld $@)
 
-state/arm-cc: ${ARCH_ARM_TOOLCHAIN_STATE}/codesourcery-gcc
+state/arm-cc: ${ARCH_ARM_TOOLCHAIN_STATE}/codesourcery-gcc-${CSCC_NAME}
 	$(call state,$@)
 	
 codesourcery-gcc-clean arm-cc-clean:
 	@$(call banner,Removing Codesourcery compiler...)
-	@rm -f state/arm-cc ${ARCH_ARM_TOOLCHAIN_STATE}/codesourcery-gcc
+	@rm -f state/arm-cc ${ARCH_ARM_TOOLCHAIN_STATE}/codesourcery-gcc-*
 	@rm -rf ${CSCC_DIR} ${CSCC_TMPDIR}
 
-arm-cc-version: ${ARCH_ARM_TOOLCHAIN_STATE}/codesourcery-gcc
+arm-cc-version: ${ARCH_ARM_TOOLCHAIN_STATE}/codesourcery-gcc-${CSCC_NAME}
 	@${CROSS_GCC} --version | head -1
 
 ${ARCH_ARM_TMPDIR}:
