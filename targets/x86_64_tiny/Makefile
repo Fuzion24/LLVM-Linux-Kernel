@@ -94,5 +94,5 @@ test-boot-poweroff: state/prep ${QEMUSTATE}/qemu-build initramfs-unpacked
 	mv ${INITRAMFS} ${INITRAMFS}.clang
 	( $(call qemu,${BOARD},${KERNEL_BUILD}/arch/x86/boot/bzImage,512,/dev/ram0,rw console=ttyS0 earlyprintk init=/bin/busybox ,-initrd ${INITRAMFS}.clang -net none ) \
 		| tee ${TMPDIR}/qemu_log ) &
-	( sleep 10 && killall -s 9 qemu-system-x86_64 ) || exit 0
+	( sleep 20 && killall -s 9 qemu-system-x86_64 ) || exit 0
 	@grep -a "SUCCESS" ${TMPDIR}/qemu_log
