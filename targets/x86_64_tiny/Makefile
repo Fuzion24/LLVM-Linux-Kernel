@@ -96,3 +96,17 @@ test-boot-poweroff: state/prep ${QEMUSTATE}/qemu-build initramfs-unpacked
 		| tee ${TMPDIR}/qemu_log ) &
 	( sleep 20 && killall -s 9 qemu-system-x86_64 ) || exit 0
 	@grep -a "SUCCESS" ${TMPDIR}/qemu_log
+
+test-kill-bot: test-boot-poweroff-bot
+test-boot-poweroff-bot: state/prep state/kernel-build ${QEMUSTATE}/qemu-build initramfs-unpacked
+	@rm -rf ${INITBUILDFSDIR}/lib/modules
+#	(cd ${KERNEL_BUILD} && make V=0 INSTALL_MOD_PATH=${INITBUILDFSDIR} modules_install 2>&1 > /dev/null)
+	mkdir -p ${INITBUILDFSDIR}/usr/lib
+	echo 'echo "### SUCCESS ### "' >> ${INITBUILDFSDIR}/etc/init.d/rcS
+	@rm -f ${INITRAMFS}
+	@make ${INITRAMFS}
+	mv ${INITRAMFS} ${INITRAMFS}.clang
+	( $(call qemu,${BOARD},${KERNEL_BUILD}/arch/x86/boot/bzImage,512,/dev/ram0,rw console=ttyS0 earlyprintk init=/bin/busybox ,-initrd ${INITRAMFS}.clang -net none ) \
+		| tee ${TMPDIR}/qemu_log ) &
+	( sleep 60 && killall -s 9 qemu-system-x86_64 ) || exit 0
+	@grep -a "SUCCESS" ${TMPDIR}/qemu_log
