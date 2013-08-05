@@ -82,7 +82,12 @@ KERNELGCC_ENV	+= KBUILD_OUTPUT=${KERNELGCC_BUILD}
 endif
 
 #############################################################################
+ifneq "BITCODE" ""
+export CLANG
+CLANGCC		= ${ARCH_ALL_BINDIR}/clang-emit-bc.sh ${CCOPTS}
+else
 CLANGCC		= ${CLANG} ${CCOPTS}
+endif
 
 ifneq ("${CROSS_COMPILE}", "")
 MAKE_FLAGS	+= ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE}
@@ -220,6 +225,7 @@ kernel-help:
 	@echo "                            HTML output to trace the found issue"
 	@echo "* make kernel-check-build - Use the kbuild's \$CHECK to run clang's"
 	@echo "                            static analyzer"
+	@echo "* make BITCODE=1          - Output llvm bitcode to *.bc files"
 
 ##############################################################################
 CHECKPOINT_TARGETS		+= kernel-checkpoint
