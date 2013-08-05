@@ -29,11 +29,18 @@ CHECKPOINT_CONFIG	= ${CHECKPOINT_DIR}/config.mk
 CHECKPOINT_MAKEFILE	= ${CHECKPOINT_DIR}/Makefile
 CHECKPOINT_PATCHES	= ${CHECKPOINT_DIR}/patches
 
+HELP_TARGETS		+= checkpoint-help
 SETTINGS_TARGETS	+= checkpoint-settings
 
 checkpoint-patches = mkdir -p ${2}\
 	&& ( cd ${1} && tar -c -h -f - series `cat series` \
 	| tar -C ${2} -x -f - )
+
+#############################################################################
+checkpoint-help:
+	@echo
+	@echo "These are the checkpoint make targets:"
+	@echo "* make CHECKPOINT=<name> checkpoint   Build a checkpoint named <name>"
 
 #############################################################################
 checkpoint-settings:
