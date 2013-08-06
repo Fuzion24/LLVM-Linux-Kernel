@@ -115,6 +115,7 @@ list-var: list-buildroot
 	@echo "COMPILER_PATH='${COMPILER_PATH}'"
 	@echo "CROSS_COMPILE=${CROSS_COMPILE}"
 	@echo "CROSS_GCC=${CROSS_GCC}"
+	@echo "GENERIC_PATCH_DIR=${GENERIC_PATCH_DIR}"
 	@echo "HOST=${HOST}"
 	@echo "HOST_TRIPLE=${HOST_TRIPLE}"
 	@echo "JOBS=${JOBS}"
