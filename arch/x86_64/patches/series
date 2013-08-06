@@ -19,5 +19,4 @@ thinkpad-acpi-nested-functions.patch
 0001-updates-to-latest-patchset-unsplit.-TODO.patch
 0016-Ad-no-integrated-as-to-arch-x86-realmode-rm-Makefile.patch
 0015-Add-no-integrated-as-to-arch-x86-boot-Makefile-for-c.patch
-#debugging.patch
 9000_fix_register_width_in_get_user_as_clang_cares_about_it.patch
