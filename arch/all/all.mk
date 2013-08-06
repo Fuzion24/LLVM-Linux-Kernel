@@ -82,7 +82,7 @@ KERNELGCC_ENV	+= KBUILD_OUTPUT=${KERNELGCC_BUILD}
 endif
 
 #############################################################################
-ifneq "BITCODE" ""
+ifneq "${BITCODE}" ""
 export CLANG
 CLANGCC		= ${ARCH_ALL_BINDIR}/clang-emit-bc.sh ${CCOPTS}
 else
@@ -108,6 +108,7 @@ list-var: list-buildroot
 	@which clang gcc ${CROSS_COMPILE}gcc
 	@echo ${seperator}
 	@echo "ARCH=${ARCH}"
+	@echo "BITCODE='${BITCODE}'"
 	@echo "CC=${CC}"
 	@echo "CFLAGS=${CFLAGS}"
 	@echo "CLANGCC=${CLANGCC}"
