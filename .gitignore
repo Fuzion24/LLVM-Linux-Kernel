@@ -29,7 +29,10 @@ state/
 targets/*/initramfs/
 targets/*/kernel-filter
 targets/*/log
+targets/*/patches/.gitignore
 targets/*/test-results/
 targets/*/tmp
 tmp
 patches.tar.bz2
+old
+du.txt
