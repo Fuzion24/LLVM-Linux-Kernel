@@ -1,3 +1,14 @@
+arm: LLVMLinux: Add current_stack_pointer macro for ARM
+
+A macro to get the current stack pointer which allows for a single place in
+which to do so with ASM. Before this named registers (a gcc extension) was used
+to get the stack pointer. Using ASM is a more portable way of getting the stack
+pointer which works with both gcc and clang.  This macro is of the same name
+used in the X86 arch.
+
+Signed-off-by: Behan Webster <behanw@converseincode.com>
+---
+
 --- linux.orig/arch/arm/include/asm/thread_info.h
 +++ linux/arch/arm/include/asm/thread_info.h
 @@ -88,6 +88,16 @@

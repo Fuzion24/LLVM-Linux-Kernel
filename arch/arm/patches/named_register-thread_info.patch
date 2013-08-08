@@ -1,4 +1,4 @@
-Use frame pointer to calculate ARM current_thread_info()
+arm: LLVMLinux: Use frame pointer to calculate ARM current_thread_info()
 
 Use the frame pointer to calculate the start of the stack for current_thread_info()
 The existing code uses the stack pointer to do this calculation.

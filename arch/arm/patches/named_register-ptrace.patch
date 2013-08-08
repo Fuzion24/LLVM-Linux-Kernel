@@ -1,8 +1,8 @@
-Use frame pointer to calculate ARM pt_regs address
+arm: LLVMLinux: Use frame pointer to calculate ARM pt_regs address
 
 Use the frame pointer to calculate the end of the stack for current_pt_regs()
 The existing code uses the stack pointer to do this calculation.
-Using the frame pointer yeilds the same value in a portable way.
+Using the frame pointer yeilds the same value in a more portable way.
 This change supports being able to compile the kernel with gcc and Clang.
 
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
