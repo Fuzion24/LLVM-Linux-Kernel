@@ -41,7 +41,7 @@ PATCH_FILTER_REGEX	= .*
 
 #############################################################################
 checkfilefor	= grep -q ${2} ${1} || echo "${2}${3}" >> ${1}
-reverselist	= for DIR in ${1} ; do echo $$DIR; done | tac
+reverselist	= mkdir -p ${TMPDIR}; for DIR in ${1} ; do echo $$DIR; done | tac
 ln_if_new	= ls -l "${2}" 2>&1 | grep -q "${1}" || ln -fsv "${1}" "${2}"
 mv_n_ln		= mv "${1}" "${2}" ; ln -sv "${2}" "${1}"
 
@@ -110,7 +110,7 @@ ${QUILTRC}:
 kernel-quilt-series-dot-target: ${SERIES_DOT_TARGET}
 ${SERIES_DOT_TARGET}:
 	@$(call banner,Updating quilt series.target file for kernel...)
-	@mkdir -p ${PATCHDIR}
+	@mkdir -p $(dir $@)
 	@[ -f ${TARGET_PATCH_SERIES} ] || touch ${TARGET_PATCH_SERIES}
 # Rename target series file to series.target (we will be generating the new series file)
 	@[ -e $@ ] || mv ${TARGET_PATCH_SERIES} $@
@@ -139,6 +139,7 @@ QUILT_GITIGNORE	= ${PATCHDIR}/.gitignore
 kernel-quilt-ignore-links: ${QUILT_GITIGNORE}
 ${QUILT_GITIGNORE}: ${GENERIC_PATCH_SERIES}
 	@$(call banner,Ignore symbolic linked quilt patches for kernel...)
+	@mkdir -p $(dir $@)
 	@echo .gitignore > $@
 	@echo series >> $@
 	@cat ${GENERIC_PATCH_SERIES} >> $@
@@ -177,7 +178,8 @@ kernel-quilt-link-patches refresh: ${QUILT_GITIGNORE}
 KERNEL_PATCHES_TAR = patches.tar.bz2
 kernel-patches-tar: ${KERNEL_PATCHES_TAR}
 ${KERNEL_PATCHES_TAR}: kernel-quilt-link-patches
-	tar chfj $@ patches/series `sed -e 's|^|patches/|' patches/series`
+	@tar chfj $@ patches/series `grep -v ^# patches/series | sed -e 's|^|patches/|'`
+	@$(call banner,Created $@)
 
 ##############################################################################
 QUILT_STATE	= state/kernel-quilt
