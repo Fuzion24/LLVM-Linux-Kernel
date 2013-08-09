@@ -22,7 +22,7 @@ Toplevel Makefile adustments to compile with clang
 
 --- linux.orig/Makefile
 +++ linux/Makefile
-@@ -244,6 +244,17 @@
+@@ -244,6 +244,18 @@
  HOSTCFLAGS   = -Wall -Wmissing-prototypes -Wstrict-prototypes -O2 -fomit-frame-pointer
  HOSTCXXFLAGS = -O2
  
@@ -31,6 +31,7 @@ Toplevel Makefile adustments to compile with clang
 +else
 +HOSTCOMPILER := gcc
 +endif
++export HOSTCOMPILER
 +
 +ifeq ($(HOSTCOMPILER),clang)
 +HOSTCFLAGS  += -Wno-unused-value -Wno-unused-parameter -Wno-missing-field-initializers \
