@@ -345,7 +345,7 @@ kernel-gcc-patch-applied:
 #############################################################################
 kernel-patch-status:
 	@$(call banner,Patch status for the kernel)
-	@$(call patchseriesstatus,${PATCHDIR})
+	@$(call patch_series_status,${PATCHDIR})
 
 #############################################################################
 kernel-configure: state/kernel-configure

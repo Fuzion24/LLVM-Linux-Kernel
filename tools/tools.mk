@@ -27,4 +27,7 @@
 PATH	:= ${PATH}:${TOOLSDIR}
 
 PATCHSTATUS = ${TOOLSDIR}/patchstatus
-patchseriesstatus = ${PATCHSTATUS} `cat $(1)/series`
+patch_series_status = ${PATCHSTATUS} `egrep -v '^\#' $(1)/series`
+
+PATCHSTATUSEXTRACT = ${TOOLSDIR}/patchstatusextract
+patch_status_extract = ${PATCHSTATUSEXTRACT} '$(1)' '$(2)' `egrep -v '^\#' $(3)/series`
