@@ -61,7 +61,9 @@ ${CHECKPOINT_DIR}: checkpoint-check
 checkpoint-config: ${CHECKPOINT_CONFIG}
 ${CHECKPOINT_CONFIG}: ${CHECKPOINT_DIR}
 	@$(MAKE) list-config | egrep -v '^$$|^make|^LLVMLINUX_COMMIT' > $@
-	@($(call prsetting,GENERIC_PATCH_DIR,\$${KERNEL_PATCH_DIR}) ; \
+	@(echo "# Extras; \
+	$(call prsetting,GENERIC_PATCH_DIR,\$${KERNEL_PATCH_DIR}) ; \
+	$(call prsetting,ALL_PATCH_SERIES,\$${GENERIC_PATCH_SERIES}) ; \
 		) | $(call configfilter) >> $@
 
 ##############################################################################
