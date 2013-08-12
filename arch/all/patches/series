@@ -10,6 +10,7 @@
 1003-disable-clang-integrated-as.patch
 1004-mm-hugepage-return-value.patch
 valign-header.patch
+vlais-cifs.patch
 vlais-dm-crypt.patch
 vlais-gadget.patch
 vlais-hmac.patch
