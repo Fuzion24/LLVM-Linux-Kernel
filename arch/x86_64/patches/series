@@ -1,4 +1,4 @@
-0014-Remove-unsupported-options-from-Kconfig-file-on-x86.patch
+ignore-arch-hweight-cflags.patch
 0025-Add-option-for-clang-in-export-of-memcpy.patch
 0026-Add-own-versions-of-memcpy-and-memset-for-compilatio.patch
 0027-Add-__used-to-arch-x86-boot-video.patch
