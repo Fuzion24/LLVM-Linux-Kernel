@@ -1,4 +1,4 @@
-arm: LLVMLinux: Use ARM inline assembly to get the stack pointer in return_address()
+arm: LLVMLinux: Use current_stack_pointer for return_address()
 
 The existing code uses named registers to get the value of the stack pointer.
 The new current_stack_pointer macro is more readable and allows for a central
@@ -7,6 +7,7 @@ supports being able to compile the kernel with both gcc and Clang.
 
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
+Reviewed-by: Jan-Simon Möller <dl9pf at gmx.de>
 ---
 
 --- linux.orig/arch/arm/kernel/return_address.c
