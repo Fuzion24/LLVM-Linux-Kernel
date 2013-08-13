@@ -23,10 +23,8 @@ Needed for compilation with clang. Also minor changes to function prototypes.
  arch/x86/boot/string.c          |    6 +++---
  4 Dateien geändert, 36 Zeilen hinzugefügt(+), 15 Zeilen entfernt(-)
 
-diff --git a/arch/x86/boot/boot.h b/arch/x86/boot/boot.h
-index 18997e5..d1fe7a3 100644
---- a/arch/x86/boot/boot.h
-+++ b/arch/x86/boot/boot.h
+--- linux.orig/arch/x86/boot/boot.h
++++ linux/arch/x86/boot/boot.h
 @@ -30,6 +30,12 @@
  #include <asm/processor-flags.h>
  #include "ctype.h"
@@ -40,15 +38,19 @@ index 18997e5..d1fe7a3 100644
  /* Useful macros */
  #define BUILD_BUG_ON(condition) ((void)sizeof(char[1 - 2*!!(condition)]))
  
-@@ -229,11 +235,26 @@ void copy_to_fs(addr_t dst, void *src, size_t len);
+@@ -229,12 +235,36 @@
  void *copy_from_fs(void *dst, addr_t src, size_t len);
  void copy_to_gs(addr_t dst, void *src, size_t len);
  void *copy_from_gs(void *dst, addr_t src, size_t len);
--void *memcpy(void *dst, void *src, size_t len);
--void *memset(void *dst, int c, size_t len);
++
++#ifndef __clang__
+ void *memcpy(void *dst, void *src, size_t len);
+ void *memset(void *dst, int c, size_t len);
  
--#define memcpy(d,s,l) __builtin_memcpy(d,s,l)
--#define memset(d,c,l) __builtin_memset(d,c,l)
+ #define memcpy(d,s,l) __builtin_memcpy(d,s,l)
+ #define memset(d,c,l) __builtin_memset(d,c,l)
+ 
++#else
 +static inline void *memcpy(void *d, const void *s, size_t l)
 +{
 +	int d0, d1, d2;
@@ -68,10 +70,12 @@ index 18997e5..d1fe7a3 100644
 +		     : "memory");
 +	return d;
 +}
- 
++#endif
++
  /* a20.c */
  int enable_a20(void);
-@@ -340,9 +361,9 @@ int printf(const char *fmt, ...);
+ 
+@@ -350,9 +380,9 @@
  void initregs(struct biosregs *regs);
  
  /* string.c */
@@ -84,11 +88,9 @@ index 18997e5..d1fe7a3 100644
  unsigned int atou(const char *s);
  unsigned long long simple_strtoull(const char *cp, char **endp, unsigned int base);
  
-diff --git a/arch/x86/boot/compressed/misc.c b/arch/x86/boot/compressed/misc.c
-index 88f7ff6..19484fc 100644
---- a/arch/x86/boot/compressed/misc.c
-+++ b/arch/x86/boot/compressed/misc.c
-@@ -109,8 +109,8 @@ static void error(char *m);
+--- linux.orig/arch/x86/boot/compressed/misc.c
++++ linux/arch/x86/boot/compressed/misc.c
+@@ -109,8 +109,8 @@
   */
  struct boot_params *real_mode;		/* Pointer to real-mode data */
  
@@ -99,7 +101,7 @@ index 88f7ff6..19484fc 100644
  
  #ifdef CONFIG_X86_64
  #define memptr long
-@@ -218,7 +218,7 @@ void __putstr(const char *s)
+@@ -222,7 +222,7 @@
  	outb(0xff & (pos >> 1), vidport+1);
  }
  
@@ -108,7 +110,7 @@ index 88f7ff6..19484fc 100644
  {
  	int i;
  	char *ss = s;
-@@ -228,7 +228,7 @@ void *memset(void *s, int c, size_t n)
+@@ -232,7 +232,7 @@
  	return s;
  }
  #ifdef CONFIG_X86_32
@@ -117,11 +119,9 @@ index 88f7ff6..19484fc 100644
  {
  	int d0, d1, d2;
  	asm volatile(
-diff --git a/arch/x86/boot/memory.c b/arch/x86/boot/memory.c
-index db75d07..65607e5 100644
---- a/arch/x86/boot/memory.c
-+++ b/arch/x86/boot/memory.c
-@@ -64,7 +64,7 @@ static int detect_memory_e820(void)
+--- linux.orig/arch/x86/boot/memory.c
++++ linux/arch/x86/boot/memory.c
+@@ -64,7 +64,7 @@
  			break;
  		}
  
@@ -130,10 +130,8 @@ index db75d07..65607e5 100644
  		count++;
  	} while (ireg.ebx && count < ARRAY_SIZE(boot_params.e820_map));
  
-diff --git a/arch/x86/boot/string.c b/arch/x86/boot/string.c
-index 574dedf..476ddea 100644
---- a/arch/x86/boot/string.c
-+++ b/arch/x86/boot/string.c
+--- linux.orig/arch/x86/boot/string.c
++++ linux/arch/x86/boot/string.c
 @@ -14,7 +14,7 @@
  
  #include "boot.h"
@@ -143,7 +141,7 @@ index 574dedf..476ddea 100644
  {
  	const unsigned char *s1 = (const unsigned char *)str1;
  	const unsigned char *s2 = (const unsigned char *)str2;
-@@ -30,7 +30,7 @@ int strcmp(const char *str1, const char *str2)
+@@ -30,7 +30,7 @@
  	return 0;
  }
  
@@ -152,7 +150,7 @@ index 574dedf..476ddea 100644
  {
  	unsigned char c1, c2;
  
-@@ -46,7 +46,7 @@ int strncmp(const char *cs, const char *ct, size_t count)
+@@ -46,7 +46,7 @@
  	return 0;
  }
  
@@ -161,6 +159,3 @@ index 574dedf..476ddea 100644
  {
  	const char *es = s;
  	while (*es && maxlen) {
--- 
-1.7.10.4
-
