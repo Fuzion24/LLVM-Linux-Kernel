@@ -1,6 +1,6 @@
 --- linux.orig/Makefile
 +++ linux/Makefile
-@@ -325,6 +325,12 @@
+@@ -326,6 +326,12 @@
  
  export quiet Q KBUILD_VERBOSE
  
@@ -13,7 +13,7 @@
  
  # Look for make include files relative to root of kernel src
  MAKEFLAGS += --include-dir=$(srctree)
-@@ -581,6 +587,9 @@
+@@ -582,6 +588,9 @@
  # Defaults to vmlinux, but the arch makefile usually adds further targets
  all: vmlinux
  
@@ -23,14 +23,13 @@
  ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
  KBUILD_CFLAGS	+= -Os $(call cc-disable-warning,maybe-uninitialized,)
  else
-@@ -610,7 +619,16 @@
+@@ -611,7 +620,15 @@
  
  # This warning generated too much noise in a regular build.
  # Use make W=1 to enable this warning (see scripts/Makefile.build)
 +ifeq ($(COMPILER),clang)
 +KBUILD_CFLAGS += $(call cc-disable-warning, unused-variable)
 +KBUILD_CFLAGS += $(call cc-disable-warning, format-invalid-specifier)
-+KBUILD_CFLAGS += $(call cc-option,-fgnu89-inline,)
 +else
  KBUILD_CFLAGS += $(call cc-disable-warning, unused-but-set-variable)
 +endif

@@ -1,4 +1,5 @@
 eabi.patch
+arm-glue-cache-extern-inline.patch
 ftrace.patch
 kbuild-clang-arm.patch
 get_current_stack_pointer_for_arm.patch
