@@ -1,4 +1,13 @@
+ARM: LLVMLinux: Change "extern inline" to "gnu_inline" in ARM ftrace.h
+
+With compilers which follow the C99 standard (like modern versions of gcc and
+clang), "extern inline" does the wrong thing (emits code for an externally
+linkable version of the inline function). In this case using the gnu_inline
+attribute makes inline do the right thing on gcc and on clang.
+
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+Signed-off-by: Behan Webster <behanw@converseincode.com>
+CC: Steven Rostedt <rostedt@goodmis.org>
 
 --- linux.orig/arch/arm/include/asm/ftrace.h
 +++ linux/arch/arm/include/asm/ftrace.h
