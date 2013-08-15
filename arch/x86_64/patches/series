@@ -9,4 +9,4 @@ ignore-arch-hweight-cflags.patch
 thinkpad-acpi-nested-functions.patch
 0016-Ad-no-integrated-as-to-arch-x86-realmode-rm-Makefile.patch
 0015-Add-no-integrated-as-to-arch-x86-boot-Makefile-for-c.patch
-9003_clang_cares_about_the_register_size.patch
+9004_fix_for_edx_register_on_64_bit_as_suggested_by_hpa.patch
