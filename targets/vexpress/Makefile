@@ -25,6 +25,8 @@
 TARGETDIR	= ${CURDIR}
 TOPDIR		= $(realpath ${TARGETDIR}/../..)
 CROSS_ARM_TOOLCHAIN = codesourcery
+LLVM_COMMIT = master
+CLANG_COMMIT = master
 
 # Need to add EXT4 support to vexpress_defconfig
 KERNEL_CFG	= ${TARGETDIR}/config_vexpress
@@ -119,6 +121,13 @@ ${KERNELGCCDTB_IMG}: state/kernel-gcc-build
 # state/fetch-initrd
 test: state/prep ${QEMUSTATE}/qemu-build ${KERNELDTB_IMG} ${INITRAMIMG} buildroot-build
 	$(call qemu_arm,${BOARD},${KERNELDTB_IMG},768,/dev/ram0,rw,-initrd ${INITRAMIMG} -net none -sd ${BUILDROOT_IMG})
+
+test-debug: state/prep ${KERNELDTB_IMG} ${QEMUSTATE}/qemu-build ${INITRAMIMG}
+	$(call qemu_arm,${BOARD},${KERNELDTB_IMG},256,/dev/ram0,rw,-initrd ${INITRAMIMG} -net none -D qemulog.log -d in_asm,op,int,exec,cpu,cpu_reset)
+
+parse-qemulog:
+	( rm a2llog ; for i in `cat qemulog.log | tail -n 500 | grep ^0x | cut -d":" -f1` ; do echo -n "$$i " >> a2llog ; addr2line -f -p -e src/linux/vmlinux $$i >> a2llog ; done )
+	( cat a2llog | more )
 
 # state/fetch-initrd
 test-kill: test-boot-poweroff
