@@ -13,16 +13,26 @@ URL:     http://llvm.linuxfoundation.org
 Merge:   Jan-Simon Möller <dl9pf at gmx.de>
 
 Description:
+
+Clangs integrated assembler does not know how to handle 16bit x86.
+
+arch/x86/realmode/rm/trampoline_64.S:37:2: error: unexpected directive .code16
+ .code16
+
+Add -no-integrated-as with cc-option. This is transparent for gcc.
+
+Signed-off-by:  Jan-Simon Möller <dl9pf at gmx.de>
 ---
  arch/x86/realmode/rm/Makefile |   12 ++++++++++--
  1 Datei geändert, 10 Zeilen hinzugefügt(+), 2 Zeilen entfernt(-)
 
 --- linux-gcc.orig/arch/x86/realmode/rm/Makefile
 +++ linux-gcc/arch/x86/realmode/rm/Makefile
-@@ -19,6 +19,13 @@
+@@ -19,6 +19,14 @@
  wakeup-objs	+= video-vesa.o
  wakeup-objs	+= video-bios.o
  
++# For clang, we need to enforce not to use the integrated assembler
 +AFLAGS_wakeup_asm.o	= $(call cc-option,-no-integrated-as,)
 +AFLAGS_bioscall.o	= $(call cc-option,-no-integrated-as,)
 +AFLAGS_copy.o		= $(call cc-option,-no-integrated-as,)
