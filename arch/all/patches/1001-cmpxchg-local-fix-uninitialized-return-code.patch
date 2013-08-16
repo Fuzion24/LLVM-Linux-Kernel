@@ -14,18 +14,13 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
  include/asm-generic/cmpxchg-local.h |    1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/include/asm-generic/cmpxchg-local.h b/include/asm-generic/cmpxchg-local.h
-index 2533fdd..48ddd574 100644
---- a/include/asm-generic/cmpxchg-local.h
-+++ b/include/asm-generic/cmpxchg-local.h
-@@ -14,6 +14,7 @@ static inline unsigned long __cmpxchg_local_generic(volatile void *ptr,
- 		unsigned long old, unsigned long new, int size)
- {
- 	unsigned long flags, prev;
-+	uninitialized_var(prev);
- 
- 	/*
- 	 * Sanity checking, compile-time.
--- 
-1.7.10.4
-
+--- linux.orig/include/asm-generic/cmpxchg-local.h
++++ linux/include/asm-generic/cmpxchg-local.h
+@@ -41,6 +41,7 @@
+ 		break;
+ 	default:
+ 		wrong_size_cmpxchg(ptr);
++		uninitialized_var(prev);
+ 	}
+ 	raw_local_irq_restore(flags);
+ 	return prev;
