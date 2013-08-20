@@ -1,0 +1,28 @@
+arm: LLVMLinux: Add current_stack_pointer macro for ARM64
+
+A macro to get the current stack pointer which allows for a single place in
+which to do so with ASM. Before this named registers (a gcc extension) was used
+to get the stack pointer. Using ASM is a more portable way of getting the stack
+pointer which works with both gcc and clang.  This macro is of the same name
+used in the X86 arch.
+
+Signed-off-by: Behan Webster <behanw@converseincode.com>
+
+--- linux.orig/arch/arm64/include/asm/thread_info.h
++++ linux/arch/arm64/include/asm/thread_info.h
+@@ -69,6 +69,15 @@
+ #define init_stack		(init_thread_union.stack)
+ 
+ /*
++ * how to get the current stack pointer from C
++ */
++#define current_stack_pointer ({ \
++	unsigned long current_sp; \
++	asm ("mov %0, r13" : "=r" (current_sp)); \
++	current_sp; \
++})
++
++/*
+  * how to get the thread information struct from C
+  */
+ static inline struct thread_info *current_thread_info(void) __attribute_const__;

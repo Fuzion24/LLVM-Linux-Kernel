@@ -25,12 +25,12 @@
 
 TARGETS		+= linaro-gcc
 
-LINARO_VER_MONTH	= 2012.10
-LINARO_VERSION		= ${LINARO_VER_MONTH}-20121022
+LINARO_VER_MONTH	?= 2012.10
+LINARO_VERSION		?= ${LINARO_VER_MONTH}-20121022
 #https://launchpad.net/linaro-toolchain-binaries/trunk/2012.10/+download/gcc-linaro-arm-linux-gnueabihf-4.7-2012.10-20121022_linux.tar.bz2
-LINARO_CC_URL		= https://launchpad.net/linaro-toolchain-binaries/trunk/${LINARO_VER_MONTH}/+download/gcc-linaro-arm-linux-gnueabihf-4.7-${LINARO_VERSION}_linux.tar.bz2
-LINARO_CC_NAME		= gcc-linaro-arm-linux-gnueabihf-4.7-${LINARO_VERSION}_linux
-LINARO_DIR		= ${ARCH_ARM_TOOLCHAIN}/linaro
+LINARO_CC_NAME		?= gcc-linaro-arm-linux-gnueabihf-4.7-${LINARO_VERSION}_linux
+LINARO_CC_URL		?= https://launchpad.net/linaro-toolchain-binaries/trunk/${LINARO_VER_MONTH}/+download/${LINARO_CC_NAME}.tar.bz2
+LINARO_DIR		?= ${ARCH_ARM_TOOLCHAIN}/linaro
 LINARO_TMPDIR		= ${LINARO_DIR}/tmp
 TMPDIRS			+= ${LINARO_TMPDIR}
 
@@ -38,8 +38,8 @@ LINARO_CC_TAR		= ${notdir ${LINARO_CC_URL}}
 LINARO_CC_DIR		= ${LINARO_DIR}/${LINARO_CC_NAME}
 LINARO_CC_BINDIR	= ${LINARO_CC_DIR}/bin
 
-HOST			= arm-linux-gnueabihf
-HOST_TRIPLE		= arm-linux-gnueabihf
+HOST			?= arm-linux-gnueabihf
+HOST_TRIPLE		?= ${HOST}
 COMPILER_PATH		= ${LINARO_CC_DIR}
 LINARO_GCC		= ${LINARO_CC_BINDIR}/${CROSS_COMPILE}gcc
 CROSS_GCC		= ${LINARO_GCC}
