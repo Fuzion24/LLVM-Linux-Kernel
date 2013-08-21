@@ -6,13 +6,13 @@ index 5ee2687..d40760e 100644
   * (%ecx being the next register in gcc's x86 register sequence), and
   * %rdx on 64 bits.
   */
-+/* Note: Workaround for clang. See bugreport:
++/* Note: Workaround for clang until resolved
 + * 
 + */
-+#define GET_USER_REG "%edx"
 +#if defined(__clang__) && defined(__x86_64__)
-+#undef  GET_USER_REG
 +#define GET_USER_REG "%rdx"
++#else
++#define GET_USER_REG "%edx"
 +#endif
  #define get_user(x, ptr)						\
  ({									\
