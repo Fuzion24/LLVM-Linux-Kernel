@@ -3,8 +3,6 @@ ignore-arch-hweight-cflags.patch
 0026-Add-own-versions-of-memcpy-and-memset-for-compilatio.patch
 0027-Add-__used-to-arch-x86-boot-video.patch
 0031-Reimplement-current_stack_pointer-without-register-u.patch
-0046-Remove-unneeded-braces.patch
-0047-Fix-braces-for-compilation-with-clang.patch
 thinkpad-acpi-nested-functions.patch
 0016-Ad-no-integrated-as-to-arch-x86-realmode-rm-Makefile.patch
 0015-Add-no-integrated-as-to-arch-x86-boot-Makefile-for-c.patch
