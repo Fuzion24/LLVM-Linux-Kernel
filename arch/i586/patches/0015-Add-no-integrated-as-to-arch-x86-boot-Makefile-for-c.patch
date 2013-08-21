@@ -14,30 +14,27 @@ URL:     http://llvm.linuxfoundation.org
 Merge:   Jan-Simon Möller <dl9pf at gmx.de>
 
 Description:
+
+Signed-off-by: Jan-Simon Möller <dl9pf at gmx.de>
 ---
  arch/x86/boot/Makefile |    7 +++++--
  1 Datei geändert, 5 Zeilen hinzugefügt(+), 2 Zeilen entfernt(-)
 
---- linux-gcc.orig/arch/x86/boot/Makefile
-+++ linux-gcc/arch/x86/boot/Makefile
-@@ -20,6 +20,8 @@
- targets		+= fdimage fdimage144 fdimage288 image.iso mtools.conf
- subdir-		:= compressed
- 
-+CFLAGS_cpucheck.o = -march=i586
+diff --git a/arch/x86/boot/Makefile b/arch/x86/boot/Makefile
+index 379814b..fc3ccd6 100644
+--- a/arch/x86/boot/Makefile
++++ b/arch/x86/boot/Makefile
+@@ -65,6 +65,13 @@ KBUILD_CFLAGS	:= $(USERINCLUDE) -g -Os -D_SETUP -D__KERNEL__ \
+ 		   $(call cc-option, -fno-stack-protector) \
+ 		   $(call cc-option, -mpreferred-stack-boundary=2)
+ KBUILD_CFLAGS	+= $(call cc-option, -m32)
 +
- setup-y		+= a20.o bioscall.o cmdline.o copy.o cpu.o cpucheck.o
- setup-y		+= early_serial_console.o edd.o header.o main.o mca.o memory.o
- setup-y		+= pm.o pmjump.o printf.o regs.o string.o tty.o video.o
-@@ -55,8 +57,10 @@
- # that way we can complain to the user if the CPU is insufficient.
- KBUILD_CFLAGS	:= $(USERINCLUDE) -g -Os -D_SETUP -D__KERNEL__ \
- 		   -DDISABLE_BRANCH_PROFILING \
--		   -Wall -Wstrict-prototypes \
-+		   -Wall -W -Wstrict-prototypes \
-+		   -Wno-unused-value -Wno-unused-parameter -mno-sse \
- 		   -march=i386 -mregparm=3 \
-+		   $(call cc-option,-no-integrated-as,) \
- 		   -include $(srctree)/$(src)/code16gcc.h \
- 		   -fno-strict-aliasing -fomit-frame-pointer -fno-pic \
- 		   $(call cc-option, -ffreestanding) \
++# For clang we need to rely on no-integrated-as for .code16 . We use gas.
++ifeq ($(COMPILER),clang)
++KBUILD_CFLAGS	+= -Wno-unused-value -Wno-unused-parameter -mno-sse \
++		   $(call cc-option,-no-integrated-as,)
++endif
++
+ KBUILD_AFLAGS	:= $(KBUILD_CFLAGS) -D__ASSEMBLY__
+ GCOV_PROFILE := n
+ 

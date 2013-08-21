@@ -1,12 +1,9 @@
-0014-Remove-unsupported-options-from-Kconfig-file-on-x86.patch
+ignore-arch-hweight-cflags.patch
 0025-Add-option-for-clang-in-export-of-memcpy.patch
 0026-Add-own-versions-of-memcpy-and-memset-for-compilatio.patch
 0027-Add-__used-to-arch-x86-boot-video.patch
 0031-Reimplement-current_stack_pointer-without-register-u.patch
-0039-Workaround-build-error-with-clang.patch
-0046-Remove-unneeded-braces.patch
-0047-Fix-braces-for-compilation-with-clang.patch
 thinkpad-acpi-nested-functions.patch
 0016-Ad-no-integrated-as-to-arch-x86-realmode-rm-Makefile.patch
 0015-Add-no-integrated-as-to-arch-x86-boot-Makefile-for-c.patch
-#9000_fix_register_width_in_get_user_as_clang_cares_about_it.patch
+9004_fix_for_edx_register_on_64_bit_as_suggested_by_hpa.patch

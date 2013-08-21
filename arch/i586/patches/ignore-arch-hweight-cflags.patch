@@ -1,0 +1,18 @@
+LLVMLinux: Clang doesn't support the gcc flags set by CONFIG_ARCH_HWEIGHT_CFLAGS
+
+Ignore the flags set in Kconfig for hweight if the compiler is clang.
+
+Signed-off-by: Behan Webster <behanw@converseincode.com>
+
+--- linux.orig/lib/Makefile
++++ linux/lib/Makefile
+@@ -45,7 +45,9 @@
+ lib-$(CONFIG_RWSEM_XCHGADD_ALGORITHM) += rwsem.o
+ lib-$(CONFIG_PERCPU_RWSEM) += percpu-rwsem.o
+ 
++ifndef ($(COMPILER),clang)
+ CFLAGS_hweight.o = $(subst $(quote),,$(CONFIG_ARCH_HWEIGHT_CFLAGS))
++endif
+ obj-$(CONFIG_GENERIC_HWEIGHT) += hweight.o
+ 
+ obj-$(CONFIG_BTREE) += btree.o
