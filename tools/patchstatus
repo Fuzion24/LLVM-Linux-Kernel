@@ -72,17 +72,19 @@ rows = gd_client.GetListFeed(spreadsheet_id, worksheet_id).entry
 # ['arch', 'boots', 'conclusion', 'done', 'handledby', 'inout', 'patchinspection', 'patchname', 'remarks', 'summarytodo']
 headers = sorted(rows[0].custom)
 headers.remove('patchname')
-fixedhdr = ('arch', 'boots', 'inout', 'summarytodo', 'handledby', 'done')
+fixedhdr = ('arch', 'required', 'finalpatchforlinus', 'upstream-able', 'boots', 'inout', 'summarytodo', 'handledby', 'submittedupstream', 'acceptedupstream')
+fixednames = ('Arch', 'Req?', 'Linus', 'up-able?', 'Boots', 'In?', 'Summary', 'Handled by', 'Sent?', 'Done!')
 [headers.remove(x) for x in fixedhdr]
 
 #-------------------------------------------------------------------------------
 # Initialize the pretty table
-table = prettytable.PrettyTable(['patchname'] + list(fixedhdr))
+table = prettytable.PrettyTable(['patchname'] + list(fixednames))
 table.align = "l"
 
 #-------------------------------------------------------------------------------
 # Print out the rows and build the pretty table
 numpatches = 0
+#nopatch = re.compile(r"\.patch$")
 for row in rows:
     patchname = row.custom['patchname'].text
     if patchname in args:
@@ -91,14 +93,17 @@ for row in rows:
 
 	vals = [patchname]
         for key in fixedhdr:
-            print "  %s: %s" % (key, row.custom[key].text),
-            vals.append(row.custom[key].text)
+            value = str(row.custom[key].text)
+            print "  %s: %s" % (key, value),
+            #value = nopatch.sub("", value)
+            value = re.sub(r"\.patch$", "", value)
+            vals.append(value)
         print
         table.add_row(vals)
 
         for key in headers:
             val = row.custom[key].text
-            if val:
+            if val and val != None and val != "None" and val != "-":
                 print "  %s: %s" % (key, val)
 
 	args.remove(patchname)
@@ -115,6 +120,6 @@ if args:
     print "Adding missing patches to spreadsheet:"
     for patch in args:
 	print "  "+patch
-	data = {'patchname':patch, 'inout':'In', 'done':'N'}
+	data = {'patchname':patch, 'arch':'?', 'required':'?', 'finalpatchforlinus':'?', 'upstream-able':'?', 'boots':'?', 'summarytodo':'?', 'inout':'In', 'submittedupstream':'N', 'acceptedupstream':'N'}
         gd_client.InsertRow(data, spreadsheet_id, worksheet_id)
 
