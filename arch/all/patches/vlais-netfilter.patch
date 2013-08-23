@@ -4,6 +4,8 @@ to the data. Per the file, these data are not reference by name
 and the memory layout is preserved.
 
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+Reviewed-by: Behan Webster <behanw@converseincode.com>
+
 ---
  net/netfilter/xt_repldata.h |   40 ++++++++++++++++++++++++----------------
  1 file changed, 24 insertions(+), 16 deletions(-)
@@ -39,14 +41,14 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 +	struct type##_standard *entries; \
 +	struct type##_error *term; \
 +	size_t p1 = padbytes(sizeof(tbl->repl), *entries); \
-+	size_t ost = sizeof(tbl->repl) + p1 + nhooks * sizeof(*entries)); \
++	size_t ost = sizeof(tbl->repl) + p1 + nhooks * sizeof(*entries); \
 +	size_t p2 = padbytes(ost, *term); \
 +	size_t tbl_sz = ost + nhooks * sizeof(*entries) + p2 + sizeof(*term); \
-+	tbl =  = kzalloc(tbl_sz, GFP_KERNEL); \
++	tbl = kzalloc(tbl_sz, GFP_KERNEL); \
  	if (tbl == NULL) \
  		return NULL; \
 +	entries = (struct type##_standard *)&tbl->data[p1]; \
-+	term = (struct type##_error *)&tbl->data[offset1+p2]; \
++	term = (struct type##_error *)&tbl->data[p1+p2]; \
  	strncpy(tbl->repl.name, info->name, sizeof(tbl->repl.name)); \
 -	tbl->term = (struct type##_error)typ2##_ERROR_INIT;  \
 +	*term = (struct type##_error)typ2##_ERROR_INIT;  \
