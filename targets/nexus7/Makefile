@@ -26,7 +26,7 @@ TARGETDIR	= ${CURDIR}
 TOPDIR		= $(realpath ${TARGETDIR}/../..)
 CROSS_ARM_TOOLCHAIN = android
 
-KERNEL_BRANCH	= cm-10.1
+KERNEL_BRANCH	= cm-10.2
 KERNEL_GIT	= git://github.com/CyanogenMod/android_kernel_asus_grouper
 KERNELDIR	= ${SRCDIR}/android_kernel_nexus7
 KERNEL_CFG	= ${KERNELDIR}/arch/arm/configs/cyanogenmod_grouper_defconfig
