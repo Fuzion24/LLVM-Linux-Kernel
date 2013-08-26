@@ -48,7 +48,7 @@ Reviewed-by: Behan Webster <behanw@converseincode.com>
  	if (tbl == NULL) \
  		return NULL; \
 +	entries = (struct type##_standard *)&tbl->data[p1]; \
-+	term = (struct type##_error *)&tbl->data[p1+p2]; \
++	term = (struct type##_error *)&tbl->data[ost+p2]; \
  	strncpy(tbl->repl.name, info->name, sizeof(tbl->repl.name)); \
 -	tbl->term = (struct type##_error)typ2##_ERROR_INIT;  \
 +	*term = (struct type##_error)typ2##_ERROR_INIT;  \
