@@ -33,8 +33,8 @@ linux/include/uapi/linux/swab.h:18:12: note: expanded from macro '___constant_sw
         (((__u32)(x) & (__u32)0x0000ff00UL) <<  8) |            \
                   ^
 
-Solution - make sure we don't exceed the 32 bit range by adding (x & ~(1U << 27))  
-=  & (0xF7FFFFFF)_16 or & (1111 0111 1111 1111 1111 1111 1111 1111)_2
+Solution - make sure we don't exceed the 32 bit range.
+ #define Z(x) cpu_to_be32(((x & 0x1f) << 27) | (x >> 5))  
 
 Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
 ---
@@ -50,7 +50,7 @@ index 3b2cf56..8ad29b7 100644
  
  #undef Z
 -#define Z(x) cpu_to_be32((x << 27) | (x >> 5))
-+#define Z(x) cpu_to_be32(((x & ~(1U << 27)) << 27) | (x >> 5))
++#define Z(x) cpu_to_be32(((x & 0x1f) << 27) | (x >> 5))
  static const __be32 sbox1[256] = {
  	Z(0x77), Z(0x14), Z(0xa6), Z(0xfe), Z(0xb2), Z(0x5e), Z(0x8c), Z(0x3e),
  	Z(0x67), Z(0x6c), Z(0xa1), Z(0x0d), Z(0xc2), Z(0xa2), Z(0xc1), Z(0x85),
