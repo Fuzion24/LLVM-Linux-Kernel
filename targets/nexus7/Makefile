@@ -25,6 +25,8 @@
 TARGETDIR	= ${CURDIR}
 TOPDIR		= $(realpath ${TARGETDIR}/../..)
 CROSS_ARM_TOOLCHAIN = android
+LLVM_COMMIT = master
+CLANG_COMMIT = master
 
 KERNEL_BRANCH	= cm-10.2
 KERNEL_GIT	= git://github.com/CyanogenMod/android_kernel_asus_grouper
