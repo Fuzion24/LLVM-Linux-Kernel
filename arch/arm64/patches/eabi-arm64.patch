@@ -1,14 +1,27 @@
-LLVMLinux: Provide __aeabi_* symbols which are needed for Clang
+From fc4e8affe20a92cc0854d98a44064d53fe969088 Mon Sep 17 00:00:00 2001
+From: Behan Webster <behanw@converseincode.com>
+Date: Tue, 3 Sep 2013 22:27:26 -0400
+Subject: [PATCH 29/39] arm64: LLVMLinux: Provide __aeabi_* symbols which are
+ needed for Clang
 
-These symbols are required when compiling the Linux kernel for arch ARM with
+These symbols are required when compiling the Linux kernel for arch ARM64 with
 clang.
 
+Author: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
----
-
+--- linux.orig/arch/arm64/lib/Makefile
++++ linux/arch/arm64/lib/Makefile
+@@ -4,3 +4,7 @@
+ 		   copy_page.o clear_page.o				\
+ 		   memchr.o memcpy.o memmove.o memset.o			\
+ 		   strchr.o strrchr.o
++
++ifeq ($(COMPILER),clang)
++lib-y += eabi.o
++endif
 --- /dev/null
-+++ linux/lib/eabi.c
++++ linux/arch/arm64/lib/eabi.c
 @@ -0,0 +1,33 @@
 +/*
 + *  linux/lib/eabi.c
@@ -43,16 +56,3 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
 +}
 +EXPORT_SYMBOL(__aeabi_memset);
 +
---- linux.orig/lib/Makefile
-+++ linux/lib/Makefile
-@@ -15,6 +15,10 @@
- 	 is_single_threaded.o plist.o decompress.o kobject_uevent.o \
- 	 earlycpio.o percpu-refcount.o
- 
-+ifeq ($(COMPILER),clang)
-+lib-y += eabi.o
-+endif
-+
- obj-$(CONFIG_ARCH_HAS_DEBUG_STRICT_USER_COPY_CHECKS) += usercopy.o
- lib-$(CONFIG_MMU) += ioremap.o
- lib-$(CONFIG_SMP) += cpumask.o

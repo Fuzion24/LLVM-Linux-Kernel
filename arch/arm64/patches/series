@@ -1,4 +1,4 @@
-eabi.patch
+eabi-arm64.patch
 kbuild-clang-arm64.patch
 get_current_stack_pointer_for_arm64.patch
 named_register-stacktrace-arm64.patch
