@@ -1,24 +1,23 @@
-From 736db63099975fe9ce7b97a40df9d698cd18aa41 Mon Sep 17 00:00:00 2001
+From e37c623a2191827ea94e480173bfe2b1d458e61b Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
 Date: Wed, 14 Nov 2012 12:48:19 +0100
-Subject: [PATCH 27/51] Add __used to arch/x86/boot/video-* .
+Subject: [PATCH 23/39] x86: LLVMLinux: Add __used to arch/x86/boot/video-* .
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Author:  PaX Team <pageexec at freemail.hu>
+Needed for compilation with clang.
+
+Author:  PaX Team <pageexec@freemail.hu>
 ML-Post: http://lists.cs.uiuc.edu/pipermail/llvm-commits/Week-of-Mon-20120507/142707.html
 URL:     http://llvm.linuxfoundation.org
-
-Merge:   Jan-Simon Möller <dl9pf at gmx.de>
-
-Description:
-Needed for compilation with clang.
+Merge:   Jan-Simon Möller <dl9pf@gmx.de>
+Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
 ---
- arch/x86/boot/video-bios.c |    2 +-
- arch/x86/boot/video-vesa.c |    2 +-
- arch/x86/boot/video-vga.c  |    2 +-
- 3 Dateien geändert, 3 Zeilen hinzugefügt(+), 3 Zeilen entfernt(-)
+ arch/x86/boot/video-bios.c | 2 +-
+ arch/x86/boot/video-vesa.c | 2 +-
+ arch/x86/boot/video-vga.c  | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/arch/x86/boot/video-bios.c b/arch/x86/boot/video-bios.c
 index 49e0c18..efd3bb3 100644
@@ -34,7 +33,7 @@ index 49e0c18..efd3bb3 100644
  	.card_name	= "BIOS",
  	.probe		= bios_probe,
 diff --git a/arch/x86/boot/video-vesa.c b/arch/x86/boot/video-vesa.c
-index 11e8c6e..075812c 100644
+index 11e8c6e..075812c7 100644
 --- a/arch/x86/boot/video-vesa.c
 +++ b/arch/x86/boot/video-vesa.c
 @@ -270,7 +270,7 @@ void vesa_store_edid(void)
@@ -60,5 +59,5 @@ index 45bc940..82882ac 100644
  	.probe		= vga_probe,
  	.set_mode	= vga_set_mode,
 -- 
-1.7.10.4
+1.8.1.2
 
