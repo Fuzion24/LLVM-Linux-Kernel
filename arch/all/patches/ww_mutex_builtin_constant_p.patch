@@ -16,11 +16,9 @@ Reviewed-by: Behan Webster <behanw@converseincode.com>
  kernel/mutex.c | 8 ++++----
  1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/mutex.c b/kernel/mutex.c
-index a52ee7bb..bdc4ccf 100644
---- a/kernel/mutex.c
-+++ b/kernel/mutex.c
-@@ -448,7 +448,7 @@ __mutex_lock_common(struct mutex *lock, long state, unsigned int subclass,
+--- linux.orig/kernel/mutex.c
++++ linux/kernel/mutex.c
+@@ -450,7 +450,7 @@
  		struct task_struct *owner;
  		struct mspin_node  node;
  
@@ -29,7 +27,7 @@ index a52ee7bb..bdc4ccf 100644
  			struct ww_mutex *ww;
  
  			ww = container_of(lock, struct ww_mutex, base);
-@@ -478,7 +478,7 @@ __mutex_lock_common(struct mutex *lock, long state, unsigned int subclass,
+@@ -480,7 +480,7 @@
  		if ((atomic_read(&lock->count) == 1) &&
  		    (atomic_cmpxchg(&lock->count, 1, 0) == 1)) {
  			lock_acquired(&lock->dep_map, ip);
@@ -38,7 +36,7 @@ index a52ee7bb..bdc4ccf 100644
  				struct ww_mutex *ww;
  				ww = container_of(lock, struct ww_mutex, base);
  
-@@ -548,7 +548,7 @@ slowpath:
+@@ -551,7 +551,7 @@
  			goto err;
  		}
  
@@ -47,15 +45,3 @@ index a52ee7bb..bdc4ccf 100644
  			ret = __mutex_lock_check_stamp(lock, ww_ctx);
  			if (ret)
  				goto err;
-@@ -568,7 +568,7 @@ done:
- 	mutex_remove_waiter(lock, &waiter, current_thread_info());
- 	mutex_set_owner(lock);
- 
--	if (!__builtin_constant_p(ww_ctx == NULL)) {
-+	if (!(ww_ctx == NULL)) {
- 		struct ww_mutex *ww = container_of(lock,
- 						      struct ww_mutex,
- 						      base);
--- 
-1.8.1.2
-
