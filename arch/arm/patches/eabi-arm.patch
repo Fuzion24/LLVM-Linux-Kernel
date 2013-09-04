@@ -16,11 +16,9 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
  2 files changed, 37 insertions(+)
  create mode 100644 arch/arm/lib/eabi.c
 
-diff --git a/arch/arm/lib/Makefile b/arch/arm/lib/Makefile
-index af72969..5aadee4 100644
---- a/arch/arm/lib/Makefile
-+++ b/arch/arm/lib/Makefile
-@@ -15,6 +15,10 @@ lib-y		:= backtrace.o changebit.o csumipv6.o csumpartial.o   \
+--- linux.orig/arch/arm/lib/Makefile
++++ linux/arch/arm/lib/Makefile
+@@ -15,6 +15,10 @@
  		   io-readsb.o io-writesb.o io-readsl.o io-writesl.o  \
  		   call_with_stack.o
  
@@ -31,12 +29,9 @@ index af72969..5aadee4 100644
  mmu-y	:= clear_user.o copy_page.o getuser.o putuser.o
  
  # the code in uaccess.S is not preemption safe and
-diff --git a/arch/arm/lib/eabi.c b/arch/arm/lib/eabi.c
-new file mode 100644
-index 0000000..94145b3
 --- /dev/null
-+++ b/arch/arm/lib/eabi.c
-@@ -0,0 +1,33 @@
++++ linux/arch/arm/lib/eabi.c
+@@ -0,0 +1,32 @@
 +/*
 + *  linux/lib/eabi.c
 + *
@@ -69,7 +64,3 @@ index 0000000..94145b3
 +	(void)memset(s, c, n);
 +}
 +EXPORT_SYMBOL(__aeabi_memset);
-+
--- 
-1.8.1.2
-

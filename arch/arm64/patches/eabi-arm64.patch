@@ -22,7 +22,7 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
 +endif
 --- /dev/null
 +++ linux/arch/arm64/lib/eabi.c
-@@ -0,0 +1,33 @@
+@@ -0,0 +1,32 @@
 +/*
 + *  linux/lib/eabi.c
 + *
@@ -55,4 +55,3 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
 +	(void)memset(s, c, n);
 +}
 +EXPORT_SYMBOL(__aeabi_memset);
-+
