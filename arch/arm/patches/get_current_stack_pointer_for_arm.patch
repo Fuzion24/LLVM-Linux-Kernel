@@ -1,4 +1,10 @@
-arm: LLVMLinux: Add current_stack_pointer macro for ARM
+From 5f1f42d8f49a1f537bef4f5106f5dd21a26cba5c Mon Sep 17 00:00:00 2001
+From: Behan Webster <behanw@converseincode.com>
+Date: Tue, 3 Sep 2013 22:27:26 -0400
+Subject: [PATCH 33/39] arm: LLVMLinux: Add current_stack_pointer macro for ARM
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
 A macro to get the current stack pointer which allows for a single place in
 which to do so with ASM. Before this named registers (a gcc extension) was used
@@ -6,18 +12,21 @@ to get the stack pointer. Using ASM is a more portable way of getting the stack
 pointer which works with both gcc and clang.  This macro is of the same name
 used in the X86 arch.
 
+Author: Behan Webster <behanw@converseincode.com>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
-Reviewed-by: Jan-Simon Möller <dl9pf at gmx.de>
+Reviewed-by: Jan-Simon Möller <dl9pf@gmx.de>
 ---
+ arch/arm/include/asm/thread_info.h | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
---- linux.orig/arch/arm/include/asm/thread_info.h
-+++ linux/arch/arm/include/asm/thread_info.h
-@@ -88,6 +88,16 @@
- #define init_thread_info	(init_thread_union.thread_info)
+diff --git a/arch/arm/include/asm/thread_info.h b/arch/arm/include/asm/thread_info.h
+index 2b8114f..88a587c 100644
+--- a/arch/arm/include/asm/thread_info.h
++++ b/arch/arm/include/asm/thread_info.h
+@@ -89,6 +89,15 @@ struct thread_info {
  #define init_stack		(init_thread_union.stack)
  
-+
-+/*
+ /*
 + * how to get the current stack pointer from C
 + */
 +#define current_stack_pointer ({ \
@@ -26,6 +35,10 @@ Reviewed-by: Jan-Simon Möller <dl9pf at gmx.de>
 +	current_sp; \
 +})
 +
- /*
++/*
   * how to get the thread information struct from C
   */
+ static inline struct thread_info *current_thread_info(void) __attribute_const__;
+-- 
+1.8.1.2
+

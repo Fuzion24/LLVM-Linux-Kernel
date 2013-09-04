@@ -1,18 +1,28 @@
-arm: LLVMLinux: Use frame pointer to calculate pt_regs address
+From 439e91a4b439fa790b9e627bd05252df82e8d58a Mon Sep 17 00:00:00 2001
+From: Behan Webster <behanw@converseincode.com>
+Date: Tue, 3 Sep 2013 22:27:27 -0400
+Subject: [PATCH 35/39] arm: LLVMLinux: Calculate pt_regs address from fp
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
 Use the frame pointer to calculate the end of the stack for current_pt_regs()
 The existing code uses the stack pointer to do this calculation.
 Using the frame pointer yeilds the same value in a more portable way.
-This change supports being able to compile the kernel with gcc and Clang.
+This change supports being able to compile the kernel with gcc and clang.
 
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
-Reviewed-by: Jan-Simon Möller <dl9pf at gmx.de>
+Reviewed-by: Jan-Simon Möller <dl9pf@gmx.de>
 ---
+ arch/arm/include/asm/ptrace.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- linux.orig/arch/arm/include/asm/ptrace.h
-+++ linux/arch/arm/include/asm/ptrace.h
-@@ -134,9 +134,9 @@
+diff --git a/arch/arm/include/asm/ptrace.h b/arch/arm/include/asm/ptrace.h
+index 04c99f3..8aec2db 100644
+--- a/arch/arm/include/asm/ptrace.h
++++ b/arch/arm/include/asm/ptrace.h
+@@ -138,9 +138,9 @@ static inline unsigned long user_stack_pointer(struct pt_regs *regs)
  	return regs->ARM_sp;
  }
  
@@ -25,3 +35,6 @@ Reviewed-by: Jan-Simon Möller <dl9pf at gmx.de>
  })
  
  #endif /* __ASSEMBLY__ */
+-- 
+1.8.1.2
+

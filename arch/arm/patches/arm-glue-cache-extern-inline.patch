@@ -1,14 +1,24 @@
-ARM: LLVMLinux: Change "extern inline" to "static inline" in glue-cache.h
+From 70b13f02833a2b947e0ac6d5194f133b0d004b70 Mon Sep 17 00:00:00 2001
+From: Behan Webster <behanw@converseincode.com>
+Date: Tue, 3 Sep 2013 22:27:26 -0400
+Subject: [PATCH 30/39] ARM: LLVMLinux: Change "extern inline" to "static
+ inline" in glue-cache.h
 
 With compilers which follow the C99 standard (like modern versions of gcc and
 clang), "extern inline" does the wrong thing (emits code for an externally
 linkable version of the inline function). "static inline" is the correct choice
 instead.
 
+Author: Behan Webster <behanw@converseincode.com>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
+---
+ arch/arm/include/asm/glue-cache.h | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
---- linux.orig/arch/arm/include/asm/glue-cache.h
-+++ linux/arch/arm/include/asm/glue-cache.h
+diff --git a/arch/arm/include/asm/glue-cache.h b/arch/arm/include/asm/glue-cache.h
+index c81adc0..a3c24cd 100644
+--- a/arch/arm/include/asm/glue-cache.h
++++ b/arch/arm/include/asm/glue-cache.h
 @@ -130,22 +130,22 @@
  #endif
  
@@ -43,3 +53,6 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
  #endif
  
  #ifndef MULTI_CACHE
+-- 
+1.8.1.2
+

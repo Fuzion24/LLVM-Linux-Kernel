@@ -1,4 +1,4 @@
-eabi.patch
+eabi-arm.patch
 arm-glue-cache-extern-inline.patch
 ftrace.patch
 kbuild-clang-arm.patch

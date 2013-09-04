@@ -1,4 +1,10 @@
-arm: LLVMLinux: use current_stack_pointer for percpu
+From 11b6a7bbb461b183a347bf0d3aeb9a837f2cc963 Mon Sep 17 00:00:00 2001
+From: Behan Webster <behanw@converseincode.com>
+Date: Tue, 3 Sep 2013 22:27:27 -0400
+Subject: [PATCH 34/39] arm: LLVMLinux: use current_stack_pointer for percpu
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
 The existing code uses named registers to get the value of the stack pointer.
 The new current_stack_pointer macro is more readable and allows for a central
@@ -7,12 +13,16 @@ supports being able to compile the kernel with both gcc and Clang.
 
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
-Reviewed-by: Jan-Simon Möller <dl9pf at gmx.de>
+Reviewed-by: Jan-Simon Möller <dl9pf@gmx.de>
 ---
+ arch/arm/include/asm/percpu.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- linux.orig/arch/arm/include/asm/percpu.h
-+++ linux/arch/arm/include/asm/percpu.h
-@@ -30,14 +30,14 @@
+diff --git a/arch/arm/include/asm/percpu.h b/arch/arm/include/asm/percpu.h
+index 209e650..629a975 100644
+--- a/arch/arm/include/asm/percpu.h
++++ b/arch/arm/include/asm/percpu.h
+@@ -30,14 +30,14 @@ static inline void set_my_cpu_offset(unsigned long off)
  static inline unsigned long __my_cpu_offset(void)
  {
  	unsigned long off;
@@ -29,3 +39,6 @@ Reviewed-by: Jan-Simon Möller <dl9pf at gmx.de>
  
  	return off;
  }
+-- 
+1.8.1.2
+
