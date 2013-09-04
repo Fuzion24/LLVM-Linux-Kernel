@@ -1,12 +1,10 @@
-From 9f7b11669d7a91011ef40c07396196c077f28e71 Mon Sep 17 00:00:00 2001
+From 27bcd2d873f6fe592911c736fca3daff37656e14 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
 Date: Mon, 2 Jul 2012 13:50:54 +0200
-Subject: [PATCH 2/8] Remove VLAIS usage from dm-crypt
+Subject: [PATCH 13/39] crypto, dm: LLVMLinux: Remove VLAIS usage from dm-crypt
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-
-From: Jan-Simon Möller <dl9pf@gmx.de>
 
 The use of variable length arrays in structs (VLAIS) in the Linux Kernel code
 precludes the use of compilers which don't implement VLAIS (for instance the
@@ -21,11 +19,11 @@ Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
 Cc: pageexec@freemail.hu
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 ---
- drivers/md/dm-crypt.c |   22 +++++++++++-----------
+ drivers/md/dm-crypt.c | 22 +++++++++++-----------
  1 file changed, 11 insertions(+), 11 deletions(-)
 
 diff --git a/drivers/md/dm-crypt.c b/drivers/md/dm-crypt.c
-index bbf459b..8b724ea 100644
+index 6d2d41a..c511e30 100644
 --- a/drivers/md/dm-crypt.c
 +++ b/drivers/md/dm-crypt.c
 @@ -525,29 +525,29 @@ static int crypt_iv_lmk_one(struct crypt_config *cc, u8 *iv,
@@ -83,5 +81,5 @@ index bbf459b..8b724ea 100644
  		return r;
  
 -- 
-1.7.9.5
+1.8.1.2
 

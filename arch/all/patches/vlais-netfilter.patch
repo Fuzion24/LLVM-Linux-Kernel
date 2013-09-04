@@ -1,3 +1,9 @@
+From 0852d16e9a12c285a5ac40965743f3cde7ebad3d Mon Sep 17 00:00:00 2001
+From: Behan Webster <behanw@converseincode.com>
+Date: Tue, 3 Sep 2013 22:27:25 -0400
+Subject: [PATCH 17/39] netfilter: LLVMLinux: Remove the use of VLAIS from
+ netfilter
+
 Replaced use of VLAIS in xt_repldata.h with a flexible array member
 and the calculated offsets of other struct members and ued pointers
 to the data. Per the file, these data are not reference by name
@@ -5,23 +11,21 @@ and the memory layout is preserved.
 
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Reviewed-by: Behan Webster <behanw@converseincode.com>
-
 ---
- net/netfilter/xt_repldata.h |   40 ++++++++++++++++++++++++----------------
- 1 file changed, 24 insertions(+), 16 deletions(-)
+ net/netfilter/xt_repldata.h | 31 +++++++++++++++++++++++++------
+ 1 file changed, 25 insertions(+), 6 deletions(-)
 
 --- linux.orig/net/netfilter/xt_repldata.h
 +++ linux/net/netfilter/xt_repldata.h
-@@ -5,29 +5,48 @@
+@@ -5,29 +5,47 @@
   * they serve as the hanging-off data accessed through repl.data[].
   */
  
-+#define padbytes(offset, type) (-offset) & (__alignof__(type)-1)
++#define padbytes(offset, type) ((-offset) & (__alignof__(type)-1))
 +
-+/*
-+ * tbl has the following structure equivalent, but without using VLAIS:
++/* tbl has the following structure equivalent, but without using VLAIS:
 + * struct {
-+ * 	struct type##_replace repl;
++ *	struct type##_replace repl;
 + *	struct type##_standard entries[nhooks];
 + *	struct type##_error term;
 + * } *tbl;

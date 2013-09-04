@@ -1,24 +1,23 @@
-From a5bb9fcc8cb255c015e5fe6d5e14afb9f0f26693 Mon Sep 17 00:00:00 2001
+From dd73123cf886d6994a96ac84fc004afe002fcc72 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
 Date: Tue, 20 Nov 2012 21:21:12 +0100
-Subject: [PATCH 1003/1005] disable-clang-integrated-as.patch
+Subject: [PATCH 11/39] Kbuild: LLVMLinux: disable-clang-integrated-as.patch
 
-Disable the use of the Clang Integrated Assembler
+Globally disable the use of the Clang Integrated Assembler (IA). Use gas
+instead. IA doesn't support the gas assembly extensions used in the kernel
+code.
 
-This patch probably can't be sent upstream in this form
-This patch needs to be reworked
-
+Author: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
-
-// Completely disable the integrated-as. //
-
 ---
- Makefile |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- linux.orig/Makefile
-+++ linux/Makefile
-@@ -383,11 +383,11 @@
+diff --git a/Makefile b/Makefile
+index 547c0b5..3082737 100644
+--- a/Makefile
++++ b/Makefile
+@@ -390,11 +390,11 @@ KBUILD_CPPFLAGS := -D__KERNEL__
  KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
  		   -fno-strict-aliasing -fno-common \
  		   -Werror-implicit-function-declaration \
@@ -32,3 +31,6 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
  KBUILD_AFLAGS_MODULE  := -DMODULE
  KBUILD_CFLAGS_MODULE  := -DMODULE
  KBUILD_LDFLAGS_MODULE := -T $(srctree)/scripts/module-common.lds
+-- 
+1.8.1.2
+

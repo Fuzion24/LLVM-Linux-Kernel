@@ -1,23 +1,22 @@
-From 2aa67a95b7be4c62a9b83c49556a97c48db16061 Mon Sep 17 00:00:00 2001
+From 4364e91262ee49a160bd664571ebfa2017659dde Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
 Date: Wed, 14 Nov 2012 10:55:48 +0100
-Subject: [PATCH 10/51] Fix LINUX_COMPILER definition script for compilation
- with clang
+Subject: [PATCH 05/39] Kbuild: LLVMLinux: Fix LINUX_COMPILER definition script
+ for compilation with clang
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Author:  PaX Team <pageexec at freemail.hu>
+Fix LINUX_COMPILER definition script for compilation with clang
+
+Author:  PaX Team <pageexec@freemail.hu>
 ML-Post: http://lists.cs.uiuc.edu/pipermail/llvm-commits/Week-of-Mon-20120507/142707.html
 URL:     http://llvm.linuxfoundation.org
-
-Merge:   Jan-Simon Möller <dl9pf at gmx.de>
-
-Description:
-Fix LINUX_COMPILER definition script for compilation with clang
+Merge:   Jan-Simon Möller <dl9pf@gmx.de>
+Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
 ---
- scripts/mkcompile_h |    2 +-
- 1 Datei geändert, 1 Zeile hinzugefügt(+), 1 Zeile entfernt(-)
+ scripts/mkcompile_h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/scripts/mkcompile_h b/scripts/mkcompile_h
 index f221ddf..cfb8440 100755
@@ -33,5 +32,5 @@ index f221ddf..cfb8440 100755
  
  # Only replace the real compile.h if the new one is different,
 -- 
-1.7.10.4
+1.8.1.2
 

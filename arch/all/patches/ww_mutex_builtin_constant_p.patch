@@ -1,5 +1,23 @@
+From a2f9b5416a3deeaf594da6d02afd6350372cee2d Mon Sep 17 00:00:00 2001
+From: Behan Webster <behanw@converseincode.com>
+Date: Tue, 3 Sep 2013 22:27:25 -0400
+Subject: [PATCH 19/39] mutex: LLVMLinux: Remove unecessary use of
+ __builtin_constant_p from mutex.c
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Using __builtin_constant_p in this way breaks the kernel when compiled with clang.
+
+Author: Jan-Simon Möller <dl9pf@gmx.de>
+Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
+Reviewed-by: Behan Webster <behanw@converseincode.com>
+---
+ kernel/mutex.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
 diff --git a/kernel/mutex.c b/kernel/mutex.c
-index ff05f4b..0ea6eb9 100644
+index a52ee7bb..bdc4ccf 100644
 --- a/kernel/mutex.c
 +++ b/kernel/mutex.c
 @@ -448,7 +448,7 @@ __mutex_lock_common(struct mutex *lock, long state, unsigned int subclass,
@@ -38,3 +56,6 @@ index ff05f4b..0ea6eb9 100644
  		struct ww_mutex *ww = container_of(lock,
  						      struct ww_mutex,
  						      base);
+-- 
+1.8.1.2
+

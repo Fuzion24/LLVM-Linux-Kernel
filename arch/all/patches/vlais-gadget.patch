@@ -1,12 +1,20 @@
+From 851e9ba54030b9f6fff623e843b4a1e2faab7782 Mon Sep 17 00:00:00 2001
+From: Behan Webster <behanw@converseincode.com>
+Date: Tue, 3 Sep 2013 22:27:25 -0400
+Subject: [PATCH 14/39] usb: LLVMLinux: Remove VLAIS from USB gadget
+
 The use of variable length arrays in structs (VLAIS) in the Linux Kernel code
 precludes the use of compilers which don't implement VLAIS (for instance the
 Clang compiler). This patch removes the use of VLAIS in the gadget driver.
 
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
+---
+ drivers/usb/gadget/f_fs.c | 128 +++++++++++++++++++++++++++-------------------
+ 1 file changed, 76 insertions(+), 52 deletions(-)
 
 diff --git a/drivers/usb/gadget/f_fs.c b/drivers/usb/gadget/f_fs.c
-index f394f29..4b872c4 100644
+index 1a66c5b..4647f80 100644
 --- a/drivers/usb/gadget/f_fs.c
 +++ b/drivers/usb/gadget/f_fs.c
 @@ -30,7 +30,6 @@
@@ -252,3 +260,6 @@ index f394f29..4b872c4 100644
  			   __ffs_func_bind_do_nums, func);
  	if (unlikely(ret < 0))
  		goto error;
+-- 
+1.8.1.2
+

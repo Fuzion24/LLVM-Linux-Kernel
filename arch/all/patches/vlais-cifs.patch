@@ -1,8 +1,8 @@
-From 79387cf4ebaaf6a39a44acd466ab2a6c1145847e Mon Sep 17 00:00:00 2001
+From a9afb4ef6ff8923517515c00590699e233581e67 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
 Date: Tue, 4 Jun 2013 19:17:28 +0200
-Subject: [PATCH 2/3] [RFC] ctx[] is not used. Fix warning when compiling with
- clang.
+Subject: [PATCH 12/39] crypto, cifs: LLVMLinux: ctx[] is not used. Fix warning
+ when compiling with clang.
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -10,7 +10,7 @@ Content-Transfer-Encoding: 8bit
 Clang warns about shash not being the last variable-sized element.
 ctx[] is never used and can be deleted.
 
-Author:  PaX Team <pageexec at freemail.hu>
+Author:  PaX Team <pageexec@freemail.hu>
 ML-Post: http://lists.cs.uiuc.edu/pipermail/llvm-commits/Week-of-Mon-201205
 07/142707.html
 URL:     http://llvm.linuxfoundation.org
@@ -21,10 +21,10 @@ Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
  1 file changed, 1 deletion(-)
 
 diff --git a/fs/cifs/cifsglob.h b/fs/cifs/cifsglob.h
-index 4f07f6f..d283b18 100644
+index 52ca861..daa5ad6 100644
 --- a/fs/cifs/cifsglob.h
 +++ b/fs/cifs/cifsglob.h
-@@ -123,7 +123,6 @@ struct session_key {
+@@ -118,7 +118,6 @@ struct session_key {
  /* crypto security descriptor definition */
  struct sdesc {
  	struct shash_desc shash;
@@ -33,5 +33,5 @@ index 4f07f6f..d283b18 100644
  
  /* crypto hashing related structure/fields, not specific to a sec mech */
 -- 
-1.8.1.4
+1.8.1.2
 
