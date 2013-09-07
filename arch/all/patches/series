@@ -4,7 +4,6 @@ kbuild-clang.patch
 0009-Update-Documentation-dontdiff.patch
 0010-Fix-LINUX_COMPILER-definition-script-for-compilation.patch
 0043-Fix-section-mismatch-issues-on-alias-usage.patch
-0044-Fix-bitoperation-for-compilation-with-clang.patch
 1000-aligned-attribute.patch
 1001-cmpxchg-local-fix-uninitialized-return-code.patch
 1002-compiler-clang.patch
