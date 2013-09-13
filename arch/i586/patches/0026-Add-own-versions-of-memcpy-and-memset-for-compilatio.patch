@@ -25,19 +25,6 @@ Needed for compilation with clang. Also minor changes to function prototypes.
 
 --- linux.orig/arch/x86/boot/boot.h
 +++ linux/arch/x86/boot/boot.h
-@@ -30,6 +30,12 @@
- #include <asm/processor-flags.h>
- #include "ctype.h"
- 
-+#ifdef CONFIG_X86_32
-+#define asmlinkage __attribute__((regparm(0)))
-+#else
-+#define asmlinkage
-+#endif
-+
- /* Useful macros */
- #define BUILD_BUG_ON(condition) ((void)sizeof(char[1 - 2*!!(condition)]))
- 
 @@ -229,12 +235,36 @@
  void *copy_from_fs(void *dst, addr_t src, size_t len);
  void copy_to_gs(addr_t dst, void *src, size_t len);
