@@ -8,7 +8,7 @@ kbuild-clang.patch
 1001-cmpxchg-local-fix-uninitialized-return-code.patch
 1002-compiler-clang.patch
 1003-disable-clang-integrated-as.patch
-vlais-cifs.patch
+cifs.patch
 vlais-dm-crypt.patch
 vlais-gadget.patch
 vlais-hmac.patch
