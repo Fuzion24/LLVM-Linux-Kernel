@@ -13,10 +13,8 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
  drivers/usb/gadget/f_fs.c | 128 +++++++++++++++++++++++++++-------------------
  1 file changed, 76 insertions(+), 52 deletions(-)
 
-diff --git a/drivers/usb/gadget/f_fs.c b/drivers/usb/gadget/f_fs.c
-index 1a66c5b..4647f80 100644
---- a/drivers/usb/gadget/f_fs.c
-+++ b/drivers/usb/gadget/f_fs.c
+--- linux.orig/drivers/usb/gadget/f_fs.c
++++ linux/drivers/usb/gadget/f_fs.c
 @@ -30,7 +30,6 @@
  
  #define FUNCTIONFS_MAGIC	0xa647361 /* Chosen by a honest dice roll ;) */
@@ -25,7 +23,7 @@ index 1a66c5b..4647f80 100644
  /* Debugging ****************************************************************/
  
  #ifdef VERBOSE_DEBUG
-@@ -214,6 +213,8 @@ struct ffs_data {
+@@ -214,6 +213,8 @@
  	/* ids in stringtabs are set in functionfs_bind() */
  	const void			*raw_strings;
  	struct usb_gadget_strings	**stringtabs;
@@ -34,7 +32,7 @@ index 1a66c5b..4647f80 100644
  
  	/*
  	 * File system's super block, write once when file system is
-@@ -263,7 +264,10 @@ struct ffs_function {
+@@ -263,7 +264,10 @@
  
  	struct ffs_ep			*eps;
  	u8				eps_revmap[16];
@@ -45,7 +43,7 @@ index 1a66c5b..4647f80 100644
  
  	struct usb_function		function;
  };
-@@ -1345,6 +1349,8 @@ static void ffs_data_clear(struct ffs_data *ffs)
+@@ -1345,6 +1349,8 @@
  	kfree(ffs->raw_descs);
  	kfree(ffs->raw_strings);
  	kfree(ffs->stringtabs);
@@ -54,7 +52,7 @@ index 1a66c5b..4647f80 100644
  }
  
  static void ffs_data_reset(struct ffs_data *ffs)
-@@ -1357,6 +1363,8 @@ static void ffs_data_reset(struct ffs_data *ffs)
+@@ -1357,6 +1363,8 @@
  	ffs->raw_descs = NULL;
  	ffs->raw_strings = NULL;
  	ffs->stringtabs = NULL;
@@ -63,7 +61,7 @@ index 1a66c5b..4647f80 100644
  
  	ffs->raw_descs_length = 0;
  	ffs->raw_fs_descs_length = 0;
-@@ -1528,12 +1536,10 @@ static void ffs_func_free(struct ffs_function *func)
+@@ -1528,12 +1536,10 @@
  	ffs_data_put(func->ffs);
  
  	kfree(func->eps);
@@ -80,7 +78,19 @@ index 1a66c5b..4647f80 100644
  	kfree(func);
  }
  
-@@ -1907,33 +1913,35 @@ static int __ffs_data_got_strings(struct ffs_data *ffs,
+@@ -1877,8 +1883,9 @@
+ 				  char *const _data, size_t len)
+ {
+ 	u32 str_count, needed_count, lang_count;
+-	struct usb_gadget_strings **stringtabs, *t;
+-	struct usb_string *strings, *s;
++	struct usb_gadget_strings *t, **stringtabs = NULL;
++	struct usb_gadget_strings *stringtab = NULL;
++	struct usb_string *s, *strings = NULL;
+ 	const char *data = _data;
+ 
+ 	ENTER();
+@@ -1907,33 +1914,33 @@
  		return 0;
  	}
  
@@ -95,9 +105,7 @@ index 1a66c5b..4647f80 100644
 -
 -		d = kmalloc(sizeof *d, GFP_KERNEL);
 -		if (unlikely(!d)) {
-+		usb_gadget_strings **stringtabs = NULL;
-+		usb_gadget_strings *stringtab = NULL;
-+		usb_string *strings = NULL;
++		struct usb_gadget_strings **b;
 +
 +		stringtabs = kmalloc(sizeof(*stringtabs)*(lang_count + 1),
 +			GFP_KERNEL);
@@ -134,7 +142,7 @@ index 1a66c5b..4647f80 100644
  	}
  
  	/* For each language */
-@@ -1991,12 +1999,16 @@ static int __ffs_data_got_strings(struct ffs_data *ffs,
+@@ -1991,12 +1998,16 @@
  
  	/* Done! */
  	ffs->stringtabs = stringtabs;
@@ -151,7 +159,7 @@ index 1a66c5b..4647f80 100644
  error:
  	kfree(_data);
  	return -EINVAL;
-@@ -2207,17 +2219,12 @@ static int ffs_func_bind(struct usb_configuration *c,
+@@ -2207,17 +2218,12 @@
  
  	int ret;
  
@@ -175,7 +183,7 @@ index 1a66c5b..4647f80 100644
  
  	ENTER();
  
-@@ -2225,21 +2232,40 @@ static int ffs_func_bind(struct usb_configuration *c,
+@@ -2225,21 +2231,40 @@
  	if (unlikely(!(full | high)))
  		return -ENOTSUPP;
  
@@ -192,7 +200,7 @@ index 1a66c5b..4647f80 100644
 +	inums = kmalloc(inums_sz, GFP_KERNEL);
 +	size_t raw_descs_sz = sizeof(*raw_descs)*(high ? ffs->raw_descs_length :
 +					ffs->raw_fs_descs_length);
-+	raw_descs = kmalloc(raw_descs_sz, , GFP_KERNEL);
++	raw_descs = kmalloc(raw_descs_sz, GFP_KERNEL);
 +
 +	if (unlikely(!eps || !fs_descs || !hs_descs || !inums || !raw_descs)) {
 +		kfree(eps);
@@ -225,7 +233,7 @@ index 1a66c5b..4647f80 100644
  
  	/*
  	 * Go through all the endpoint descriptors and allocate
-@@ -2247,10 +2273,9 @@ static int ffs_func_bind(struct usb_configuration *c,
+@@ -2247,10 +2272,9 @@
  	 * numbers without worrying that it may be described later on.
  	 */
  	if (likely(full)) {
@@ -238,7 +246,7 @@ index 1a66c5b..4647f80 100644
  				   __ffs_func_bind_do_descs, func);
  		if (unlikely(ret < 0))
  			goto error;
-@@ -2259,10 +2284,9 @@ static int ffs_func_bind(struct usb_configuration *c,
+@@ -2259,10 +2283,9 @@
  	}
  
  	if (likely(high)) {
@@ -251,7 +259,7 @@ index 1a66c5b..4647f80 100644
  				   __ffs_func_bind_do_descs, func);
  	}
  
-@@ -2273,7 +2297,7 @@ static int ffs_func_bind(struct usb_configuration *c,
+@@ -2273,7 +2296,7 @@
  	 */
  	ret = ffs_do_descs(ffs->fs_descs_count +
  			   (high ? ffs->hs_descs_count : 0),
@@ -260,6 +268,3 @@ index 1a66c5b..4647f80 100644
  			   __ffs_func_bind_do_nums, func);
  	if (unlikely(ret < 0))
  		goto error;
--- 
-1.8.1.2
-
