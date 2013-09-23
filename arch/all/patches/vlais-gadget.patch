@@ -1,7 +1,15 @@
-From 851e9ba54030b9f6fff623e843b4a1e2faab7782 Mon Sep 17 00:00:00 2001
-From: Behan Webster <behanw@converseincode.com>
-Date: Tue, 3 Sep 2013 22:27:25 -0400
-Subject: [PATCH 14/39] usb: LLVMLinux: Remove VLAIS from USB gadget
+From: Mark Charlebois <charlebm@gmail.com>
+Date: Mon, 23 Sep 2013 15:27:45 -0700
+Subject: [PATCH] usb: LLVMLinux: Remove VLAIS from USB gadget
+To: Felipe Balbi <balbi@ti.com> 
+Cc: Mark Charlebois <charlebm@gmail.com>
+Cc: Behan Webster <behanw@converseincode.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org> 
+Cc: USB list <linux-usb@vger.kernel.org>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc: Andrzej Pietrasiewicz <andrzej.p@samsung.com>
+
 
 The use of variable length arrays in structs (VLAIS) in the Linux Kernel code
 precludes the use of compilers which don't implement VLAIS (for instance the
