@@ -164,7 +164,7 @@ get-kernel-size		= mkdir -p ${TOPLOGDIR} ; \
 			( ${2} --version | head -1 ; \
 			cd ${3} && wc -c ${KERNEL_SIZE_ARTIFACTS} ) \
 			| tee $(call sizelog,${TOPLOGDIR},{1})
-make-kernel		= (cd ${1} && ${2} time ${3} make ${MAKE_FLAGS} ${KERNEL_VAR} ${4} ${5} ${KERNEL_MAKE_TARGETS} ${6})
+make-kernel		= (cd ${1} && ${2} time ${3} make ${MAKE_FLAGS} ${KERNEL_VAR} ${4} ${5} ${KERNEL_MAKE_TARGETS} ${6} ${7})
 
 #############################################################################
 KERNEL_TARGETS_CLANG	= kernel-[fetch,patch,configure,build,clean,sync]
@@ -391,7 +391,7 @@ state/kernel-build: ${STATE_CLANG_TOOLCHAIN} ${STATE_TOOLCHAIN} state/kernel-con
 	@[ -d ${KERNEL_BUILD} ] || ($(call leavestate,${STATEDIR},kernel-configure) && ${MAKE} kernel-configure)
 	@$(MAKE) kernel-quilt-link-patches
 	@$(call banner,Building kernel with clang...)
-	$(call make-kernel,${KERNELDIR},${KERNEL_ENV},${CHECKER},${CHECK_VARS},CC?="${CLANGCC}")
+	$(call make-kernel,${KERNELDIR},${KERNEL_ENV},${CHECKER},${CHECK_VARS},CC?="${CLANGCC}",${KERNELMAKETARGET})
 	@$(call banner,Successfully Built kernel with clang!)
 	@$(call get-kernel-size,clang,${CLANG},${KERNEL_BUILD})
 	$(call state,$@,done)
