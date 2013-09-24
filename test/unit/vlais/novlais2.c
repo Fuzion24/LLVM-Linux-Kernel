@@ -7,10 +7,9 @@
 
 #define vla_item(structname, type, name, n) \
 	type * structname##_##name; \
-	size_t structname##_##name##__##pad = (structname##__##next & (__alignof__(type)-1)); \
-	size_t structname##_##name##__##offset = structname##__##next + structname##_##name##__##pad; \
+	size_t structname##_##name##__##offset = (structname##__##next + __alignof__(type) - 1) & ~(__alignof__(type) - 1); \
 	size_t structname##_##name##__##sz = n * sizeof(type); \
-	structname##__##next = structname##__##next + structname##_##name##__##pad + structname##_##name##__##sz; 
+	structname##__##next = structname##_##name##__##offset + structname##_##name##__##sz; 
 
 #define vla_ptr(ptr,structname,name) structname##_##name = (__typeof__(structname##_##name))&ptr[structname##_##name##__##offset]
 

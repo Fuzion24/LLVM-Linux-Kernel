@@ -83,6 +83,7 @@ int main(void)
 	test_novlais(&test1);
 	test_novlais1(&test1);
 	test_novlais2(&test1);
+	printHex(test1.buffer, sizeof(test1.buffer));
 	test_novlais3(&test1);
 	test_novlais4(&test1);
 
