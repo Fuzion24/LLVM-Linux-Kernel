@@ -14,7 +14,9 @@ The use of variable length arrays in structs (VLAIS) in the Linux Kernel code
 precludes the use of compilers which don't implement VLAIS (for instance the
 Clang compiler). This alternate patch calculates offsets into the kmalloc-ed
 memory buffer using macros. The previous patch required multiple kmalloc and
-kfree calls.
+kfree calls. This version uses "group" vs "struct" since it really is not a
+struct and is essentially a group of VLA in a common allocated block. This
+version also fixes the issues pointed out by Andrzej Pietrasiewicz.
 
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
@@ -27,20 +29,20 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
  #define FUNCTIONFS_MAGIC	0xa647361 /* Chosen by a honest dice roll ;) */
  
 +/* Variable Length Array Macros **********************************************/
-+#define vla_struct(structname) size_t structname##__##next = 0
-+#define vla_struct_size(structname) structname##__##next
++#define vla_group(groupname) size_t groupname##__##next = 0
++#define vla_group_size(groupname) groupname##__##next
 +
-+#define vla_item(structname, type, name, n) \
-+	type * structname##_##name; \
-+	size_t structname##_##name##__##offset = \
-+		(structname##__##next + __alignof__(type) - 1) & \
++#define vla_item(groupname, type, name, n) \
++	size_t groupname##_##name##__##offset = \
++		(groupname##__##next + __alignof__(type) - 1) & \
 +		~(__alignof__(type) - 1); \
-+	size_t structname##_##name##__##sz = n * sizeof(type); \
-+	structname##__##next = structname##_##name##__##offset + \
-+		structname##_##name##__##sz;
++	size_t groupname##_##name##__##sz = (n) * sizeof(type); \
++	type * groupname##_##name = ({ \
++	groupname##__##next = groupname##_##name##__##offset + \
++		groupname##_##name##__##sz; NULL;})
 +
-+#define vla_ptr(ptr,structname,name) structname##_##name = \
-+	(__typeof__(structname##_##name))&ptr[structname##_##name##__##offset]
++#define vla_ptr(ptr,groupname,name) groupname##_##name = \
++	(__typeof__(groupname##_##name))&ptr[groupname##_##name##__##offset]
  
  /* Debugging ****************************************************************/
  
@@ -54,14 +56,14 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
 -			struct usb_string strings[lang_count*(needed_count+1)];
 -		} *d;
  		unsigned i = 0;
-+		vla_struct(d);
++		vla_group(d);
 +		vla_item(d, struct usb_gadget_strings *, stringtabs,
 +			lang_count + 1);
 +		vla_item(d, struct usb_gadget_strings, stringtab, lang_count);
 +		vla_item(d, struct usb_string, strings,
 +			lang_count*(needed_count+1));
 +
-+		char *vlabuf = kmalloc(vla_struct_size(d), GFP_KERNEL);
++		char *vlabuf = kmalloc(vla_group_size(d), GFP_KERNEL);
  
 -		d = kmalloc(sizeof *d, GFP_KERNEL);
 -		if (unlikely(!d)) {
@@ -88,7 +90,7 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
 -		stringtabs = d->stringtabs;
 -		t = d->stringtab;
 -		s = d->strings;
-+		/* stringtabs = vlabuf = d_stringtabs for later free */
++		/* stringtabs = vlabuf = d_stringtabs for later kfree */
 +		stringtabs = d_stringtabs;
 +		t = d_stringtab;
 +		s = d_strings;
@@ -109,7 +111,7 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
 -		char raw_descs[high ? ffs->raw_descs_length
 -				    : ffs->raw_fs_descs_length];
 -	} *data;
-+	vla_struct(d);
++	vla_group(d);
 +	vla_item(d, struct ffs_ep, eps, ffs->eps_count);
 +	vla_item(d, struct usb_descriptor_header *, fs_descs,
 +		full ? ffs->fs_descs_count + 1 : 0);
@@ -129,7 +131,7 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
 -	data = kmalloc(sizeof *data, GFP_KERNEL);
 -	if (unlikely(!data))
 +	/* Allocate a single chunk, less management later on */
-+	char *vlabuf = kmalloc(vla_struct_size(d), GFP_KERNEL);
++	char *vlabuf = kmalloc(vla_group_size(d), GFP_KERNEL);
 +	if (unlikely(!vlabuf))
  		return -ENOMEM;
  
@@ -155,8 +157,8 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
 -	func->eps             = data->eps;
 -	func->interfaces_nums = data->inums;
 +	/* Save pointers
-+	 * d_eps == vlabuf, func->eps used to free vlabuf later
-+         */
++	 * d_eps == vlabuf, func->eps used to kfree vlabuf later
++	*/
 +	func->eps             = d_eps;
 +	func->interfaces_nums = d_inums;
  

@@ -2,26 +2,31 @@
 #include <string.h>
 #include "util.h"
 
-#define vla_struct(structname) size_t structname##__##next = 0
-#define vla_struct_size(structname) structname##__##next
+#define vla_group(groupname) size_t groupname##__##next = 0
+#define vla_group_size(groupname) groupname##__##next
 
-#define vla_item(structname, type, name, n) \
-	type * structname##_##name; \
-	size_t structname##_##name##__##offset = (structname##__##next + __alignof__(type) - 1) & ~(__alignof__(type) - 1); \
-	size_t structname##_##name##__##sz = n * sizeof(type); \
-	structname##__##next = structname##_##name##__##offset + structname##_##name##__##sz; 
+#define vla_item(groupname, type, name, n) \
+       size_t groupname##_##name##__##offset = \
+               (groupname##__##next + __alignof__(type) - 1) & \
+               ~(__alignof__(type) - 1); \
+       size_t groupname##_##name##__##sz = (n) * sizeof(type); \
+       type * groupname##_##name = ({ \
+       groupname##__##next = groupname##_##name##__##offset + \
+               groupname##_##name##__##sz; NULL;})
 
-#define vla_ptr(ptr,structname,name) structname##_##name = (__typeof__(structname##_##name))&ptr[structname##_##name##__##offset]
+#define vla_ptr(ptr,groupname,name) groupname##_##name = \
+       (__typeof__(groupname##_##name))&ptr[groupname##_##name##__##offset]
+
 
 TESTFUNC(NOVLAIS)
 {
-	vla_struct(foo);
-		vla_item(foo, TYPEA, vara, a);
-		vla_item(foo, TYPEB, varb, b);
-		vla_item(foo, TYPEC, varc, c);
-		vla_item(foo, TYPED, vard, d);
+	vla_group(foo);
+	vla_item(foo, TYPEA, vara, a-1+1);
+	vla_item(foo, TYPEB, varb, b-1+1);
+	vla_item(foo, TYPEC, varc, c-1+1);
+	vla_item(foo, TYPED, vard, d-1+1);
 
-	ptr->size = vla_struct_size(foo);
+	ptr->size = vla_group_size(foo);
 
 	vla_ptr(ptr->buffer, foo, vara);
 	vla_ptr(ptr->buffer, foo, varb);

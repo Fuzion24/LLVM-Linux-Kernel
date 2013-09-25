@@ -22,9 +22,9 @@
 ##############################################################################
 # Build and test alternatives to VLAIS
 
-CLANG	= ../../../toolchain/clang/install/bin/clang
+CLANG	= ../../../toolchain/clang/clang+llvm-3.3-Ubuntu-13.04-x86_64-linux-gnu/bin/clang
 GCC	= gcc -std=c11
-CFLAGS	= -g
+CFLAGS	= -g -Wall
 
 TARGET	= test-vlais
 
