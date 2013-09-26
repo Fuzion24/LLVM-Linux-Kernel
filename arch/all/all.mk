@@ -514,6 +514,30 @@ kernel-gcc-clean kernel-gcc-mrproper: kernel-unpatch
 	@$(call banner,Gcc compiled Kernel is now clean)
 
 #############################################################################
+kernel-shell-for-build: kernel-configure
+	@echo "PATH='${COMPILER_PATH}/bin:${PATH}'" \
+		"ARCH=${ARCH}" \
+		"CROSS_COMPILE='${CROSS_COMPILE}'" \
+		"KBUILD_OUTPUT=${KERNEL_BUILD}" \
+		"HOSTCC='${CLANG}'" \
+		"CC='${CLANGCC}'" \
+		"KERNEL_SRC_DIR='${KERNELDIR}'" \
+		"KERNEL_BUILD_DIR='${KERNEL_BUILD}'" \
+		"KERNEL_BUILD_PARAMETERS='${MAKE_FLAGS} ${KERNEL_VAR} ${KERNEL_MAKE_TARGETS}'" \
+		"BUILD_COMMAND='make -C ${KERNEL_BUILD} ${MAKE_FLAGS} ${KERNEL_VAR} ${KERNEL_MAKE_TARGETS}'"
+
+kernel-gcc-shell-for-build: kernel-gcc-configure
+	@echo "PATH='${COMPILER_PATH}/bin:${PATH}'" \
+		"ARCH=${ARCH}" \
+		"CROSS_COMPILE='${CROSS_COMPILE}'" \
+		"KBUILD_OUTPUT=${KERNELGCC_BUILD}" \
+		"CC='${CROSS_COMPILE}${GCC}'" \
+		"KERNEL_SRC_DIR='${KERNELGCC}'" \
+		"KERNEL_BUILD_DIR='${KERNELGCC_BUILD}'" \
+		"KERNEL_BUILD_PARAMETERS='${MAKE_FLAGS} ${KERNEL_VAR} ${KERNEL_MAKE_TARGETS}'" \
+		"BUILD_COMMAND='make -C ${KERNELGCC_BUILD} ${MAKE_FLAGS} ${KERNEL_VAR} ${KERNEL_MAKE_TARGETS}'"
+
+#############################################################################
 BUILD_LOG	= ${TMPDIR}/build.log
 BUILD_WARNINGS	= ${TMPDIR}/build-warnings.log
 warnings-save:
