@@ -9,40 +9,6 @@
  #endif
  
  static int __init vreg_init(void)
---- msm.orig/arch/arm/mach-msm/perf_event_msm_krait_l2.c
-+++ msm/arch/arm/mach-msm/perf_event_msm_krait_l2.c
-@@ -18,6 +18,10 @@
- 
- #include <mach/msm-krait-l2-accessors.h>
- 
-+#ifndef CONFIG_HW_PERF_EVENTS
-+#error "CONFIG_HW_PERF_EVENTS is undefined but is required"
-+#endif
-+
- #define MAX_L2_PERIOD	((1ULL << 32) - 1)
- #define MAX_KRAIT_L2_CTRS 10
- 
---- msm.orig/arch/arm/mach-msm/perf_trace_counters.h
-+++ msm/arch/arm/mach-msm/perf_trace_counters.h
-@@ -121,7 +121,7 @@
- 
- #endif
- #undef TRACE_INCLUDE_PATH
--#define TRACE_INCLUDE_PATH .
-+#define TRACE_INCLUDE_PATH ../mach-msm
- #define TRACE_INCLUDE_FILE perf_trace_counters
- #include <trace/define_trace.h>
- 
---- msm.orig/arch/arm/mach-msm/trace_msm_low_power.h
-+++ msm/arch/arm/mach-msm/trace_msm_low_power.h
-@@ -149,6 +149,6 @@
- );
- #endif
- #undef TRACE_INCLUDE_PATH
--#define TRACE_INCLUDE_PATH .
-+#define TRACE_INCLUDE_PATH ../mach-msm
- #define TRACE_INCLUDE_FILE trace_msm_low_power
- #include <trace/define_trace.h>
 --- msm.orig/drivers/video/msm/Makefile
 +++ msm/drivers/video/msm/Makefile
 @@ -173,7 +173,7 @@
@@ -54,38 +20,9 @@
  obj-$(CONFIG_FB_MSM_HDMI_MHL_8334) += mhl-8334.o
  mhl-8334-objs  += mhl/mhl_8334.o
  mhl-8334-objs  += mhl/mhl_i2c_utils.o
---- msm.orig/arch/arm/mach-msm/trace_rpm_smd.h
-+++ msm/arch/arm/mach-msm/trace_rpm_smd.h
-@@ -74,6 +74,6 @@
- );
- #endif
- #undef TRACE_INCLUDE_PATH
--#define TRACE_INCLUDE_PATH .
-+#define TRACE_INCLUDE_PATH ../mach-msm
- #define TRACE_INCLUDE_FILE trace_rpm_smd
- #include <trace/define_trace.h>
---- msm.orig/arch/arm/configs/msm8974-perf_defconfig
-+++ msm/arch/arm/configs/msm8974-perf_defconfig
-@@ -443,15 +443,7 @@
- CONFIG_IOMMU_PGTABLES_L2=y
- CONFIG_MOBICORE_SUPPORT=m
- CONFIG_MOBICORE_API=m
--CONFIG_CORESIGHT=y
--CONFIG_CORESIGHT_TMC=y
--CONFIG_CORESIGHT_TPIU=y
--CONFIG_CORESIGHT_FUNNEL=y
--CONFIG_CORESIGHT_REPLICATOR=y
--CONFIG_CORESIGHT_STM=y
--CONFIG_CORESIGHT_ETM=y
--CONFIG_CORESIGHT_ETM_PCSAVE_DEFAULT_ENABLE=y
--CONFIG_CORESIGHT_EVENT=m
-+CONFIG_CORESIGHT=n
- CONFIG_BIF=y
- CONFIG_BIF_QPNP=y
- CONFIG_EXT2_FS=y
 --- msm.orig/drivers/gpu/msm/kgsl_iommu.c
 +++ msm/drivers/gpu/msm/kgsl_iommu.c
-@@ -954,7 +954,7 @@
+@@ -999,7 +999,7 @@
   *
   * Return - int - number of commands.
   */
@@ -94,7 +31,7 @@
  						unsigned int *cmds)
  {
  	struct kgsl_device *device = mmu->device;
-@@ -1012,7 +1012,7 @@
+@@ -1057,7 +1057,7 @@
   *
   * Return - int - number of commands.
   */
@@ -103,3 +40,16 @@
  					unsigned int *cmds)
  {
  	struct kgsl_device *device = mmu->device;
+--- msm.orig/arch/arm/mach-msm/perf_event_msm_krait_l2.c
++++ msm/arch/arm/mach-msm/perf_event_msm_krait_l2.c
+@@ -18,6 +18,10 @@
+ 
+ #include <mach/msm-krait-l2-accessors.h>
+ 
++#ifndef CONFIG_HW_PERF_EVENTS
++#error "CONFIG_HW_PERF_EVENTS is undefined but is required"
++#endif
++
+ /*
+  * The L2 PMU is shared between all CPU's, so protect
+  * its bitmap access.

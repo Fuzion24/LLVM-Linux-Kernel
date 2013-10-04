@@ -1,47 +1,28 @@
-Index: msm/arch/arm/kernel/perf_event.c
-===================================================================
 --- msm.orig/arch/arm/kernel/perf_event.c
 +++ msm/arch/arm/kernel/perf_event.c
-@@ -696,7 +696,7 @@
+@@ -791,7 +791,7 @@
  	return 0;
  }
  
 -static struct platform_driver armpmu_driver = {
 +static struct platform_driver armpmu_driver  __initdata =  {
  	.driver		= {
- 		.name	= "cpu-arm-pmu",
+ 		.name	= "cpu-pmu",
  		.of_match_table = armpmu_of_device_ids,
-Index: msm/arch/arm/mach-msm/mdm2.c
-===================================================================
---- msm.orig/arch/arm/mach-msm/mdm2.c
-+++ msm/arch/arm/mach-msm/mdm2.c
-@@ -298,7 +298,7 @@
- 	mdm_common_modem_shutdown(pdev);
- }
- 
--static struct platform_driver mdm_modem_driver = {
-+static struct platform_driver mdm_modem_driver  __exitdata =  {
- 	.remove         = mdm_modem_remove,
- 	.shutdown	= mdm_modem_shutdown,
- 	.driver         = {
-Index: msm/arch/arm/mach-msm/perf_event_msm_krait_l2.c
-===================================================================
 --- msm.orig/arch/arm/mach-msm/perf_event_msm_krait_l2.c
 +++ msm/arch/arm/mach-msm/perf_event_msm_krait_l2.c
-@@ -542,7 +542,7 @@
+@@ -550,7 +550,7 @@
  	return 0;
  }
  
 -static struct platform_driver krait_l2_pmu_driver = {
 +static struct platform_driver krait_l2_pmu_driver  __initdata =  {
  	.driver		= {
- 		.name	= "l2-arm-pmu",
- 	},
-Index: msm/arch/arm/mach-msm/pil-gss.c
-===================================================================
+ 		.name	= "l2-pmu",
+ 		.of_match_table = l2pmu_of_device_ids,
 --- msm.orig/arch/arm/mach-msm/pil-gss.c
 +++ msm/arch/arm/mach-msm/pil-gss.c
-@@ -373,7 +373,7 @@
+@@ -604,7 +604,7 @@
  	return 0;
  }
  
@@ -50,11 +31,9 @@ Index: msm/arch/arm/mach-msm/pil-gss.c
  	.probe = pil_gss_probe,
  	.remove = __devexit_p(pil_gss_remove),
  	.driver = {
-Index: msm/arch/arm/mach-msm/pil-riva.c
-===================================================================
 --- msm.orig/arch/arm/mach-msm/pil-riva.c
 +++ msm/arch/arm/mach-msm/pil-riva.c
-@@ -348,7 +348,7 @@
+@@ -571,7 +571,7 @@
  	return 0;
  }
  
@@ -63,11 +42,9 @@ Index: msm/arch/arm/mach-msm/pil-riva.c
  	.probe = pil_riva_probe,
  	.remove = __devexit_p(pil_riva_remove),
  	.driver = {
-Index: msm/arch/arm/mach-msm/pil-vidc.c
-===================================================================
 --- msm.orig/arch/arm/mach-msm/pil-vidc.c
 +++ msm/arch/arm/mach-msm/pil-vidc.c
-@@ -105,7 +105,7 @@
+@@ -137,7 +137,7 @@
  	return 0;
  }
  
@@ -76,11 +53,9 @@ Index: msm/arch/arm/mach-msm/pil-vidc.c
  	.probe = pil_vidc_driver_probe,
  	.remove = __devexit_p(pil_vidc_driver_exit),
  	.driver = {
-Index: msm/arch/arm/mach-msm/pm-boot.c
-===================================================================
 --- msm.orig/arch/arm/mach-msm/pm-boot.c
 +++ msm/arch/arm/mach-msm/pm-boot.c
-@@ -256,7 +256,7 @@
+@@ -330,7 +330,7 @@
  	{},
  };
  
@@ -89,11 +64,9 @@ Index: msm/arch/arm/mach-msm/pm-boot.c
  	.probe = msm_pm_boot_probe,
  	.driver = {
  		.name = "pm-boot",
-Index: msm/arch/arm/mach-msm/spm_devices.c
-===================================================================
 --- msm.orig/arch/arm/mach-msm/spm_devices.c
 +++ msm/arch/arm/mach-msm/spm_devices.c
-@@ -401,7 +401,7 @@
+@@ -516,7 +516,7 @@
  	{},
  };
  
@@ -102,11 +75,9 @@ Index: msm/arch/arm/mach-msm/spm_devices.c
  	.probe = msm_spm_dev_probe,
  	.driver = {
  		.name = "spm-v2",
-Index: msm/arch/arm/mach-msm/tz_log.c
-===================================================================
 --- msm.orig/arch/arm/mach-msm/tz_log.c
 +++ msm/arch/arm/mach-msm/tz_log.c
-@@ -542,7 +542,7 @@
+@@ -756,7 +756,7 @@
  	{}
  };
  
@@ -115,11 +86,9 @@ Index: msm/arch/arm/mach-msm/tz_log.c
  	.probe		= tz_log_probe,
  	.remove		= __devexit_p(tz_log_remove),
  	.driver		= {
-Index: msm/drivers/coresight/coresight-etb.c
-===================================================================
 --- msm.orig/drivers/coresight/coresight-etb.c
 +++ msm/drivers/coresight/coresight-etb.c
-@@ -441,7 +441,7 @@
+@@ -444,7 +444,7 @@
  	{}
  };
  
@@ -128,11 +97,9 @@ Index: msm/drivers/coresight/coresight-etb.c
  	.probe          = etb_probe,
  	.remove         = __devexit_p(etb_remove),
  	.driver         = {
-Index: msm/drivers/coresight/coresight-etm.c
-===================================================================
 --- msm.orig/drivers/coresight/coresight-etm.c
 +++ msm/drivers/coresight/coresight-etm.c
-@@ -1644,7 +1644,7 @@
+@@ -2281,7 +2281,7 @@
  	{}
  };
  
@@ -141,11 +108,9 @@ Index: msm/drivers/coresight/coresight-etm.c
  	.probe          = etm_probe,
  	.remove         = __devexit_p(etm_remove),
  	.driver         = {
-Index: msm/drivers/coresight/coresight-funnel.c
-===================================================================
 --- msm.orig/drivers/coresight/coresight-funnel.c
 +++ msm/drivers/coresight/coresight-funnel.c
-@@ -234,7 +234,7 @@
+@@ -237,7 +237,7 @@
  	{}
  };
  
@@ -154,11 +119,9 @@ Index: msm/drivers/coresight/coresight-funnel.c
  	.probe          = funnel_probe,
  	.remove         = __devexit_p(funnel_remove),
  	.driver         = {
-Index: msm/drivers/coresight/coresight-stm.c
-===================================================================
 --- msm.orig/drivers/coresight/coresight-stm.c
 +++ msm/drivers/coresight/coresight-stm.c
-@@ -747,7 +747,7 @@
+@@ -903,7 +903,7 @@
  	{}
  };
  
@@ -167,11 +130,9 @@ Index: msm/drivers/coresight/coresight-stm.c
  	.probe          = stm_probe,
  	.remove         = __devexit_p(stm_remove),
  	.driver         = {
-Index: msm/drivers/coresight/coresight-tpiu.c
-===================================================================
 --- msm.orig/drivers/coresight/coresight-tpiu.c
 +++ msm/drivers/coresight/coresight-tpiu.c
-@@ -206,7 +206,7 @@
+@@ -857,7 +857,7 @@
  	{}
  };
  
@@ -180,11 +141,9 @@ Index: msm/drivers/coresight/coresight-tpiu.c
  	.probe          = tpiu_probe,
  	.remove         = __devexit_p(tpiu_remove),
  	.driver         = {
-Index: msm/drivers/hwmon/epm_adc.c
-===================================================================
 --- msm.orig/drivers/hwmon/epm_adc.c
 +++ msm/drivers/hwmon/epm_adc.c
-@@ -1813,7 +1813,7 @@
+@@ -2322,7 +2322,7 @@
  	return 0;
  }
  
@@ -193,11 +152,9 @@ Index: msm/drivers/hwmon/epm_adc.c
  	.probe = epm_adc_probe,
  	.remove = __devexit_p(epm_adc_remove),
  	.driver = {
-Index: msm/drivers/hwmon/pm8xxx-adc.c
-===================================================================
 --- msm.orig/drivers/hwmon/pm8xxx-adc.c
 +++ msm/drivers/hwmon/pm8xxx-adc.c
-@@ -1274,7 +1274,7 @@
+@@ -1305,7 +1305,7 @@
  	return 0;
  }
  
@@ -206,11 +163,9 @@ Index: msm/drivers/hwmon/pm8xxx-adc.c
  	.probe	= pm8xxx_adc_probe,
  	.remove	= __devexit_p(pm8xxx_adc_teardown),
  	.driver	= {
-Index: msm/drivers/leds/leds-pm8xxx.c
-===================================================================
 --- msm.orig/drivers/leds/leds-pm8xxx.c
 +++ msm/drivers/leds/leds-pm8xxx.c
-@@ -982,7 +982,7 @@
+@@ -1018,7 +1018,7 @@
  	return 0;
  }
  
@@ -219,24 +174,20 @@ Index: msm/drivers/leds/leds-pm8xxx.c
  	.probe		= pm8xxx_led_probe,
  	.remove		= __devexit_p(pm8xxx_led_remove),
  	.driver		= {
-Index: msm/drivers/media/radio/radio-iris.c
-===================================================================
 --- msm.orig/drivers/media/radio/radio-iris.c
 +++ msm/drivers/media/radio/radio-iris.c
-@@ -3687,7 +3687,7 @@
- 	return 0;
- }
+@@ -4342,7 +4342,7 @@
+ 	{}
+ };
  
 -static struct platform_driver iris_driver = {
 +static struct platform_driver iris_driver  __exitdata =  {
  	.driver = {
  		.owner  = THIS_MODULE,
  		.name   = "iris_fm",
-Index: msm/drivers/mfd/pm8038-core.c
-===================================================================
 --- msm.orig/drivers/mfd/pm8038-core.c
 +++ msm/drivers/mfd/pm8038-core.c
-@@ -806,7 +806,7 @@
+@@ -857,7 +857,7 @@
  	return 0;
  }
  
@@ -245,8 +196,6 @@ Index: msm/drivers/mfd/pm8038-core.c
  	.probe		= pm8038_probe,
  	.remove		= __devexit_p(pm8038_remove),
  	.driver		= {
-Index: msm/drivers/mfd/pm8821-core.c
-===================================================================
 --- msm.orig/drivers/mfd/pm8821-core.c
 +++ msm/drivers/mfd/pm8821-core.c
 @@ -324,7 +324,7 @@
@@ -258,11 +207,9 @@ Index: msm/drivers/mfd/pm8821-core.c
  	.probe		= pm8821_probe,
  	.remove		= __devexit_p(pm8821_remove),
  	.driver		= {
-Index: msm/drivers/mfd/pm8921-core.c
-===================================================================
 --- msm.orig/drivers/mfd/pm8921-core.c
 +++ msm/drivers/mfd/pm8921-core.c
-@@ -972,7 +972,7 @@
+@@ -974,7 +974,7 @@
  	return 0;
  }
  
@@ -271,11 +218,9 @@ Index: msm/drivers/mfd/pm8921-core.c
  	.probe		= pm8921_probe,
  	.remove		= __devexit_p(pm8921_remove),
  	.driver		= {
-Index: msm/drivers/mfd/pm8xxx-pwm.c
-===================================================================
 --- msm.orig/drivers/mfd/pm8xxx-pwm.c
 +++ msm/drivers/mfd/pm8xxx-pwm.c
-@@ -1443,7 +1443,7 @@
+@@ -1519,7 +1519,7 @@
  	return 0;
  }
  
@@ -284,11 +229,9 @@ Index: msm/drivers/mfd/pm8xxx-pwm.c
  	.probe		= pm8xxx_pwm_probe,
  	.remove		= __devexit_p(pm8xxx_pwm_remove),
  	.driver		= {
-Index: msm/drivers/misc/qseecom.c
-===================================================================
 --- msm.orig/drivers/misc/qseecom.c
 +++ msm/drivers/misc/qseecom.c
-@@ -1817,7 +1817,7 @@
+@@ -3391,7 +3391,7 @@
  	{}
  };
  
@@ -297,11 +240,9 @@ Index: msm/drivers/misc/qseecom.c
  	.probe = qseecom_probe,
  	.remove = qseecom_remove,
  	.driver = {
-Index: msm/drivers/platform/msm/sps/sps.c
-===================================================================
 --- msm.orig/drivers/platform/msm/sps/sps.c
 +++ msm/drivers/platform/msm/sps/sps.c
-@@ -2323,7 +2323,7 @@
+@@ -2612,7 +2612,7 @@
  	{}
  };
  
@@ -310,24 +251,20 @@ Index: msm/drivers/platform/msm/sps/sps.c
  	.probe          = msm_sps_probe,
  	.driver		= {
  		.name	= SPS_DRV_NAME,
-Index: msm/drivers/power/pm8921-bms.c
-===================================================================
 --- msm.orig/drivers/power/pm8921-bms.c
 +++ msm/drivers/power/pm8921-bms.c
-@@ -3282,7 +3282,7 @@
- 	return 0;
- }
+@@ -3921,7 +3921,7 @@
+ 	.suspend	= pm8921_bms_suspend,
+ };
  
 -static struct platform_driver pm8921_bms_driver = {
 +static struct platform_driver pm8921_bms_driver  __refdata =  {
  	.probe	= pm8921_bms_probe,
  	.remove	= __devexit_p(pm8921_bms_remove),
  	.driver	= {
-Index: msm/drivers/power/pm8921-charger.c
-===================================================================
 --- msm.orig/drivers/power/pm8921-charger.c
 +++ msm/drivers/power/pm8921-charger.c
-@@ -4213,7 +4213,7 @@
+@@ -4935,7 +4935,7 @@
  	.resume_noirq   = pm8921_charger_resume_noirq,
  	.resume		= pm8921_charger_resume,
  };
@@ -336,21 +273,17 @@ Index: msm/drivers/power/pm8921-charger.c
  	.probe		= pm8921_charger_probe,
  	.remove		= __devexit_p(pm8921_charger_remove),
  	.driver		= {
-Index: msm/drivers/power/pm8xxx-ccadc.c
-===================================================================
 --- msm.orig/drivers/power/pm8xxx-ccadc.c
 +++ msm/drivers/power/pm8xxx-ccadc.c
-@@ -712,7 +712,7 @@
- 	return 0;
- }
+@@ -848,7 +848,7 @@
+ 	.resume		= pm8xxx_ccadc_resume,
+ };
  
 -static struct platform_driver pm8xxx_ccadc_driver = {
 +static struct platform_driver pm8xxx_ccadc_driver  __refdata =  {
  	.probe	= pm8xxx_ccadc_probe,
  	.remove	= __devexit_p(pm8xxx_ccadc_remove),
  	.driver	= {
-Index: msm/drivers/regulator/msm-gpio-regulator.c
-===================================================================
 --- msm.orig/drivers/regulator/msm-gpio-regulator.c
 +++ msm/drivers/regulator/msm-gpio-regulator.c
 @@ -196,7 +196,7 @@
@@ -362,8 +295,6 @@ Index: msm/drivers/regulator/msm-gpio-regulator.c
  	.probe = gpio_vreg_probe,
  	.remove = __devexit_p(gpio_vreg_remove),
  	.driver = {
-Index: msm/drivers/regulator/pm8xxx-regulator.c
-===================================================================
 --- msm.orig/drivers/regulator/pm8xxx-regulator.c
 +++ msm/drivers/regulator/pm8xxx-regulator.c
 @@ -3318,7 +3318,7 @@
@@ -375,11 +306,9 @@ Index: msm/drivers/regulator/pm8xxx-regulator.c
  	.probe	= pm8xxx_vreg_probe,
  	.remove	= __devexit_p(pm8xxx_vreg_remove),
  	.driver	= {
-Index: msm/drivers/slimbus/slim-msm-ctrl.c
-===================================================================
 --- msm.orig/drivers/slimbus/slim-msm-ctrl.c
 +++ msm/drivers/slimbus/slim-msm-ctrl.c
-@@ -1576,7 +1576,7 @@
+@@ -1566,7 +1566,7 @@
  	{}
  };
  
@@ -388,8 +317,6 @@ Index: msm/drivers/slimbus/slim-msm-ctrl.c
  	.probe = msm_slim_probe,
  	.remove = msm_slim_remove,
  	.driver	= {
-Index: msm/drivers/staging/android/ram_console.c
-===================================================================
 --- msm.orig/drivers/staging/android/ram_console.c
 +++ msm/drivers/staging/android/ram_console.c
 @@ -74,7 +74,7 @@
@@ -401,8 +328,6 @@ Index: msm/drivers/staging/android/ram_console.c
  	.driver		= {
  		.name	= "ram_console",
  	},
-Index: msm/drivers/staging/tidspbridge/rmgr/drv_interface.c
-===================================================================
 --- msm.orig/drivers/staging/tidspbridge/rmgr/drv_interface.c
 +++ msm/drivers/staging/tidspbridge/rmgr/drv_interface.c
 @@ -601,7 +601,7 @@
@@ -414,11 +339,9 @@ Index: msm/drivers/staging/tidspbridge/rmgr/drv_interface.c
  	.driver = {
  		   .name = "omap-dsp",
  		   },
-Index: msm/drivers/thermal/msm8960_tsens.c
-===================================================================
 --- msm.orig/drivers/thermal/msm8960_tsens.c
 +++ msm/drivers/thermal/msm8960_tsens.c
-@@ -1041,7 +1041,7 @@
+@@ -1074,7 +1074,7 @@
  	return 0;
  }
  
@@ -427,8 +350,6 @@ Index: msm/drivers/thermal/msm8960_tsens.c
  	.probe = tsens_tm_probe,
  	.remove = tsens_tm_remove,
  	.driver = {
-Index: msm/drivers/thermal/msm_tsens.c
-===================================================================
 --- msm.orig/drivers/thermal/msm_tsens.c
 +++ msm/drivers/thermal/msm_tsens.c
 @@ -634,7 +634,7 @@
@@ -440,8 +361,6 @@ Index: msm/drivers/thermal/msm_tsens.c
  	.probe	= tsens_tm_probe,
  	.remove	= __devexit_p(tsens_tm_remove),
  	.driver	= {
-Index: msm/drivers/video/msm/lvds_chimei_wxga.c
-===================================================================
 --- msm.orig/drivers/video/msm/lvds_chimei_wxga.c
 +++ msm/drivers/video/msm/lvds_chimei_wxga.c
 @@ -92,7 +92,7 @@
@@ -453,8 +372,6 @@ Index: msm/drivers/video/msm/lvds_chimei_wxga.c
  	.probe  = lvds_chimei_probe,
  	.driver = {
  		.name   = "lvds_chimei_wxga",
-Index: msm/drivers/video/msm/lvds_frc_fhd.c
-===================================================================
 --- msm.orig/drivers/video/msm/lvds_frc_fhd.c
 +++ msm/drivers/video/msm/lvds_frc_fhd.c
 @@ -126,7 +126,7 @@
@@ -466,11 +383,9 @@ Index: msm/drivers/video/msm/lvds_frc_fhd.c
  	.probe  = lvds_frc_probe,
  	.driver = {
  		.name   = "lvds_frc_fhd",
-Index: msm/drivers/video/msm/mipi_orise.c
-===================================================================
 --- msm.orig/drivers/video/msm/mipi_orise.c
 +++ msm/drivers/video/msm/mipi_orise.c
-@@ -130,7 +130,7 @@
+@@ -146,7 +146,7 @@
  	return 0;
  }
  
@@ -479,8 +394,6 @@ Index: msm/drivers/video/msm/mipi_orise.c
  	.probe  = mipi_orise_lcd_probe,
  	.driver = {
  		.name   = "mipi_orise",
-Index: msm/drivers/video/vfb.c
-===================================================================
 --- msm.orig/drivers/video/vfb.c
 +++ msm/drivers/video/vfb.c
 @@ -566,7 +566,7 @@
@@ -492,11 +405,9 @@ Index: msm/drivers/video/vfb.c
  	.probe	= vfb_probe,
  	.remove = vfb_remove,
  	.driver = {
-Index: msm/sound/soc/codecs/msm_stub.c
-===================================================================
 --- msm.orig/sound/soc/codecs/msm_stub.c
 +++ msm/sound/soc/codecs/msm_stub.c
-@@ -64,7 +64,7 @@
+@@ -65,7 +65,7 @@
  	{}
  };
  
@@ -505,11 +416,9 @@ Index: msm/sound/soc/codecs/msm_stub.c
  	.driver = {
  		.name = "msm-stub-codec",
  		.owner = THIS_MODULE,
-Index: msm/sound/soc/codecs/wcd9304.c
-===================================================================
 --- msm.orig/sound/soc/codecs/wcd9304.c
 +++ msm/sound/soc/codecs/wcd9304.c
-@@ -5366,7 +5366,7 @@
+@@ -6225,7 +6225,7 @@
  #endif
  	return 0;
  }
@@ -518,11 +427,9 @@ Index: msm/sound/soc/codecs/wcd9304.c
  	.probe = sitar_probe,
  	.remove = sitar_remove,
  	.driver = {
-Index: msm/sound/soc/msm/msm-compr-q6.c
-===================================================================
 --- msm.orig/sound/soc/msm/msm-compr-q6.c
 +++ msm/sound/soc/msm/msm-compr-q6.c
-@@ -1157,7 +1157,7 @@
+@@ -1366,7 +1366,7 @@
  	return 0;
  }
  
@@ -531,11 +438,9 @@ Index: msm/sound/soc/msm/msm-compr-q6.c
  	.driver = {
  		.name = "msm-compr-dsp",
  		.owner = THIS_MODULE,
-Index: msm/sound/soc/msm/msm-dai-fe.c
-===================================================================
 --- msm.orig/sound/soc/msm/msm-dai-fe.c
 +++ msm/sound/soc/msm/msm-dai-fe.c
-@@ -501,7 +501,7 @@
+@@ -789,7 +789,7 @@
  	{}
  };
  
@@ -544,11 +449,9 @@ Index: msm/sound/soc/msm/msm-dai-fe.c
  	.probe  = msm_fe_dai_dev_probe,
  	.remove = msm_fe_dai_dev_remove,
  	.driver = {
-Index: msm/sound/soc/msm/msm-dai-q6-hdmi.c
-===================================================================
 --- msm.orig/sound/soc/msm/msm-dai-q6-hdmi.c
 +++ msm/sound/soc/msm/msm-dai-q6-hdmi.c
-@@ -271,7 +271,7 @@
+@@ -285,7 +285,7 @@
  	return 0;
  }
  
@@ -557,8 +460,6 @@ Index: msm/sound/soc/msm/msm-dai-q6-hdmi.c
  	.probe  = msm_dai_q6_hdmi_dev_probe,
  	.remove = msm_dai_q6_hdmi_dev_remove,
  	.driver = {
-Index: msm/sound/soc/msm/msm-dai-stub.c
-===================================================================
 --- msm.orig/sound/soc/msm/msm-dai-stub.c
 +++ msm/sound/soc/msm/msm-dai-stub.c
 @@ -72,7 +72,7 @@
@@ -570,8 +471,6 @@ Index: msm/sound/soc/msm/msm-dai-stub.c
  	.probe  = msm_dai_stub_dev_probe,
  	.remove = msm_dai_stub_dev_remove,
  	.driver = {
-Index: msm/sound/soc/msm/msm-mvs.c
-===================================================================
 --- msm.orig/sound/soc/msm/msm-mvs.c
 +++ msm/sound/soc/msm/msm-mvs.c
 @@ -898,7 +898,7 @@
@@ -583,11 +482,9 @@ Index: msm/sound/soc/msm/msm-mvs.c
  	.driver = {
  		.name = "msm-mvs-audio",
  		.owner = THIS_MODULE,
-Index: msm/sound/soc/msm/msm-pcm-afe.c
-===================================================================
 --- msm.orig/sound/soc/msm/msm-pcm-afe.c
 +++ msm/sound/soc/msm/msm-pcm-afe.c
-@@ -592,7 +592,7 @@
+@@ -591,7 +591,7 @@
  	return 0;
  }
  
@@ -596,11 +493,9 @@ Index: msm/sound/soc/msm/msm-pcm-afe.c
  	.driver = {
  		.name = "msm-pcm-afe",
  		.owner = THIS_MODULE,
-Index: msm/sound/soc/msm/msm-pcm-routing.c
-===================================================================
 --- msm.orig/sound/soc/msm/msm-pcm-routing.c
 +++ msm/sound/soc/msm/msm-pcm-routing.c
-@@ -2847,7 +2847,7 @@
+@@ -3614,7 +3614,7 @@
  	return 0;
  }
  
@@ -609,11 +504,9 @@ Index: msm/sound/soc/msm/msm-pcm-routing.c
  	.driver = {
  		.name = "msm-pcm-routing",
  		.owner = THIS_MODULE,
-Index: msm/sound/soc/msm/msm-pcm-voip.c
-===================================================================
 --- msm.orig/sound/soc/msm/msm-pcm-voip.c
 +++ msm/sound/soc/msm/msm-pcm-voip.c
-@@ -1112,7 +1112,7 @@
+@@ -1280,7 +1280,7 @@
  	return ret;
  }
  
@@ -622,7 +515,7 @@ Index: msm/sound/soc/msm/msm-pcm-voip.c
  	.ops		= &msm_pcm_ops,
  	.pcm_new	= msm_asoc_pcm_new,
  	.probe		= msm_pcm_voip_probe,
-@@ -1131,7 +1131,7 @@
+@@ -1299,7 +1299,7 @@
  	return 0;
  }
  
@@ -631,8 +524,6 @@ Index: msm/sound/soc/msm/msm-pcm-voip.c
  	.driver = {
  		.name = "msm-voip-dsp",
  		.owner = THIS_MODULE,
-Index: msm/sound/soc/msm/msm-voip.c
-===================================================================
 --- msm.orig/sound/soc/msm/msm-voip.c
 +++ msm/sound/soc/msm/msm-voip.c
 @@ -576,7 +576,7 @@
@@ -644,8 +535,6 @@ Index: msm/sound/soc/msm/msm-voip.c
  	.driver = {
  		.name = "msm-mvs-audio",
  		.owner = THIS_MODULE,
-Index: msm/sound/soc/msm/msm7kv2-pcm.c
-===================================================================
 --- msm.orig/sound/soc/msm/msm7kv2-pcm.c
 +++ msm/sound/soc/msm/msm7kv2-pcm.c
 @@ -749,7 +749,7 @@
@@ -657,8 +546,6 @@ Index: msm/sound/soc/msm/msm7kv2-pcm.c
  	.driver = {
  		.name = "msm-dsp-audio",
  		.owner = THIS_MODULE,
-Index: msm/sound/soc/msm/msm8x60-pcm.c
-===================================================================
 --- msm.orig/sound/soc/msm/msm8x60-pcm.c
 +++ msm/sound/soc/msm/msm8x60-pcm.c
 @@ -781,7 +781,7 @@
@@ -670,11 +557,9 @@ Index: msm/sound/soc/msm/msm8x60-pcm.c
  	.probe = msm_pcm_probe,
  	.remove = __devexit_p(msm_pcm_remove),
  	.driver = {
-Index: msm/sound/soc/msm/qdsp6v2/msm-compr-q6-v2.c
-===================================================================
 --- msm.orig/sound/soc/msm/qdsp6v2/msm-compr-q6-v2.c
 +++ msm/sound/soc/msm/qdsp6v2/msm-compr-q6-v2.c
-@@ -642,7 +642,7 @@
+@@ -1279,7 +1279,7 @@
  };
  MODULE_DEVICE_TABLE(of, msm_compr_dt_match);
  
@@ -683,11 +568,9 @@ Index: msm/sound/soc/msm/qdsp6v2/msm-compr-q6-v2.c
  	.driver = {
  		.name = "msm-compr-dsp",
  		.owner = THIS_MODULE,
-Index: msm/sound/soc/msm/qdsp6v2/msm-multi-ch-pcm-q6-v2.c
-===================================================================
 --- msm.orig/sound/soc/msm/qdsp6v2/msm-multi-ch-pcm-q6-v2.c
 +++ msm/sound/soc/msm/qdsp6v2/msm-multi-ch-pcm-q6-v2.c
-@@ -747,7 +747,7 @@
+@@ -765,7 +765,7 @@
  	return 0;
  }
  
@@ -696,24 +579,20 @@ Index: msm/sound/soc/msm/qdsp6v2/msm-multi-ch-pcm-q6-v2.c
  	.driver = {
  		.name = "msm-multi-ch-pcm-dsp",
  		.owner = THIS_MODULE,
-Index: msm/sound/soc/msm/qdsp6v2/msm-pcm-afe-v2.c
-===================================================================
 --- msm.orig/sound/soc/msm/qdsp6v2/msm-pcm-afe-v2.c
 +++ msm/sound/soc/msm/qdsp6v2/msm-pcm-afe-v2.c
-@@ -554,7 +554,7 @@
- 	return 0;
- }
+@@ -699,7 +699,7 @@
+ };
+ MODULE_DEVICE_TABLE(of, msm_pcm_afe_dt_match);
  
 -static struct platform_driver msm_afe_driver = {
 +static struct platform_driver msm_afe_driver  __initdata =  {
  	.driver = {
  		.name = "msm-pcm-afe",
  		.owner = THIS_MODULE,
-Index: msm/sound/soc/msm/qdsp6v2/msm-pcm-lpa-v2.c
-===================================================================
 --- msm.orig/sound/soc/msm/qdsp6v2/msm-pcm-lpa-v2.c
 +++ msm/sound/soc/msm/qdsp6v2/msm-pcm-lpa-v2.c
-@@ -595,7 +595,7 @@
+@@ -810,7 +810,7 @@
  };
  MODULE_DEVICE_TABLE(of, msm_pcm_lpa_dt_match);
  
@@ -722,11 +601,9 @@ Index: msm/sound/soc/msm/qdsp6v2/msm-pcm-lpa-v2.c
  	.driver = {
  		.name = "msm-pcm-lpa",
  		.owner = THIS_MODULE,
-Index: msm/sound/soc/msm/qdsp6v2/msm-pcm-q6-v2.c
-===================================================================
 --- msm.orig/sound/soc/msm/qdsp6v2/msm-pcm-q6-v2.c
 +++ msm/sound/soc/msm/qdsp6v2/msm-pcm-q6-v2.c
-@@ -701,7 +701,7 @@
+@@ -918,7 +918,7 @@
  };
  MODULE_DEVICE_TABLE(of, msm_pcm_dt_match);
  
@@ -735,11 +612,9 @@ Index: msm/sound/soc/msm/qdsp6v2/msm-pcm-q6-v2.c
  	.driver = {
  		.name = "msm-pcm-dsp",
  		.owner = THIS_MODULE,
-Index: msm/sound/soc/msm/qdsp6v2/msm-pcm-routing-v2.c
-===================================================================
 --- msm.orig/sound/soc/msm/qdsp6v2/msm-pcm-routing-v2.c
 +++ msm/sound/soc/msm/qdsp6v2/msm-pcm-routing-v2.c
-@@ -2175,7 +2175,7 @@
+@@ -4131,7 +4131,7 @@
  };
  MODULE_DEVICE_TABLE(of, msm_pcm_routing_dt_match);
  
@@ -748,11 +623,9 @@ Index: msm/sound/soc/msm/qdsp6v2/msm-pcm-routing-v2.c
  	.driver = {
  		.name = "msm-pcm-routing",
  		.owner = THIS_MODULE,
-Index: msm/sound/soc/msm/qdsp6v2/msm-pcm-voice-v2.c
-===================================================================
 --- msm.orig/sound/soc/msm/qdsp6v2/msm-pcm-voice-v2.c
 +++ msm/sound/soc/msm/qdsp6v2/msm-pcm-voice-v2.c
-@@ -486,7 +486,7 @@
+@@ -560,7 +560,7 @@
  };
  MODULE_DEVICE_TABLE(of, msm_voice_dt_match);
  
@@ -761,11 +634,9 @@ Index: msm/sound/soc/msm/qdsp6v2/msm-pcm-voice-v2.c
  	.driver = {
  		.name = "msm-pcm-voice",
  		.owner = THIS_MODULE,
-Index: msm/sound/soc/msm/qdsp6v2/msm-pcm-voip-v2.c
-===================================================================
 --- msm.orig/sound/soc/msm/qdsp6v2/msm-pcm-voip-v2.c
 +++ msm/sound/soc/msm/qdsp6v2/msm-pcm-voip-v2.c
-@@ -1143,7 +1143,7 @@
+@@ -1226,7 +1226,7 @@
  };
  MODULE_DEVICE_TABLE(of, msm_voip_dt_match);
  
@@ -774,8 +645,6 @@ Index: msm/sound/soc/msm/qdsp6v2/msm-pcm-voip-v2.c
  	.driver = {
  		.name = "msm-voip-dsp",
  		.owner = THIS_MODULE,
-Index: msm/drivers/input/touchscreen/cyttsp_i2c.c
-===================================================================
 --- msm.orig/drivers/input/touchscreen/cyttsp_i2c.c
 +++ msm/drivers/input/touchscreen/cyttsp_i2c.c
 @@ -117,7 +117,7 @@
@@ -787,8 +656,6 @@ Index: msm/drivers/input/touchscreen/cyttsp_i2c.c
  	.driver = {
  		.name	= CY_I2C_NAME,
  		.owner	= THIS_MODULE,
-Index: msm/drivers/power/smb349.c
-===================================================================
 --- msm.orig/drivers/power/smb349.c
 +++ msm/drivers/power/smb349.c
 @@ -678,7 +678,7 @@
@@ -800,11 +667,9 @@ Index: msm/drivers/power/smb349.c
  	.driver	= {
  		   .name	= SMB349_NAME,
  		   .owner	= THIS_MODULE,
-Index: msm/drivers/usb/misc/mdm_data_bridge.c
-===================================================================
 --- msm.orig/drivers/usb/misc/mdm_data_bridge.c
 +++ msm/drivers/usb/misc/mdm_data_bridge.c
-@@ -1036,7 +1036,7 @@
+@@ -1095,7 +1095,7 @@
  };
  MODULE_DEVICE_TABLE(usb, bridge_ids);
  
@@ -813,11 +678,9 @@ Index: msm/drivers/usb/misc/mdm_data_bridge.c
  	.name =			"mdm_bridge",
  	.probe =		bridge_probe,
  	.disconnect =		bridge_disconnect,
-Index: msm/sound/soc/codecs/cs8427.c
-===================================================================
 --- msm.orig/sound/soc/codecs/cs8427.c
 +++ msm/sound/soc/codecs/cs8427.c
-@@ -946,7 +946,7 @@
+@@ -958,7 +958,7 @@
  };
  MODULE_DEVICE_TABLE(i2c, cs8427_id_table);
  
@@ -826,11 +689,9 @@ Index: msm/sound/soc/codecs/cs8427.c
  	.driver                 = {
  		.owner          =       THIS_MODULE,
  		.name           =       "cs8427-spdif",
-Index: msm/sound/soc/codecs/wcd9310.c
-===================================================================
 --- msm.orig/sound/soc/codecs/wcd9310.c
 +++ msm/sound/soc/codecs/wcd9310.c
-@@ -8407,7 +8407,7 @@
+@@ -9296,7 +9296,7 @@
  	snd_soc_unregister_codec(&pdev->dev);
  	return 0;
  }
@@ -839,7 +700,7 @@ Index: msm/sound/soc/codecs/wcd9310.c
  	.probe = tabla_probe,
  	.remove = tabla_remove,
  	.driver = {
-@@ -8419,7 +8419,7 @@
+@@ -9308,7 +9308,7 @@
  	},
  };
  
@@ -848,11 +709,9 @@ Index: msm/sound/soc/codecs/wcd9310.c
  	.probe = tabla_probe,
  	.remove = tabla_remove,
  	.driver = {
-Index: msm/sound/soc/msm/msm-dai-q6.c
-===================================================================
 --- msm.orig/sound/soc/msm/msm-dai-q6.c
 +++ msm/sound/soc/msm/msm-dai-q6.c
-@@ -1488,7 +1488,7 @@
+@@ -1499,7 +1499,7 @@
  	.shutdown	= msm_dai_q6_sec_auxpcm_shutdown,
  };
  
@@ -861,7 +720,7 @@ Index: msm/sound/soc/msm/msm-dai-q6.c
  	.playback = {
  		.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_8000 |
  		SNDRV_PCM_RATE_16000,
-@@ -1970,7 +1970,7 @@
+@@ -2000,7 +2000,7 @@
  	return 0;
  }
  
@@ -870,7 +729,7 @@ Index: msm/sound/soc/msm/msm-dai-q6.c
  	.probe  = msm_dai_q6_dev_probe,
  	.remove = msm_dai_q6_dev_remove,
  	.driver = {
-@@ -1979,7 +1979,7 @@
+@@ -2009,7 +2009,7 @@
  	},
  };
  
@@ -879,11 +738,9 @@ Index: msm/sound/soc/msm/msm-dai-q6.c
  	.probe  = msm_dai_q6_mi2s_dev_probe,
  	.remove = msm_dai_q6_mi2s_dev_remove,
  	.driver = {
-Index: msm/drivers/input/touchscreen/cyttsp-i2c-qc.c
-===================================================================
 --- msm.orig/drivers/input/touchscreen/cyttsp-i2c-qc.c
 +++ msm/drivers/input/touchscreen/cyttsp-i2c-qc.c
-@@ -162,7 +162,7 @@
+@@ -136,7 +136,7 @@
  };
  #endif
  
@@ -892,8 +749,6 @@ Index: msm/drivers/input/touchscreen/cyttsp-i2c-qc.c
  	.driver = {
  		.name = CY_I2C_NAME,
  		.owner = THIS_MODULE,
-Index: msm/drivers/video/msm/mipi_tc358764_dsi2lvds.c
-===================================================================
 --- msm.orig/drivers/video/msm/mipi_tc358764_dsi2lvds.c
 +++ msm/drivers/video/msm/mipi_tc358764_dsi2lvds.c
 @@ -224,7 +224,7 @@
@@ -905,7 +760,7 @@ Index: msm/drivers/video/msm/mipi_tc358764_dsi2lvds.c
  
  static int mipi_d2l_init(void);
  static int mipi_d2l_enable_3d(struct msm_fb_data_type *mfd,
-@@ -973,7 +973,7 @@
+@@ -984,7 +984,7 @@
  	return ret;
  }
  
@@ -914,8 +769,6 @@ Index: msm/drivers/video/msm/mipi_tc358764_dsi2lvds.c
  	.probe  = mipi_d2l_probe,
  	.remove = __devexit_p(mipi_d2l_remove),
  	.driver = {
-Index: msm/include/linux/oprofile.h
-===================================================================
 --- msm.orig/include/linux/oprofile.h
 +++ msm/include/linux/oprofile.h
 @@ -84,7 +84,7 @@
@@ -927,8 +780,6 @@ Index: msm/include/linux/oprofile.h
   
  /**
   * One-time exit/cleanup for the arch.
-Index: msm/net/wireless/reg.c
-===================================================================
 --- msm.orig/net/wireless/reg.c
 +++ msm/net/wireless/reg.c
 @@ -2309,7 +2309,7 @@
@@ -940,8 +791,6 @@ Index: msm/net/wireless/reg.c
  {
  	int err = 0;
  
-Index: msm/net/wireless/reg.h
-===================================================================
 --- msm.orig/net/wireless/reg.h
 +++ msm/net/wireless/reg.h
 @@ -27,7 +27,7 @@
@@ -953,11 +802,9 @@ Index: msm/net/wireless/reg.h
  void regulatory_exit(void);
  
  int set_regdom(const struct ieee80211_regdomain *rd);
-Index: msm/arch/arm/mach-msm/sysmon.c
-===================================================================
 --- msm.orig/arch/arm/mach-msm/sysmon.c
 +++ msm/arch/arm/mach-msm/sysmon.c
-@@ -278,7 +278,7 @@
+@@ -328,7 +328,7 @@
  	return 0;
  }
  
@@ -966,8 +813,6 @@ Index: msm/arch/arm/mach-msm/sysmon.c
  	.probe		= sysmon_probe,
  	.remove		= __devexit_p(sysmon_remove),
  	.driver		= {
-Index: msm/arch/arm/oprofile/common.c
-===================================================================
 --- msm.orig/arch/arm/oprofile/common.c
 +++ msm/arch/arm/oprofile/common.c
 @@ -116,7 +116,7 @@
@@ -979,11 +824,9 @@ Index: msm/arch/arm/oprofile/common.c
  {
  	/* provide backtrace support also in timer mode: */
  	ops->backtrace		= arm_backtrace;
-Index: msm/drivers/bluetooth/bluetooth-power.c
-===================================================================
 --- msm.orig/drivers/bluetooth/bluetooth-power.c
 +++ msm/drivers/bluetooth/bluetooth-power.c
-@@ -108,7 +108,7 @@
+@@ -465,7 +465,7 @@
  	return 0;
  }
  
@@ -992,8 +835,6 @@ Index: msm/drivers/bluetooth/bluetooth-power.c
  	.probe = bt_power_probe,
  	.remove = __devexit_p(bt_power_remove),
  	.driver = {
-Index: msm/drivers/char/dcc_tty.c
-===================================================================
 --- msm.orig/drivers/char/dcc_tty.c
 +++ msm/drivers/char/dcc_tty.c
 @@ -33,7 +33,7 @@
@@ -1014,11 +855,9 @@ Index: msm/drivers/char/dcc_tty.c
  {
  	.name		= "ttyDCC",
  	.write		= dcc_console_write,
-Index: msm/drivers/char/hw_random/msm_rng.c
-===================================================================
 --- msm.orig/drivers/char/hw_random/msm_rng.c
 +++ msm/drivers/char/hw_random/msm_rng.c
-@@ -237,7 +237,7 @@
+@@ -313,7 +313,7 @@
  	{}
  };
  
@@ -1027,11 +866,9 @@ Index: msm/drivers/char/hw_random/msm_rng.c
  	.probe      = msm_rng_probe,
  	.remove     = __devexit_p(msm_rng_remove),
  	.driver     = {
-Index: msm/drivers/char/msm_rotator.c
-===================================================================
 --- msm.orig/drivers/char/msm_rotator.c
 +++ msm/drivers/char/msm_rotator.c
-@@ -1809,7 +1809,7 @@
+@@ -1819,7 +1819,7 @@
  }
  #endif
  
@@ -1040,11 +877,9 @@ Index: msm/drivers/char/msm_rotator.c
  	.probe = msm_rotator_probe,
  	.remove = __devexit_p(msm_rotator_remove),
  #ifdef CONFIG_PM
-Index: msm/drivers/gpio/pm8xxx-gpio.c
-===================================================================
 --- msm.orig/drivers/gpio/pm8xxx-gpio.c
 +++ msm/drivers/gpio/pm8xxx-gpio.c
-@@ -435,7 +435,7 @@
+@@ -426,7 +426,7 @@
  }
  EXPORT_SYMBOL(pm8xxx_gpio_config);
  
@@ -1053,8 +888,6 @@ Index: msm/drivers/gpio/pm8xxx-gpio.c
  	.probe		= pm_gpio_probe,
  	.remove		= __devexit_p(pm_gpio_remove),
  	.driver		= {
-Index: msm/drivers/gpio/pm8xxx-mpp.c
-===================================================================
 --- msm.orig/drivers/gpio/pm8xxx-mpp.c
 +++ msm/drivers/gpio/pm8xxx-mpp.c
 @@ -308,7 +308,7 @@
@@ -1066,12 +899,10 @@ Index: msm/drivers/gpio/pm8xxx-mpp.c
  	.probe		= pm8xxx_mpp_probe,
  	.remove		= __devexit_p(pm8xxx_mpp_remove),
  	.driver		= {
-Index: msm/drivers/gpu/msm/adreno.c
-===================================================================
 --- msm.orig/drivers/gpu/msm/adreno.c
 +++ msm/drivers/gpu/msm/adreno.c
-@@ -2456,7 +2456,7 @@
- 	.postmortem_dump = adreno_dump,
+@@ -2898,7 +2898,7 @@
+ 	.drawctxt_sched = adreno_drawctxt_sched,
  };
  
 -static struct platform_driver adreno_platform_driver = {
@@ -1079,11 +910,9 @@ Index: msm/drivers/gpu/msm/adreno.c
  	.probe = adreno_probe,
  	.remove = __devexit_p(adreno_remove),
  	.suspend = kgsl_suspend_driver,
-Index: msm/drivers/gpu/msm/z180.c
-===================================================================
 --- msm.orig/drivers/gpu/msm/z180.c
 +++ msm/drivers/gpu/msm/z180.c
-@@ -941,7 +941,7 @@
+@@ -1021,7 +1021,7 @@
  };
  MODULE_DEVICE_TABLE(platform, z180_id_table);
  
@@ -1092,8 +921,6 @@ Index: msm/drivers/gpu/msm/z180.c
  	.probe = z180_probe,
  	.remove = __devexit_p(z180_remove),
  	.suspend = kgsl_suspend_driver,
-Index: msm/drivers/hwmon/msm_adc.c
-===================================================================
 --- msm.orig/drivers/hwmon/msm_adc.c
 +++ msm/drivers/hwmon/msm_adc.c
 @@ -1384,7 +1384,7 @@
@@ -1114,11 +941,9 @@ Index: msm/drivers/hwmon/msm_adc.c
  	.probe = msm_adc_probe,
  	.remove = __devexit_p(msm_adc_remove),
  	.driver = {
-Index: msm/drivers/i2c/busses/i2c-qup.c
-===================================================================
 --- msm.orig/drivers/i2c/busses/i2c-qup.c
 +++ msm/drivers/i2c/busses/i2c-qup.c
-@@ -1502,7 +1502,7 @@
+@@ -1793,7 +1793,7 @@
  	{}
  };
  
@@ -1127,11 +952,9 @@ Index: msm/drivers/i2c/busses/i2c-qup.c
  	.probe		= qup_i2c_probe,
  	.remove		= __devexit_p(qup_i2c_remove),
  	.driver		= {
-Index: msm/drivers/input/keyboard/gpio_keys.c
-===================================================================
 --- msm.orig/drivers/input/keyboard/gpio_keys.c
 +++ msm/drivers/input/keyboard/gpio_keys.c
-@@ -816,7 +816,7 @@
+@@ -817,7 +817,7 @@
  
  static SIMPLE_DEV_PM_OPS(gpio_keys_pm_ops, gpio_keys_suspend, gpio_keys_resume);
  
@@ -1140,8 +963,6 @@ Index: msm/drivers/input/keyboard/gpio_keys.c
  	.probe		= gpio_keys_probe,
  	.remove		= __devexit_p(gpio_keys_remove),
  	.driver		= {
-Index: msm/drivers/input/keyboard/pmic8xxx-keypad.c
-===================================================================
 --- msm.orig/drivers/input/keyboard/pmic8xxx-keypad.c
 +++ msm/drivers/input/keyboard/pmic8xxx-keypad.c
 @@ -781,7 +781,7 @@
@@ -1153,8 +974,6 @@ Index: msm/drivers/input/keyboard/pmic8xxx-keypad.c
  	.probe		= pmic8xxx_kp_probe,
  	.remove		= __devexit_p(pmic8xxx_kp_remove),
  	.driver		= {
-Index: msm/drivers/input/misc/pmic8058-othc.c
-===================================================================
 --- msm.orig/drivers/input/misc/pmic8058-othc.c
 +++ msm/drivers/input/misc/pmic8058-othc.c
 @@ -1155,7 +1155,7 @@
@@ -1166,8 +985,6 @@ Index: msm/drivers/input/misc/pmic8058-othc.c
  	.driver = {
  		.name = "pm8058-othc",
  		.owner = THIS_MODULE,
-Index: msm/drivers/input/touchscreen/atmel_maxtouch.c
-===================================================================
 --- msm.orig/drivers/input/touchscreen/atmel_maxtouch.c
 +++ msm/drivers/input/touchscreen/atmel_maxtouch.c
 @@ -2299,7 +2299,7 @@
@@ -1179,11 +996,9 @@ Index: msm/drivers/input/touchscreen/atmel_maxtouch.c
  	.driver = {
  		.name	= "maXTouch",
  		.owner  = THIS_MODULE,
-Index: msm/drivers/input/touchscreen/atmel_mxt_ts.c
-===================================================================
 --- msm.orig/drivers/input/touchscreen/atmel_mxt_ts.c
 +++ msm/drivers/input/touchscreen/atmel_mxt_ts.c
-@@ -2782,7 +2782,7 @@
+@@ -3282,7 +3282,7 @@
  #define mxt_match_table NULL
  #endif
  
@@ -1192,8 +1007,6 @@ Index: msm/drivers/input/touchscreen/atmel_mxt_ts.c
  	.driver = {
  		.name	= "atmel_mxt_ts",
  		.owner	= THIS_MODULE,
-Index: msm/drivers/input/touchscreen/cy8c_tmg_ts.c
-===================================================================
 --- msm.orig/drivers/input/touchscreen/cy8c_tmg_ts.c
 +++ msm/drivers/input/touchscreen/cy8c_tmg_ts.c
 @@ -428,7 +428,7 @@
@@ -1205,8 +1018,6 @@ Index: msm/drivers/input/touchscreen/cy8c_tmg_ts.c
  	.id_table = cy8c_ts_i2c_id,
  	.probe = cy8c_ts_probe,
  	.remove = cy8c_ts_remove,
-Index: msm/drivers/input/touchscreen/cy8c_ts.c
-===================================================================
 --- msm.orig/drivers/input/touchscreen/cy8c_ts.c
 +++ msm/drivers/input/touchscreen/cy8c_ts.c
 @@ -791,7 +791,7 @@
@@ -1218,8 +1029,6 @@ Index: msm/drivers/input/touchscreen/cy8c_ts.c
  	.driver = {
  		.name = "cy8c_ts",
  		.owner = THIS_MODULE,
-Index: msm/drivers/leds/leds-pmic8058.c
-===================================================================
 --- msm.orig/drivers/leds/leds-pmic8058.c
 +++ msm/drivers/leds/leds-pmic8058.c
 @@ -401,7 +401,7 @@
@@ -1231,11 +1040,9 @@ Index: msm/drivers/leds/leds-pmic8058.c
  	.probe		= pmic8058_led_probe,
  	.remove		= __devexit_p(pmic8058_led_remove),
  	.driver		= {
-Index: msm/drivers/media/radio/radio-tavarua.c
-===================================================================
 --- msm.orig/drivers/media/radio/radio-tavarua.c
 +++ msm/drivers/media/radio/radio-tavarua.c
-@@ -4580,7 +4580,7 @@
+@@ -4611,7 +4611,7 @@
   provide probe() and remove() methods.  They support power management
   and shutdown notifications using the standard conventions.
  */
@@ -1244,11 +1051,9 @@ Index: msm/drivers/media/radio/radio-tavarua.c
  	.driver = {
  		.owner  = THIS_MODULE,
  		.name   = "marimba_fm",
-Index: msm/drivers/mfd/marimba-core.c
-===================================================================
 --- msm.orig/drivers/mfd/marimba-core.c
 +++ msm/drivers/mfd/marimba-core.c
-@@ -909,7 +909,7 @@
+@@ -913,7 +913,7 @@
  };
  MODULE_DEVICE_TABLE(i2c, marimba_id_table);
  
@@ -1257,8 +1062,6 @@ Index: msm/drivers/mfd/marimba-core.c
  		.driver			= {
  			.owner		=	THIS_MODULE,
  			.name		=	"marimba-core",
-Index: msm/drivers/mfd/pm8xxx-batt-alarm.c
-===================================================================
 --- msm.orig/drivers/mfd/pm8xxx-batt-alarm.c
 +++ msm/drivers/mfd/pm8xxx-batt-alarm.c
 @@ -778,7 +778,7 @@
@@ -1270,8 +1073,6 @@ Index: msm/drivers/mfd/pm8xxx-batt-alarm.c
  	.probe	= pm8xxx_batt_alarm_probe,
  	.remove	= __devexit_p(pm8xxx_batt_alarm_remove),
  	.driver	= {
-Index: msm/drivers/mfd/pm8xxx-debug.c
-===================================================================
 --- msm.orig/drivers/mfd/pm8xxx-debug.c
 +++ msm/drivers/mfd/pm8xxx-debug.c
 @@ -189,7 +189,7 @@
@@ -1283,11 +1084,9 @@ Index: msm/drivers/mfd/pm8xxx-debug.c
  	.probe		= pm8xxx_debug_probe,
  	.remove		= __devexit_p(pm8xxx_debug_remove),
  	.driver		= {
-Index: msm/drivers/mfd/pm8xxx-misc.c
-===================================================================
 --- msm.orig/drivers/mfd/pm8xxx-misc.c
 +++ msm/drivers/mfd/pm8xxx-misc.c
-@@ -1237,7 +1237,7 @@
+@@ -1271,7 +1271,7 @@
  	return 0;
  }
  
@@ -1296,8 +1095,6 @@ Index: msm/drivers/mfd/pm8xxx-misc.c
  	.probe	= pm8xxx_misc_probe,
  	.remove	= __devexit_p(pm8xxx_misc_remove),
  	.driver	= {
-Index: msm/drivers/mfd/pmic8058.c
-===================================================================
 --- msm.orig/drivers/mfd/pmic8058.c
 +++ msm/drivers/mfd/pmic8058.c
 @@ -765,7 +765,7 @@
@@ -1309,8 +1106,6 @@ Index: msm/drivers/mfd/pmic8058.c
  	.probe		= pm8058_probe,
  	.remove		= __devexit_p(pm8058_remove),
  	.driver		= {
-Index: msm/drivers/mfd/pmic8901.c
-===================================================================
 --- msm.orig/drivers/mfd/pmic8901.c
 +++ msm/drivers/mfd/pmic8901.c
 @@ -355,7 +355,7 @@
@@ -1322,8 +1117,6 @@ Index: msm/drivers/mfd/pmic8901.c
  	.probe		= pm8901_probe,
  	.remove		= __devexit_p(pm8901_remove),
  	.driver		= {
-Index: msm/drivers/misc/pm8xxx-upl.c
-===================================================================
 --- msm.orig/drivers/misc/pm8xxx-upl.c
 +++ msm/drivers/misc/pm8xxx-upl.c
 @@ -322,7 +322,7 @@
@@ -1335,8 +1128,6 @@ Index: msm/drivers/misc/pm8xxx-upl.c
  	.probe		= pm8xxx_upl_probe,
  	.remove		= __devexit_p(pm8xxx_upl_remove),
  	.driver		= {
-Index: msm/drivers/misc/pmic8058-pwm.c
-===================================================================
 --- msm.orig/drivers/misc/pmic8058-pwm.c
 +++ msm/drivers/misc/pmic8058-pwm.c
 @@ -1057,7 +1057,7 @@
@@ -1348,11 +1139,9 @@ Index: msm/drivers/misc/pmic8058-pwm.c
  	.probe		= pmic8058_pwm_probe,
  	.remove		= __devexit_p(pmic8058_pwm_remove),
  	.driver		= {
-Index: msm/drivers/misc/tsif.c
-===================================================================
 --- msm.orig/drivers/misc/tsif.c
 +++ msm/drivers/misc/tsif.c
-@@ -1401,7 +1401,7 @@
+@@ -1534,7 +1534,7 @@
  };
  
  
@@ -1361,8 +1150,6 @@ Index: msm/drivers/misc/tsif.c
  	.probe          = msm_tsif_probe,
  	.remove         = __exit_p(msm_tsif_remove),
  	.driver         = {
-Index: msm/drivers/oprofile/oprofilefs.c
-===================================================================
 --- msm.orig/drivers/oprofile/oprofilefs.c
 +++ msm/drivers/oprofile/oprofilefs.c
 @@ -268,13 +268,13 @@
@@ -1381,8 +1168,6 @@ Index: msm/drivers/oprofile/oprofilefs.c
  {
  	unregister_filesystem(&oprofilefs_type);
  }
-Index: msm/drivers/platform/msm/ssbi.c
-===================================================================
 --- msm.orig/drivers/platform/msm/ssbi.c
 +++ msm/drivers/platform/msm/ssbi.c
 @@ -414,7 +414,7 @@
@@ -1394,8 +1179,6 @@ Index: msm/drivers/platform/msm/ssbi.c
  	.probe		= msm_ssbi_probe,
  	.remove		= __exit_p(msm_ssbi_remove),
  	.driver		= {
-Index: msm/drivers/power/isl9519q.c
-===================================================================
 --- msm.orig/drivers/power/isl9519q.c
 +++ msm/drivers/power/isl9519q.c
 @@ -817,7 +817,7 @@
@@ -1407,8 +1190,6 @@ Index: msm/drivers/power/isl9519q.c
  	.driver = {
  		   .name = "isl9519q",
  		   .owner = THIS_MODULE,
-Index: msm/drivers/power/msm_charger.c
-===================================================================
 --- msm.orig/drivers/power/msm_charger.c
 +++ msm/drivers/power/msm_charger.c
 @@ -1217,7 +1217,7 @@
@@ -1420,8 +1201,6 @@ Index: msm/drivers/power/msm_charger.c
  	.probe = msm_charger_probe,
  	.remove = __devexit_p(msm_charger_remove),
  	.driver = {
-Index: msm/drivers/power/pm8058_usb_fix.c
-===================================================================
 --- msm.orig/drivers/power/pm8058_usb_fix.c
 +++ msm/drivers/power/pm8058_usb_fix.c
 @@ -329,7 +329,7 @@
@@ -1433,8 +1212,6 @@ Index: msm/drivers/power/pm8058_usb_fix.c
  	.probe = pm8058_charger_probe,
  	.remove = __devexit_p(pm8058_charger_remove),
  	.driver = {
-Index: msm/drivers/power/pmic8058-charger.c
-===================================================================
 --- msm.orig/drivers/power/pmic8058-charger.c
 +++ msm/drivers/power/pmic8058-charger.c
 @@ -2019,7 +2019,7 @@
@@ -1446,8 +1223,6 @@ Index: msm/drivers/power/pmic8058-charger.c
  	.probe = pm8058_charger_probe,
  	.remove = __devexit_p(pm8058_charger_remove),
  	.driver = {
-Index: msm/drivers/power/smb137b.c
-===================================================================
 --- msm.orig/drivers/power/smb137b.c
 +++ msm/drivers/power/smb137b.c
 @@ -826,7 +826,7 @@
@@ -1459,8 +1234,6 @@ Index: msm/drivers/power/smb137b.c
  	.driver = {
  		   .name = "smb137b",
  		   .owner = THIS_MODULE,
-Index: msm/drivers/regulator/dummy.c
-===================================================================
 --- msm.orig/drivers/regulator/dummy.c
 +++ msm/drivers/regulator/dummy.c
 @@ -52,7 +52,7 @@
@@ -1472,8 +1245,6 @@ Index: msm/drivers/regulator/dummy.c
  	.probe		= dummy_regulator_probe,
  	.driver		= {
  		.name		= "reg-dummy",
-Index: msm/drivers/regulator/pmic8058-regulator.c
-===================================================================
 --- msm.orig/drivers/regulator/pmic8058-regulator.c
 +++ msm/drivers/regulator/pmic8058-regulator.c
 @@ -1716,7 +1716,7 @@
@@ -1485,8 +1256,6 @@ Index: msm/drivers/regulator/pmic8058-regulator.c
  	.probe = pm8058_vreg_probe,
  	.remove = __devexit_p(pm8058_vreg_remove),
  	.driver = {
-Index: msm/drivers/regulator/pmic8901-regulator.c
-===================================================================
 --- msm.orig/drivers/regulator/pmic8901-regulator.c
 +++ msm/drivers/regulator/pmic8901-regulator.c
 @@ -978,7 +978,7 @@
@@ -1498,11 +1267,9 @@ Index: msm/drivers/regulator/pmic8901-regulator.c
  	.probe = pm8901_vreg_probe,
  	.remove = __devexit_p(pm8901_vreg_remove),
  	.driver = {
-Index: msm/drivers/rtc/rtc-pm8xxx.c
-===================================================================
 --- msm.orig/drivers/rtc/rtc-pm8xxx.c
 +++ msm/drivers/rtc/rtc-pm8xxx.c
-@@ -587,7 +587,7 @@
+@@ -569,7 +569,7 @@
  	}
  }
  
@@ -1511,11 +1278,9 @@ Index: msm/drivers/rtc/rtc-pm8xxx.c
  	.probe		= pm8xxx_rtc_probe,
  	.remove		= __devexit_p(pm8xxx_rtc_remove),
  	.shutdown	= pm8xxx_rtc_shutdown,
-Index: msm/drivers/slimbus/slimbus.c
-===================================================================
 --- msm.orig/drivers/slimbus/slimbus.c
 +++ msm/drivers/slimbus/slimbus.c
-@@ -2201,7 +2201,7 @@
+@@ -2311,7 +2311,7 @@
  				}
  			}
  			/* schedule 4k family channels */
@@ -1524,8 +1289,6 @@ Index: msm/drivers/slimbus/slimbus.c
  				curexp == (int)slc1->rootexp + expshft) {
  				/* searchorder effective when opensl valid */
  				static const int srcho[] = { 5, 2, 4, 1, 3, 0 };
-Index: msm/drivers/spi/spidev.c
-===================================================================
 --- msm.orig/drivers/spi/spidev.c
 +++ msm/drivers/spi/spidev.c
 @@ -680,7 +680,7 @@
@@ -1537,11 +1300,9 @@ Index: msm/drivers/spi/spidev.c
  	.driver = {
  		.name =		"spidev",
  		.owner =	THIS_MODULE,
-Index: msm/drivers/thermal/pm8xxx-tm.c
-===================================================================
 --- msm.orig/drivers/thermal/pm8xxx-tm.c
 +++ msm/drivers/thermal/pm8xxx-tm.c
-@@ -714,7 +714,7 @@
+@@ -723,7 +723,7 @@
  #define PM8XXX_TM_PM_OPS	NULL
  #endif
  
@@ -1549,25 +1310,21 @@ Index: msm/drivers/thermal/pm8xxx-tm.c
 +static struct platform_driver pm8xxx_tm_driver __refdata = {
  	.probe	= pm8xxx_tm_probe,
  	.remove	= __devexit_p(pm8xxx_tm_remove),
- 	.driver	= {
-Index: msm/drivers/tty/serial/msm_serial_hs.c
-===================================================================
+ 	.shutdown = pm8xxx_tm_shutdown,
 --- msm.orig/drivers/tty/serial/msm_serial_hs.c
 +++ msm/drivers/tty/serial/msm_serial_hs.c
-@@ -2176,7 +2176,7 @@
- 	.runtime_idle    = msm_hs_runtime_idle,
+@@ -3398,7 +3398,7 @@
  };
+ 
  
 -static struct platform_driver msm_serial_hs_platform_driver = {
 +static struct platform_driver msm_serial_hs_platform_driver __refdata = {
  	.probe	= msm_hs_probe,
  	.remove = __devexit_p(msm_hs_remove),
  	.driver = {
-Index: msm/drivers/tty/serial/msm_serial_hs_lite.c
-===================================================================
 --- msm.orig/drivers/tty/serial/msm_serial_hs_lite.c
 +++ msm/drivers/tty/serial/msm_serial_hs_lite.c
-@@ -1239,7 +1239,7 @@
+@@ -1520,7 +1520,7 @@
  
  static struct uart_driver msm_hsl_uart_driver;
  
@@ -1576,7 +1333,7 @@ Index: msm/drivers/tty/serial/msm_serial_hs_lite.c
  	.name = "ttyHSL",
  	.write = msm_hsl_console_write,
  	.device = uart_console_device,
-@@ -1533,7 +1533,7 @@
+@@ -1941,7 +1941,7 @@
  	.runtime_resume = msm_hsl_runtime_resume,
  };
  
@@ -1585,11 +1342,9 @@ Index: msm/drivers/tty/serial/msm_serial_hs_lite.c
  	.probe = msm_serial_hsl_probe,
  	.remove = __devexit_p(msm_serial_hsl_remove),
  	.driver = {
-Index: msm/drivers/usb/gadget/msm72k_udc.c
-===================================================================
 --- msm.orig/drivers/usb/gadget/msm72k_udc.c
 +++ msm/drivers/usb/gadget/msm72k_udc.c
-@@ -2863,7 +2863,7 @@
+@@ -2955,7 +2955,7 @@
  	return usb_free(ui, 0);
  }
  
@@ -1598,11 +1353,9 @@ Index: msm/drivers/usb/gadget/msm72k_udc.c
  	.probe = msm72k_probe,
  	.remove = msm72k_remove,
  	.driver = { .name = "msm_hsusb",
-Index: msm/drivers/usb/host/ehci-msm.c
-===================================================================
 --- msm.orig/drivers/usb/host/ehci-msm.c
 +++ msm/drivers/usb/host/ehci-msm.c
-@@ -263,7 +263,7 @@
+@@ -290,7 +290,7 @@
  				ehci_msm_runtime_idle)
  };
  
@@ -1611,24 +1364,20 @@ Index: msm/drivers/usb/host/ehci-msm.c
  	.probe	= ehci_msm_probe,
  	.remove	= __devexit_p(ehci_msm_remove),
  	.driver = {
-Index: msm/drivers/usb/host/ehci-msm2.c
-===================================================================
 --- msm.orig/drivers/usb/host/ehci-msm2.c
 +++ msm/drivers/usb/host/ehci-msm2.c
-@@ -1160,7 +1160,7 @@
+@@ -1753,7 +1753,7 @@
+ 	{}
  };
- #endif
  
 -static struct platform_driver ehci_msm2_driver = {
 +static struct platform_driver ehci_msm2_driver __refdata = {
  	.probe	= ehci_msm2_probe,
  	.remove	= __devexit_p(ehci_msm2_remove),
  	.driver = {
-Index: msm/drivers/usb/host/ehci-msm72k.c
-===================================================================
 --- msm.orig/drivers/usb/host/ehci-msm72k.c
 +++ msm/drivers/usb/host/ehci-msm72k.c
-@@ -804,7 +804,7 @@
+@@ -806,7 +806,7 @@
  	.runtime_idle = ehci_msm_runtime_idle
  };
  
@@ -1637,11 +1386,9 @@ Index: msm/drivers/usb/host/ehci-msm72k.c
  	.probe	= ehci_msm_probe,
  	.remove	= __exit_p(ehci_msm_remove),
  	.driver	= {.name = "msm_hsusb_host",
-Index: msm/drivers/usb/otg/msm72k_otg.c
-===================================================================
 --- msm.orig/drivers/usb/otg/msm72k_otg.c
 +++ msm/drivers/usb/otg/msm72k_otg.c
-@@ -3009,7 +3009,7 @@
+@@ -3015,7 +3015,7 @@
  	.runtime_idle = msm_otg_runtime_idle,
  };
  
@@ -1650,11 +1397,9 @@ Index: msm/drivers/usb/otg/msm72k_otg.c
  	.remove = __exit_p(msm_otg_remove),
  	.driver = {
  		.name = DRIVER_NAME,
-Index: msm/drivers/usb/otg/msm_otg.c
-===================================================================
 --- msm.orig/drivers/usb/otg/msm_otg.c
 +++ msm/drivers/usb/otg/msm_otg.c
-@@ -3957,7 +3957,7 @@
+@@ -4925,7 +4925,7 @@
  	{}
  };
  
@@ -1663,8 +1408,6 @@ Index: msm/drivers/usb/otg/msm_otg.c
  	.remove = __devexit_p(msm_otg_remove),
  	.driver = {
  		.name = DRIVER_NAME,
-Index: msm/drivers/video/msm/ebi2_l2f.c
-===================================================================
 --- msm.orig/drivers/video/msm/ebi2_l2f.c
 +++ msm/drivers/video/msm/ebi2_l2f.c
 @@ -516,7 +516,7 @@
@@ -1676,8 +1419,6 @@ Index: msm/drivers/video/msm/ebi2_l2f.c
  	.probe  = epsonQcif_probe,
  	.driver = {
  		.name   = "ebi2_epson_qcif",
-Index: msm/drivers/video/msm/ebi2_lcd.c
-===================================================================
 --- msm.orig/drivers/video/msm/ebi2_lcd.c
 +++ msm/drivers/video/msm/ebi2_lcd.c
 @@ -52,7 +52,7 @@
@@ -1689,8 +1430,6 @@ Index: msm/drivers/video/msm/ebi2_lcd.c
  	.probe = ebi2_lcd_probe,
  	.remove = ebi2_lcd_remove,
  	.suspend = NULL,
-Index: msm/drivers/video/msm/ebi2_tmd20.c
-===================================================================
 --- msm.orig/drivers/video/msm/ebi2_tmd20.c
 +++ msm/drivers/video/msm/ebi2_tmd20.c
 @@ -1059,7 +1059,7 @@
@@ -1702,11 +1441,9 @@ Index: msm/drivers/video/msm/ebi2_tmd20.c
  	.probe  = tmd20qvga_probe,
  	.driver = {
  		.name   = "ebi2_tmd_qvga",
-Index: msm/drivers/video/msm/hdmi_msm.c
-===================================================================
 --- msm.orig/drivers/video/msm/hdmi_msm.c
 +++ msm/drivers/video/msm/hdmi_msm.c
-@@ -4736,7 +4736,7 @@
+@@ -4819,7 +4819,7 @@
  	return rc;
  }
  
@@ -1715,8 +1452,6 @@ Index: msm/drivers/video/msm/hdmi_msm.c
  	.probe = hdmi_msm_probe,
  	.remove = hdmi_msm_remove,
  	.driver.name = "hdmi_msm",
-Index: msm/drivers/video/msm/lcdc.c
-===================================================================
 --- msm.orig/drivers/video/msm/lcdc.c
 +++ msm/drivers/video/msm/lcdc.c
 @@ -45,7 +45,7 @@
@@ -1728,8 +1463,6 @@ Index: msm/drivers/video/msm/lcdc.c
  	.probe = lcdc_probe,
  	.remove = lcdc_remove,
  	.suspend = NULL,
-Index: msm/drivers/video/msm/lcdc_auo_wvga.c
-===================================================================
 --- msm.orig/drivers/video/msm/lcdc_auo_wvga.c
 +++ msm/drivers/video/msm/lcdc_auo_wvga.c
 @@ -305,7 +305,7 @@
@@ -1741,8 +1474,6 @@ Index: msm/drivers/video/msm/lcdc_auo_wvga.c
  	.driver.name   = LCDC_AUO_SPI_DEVICE_NAME,
  	.driver.owner  = THIS_MODULE,
  	.probe         = lcdc_auo_spi_probe,
-Index: msm/drivers/video/msm/lcdc_chimei_wxga.c
-===================================================================
 --- msm.orig/drivers/video/msm/lcdc_chimei_wxga.c
 +++ msm/drivers/video/msm/lcdc_chimei_wxga.c
 @@ -161,7 +161,7 @@
@@ -1754,8 +1485,6 @@ Index: msm/drivers/video/msm/lcdc_chimei_wxga.c
  	.probe  = chimei_probe,
  	.driver = {
  		.name   = "lcdc_chimei_lvds_wxga",
-Index: msm/drivers/video/msm/lcdc_gordon.c
-===================================================================
 --- msm.orig/drivers/video/msm/lcdc_gordon.c
 +++ msm/drivers/video/msm/lcdc_gordon.c
 @@ -390,7 +390,7 @@
@@ -1767,8 +1496,6 @@ Index: msm/drivers/video/msm/lcdc_gordon.c
  	.probe  = gordon_probe,
  	.driver = {
  		.name   = "lcdc_gordon_vga",
-Index: msm/drivers/video/msm/lcdc_nt35582_wvga.c
-===================================================================
 --- msm.orig/drivers/video/msm/lcdc_nt35582_wvga.c
 +++ msm/drivers/video/msm/lcdc_nt35582_wvga.c
 @@ -375,7 +375,7 @@
@@ -1789,8 +1516,6 @@ Index: msm/drivers/video/msm/lcdc_nt35582_wvga.c
  	.probe = nt35582_probe,
  	.driver = {
  		.name = LCDC_NT35582_PANEL_NAME,
-Index: msm/drivers/video/msm/lcdc_panel.c
-===================================================================
 --- msm.orig/drivers/video/msm/lcdc_panel.c
 +++ msm/drivers/video/msm/lcdc_panel.c
 @@ -30,7 +30,7 @@
@@ -1802,8 +1527,6 @@ Index: msm/drivers/video/msm/lcdc_panel.c
  	.probe  = lcdc_panel_probe,
  	.driver = {
  		.name   = "lcdc_panel",
-Index: msm/drivers/video/msm/lcdc_samsung_oled_pt.c
-===================================================================
 --- msm.orig/drivers/video/msm/lcdc_samsung_oled_pt.c
 +++ msm/drivers/video/msm/lcdc_samsung_oled_pt.c
 @@ -534,7 +534,7 @@
@@ -1824,8 +1547,6 @@ Index: msm/drivers/video/msm/lcdc_samsung_oled_pt.c
  	.probe		= samsung_probe,
  	.driver.name	= "lcdc_samsung_oled",
  };
-Index: msm/drivers/video/msm/lcdc_samsung_wsvga.c
-===================================================================
 --- msm.orig/drivers/video/msm/lcdc_samsung_wsvga.c
 +++ msm/drivers/video/msm/lcdc_samsung_wsvga.c
 @@ -195,7 +195,7 @@
@@ -1837,8 +1558,6 @@ Index: msm/drivers/video/msm/lcdc_samsung_wsvga.c
  	.probe  = samsung_probe,
  #ifdef CONFIG_FB_MSM_LCDC_DSUB
  	.remove = samsung_remove,
-Index: msm/drivers/video/msm/lcdc_sharp_wvga_pt.c
-===================================================================
 --- msm.orig/drivers/video/msm/lcdc_sharp_wvga_pt.c
 +++ msm/drivers/video/msm/lcdc_sharp_wvga_pt.c
 @@ -320,7 +320,7 @@
@@ -1850,8 +1569,6 @@ Index: msm/drivers/video/msm/lcdc_sharp_wvga_pt.c
  	.probe  = sharp_probe,
  	.driver = {
  		.name   = "lcdc_sharp_wvga",
-Index: msm/drivers/video/msm/lcdc_toshiba_fwvga_pt.c
-===================================================================
 --- msm.orig/drivers/video/msm/lcdc_toshiba_fwvga_pt.c
 +++ msm/drivers/video/msm/lcdc_toshiba_fwvga_pt.c
 @@ -387,7 +387,7 @@
@@ -1863,8 +1580,6 @@ Index: msm/drivers/video/msm/lcdc_toshiba_fwvga_pt.c
  	.probe  = toshiba_probe,
  	.driver = {
  		.name   = "lcdc_toshiba_fwvga_pt",
-Index: msm/drivers/video/msm/lcdc_toshiba_wvga_pt.c
-===================================================================
 --- msm.orig/drivers/video/msm/lcdc_toshiba_wvga_pt.c
 +++ msm/drivers/video/msm/lcdc_toshiba_wvga_pt.c
 @@ -428,7 +428,7 @@
@@ -1876,8 +1591,6 @@ Index: msm/drivers/video/msm/lcdc_toshiba_wvga_pt.c
  	.probe  = toshiba_probe,
  	.driver = {
  		.name   = "lcdc_toshiba_wvga",
-Index: msm/drivers/video/msm/mddi.c
-===================================================================
 --- msm.orig/drivers/video/msm/mddi.c
 +++ msm/drivers/video/msm/mddi.c
 @@ -93,7 +93,7 @@
@@ -1889,8 +1602,6 @@ Index: msm/drivers/video/msm/mddi.c
  	.probe = mddi_probe,
  	.remove = mddi_remove,
  #ifndef CONFIG_HAS_EARLYSUSPEND
-Index: msm/drivers/video/msm/mddi_client_dummy.c
-===================================================================
 --- msm.orig/drivers/video/msm/mddi_client_dummy.c
 +++ msm/drivers/video/msm/mddi_client_dummy.c
 @@ -81,7 +81,7 @@
@@ -1902,8 +1613,6 @@ Index: msm/drivers/video/msm/mddi_client_dummy.c
  	.probe = mddi_dummy_probe,
  	.remove = mddi_dummy_remove,
  	.driver = { .name = "mddi_c_dummy" },
-Index: msm/drivers/video/msm/mddi_client_nt35399.c
-===================================================================
 --- msm.orig/drivers/video/msm/mddi_client_nt35399.c
 +++ msm/drivers/video/msm/mddi_client_nt35399.c
 @@ -236,7 +236,7 @@
@@ -1915,8 +1624,6 @@ Index: msm/drivers/video/msm/mddi_client_nt35399.c
  	.probe = mddi_nt35399_probe,
  	.remove = mddi_nt35399_remove,
  	.driver = { .name = "mddi_c_0bda_8a47" },
-Index: msm/drivers/video/msm/mddi_client_toshiba.c
-===================================================================
 --- msm.orig/drivers/video/msm/mddi_client_toshiba.c
 +++ msm/drivers/video/msm/mddi_client_toshiba.c
 @@ -240,7 +240,7 @@
@@ -1928,8 +1635,6 @@ Index: msm/drivers/video/msm/mddi_client_toshiba.c
  	.probe = mddi_toshiba_probe,
  	.remove = mddi_toshiba_remove,
  	.driver = { .name = "mddi_c_d263_0000" },
-Index: msm/drivers/video/msm/mddi_ext.c
-===================================================================
 --- msm.orig/drivers/video/msm/mddi_ext.c
 +++ msm/drivers/video/msm/mddi_ext.c
 @@ -74,7 +74,7 @@
@@ -1941,8 +1646,6 @@ Index: msm/drivers/video/msm/mddi_ext.c
  	.probe = mddi_ext_probe,
  	.remove = mddi_ext_remove,
  #ifndef CONFIG_HAS_EARLYSUSPEND
-Index: msm/drivers/video/msm/mddi_ext_lcd.c
-===================================================================
 --- msm.orig/drivers/video/msm/mddi_ext_lcd.c
 +++ msm/drivers/video/msm/mddi_ext_lcd.c
 @@ -35,7 +35,7 @@
@@ -1954,8 +1657,6 @@ Index: msm/drivers/video/msm/mddi_ext_lcd.c
  	.probe  = mddi_ext_lcd_probe,
  	.driver = {
  		.name   = "extmddi_svga",
-Index: msm/drivers/video/msm/mddi_prism.c
-===================================================================
 --- msm.orig/drivers/video/msm/mddi_prism.c
 +++ msm/drivers/video/msm/mddi_prism.c
 @@ -38,7 +38,7 @@
@@ -1967,11 +1668,9 @@ Index: msm/drivers/video/msm/mddi_prism.c
  	.probe  = prism_probe,
  	.driver = {
  		.name   = "mddi_prism_wvga",
-Index: msm/drivers/video/msm/mddi_quickvx.c
-===================================================================
 --- msm.orig/drivers/video/msm/mddi_quickvx.c
 +++ msm/drivers/video/msm/mddi_quickvx.c
-@@ -609,7 +609,7 @@
+@@ -536,7 +536,7 @@
  }
  
  /* Driver data structure */
@@ -1980,8 +1679,6 @@ Index: msm/drivers/video/msm/mddi_quickvx.c
  	.probe  = mddi_quickvx_lcd_probe,
  	.driver	= {
  		.name	= "mddi_quickvx",
-Index: msm/drivers/video/msm/mddi_sharp.c
-===================================================================
 --- msm.orig/drivers/video/msm/mddi_sharp.c
 +++ msm/drivers/video/msm/mddi_sharp.c
 @@ -760,7 +760,7 @@
@@ -1993,8 +1690,6 @@ Index: msm/drivers/video/msm/mddi_sharp.c
  	.probe  = mddi_sharp_probe,
  	.driver = {
  		.name   = "mddi_sharp_qvga",
-Index: msm/drivers/video/msm/mddi_toshiba.c
-===================================================================
 --- msm.orig/drivers/video/msm/mddi_toshiba.c
 +++ msm/drivers/video/msm/mddi_toshiba.c
 @@ -1672,7 +1672,7 @@
@@ -2006,11 +1701,9 @@ Index: msm/drivers/video/msm/mddi_toshiba.c
  	.probe  = mddi_toshiba_lcd_probe,
  	.driver = {
  		.name   = "mddi_toshiba",
-Index: msm/drivers/video/msm/mdp.c
-===================================================================
 --- msm.orig/drivers/video/msm/mdp.c
 +++ msm/drivers/video/msm/mdp.c
-@@ -2038,7 +2038,7 @@
+@@ -2199,7 +2199,7 @@
  };
  
  
@@ -2019,11 +1712,9 @@ Index: msm/drivers/video/msm/mdp.c
  	.probe = mdp_probe,
  	.remove = mdp_remove,
  #ifndef CONFIG_HAS_EARLYSUSPEND
-Index: msm/drivers/video/msm/mdp4_dtv.c
-===================================================================
 --- msm.orig/drivers/video/msm/mdp4_dtv.c
 +++ msm/drivers/video/msm/mdp4_dtv.c
-@@ -64,7 +64,7 @@
+@@ -68,7 +68,7 @@
  	.runtime_resume = mdp4_dtv_runtime_resume,
  };
  
@@ -2032,21 +1723,17 @@ Index: msm/drivers/video/msm/mdp4_dtv.c
  	.probe = dtv_probe,
  	.remove = dtv_remove,
  	.suspend = NULL,
-Index: msm/drivers/video/msm/mdp4_wfd_writeback.c
-===================================================================
 --- msm.orig/drivers/video/msm/mdp4_wfd_writeback.c
 +++ msm/drivers/video/msm/mdp4_wfd_writeback.c
-@@ -84,7 +84,7 @@
- 	return rc;
+@@ -98,7 +98,7 @@
+ 	return 0;
  }
  
 -static struct platform_driver writeback_driver = {
 +static struct platform_driver writeback_driver __devinitdata = {
  	.probe = writeback_probe,
+ 	.remove = writeback_remove,
  	.driver = {
- 		.name = "writeback",
-Index: msm/drivers/video/msm/mdp4_wfd_writeback_panel.c
-===================================================================
 --- msm.orig/drivers/video/msm/mdp4_wfd_writeback_panel.c
 +++ msm/drivers/video/msm/mdp4_wfd_writeback_panel.c
 @@ -52,7 +52,7 @@
@@ -2058,8 +1745,6 @@ Index: msm/drivers/video/msm/mdp4_wfd_writeback_panel.c
  	.probe = writeback_panel_probe,
  	.driver = {
  		.name = "writeback_panel"
-Index: msm/drivers/video/msm/mdp_lcdc.c
-===================================================================
 --- msm.orig/drivers/video/msm/mdp_lcdc.c
 +++ msm/drivers/video/msm/mdp_lcdc.c
 @@ -390,7 +390,7 @@
@@ -2071,11 +1756,9 @@ Index: msm/drivers/video/msm/mdp_lcdc.c
  	.probe = mdp_lcdc_probe,
  	.remove = mdp_lcdc_remove,
  	.driver = {
-Index: msm/drivers/video/msm/mipi_NT35510.c
-===================================================================
 --- msm.orig/drivers/video/msm/mipi_NT35510.c
 +++ msm/drivers/video/msm/mipi_NT35510.c
-@@ -613,7 +613,7 @@
+@@ -637,7 +637,7 @@
  	return 0;
  }
  
@@ -2084,8 +1767,6 @@ Index: msm/drivers/video/msm/mipi_NT35510.c
  	.probe  = mipi_nt35510_lcd_probe,
  	.driver = {
  		.name   = "mipi_NT35510",
-Index: msm/drivers/video/msm/mipi_dsi.c
-===================================================================
 --- msm.orig/drivers/video/msm/mipi_dsi.c
 +++ msm/drivers/video/msm/mipi_dsi.c
 @@ -52,7 +52,7 @@
@@ -2097,8 +1778,6 @@ Index: msm/drivers/video/msm/mipi_dsi.c
  	.probe = mipi_dsi_probe,
  	.remove = mipi_dsi_remove,
  	.shutdown = NULL,
-Index: msm/drivers/video/msm/mipi_novatek.c
-===================================================================
 --- msm.orig/drivers/video/msm/mipi_novatek.c
 +++ msm/drivers/video/msm/mipi_novatek.c
 @@ -119,7 +119,7 @@
@@ -2110,7 +1789,7 @@ Index: msm/drivers/video/msm/mipi_novatek.c
  	.probe         = panel_3d_spi_probe,
  	.remove        = __devexit_p(panel_3d_spi_remove),
  	.driver		   = {
-@@ -513,7 +513,7 @@
+@@ -550,7 +550,7 @@
  	return 0;
  }
  
@@ -2119,11 +1798,9 @@ Index: msm/drivers/video/msm/mipi_novatek.c
  	.probe  = mipi_novatek_lcd_probe,
  	.driver = {
  		.name   = "mipi_novatek",
-Index: msm/drivers/video/msm/mipi_renesas.c
-===================================================================
 --- msm.orig/drivers/video/msm/mipi_renesas.c
 +++ msm/drivers/video/msm/mipi_renesas.c
-@@ -1196,7 +1196,7 @@
+@@ -1226,7 +1226,7 @@
  		pr_err("%s(): Backlight level set failed", __func__);
  }
  
@@ -2132,11 +1809,9 @@ Index: msm/drivers/video/msm/mipi_renesas.c
  	.probe  = mipi_renesas_lcd_probe,
  	.driver = {
  		.name   = "mipi_renesas",
-Index: msm/drivers/video/msm/mipi_simulator.c
-===================================================================
 --- msm.orig/drivers/video/msm/mipi_simulator.c
 +++ msm/drivers/video/msm/mipi_simulator.c
-@@ -98,7 +98,7 @@
+@@ -110,7 +110,7 @@
  	return 0;
  }
  
@@ -2145,11 +1820,9 @@ Index: msm/drivers/video/msm/mipi_simulator.c
  	.probe  = mipi_simulator_lcd_probe,
  	.driver = {
  		.name   = "mipi_simulator",
-Index: msm/drivers/video/msm/mipi_toshiba.c
-===================================================================
 --- msm.orig/drivers/video/msm/mipi_toshiba.c
 +++ msm/drivers/video/msm/mipi_toshiba.c
-@@ -286,7 +286,7 @@
+@@ -305,7 +305,7 @@
  	return 0;
  }
  
@@ -2158,11 +1831,9 @@ Index: msm/drivers/video/msm/mipi_toshiba.c
  	.probe  = mipi_toshiba_lcd_probe,
  	.driver = {
  		.name   = "mipi_toshiba",
-Index: msm/drivers/video/msm/mipi_truly.c
-===================================================================
 --- msm.orig/drivers/video/msm/mipi_truly.c
 +++ msm/drivers/video/msm/mipi_truly.c
-@@ -194,7 +194,7 @@
+@@ -207,7 +207,7 @@
  	return 0;
  }
  
@@ -2171,11 +1842,9 @@ Index: msm/drivers/video/msm/mipi_truly.c
  	.probe  = mipi_truly_lcd_probe,
  	.driver = {
  		.name   = "mipi_truly",
-Index: msm/drivers/video/msm/mipi_truly_tft540960_1_e.c
-===================================================================
 --- msm.orig/drivers/video/msm/mipi_truly_tft540960_1_e.c
 +++ msm/drivers/video/msm/mipi_truly_tft540960_1_e.c
-@@ -795,7 +795,7 @@
+@@ -809,7 +809,7 @@
  	return rc;
  }
  
@@ -2184,11 +1853,9 @@ Index: msm/drivers/video/msm/mipi_truly_tft540960_1_e.c
  	.probe  = mipi_truly_lcd_probe,
  	.driver = {
  		.name   = "mipi_truly_tft540960_1_e",
-Index: msm/drivers/video/msm/msm_fb.c
-===================================================================
 --- msm.orig/drivers/video/msm/msm_fb.c
 +++ msm/drivers/video/msm/msm_fb.c
-@@ -720,7 +720,7 @@
+@@ -728,7 +728,7 @@
  #endif
  };
  
@@ -2197,8 +1864,6 @@ Index: msm/drivers/video/msm/msm_fb.c
  	.probe = msm_fb_probe,
  	.remove = msm_fb_remove,
  #ifndef CONFIG_HAS_EARLYSUSPEND
-Index: msm/drivers/video/msm/tvenc.c
-===================================================================
 --- msm.orig/drivers/video/msm/tvenc.c
 +++ msm/drivers/video/msm/tvenc.c
 @@ -75,7 +75,7 @@
@@ -2210,8 +1875,6 @@ Index: msm/drivers/video/msm/tvenc.c
  	.probe = tvenc_probe,
  	.remove = tvenc_remove,
  	.suspend = NULL,
-Index: msm/drivers/video/msm/tvout_msm.c
-===================================================================
 --- msm.orig/drivers/video/msm/tvout_msm.c
 +++ msm/drivers/video/msm/tvout_msm.c
 @@ -565,7 +565,7 @@
@@ -2223,11 +1886,9 @@ Index: msm/drivers/video/msm/tvout_msm.c
  	.probe  = tvout_probe,
  	.remove = tvout_remove,
  	.driver = {
-Index: msm/drivers/video/msm/vidc/common/init/vidc_init.c
-===================================================================
 --- msm.orig/drivers/video/msm/vidc/common/init/vidc_init.c
 +++ msm/drivers/video/msm/vidc/common/init/vidc_init.c
-@@ -202,7 +202,7 @@
+@@ -201,7 +201,7 @@
  	.runtime_resume = vidc_runtime_resume,
  };
  
@@ -2236,8 +1897,6 @@ Index: msm/drivers/video/msm/vidc/common/init/vidc_init.c
  	.probe = vidc_720p_probe,
  	.remove = vidc_720p_remove,
  	.driver = {
-Index: msm/include/net/net_namespace.h
-===================================================================
 --- msm.orig/include/net/net_namespace.h
 +++ msm/include/net/net_namespace.h
 @@ -240,10 +240,12 @@
@@ -2253,8 +1912,6 @@ Index: msm/include/net/net_namespace.h
  #endif
  
  struct pernet_operations {
-Index: msm/net/core/fib_rules.c
-===================================================================
 --- msm.orig/net/core/fib_rules.c
 +++ msm/net/core/fib_rules.c
 @@ -737,7 +737,7 @@
@@ -2266,11 +1923,9 @@ Index: msm/net/core/fib_rules.c
  	.init = fib_rules_net_init,
  };
  
-Index: msm/net/core/rtnetlink.c
-===================================================================
 --- msm.orig/net/core/rtnetlink.c
 +++ msm/net/core/rtnetlink.c
-@@ -2113,7 +2113,7 @@
+@@ -2115,7 +2115,7 @@
  	net->rtnl = NULL;
  }
  
@@ -2279,8 +1934,6 @@ Index: msm/net/core/rtnetlink.c
  	.init = rtnetlink_net_init,
  	.exit = rtnetlink_net_exit,
  };
-Index: msm/net/ipv4/arp.c
-===================================================================
 --- msm.orig/net/ipv4/arp.c
 +++ msm/net/ipv4/arp.c
 @@ -1405,7 +1405,7 @@
@@ -2301,8 +1954,6 @@ Index: msm/net/ipv4/arp.c
  	.init = arp_net_init,
  	.exit = arp_net_exit,
  };
-Index: msm/net/ipv4/fib_frontend.c
-===================================================================
 --- msm.orig/net/ipv4/fib_frontend.c
 +++ msm/net/ipv4/fib_frontend.c
 @@ -1116,7 +1116,7 @@
@@ -2314,8 +1965,6 @@ Index: msm/net/ipv4/fib_frontend.c
  	.init = fib_net_init,
  	.exit = fib_net_exit,
  };
-Index: msm/net/ipv4/ip_fragment.c
-===================================================================
 --- msm.orig/net/ipv4/ip_fragment.c
 +++ msm/net/ipv4/ip_fragment.c
 @@ -852,7 +852,7 @@
@@ -2327,8 +1976,6 @@ Index: msm/net/ipv4/ip_fragment.c
  	.init = ipv4_frags_init_net,
  	.exit = ipv4_frags_exit_net,
  };
-Index: msm/net/ipv4/netfilter/arp_tables.c
-===================================================================
 --- msm.orig/net/ipv4/netfilter/arp_tables.c
 +++ msm/net/ipv4/netfilter/arp_tables.c
 @@ -1865,7 +1865,7 @@
@@ -2340,8 +1987,6 @@ Index: msm/net/ipv4/netfilter/arp_tables.c
  	.init = arp_tables_net_init,
  	.exit = arp_tables_net_exit,
  };
-Index: msm/net/ipv4/netfilter/ip_tables.c
-===================================================================
 --- msm.orig/net/ipv4/netfilter/ip_tables.c
 +++ msm/net/ipv4/netfilter/ip_tables.c
 @@ -2216,7 +2216,7 @@
@@ -2353,8 +1998,6 @@ Index: msm/net/ipv4/netfilter/ip_tables.c
  	.init = ip_tables_net_init,
  	.exit = ip_tables_net_exit,
  };
-Index: msm/net/ipv4/netfilter/iptable_filter.c
-===================================================================
 --- msm.orig/net/ipv4/netfilter/iptable_filter.c
 +++ msm/net/ipv4/netfilter/iptable_filter.c
 @@ -79,7 +79,7 @@
@@ -2366,8 +2009,6 @@ Index: msm/net/ipv4/netfilter/iptable_filter.c
  	.init = iptable_filter_net_init,
  	.exit = iptable_filter_net_exit,
  };
-Index: msm/net/ipv4/netfilter/nf_nat_core.c
-===================================================================
 --- msm.orig/net/ipv4/netfilter/nf_nat_core.c
 +++ msm/net/ipv4/netfilter/nf_nat_core.c
 @@ -681,7 +681,7 @@
@@ -2379,11 +2020,9 @@ Index: msm/net/ipv4/netfilter/nf_nat_core.c
  	.init = nf_nat_net_init,
  	.exit = nf_nat_net_exit,
  };
-Index: msm/net/ipv4/tcp_ipv4.c
-===================================================================
 --- msm.orig/net/ipv4/tcp_ipv4.c
 +++ msm/net/ipv4/tcp_ipv4.c
-@@ -2603,7 +2603,7 @@
+@@ -2560,7 +2560,7 @@
  	tcp_proc_unregister(net, &tcp4_seq_afinfo);
  }
  
@@ -2392,8 +2031,6 @@ Index: msm/net/ipv4/tcp_ipv4.c
  	.init = tcp4_proc_init_net,
  	.exit = tcp4_proc_exit_net,
  };
-Index: msm/net/ipv4/udp.c
-===================================================================
 --- msm.orig/net/ipv4/udp.c
 +++ msm/net/ipv4/udp.c
 @@ -2144,7 +2144,7 @@
@@ -2405,8 +2042,6 @@ Index: msm/net/ipv4/udp.c
  	.init = udp4_proc_init_net,
  	.exit = udp4_proc_exit_net,
  };
-Index: msm/net/ipv4/udplite.c
-===================================================================
 --- msm.orig/net/ipv4/udplite.c
 +++ msm/net/ipv4/udplite.c
 @@ -104,7 +104,7 @@
@@ -2418,11 +2053,9 @@ Index: msm/net/ipv4/udplite.c
  	.init = udplite4_proc_init_net,
  	.exit = udplite4_proc_exit_net,
  };
-Index: msm/net/ipv6/addrconf.c
-===================================================================
 --- msm.orig/net/ipv6/addrconf.c
 +++ msm/net/ipv6/addrconf.c
-@@ -3213,7 +3213,7 @@
+@@ -3219,7 +3219,7 @@
         proc_net_remove(net, "if_inet6");
  }
  
@@ -2431,7 +2064,7 @@ Index: msm/net/ipv6/addrconf.c
         .init = if6_proc_net_init,
         .exit = if6_proc_net_exit,
  };
-@@ -4749,7 +4749,7 @@
+@@ -4762,7 +4762,7 @@
  	}
  }
  
@@ -2440,8 +2073,6 @@ Index: msm/net/ipv6/addrconf.c
  	.init = addrconf_init_net,
  	.exit = addrconf_exit_net,
  };
-Index: msm/net/ipv6/addrlabel.c
-===================================================================
 --- msm.orig/net/ipv6/addrlabel.c
 +++ msm/net/ipv6/addrlabel.c
 @@ -381,7 +381,7 @@
@@ -2453,8 +2084,6 @@ Index: msm/net/ipv6/addrlabel.c
  	.init = ip6addrlbl_net_init,
  	.exit = ip6addrlbl_net_exit,
  };
-Index: msm/net/ipv6/af_inet6.c
-===================================================================
 --- msm.orig/net/ipv6/af_inet6.c
 +++ msm/net/ipv6/af_inet6.c
 @@ -1090,7 +1090,7 @@
@@ -2466,8 +2095,6 @@ Index: msm/net/ipv6/af_inet6.c
  	.init = inet6_net_init,
  	.exit = inet6_net_exit,
  };
-Index: msm/net/ipv6/ip6_fib.c
-===================================================================
 --- msm.orig/net/ipv6/ip6_fib.c
 +++ msm/net/ipv6/ip6_fib.c
 @@ -1672,7 +1672,7 @@
@@ -2479,8 +2106,6 @@ Index: msm/net/ipv6/ip6_fib.c
  	.init = fib6_net_init,
  	.exit = fib6_net_exit,
  };
-Index: msm/net/ipv6/ip6_flowlabel.c
-===================================================================
 --- msm.orig/net/ipv6/ip6_flowlabel.c
 +++ msm/net/ipv6/ip6_flowlabel.c
 @@ -730,7 +730,7 @@
@@ -2501,8 +2126,6 @@ Index: msm/net/ipv6/ip6_flowlabel.c
  	.init = ip6_flowlabel_proc_init,
  	.exit = ip6_flowlabel_net_exit,
  };
-Index: msm/net/ipv6/mcast.c
-===================================================================
 --- msm.orig/net/ipv6/mcast.c
 +++ msm/net/ipv6/mcast.c
 @@ -2652,7 +2652,7 @@
@@ -2514,8 +2137,6 @@ Index: msm/net/ipv6/mcast.c
  	.init = igmp6_net_init,
  	.exit = igmp6_net_exit,
  };
-Index: msm/net/ipv6/ndisc.c
-===================================================================
 --- msm.orig/net/ipv6/ndisc.c
 +++ msm/net/ipv6/ndisc.c
 @@ -1752,7 +1752,7 @@
@@ -2527,8 +2148,6 @@ Index: msm/net/ipv6/ndisc.c
  	.notifier_call = ndisc_netdev_event,
  };
  
-Index: msm/net/ipv6/netfilter/ip6_tables.c
-===================================================================
 --- msm.orig/net/ipv6/netfilter/ip6_tables.c
 +++ msm/net/ipv6/netfilter/ip6_tables.c
 @@ -2225,7 +2225,7 @@
@@ -2540,8 +2159,6 @@ Index: msm/net/ipv6/netfilter/ip6_tables.c
  	.init = ip6_tables_net_init,
  	.exit = ip6_tables_net_exit,
  };
-Index: msm/net/ipv6/netfilter/ip6table_filter.c
-===================================================================
 --- msm.orig/net/ipv6/netfilter/ip6table_filter.c
 +++ msm/net/ipv6/netfilter/ip6table_filter.c
 @@ -22,7 +22,7 @@
@@ -2562,8 +2179,6 @@ Index: msm/net/ipv6/netfilter/ip6table_filter.c
  	.init = ip6table_filter_net_init,
  	.exit = ip6table_filter_net_exit,
  };
-Index: msm/net/ipv6/raw.c
-===================================================================
 --- msm.orig/net/ipv6/raw.c
 +++ msm/net/ipv6/raw.c
 @@ -1300,7 +1300,7 @@
@@ -2584,8 +2199,6 @@ Index: msm/net/ipv6/raw.c
  	.type		= SOCK_RAW,
  	.protocol	= IPPROTO_IP,	/* wild card */
  	.prot		= &rawv6_prot,
-Index: msm/net/ipv6/reassembly.c
-===================================================================
 --- msm.orig/net/ipv6/reassembly.c
 +++ msm/net/ipv6/reassembly.c
 @@ -720,7 +720,7 @@
@@ -2597,8 +2210,6 @@ Index: msm/net/ipv6/reassembly.c
  	.init = ipv6_frags_init_net,
  	.exit = ipv6_frags_exit_net,
  };
-Index: msm/net/ipv6/route.c
-===================================================================
 --- msm.orig/net/ipv6/route.c
 +++ msm/net/ipv6/route.c
 @@ -2989,7 +2989,7 @@
@@ -2610,8 +2221,6 @@ Index: msm/net/ipv6/route.c
  	.init = ip6_route_net_init,
  	.exit = ip6_route_net_exit,
  };
-Index: msm/net/ipv6/sysctl_net_ipv6.c
-===================================================================
 --- msm.orig/net/ipv6/sysctl_net_ipv6.c
 +++ msm/net/ipv6/sysctl_net_ipv6.c
 @@ -129,7 +129,7 @@
@@ -2623,8 +2232,6 @@ Index: msm/net/ipv6/sysctl_net_ipv6.c
  	.init = ipv6_sysctl_net_init,
  	.exit = ipv6_sysctl_net_exit,
  };
-Index: msm/net/ipv6/tcp_ipv6.c
-===================================================================
 --- msm.orig/net/ipv6/tcp_ipv6.c
 +++ msm/net/ipv6/tcp_ipv6.c
 @@ -2156,7 +2156,7 @@
@@ -2636,8 +2243,6 @@ Index: msm/net/ipv6/tcp_ipv6.c
  	.init	    = tcpv6_net_init,
  	.exit	    = tcpv6_net_exit,
  	.exit_batch = tcpv6_net_exit_batch,
-Index: msm/net/ipv6/udplite.c
-===================================================================
 --- msm.orig/net/ipv6/udplite.c
 +++ msm/net/ipv6/udplite.c
 @@ -123,7 +123,7 @@
@@ -2649,8 +2254,6 @@ Index: msm/net/ipv6/udplite.c
  	.init = udplite6_proc_init_net,
  	.exit = udplite6_proc_exit_net,
  };
-Index: msm/net/ipv6/xfrm6_tunnel.c
-===================================================================
 --- msm.orig/net/ipv6/xfrm6_tunnel.c
 +++ msm/net/ipv6/xfrm6_tunnel.c
 @@ -345,7 +345,7 @@
@@ -2662,8 +2265,6 @@ Index: msm/net/ipv6/xfrm6_tunnel.c
  	.init	= xfrm6_tunnel_net_init,
  	.exit	= xfrm6_tunnel_net_exit,
  	.id	= &xfrm6_tunnel_net_id,
-Index: msm/net/netfilter/nf_conntrack_proto_dccp.c
-===================================================================
 --- msm.orig/net/netfilter/nf_conntrack_proto_dccp.c
 +++ msm/net/netfilter/nf_conntrack_proto_dccp.c
 @@ -928,7 +928,7 @@
@@ -2675,8 +2276,6 @@ Index: msm/net/netfilter/nf_conntrack_proto_dccp.c
  	.init = dccp_net_init,
  	.exit = dccp_net_exit,
  	.id   = &dccp_net_id,
-Index: msm/net/netfilter/nfnetlink.c
-===================================================================
 --- msm.orig/net/netfilter/nfnetlink.c
 +++ msm/net/netfilter/nfnetlink.c
 @@ -224,7 +224,7 @@
@@ -2688,8 +2287,6 @@ Index: msm/net/netfilter/nfnetlink.c
  	.init		= nfnetlink_net_init,
  	.exit_batch	= nfnetlink_net_exit_batch,
  };
-Index: msm/net/netfilter/xt_hashlimit.c
-===================================================================
 --- msm.orig/net/netfilter/xt_hashlimit.c
 +++ msm/net/netfilter/xt_hashlimit.c
 @@ -798,7 +798,7 @@
@@ -2701,8 +2298,6 @@ Index: msm/net/netfilter/xt_hashlimit.c
  	.init	= hashlimit_net_init,
  	.exit	= hashlimit_net_exit,
  	.id	= &hashlimit_net_id,
-Index: msm/net/netlink/genetlink.c
-===================================================================
 --- msm.orig/net/netlink/genetlink.c
 +++ msm/net/netlink/genetlink.c
 @@ -897,7 +897,7 @@
@@ -2723,8 +2318,6 @@ Index: msm/net/netlink/genetlink.c
  	.init = genl_pernet_init,
  	.exit = genl_pernet_exit,
  };
-Index: msm/net/packet/af_packet.c
-===================================================================
 --- msm.orig/net/packet/af_packet.c
 +++ msm/net/packet/af_packet.c
 @@ -3929,7 +3929,7 @@
@@ -2736,8 +2329,6 @@ Index: msm/net/packet/af_packet.c
  	.init = packet_net_init,
  	.exit = packet_net_exit,
  };
-Index: msm/net/sched/sch_api.c
-===================================================================
 --- msm.orig/net/sched/sch_api.c
 +++ msm/net/sched/sch_api.c
 @@ -1770,7 +1770,7 @@
@@ -2758,8 +2349,6 @@ Index: msm/net/sched/sch_api.c
  	.init = psched_net_init,
  	.exit = psched_net_exit,
  };
-Index: msm/net/sysctl_net.c
-===================================================================
 --- msm.orig/net/sysctl_net.c
 +++ msm/net/sysctl_net.c
 @@ -83,7 +83,7 @@
@@ -2771,8 +2360,6 @@ Index: msm/net/sysctl_net.c
  	.init = sysctl_net_init,
  	.exit = sysctl_net_exit,
  };
-Index: msm/net/unix/af_unix.c
-===================================================================
 --- msm.orig/net/unix/af_unix.c
 +++ msm/net/unix/af_unix.c
 @@ -2400,7 +2400,7 @@
@@ -2784,8 +2371,6 @@ Index: msm/net/unix/af_unix.c
  	.init = unix_net_init,
  	.exit = unix_net_exit,
  };
-Index: msm/net/wireless/wext-core.c
-===================================================================
 --- msm.orig/net/wireless/wext-core.c
 +++ msm/net/wireless/wext-core.c
 @@ -353,7 +353,7 @@
@@ -2797,8 +2382,6 @@ Index: msm/net/wireless/wext-core.c
  	.init = wext_pernet_init,
  	.exit = wext_pernet_exit,
  };
-Index: msm/sound/soc/msm/lpass-dma.c
-===================================================================
 --- msm.orig/sound/soc/msm/lpass-dma.c
 +++ msm/sound/soc/msm/lpass-dma.c
 @@ -424,7 +424,7 @@
@@ -2810,8 +2393,6 @@ Index: msm/sound/soc/msm/lpass-dma.c
  	.probe = dai_probe,
  	.remove = dai_remove,
  	.driver = {
-Index: msm/sound/soc/msm/msm-dai.c
-===================================================================
 --- msm.orig/sound/soc/msm/msm-dai.c
 +++ msm/sound/soc/msm/msm-dai.c
 @@ -102,7 +102,7 @@
@@ -2832,8 +2413,6 @@ Index: msm/sound/soc/msm/msm-dai.c
  	.probe = asoc_pcm_cpu_probe,
  	.remove = __devexit_p(asoc_pcm_cpu_remove),
  	.driver = {
-Index: msm/sound/soc/msm/msm-pcm-lpa.c
-===================================================================
 --- msm.orig/sound/soc/msm/msm-pcm-lpa.c
 +++ msm/sound/soc/msm/msm-pcm-lpa.c
 @@ -587,7 +587,7 @@
@@ -2845,11 +2424,9 @@ Index: msm/sound/soc/msm/msm-pcm-lpa.c
  	.driver = {
  		.name = "msm-pcm-lpa",
  		.owner = THIS_MODULE,
-Index: msm/sound/soc/msm/msm-pcm-q6.c
-===================================================================
 --- msm.orig/sound/soc/msm/msm-pcm-q6.c
 +++ msm/sound/soc/msm/msm-pcm-q6.c
-@@ -722,7 +722,7 @@
+@@ -760,7 +760,7 @@
  	return 0;
  }
  
@@ -2858,11 +2435,9 @@ Index: msm/sound/soc/msm/msm-pcm-q6.c
  	.driver = {
  		.name = "msm-pcm-dsp",
  		.owner = THIS_MODULE,
-Index: msm/sound/soc/msm/msm-pcm-voice.c
-===================================================================
 --- msm.orig/sound/soc/msm/msm-pcm-voice.c
 +++ msm/sound/soc/msm/msm-pcm-voice.c
-@@ -616,7 +616,7 @@
+@@ -665,7 +665,7 @@
  	return 0;
  }
  
@@ -2871,8 +2446,6 @@ Index: msm/sound/soc/msm/msm-pcm-voice.c
  	.driver = {
  		.name = "msm-pcm-voice",
  		.owner = THIS_MODULE,
-Index: msm/sound/soc/msm/msm7k-pcm.c
-===================================================================
 --- msm.orig/sound/soc/msm/msm7k-pcm.c
 +++ msm/sound/soc/msm/msm7k-pcm.c
 @@ -674,7 +674,7 @@
@@ -2884,8 +2457,6 @@ Index: msm/sound/soc/msm/msm7k-pcm.c
  	.driver = {
  		.name = "msm-dsp-audio",
  		.owner = THIS_MODULE,
-Index: msm/sound/soc/msm/msm8x60-dai.c
-===================================================================
 --- msm.orig/sound/soc/msm/msm8x60-dai.c
 +++ msm/sound/soc/msm/msm8x60-dai.c
 @@ -100,7 +100,7 @@
@@ -2906,8 +2477,6 @@ Index: msm/sound/soc/msm/msm8x60-dai.c
  	.probe = asoc_msm_cpu_probe,
  	.remove = __devexit_p(asoc_msm_cpu_remove),
  	.driver = {
-Index: msm/sound/soc/msm/mvs-dai.c
-===================================================================
 --- msm.orig/sound/soc/msm/mvs-dai.c
 +++ msm/sound/soc/msm/mvs-dai.c
 @@ -93,7 +93,7 @@
@@ -2928,8 +2497,6 @@ Index: msm/sound/soc/msm/mvs-dai.c
  	.probe = asoc_mvs_cpu_probe,
  	.remove = __devexit_p(asoc_mvs_cpu_remove),
  	.driver = {
-Index: msm/sound/soc/soc-utils.c
-===================================================================
 --- msm.orig/sound/soc/soc-utils.c
 +++ msm/sound/soc/soc-utils.c
 @@ -119,7 +119,7 @@
@@ -2941,11 +2508,9 @@ Index: msm/sound/soc/soc-utils.c
  	.driver = {
  		.name = "snd-soc-dummy",
  		.owner = THIS_MODULE,
-Index: msm/net/netfilter/nf_conntrack_netlink.c
-===================================================================
 --- msm.orig/net/netfilter/nf_conntrack_netlink.c
 +++ msm/net/netfilter/nf_conntrack_netlink.c
-@@ -2375,7 +2375,7 @@
+@@ -2380,7 +2380,7 @@
  		ctnetlink_net_exit(net);
  }
  
@@ -2954,8 +2519,6 @@ Index: msm/net/netfilter/nf_conntrack_netlink.c
  	.init		= ctnetlink_net_init,
  	.exit_batch	= ctnetlink_net_exit_batch,
  };
-Index: msm/net/sunrpc/auth_gss/auth_gss.c
-===================================================================
 --- msm.orig/net/sunrpc/auth_gss/auth_gss.c
 +++ msm/net/sunrpc/auth_gss/auth_gss.c
 @@ -1672,7 +1672,7 @@
@@ -2967,8 +2530,6 @@ Index: msm/net/sunrpc/auth_gss/auth_gss.c
  	.init = rpcsec_gss_init_net,
  	.exit = rpcsec_gss_exit_net,
  };
-Index: msm/sound/soc/msm/msm-pcm-hostless.c
-===================================================================
 --- msm.orig/sound/soc/msm/msm-pcm-hostless.c
 +++ msm/sound/soc/msm/msm-pcm-hostless.c
 @@ -45,7 +45,7 @@
@@ -2980,11 +2541,9 @@ Index: msm/sound/soc/msm/msm-pcm-hostless.c
  	.driver = {
  		.name = "msm-pcm-hostless",
  		.owner = THIS_MODULE,
-Index: msm/arch/arm/mach-msm/cpufreq.c
-===================================================================
 --- msm.orig/arch/arm/mach-msm/cpufreq.c
 +++ msm/arch/arm/mach-msm/cpufreq.c
-@@ -387,7 +387,7 @@
+@@ -467,7 +467,7 @@
  	NULL,
  };
  
@@ -2993,11 +2552,9 @@ Index: msm/arch/arm/mach-msm/cpufreq.c
  	/* lps calculations are handled here. */
  	.flags		= CPUFREQ_STICKY | CPUFREQ_CONST_LOOPS,
  	.init		= msm_cpufreq_init,
-Index: msm/arch/arm/mach-msm/footswitch-8x60.c
-===================================================================
 --- msm.orig/arch/arm/mach-msm/footswitch-8x60.c
 +++ msm/arch/arm/mach-msm/footswitch-8x60.c
-@@ -550,7 +550,7 @@
+@@ -679,7 +679,7 @@
  	return 0;
  }
  
@@ -3006,8 +2563,6 @@ Index: msm/arch/arm/mach-msm/footswitch-8x60.c
  	.probe		= footswitch_probe,
  	.remove		= __devexit_p(footswitch_remove),
  	.driver		= {
-Index: msm/arch/arm/mach-msm/footswitch-pcom.c
-===================================================================
 --- msm.orig/arch/arm/mach-msm/footswitch-pcom.c
 +++ msm/arch/arm/mach-msm/footswitch-pcom.c
 @@ -299,7 +299,7 @@
@@ -3019,11 +2574,9 @@ Index: msm/arch/arm/mach-msm/footswitch-pcom.c
  	.probe		= footswitch_probe,
  	.remove		= __devexit_p(footswitch_remove),
  	.driver		= {
-Index: msm/arch/arm/mach-msm/msm_dsps.c
-===================================================================
 --- msm.orig/arch/arm/mach-msm/msm_dsps.c
 +++ msm/arch/arm/mach-msm/msm_dsps.c
-@@ -972,7 +972,7 @@
+@@ -713,7 +713,7 @@
  	return 0;
  }
  
@@ -3032,11 +2585,9 @@ Index: msm/arch/arm/mach-msm/msm_dsps.c
  	.probe          = dsps_probe,
  	.remove         = __exit_p(dsps_remove),
  	.driver         = {
-Index: msm/arch/arm/mach-msm/pil-modem.c
-===================================================================
 --- msm.orig/arch/arm/mach-msm/pil-modem.c
 +++ msm/arch/arm/mach-msm/pil-modem.c
-@@ -286,7 +286,7 @@
+@@ -522,7 +522,7 @@
  	return 0;
  }
  
@@ -3045,11 +2596,9 @@ Index: msm/arch/arm/mach-msm/pil-modem.c
  	.probe = pil_modem_driver_probe,
  	.remove = __devexit_p(pil_modem_driver_exit),
  	.driver = {
-Index: msm/arch/arm/mach-msm/pil-q6v3.c
-===================================================================
 --- msm.orig/arch/arm/mach-msm/pil-q6v3.c
 +++ msm/arch/arm/mach-msm/pil-q6v3.c
-@@ -252,7 +252,7 @@
+@@ -422,7 +422,7 @@
  	return 0;
  }
  
@@ -3058,11 +2607,9 @@ Index: msm/arch/arm/mach-msm/pil-q6v3.c
  	.probe = pil_q6v3_driver_probe,
  	.remove = __devexit_p(pil_q6v3_driver_exit),
  	.driver = {
-Index: msm/arch/arm/mach-msm/pil-tzapps.c
-===================================================================
 --- msm.orig/arch/arm/mach-msm/pil-tzapps.c
 +++ msm/arch/arm/mach-msm/pil-tzapps.c
-@@ -71,7 +71,7 @@
+@@ -112,7 +112,7 @@
  	return 0;
  }
  
@@ -3071,11 +2618,9 @@ Index: msm/arch/arm/mach-msm/pil-tzapps.c
  	.probe = pil_tzapps_driver_probe,
  	.remove = __devexit_p(pil_tzapps_driver_exit),
  	.driver = {
-Index: msm/arch/arm/mach-msm/rpm-regulator.c
-===================================================================
 --- msm.orig/arch/arm/mach-msm/rpm-regulator.c
 +++ msm/arch/arm/mach-msm/rpm-regulator.c
-@@ -1947,7 +1947,7 @@
+@@ -1898,7 +1898,7 @@
  	return 0;
  }
  
@@ -3084,8 +2629,6 @@ Index: msm/arch/arm/mach-msm/rpm-regulator.c
  	.probe = rpm_vreg_probe,
  	.remove = __devexit_p(rpm_vreg_remove),
  	.driver = {
-Index: msm/arch/arm/mach-msm/rpm.c
-===================================================================
 --- msm.orig/arch/arm/mach-msm/rpm.c
 +++ msm/arch/arm/mach-msm/rpm.c
 @@ -880,7 +880,7 @@
@@ -3097,24 +2640,20 @@ Index: msm/arch/arm/mach-msm/rpm.c
  	.probe = msm_rpm_probe,
  	.remove = __devexit_p(msm_rpm_remove),
  	.driver = {
-Index: msm/arch/arm/mach-msm/rpm_log.c
-===================================================================
 --- msm.orig/arch/arm/mach-msm/rpm_log.c
 +++ msm/arch/arm/mach-msm/rpm_log.c
-@@ -333,7 +333,7 @@
- 	return 0;
- }
+@@ -500,7 +500,7 @@
+ 	       {},
+ };
  
 -static struct platform_driver msm_rpm_log_driver = {
 +static struct platform_driver msm_rpm_log_driver __refdata = {
  	.probe		= msm_rpm_log_probe,
  	.remove		= __devexit_p(msm_rpm_log_remove),
  	.driver		= {
-Index: msm/arch/arm/mach-msm/saw-regulator.c
-===================================================================
 --- msm.orig/arch/arm/mach-msm/saw-regulator.c
 +++ msm/arch/arm/mach-msm/saw-regulator.c
-@@ -209,7 +209,7 @@
+@@ -264,7 +264,7 @@
  	return 0;
  }
  
@@ -3123,21 +2662,6 @@ Index: msm/arch/arm/mach-msm/saw-regulator.c
  	.probe = saw_probe,
  	.remove = __devexit_p(saw_remove),
  	.driver = {
-Index: msm/arch/arm/mach-msm/smd.c
-===================================================================
---- msm.orig/arch/arm/mach-msm/smd.c
-+++ msm/arch/arm/mach-msm/smd.c
-@@ -3553,7 +3553,7 @@
- }
- late_initcall(modem_restart_late_init);
- 
--static struct platform_driver msm_smd_driver = {
-+static struct platform_driver msm_smd_driver __initdata = {
- 	.probe = msm_smd_probe,
- 	.driver = {
- 		.name = MODULE_NAME,
-Index: msm/drivers/gpio/gpio-msm-v1.c
-===================================================================
 --- msm.orig/drivers/gpio/gpio-msm-v1.c
 +++ msm/drivers/gpio/gpio-msm-v1.c
 @@ -822,7 +822,7 @@
@@ -3149,11 +2673,9 @@ Index: msm/drivers/gpio/gpio-msm-v1.c
  	.probe = msm_gpio_probe,
  	.driver = {
  		.name = "msmgpio",
-Index: msm/sound/soc/msm/msm-multi-ch-pcm-q6.c
-===================================================================
 --- msm.orig/sound/soc/msm/msm-multi-ch-pcm-q6.c
 +++ msm/sound/soc/msm/msm-multi-ch-pcm-q6.c
-@@ -821,7 +821,7 @@
+@@ -923,7 +923,7 @@
  	return 0;
  }
  
@@ -3162,11 +2684,9 @@ Index: msm/sound/soc/msm/msm-multi-ch-pcm-q6.c
  	.driver = {
  		.name = "msm-multi-ch-pcm-dsp",
  		.owner = THIS_MODULE,
-Index: msm/drivers/net/wireless/wcnss/wcnss_wlan.c
-===================================================================
 --- msm.orig/drivers/net/wireless/wcnss/wcnss_wlan.c
 +++ msm/drivers/net/wireless/wcnss/wcnss_wlan.c
-@@ -329,7 +329,7 @@
+@@ -764,7 +764,7 @@
  }
  
  
@@ -3175,7 +2695,7 @@ Index: msm/drivers/net/wireless/wcnss/wcnss_wlan.c
  	.driver = {
  		.name	= "WLAN_CTRL",
  		.owner	= THIS_MODULE,
-@@ -368,7 +368,7 @@
+@@ -803,7 +803,7 @@
  }
  
  /* platform device for WCNSS_CTRL SMD channel */
@@ -3184,7 +2704,7 @@ Index: msm/drivers/net/wireless/wcnss/wcnss_wlan.c
  	.driver = {
  		.name	= "WCNSS_CTRL",
  		.owner	= THIS_MODULE,
-@@ -793,7 +793,7 @@
+@@ -2009,7 +2009,7 @@
  };
  #endif
  
@@ -3193,11 +2713,9 @@ Index: msm/drivers/net/wireless/wcnss/wcnss_wlan.c
  	.driver = {
  		.name	= DEVICE,
  		.owner	= THIS_MODULE,
-Index: msm/sound/soc/msm/msm-lowlatency-pcm-q6.c
-===================================================================
 --- msm.orig/sound/soc/msm/msm-lowlatency-pcm-q6.c
 +++ msm/sound/soc/msm/msm-lowlatency-pcm-q6.c
-@@ -726,7 +726,7 @@
+@@ -746,7 +746,7 @@
  	return 0;
  }
  
@@ -3206,11 +2724,9 @@ Index: msm/sound/soc/msm/msm-lowlatency-pcm-q6.c
  	.driver = {
  		.name = "msm-lowlatency-pcm-dsp",
  		.owner = THIS_MODULE,
-Index: msm/drivers/coresight/coresight-csr.c
-===================================================================
 --- msm.orig/drivers/coresight/coresight-csr.c
 +++ msm/drivers/coresight/coresight-csr.c
-@@ -176,7 +176,7 @@
+@@ -244,7 +244,7 @@
  	{}
  };
  
@@ -3219,11 +2735,9 @@ Index: msm/drivers/coresight/coresight-csr.c
  	.probe          = csr_probe,
  	.remove         = __devexit_p(csr_remove),
  	.driver         = {
-Index: msm/drivers/coresight/coresight-replicator.c
-===================================================================
 --- msm.orig/drivers/coresight/coresight-replicator.c
 +++ msm/drivers/coresight/coresight-replicator.c
-@@ -185,7 +185,7 @@
+@@ -189,7 +189,7 @@
  	{}
  };
  
@@ -3232,11 +2746,9 @@ Index: msm/drivers/coresight/coresight-replicator.c
  	.probe          = replicator_probe,
  	.remove         = __devexit_p(replicator_remove),
  	.driver         = {
-Index: msm/drivers/coresight/coresight-tmc.c
-===================================================================
 --- msm.orig/drivers/coresight/coresight-tmc.c
 +++ msm/drivers/coresight/coresight-tmc.c
-@@ -1183,7 +1183,7 @@
+@@ -1750,7 +1750,7 @@
  };
  EXPORT_COMPAT("arm,coresight-tmc");
  
@@ -3245,11 +2757,9 @@ Index: msm/drivers/coresight/coresight-tmc.c
  	.probe          = tmc_probe,
  	.remove         = __devexit_p(tmc_remove),
  	.driver         = {
-Index: msm/drivers/thermal/msm_thermal.c
-===================================================================
 --- msm.orig/drivers/thermal/msm_thermal.c
 +++ msm/drivers/thermal/msm_thermal.c
-@@ -240,7 +240,7 @@
+@@ -1908,7 +1908,7 @@
  	{},
  };
  
@@ -3258,8 +2768,6 @@ Index: msm/drivers/thermal/msm_thermal.c
  	.probe = msm_thermal_dev_probe,
  	.driver = {
  		.name = "msm-thermal",
-Index: msm/arch/arm/mach-msm/rpm_rbcpr_stats.c
-===================================================================
 --- msm.orig/arch/arm/mach-msm/rpm_rbcpr_stats.c
 +++ msm/arch/arm/mach-msm/rpm_rbcpr_stats.c
 @@ -392,7 +392,7 @@
@@ -3271,11 +2779,9 @@ Index: msm/arch/arm/mach-msm/rpm_rbcpr_stats.c
  	.probe  = msm_rpmrbcpr_probe,
  	.remove = __devexit_p(msm_rpmrbcpr_remove),
  	.driver = {
-Index: msm/drivers/gpio/gpio-msm-common.c
-===================================================================
 --- msm.orig/drivers/gpio/gpio-msm-common.c
 +++ msm/drivers/gpio/gpio-msm-common.c
-@@ -587,7 +587,7 @@
+@@ -590,7 +590,7 @@
  	return 0;
  }
  
@@ -3284,11 +2790,9 @@ Index: msm/drivers/gpio/gpio-msm-common.c
  	.probe = msm_gpio_probe,
  	.remove = __devexit_p(msm_gpio_remove),
  	.driver = {
-Index: msm/drivers/mfd/wcd9xxx-core.c
-===================================================================
 --- msm.orig/drivers/mfd/wcd9xxx-core.c
 +++ msm/drivers/mfd/wcd9xxx-core.c
-@@ -1435,7 +1435,7 @@
+@@ -1855,7 +1855,7 @@
  };
  MODULE_DEVICE_TABLE(i2c, tabla_id_table);
  
