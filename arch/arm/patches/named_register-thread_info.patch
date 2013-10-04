@@ -29,7 +29,7 @@ index 88a587c..50bf262 100644
 -	register unsigned long sp asm ("sp");
 -	return (struct thread_info *)(sp & ~(THREAD_SIZE - 1));
 +	return (struct thread_info *)
-+		((u32)(__builtin_frame_address(0))
++		((u32)(__builtin_stack_pointer())
 +		& ~(THREAD_SIZE - 1));
  }
  

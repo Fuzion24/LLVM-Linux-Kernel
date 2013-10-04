@@ -27,7 +27,7 @@ index 209e650..629a975 100644
  {
  	unsigned long off;
 -	register unsigned long *sp asm ("sp");
-+	unsigned long sp = current_stack_pointer;
++	unsigned long sp = __builtin_stack_pointer();
  
  	/*
  	 * Read TPIDRPRW.

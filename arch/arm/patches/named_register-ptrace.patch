@@ -30,7 +30,7 @@ index 04c99f3..8aec2db 100644
 -	register unsigned long sp asm ("sp");			\
 -	(struct pt_regs *)((sp | (THREAD_SIZE - 1)) - 7) - 1;	\
 +#define current_pt_regs(void) ({					\
-+	(struct pt_regs *)(((unsigned long)(__builtin_frame_address(0))	\
++	(struct pt_regs *)(((unsigned long)(__builtin_stack_pointer())	\
 +		| (THREAD_SIZE - 1)) - 7) - 1;				\
  })
  
