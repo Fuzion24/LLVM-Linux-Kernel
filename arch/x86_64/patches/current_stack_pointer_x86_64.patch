@@ -7,13 +7,15 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Named registers aren't supported in clang. Inline assembly is supported by both
-gcc and clang.
+The current kernel code uses a named register to get the stack pointer which is
+only supported in gcc. For clang an alternative is to use a macro to get the
+current stack pointer using ASM (which is less efficient than a named
+resgiter). Long term the LLVMLinux project is hoping to introduce a new
+__builtin_stack_pointer() which will be added to both LLVM and gcc.
 
-Author:  PaX Team <pageexec@freemail.hu>
-ML-Post: http://lists.cs.uiuc.edu/pipermail/llvm-commits/Week-of-Mon-20120507/142707.html
-URL:     http://llvm.linuxfoundation.org
-Merge:   Jan-Simon Möller <dl9pf@gmx.de>
+Author: Behan Webster <behanw@converseincode.com>
+Signed-off-by: Behan Webster <behanw@converseincode.com>
+Based on:  PaX Team <pageexec@freemail.hu>
 Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
 ---
  arch/x86/include/asm/thread_info.h | 2 +-
@@ -21,16 +23,25 @@ Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
 
 --- linux.orig/arch/x86/include/asm/thread_info.h
 +++ linux/arch/x86/include/asm/thread_info.h
-@@ -168,7 +168,11 @@
+@@ -168,7 +168,21 @@
  
  
  /* how to get the current stack pointer from C */
--register unsigned long current_stack_pointer asm("esp") __used;
++#if defined(CONFIG_BUILTIN_STACK_POINTER)
++/* compiler has __builtin_stack_pointer support already */
++
++#elif defined(__clang__)
 +#define current_stack_pointer ({ \
 +	unsigned long esp; \
 +	asm("mov %%esp, %0" : "=r"(esp)); \
 +	esp; \
 +})
++#define current_stack_pointer __builtin_stack_pointer()
++
++#else /* gcc */
+ register unsigned long current_stack_pointer asm("esp") __used;
++#define __builtin_stack_pointer() current_stack_pointer
++#endif
  
  /* how to get the thread information struct from C */
  static inline struct thread_info *current_thread_info(void)

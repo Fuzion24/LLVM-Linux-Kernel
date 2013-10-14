@@ -6,11 +6,11 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-A macro to get the current stack pointer which allows for a single place in
-which to do so with ASM. Before this named registers (a gcc extension) was used
-to get the stack pointer. Using ASM is a more portable way of getting the stack
-pointer which works with both gcc and clang.  This macro is of the same name
-used in the X86 arch.
+The current kernel code uses a named register to get the stack pointer which is
+only supported in gcc. For clang an alternative is to use a macro to get the
+current stack pointer using ASM (which is less efficient than a named
+resgiter). Long term the LLVMLinux project is hoping to introduce a new
+__builtin_stack_pointer() which will be added to both LLVM and gcc.
 
 Author: Behan Webster <behanw@converseincode.com>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
