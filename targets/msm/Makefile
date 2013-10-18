@@ -25,12 +25,12 @@
 TARGETDIR	= ${CURDIR}
 TOPDIR		= $(realpath ${TARGETDIR}/../..)
 CROSS_ARM_TOOLCHAIN = android
+CLANG_TOOLCHAIN=prebuilt
 
-KERNEL_BRANCH	= msm-3.4
-KERNEL_GIT	= git://codeaurora.org/kernel/msm.git
+KERNEL_BRANCH	= msm-3.10
+KERNEL_GIT	= git://codeaurora.org/kernel/msm-3.10.git
 KERNELDIR	= ${SRCDIR}/msm
-#KERNEL_TAG	= AU_LINUX_BASE_TARGET_ALL.01.00.461
-KERNEL_CFG	= ${KERNELDIR}/arch/arm/configs/msm8974-perf_defconfig
+KERNEL_CFG	= ${KERNELDIR}/arch/arm/configs/msm8974_defconfig
 
 #Use the branch name for the dir containing MSM specific patch overrides
 KERNEL_REPO_PATCHES=${KERNEL_BRANCH}
@@ -46,7 +46,7 @@ include ${CONFIG}
 
 KERNEL_PATCH_DIR+= ${TARGETDIR}/patches ${TARGETDIR}/patches/${KERNEL_REPO_PATCHES}
 
-TARGETS+= check-dups kernel-autopatch clean mrproper
+TARGETS+= kernel-autopatch clean mrproper
 .PHONY: kernel-copy clean mrproper
 
 prep: state/prep
@@ -54,9 +54,6 @@ state/prep:
 	$(MAKE) ${TMPDIR}
 	@mkdir -p ${LOGDIR}
 	$(call state,$@)
-
-check-dups:
-	${TOOLSDIR}/checkduplicates.py $(shell ${MAKE} list-kernel-patches)
 
 clean: kernel-clean kernel-gcc-clean
 	@$(call banner,Clean)
