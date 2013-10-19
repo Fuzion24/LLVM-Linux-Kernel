@@ -1,0 +1,39 @@
+From 99acf58c3fc6df0556d5090f67a26e744da12485 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
+Date: Sun, 20 Oct 2013 00:36:47 +0200
+Subject: [PATCH] clang.
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
+---
+ arch/x86/Makefile | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/Makefile b/arch/x86/Makefile
+index 41250fb..2b95741 100644
+--- a/arch/x86/Makefile
++++ b/arch/x86/Makefile
+@@ -58,7 +58,9 @@ else
+         KBUILD_CFLAGS += -m64
+ 
+ 	# Use -mpreferred-stack-boundary=3 if supported.
++ifneq ($(COMPILER),clang)
+ 	KBUILD_CFLAGS += $(call cc-option,-mno-sse -mpreferred-stack-boundary=3)
++endif
+ 
+         # FIXME - should be integrated in Makefile.cpu (Makefile_32.cpu)
+         cflags-$(CONFIG_MK8) += $(call cc-option,-march=k8)
+@@ -80,7 +82,7 @@ else
+ 
+         # this works around some issues with generating unwind tables in older gccs
+         # newer gccs do it by default
+-        KBUILD_CFLAGS += -maccumulate-outgoing-args
++        KBUILD_CFLAGS += $(call cc-option,-maccumulate-outgoing-args)
+ endif
+ 
+ ifdef CONFIG_CC_STACKPROTECTOR
+-- 
+1.8.1.4
+

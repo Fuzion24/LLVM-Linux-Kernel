@@ -6,3 +6,4 @@ current_stack_pointer_x86_64.patch
 thinkpad-acpi-nested-functions.patch
 0016-Ad-no-integrated-as-to-arch-x86-realmode-rm-Makefile.patch
 0015-Add-no-integrated-as-to-arch-x86-boot-Makefile-for-c.patch
+9903-clang-arch-fix.patch
