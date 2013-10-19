@@ -20,7 +20,7 @@ index f2cb308..75bec5f 100644
  lib-$(CONFIG_RWSEM_XCHGADD_ALGORITHM) += rwsem.o
  lib-$(CONFIG_PERCPU_RWSEM) += percpu-rwsem.o
  
-+ifndef ($(COMPILER),clang)
++ifneq ($(COMPILER),clang)
  CFLAGS_hweight.o = $(subst $(quote),,$(CONFIG_ARCH_HWEIGHT_CFLAGS))
 +endif
  obj-$(CONFIG_GENERIC_HWEIGHT) += hweight.o
