@@ -15,4 +15,4 @@ vlais-hmac.patch
 vlais-libcrc32c.patch
 vlais-netfilter.patch
 vlais-testmgr.patch
-ww_mutex_builtin_constant_p.patch
+9901-Clang-3.4-changed-to-error-on-unknown-options.patch
