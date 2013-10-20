@@ -26,7 +26,7 @@ CLANG_TMPDIR	= ${LLVMTOP}/tmp
 TMPDIRS		+= ${CLANG_TMPDIR}
 RAZE_TARGETS	+= clang-raze
 
-ifeq ($(shell uname -p), i686)
+ifeq ($(shell uname -i), i686)
 CLANG_DIR	= clang+llvm-3.3-i386-debian6
 else
 CLANG_DIR	= clang+llvm-3.3-Ubuntu-13.04-x86_64-linux-gnu
