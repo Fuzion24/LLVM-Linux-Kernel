@@ -191,7 +191,7 @@ index 25b5d7a9..a39687e 100644
 +	size_t raw_descs_sz = sizeof(*raw_descs)*(ffs->raw_descs_length);
 +	raw_descs = kmalloc(raw_descs_sz, GFP_KERNEL);
 +
-+	if (unlikely(!eps || !fs_descs || !hs_descs || !ss_descs || !inums || 
++	if (unlikely(!eps || !fs_descs || !hs_descs || !ss_descs || !inums ||
 +		!raw_descs)) {
 +		kfree(eps);
 +		kfree(fs_descs);
