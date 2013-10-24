@@ -2,7 +2,7 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
 
 --- linux.orig/arch/arm64/Makefile
 +++ linux/arch/arm64/Makefile
-@@ -19,8 +19,16 @@
+@@ -18,8 +18,15 @@
  
  KBUILD_DEFCONFIG := defconfig
  
@@ -13,7 +13,6 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
 +KBUILD_CPPFLAGS	+= $(call cc-option,-target $(CROSS_COMPILE:-=),)
 +KBUILD_CFLAGS   += $(call cc-option,-fno-builtin,)
 +KBUILD_CFLAGS   += $(call cc-disable-warning,asm-operand-widths)
-+KBUILD_CFLAGS   += $(call cc-option,-Xassembler,)
 +#endif
 +
 +KBUILD_CFLAGS	+= $(call cc-option,-mgeneral-regs-only,)
