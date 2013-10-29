@@ -18,7 +18,7 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
 + */
 +#define current_stack_pointer ({ \
 +	unsigned long current_sp; \
-+	asm ("mov %0, r13" : "=r" (current_sp)); \
++	asm ("mov %0, sp" : "=r" (current_sp)); \
 +	current_sp; \
 +})
 +

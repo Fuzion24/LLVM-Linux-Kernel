@@ -40,19 +40,16 @@ index e4cec9d..6c2be8c 100644
  	/* Disable user access to the timers and the virtual counter. */
  	asm volatile("mrs	%0, cntkctl_el1" : "=r" (cntkctl));
 diff --git a/arch/arm64/kernel/debug-monitors.c b/arch/arm64/kernel/debug-monitors.c
-index 0c3ba9f..efc8f8c 100644
+index 0c3ba9f..70732e7 100644
 --- a/arch/arm64/kernel/debug-monitors.c
 +++ b/arch/arm64/kernel/debug-monitors.c
-@@ -50,17 +50,19 @@ u8 debug_monitors_arch(void)
-  */
- static void mdscr_write(u32 mdscr)
+@@ -52,15 +52,15 @@ static void mdscr_write(u32 mdscr)
  {
-+/*
  	unsigned long flags;
  	local_dbg_save(flags);
- 	asm volatile("msr mdscr_el1, %0" :: "r" (mdscr));
+-	asm volatile("msr mdscr_el1, %0" :: "r" (mdscr));
++	asm volatile("msr mdscr_el1, %0" :: "r" ((u64)mdscr));
  	local_dbg_restore(flags);
-+*/
  }
  
  static u32 mdscr_read(void)
@@ -65,15 +62,15 @@ index 0c3ba9f..efc8f8c 100644
  }
  
  /*
-@@ -136,9 +138,9 @@ void disable_debug_monitors(enum debug_el el)
+@@ -136,9 +136,9 @@ void disable_debug_monitors(enum debug_el el)
   */
  static void clear_os_lock(void *unused)
  {
 -	asm volatile("msr mdscr_el1, %0" : : "r" (0));
-+	asm volatile("msr mdscr_el1, %0" : : "r" (0LL));
++	asm volatile("msr mdscr_el1, %0" : : "r" ((u64)0));
  	isb();
 -	asm volatile("msr oslar_el1, %0" : : "r" (0));
-+	asm volatile("msr oslar_el1, %0" : : "r" (0LL));
++	asm volatile("msr oslar_el1, %0" : : "r" ((u64)0));
  	isb();
  }
  
@@ -214,3 +211,16 @@ index ecbf2d8..3b4d954 100644
  }
  
  static int armv8_pmuv3_map_event(struct perf_event *event)
+diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+index f4dd585..b7f7e419 100644
+--- a/arch/arm64/mm/mmu.c
++++ b/arch/arm64/mm/mmu.c
+@@ -98,7 +98,7 @@ static int __init early_cachepolicy(char *p)
+ 	 */
+ 	asm volatile(
+ 	"	mrs	%0, mair_el1\n"
+-	"	bfi	%0, %1, #%2, #8\n"
++	"	bfi	%0, %1, %2, #8\n"
+ 	"	msr	mair_el1, %0\n"
+ 	"	isb\n"
+ 	: "=&r" (tmp)
