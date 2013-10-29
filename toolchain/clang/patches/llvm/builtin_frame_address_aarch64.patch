@@ -1,0 +1,146 @@
+From 311b09ecb3a99c2fd5efaa99348ebce2092d3c3c Mon Sep 17 00:00:00 2001
+From: Weiming Zhao <weimingz@codeaurora.org>
+Date: Fri, 25 Oct 2013 15:32:59 -0700
+Subject: [PATCH] [AArch64] Add support of frameaddress and returnaddress
+
+Fixes PR 17690
+
+charlebm@gmail.com - changed SDLoc to DebugLoc
+Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+---
+ lib/Target/AArch64/AArch64ISelLowering.cpp |   41 ++++++++++++++++++++++++++++
+ lib/Target/AArch64/AArch64ISelLowering.h   |    2 +
+ test/CodeGen/AArch64/frameaddr.ll          |   20 +++++++++++++
+ test/CodeGen/AArch64/returnaddr.ll         |   21 ++++++++++++++
+ 4 files changed, 84 insertions(+), 0 deletions(-)
+ create mode 100644 test/CodeGen/AArch64/frameaddr.ll
+ create mode 100644 test/CodeGen/AArch64/returnaddr.ll
+
+diff --git a/lib/Target/AArch64/AArch64ISelLowering.cpp b/lib/Target/AArch64/AArch64ISelLowering.cpp
+index c6b1d7a..77aadee 100644
+--- a/lib/Target/AArch64/AArch64ISelLowering.cpp
++++ b/lib/Target/AArch64/AArch64ISelLowering.cpp
+@@ -1958,6 +1958,45 @@ AArch64TargetLowering::LowerFP_TO_INT(SDValue Op, SelectionDAG &DAG,
+   return LowerF128ToCall(Op, DAG, LC);
+ }
+ 
++SDValue AArch64TargetLowering::LowerRETURNADDR(SDValue Op, SelectionDAG &DAG) const{
++  MachineFunction &MF = DAG.getMachineFunction();
++  MachineFrameInfo *MFI = MF.getFrameInfo();
++  MFI->setReturnAddressIsTaken(true);
++
++  EVT VT = Op.getValueType();
++  SDLoc dl(Op);
++  unsigned Depth = cast<ConstantSDNode>(Op.getOperand(0))->getZExtValue();
++  if (Depth) {
++    SDValue FrameAddr = LowerFRAMEADDR(Op, DAG);
++    SDValue Offset = DAG.getConstant(8, MVT::i64);
++    return DAG.getLoad(VT, dl, DAG.getEntryNode(),
++                       DAG.getNode(ISD::ADD, dl, VT, FrameAddr, Offset),
++                       MachinePointerInfo(), false, false, false, 0);
++  }
++
++  // Return X30, which contains the return address. Mark it an implicit live-in.
++  unsigned Reg = MF.addLiveIn(AArch64::X30, getRegClassFor(MVT::i64));
++  return DAG.getCopyFromReg(DAG.getEntryNode(), dl, Reg, MVT::i64);
++}
++
++
++SDValue AArch64TargetLowering::LowerFRAMEADDR(SDValue Op, SelectionDAG &DAG)
++                                              const {
++  MachineFrameInfo *MFI = DAG.getMachineFunction().getFrameInfo();
++  MFI->setFrameAddressIsTaken(true);
++
++  EVT VT = Op.getValueType();
++  SDLoc dl(Op);
++  unsigned Depth = cast<ConstantSDNode>(Op.getOperand(0))->getZExtValue();
++  unsigned FrameReg = AArch64::X29;
++  SDValue FrameAddr = DAG.getCopyFromReg(DAG.getEntryNode(), dl, FrameReg, VT);
++  while (Depth--)
++    FrameAddr = DAG.getLoad(VT, dl, DAG.getEntryNode(), FrameAddr,
++                            MachinePointerInfo(),
++                            false, false, false, 0);
++  return FrameAddr;
++}
++
+ SDValue
+ AArch64TargetLowering::LowerGlobalAddressELFLarge(SDValue Op,
+                                                   SelectionDAG &DAG) const {
+@@ -2703,6 +2742,8 @@ AArch64TargetLowering::LowerOperation(SDValue Op, SelectionDAG &DAG) const {
+   case ISD::UINT_TO_FP: return LowerINT_TO_FP(Op, DAG, false);
+   case ISD::FP_ROUND: return LowerFP_ROUND(Op, DAG);
+   case ISD::FP_EXTEND: return LowerFP_EXTEND(Op, DAG);
++  case ISD::RETURNADDR:    return LowerRETURNADDR(Op, DAG);
++  case ISD::FRAMEADDR:     return LowerFRAMEADDR(Op, DAG);
+ 
+   case ISD::BlockAddress: return LowerBlockAddress(Op, DAG);
+   case ISD::BRCOND: return LowerBRCOND(Op, DAG);
+diff --git a/lib/Target/AArch64/AArch64ISelLowering.h b/lib/Target/AArch64/AArch64ISelLowering.h
+index a9bc70a..9836d40 100644
+--- a/lib/Target/AArch64/AArch64ISelLowering.h
++++ b/lib/Target/AArch64/AArch64ISelLowering.h
+@@ -246,6 +246,8 @@ public:
+   SDValue LowerFP_EXTEND(SDValue Op, SelectionDAG &DAG) const;
+   SDValue LowerFP_ROUND(SDValue Op, SelectionDAG &DAG) const;
+   SDValue LowerFP_TO_INT(SDValue Op, SelectionDAG &DAG, bool IsSigned) const;
++  SDValue LowerRETURNADDR(SDValue Op, SelectionDAG &DAG) const;
++  SDValue LowerFRAMEADDR(SDValue Op, SelectionDAG &DAG) const;
+ 
+   SDValue LowerGlobalAddressELFSmall(SDValue Op, SelectionDAG &DAG) const;
+   SDValue LowerGlobalAddressELFLarge(SDValue Op, SelectionDAG &DAG) const;
+diff --git a/test/CodeGen/AArch64/frameaddr.ll b/test/CodeGen/AArch64/frameaddr.ll
+new file mode 100644
+index 0000000..182704b
+--- /dev/null
++++ b/test/CodeGen/AArch64/frameaddr.ll
+@@ -0,0 +1,20 @@
++; RUN: llc < %s -mtriple=aarch64-none-linux-gnu  | FileCheck %s
++
++define i8* @t() nounwind {
++entry:
++; CHECK-LABEL: t:
++; CHECK: mov x0, x29
++	%0 = call i8* @llvm.frameaddress(i32 0)
++        ret i8* %0
++}
++
++define i8* @t2() nounwind {
++entry:
++; CHECK-LABEL: t2:
++; CHECK: ldr x[[reg:[0-9]+]], [x29]
++; CHECK: ldr x[[reg]], [x[[reg]]]
++	%0 = call i8* @llvm.frameaddress(i32 2)
++        ret i8* %0
++}
++
++declare i8* @llvm.frameaddress(i32) nounwind readnone
+diff --git a/test/CodeGen/AArch64/returnaddr.ll b/test/CodeGen/AArch64/returnaddr.ll
+new file mode 100644
+index 0000000..c85f9ec
+--- /dev/null
++++ b/test/CodeGen/AArch64/returnaddr.ll
+@@ -0,0 +1,21 @@
++; RUN: llc < %s -mtriple=aarch64-none-linux-gnu  | FileCheck %s
++
++define i8* @rt0(i32 %x) nounwind readnone {
++entry:
++; CHECK-LABEL: rt0:
++; CHECK: mov x0, x30
++  %0 = tail call i8* @llvm.returnaddress(i32 0)
++  ret i8* %0
++}
++
++define i8* @rt2() nounwind readnone {
++entry:
++; CHECK-LABEL: rt2:
++; CHECK: ldr x[[reg:[0-9]+]], [x29]
++; CHECK: ldr x[[reg]], [x[[reg]]]
++; CHECK: ldr x0, [x[[reg]], #8]
++  %0 = tail call i8* @llvm.returnaddress(i32 2)
++  ret i8* %0
++}
++
++declare i8* @llvm.returnaddress(i32) nounwind readnone
+-- 
+1.7.8.3
+

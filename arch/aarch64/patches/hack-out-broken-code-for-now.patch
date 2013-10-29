@@ -1,0 +1,178 @@
+diff --git a/arch/arm64/include/asm/atomic.h b/arch/arm64/include/asm/atomic.h
+index 407717b..97fbdc6 100644
+--- a/arch/arm64/include/asm/atomic.h
++++ b/arch/arm64/include/asm/atomic.h
+@@ -48,7 +48,8 @@ static inline void atomic_add(int i, atomic_t *v)
+ 	unsigned long tmp;
+ 	int result;
+ 
+-	asm volatile("// atomic_add\n"
++/* FIXME LLVMLINUX
++	__asm__ __volatile__("@ atomic_add\n"
+ "1:	ldxr	%w0, [%3]\n"
+ "	add	%w0, %w0, %w4\n"
+ "	stxr	%w1, %w0, [%3]\n"
+@@ -56,6 +57,7 @@ static inline void atomic_add(int i, atomic_t *v)
+ 	: "=&r" (result), "=&r" (tmp), "+o" (v->counter)
+ 	: "r" (&v->counter), "Ir" (i)
+ 	: "cc");
++*/
+ }
+ 
+ static inline int atomic_add_return(int i, atomic_t *v)
+@@ -63,6 +65,7 @@ static inline int atomic_add_return(int i, atomic_t *v)
+ 	unsigned long tmp;
+ 	int result;
+ 
++/* FIXME LLVMLINUX
+ 	asm volatile("// atomic_add_return\n"
+ "1:	ldaxr	%w0, [%3]\n"
+ "	add	%w0, %w0, %w4\n"
+@@ -71,6 +74,7 @@ static inline int atomic_add_return(int i, atomic_t *v)
+ 	: "=&r" (result), "=&r" (tmp), "+o" (v->counter)
+ 	: "r" (&v->counter), "Ir" (i)
+ 	: "cc");
++*/
+ 
+ 	return result;
+ }
+@@ -80,6 +84,7 @@ static inline void atomic_sub(int i, atomic_t *v)
+ 	unsigned long tmp;
+ 	int result;
+ 
++/* FIXME LLVMLINUX
+ 	asm volatile("// atomic_sub\n"
+ "1:	ldxr	%w0, [%3]\n"
+ "	sub	%w0, %w0, %w4\n"
+@@ -88,6 +93,7 @@ static inline void atomic_sub(int i, atomic_t *v)
+ 	: "=&r" (result), "=&r" (tmp), "+o" (v->counter)
+ 	: "r" (&v->counter), "Ir" (i)
+ 	: "cc");
++*/
+ }
+ 
+ static inline int atomic_sub_return(int i, atomic_t *v)
+@@ -95,6 +101,7 @@ static inline int atomic_sub_return(int i, atomic_t *v)
+ 	unsigned long tmp;
+ 	int result;
+ 
++/* FIXME LLVMLINUX
+ 	asm volatile("// atomic_sub_return\n"
+ "1:	ldaxr	%w0, [%3]\n"
+ "	sub	%w0, %w0, %w4\n"
+@@ -104,6 +111,7 @@ static inline int atomic_sub_return(int i, atomic_t *v)
+ 	: "r" (&v->counter), "Ir" (i)
+ 	: "cc");
+ 
++*/
+ 	return result;
+ }
+ 
+@@ -112,6 +120,7 @@ static inline int atomic_cmpxchg(atomic_t *ptr, int old, int new)
+ 	unsigned long tmp;
+ 	int oldval;
+ 
++/* FIXME LLVMLINUX
+ 	asm volatile("// atomic_cmpxchg\n"
+ "1:	ldaxr	%w1, [%3]\n"
+ "	cmp	%w1, %w4\n"
+@@ -122,6 +131,7 @@ static inline int atomic_cmpxchg(atomic_t *ptr, int old, int new)
+ 	: "=&r" (tmp), "=&r" (oldval), "+o" (ptr->counter)
+ 	: "r" (&ptr->counter), "Ir" (old), "r" (new)
+ 	: "cc");
++*/
+ 
+ 	return oldval;
+ }
+@@ -130,6 +140,7 @@ static inline void atomic_clear_mask(unsigned long mask, unsigned long *addr)
+ {
+ 	unsigned long tmp, tmp2;
+ 
++/* FIXME LLVMLINUX
+ 	asm volatile("// atomic_clear_mask\n"
+ "1:	ldxr	%0, [%3]\n"
+ "	bic	%0, %0, %4\n"
+@@ -138,6 +149,7 @@ static inline void atomic_clear_mask(unsigned long mask, unsigned long *addr)
+ 	: "=&r" (tmp), "=&r" (tmp2), "+o" (*addr)
+ 	: "r" (addr), "Ir" (mask)
+ 	: "cc");
++*/
+ }
+ 
+ #define atomic_xchg(v, new) (xchg(&((v)->counter), new))
+diff --git a/arch/arm64/include/asm/processor.h b/arch/arm64/include/asm/processor.h
+index 5d81004..df84d49 100644
+--- a/arch/arm64/include/asm/processor.h
++++ b/arch/arm64/include/asm/processor.h
+@@ -143,13 +143,13 @@ extern int kernel_thread(int (*fn)(void *), void *arg, unsigned long flags);
+ #define ARCH_HAS_PREFETCH
+ static inline void prefetch(const void *ptr)
+ {
+-	asm volatile("prfm pldl1keep, %a0\n" : : "p" (ptr));
++	//asm volatile("prfm pldl1keep, %a0\n" : : "p" (ptr));
+ }
+ 
+ #define ARCH_HAS_PREFETCHW
+ static inline void prefetchw(const void *ptr)
+ {
+-	asm volatile("prfm pstl1keep, %a0\n" : : "p" (ptr));
++	//asm volatile("prfm pstl1keep, %a0\n" : : "p" (ptr));
+ }
+ 
+ #define ARCH_HAS_SPINLOCK_PREFETCH
+diff --git a/arch/arm64/include/asm/uaccess.h b/arch/arm64/include/asm/uaccess.h
+index 008f848..3c6490f 100644
+--- a/arch/arm64/include/asm/uaccess.h
++++ b/arch/arm64/include/asm/uaccess.h
+@@ -91,13 +91,16 @@ static inline void set_fs(mm_segment_t fs)
+ ({									\
+ 	unsigned long flag, roksum;					\
+ 	__chk_user_ptr(addr);						\
++	flag;								\
++})
++#if 0
+ 	asm("adds %1, %1, %3; ccmp %1, %4, #2, cc; cset %0, cc"		\
+ 		: "=&r" (flag), "=&r" (roksum)				\
+ 		: "1" (addr), "Ir" (size),				\
+ 		  "r" (current_thread_info()->addr_limit)		\
+ 		: "cc");						\
+-	flag;								\
+-})
++
++#endif
+ 
+ #define access_ok(type, addr, size)	__range_ok(addr, size)
+ 
+diff --git a/arch/arm64/kernel/traps.c b/arch/arm64/kernel/traps.c
+index 3883f84..6bb2458 100644
+--- a/arch/arm64/kernel/traps.c
++++ b/arch/arm64/kernel/traps.c
+@@ -144,7 +143,7 @@ static void dump_backtrace(struct pt_regs *regs, struct task_struct *tsk)
+ 		frame.pc = regs->pc;
+ 	} else if (tsk == current) {
+ 		frame.fp = (unsigned long)__builtin_frame_address(0);
+-		frame.sp = current_stack_pointer;
++		//frame.sp = current_stack_pointer;
+ 		frame.pc = (unsigned long)dump_backtrace;
+ 	} else {
+ 		/*
+diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+index f4dd585..ec5ee54 100644
+--- a/arch/arm64/mm/mmu.c
++++ b/arch/arm64/mm/mmu.c
+@@ -96,6 +96,7 @@ static int __init early_cachepolicy(char *p)
+ 	/*
+ 	 * Modify MT_NORMAL attributes in MAIR_EL1.
+ 	 */
++/* LLVM FIXME
+ 	asm volatile(
+ 	"	mrs	%0, mair_el1\n"
+ 	"	bfi	%0, %1, #%2, #8\n"
+@@ -103,6 +104,7 @@ static int __init early_cachepolicy(char *p)
+ 	"	isb\n"
+ 	: "=&r" (tmp)
+ 	: "r" (cache_policies[i].mair), "i" (MT_NORMAL * 8));
++*/
+ 
+ 	/*
+ 	 * Modify TCR PTW cacheability attributes.
