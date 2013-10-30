@@ -1,125 +1,20 @@
-diff --git a/arch/arm64/include/asm/atomic.h b/arch/arm64/include/asm/atomic.h
-index 407717b..97fbdc6 100644
---- a/arch/arm64/include/asm/atomic.h
-+++ b/arch/arm64/include/asm/atomic.h
-@@ -48,7 +48,8 @@ static inline void atomic_add(int i, atomic_t *v)
- 	unsigned long tmp;
- 	int result;
+diff --git a/arch/arm64/include/asm/futex.h b/arch/arm64/include/asm/futex.h
+index 3468ae8..7bb11f5 100644
+--- a/arch/arm64/include/asm/futex.h
++++ b/arch/arm64/include/asm/futex.h
+@@ -109,6 +109,7 @@ futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
+ 	if (!access_ok(VERIFY_WRITE, uaddr, sizeof(u32)))
+ 		return -EFAULT;
  
--	asm volatile("// atomic_add\n"
-+/* FIXME LLVMLINUX
-+	__asm__ __volatile__("@ atomic_add\n"
- "1:	ldxr	%w0, [%3]\n"
- "	add	%w0, %w0, %w4\n"
- "	stxr	%w1, %w0, [%3]\n"
-@@ -56,6 +57,7 @@ static inline void atomic_add(int i, atomic_t *v)
- 	: "=&r" (result), "=&r" (tmp), "+o" (v->counter)
- 	: "r" (&v->counter), "Ir" (i)
- 	: "cc");
-+*/
- }
- 
- static inline int atomic_add_return(int i, atomic_t *v)
-@@ -63,6 +65,7 @@ static inline int atomic_add_return(int i, atomic_t *v)
- 	unsigned long tmp;
- 	int result;
- 
-+/* FIXME LLVMLINUX
- 	asm volatile("// atomic_add_return\n"
- "1:	ldaxr	%w0, [%3]\n"
- "	add	%w0, %w0, %w4\n"
-@@ -71,6 +74,7 @@ static inline int atomic_add_return(int i, atomic_t *v)
- 	: "=&r" (result), "=&r" (tmp), "+o" (v->counter)
- 	: "r" (&v->counter), "Ir" (i)
- 	: "cc");
-+*/
- 
- 	return result;
- }
-@@ -80,6 +84,7 @@ static inline void atomic_sub(int i, atomic_t *v)
- 	unsigned long tmp;
- 	int result;
- 
-+/* FIXME LLVMLINUX
- 	asm volatile("// atomic_sub\n"
- "1:	ldxr	%w0, [%3]\n"
- "	sub	%w0, %w0, %w4\n"
-@@ -88,6 +93,7 @@ static inline void atomic_sub(int i, atomic_t *v)
- 	: "=&r" (result), "=&r" (tmp), "+o" (v->counter)
- 	: "r" (&v->counter), "Ir" (i)
- 	: "cc");
-+*/
- }
- 
- static inline int atomic_sub_return(int i, atomic_t *v)
-@@ -95,6 +101,7 @@ static inline int atomic_sub_return(int i, atomic_t *v)
- 	unsigned long tmp;
- 	int result;
- 
-+/* FIXME LLVMLINUX
- 	asm volatile("// atomic_sub_return\n"
- "1:	ldaxr	%w0, [%3]\n"
- "	sub	%w0, %w0, %w4\n"
-@@ -104,6 +111,7 @@ static inline int atomic_sub_return(int i, atomic_t *v)
- 	: "r" (&v->counter), "Ir" (i)
- 	: "cc");
- 
-+*/
- 	return result;
- }
- 
-@@ -112,6 +120,7 @@ static inline int atomic_cmpxchg(atomic_t *ptr, int old, int new)
- 	unsigned long tmp;
- 	int oldval;
- 
-+/* FIXME LLVMLINUX
- 	asm volatile("// atomic_cmpxchg\n"
- "1:	ldaxr	%w1, [%3]\n"
- "	cmp	%w1, %w4\n"
-@@ -122,6 +131,7 @@ static inline int atomic_cmpxchg(atomic_t *ptr, int old, int new)
- 	: "=&r" (tmp), "=&r" (oldval), "+o" (ptr->counter)
- 	: "r" (&ptr->counter), "Ir" (old), "r" (new)
- 	: "cc");
-+*/
- 
- 	return oldval;
- }
-@@ -130,6 +140,7 @@ static inline void atomic_clear_mask(unsigned long mask, unsigned long *addr)
- {
- 	unsigned long tmp, tmp2;
- 
-+/* FIXME LLVMLINUX
- 	asm volatile("// atomic_clear_mask\n"
- "1:	ldxr	%0, [%3]\n"
- "	bic	%0, %0, %4\n"
-@@ -138,6 +149,7 @@ static inline void atomic_clear_mask(unsigned long mask, unsigned long *addr)
- 	: "=&r" (tmp), "=&r" (tmp2), "+o" (*addr)
- 	: "r" (addr), "Ir" (mask)
- 	: "cc");
-+*/
- }
- 
- #define atomic_xchg(v, new) (xchg(&((v)->counter), new))
-diff --git a/arch/arm64/include/asm/uaccess.h b/arch/arm64/include/asm/uaccess.h
-index 008f848..3c6490f 100644
---- a/arch/arm64/include/asm/uaccess.h
-+++ b/arch/arm64/include/asm/uaccess.h
-@@ -91,13 +91,16 @@ static inline void set_fs(mm_segment_t fs)
- ({									\
- 	unsigned long flag, roksum;					\
- 	__chk_user_ptr(addr);						\
-+	flag;								\
-+})
 +#if 0
- 	asm("adds %1, %1, %3; ccmp %1, %4, #2, cc; cset %0, cc"		\
- 		: "=&r" (flag), "=&r" (roksum)				\
- 		: "1" (addr), "Ir" (size),				\
- 		  "r" (current_thread_info()->addr_limit)		\
- 		: "cc");						\
--	flag;								\
--})
-+
+ 	asm volatile("// futex_atomic_cmpxchg_inatomic\n"
+ "1:	ldaxr	%w1, %2\n"
+ "	sub	%w3, %w1, %w4\n"
+@@ -127,6 +128,7 @@ futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
+ 	: "+r" (ret), "=&r" (val), "+Q" (*uaddr), "=&r" (tmp)
+ 	: "r" (oldval), "r" (newval), "Ir" (-EFAULT)
+ 	: "cc", "memory");
 +#endif
  
- #define access_ok(type, addr, size)	__range_ok(addr, size)
- 
+ 	*uval = val;
+ 	return ret;
