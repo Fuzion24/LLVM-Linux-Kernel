@@ -1,0 +1,16 @@
+diff --git a/arch/arm64/include/asm/futex.h b/arch/arm64/include/asm/futex.h
+index 3468ae8..8c01dfd 100644
+--- a/arch/arm64/include/asm/futex.h
++++ b/arch/arm64/include/asm/futex.h
+@@ -106,7 +106,10 @@ futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
+ 	int ret = 0;
+ 	u32 val, tmp;
+ 
+-	if (!access_ok(VERIFY_WRITE, uaddr, sizeof(u32)))
++	// LLVMLINUX - futex_init passes uaddr = 0.
++	// The LLVM optimizer will see that *uaddr is 0, set the register 
++	// to xzr and compilation will fail
++	if (uaddr == 0 || !access_ok(VERIFY_WRITE, uaddr, sizeof(u32)))
+ 		return -EFAULT;
+ 
+ 	asm volatile("// futex_atomic_cmpxchg_inatomic\n"
