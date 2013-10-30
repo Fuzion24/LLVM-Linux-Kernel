@@ -7,3 +7,4 @@ named_register-traps-arm64.patch
 inline-asm.patch
 cmpxchg-warning.patch
 futex-init.patch
+abort-missing.patch
