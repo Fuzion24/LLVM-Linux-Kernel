@@ -1,6 +1,0 @@
-eabi-arm64.patch
-kbuild-clang-arm64.patch
-current_stack_pointer_arm64.patch
-named_register-stacktrace-arm64.patch
-named_register-thread_info-arm64.patch
-named_register-traps-arm64.patch
