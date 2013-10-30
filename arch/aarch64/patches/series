@@ -5,4 +5,4 @@ named_register-stacktrace-arm64.patch
 named_register-thread_info-arm64.patch
 named_register-traps-arm64.patch
 inline-asm.patch
-hack-out-broken-code-for-now.patch
+cmpxchg-warning.patch

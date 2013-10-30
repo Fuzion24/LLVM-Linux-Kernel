@@ -1,0 +1,12 @@
+diff --git a/arch/arm64/include/asm/cmpxchg.h b/arch/arm64/include/asm/cmpxchg.h
+index e0e65b0..c619e20 100644
+--- a/arch/arm64/include/asm/cmpxchg.h
++++ b/arch/arm64/include/asm/cmpxchg.h
+@@ -64,6 +64,7 @@ static inline unsigned long __xchg(unsigned long x, volatile void *ptr, int size
+ 			: "memory", "cc");
+ 		break;
+ 	default:
++		ret=0;
+ 		BUILD_BUG();
+ 	}
+ 
