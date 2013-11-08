@@ -1,0 +1,46 @@
+diff --git a/include/llvm/IR/Intrinsics.td b/include/llvm/IR/Intrinsics.td
+index 53341b7..8a8caec 100644
+--- a/include/llvm/IR/Intrinsics.td
++++ b/include/llvm/IR/Intrinsics.td
+@@ -242,6 +242,7 @@ def int_gcwrite : Intrinsic<[],
+ //
+ def int_returnaddress : Intrinsic<[llvm_ptr_ty], [llvm_i32_ty], [IntrNoMem]>;
+ def int_frameaddress  : Intrinsic<[llvm_ptr_ty], [llvm_i32_ty], [IntrNoMem]>;
++def int_stackpointer  : Intrinsic<[llvm_ptr_ty], [IntrNoMem]>;
+
+ // Note: we treat stacksave/stackrestore as writemem because we don't otherwise
+ // model their dependencies on allocas.
+
+diff --git a/docs/LangRef.rst b/docs/LangRef.rst
+index a8f3cee..9987c5a 100644
+--- a/docs/LangRef.rst
++++ b/docs/LangRef.rst
+@@ -6688,6 +6688,28 @@ Note that calling this intrinsic does not prevent function inlining or
+ other aggressive transformations, so the value returned may not be that
+ of the obvious source-language caller.
+
++'``llvm.stackpointer``' Intrinsic
++^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++
++Syntax:
++"""""""
++
++::
++
++      declare i8* @llvm.stackpointer()
++
++Overview:
++"""""""""
++
++The '``llvm.stackpointer``' intrinsic provides access to the stack
++pointer register.
++
++Semantics:
++""""""""""
++
++The '``llvm.stackpointer``' intrinsic returns the current value of the
++stack pointer register.
++
+ .. _int_stacksave:
+
+ '``llvm.stacksave``' Intrinsic
