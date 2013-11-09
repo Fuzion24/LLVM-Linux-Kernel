@@ -44,3 +44,69 @@ index a8f3cee..9987c5a 100644
  .. _int_stacksave:
 
  '``llvm.stacksave``' Intrinsic
+diff --git a/lib/Target/ARM/ARMISelLowering.cpp b/lib/Target/ARM/ARMISelLowering.cpp
+index 2de2dfa..04e3a12 100644
+--- a/lib/Target/ARM/ARMISelLowering.cpp
++++ b/lib/Target/ARM/ARMISelLowering.cpp
+@@ -3820,6 +3820,15 @@ SDValue ARMTargetLowering::LowerFRAMEADDR(SDValue Op, SelectionDAG &DAG) const {
+   return FrameAddr;
+ }
+ 
++SDValue ARMTargetLowering::LowerSTACKPOINTER(SDValue Op, SelectionDAG &DAG) const{
++  MachineFunction &MF = DAG.getMachineFunction();
++
++  // Return SP, which contains the stack pointer. Mark it an implicit live-in.
++  unsigned Reg = MF.addLiveIn(ARM::SP, getRegClassFor(MVT::i32));
++  return DAG.getCopyFromReg(DAG.getEntryNode(), dl, Reg, VT);
++}
++
++
+ /// ExpandBITCAST - If the target supports VFP, this function is called to
+ /// expand a bit convert where either the source or destination type is i64 to
+ /// use a VMOVDRR or VMOVRRD node.  This should not be done when the non-i64
+@@ -6050,6 +6059,7 @@ SDValue ARMTargetLowering::LowerOperation(SDValue Op, SelectionDAG &DAG) const {
+   case ISD::FCOPYSIGN:     return LowerFCOPYSIGN(Op, DAG);
+   case ISD::RETURNADDR:    return LowerRETURNADDR(Op, DAG);
+   case ISD::FRAMEADDR:     return LowerFRAMEADDR(Op, DAG);
++  case ISD::STACKPOINTER:  return LowerSTACKPOINTER(Op, DAG);
+   case ISD::GLOBAL_OFFSET_TABLE: return LowerGLOBAL_OFFSET_TABLE(Op, DAG);
+   case ISD::EH_SJLJ_SETJMP: return LowerEH_SJLJ_SETJMP(Op, DAG);
+   case ISD::EH_SJLJ_LONGJMP: return LowerEH_SJLJ_LONGJMP(Op, DAG);
+diff --git a/lib/CodeGen/SelectionDAG/SelectionDAGBuilder.cpp b/lib/CodeGen/SelectionDAG/SelectionDAGBuilder.cpp
+index 88572b5..80b6454 100644
+--- a/lib/CodeGen/SelectionDAG/SelectionDAGBuilder.cpp
++++ b/lib/CodeGen/SelectionDAG/SelectionDAGBuilder.cpp
+@@ -4553,6 +4553,9 @@ SelectionDAGBuilder::visitIntrinsicCall(const CallInst &I, unsigned Intrinsic) {
+     setValue(&I, DAG.getNode(ISD::FRAMEADDR, sdl, TLI->getPointerTy(),
+                              getValue(I.getArgOperand(0))));
+     return 0;
++  case Intrinsic::stackpointer:
++    setValue(&I, DAG.getNode(ISD::STACKPOINTER, sdl, TLI->getPointerTy()));
++    return 0;
+   case Intrinsic::setjmp:
+     return &"_setjmp"[!TLI->usesUnderscoreSetJmp()];
+   case Intrinsic::longjmp:
+diff --git a/lib/CodeGen/SelectionDAG/SelectionDAGDumper.cpp b/lib/CodeGen/SelectionDAG/SelectionDAGDumper.cpp
+index 47bab32..3500f82 100644
+--- a/lib/CodeGen/SelectionDAG/SelectionDAGDumper.cpp
++++ b/lib/CodeGen/SelectionDAG/SelectionDAGDumper.cpp
+@@ -91,6 +91,7 @@ std::string SDNode::getOperationName(const SelectionDAG *G) const {
+   case ISD::GLOBAL_OFFSET_TABLE:        return "GLOBAL_OFFSET_TABLE";
+   case ISD::RETURNADDR:                 return "RETURNADDR";
+   case ISD::FRAMEADDR:                  return "FRAMEADDR";
++  case ISD::STACKPOINTER:               return "STACKPOINTER";
+   case ISD::FRAME_TO_ARGS_OFFSET:       return "FRAME_TO_ARGS_OFFSET";
+   case ISD::EH_RETURN:                  return "EH_RETURN";
+   case ISD::EH_SJLJ_SETJMP:             return "EH_SJLJ_SETJMP";
+diff --git a/lib/CodeGen/SelectionDAG/LegalizeDAG.cpp b/lib/CodeGen/SelectionDAG/LegalizeDAG.cpp
+index 10852bf..d22e289 100644
+--- a/lib/CodeGen/SelectionDAG/LegalizeDAG.cpp
++++ b/lib/CodeGen/SelectionDAG/LegalizeDAG.cpp
+@@ -1250,6 +1250,7 @@ void SelectionDAGLegalize::LegalizeOp(SDNode *Node) {
+   case ISD::ADJUST_TRAMPOLINE:
+   case ISD::FRAMEADDR:
+   case ISD::RETURNADDR:
++  case ISD::STACKPOINTER:
+     // These operations lie about being legal: when they claim to be legal,
+     // they should actually be custom-lowered.
+     Action = TLI.getOperationAction(Node->getOpcode(), Node->getValueType(0));
