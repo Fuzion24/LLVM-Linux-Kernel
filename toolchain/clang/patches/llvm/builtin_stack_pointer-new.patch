@@ -6,7 +6,7 @@ index 53341b7..8a8caec 100644
  //
  def int_returnaddress : Intrinsic<[llvm_ptr_ty], [llvm_i32_ty], [IntrNoMem]>;
  def int_frameaddress  : Intrinsic<[llvm_ptr_ty], [llvm_i32_ty], [IntrNoMem]>;
-+def int_stackpointer  : Intrinsic<[llvm_ptr_ty], [IntrNoMem]>;
++def int_stackpointer  : Intrinsic<[llvm_ptr_ty], [], [IntrNoMem]>;
 
  // Note: we treat stacksave/stackrestore as writemem because we don't otherwise
  // model their dependencies on allocas.
@@ -110,3 +110,17 @@ index 10852bf..d22e289 100644
      // These operations lie about being legal: when they claim to be legal,
      // they should actually be custom-lowered.
      Action = TLI.getOperationAction(Node->getOpcode(), Node->getValueType(0));
+diff --git a/include/llvm/CodeGen/ISDOpcodes.h b/include/llvm/CodeGen/ISDOpcodes.h
+index 3a49dd8..2a984c7 100644
+--- a/include/llvm/CodeGen/ISDOpcodes.h
++++ b/include/llvm/CodeGen/ISDOpcodes.h
+@@ -72,6 +72,9 @@ namespace ISD {
+     /// the parent's frame or return address, and so on.
+     FRAMEADDR, RETURNADDR,
+ 
++    /// STACKPOINTER - This node represents llvm.stackpointer on the DAG.  
++    STACKPOINTER,
++
+     /// FRAME_TO_ARGS_OFFSET - This node represents offset from frame pointer to
+     /// first (possible) on-stack argument. This is needed for correct stack
+     /// adjustment during unwind.
