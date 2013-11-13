@@ -138,3 +138,69 @@ index 9dee931..a66656c 100644
    case ISD::GLOBAL_OFFSET_TABLE: return LowerGLOBAL_OFFSET_TABLE(Op, DAG);
    case ISD::EH_SJLJ_SETJMP: return LowerEH_SJLJ_SETJMP(Op, DAG);
    case ISD::EH_SJLJ_LONGJMP: return LowerEH_SJLJ_LONGJMP(Op, DAG);
+diff --git a/lib/Target/AArch64/AArch64ISelLowering.cpp b/lib/Target/AArch64/AArch64ISelLowering.cpp
+index 323acdd..3f6e232 100644
+--- a/lib/Target/AArch64/AArch64ISelLowering.cpp
++++ b/lib/Target/AArch64/AArch64ISelLowering.cpp
+@@ -2005,6 +2005,15 @@ SDValue AArch64TargetLowering::LowerFRAMEADDR(SDValue Op, SelectionDAG &DAG)
+   return FrameAddr;
+ }
+ 
++SDValue AArch64TargetLowering::LowerSTACKPOINTER(SDValue Op, SelectionDAG &DAG) const{
++  MachineFunction &MF = DAG.getMachineFunction();
++  SDLoc dl(Op);
++
++  // Return XSP, which contains the stack pointer. Mark it an implicit live-in.
++  unsigned Reg = MF.addLiveIn(AArch64::XSP, getRegClassFor(MVT::i64));
++  return DAG.getCopyFromReg(DAG.getEntryNode(), dl, Reg, MVT::i64);
++}
++
+ SDValue
+ AArch64TargetLowering::LowerGlobalAddressELFLarge(SDValue Op,
+                                                   SelectionDAG &DAG) const {
+diff --git a/lib/Target/X86/X86ISelLowering.h b/lib/Target/X86/X86ISelLowering.h
+index 07a36f9..7b5f3dc 100644
+--- a/lib/Target/X86/X86ISelLowering.h
++++ b/lib/Target/X86/X86ISelLowering.h
+@@ -887,6 +887,7 @@ namespace llvm {
+     SDValue LowerVAARG(SDValue Op, SelectionDAG &DAG) const;
+     SDValue LowerRETURNADDR(SDValue Op, SelectionDAG &DAG) const;
+     SDValue LowerFRAMEADDR(SDValue Op, SelectionDAG &DAG) const;
++    SDValue LowerSTACKPOINTER(SDValue Op, SelectionDAG &DAG) const;
+     SDValue LowerFRAME_TO_ARGS_OFFSET(SDValue Op, SelectionDAG &DAG) const;
+     SDValue LowerEH_RETURN(SDValue Op, SelectionDAG &DAG) const;
+     SDValue lowerEH_SJLJ_SETJMP(SDValue Op, SelectionDAG &DAG) const;
+diff --git a/lib/Target/AArch64/AArch64ISelLowering.h b/lib/Target/AArch64/AArch64ISelLowering.h
+index 83fd79d..8d06f76 100644
+--- a/lib/Target/AArch64/AArch64ISelLowering.h
++++ b/lib/Target/AArch64/AArch64ISelLowering.h
+@@ -263,6 +263,7 @@ public:
+   SDValue LowerFP_TO_INT(SDValue Op, SelectionDAG &DAG, bool IsSigned) const;
+   SDValue LowerRETURNADDR(SDValue Op, SelectionDAG &DAG) const;
+   SDValue LowerFRAMEADDR(SDValue Op, SelectionDAG &DAG) const;
++  SDValue LowerSTACKPOINTER(SDValue Op, SelectionDAG &DAG) const;
+ 
+   SDValue LowerGlobalAddressELFSmall(SDValue Op, SelectionDAG &DAG) const;
+   SDValue LowerGlobalAddressELFLarge(SDValue Op, SelectionDAG &DAG) const;
+diff --git a/lib/Target/X86/X86ISelLowering.cpp b/lib/Target/X86/X86ISelLowering.cpp
+index 6df0fd8..cd832cf 100644
+--- a/lib/Target/X86/X86ISelLowering.cpp
++++ b/lib/Target/X86/X86ISelLowering.cpp
+@@ -12003,6 +12003,17 @@ SDValue X86TargetLowering::LowerFRAMEADDR(SDValue Op, SelectionDAG &DAG) const {
+   return FrameAddr;
+ }
+ 
++SDValue X86TargetLowering::LowerSTACKPOINTER(SDValue Op,
++                                           SelectionDAG &DAG) const {
++  EVT VT = Op.getValueType();
++  SDLoc dl(Op);  // FIXME probably not meaningful
++  const X86RegisterInfo *RegInfo =
++    static_cast<const X86RegisterInfo*>(getTargetMachine().getRegisterInfo());
++  unsigned StackPointerReg = RegInfo->getStackRegister();
++  SDValue StackPointer = DAG.getCopyFromReg(DAG.getEntryNode(), dl, StackPointerReg, VT);
++  return StackPointer;
++}
++
+ SDValue X86TargetLowering::LowerFRAME_TO_ARGS_OFFSET(SDValue Op,
+                                                      SelectionDAG &DAG) const {
+   const X86RegisterInfo *RegInfo =
