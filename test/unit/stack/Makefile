@@ -21,28 +21,32 @@
 ##############################################################################
 # Build and test __builtin_stack_address
 
-CLANG	= ../../../toolchain/clang/install/bin/clang
-CFLAGS	= -g
-
-TARGET	= test
+BASE	= ../../../
+CLANG	= ${BASE}/toolchain/clang/install/bin/clang
 
 .PHONY: all clean
 
 
 ### BUILD ######################################################################
-all: arm_test.s aarch64_test.s x86_test.s
+all: arm_test.s aarch64_test.s x86_test.s arm_testgcc.s aarch64_testgcc.s x86_testgcc.s
 
 arm_test.s: test.c Makefile
-	$(CLANG) -target arm-none-linux-gnueabi ${EXTRAFLAGS} -S -O2 $< -o $@
+	$(CLANG) -target arm-none-linux-gnueabi -S -O2 -fomit-frame-pointer $< -o $@
 
 x86_test.s: test.c Makefile
-	$(CLANG) ${EXTRAFLAGS} -S -O2 $< -o $@
+	$(CLANG) -S -O2 $< -o $@
 
-aarch64_test.s: test.c Makefile
-	$(CLANG) -target aarch64-none-linux-gnueabi ${EXTRAFLAGS} -S -O2 $< -o $@
+aarch64_test.s: testgcc.c Makefile
+	$(CLANG) -target aarch64-none-linux-gnueabi -S -O2 $< -o $@
 
-test: test.c Makefile
-	$(CLANG) -target arm-none-gnueabi ${EXTRAFLAGS} -O2 $< -o $@
+arm_testgcc.s: testgcc.c Makefile
+	${BASE}/arch/arm/toolchain/codesourcery/arm-2013.05/bin/arm-none-linux-gnueabi-gcc -S -O2 $< -o $@
+
+aarch64_testgcc.s: testgcc.c Makefile
+	${BASE}/arch/aarch64/toolchain/linaro/gcc-linaro-aarch64-linux-gnu-4.8-2013.06_linux/bin/aarch64-linux-gnu-gcc -S -O2 $< -o $@
+
+x86_testgcc.s: testgcc.c Makefile
+	gcc -S -O2 $< -o $@
 
 clean:
-	@rm -f *test.s
+	@rm -f *test*.s
