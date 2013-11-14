@@ -30,10 +30,19 @@ TARGET	= test
 
 
 ### BUILD ######################################################################
-all: test
+all: arm_test.s aarch64_test.s x86_test.s
 
-test: test.c
-	$(CLANG) ${EXTRAFLAGS} -g $< -o $@
+arm_test.s: test.c Makefile
+	$(CLANG) -target arm-none-linux-gnueabi ${EXTRAFLAGS} -S -O2 $< -o $@
+
+x86_test.s: test.c Makefile
+	$(CLANG) ${EXTRAFLAGS} -S -O2 $< -o $@
+
+aarch64_test.s: test.c Makefile
+	$(CLANG) -target aarch64-none-linux-gnueabi ${EXTRAFLAGS} -S -O2 $< -o $@
+
+test: test.c Makefile
+	$(CLANG) -target arm-none-gnueabi ${EXTRAFLAGS} -O2 $< -o $@
 
 clean:
-	@rm test
+	@rm -f *test.s

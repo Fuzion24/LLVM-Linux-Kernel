@@ -1,8 +1,15 @@
 #include <stdio.h>
 
+#define xxx() 
 int main()
 {
-	int foo = 1;
+#if 0
+	register unsigned long r13 asm("r13");
+	asm("" : "=r"(r13));
+	register unsigned long foo asm("sp");
+        asm("" : "=r"(foo));
+	printf("sp = %p\n", r13);
+#endif
 
-	printf("&foo = %p sp = %p\n", &foo, __builtin_stack_pointer());
+	printf("sp = %p\n", __builtin_stack_pointer());
 }
