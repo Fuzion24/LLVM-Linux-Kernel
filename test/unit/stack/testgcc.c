@@ -2,7 +2,10 @@
 
 int main()
 {
+	int a;
 	register unsigned long sp asm("sp");
 
-	printf("sp = %p\n", sp);
+	printf("a = %p sp = %p\n", &a, sp);
+
+	return 0;
 }

@@ -2,5 +2,9 @@
 
 int main()
 {
-	printf("sp = %p\n", __builtin_stack_pointer());
+	int a;
+
+	printf("a = %p sp = %p\n", &a, __builtin_stack_pointer());
+
+	return 0;
 }
