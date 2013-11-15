@@ -214,3 +214,47 @@ index 07a36f9..7b5f3dc 100644
      SDValue LowerFRAME_TO_ARGS_OFFSET(SDValue Op, SelectionDAG &DAG) const;
      SDValue LowerEH_RETURN(SDValue Op, SelectionDAG &DAG) const;
      SDValue lowerEH_SJLJ_SETJMP(SDValue Op, SelectionDAG &DAG) const;
+diff --git a/test/CodeGen/AArch64/stackpointer.ll b/test/CodeGen/AArch64/stackpointer.ll
+new file mode 100644
+index 0000000..d574025
+--- /dev/null
++++ b/test/CodeGen/AArch64/stackpointer.ll
+@@ -0,0 +1,20 @@
++; RUN: llc < %s -mtriple=aarch64-none-linux-gnu  | FileCheck %s
++
++define i8* @t() nounwind {
++entry:
++; CHECK-LABEL: t:
++; CHECK: mov x0, xsp
++	%0 = call i8* @llvm.stackpointer()
++        ret i8* %0
++}
++
++define i8* @t2() nounwind {
++entry:
++; CHECK-LABEL: t2:
++; CHECK: ldr x[[reg:[0-9]+]], [xsp]
++; CHECK: ldr x[[reg]], [x[[reg]]]
++	%0 = call i8* @llvm.stackpointer()
++        ret i8* %0
++}
++
++declare i8* @llvm.stackpointer() nounwind readnone
+diff --git a/test/CodeGen/ARM/arm-stackpointer.ll b/test/CodeGen/ARM/arm-stackpointer.ll
+new file mode 100644
+index 0000000..7bd3c64
+--- /dev/null
++++ b/test/CodeGen/ARM/arm-stackpointer.ll
+@@ -0,0 +1,12 @@
++; RUN: llc < %s -mtriple=arm-apple-darwin  | FileCheck %s
++; RUN: llc < %s -mtriple=arm-linux-gnueabi | FileCheck %s
++
++define i8* @t() nounwind {
++entry:
++; CHECK-LABEL: t:
++; CHECK: mov r0, sp
++	%0 = call i8* @llvm.stackpointer()
++        ret i8* %0
++}
++
++declare i8* @llvm.stackpointer() nounwind readnone

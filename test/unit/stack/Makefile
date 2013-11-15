@@ -21,23 +21,30 @@
 ##############################################################################
 # Build and test __builtin_stack_address
 
-BASE	= ../../../
+BASE	= /home/mcharleb/work/llvmlinux
 CLANG	= ${BASE}/toolchain/clang/install/bin/clang
 
 .PHONY: all clean
+
+# The following seems to be needed on i686 machine but not on x86_64
+#ARM_SYSROOT=${BASE}/arch/arm/toolchain/codesourcery/arm-2013.05/arm-none-linux-gnueabi/libc
+#ARM_FLAGS=-isysroot ${ARM_SYSROOT} -iwithsysroot /usr/include
+
+#AARCH64_SYSROOT=${BASE}/arch/aarch64/toolchain/linaro/gcc-linaro-aarch64-linux-gnu-4.8-2013.06_linux/aarch64-linux-gnu/libc
+#AARCH64_FLAGS=-isysroot ${AARCH64_SYSROOT} -iwithsysroot /usr/include
 
 
 ### BUILD ######################################################################
 all: arm_test.s aarch64_test.s x86_test.s arm_testgcc.s aarch64_testgcc.s x86_testgcc.s
 
 arm_test.s: test.c Makefile
-	$(CLANG) -target arm-none-linux-gnueabi -S -O2 -fomit-frame-pointer $< -o $@
+	$(CLANG) -target arm-none-linux-gnueabi ${ARM_FLAGS} -S -O2 $< -o $@
 
 x86_test.s: test.c Makefile
 	$(CLANG) -S -O2 $< -o $@
 
 aarch64_test.s: testgcc.c Makefile
-	$(CLANG) -target aarch64-none-linux-gnueabi -S -O2 $< -o $@
+	$(CLANG) -target aarch64-none-linux-gnueabi ${AARCH64_FLAGS} -S -O2 $< -o $@
 
 arm_testgcc.s: testgcc.c Makefile
 	${BASE}/arch/arm/toolchain/codesourcery/arm-2013.05/bin/arm-none-linux-gnueabi-gcc -S -O2 $< -o $@
