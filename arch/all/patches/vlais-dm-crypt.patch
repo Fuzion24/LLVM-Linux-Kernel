@@ -39,7 +39,7 @@ index 6d2d41a..c511e30 100644
 +		+ CRYPTO_MINALIGN] CRYPTO_MINALIGN_ATTR;
 +	struct shash_desc *desc = (struct shash_desc *)sdesc;
  	struct md5_state md5state;
- 	u32 buf[4];
+ 	__le32 buf[4];
  	int i, r;
  
 -	sdesc.desc.tfm = lmk->hash_tfm;
