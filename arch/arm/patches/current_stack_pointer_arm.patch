@@ -39,7 +39,7 @@ Reviewed-by: Jan-Simon Möller <dl9pf@gmx.de>
 +#define current_stack_pointer __builtin_stack_pointer()
 +
 +#else /* gcc */
-+static register unsigned long current_stack_pointer asm ("sp");
++register unsigned long current_stack_pointer asm ("sp");
 +#define __builtin_stack_pointer() current_stack_pointer
 +#endif
 +
