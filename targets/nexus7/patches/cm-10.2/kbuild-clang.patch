@@ -1,3 +1,18 @@
+From 99e2eb26e1510a8ee975e07b935243fba39742d2 Mon Sep 17 00:00:00 2001
+From: Behan Webster <behanw@converseincode.com>
+Date: Tue, 3 Sep 2013 22:27:23 -0400
+Subject: [PATCH 01/39] Kbuild: LLVMLinux: Add Kbuild support for building
+ kernel with Clang
+
+Add support for for compiling with clang to Kbuild
+
+Author: Behan Webster <behanw@converseincode.com>
+Signed-off-by: Behan Webster <behanw@converseincode.com>
+---
+ Makefile               | 18 ++++++++++++++++++
+ scripts/Kbuild.include | 35 ++++++++++++++++++++++++++++++-----
+ 2 files changed, 48 insertions(+), 5 deletions(-)
+
 --- android_kernel_nexus7.orig/Makefile
 +++ android_kernel_nexus7/Makefile
 @@ -318,6 +318,12 @@
