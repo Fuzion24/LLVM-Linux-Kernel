@@ -21,17 +21,17 @@
 ##############################################################################
 # Build and test __builtin_stack_address
 
-BASE	= /home/mcharleb/work/llvmlinux
+BASE	= $(realpath ../../..)
 CLANG	= ${BASE}/toolchain/clang/install/bin/clang
 
 .PHONY: all clean
 
 # The following seems to be needed on i686 machine but not on x86_64
-#ARM_SYSROOT=${BASE}/arch/arm/toolchain/codesourcery/arm-2013.05/arm-none-linux-gnueabi/libc
-#ARM_FLAGS=-isysroot ${ARM_SYSROOT} -iwithsysroot /usr/include
+ARM_SYSROOT=${BASE}/arch/arm/toolchain/codesourcery/arm-2013.05/arm-none-linux-gnueabi/libc
+ARM_FLAGS=-isysroot ${ARM_SYSROOT} -iwithsysroot /usr/include
 
-#AARCH64_SYSROOT=${BASE}/arch/aarch64/toolchain/linaro/gcc-linaro-aarch64-linux-gnu-4.8-2013.06_linux/aarch64-linux-gnu/libc
-#AARCH64_FLAGS=-isysroot ${AARCH64_SYSROOT} -iwithsysroot /usr/include
+AARCH64_SYSROOT=${BASE}/arch/aarch64/toolchain/linaro/gcc-linaro-aarch64-linux-gnu-4.8-2013.06_linux/aarch64-linux-gnu/libc
+AARCH64_FLAGS=-isysroot ${AARCH64_SYSROOT} -iwithsysroot /usr/include
 
 
 ### BUILD ######################################################################
