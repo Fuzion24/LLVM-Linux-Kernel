@@ -1,0 +1,13 @@
+diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
+index d80214f..aa36cce 100644
+--- a/sound/soc/codecs/max98090.c
++++ b/sound/soc/codecs/max98090.c
+@@ -573,7 +573,7 @@ static int max98090_volatile(struct snd_soc_codec *codec, unsigned int reg)
+ //------------------------------------------------
+ // Implementation of I2C functions
+ //------------------------------------------------
+-inline unsigned int max98090_i2c_read(struct snd_soc_codec *codec, unsigned int reg)
++unsigned int max98090_i2c_read(struct snd_soc_codec *codec, unsigned int reg)
+ {
+ 	int ret;
+ 

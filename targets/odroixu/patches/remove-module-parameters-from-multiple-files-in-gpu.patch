@@ -1,0 +1,104 @@
+diff --git a/drivers/gpu/pvr/services4/srvkm/env/linux/module.c b/drivers/gpu/pvr/services4/srvkm/env/linux/module.c
+index 1338197..a498ada 100644
+--- a/drivers/gpu/pvr/services4/srvkm/env/linux/module.c
++++ b/drivers/gpu/pvr/services4/srvkm/env/linux/module.c
+@@ -181,17 +181,11 @@ MODULE_SUPPORTED_DEVICE(DEVNAME);
+ #if defined(PVRSRV_NEED_PVR_DPF)
+ #include <linux/moduleparam.h>
+ extern IMG_UINT32 gPVRDebugLevel;
+-module_param(gPVRDebugLevel, uint, 0644);
+-MODULE_PARM_DESC(gPVRDebugLevel, "Sets the level of debug output (default 0x7)");
+ 
+ /*S.LSI*/
+ extern IMG_UINT32 gPVREnableVSync;
+-module_param(gPVREnableVSync, uint, 0644);
+-MODULE_PARM_DESC(gPVREnableVSync, "Sets the vsync waiting (default 1)");
+ 
+ extern IMG_UINT32 gPVRPanDisplaySignal;
+-module_param(gPVRPanDisplaySignal, uint, 0644);
+-MODULE_PARM_DESC(gPVRPanDisplaySignal, "Send Pan display signal to userspace through uevent (default 1)");
+ 
+ /*S.LSI*/
+ #endif /* defined(PVRSRV_NEED_PVR_DPF) */
+diff --git a/drivers/gpu/pvr/services4/system/exynos5410/sec_clock.c b/drivers/gpu/pvr/services4/system/exynos5410/sec_clock.c
+index 2a4281b..fc2c2c7 100644
+--- a/drivers/gpu/pvr/services4/system/exynos5410/sec_clock.c
++++ b/drivers/gpu/pvr/services4/system/exynos5410/sec_clock.c
+@@ -55,12 +55,6 @@ static struct clk	*fout_vpll_clock;
+ static int sgx_gpu_clk;
+ static int sgx_gpu_src_clk;
+ 
+-module_param(sgx_gpu_clk, int, S_IRUSR | S_IRGRP | S_IROTH);
+-MODULE_PARM_DESC(sgx_gpu_clk, "SGX clock current value");
+-
+-module_param(sgx_gpu_src_clk, int, S_IRUSR | S_IRGRP | S_IROTH);
+-MODULE_PARM_DESC(sgx_gpu_src_clk, "SGX source clock current value");
+-
+ /* end sys parameters */
+ 
+ int gpu_clks_get(void)
+diff --git a/drivers/gpu/pvr/services4/system/exynos5410/sec_control_pwr_clk.c b/drivers/gpu/pvr/services4/system/exynos5410/sec_control_pwr_clk.c
+index ce66d1e..548fe43 100644
+--- a/drivers/gpu/pvr/services4/system/exynos5410/sec_control_pwr_clk.c
++++ b/drivers/gpu/pvr/services4/system/exynos5410/sec_control_pwr_clk.c
+@@ -45,9 +45,6 @@ static int gpu_voltage_marin;
+ int sec_wakeup_lock_state = 1;
+ bool sec_gpu_power_on;
+ 
+-module_param(sec_wakeup_lock_state, int, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
+-MODULE_PARM_DESC(sec_wakeup_lock_state, "SGX wakeup lock setting");
+-
+ int sec_gpu_setting_clock   = SGX_DEFAULT_CLOCK;
+ int sec_gpu_setting_voltage = SGX_DEFAULT_VOLTAGE;
+ 
+diff --git a/drivers/gpu/pvr/services4/system/exynos5410/sec_dvfs.c b/drivers/gpu/pvr/services4/system/exynos5410/sec_dvfs.c
+index 2aa3b98..6ad8adc 100644
+--- a/drivers/gpu/pvr/services4/system/exynos5410/sec_dvfs.c
++++ b/drivers/gpu/pvr/services4/system/exynos5410/sec_dvfs.c
+@@ -89,16 +89,6 @@ int custom_threshold_change;
+ char sgx_dvfs_table_string[256] = {0};
+ char *sgx_dvfs_table;
+ /* set sys parameters */
+-module_param(sgx_dvfs_level, int, S_IRUSR | S_IRGRP | S_IROTH);
+-MODULE_PARM_DESC(sgx_dvfs_level, "SGX DVFS status");
+-module_param(sgx_dvfs_custom_clock, int, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
+-MODULE_PARM_DESC(sgx_dvfs_custom_clock, "SGX custom threshold array value");
+-module_param_array(custom_threshold, int, &sgx_dvfs_custom_threshold_size, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
+-MODULE_PARM_DESC(custom_threshold, "SGX custom threshold array value");
+-module_param(custom_threshold_change, int, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
+-MODULE_PARM_DESC(custom_threshold_change, "SGX DVFS custom threshold set (0: do nothing, 1: change, others: reset)");
+-module_param(sgx_dvfs_table, charp , S_IRUSR | S_IRGRP | S_IROTH);
+-MODULE_PARM_DESC(sgx_dvfs_table, "SGX DVFS frequency array (Mhz)");
+ 
+ #ifdef CONFIG_ASV_MARGIN_TEST
+ static int set_g3d_freq;
+diff --git a/drivers/gpu/pvr/services4/system/exynos5410/sec_power.c b/drivers/gpu/pvr/services4/system/exynos5410/sec_power.c
+index 4eafd8d..bbcc336 100644
+--- a/drivers/gpu/pvr/services4/system/exynos5410/sec_power.c
++++ b/drivers/gpu/pvr/services4/system/exynos5410/sec_power.c
+@@ -39,12 +39,7 @@ static int sgx_gpu_vol;
+ static int sgx_gpu_power_state = 0;
+ #endif
+ 
+-module_param(sgx_gpu_vol, int, S_IRUSR | S_IRGRP | S_IROTH);
+-MODULE_PARM_DESC(sgx_gpu_vol, "SGX voltage current value");
+-
+ #ifdef CONFIG_PM_RUNTIME
+-module_param(sgx_gpu_power_state, int, S_IRUSR | S_IRGRP | S_IROTH);
+-MODULE_PARM_DESC(sgx_gpu_power_state, "SGX power current status");
+ #endif
+ /* end sys parameters */
+ 
+diff --git a/drivers/gpu/pvr/services4/system/exynos5410/secutils.c b/drivers/gpu/pvr/services4/system/exynos5410/secutils.c
+index f8c01fa..6c8d2f4 100644
+--- a/drivers/gpu/pvr/services4/system/exynos5410/secutils.c
++++ b/drivers/gpu/pvr/services4/system/exynos5410/secutils.c
+@@ -39,8 +39,6 @@ extern struct pm_qos_request exynos5_g3d_int_qos;
+ #endif
+ static int sgx_gpu_utilization;
+ extern int sgx_dvfs_level;
+-module_param(sgx_gpu_utilization, int, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
+-MODULE_PARM_DESC(sgx_gpu_utilization, "SGX gpu utilization");
+ 
+ struct mutex time_data_lock;
+ struct mutex timer_lock;

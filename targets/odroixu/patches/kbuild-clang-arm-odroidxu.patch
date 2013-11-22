@@ -1,0 +1,23 @@
+--- odroidxu.orig/Makefile
++++ odroidxu/Makefile
+@@ -386,8 +386,7 @@
+ 		   -fno-strict-aliasing -fno-common \
+ 		   -Werror-implicit-function-declaration \
+ 		   -Wno-format-security $(call cc-option,-no-integrated-as,) \
+-		   $(call cc-option,-fno-delete-null-pointer-checks,) \
+-		   -fno-schedule-insns2
++		   $(call cc-option,-fno-delete-null-pointer-checks,)
+ 
+ KBUILD_AFLAGS_KERNEL :=
+ KBUILD_CFLAGS_KERNEL :=
+--- odroidxu.orig/arch/arm/Makefile
++++ odroidxu/arch/arm/Makefile
+@@ -43,7 +43,7 @@
+ endif
+ 
+ ifeq ($(CONFIG_FRAME_POINTER),y)
+-KBUILD_CFLAGS	+=-fno-omit-frame-pointer -mapcs -mno-sched-prolog
++KBUILD_CFLAGS	+=-fno-omit-frame-pointer
+ endif
+ 
+ ifeq ($(CONFIG_CC_STACKPROTECTOR),y)

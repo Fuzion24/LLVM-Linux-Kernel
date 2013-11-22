@@ -1,0 +1,22 @@
+diff --git a/drivers/devfreq/exynos5410_bus_mif.c b/drivers/devfreq/exynos5410_bus_mif.c
+index b0bc367..730ca52 100644
+--- a/drivers/devfreq/exynos5410_bus_mif.c
++++ b/drivers/devfreq/exynos5410_bus_mif.c
+@@ -219,7 +219,7 @@ void exynos5_mif_notify_transition(struct devfreq_info *info, unsigned int state
+ {
+ 	BUG_ON(irqs_disabled());
+ 
+-	return srcu_notifier_call_chain(&exynos5_mif_transition_notifier_list, state, info);
++	srcu_notifier_call_chain(&exynos5_mif_transition_notifier_list, state, info);
+ }
+ EXPORT_SYMBOL_GPL(exynos5_mif_notify_transition);
+ 
+@@ -252,7 +252,7 @@ void exynos5_mif_bpll_transition_notify(struct devfreq_info *info, unsigned int
+ {
+ 	BUG_ON(irqs_disabled());
+ 
+-	return srcu_notifier_call_chain(&exynos5_mif_bpll_transition_notifier_list, state, info);
++	srcu_notifier_call_chain(&exynos5_mif_bpll_transition_notifier_list, state, info);
+ }
+ EXPORT_SYMBOL_GPL(exynos5_mif_bpll_transition_notify);
+ 
