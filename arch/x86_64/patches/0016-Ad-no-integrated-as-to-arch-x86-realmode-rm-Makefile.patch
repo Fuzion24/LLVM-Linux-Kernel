@@ -23,11 +23,9 @@ Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
  arch/x86/realmode/rm/Makefile | 13 +++++++++++--
  1 file changed, 11 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/realmode/rm/Makefile b/arch/x86/realmode/rm/Makefile
-index 8869287..cc5d4dd 100644
---- a/arch/x86/realmode/rm/Makefile
-+++ b/arch/x86/realmode/rm/Makefile
-@@ -19,6 +19,14 @@ wakeup-objs	+= video-vga.o
+--- linux.orig/arch/x86/realmode/rm/Makefile
++++ linux/arch/x86/realmode/rm/Makefile
+@@ -19,6 +19,14 @@
  wakeup-objs	+= video-vesa.o
  wakeup-objs	+= video-bios.o
  
@@ -42,7 +40,7 @@ index 8869287..cc5d4dd 100644
  realmode-y			+= header.o
  realmode-y			+= trampoline_$(BITS).o
  realmode-y			+= stack.o
-@@ -70,13 +78,14 @@ KBUILD_CFLAGS	:= $(LINUXINCLUDE) -m32 -g -Os -D_SETUP -D__KERNEL__ -D_WAKEUP \
+@@ -70,7 +78,7 @@
  		   -I$(srctree)/arch/x86/boot \
  		   -DDISABLE_BRANCH_PROFILING \
  		   -Wall -Wstrict-prototypes \
@@ -50,15 +48,12 @@ index 8869287..cc5d4dd 100644
 +		   -march=i586 -mregparm=3 \
  		   -include $(srctree)/$(src)/../../boot/code16gcc.h \
  		   -fno-strict-aliasing -fomit-frame-pointer -fno-pic \
- 		   $(call cc-option, -ffreestanding) \
+ 		   -mno-mmx -mno-sse \
+@@ -78,6 +86,7 @@
  		   $(call cc-option, -fno-toplevel-reorder,\
- 			$(call cc-option, -fno-unit-at-a-time)) \
+ 		   $(call cc-option, -fno-unit-at-a-time)) \
  		   $(call cc-option, -fno-stack-protector) \
--		   $(call cc-option, -mpreferred-stack-boundary=2)
-+		   $(call cc-option, -mpreferred-stack-boundary=2) \
-+		   $(call cc-option,-no-integrated-as,)
++		   $(call cc-option,-no-integrated-as,) \
+ 		   $(call cc-option, -mpreferred-stack-boundary=2)
  KBUILD_AFLAGS	:= $(KBUILD_CFLAGS) -D__ASSEMBLY__
  GCOV_PROFILE := n
--- 
-1.8.1.2
-
