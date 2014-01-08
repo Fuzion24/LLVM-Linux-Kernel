@@ -27,15 +27,18 @@ TMPDIRS		+= ${CLANG_TMPDIR}
 RAZE_TARGETS	+= clang-raze
 
 ifeq ($(shell uname -i), i686)
-CLANG_DIR	= clang+llvm-3.3-i386-debian6
+CLANG_DIR	= clang+llvm-3.4-i586-opensuse13.1
+CLANG_TAR	= ${CLANG_DIR}.tar.gz
+CLANG_UNPACK	= tar xvzf
 else
-CLANG_DIR	= clang+llvm-3.3-Ubuntu-13.04-x86_64-linux-gnu
+CLANG_DIR	= clang+llvm-3.4-x86_64-linux-gnu-ubuntu-13.10
+CLANG_TAR	= ${CLANG_DIR}.tar.xz
+CLANG_UNPACK 	= tar xvJf
 endif
 
 CLANG_PATH	= ${LLVMTOP}/${CLANG_DIR}
 CLANG_BINDIR	= ${CLANG_PATH}/bin
-CLANG_TAR	= ${CLANG_DIR}.tar.bz2
-CLANG_URL	= http://llvm.org/releases/3.3/${CLANG_TAR}
+CLANG_URL	= http://llvm.org/releases/3.4/${CLANG_TAR}
 
 CLANG			= ${CLANG_BINDIR}/clang
 STATE_CLANG_TOOLCHAIN	= ${CLANG}
@@ -51,7 +54,7 @@ ${CLANG_TMPDIR}/${CLANG_TAR}:
 
 clang-unpack: ${LLVMSTATE}/clang-prebuilt
 ${LLVMSTATE}/clang-prebuilt: ${CLANG_TMPDIR}/${CLANG_TAR}
-	@$(call unbz2,$<,${LLVMTOP})
+	(cd ${LLVMTOP} && ${CLANG_UNPACK} $<)
 	$(call state,$@)
 
 clang-raze:
