@@ -29,11 +29,11 @@ RAZE_TARGETS	+= clang-raze
 ifeq ($(shell uname -i), i686)
 CLANG_DIR	= clang+llvm-3.4-i586-opensuse13.1
 CLANG_TAR	= ${CLANG_DIR}.tar.gz
-CLANG_UNPACK	= tar xvzf
+CLANG_UNPACK	= untgz
 else
 CLANG_DIR	= clang+llvm-3.4-x86_64-linux-gnu-ubuntu-13.10
 CLANG_TAR	= ${CLANG_DIR}.tar.xz
-CLANG_UNPACK 	= tar xvJf
+CLANG_UNPACK 	= unxz
 endif
 
 CLANG_PATH	= ${LLVMTOP}/${CLANG_DIR}
@@ -54,7 +54,7 @@ ${CLANG_TMPDIR}/${CLANG_TAR}:
 
 clang-unpack: ${LLVMSTATE}/clang-prebuilt
 ${LLVMSTATE}/clang-prebuilt: ${CLANG_TMPDIR}/${CLANG_TAR}
-	(cd ${LLVMTOP} && ${CLANG_UNPACK} $<)
+	$(call ${CLANG_UNPACK},$<,${LLVMTOP})
 	$(call state,$@)
 
 clang-raze:

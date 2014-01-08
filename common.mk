@@ -105,6 +105,8 @@ untgz = $(call echo,Unpacking $(notdir ${1}) into ${2}) \
 		&& mkdir -p ${2} && tar --extract --gunzip --file ${1} --directory ${2}
 unbz2 = $(call echo,Unpacking $(notdir ${1}) into ${2}) \
 		&& mkdir -p ${2} && tar --extract --bzip2 --file ${1} --directory ${2}
+unxz = $(call echo,Unpacking $(notdir ${1}) into ${2}) \
+		&& mkdir -p ${2} && tar --extract --xz --file ${1} --directory ${2}
 
 ##############################################################################
 # Settings macros used by all subsystems
