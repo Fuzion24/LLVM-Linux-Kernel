@@ -32,8 +32,8 @@ LLVMPATCHES	?= ${LLVMTOP}/patches
 # Workaround for LLVM breakage
 # undefined reference to `.Lline_table_start0'
 # use ?= to not override CHECKPOINTS !
-LLVM_COMMIT	?= release_33
-CLANG_COMMIT	?= release_33
+LLVM_COMMIT	?= release_34
+CLANG_COMMIT	?= release_34
 #LLVM_COMMIT	?= "4010e438100fedeacd36ecd2385adabc02b6f236"
 #CLANG_COMMIT	?= "cac18add73d095eaab600aefe27ea7174aec4922"
 
@@ -83,9 +83,10 @@ LLVM_GIT	= "http://llvm.org/git/llvm.git"
 CLANG_GIT	= "http://llvm.org/git/clang.git"
 #COMPILERRT_GIT	= "http://llvm.org/git/compiler-rt.git"
 
-#LLVM_BRANCH	= "release_30"
-LLVM_BRANCH	= "master"
-CLANG_BRANCH	= "master"
+LLVM_BRANCH	= "release_34"
+CLANG_BRANCH	= "release_34"
+#LLVM_BRANCH	= "master"
+#CLANG_BRANCH	= "master"
 #COMPILERRT_BRANCH = "master"
 # The buildbot takes quite long to build the debug-version of clang (debug+asserts).
 # Introducing this option to switch between debug and optimized.
