@@ -28,10 +28,11 @@ HELP_TARGETS	+= arm-gcc-toolchain-help
 arm-gcc-toolchain-help:
 	@echo
 	@echo "You can choose your cross-gcc by setting the CROSS_ARM_TOOLCHAIN variable."
-	@echo "  CROSS_ARM_TOOLCHAIN=android       Download and use Android gcc cross-toolchain"
-	@echo "  CROSS_ARM_TOOLCHAIN=codesourcery  Download and use Code sourcery toolchain (Default)"
-	@echo "  CROSS_ARM_TOOLCHAIN=linaro        Download and use Linaro gcc cross-toolchain"
-	@echo "  CROSS_ARM_TOOLCHAIN=native        Use distro installed gcc cross-toolchain"
+	@echo "  CROSS_ARM_TOOLCHAIN=android            Download and use Android gcc cross-toolchain"
+	@echo "  CROSS_ARM_TOOLCHAIN=android-linaro     Download and use Linaro Android gcc cross-toolchain"
+	@echo "  CROSS_ARM_TOOLCHAIN=codesourcery       Download and use Code sourcery toolchain (Default)"
+	@echo "  CROSS_ARM_TOOLCHAIN=linaro             Download and use Linaro gcc cross-toolchain"
+	@echo "  CROSS_ARM_TOOLCHAIN=native             Use distro installed gcc cross-toolchain"
 
 # Configure the requested ARM cross compiler
 # Sets CROSS_GCC, PATH, HOST, HOST_TRIPLE
@@ -42,13 +43,17 @@ arm-gcc-toolchain-help:
 ifeq (${CROSS_ARM_TOOLCHAIN},android)
   include ${ARCH_ARM_TOOLCHAIN}/android/android.mk
 else
-  ifeq (${CROSS_ARM_TOOLCHAIN},linaro)
-    include ${ARCH_ARM_TOOLCHAIN}/linaro/linaro.mk
+  ifeq (${CROSS_ARM_TOOLCHAIN},android-linaro)
+  include ${ARCH_ARM_TOOLCHAIN}/android-linaro/android-linaro.mk
   else
-    ifeq (${CROSS_ARM_TOOLCHAIN},native)
-      include ${ARCH_ARM_TOOLCHAIN}/native.mk
+    ifeq (${CROSS_ARM_TOOLCHAIN},linaro)
+      include ${ARCH_ARM_TOOLCHAIN}/linaro/linaro.mk
     else
-      include ${ARCH_ARM_TOOLCHAIN}/codesourcery/codesourcery.mk
+      ifeq (${CROSS_ARM_TOOLCHAIN},native)
+        include ${ARCH_ARM_TOOLCHAIN}/native.mk
+      else
+        include ${ARCH_ARM_TOOLCHAIN}/codesourcery/codesourcery.mk
+      endif
     endif
   endif
 endif
