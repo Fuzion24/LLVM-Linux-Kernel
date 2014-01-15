@@ -8,11 +8,7 @@ Add support for for compiling with clang to Kbuild
 
 Author: Behan Webster <behanw@converseincode.com>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
----
- Makefile               | 18 ++++++++++++++++++
- scripts/Kbuild.include | 35 ++++++++++++++++++++++++++++++-----
- 2 files changed, 48 insertions(+), 5 deletions(-)
-
+Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 diff --git a/Makefile b/Makefile
 index fe8204b..4971db7 100644
 --- a/Makefile
@@ -30,12 +26,13 @@ index fe8204b..4971db7 100644
  
  # Look for make include files relative to root of kernel src
  MAKEFLAGS += --include-dir=$(srctree)
-@@ -570,6 +576,9 @@ endif # $(dot-config)
+@@ -570,6 +576,10 @@ endif # $(dot-config)
  # Defaults to vmlinux, but the arch makefile usually adds further targets
  all: vmlinux
  
 +# Quiet unused arguments warning from clang
 +KBUILD_CPPFLAGS   += $(call cc-option,-Qunused-arguments,)
++KBUILD_CPPFLAGS   += $(call cc-option,-Wno-unknown-warning-option,)
 +
  ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
  KBUILD_CFLAGS	+= -Os $(call cc-disable-warning,maybe-uninitialized,)
@@ -57,6 +54,16 @@ index fe8204b..4971db7 100644
  
  ifdef CONFIG_FRAME_POINTER
  KBUILD_CFLAGS	+= -fno-omit-frame-pointer -fno-optimize-sibling-calls
--- 
-1.8.1.2
-
+diff --git a/scripts/Kbuild.include b/scripts/Kbuild.include
+index 547e15d..4846a1b 100644
+--- a/scripts/Kbuild.include
++++ b/scripts/Kbuild.include
+@@ -125,7 +125,7 @@ cc-option-align = $(subst -functions=0,,\
+ # cc-disable-warning
+ # Usage: cflags-y += $(call cc-disable-warning,unused-but-set-variable)
+ cc-disable-warning = $(call try-run,\
+-	$(CC) $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) -W$(strip $(1)) -c -x c /dev/null -o "$$TMP",-Wno-$(strip $(1)))
++	$(CC) $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) -w -W$(strip $(1)) -c -x c /dev/null -o "$$TMP",-Wno-$(strip $(1)))
+ 
+ # cc-version
+ # Usage gcc-ver := $(call cc-version)
