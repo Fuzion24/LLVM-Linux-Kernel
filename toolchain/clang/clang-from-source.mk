@@ -32,8 +32,6 @@ LLVMPATCHES	?= ${LLVMTOP}/patches
 # Workaround for LLVM breakage
 # undefined reference to `.Lline_table_start0'
 # use ?= to not override CHECKPOINTS !
-LLVM_COMMIT	?= release_34
-CLANG_COMMIT	?= release_34
 #LLVM_COMMIT	?= "4010e438100fedeacd36ecd2385adabc02b6f236"
 #CLANG_COMMIT	?= "cac18add73d095eaab600aefe27ea7174aec4922"
 
@@ -83,11 +81,11 @@ LLVM_GIT	= "http://llvm.org/git/llvm.git"
 CLANG_GIT	= "http://llvm.org/git/clang.git"
 #COMPILERRT_GIT	= "http://llvm.org/git/compiler-rt.git"
 
-LLVM_BRANCH	= "release_34"
-CLANG_BRANCH	= "release_34"
-#LLVM_BRANCH	= "master"
-#CLANG_BRANCH	= "master"
-#COMPILERRT_BRANCH = "master"
+LLVM_BRANCH	= release_34
+CLANG_BRANCH	= release_34
+#LLVM_BRANCH	= master
+#CLANG_BRANCH	= master
+#COMPILERRT_BRANCH = master
 # The buildbot takes quite long to build the debug-version of clang (debug+asserts).
 # Introducing this option to switch between debug and optimized.
 #LLVM_OPTIMIZED	= ""
@@ -196,13 +194,13 @@ llvmpatch = $(call banner,Patching ${1}...) ; \
 ##############################################################################
 llvm-patch: ${LLVMSTATE}/llvm-patch
 ${LLVMSTATE}/llvm-patch: ${LLVMSTATE}/llvm-fetch
-	@$(call llvmpatch,LLVM,${LLVMPATCHES}/llvm,${LLVMDIR})
+	@$(call llvmpatch,LLVM,${LLVMPATCHES}/llvm/$(if ${LLVM_BRANCH},${LLVM_BRANCH},${LLVM_COMMIT}),${LLVMDIR})
 	$(call state,$@,llvm-configure)
 
 ##############################################################################
 clang-patch: ${LLVMSTATE}/clang-patch
 ${LLVMSTATE}/clang-patch: ${LLVMSTATE}/clang-fetch
-	@$(call llvmpatch,Clang,${LLVMPATCHES}/clang,${CLANGDIR})
+	@$(call llvmpatch,Clang,${LLVMPATCHES}/clang/$(if ${CLANG_BRANCH},${${CLANG_BRANCH},${CLANG_COMMIT}),${CLANGDIR})
 	$(call state,$@,clang-configure)
 
 ##############################################################################
@@ -377,13 +375,13 @@ clang-sync: clang-clean
 #	@$(call llvmsync,Unpatched compiler-rt,${COMPILERRTDIR2},${COMPILERRT_BRANCH},${COMPILERRT_COMMIT})
 
 ##############################################################################
-llvm-version:
+llvm-version::
 	@(cd ${LLVMDIR} && [ -f "${LLVMINSTALLDIR}/bin/llc" ] \
 		&& echo "`${LLVMINSTALLDIR}/bin/llc --version | grep version | xargs echo` commit `git rev-parse HEAD`" \
 		|| echo "LLVM version ? commit `git rev-parse HEAD`")
 
 ##############################################################################
-clang-version:
+clang-version::
 	@(cd ${CLANGDIR} && [ -f "${CLANG}" ] \
 		&& echo "`${CLANG} --version | grep version | xargs echo` commit `git rev-parse HEAD`" \
 		|| echo "clang version ? commit `git rev-parse HEAD`")

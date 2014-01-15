@@ -24,6 +24,8 @@
 
 # Assumes has been included from ../toolchain.mk
 
+VERSION_TARGETS	+= llvm-version clang-version
+
 LLVMSTATE	= ${LLVMTOP}/state
 
 # The following export is needed by make_kernel.sh and clang_wrap.sh
@@ -53,3 +55,12 @@ else
     include ${LLVMTOP}/clang-from-source.mk
   endif
 endif
+
+##############################################################################
+llvm-version::
+	@[ ! -e $(dir ${CLANG})llc ] || echo `$(dir ${CLANG})llc --version | grep version`
+
+##############################################################################
+clang-version::
+	@[ ! -e ${CLANG} ] || echo "`${CLANG} --version | grep version`"
+
