@@ -200,7 +200,7 @@ ${LLVMSTATE}/llvm-patch: ${LLVMSTATE}/llvm-fetch
 ##############################################################################
 clang-patch: ${LLVMSTATE}/clang-patch
 ${LLVMSTATE}/clang-patch: ${LLVMSTATE}/clang-fetch
-	@$(call llvmpatch,Clang,${LLVMPATCHES}/clang/$(if ${CLANG_BRANCH},${${CLANG_BRANCH},${CLANG_COMMIT}),${CLANGDIR})
+	@$(call llvmpatch,Clang,${LLVMPATCHES}/clang/$(if ${CLANG_BRANCH},${CLANG_BRANCH},${CLANG_COMMIT}),${CLANGDIR})
 	$(call state,$@,clang-configure)
 
 ##############################################################################
