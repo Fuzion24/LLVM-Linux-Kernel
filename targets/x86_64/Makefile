@@ -30,8 +30,6 @@ KERNEL_CFG	= ${TARGETDIR}/config_x86_64
 #KERNEL_TAG = v3.3
 # around 3.10-rc7
 #KERNEL_COMMIT = "4300a0f8bdcce5a03b88bfa16fc9827e15c52dc4"
-LLVM_COMMIT = release_33
-CLANG_COMMIT = release_33
 
 #GDB_OPTS	= -gdb tcp::1234 -s -S
 GDB_OPTS	=
@@ -71,7 +69,7 @@ test: state/prep ${QEMUSTATE}/qemu-build ${INITRAMFS}.clang
 	$(call qemu,${BOARD},${KERNEL_BUILD}/arch/x86/boot/bzImage,512,/dev/ram0,rw console=ttyS0 earlyprintk ,-initrd ${INITRAMFS}.clang -net none )
 #	$(call qemu,${BOARD},${KERNEL_BUILD}/arch/x86/boot/bzImage,2048,/dev/ram0,ramdisk_size=512000 rdinit=/init console=ttyS0 earlyprintk,-initrd ${INITRAMFS}.clang -curses)
 
-test-qemu: ${INITRAMFS}.clang
+test-qemu: ${INITRAMFS}.clang ${QEMUSTATE}/qemu-build
 	$(call qemu,${BOARD},${KERNEL_BUILD}/arch/x86/boot/bzImage,512,/dev/ram0,rw console=ttyS0 earlyprintk ,-initrd ${INITRAMFS}.clang -net none )
 #	$(call qemu,${BOARD},${KERNEL_BUILD}/arch/x86/boot/bzImage,2048,/dev/ram0,ramdisk_size=512000 rdinit=/init console=ttyS0 earlyprintk,-M q35 -cpu SandyBridge -initrd ${INITRAMFS}.clang -curses)
 
