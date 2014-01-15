@@ -2,7 +2,7 @@
 +++ android_kernel_nexus4/scripts/Kbuild.include
 @@ -106,9 +106,32 @@
  as-instr = $(call try-run,\
- 	printf "%b\n" "$(1)" | $(CC) $(KBUILD_AFLAGS) -c -xassembler -o "$$TMP" -,$(2),$(3))
+ 	printf "%b\n" "$(1)" | $(CC) $(KBUILD_AFLAGS) -c -x assembler -o "$$TMP" -,$(2),$(3))
  
 +# Test for clang
 +ifeq ($(COMPILER),clang)
@@ -31,11 +31,11 @@
 +# cc-option
 +# Usage: cflags-y += $(call cc-option,-march=winchip-c6,-march=i586)
  cc-option = $(call try-run,\
- 	$(CC) $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) $(1) -c -xc /dev/null -o "$$TMP",$(1),$(2))
+ 	$(CC) $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) $(1) -c -x c /dev/null -o "$$TMP",$(1),$(2))
  
 @@ -117,16 +140,18 @@
  cc-option-yn = $(call try-run,\
- 	$(CC) $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) $(1) -c -xc /dev/null -o "$$TMP",y,n)
+ 	$(CC) $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) $(1) -c -x c /dev/null -o "$$TMP",y,n)
  
 -# cc-option-align
 -# Prefix align with either -falign or -malign
@@ -59,7 +59,7 @@
  cc-version = $(shell $(CONFIG_SHELL) $(srctree)/scripts/gcc-version.sh $(CC))
 --- android_kernel_nexus4.orig/Makefile
 +++ android_kernel_nexus4/Makefile
-@@ -329,6 +329,11 @@
+@@ -329,6 +329,12 @@
  
  export quiet Q KBUILD_VERBOSE
  
@@ -68,6 +68,7 @@
 +else
 +COMPILER := gcc
 +endif
++export COMPILER
  
  # Look for make include files relative to root of kernel src
  MAKEFLAGS += --include-dir=$(srctree)

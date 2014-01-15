@@ -1,2 +1,3 @@
 clang-unsupported.patch
 remove_inline_modifier.patch
+arm-glue-cache-extern-inline.patch
