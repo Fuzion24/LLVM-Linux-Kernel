@@ -15,11 +15,9 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
  arch/arm/Makefile | 23 ++++++++++++++++++++---
  1 file changed, 20 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm/Makefile b/arch/arm/Makefile
-index 6fd2cea..d302e18 100644
---- a/arch/arm/Makefile
-+++ b/arch/arm/Makefile
-@@ -22,6 +22,15 @@ OBJCOPYFLAGS	:=-O binary -R .comment -S
+--- linux.orig/arch/arm/Makefile
++++ linux/arch/arm/Makefile
+@@ -23,6 +23,15 @@
  GZFLAGS		:=-9
  #KBUILD_CFLAGS	+=-pipe
  
@@ -35,7 +33,7 @@ index 6fd2cea..d302e18 100644
  # Never generate .eh_frame
  KBUILD_CFLAGS	+= $(call cc-option,-fno-dwarf2-cfi-asm)
  
-@@ -44,11 +53,11 @@ KBUILD_CFLAGS	+=-fstack-protector
+@@ -45,11 +54,11 @@
  endif
  
  ifeq ($(CONFIG_CPU_BIG_ENDIAN),y)
@@ -49,7 +47,7 @@ index 6fd2cea..d302e18 100644
  AS		+= -EL
  LD		+= -EL
  endif
-@@ -99,7 +108,11 @@ tune-$(CONFIG_CPU_V6K)		=$(call cc-option,-mtune=arm1136j-s,-mtune=strongarm)
+@@ -100,7 +109,11 @@
  tune-y := $(tune-y)
  
  ifeq ($(CONFIG_AEABI),y)
@@ -62,7 +60,7 @@ index 6fd2cea..d302e18 100644
  else
  CFLAGS_ABI	:=$(call cc-option,-mapcs-32,-mabi=apcs-gnu) $(call cc-option,-mno-thumb-interwork,)
  endif
-@@ -123,7 +136,11 @@ AFLAGS_ISA	:=$(CFLAGS_ISA)
+@@ -124,7 +137,11 @@
  endif
  
  # Need -Uarm for gcc < 3.x
@@ -74,6 +72,14 @@ index 6fd2cea..d302e18 100644
  KBUILD_AFLAGS	+=$(CFLAGS_ABI) $(AFLAGS_ISA) $(arch-y) $(tune-y) -include asm/unified.h -msoft-float
  
  CHECKFLAGS	+= -D__arm__
--- 
-1.8.1.2
-
+--- linux.orig/arch/arm/boot/compressed/Makefile
++++ linux/arch/arm/boot/compressed/Makefile
+@@ -121,7 +121,7 @@
+ KBUILD_CFLAGS = $(subst -pg, , $(ORIG_CFLAGS))
+ endif
+ 
+-ccflags-y := -fpic -mno-single-pic-base -fno-builtin -I$(obj)
++ccflags-y := -fpic $(call cc-option,-mno-single-pic-base,) -fno-builtin -I$(obj)
+ asflags-y := -DZIMAGE
+ 
+ # Supply kernel BSS size to the decompressor via a linker symbol.
