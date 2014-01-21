@@ -1,7 +1,7 @@
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 --- msm.orig/arch/arm/Makefile
 +++ msm/arch/arm/Makefile
-@@ -18,8 +18,17 @@
+@@ -18,8 +18,16 @@
  OBJCOPYFLAGS	:=-O binary -R .comment -S
  GZFLAGS		:=-9
  #KBUILD_CFLAGS	+=-pipe
@@ -13,7 +13,6 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 +KBUILD_CPPFLAGS	+= $(call cc-option,-target $(CROSS_COMPILE:-=),)
 +KBUILD_CFLAGS   += $(call cc-option,-fno-builtin,)
 +KBUILD_CFLAGS   += $(call cc-disable-warning,asm-operand-widths)
-+KBUILD_CFLAGS   += $(call cc-option,-Xassembler,)
 +KBUILD_CFLAGS   += $(call cc-option,-mno-warn-deprecated,)
 +#endif
  
