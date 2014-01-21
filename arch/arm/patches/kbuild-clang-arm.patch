@@ -17,7 +17,7 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
 
 --- linux.orig/arch/arm/Makefile
 +++ linux/arch/arm/Makefile
-@@ -23,6 +23,15 @@
+@@ -23,6 +23,14 @@
  GZFLAGS		:=-9
  #KBUILD_CFLAGS	+=-pipe
  
@@ -26,8 +26,7 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
 +KBUILD_CPPFLAGS	+= $(call cc-option,-target $(CROSS_COMPILE:-=),)
 +KBUILD_CFLAGS   += $(call cc-option,-fno-builtin,)
 +KBUILD_CFLAGS   += $(call cc-disable-warning,asm-operand-widths)
-+KBUILD_CFLAGS   += $(call cc-option,-Xassembler,)
-+KBUILD_CFLAGS   += $(call cc-option,-mno-warn-deprecated,)
++KBUILD_CFLAGS   += $(call cc-option,-Xassembler -mno-warn-deprecated,)
 +endif
 +
  # Never generate .eh_frame
