@@ -1,12 +1,12 @@
-BASE=../../..
+BASE=$(realpath ../../..)
 
 # Prebuilt Clang
-#CLANGDIR=${BASE}/toolchain/clang/clang+llvm-3.3-Ubuntu-13.04-x86_64-linux-gnu/bin
-#VERSION=3.3
+CLANGDIR=${BASE}/toolchain/clang/clang+llvm-3.4-x86_64-linux-gnu-ubuntu-13.10/bin
+VERSION=3.4
 
 # Src Clang
-CLANGDIR=${BASE}/toolchain/clang/install/bin
-VERSION=3.4
+#CLANGDIR=${BASE}/toolchain/clang/install/bin
+#VERSION=3.4
 
 VEXPRESSDIR=${BASE}/targets/vexpress
 
@@ -37,7 +37,7 @@ outfile-gcc: ${VEXPRESSDIR}/src/linux/scripts/mod/modpost foo-gcc.o
 	${VEXPRESSDIR}/src/linux/scripts/mod/modpost foo-gcc.o >> $@ 2>&1 
 
 ${VEXPRESSDIR}/src/linux/scripts/mod/modpost: 
-	(cd ${VEXPRESSDIR} && make kernel-config)
+	(cd ${VEXPRESSDIR} && make kernel-configure)
 	(cd ${VEXPRESSDIR}/src/linux &&  time  make ARCH=arm CROSS_COMPILE=arm-none-linux-gnueabi- CONFIG_DEBUG_INFO=1 CONFIG_DEBUG_SECTION_MISMATCH=y CONFIG_NO_ERROR_ON_MISMATCH=y   CC="${CLANGDIR}/clang -gcc-toolchain ${BASE}/arch/arm/toolchain/codesourcery/arm-2013.05" init/main.o )
 	
 test: outfile outfile-gcc objdump objdump-gcc
