@@ -46,7 +46,7 @@ index fe8204b..4971db7 100644
  ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
  KBUILD_CFLAGS	+= -Os $(call cc-disable-warning,maybe-uninitialized,)
  else
-@@ -602,7 +611,16 @@
+@@ -602,7 +611,20 @@
  
  # This warning generated too much noise in a regular build.
  # Use make W=1 to enable this warning (see scripts/Makefile.build)
@@ -54,6 +54,10 @@ index fe8204b..4971db7 100644
 +KBUILD_CFLAGS += $(call cc-disable-warning, unused-variable)
 +KBUILD_CFLAGS += $(call cc-disable-warning, format-invalid-specifier)
 +KBUILD_CFLAGS += $(call cc-disable-warning, gnu)
++# CLANG uses a _MergedGlobals as optimization, but this breaks modpost, as the
++# source of a reference will be _MergedGlobals and not on of the whitelisted names.
++# See modpost pattern 2
++KBUILD_CFLAGS += $(call cc-option, -mno-global-merge,)
 +else
  KBUILD_CFLAGS += $(call cc-disable-warning, unused-but-set-variable)
 +endif
