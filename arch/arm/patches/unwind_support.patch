@@ -1,3 +1,17 @@
+Patch to prevent warning of a buggy compiler when using clang and
+the ARM_UNWIND option.
+
+Clang defines (at least on the current trunk) GNUC, GNUC_MINOR, and 
+GNUC_PATCHLEVEL to 4, 2, and 1 respectively. 
+
+This version of GCC gets flagged as buggy, but it isn't actually an 
+issue with clang so the patch will do what it did before unless clang 
+is defined and then it will not report the GCC version as an issue.
+
+Author: Mark Charlebois <charlebm@gmail.com>
+Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+---
+
 diff --git a/arch/arm/kernel/unwind.c b/arch/arm/kernel/unwind.c
 index 00df012..d324a84 100644
 --- a/arch/arm/kernel/unwind.c
