@@ -21,7 +21,7 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
  		   -Werror-implicit-function-declaration \
 -		   -Wno-format-security \
 +		   -Wno-format-security $(call cc-option,-no-integrated-as,) \
- 		   -fno-delete-null-pointer-checks \
+		   $(call cc-option,-fno-delete-null-pointer-checks,) \
  		   -fno-schedule-insns2
  
  KBUILD_AFLAGS_KERNEL :=
