@@ -27,6 +27,7 @@ TOPDIR		= $(realpath ${TARGETDIR}/../..)
 CROSS_ARM_TOOLCHAIN = codesourcery
 LLVM_COMMIT = master
 CLANG_COMMIT = master
+CLANG_TOOLCHAIN=prebuilt
 
 # Need to add EXT4 support to vexpress_defconfig
 KERNEL_CFG	= ${TARGETDIR}/config_vexpress
