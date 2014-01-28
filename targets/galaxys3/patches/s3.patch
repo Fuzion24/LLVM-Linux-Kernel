@@ -1,0 +1,51 @@
+diff --git a/drivers/media/video/msm/Kconfig b/drivers/media/video/msm/Kconfig
+index a4e7534..d5914f5 100644
+--- a/drivers/media/video/msm/Kconfig
++++ b/drivers/media/video/msm/Kconfig
+@@ -119,15 +119,15 @@ choice
+ 	depends on MT9P012 && !ARCH_MSM8X60 && !MSM_CAMERA_V4L2
+ 	default MSM_CAMERA_AF_FOXCONN
+ 
+-config MSM_CAMERA_AF_FOXCONN
+-	bool "FOXCONN Module"
+-	help
+-	  This driver supports FOXCONN AF module for 5M Bayer sensor
+-
+-config MSM_CAMERA_AF_BAM
+-	bool "BAM Module"
+-	help
+-	  This driver supports BAM AF module for 5M Bayer sensor
++	config MSM_CAMERA_AF_FOXCONN
++		bool "FOXCONN Module"
++		---help---
++		  This driver supports FOXCONN AF module for 5M Bayer sensor
++
++	config MSM_CAMERA_AF_BAM
++		bool "BAM Module"
++		---help---
++		  This driver supports BAM AF module for 5M Bayer sensor
+ 
+ endchoice
+ 
+diff --git a/drivers/gpu/msm/kgsl_iommu.c b/drivers/gpu/msm/kgsl_iommu.c
+index 28542af..c8477ba 100644
+--- a/drivers/gpu/msm/kgsl_iommu.c
++++ b/drivers/gpu/msm/kgsl_iommu.c
+@@ -672,7 +672,7 @@ static int kgsl_iommu_init_sync_lock(struct kgsl_mmu *mmu)
+  *
+  * Return - int - number of commands.
+  */
+-inline unsigned int kgsl_iommu_sync_lock(struct kgsl_mmu *mmu,
++static unsigned int kgsl_iommu_sync_lock(struct kgsl_mmu *mmu,
+ 						unsigned int *cmds)
+ {
+ 	struct kgsl_device *device = mmu->device;
+@@ -730,7 +730,7 @@ inline unsigned int kgsl_iommu_sync_lock(struct kgsl_mmu *mmu,
+  *
+  * Return - int - number of commands.
+  */
+-inline unsigned int kgsl_iommu_sync_unlock(struct kgsl_mmu *mmu,
++static unsigned int kgsl_iommu_sync_unlock(struct kgsl_mmu *mmu,
+ 					unsigned int *cmds)
+ {
+ 	struct kgsl_device *device = mmu->device;

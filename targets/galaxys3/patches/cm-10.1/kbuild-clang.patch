@@ -1,65 +1,6 @@
---- android_kernel_samsung_d2.orig/scripts/Kbuild.include
-+++ android_kernel_samsung_d2/scripts/Kbuild.include
-@@ -102,9 +102,32 @@
- as-instr = $(call try-run,\
- 	printf "%b\n" "$(1)" | $(CC) $(KBUILD_AFLAGS) -c -xassembler -o "$$TMP" -,$(2),$(3))
- 
-+# Test for clang
-+ifeq ($(COMPILER),clang)
-+
- # cc-option
- # Usage: cflags-y += $(call cc-option,-march=winchip-c6,-march=i586)
-+cc-option = $(call try-run,\
-+	$(CC) $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) $(1) -c -x c /dev/null -o "$$TMP" 2>&1 \
-+		| egrep -q "warning: .* '$(1)'",$(2),$(1))
-+
-+# cc-option-yn
-+# Usage: flag := $(call cc-option-yn,-march=winchip-c6)
-+cc-option-yn = $(call try-run,\
-+	$(CC) $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) $(1) -c -x c /dev/null -o "$$TMP" 2>&1 \
-+		| egrep -q "warning: .* '$(1)'",n,y)
- 
-+# cc-disable-warning
-+# Usage: cflags-y += $(call cc-disable-warning,unused-but-set-variable)
-+cc-disable-warning = $(call try-run,\
-+	$(CC) $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) -W$(strip $(1)) -c -x c /dev/null -o "$$TMP" 2>&1 \
-+		| grep -q "unknown warning option",,-Wno-$(strip $(1)))
-+
-+# Otherwise assume GCC or something compatible
-+else
-+
-+# cc-option
-+# Usage: cflags-y += $(call cc-option,-march=winchip-c6,-march=i586)
- cc-option = $(call try-run,\
- 	$(CC) $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) $(1) -c -x c /dev/null -o "$$TMP",$(1),$(2))
- 
-@@ -113,16 +136,18 @@
- cc-option-yn = $(call try-run,\
- 	$(CC) $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) $(1) -c -x c /dev/null -o "$$TMP",y,n)
- 
--# cc-option-align
--# Prefix align with either -falign or -malign
--cc-option-align = $(subst -functions=0,,\
--	$(call cc-option,-falign-functions=0,-malign-functions=0))
--
- # cc-disable-warning
- # Usage: cflags-y += $(call cc-disable-warning,unused-but-set-variable)
- cc-disable-warning = $(call try-run,\
- 	$(CC) $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) -W$(strip $(1)) -c -x c /dev/null -o "$$TMP",-Wno-$(strip $(1)))
- 
-+endif
-+
-+# cc-option-align
-+# Prefix align with either -falign or -malign
-+cc-option-align = $(subst -functions=0,,\
-+	$(call cc-option,-falign-functions=0,-malign-functions=0))
-+
- # cc-version
- # Usage gcc-ver := $(call cc-version)
- cc-version = $(shell $(CONFIG_SHELL) $(srctree)/scripts/gcc-version.sh $(CC))
 --- android_kernel_samsung_d2.orig/Makefile
 +++ android_kernel_samsung_d2/Makefile
-@@ -331,6 +331,11 @@
+@@ -331,6 +331,12 @@
  
  export quiet Q KBUILD_VERBOSE
  
@@ -68,28 +9,58 @@
 +else
 +COMPILER := gcc
 +endif
++export COMPILER
  
  # Look for make include files relative to root of kernel src
  MAKEFLAGS += --include-dir=$(srctree)
-@@ -577,6 +582,9 @@
+@@ -376,7 +382,7 @@
+ 		   -fno-strict-aliasing -fno-common \
+ 		   -Werror-implicit-function-declaration \
+ 		   -Wno-format-security \
+-		   -fno-delete-null-pointer-checks
++		   $(call cc-option,-fno-delete-null-pointer-checks,)
+ KBUILD_AFLAGS_KERNEL :=
+ KBUILD_CFLAGS_KERNEL :=
+ KBUILD_AFLAGS   := -D__ASSEMBLY__
+@@ -577,6 +582,10 @@
  # Defaults to vmlinux, but the arch makefile usually adds further targets
  all: vmlinux
  
 +# Quiet unused arguments warning from clang
 +KBUILD_CPPFLAGS   += $(call cc-option,-Qunused-arguments,)
++KBUILD_CPPFLAGS   += $(call cc-option,-Wno-unknown-warning-option,)
 +
  ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
- KBUILD_CFLAGS	+= -Os
+ KBUILD_CFLAGS	+= -Os $(call cc-disable-warning,maybe-uninitialized,)
  else
-@@ -596,7 +604,11 @@
+@@ -596,7 +604,17 @@
  
  # This warning generated too much noise in a regular build.
  # Use make W=1 to enable this warning (see scripts/Makefile.build)
 +ifeq ($(COMPILER),clang)
 +KBUILD_CFLAGS += $(call cc-disable-warning, unused-variable)
++KBUILD_CFLAGS += $(call cc-disable-warning, format-invalid-specifier)
++KBUILD_CFLAGS += $(call cc-disable-warning, gnu)
++KBUILD_CFLAGS += $(call cc-option, -mno-global-merge,)
 +else
  KBUILD_CFLAGS += $(call cc-disable-warning, unused-but-set-variable)
 +endif
++
++# Quiet clang warning: comparison of unsigned expression < 0 is always false
++KBUILD_CFLAGS += $(call cc-disable-warning, tautological-compare)
  
  ifdef CONFIG_FRAME_POINTER
  KBUILD_CFLAGS	+= -fno-omit-frame-pointer -fno-optimize-sibling-calls
+diff --git a/scripts/Kbuild.include b/scripts/Kbuild.include
+index 547e15d..4846a1b 100644
+--- a/scripts/Kbuild.include
++++ b/scripts/Kbuild.include
+@@ -125,7 +125,7 @@ cc-option-align = $(subst -functions=0,,\
+ # cc-disable-warning
+ # Usage: cflags-y += $(call cc-disable-warning,unused-but-set-variable)
+ cc-disable-warning = $(call try-run,\
+-	$(CC) $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) -W$(strip $(1)) -c -x c /dev/null -o "$$TMP",-Wno-$(strip $(1)))
++	$(CC) $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) -w -W$(strip $(1)) -c -x c /dev/null -o "$$TMP",-Wno-$(strip $(1)))
+ 
+ # cc-version
+ # Usage gcc-ver := $(call cc-version)
