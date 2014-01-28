@@ -10,7 +10,6 @@ kbuild-clang.patch
 1003-disable-clang-integrated-as.patch
 cifs.patch
 vlais-dm-crypt.patch
-vlais-gadget.patch
 vlais-hmac.patch
 vlais-libcrc32c.patch
 vlais-netfilter.patch
