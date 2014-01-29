@@ -8,5 +8,4 @@
 0008-KBuild-x86-LLVMLinux-Ad-no-integrated-as-to-arch-x86.patch
 0009-Kbuild-LLVMLinux-Add-no-integrated-as-to-arch-x86-bo.patch
 0010-clang.patch
-0011_patch_net_mac80211_aes_ccm.c-novlais.patch
 9001-LLVMLinux-NOUPSTREAM-support-older-versions-of-clang.patch
