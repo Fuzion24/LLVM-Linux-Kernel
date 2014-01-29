@@ -31,7 +31,7 @@ KERNEL_BRANCH	= rpi-3.8.y
 KERNEL_GIT	= https://github.com/raspberrypi/linux.git
 KERNELDIR	= ${SRCDIR}/rpi
 
-KERNEL_REPO_PATCHES=${KERNEL_BRANCH}
+#KERNEL_REPO_PATCHES=${KERNEL_BRANCH}
 
 MARCH		= armv6
 MFLOAT		= -mfloat-abi=hard -mfpu=vfp
@@ -46,6 +46,10 @@ all: prep kernel-build
 
 include ${TOPDIR}/common.mk
 include ${ARCHDIR}/arm/arm.mk
+
+KERNEL_PATCH_DIR+= ${TARGETDIR}/patches/rpi-overlay
+KERNEL_PATCH_DIR+= ${TARGETDIR}/patches
+
 include ${CONFIG}
 
 KERNEL_PATCH_DIR+= ${PATCHDIR} ${PATCHDIR}/${KERNEL_REPO_PATCHES}
