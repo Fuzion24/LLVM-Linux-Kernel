@@ -27,11 +27,9 @@ TOPDIR		= $(realpath ${TARGETDIR}/../..)
 
 KERNEL_CFG	= ${TARGETDIR}/config_x86_64
 KERNEL_GIT	= git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+KERNEL_BRANCH	= master
 #LLVM_COMMIT = release_34
 #CLANG_COMMIT = release_34
-
-# linux-next is rebased every day
-GIT_HARD_RESET	= 1
 
 #GDB_OPTS	= -gdb tcp::1234 -s -S
 GDB_OPTS	=
@@ -41,6 +39,16 @@ all: prep kernel-build
 include ${TOPDIR}/common.mk
 include ${ARCHDIR}/x86_64/x86_64.mk
 include ${CONFIG}
+
+
+# linux-next is rebased every day
+GIT_HARD_RESET	= 1
+
+# we overlay the patches with even newer versions of it 
+PATCHDIR = ${TARGETDIR}/patches
+KERNEL_REPO_PATCHES = master
+KERNEL_PATCH_DIR += ${PATCHDIR}/${KERNEL_REPO_PATCHES}
+
 
 TARGETS+= clean mrproper test test2
 .PHONY: test test2 fetch-initrd prep clean mrproper test
