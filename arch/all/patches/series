@@ -1,5 +1,4 @@
 kbuild-clang.patch
-0001-Toplevel-Makefile-adustments-to-compile-with-clang.patch
 0002-Adapt-warnings-for-compilation-with-clang.patch
 0009-Update-Documentation-dontdiff.patch
 0010-Fix-LINUX_COMPILER-definition-script-for-compilation.patch
