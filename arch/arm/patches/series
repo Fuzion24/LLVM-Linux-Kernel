@@ -2,7 +2,6 @@ eabi-arm.patch
 arm-glue-cache-extern-inline.patch
 ftrace.patch
 kbuild-clang-arm.patch
-current_stack_pointer_arm.patch
 named_register-percpu.patch
 named_register-ptrace.patch
 named_register-return_address.patch

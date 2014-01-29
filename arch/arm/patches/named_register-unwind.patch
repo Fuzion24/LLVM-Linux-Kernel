@@ -7,10 +7,9 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-The existing code uses named registers to get the value of the stack pointer.
-The new current_stack_pointer macro is more readable and allows for a central
-portable implementation of how to get the stack pointer with ASM.  This change
-supports being able to compile the kernel with both gcc and Clang.
+Clang requires an extra asm annotation in order to be able to use a named
+register. This change supports being able to compile the kernel with both gcc
+and Clang.
 
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
@@ -19,27 +18,13 @@ Reviewed-by: Jan-Simon Möller <dl9pf@gmx.de>
  arch/arm/kernel/unwind.c | 3 +--
  1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/arch/arm/kernel/unwind.c b/arch/arm/kernel/unwind.c
-index 00df012..e7f1eec 100644
---- a/arch/arm/kernel/unwind.c
-+++ b/arch/arm/kernel/unwind.c
-@@ -408,7 +408,6 @@ int unwind_frame(struct stackframe *frame)
- void unwind_backtrace(struct pt_regs *regs, struct task_struct *tsk)
+--- linux.orig/arch/arm/kernel/unwind.c
++++ linux/arch/arm/kernel/unwind.c
+@@ -409,6 +409,7 @@
  {
  	struct stackframe frame;
--	register unsigned long current_sp asm ("sp");
+ 	register unsigned long current_sp asm ("sp");
++	asm("" : "=r"(current_sp));
  
  	pr_debug("%s(regs = %p tsk = %p)\n", __func__, regs, tsk);
  
-@@ -424,7 +423,7 @@ void unwind_backtrace(struct pt_regs *regs, struct task_struct *tsk)
- 			 ? regs->ARM_pc : regs->ARM_lr;
- 	} else if (tsk == current) {
- 		frame.fp = (unsigned long)__builtin_frame_address(0);
--		frame.sp = current_sp;
-+		frame.sp = __builtin_stack_pointer();
- 		frame.lr = (unsigned long)__builtin_return_address(0);
- 		frame.pc = (unsigned long)unwind_backtrace;
- 	} else {
--- 
-1.8.1.2
-

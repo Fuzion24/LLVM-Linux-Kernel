@@ -6,10 +6,9 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Use the frame pointer to calculate the start of the stack for current_thread_info()
-The existing code uses the stack pointer to do this calculation.
-Using the frame pointer yeilds the same value in a portable way.
-This change supports being able to compile the kernel with gcc and Clang.
+Clang requires an extra asm annotation in order to be able to use a named
+register. This change supports being able to compile the kernel with both gcc
+and Clang.
 
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
@@ -18,22 +17,13 @@ Reviewed-by: Jan-Simon Möller <dl9pf@gmx.de>
  arch/arm/include/asm/thread_info.h | 5 +++--
  1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/include/asm/thread_info.h b/arch/arm/include/asm/thread_info.h
-index 88a587c..50bf262 100644
---- a/arch/arm/include/asm/thread_info.h
-+++ b/arch/arm/include/asm/thread_info.h
-@@ -104,8 +104,9 @@ static inline struct thread_info *current_thread_info(void) __attribute_const__;
- 
+--- linux.orig/arch/arm/include/asm/thread_info.h
++++ linux/arch/arm/include/asm/thread_info.h
+@@ -107,6 +107,7 @@
  static inline struct thread_info *current_thread_info(void)
  {
--	register unsigned long sp asm ("sp");
--	return (struct thread_info *)(sp & ~(THREAD_SIZE - 1));
-+	return (struct thread_info *)
-+		((u32)(__builtin_stack_pointer())
-+		& ~(THREAD_SIZE - 1));
+ 	register unsigned long sp asm ("sp");
++	asm("" : "=r"(sp));
+ 	return (struct thread_info *)(sp & ~(THREAD_SIZE - 1));
  }
  
- #define thread_saved_pc(tsk)	\
--- 
-1.8.1.2
-
