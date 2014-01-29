@@ -61,7 +61,7 @@ q['title-exact'] = 'true'
 feed = gd_client.GetSpreadsheetsFeed(query=q)
 spreadsheet_id = feed.entry[0].id.text.rsplit('/',1)[1]
 feed = gd_client.GetWorksheetsFeed(spreadsheet_id)
-worksheet_id = feed.entry[0].id.text.rsplit('/',1)[1]
+worksheet_id = feed.entry[2].id.text.rsplit('/',1)[1]
 
 #-------------------------------------------------------------------------------
 # Get row iterator for spreadsheet
