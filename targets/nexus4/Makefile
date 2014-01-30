@@ -42,7 +42,8 @@ include ${TOPDIR}/common.mk
 include ${ARCHDIR}/arm/arm.mk
 include ${CONFIG}
 
-KERNEL_PATCH_DIR+= ${TARGETDIR}/patches ${TARGETDIR}/patches/${KERNEL_REPO_PATCHES}
+KERNEL_PATCH_DIR	+= ${TARGETDIR}/patches-overlay
+KERNEL_PATCH_DIR	+= ${TARGETDIR}/patches
 
 TARGETS+= check-dups kernel-autopatch clean mrproper
 .PHONY: kernel-copy clean mrproper
