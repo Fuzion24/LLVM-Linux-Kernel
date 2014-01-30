@@ -26,7 +26,7 @@ TARGETDIR	= ${CURDIR}
 TOPDIR		= $(realpath ${TARGETDIR}/../..)
 
 #CLANG_TOOLCHAIN	= source
-CLANG_TOOLCHAIN	= prebuilt
+#CLANG_TOOLCHAIN	= prebuilt
 CROSS_AARCH64_TOOLCHAIN = linaro
 
 LLVM_COMMIT = master
@@ -60,7 +60,8 @@ RAZE_TARGETS		+= aarch64-raze
 include ${TOPDIR}/common.mk
 include ${ARCHDIR}/aarch64/aarch64.mk
 
-KERNEL_PATCH_DIR+= ${TARGETDIR}/patches ${TARGETDIR}/patches/${KERNEL_REPO_PATCHES}
+KERNEL_PATCH_DIR	+= ${TARGETDIR}/patches-overlay
+KERNEL_PATCH_DIR	+= ${TARGETDIR}/patches
 
 include ${CONFIG}
 
@@ -70,10 +71,10 @@ state/prep:
 	@mkdir -p ${LOGDIR}
 	$(call state,$@)
 
-arm64-clean: kernel-clean kernel-gcc-clean
+aarch64-clean: kernel-clean kernel-gcc-clean
 	@$(call banner,Cleaning Vexpress)
 
-arm64-mrproper: aarch64-clean kernel-mrproper kernel-gcc-mrproper
+aarch64-mrproper: aarch64-clean kernel-mrproper kernel-gcc-mrproper
 	@$(call banner,Scrubbing Vexpress)
 	@rm -rf ${LOGDIR}/*
 
