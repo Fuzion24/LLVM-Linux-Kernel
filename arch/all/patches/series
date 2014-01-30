@@ -6,7 +6,6 @@ kbuild-clang.patch
 1000-aligned-attribute.patch
 1001-cmpxchg-local-fix-uninitialized-return-code.patch
 1002-compiler-clang.patch
-1003-disable-clang-integrated-as.patch
 cifs.patch
 vlais-dm-crypt.patch
 vlais-hmac.patch

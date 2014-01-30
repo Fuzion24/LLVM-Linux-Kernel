@@ -1,3 +1,4 @@
+disable-clang-integrated-as.patch
 0001-x86-Remove-duplication-of-16-bit-CFLAGS.patch
 0002-x86-Allow-building-16-bit-code-with-m16-with-toolcha.patch
 0003-x86-boot-Work-around-clang-PR18415.patch
