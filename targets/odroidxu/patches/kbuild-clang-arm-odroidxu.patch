@@ -3,7 +3,7 @@
 @@ -386,8 +386,7 @@
  		   -fno-strict-aliasing -fno-common \
  		   -Werror-implicit-function-declaration \
- 		   -Wno-format-security $(call cc-option,-no-integrated-as,) \
+ 		   -Wno-format-security \
 -		   $(call cc-option,-fno-delete-null-pointer-checks,) \
 -		   -fno-schedule-insns2
 +		   $(call cc-option,-fno-delete-null-pointer-checks,)
