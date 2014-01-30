@@ -50,11 +50,11 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
  tune-y := $(tune-y)
  
  ifeq ($(CONFIG_AEABI),y)
--CFLAGS_ABI	:=-mabi=aapcs-linux -mno-thumb-interwork
+-CFLAGS_ABI	:=-mabi=aapcs-linux -mno-thumb-interwork -mfpu=vfp
 +ifeq ($(COMPILER),clang)
-+CFLAGS_ABI	:=
++CFLAGS_ABI	:= -mfpu=vfp
 +else
-+CFLAGS_ABI	:=-mabi=aapcs-linux $(call cc-option,-mno-thumb-interwork,)
++CFLAGS_ABI	:=-mabi=aapcs-linux $(call cc-option,-mno-thumb-interwork,) -mfpu=vfp
 +endif
  else
  CFLAGS_ABI	:=$(call cc-option,-mapcs-32,-mabi=apcs-gnu) $(call cc-option,-mno-thumb-interwork,)
