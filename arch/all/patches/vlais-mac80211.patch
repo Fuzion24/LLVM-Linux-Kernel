@@ -1,3 +1,19 @@
+From 0ad77e805d07feba36e9c937c737a99f4838a99c Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
+Date: Mon, 2 Jul 2012 12:54:28 +0200
+Subject: [PATCH no-upstream-yet] mac80211: LLVMLinux: Remove VLAIS usage from mac80211
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+The use of variable length arrays in structs (VLAIS) in the Linux Kernel code
+precludes the use of compilers which don't implement VLAIS (for instance the
+Clang compiler). This patch instead allocates the appropriate amount of memory
+using an char array.
+
+Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
+---
+
 diff --git a/net/mac80211/aes_ccm.c b/net/mac80211/aes_ccm.c
 index 7c7df47..caaf215 100644
 --- a/net/mac80211/aes_ccm.c

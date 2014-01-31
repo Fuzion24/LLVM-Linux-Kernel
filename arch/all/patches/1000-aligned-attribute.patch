@@ -1,7 +1,7 @@
 From b9f1598eb38769a0801bb24d374d09c3aa575403 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
 Date: Tue, 20 Nov 2012 21:18:16 +0100
-Subject: [PATCH 08/39] crypto: LLVMLinux: aligned-attribute.patch
+Subject: [PATCH] crypto: LLVMLinux: aligned-attribute.patch
 
 __attribute((aligned)) can only be used in type definitions, but
 gcc allows it to be applied to a defined type.

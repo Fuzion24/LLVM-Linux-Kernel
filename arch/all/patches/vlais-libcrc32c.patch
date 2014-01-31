@@ -1,7 +1,7 @@
 From 0ad77e805d07feba36e9c937c737a99f4838a99c Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
 Date: Mon, 2 Jul 2012 12:54:28 +0200
-Subject: [PATCH 16/39] crypto: LLVMLinux: Remove VLAIS usage from libcrc32c.c
+Subject: [PATCH] crypto: LLVMLinux: Remove VLAIS usage from libcrc32c.c
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit

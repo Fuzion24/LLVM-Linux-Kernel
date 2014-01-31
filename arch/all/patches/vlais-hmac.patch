@@ -1,7 +1,7 @@
 From 95f51cb3e4ccb923a0309008cfc75e7d267224f0 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
 Date: Mon, 2 Jul 2012 13:47:40 +0200
-Subject: [PATCH 15/39] crypto: LLVMLinux: Remove VLAIS usage from
+Subject: [PATCH] crypto: LLVMLinux: Remove VLAIS usage from
  crypto/hmac.c
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8

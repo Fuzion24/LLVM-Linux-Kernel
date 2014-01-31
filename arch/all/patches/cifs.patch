@@ -1,8 +1,7 @@
 From a9afb4ef6ff8923517515c00590699e233581e67 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
 Date: Tue, 4 Jun 2013 19:17:28 +0200
-Subject: [PATCH 12/39] crypto, cifs: LLVMLinux: ctx[] is not used. Fix warning
- when compiling with clang.
+Subject: [PATCH] crypto, cifs: LLVMLinux: Remove used of VLIAS from cifs
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
