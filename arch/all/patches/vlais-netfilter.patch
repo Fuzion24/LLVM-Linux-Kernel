@@ -1,7 +1,7 @@
 From 0852d16e9a12c285a5ac40965743f3cde7ebad3d Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 3 Sep 2013 22:27:25 -0400
-Subject: [PATCH 17/39] netfilter: LLVMLinux: Remove the use of VLAIS from
+Subject: [PATCH] netfilter: LLVMLinux: Remove the use of VLAIS from
  netfilter
 
 Replaced use of VLAIS in xt_repldata.h with a flexible array member

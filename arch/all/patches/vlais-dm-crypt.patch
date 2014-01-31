@@ -1,7 +1,7 @@
 From 27bcd2d873f6fe592911c736fca3daff37656e14 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
 Date: Mon, 2 Jul 2012 13:50:54 +0200
-Subject: [PATCH 13/39] crypto, dm: LLVMLinux: Remove VLAIS usage from dm-crypt
+Subject: [PATCH] crypto, dm: LLVMLinux: Remove VLAIS usage from dm-crypt
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit

@@ -1,7 +1,7 @@
 From 5c2c83ce7d2eb34eef895da7bcbc0f9026d29bb5 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
 Date: Mon, 2 Jul 2012 13:48:30 +0200
-Subject: [PATCH 18/39] crypto: LLVMLinux: Remove VLAIS usage from
+Subject: [PATCH] crypto: LLVMLinux: Remove VLAIS usage from
  crypto/testmgr.c
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8

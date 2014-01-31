@@ -1,7 +1,8 @@
 From dd73123cf886d6994a96ac84fc004afe002fcc72 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
 Date: Tue, 20 Nov 2012 21:21:12 +0100
-Subject: [PATCH 11/39] Kbuild: LLVMLinux: disable-clang-integrated-as.patch
+Subject: [PATCH] Kbuild: LLVMLinux: Disable the use of the Integrated Assembler
+ when compiling with Clang
 
 Globally disable the use of the Clang Integrated Assembler (IA). Use gas
 instead. IA doesn't support the gas assembly extensions used in the kernel

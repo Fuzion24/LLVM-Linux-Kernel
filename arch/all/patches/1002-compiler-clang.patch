@@ -1,7 +1,7 @@
 From a511f71130a71ae0cbd53df74092a7ebcefd4a0b Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
 Date: Tue, 20 Nov 2012 22:13:10 +0100
-Subject: [PATCH 10/39] LLVMLinux: Add support for clang to compiler.h and new
+Subject: [PATCH] LLVMLinux: Add support for clang to compiler.h and new
  compiler-clang.h
 
 Add a compiler-clang.h file to add specific macros needed for compiling the
