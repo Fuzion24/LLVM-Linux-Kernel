@@ -11,6 +11,7 @@ instead.
 
 Author: Behan Webster <behanw@converseincode.com>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
+Reviewed-by: Mark Charlebois <charlebm@gmail.com>
 ---
  arch/arm/include/asm/glue-cache.h | 22 +++++++++++-----------
  1 file changed, 11 insertions(+), 11 deletions(-)

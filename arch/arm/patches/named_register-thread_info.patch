@@ -10,8 +10,8 @@ Clang requires an extra asm annotation in order to be able to use a named
 register. This change supports being able to compile the kernel with both gcc
 and Clang.
 
-Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
+Reviewed-by: Mark Charlebois <charlebm@gmail.com>
 Reviewed-by: Jan-Simon Möller <dl9pf@gmx.de>
 ---
  arch/arm/include/asm/thread_info.h | 5 +++--
