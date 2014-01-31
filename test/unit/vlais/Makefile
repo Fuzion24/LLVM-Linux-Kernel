@@ -151,3 +151,11 @@ clean:
 	rm -f $(TARGET) *.o
 distclean: clean
 	rm -f *.asm *.dat *.log
+
+
+netfilter_clang: netfilter.c
+	${CLANG} $< -o $@
+
+netfilter_gcc: netfilter.c
+	gcc $< -o $@
+
