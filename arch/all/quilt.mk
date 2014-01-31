@@ -126,12 +126,15 @@ kernel-quilt-update-series-dot-target: ${SERIES_DOT_TARGET}
 		>> ${SERIES_DOT_TARGET}; touch ${SERIES_DOT_TARGET})
 
 ##############################################################################
+uniq = perl -ne 'print unless $$u{$$_}; $$u{$$_}=1'
+
+##############################################################################
 # Generate target series file from relevant kernel quilt patch series files
 kernel-quilt-generate-series: ${TARGET_PATCH_SERIES}
 ${TARGET_PATCH_SERIES}: ${ALL_PATCH_SERIES}
 	@$(MAKE) kernel-quilt-update-series-dot-target
 	@$(call banner,Building quilt series file for kernel...)
-	@cat ${ALL_PATCH_SERIES} > $@
+	@cat ${ALL_PATCH_SERIES} | $(call uniq) > $@
 
 ##############################################################################
 # Have git ignore extra patch files
