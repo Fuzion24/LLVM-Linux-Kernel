@@ -1,9 +1,6 @@
-0001-x86-Remove-duplication-of-16-bit-CFLAGS.patch
-0002-x86-Allow-building-16-bit-code-with-m16-with-toolcha.patch
 0003-x86-boot-Work-around-clang-PR18415.patch
 0004-LLVMLinux-Clang-doesn-t-support-the-gcc-flags-set-by.patch
 0005-x86-LLVMLinux-Add-option-for-clang-in-export-of-memc.patch
-0006-x86-LLVMLinux-Reimplement-current_stack_pointer-with.patch
 0007-x86-acpi-LLVMLinux-Remove-nested-functions-from-Thin.patch
 0008-KBuild-x86-LLVMLinux-Ad-no-integrated-as-to-arch-x86.patch
 0009-Kbuild-LLVMLinux-Add-no-integrated-as-to-arch-x86-bo.patch
