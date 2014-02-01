@@ -1,7 +1,8 @@
-From 6f4c2f41bf320ff2350b62e1285a5755cf9f4a17 Mon Sep 17 00:00:00 2001
+From f9824de4469fcb98ad0c7875f0d1d5f5db3f03ab Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 12 Feb 2013 22:25:57 -0500
-Subject: [PATCH] Remove nested functions from Thinkpad ACPI
+Subject: [PATCH 07/10] x86, acpi: LLVMLinux: Remove nested functions from
+ Thinkpad ACPI
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -24,10 +25,10 @@ Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
  1 file changed, 45 insertions(+), 41 deletions(-)
 
 diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
-index 54d31c0..eba2359 100644
+index 58b0274..8a61b69 100644
 --- a/drivers/platform/x86/thinkpad_acpi.c
 +++ b/drivers/platform/x86/thinkpad_acpi.c
-@@ -2324,53 +2324,55 @@ static void hotkey_read_nvram(struct tp_nvram_state *n, const u32 m)
+@@ -2327,53 +2327,55 @@ static void hotkey_read_nvram(struct tp_nvram_state *n, const u32 m)
  	}
  }
  
@@ -121,7 +122,7 @@ index 54d31c0..eba2359 100644
  
  	TPACPI_COMPARE_KEY(TP_ACPI_HOTKEYSCAN_THINKPAD, thinkpad_toggle);
  	TPACPI_COMPARE_KEY(TP_ACPI_HOTKEYSCAN_FNSPACE, zoom_toggle);
-@@ -2405,7 +2407,8 @@ static void hotkey_compare_and_issue_event(struct tp_nvram_state *oldn,
+@@ -2408,7 +2410,8 @@ static void hotkey_compare_and_issue_event(struct tp_nvram_state *oldn,
  		    oldn->volume_level != newn->volume_level) {
  			/* recently muted, or repeated mute keypress, or
  			 * multiple presses ending in mute */
@@ -131,7 +132,7 @@ index 54d31c0..eba2359 100644
  			TPACPI_MAY_SEND_KEY(TP_ACPI_HOTKEYSCAN_MUTE);
  		}
  	} else {
-@@ -2415,7 +2418,8 @@ static void hotkey_compare_and_issue_event(struct tp_nvram_state *oldn,
+@@ -2418,7 +2421,8 @@ static void hotkey_compare_and_issue_event(struct tp_nvram_state *oldn,
  			TPACPI_MAY_SEND_KEY(TP_ACPI_HOTKEYSCAN_VOLUMEUP);
  		}
  		if (oldn->volume_level != newn->volume_level) {
@@ -141,7 +142,7 @@ index 54d31c0..eba2359 100644
  		} else if (oldn->volume_toggle != newn->volume_toggle) {
  			/* repeated vol up/down keypress at end of scale ? */
  			if (newn->volume_level == 0)
-@@ -2428,7 +2432,7 @@ static void hotkey_compare_and_issue_event(struct tp_nvram_state *oldn,
+@@ -2431,7 +2435,7 @@ static void hotkey_compare_and_issue_event(struct tp_nvram_state *oldn,
  	/* handle brightness */
  	if (oldn->brightness_level != newn->brightness_level) {
  		issue_brightnesschange(oldn->brightness_level,
@@ -151,5 +152,5 @@ index 54d31c0..eba2359 100644
  		/* repeated key presses that didn't change state */
  		if (newn->brightness_level == 0)
 -- 
-1.8.1.2
+1.8.1.4
 
