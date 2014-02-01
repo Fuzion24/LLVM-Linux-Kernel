@@ -24,7 +24,7 @@
 
 TARGETDIR	= ${CURDIR}
 TOPDIR		= $(realpath ${TARGETDIR}/../..)
-CROSS_ARM_TOOLCHAIN = android
+CROSS_ARM_TOOLCHAIN = codesourcery
 CLANG_TOOLCHAIN=prebuilt
 
 KERNEL_BRANCH	= msm-3.10
@@ -42,9 +42,11 @@ all: prep kernel-build
 
 include ${TOPDIR}/common.mk
 include ${ARCHDIR}/arm/arm.mk
-include ${CONFIG}
 
-KERNEL_PATCH_DIR+= ${TARGETDIR}/patches ${TARGETDIR}/patches/${KERNEL_REPO_PATCHES}
+KERNEL_PATCH_DIR	+= ${TARGETDIR}/patches-overlay
+KERNEL_PATCH_DIR	+= ${TARGETDIR}/patches
+
+include ${CONFIG}
 
 TARGETS+= kernel-autopatch clean mrproper
 .PHONY: kernel-copy clean mrproper
