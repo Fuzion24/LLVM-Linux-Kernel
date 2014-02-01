@@ -11,6 +11,7 @@ and removing the NULL version of return_address in return_address.c does
 the right thing.
 
 Signed-off-by: Behan Webster <behanw@converseincode.com>
+Reviewed-by: Mark Charlebois <charlebm@gmail.com>
 ---
  arch/arm/include/asm/ftrace.h    | 2 +-
  arch/arm/kernel/return_address.c | 5 -----
