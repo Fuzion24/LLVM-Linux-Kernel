@@ -5,7 +5,9 @@ Subject: [PATCH] LLVMLinux: Remove warning about returning an uninitialized vari
 
 Fix uninitialized return code in default case in cmpxchg-local.h
 
-This patch fixes warning when compiling the Linux kernel with Clang.
+This patch fixes the code to prevent an uninitialized return value that is detected
+when compiling with clang. The bug produces numerous warnings when compiling the
+Linux kernel with clang.
 
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
@@ -19,7 +21,7 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
  		break;
  	default:
  		wrong_size_cmpxchg(ptr);
-+		prev = 0; /* Shut the compiler up */
++		prev = 0;
  	}
  	raw_local_irq_restore(flags);
  	return prev;

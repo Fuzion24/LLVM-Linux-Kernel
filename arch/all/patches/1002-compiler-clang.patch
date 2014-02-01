@@ -7,6 +7,9 @@ Subject: [PATCH] LLVMLinux: Add support for clang to compiler.h and new
 Add a compiler-clang.h file to add specific macros needed for compiling the
 kernel with clang.
 
+Initially the only override required is the macro for silencing the
+compiler for a purposefully uninintialized variable.
+
 Author: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 ---

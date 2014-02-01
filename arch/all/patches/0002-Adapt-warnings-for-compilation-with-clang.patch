@@ -15,6 +15,7 @@ URL:     http://llvm.linuxfoundation.org
 Merge:   Jan-Simon Möller <dl9pf@gmx.de>
 Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
+Reviewed-by: Mark Charlebois <mcharleb@gmail.com>
 ---
  scripts/Makefile.build | 13 ++++++++++++-
  1 file changed, 12 insertions(+), 1 deletion(-)

@@ -1,5 +1,6 @@
-Replaced use of VLAIS in xt_repldata.h with a flexible array member
-and the calculated offsets of other struct members and ued pointers
+Replaced use of non-standard C use of variable length arrays in
+structs (VLAIS) in xt_repldata.h with a flexible array member
+and the calculated offsets of other struct members and used pointers
 to the data. Per the file, these data are not reference by name
 and the memory layout is preserved.
 
@@ -7,12 +8,18 @@ This patch was updated for corrections and to add any trailing
 padding that the structure would have originally allocated using 
 VLAIS.
 
-The original code seems to assume that there will be no pad bytes 
-between tbl->entries[nhooks] and tbl->term or the following 
-calculation would be incorrect:
+The code also seems to assume that there will be no pad bytes
+after tbl->repl or between tbl->entries[nhooks] and tbl->term or
+the following calculation would be incorrect:
 
 tbl->repl.size = nhooks * sizeof(struct type##_standard) + \
                         sizeof(struct type##_error); \
+
+and tbl->repl.data[tbl->repl.size] would only contain part of
+tbl->term and tbl->entries[0] would not start at repl.data[0]
+unless there was no structure padding after tbl->repl.
+
+This patch makes no attempt to change the existing behavior.
 
 
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
@@ -28,7 +35,7 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
  
 +#define padbytes(offset, type) ((-offset) & (__alignof__(type)-1))
 +
-+/* tbl has the following structure equivalent, but without using VLAIS:
++/* tbl has the following structure equivalent, but is C compliant:
 + * struct {
 + *	struct type##_replace repl;
 + *	struct type##_standard entries[nhooks];
