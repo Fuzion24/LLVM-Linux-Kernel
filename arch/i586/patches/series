@@ -6,3 +6,4 @@
 0009-Kbuild-LLVMLinux-Add-no-integrated-as-to-arch-x86-bo.patch
 0010-clang.patch
 9001-LLVMLinux-NOUPSTREAM-support-older-versions-of-clang.patch
+9999_LLVMLinux-NOUPSTREAM-workaround_buildbot.patch
