@@ -1,0 +1,14 @@
+Author: Mark Charlebois <charlebm@gmail.com>
+Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+---
+--- linux.orig/Makefile
++++ linux/Makefile
+@@ -394,7 +394,8 @@
+ 		   -fno-strict-aliasing -fno-common \
+ 		   -Werror-implicit-function-declaration \
+ 		   -Wno-format-security \
+		   $(call cc-option,-no-integrated-as,) \
++	           -Wno-unused-function \
+ 		   $(call cc-option,-fno-delete-null-pointer-checks,)
+ KBUILD_AFLAGS_KERNEL :=
+ KBUILD_CFLAGS_KERNEL :=

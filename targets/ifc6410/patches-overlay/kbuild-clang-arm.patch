@@ -13,7 +13,7 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 +KBUILD_CPPFLAGS	+= $(call cc-option,-target $(CROSS_COMPILE:-=),)
 +KBUILD_CFLAGS   += $(call cc-option,-fno-builtin,)
 +KBUILD_CFLAGS   += $(call cc-disable-warning,asm-operand-widths)
-+KBUILD_CFLAGS   += $(call cc-option,-mno-warn-deprecated,)
++KBUILD_CFLAGS   += $(call cc-option,-Xassembler -mno-warn-deprecated,)
 +#endif
  
  # Never generate .eh_frame

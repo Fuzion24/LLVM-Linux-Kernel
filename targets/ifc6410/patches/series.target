@@ -1,2 +1,2 @@
 clang-unsupported.patch
-gpu-pragma.patch
+unused-function.patch
