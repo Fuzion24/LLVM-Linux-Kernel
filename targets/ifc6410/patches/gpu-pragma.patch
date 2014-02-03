@@ -1,0 +1,15 @@
+diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
+index 333b672b..9484dc3 100644
+--- a/drivers/gpu/drm/msm/msm_drv.c
++++ b/drivers/gpu/drm/msm/msm_drv.c
+@@ -54,7 +54,10 @@ module_param(reglog, bool, 0600);
+ 
+ static char *vram;
+ MODULE_PARM_DESC(vram, "Configure VRAM size (for devices without IOMMU/GPUMMU");
++#pragma clang diagnostic push
++#pragma clang diagnostic ignored "-Wunused-function"
+ module_param(vram, charp, 0);
++#pragma clang diagnostic pop
+ 
+ void __iomem *msm_ioremap(struct platform_device *pdev, const char *name,
+ 		const char *dbgname)
