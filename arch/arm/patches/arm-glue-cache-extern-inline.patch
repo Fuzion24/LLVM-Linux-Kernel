@@ -1,7 +1,7 @@
 From 70b13f02833a2b947e0ac6d5194f133b0d004b70 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 3 Sep 2013 22:27:26 -0400
-Subject: [PATCH 30/39] ARM: LLVMLinux: Change "extern inline" to "static
+Subject: [PATCH] ARM: LLVMLinux: Change "extern inline" to "static
  inline" in glue-cache.h
 
 With compilers which follow the C99 standard (like modern versions of gcc and
