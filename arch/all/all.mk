@@ -449,13 +449,13 @@ kernel-shared-sync:
 	@(cd ${SHARED_KERNEL} && git fetch origin +refs/heads/*:refs/heads/*)
 
 #############################################################################
-kernel-sync: state/kernel-fetch kernel-shared-sync kernel-clean
+kernel-sync: state/kernel-fetch kernel-clean kernel-shared-sync
 	@$(call banner,Syncing kernel...)
 	@$(call check_llvmlinux_commit,${CONFIG})
 	@$(call gitsync,${KERNELDIR},${KERNEL_COMMIT},${KERNEL_BRANCH},${KERNEL_TAG})
 
 #############################################################################
-kernel-gcc-sync: state/kernel-gcc-fetch kernel-sync kernel-gcc-clean
+kernel-gcc-sync: state/kernel-gcc-fetch kernel-gcc-clean kernel-shared-sync
 	@$(call banner,Syncing gcc kernel...)
 	@$(call check_llvmlinux_commit,${CONFIG})
 	@$(call gitsync,${KERNELGCC},${KERNEL_COMMIT},${KERNEL_BRANCH},${KERNEL_TAG})
@@ -486,6 +486,22 @@ kernel-rebuild kernel-gcc-rebuild: kernel-%rebuild:
 kernel-rebuild-verbose kernel-gcc-rebuild-verbose: kernel-%rebuild-verbose:
 	@$(call leavestate,${STATEDIR},kernel-$*build)
 	@$(MAKE) JOBS=1 V=1 kernel-$*build
+
+#############################################################################
+BUILD_LOG	= ${TMPDIR}/build.log
+BUILD_WARNINGS	= ${TMPDIR}/build-warnings.log
+warnings-save: ${BUILD_LOG}
+${BUILD_LOG}:
+	@$(MAKE) kernel-clean kernel-build 2>&1 | tee $@
+warnings-grep: ${BUILD_WARNINGS}
+${BUILD_WARNINGS}: ${BUILD_LOG}
+	@grep ': warning:' $< > $@
+warnings-sort: ${BUILD_WARNINGS}
+	@sort -k3,4 $<
+warnings-kind: ${BUILD_WARNINGS}
+	@sort -k3,4 $< \
+		| sed -e 's/__check_.* /__check_* /g' \
+		| cut -d' ' -f2- | sort -u
 
 #############################################################################
 kernel-version:
