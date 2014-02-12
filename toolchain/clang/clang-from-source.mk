@@ -81,10 +81,10 @@ LLVM_GIT	= "http://llvm.org/git/llvm.git"
 CLANG_GIT	= "http://llvm.org/git/clang.git"
 #COMPILERRT_GIT	= "http://llvm.org/git/compiler-rt.git"
 
-LLVM_BRANCH	= release_34
-CLANG_BRANCH	= release_34
-#LLVM_BRANCH	= master
-#CLANG_BRANCH	= master
+LLVM_BRANCH	?= release_34
+CLANG_BRANCH	?= release_34
+#LLVM_BRANCH	?= master
+#CLANG_BRANCH	?= master
 #COMPILERRT_BRANCH = master
 # The buildbot takes quite long to build the debug-version of clang (debug+asserts).
 # Introducing this option to switch between debug and optimized.
