@@ -1,5 +1,5 @@
 From fc4e8affe20a92cc0854d98a44064d53fe969088 Mon Sep 17 00:00:00 2001
-From: Behan Webster <behanw@converseincode.com>
+From: Mark Charlebois <charlebm@gmail.com>
 Date: Tue, 3 Sep 2013 22:27:26 -0400
 Subject: [PATCH] arm64: LLVMLinux: Provide __aeabi_* symbols which are
  needed for Clang

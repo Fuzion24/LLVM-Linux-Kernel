@@ -9,8 +9,8 @@ using clang instead of gcc.  Add more or different options when using clang as
 well.
 
 Author: Behan Webster <behanw@converseincode.com>
-Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
+Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 
 --- linux.orig/arch/arm64/Makefile
 +++ linux/arch/arm64/Makefile

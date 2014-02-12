@@ -1,4 +1,4 @@
-From 462a72cd045ea0303e669fd6c281de807d114cd5 Mon Sep 17 00:00:00 2001
+From bd5fa1856d2f94f2e9ac0c5ddf025fac19db0e33 Mon Sep 17 00:00:00 2001
 From: Mark Charlebois <charlebm@gmail.com>
 Date: Wed, 12 Feb 2014 12:16:55 -0800
 Subject: [PATCH] arm64: LLVMLinux: Remove cmpxchg warning about uninitialized
@@ -21,7 +21,7 @@ index 57c0fa7..3a2e63c 100644
  			: "memory");
  		break;
  	default:
-+		ret=0;
++		ret = 0;
  		BUILD_BUG();
  	}
  
@@ -29,7 +29,7 @@ index 57c0fa7..3a2e63c 100644
  		break;
  
  	default:
-+		res=0;
++		res = 0;
  		BUILD_BUG();
  	}
  

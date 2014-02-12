@@ -1,5 +1,5 @@
-From f4a5d1d766f0395e3b42763c8d7922752c5d437d Mon Sep 17 00:00:00 2001
-From: Mark Charlebois <charlebm@gmail.com>
+From c6f7bd68d1df43d39a6ac792d44732feaa44bb4c Mon Sep 17 00:00:00 2001
+From: Behan Webster <behanw@converseincode.com>
 Date: Wed, 12 Feb 2014 12:16:49 -0800
 Subject: [PATCH] arm64: LLVMLinux: Use current_stack_pointer in kernel/traps.c
 
