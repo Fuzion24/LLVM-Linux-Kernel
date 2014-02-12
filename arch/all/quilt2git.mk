@@ -29,10 +29,10 @@ kernel-git-import-quilt-patches: kernel-fetch kernel-quilt-link-patches
 	@$(call gitcheckout,${KERNELDIR},${KERNEL_BRANCH})
 	@$(call unpatch,${KERNELDIR})
 	@$(call leavestate,${STATEDIR},kernel-patch)
-	-@$(call git,${KERNELDIR}, rebase --continue)
-	-@$(call git,${KERNELDIR}, branch -D ${TMP_BRANCH})
+	-@$(call git,${KERNELDIR}, rebase --continue) >/dev/null 2>&1
+	-@$(call git,${KERNELDIR}, branch -D ${TMP_BRANCH}) >/dev/null 2>&1
 	@$(call gitcheckout,${KERNELDIR},-b ${TMP_BRANCH})
-	-@$(call git,${KERNELDIR}, rebase --continue)
+	-@$(call git,${KERNELDIR}, rebase --continue) >/dev/null 2>&1
 	@$(call git,${KERNELDIR}, quiltimport ${TMP_BRANCH})
 	@$(call gitcheckout,${KERNELDIR},${KERNEL_BRANCH})
 
@@ -59,8 +59,21 @@ kernel-quilt-rename-patches:
 		[ -n "$$FILE" ] && mv $$NEWPATCH $$FILE; \
 	done)
 
-kernel-quilt-import-git-patches: kernel-git-export-patches kernel-quilt-rename-patches
+kernel-quilt-fix-unchanged-patches:
+	@for PATCH in `git status | awk '/#.*modified.*patch/ {print $$3}'`; do \
+		CHANGED=`GIT_EXTERNAL_DIFF=${TOOLSDIR}/patchdiff git diff $$PATCH 2>/dev/null | wc -l`; \
+		if [ $$CHANGED -eq 0 ] ; then \
+			git checkout $$PATCH; \
+		else \
+			echo "modified: $$PATCH"; \
+		fi ; \
+	done
+
+kernel-quilt-import-git-patches: kernel-git-export-patches
+	$(MAKE) kernel-quilt-rename-patches
 	$(MAKE) kernel-quilt-link-patches
+	$(MAKE) kernel-quilt-fix-unchanged-patches
+	@$(call banner,Patches successfully sent through git back to quilt series)
 
 kernel-git-quilt-delete-branch:
 	@$(call banner,Deleting git branch: ${TMP_BRANCH}...)
