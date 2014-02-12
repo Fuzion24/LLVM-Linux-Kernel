@@ -10,6 +10,9 @@ Content-Transfer-Encoding: 8bit
 Add support to toplevel Makefile for compiling with clang, both for
 HOSTCC and CC
 
+Part of this patch disables the use of -fno-delete-null-pointer-checks when
+used with clang (PR9251)
+
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>

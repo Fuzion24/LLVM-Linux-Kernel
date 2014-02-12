@@ -9,6 +9,8 @@ gcc allows it to be applied to a defined type.
 This patch fixes errors when compiling the Linux kernel with Clang.
 Breaking this code into 2 lines also makes it more understandable.
 
+This is also reported as LLVM PR11071
+
 Author: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 ---

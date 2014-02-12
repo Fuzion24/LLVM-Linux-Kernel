@@ -6,6 +6,8 @@ Subject: [PATCH] LLVMLinux: Clang doesn't support the gcc flags set by
 
 Ignore the flags set in Kconfig for hweight if the compiler is clang.
 
+This is also reported as LLVM PR9457
+
 Author: Behan Webster <behanw@converseincode.com>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 ---
