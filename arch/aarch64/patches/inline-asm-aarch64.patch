@@ -1,3 +1,12 @@
+From 907f58e9e45f9b8cd702b391e08378e724d09dda Mon Sep 17 00:00:00 2001
+From: Mark Charlebois <charlebm@gmail.com>
+Date: Wed, 12 Feb 2014 12:16:58 -0800
+Subject: [PATCH] arm64: LLVMLinux: Fix inline arm64 assembly for use with clang
+
+Fix variable types for 64-bit inline assembly.
+
+Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+---
 diff --git a/arch/arm64/include/asm/arm_generic.h b/arch/arm64/include/asm/arm_generic.h
 index e4cec9d..6c2be8c 100644
 --- a/arch/arm64/include/asm/arm_generic.h

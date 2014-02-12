@@ -1,6 +1,22 @@
---- linux.orig/arch/arm64/include/asm/thread_info.h
-+++ linux/arch/arm64/include/asm/thread_info.h
-@@ -84,8 +84,9 @@
+From d9aeadf4a903e7f431650f8b32e230eaa9730516 Mon Sep 17 00:00:00 2001
+From: Behan Webster <behanw@converseincode.com>
+Date: Tue, 3 Sep 2013 22:27:27 -0400
+Subject: [PATCH] arm64: LLVMLinux: Calculate current_thread_info from fp
+
+Use the frame pointer to calculate the location of thread info.
+This change supports being able to compile the kernel with both gcc
+and Clang.
+
+Signed-off-by: Behan Webster <behanw@converseincode.com>
+---
+ arch/arm64/include/asm/thread_info.h | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm64/include/asm/thread_info.h b/arch/arm64/include/asm/thread_info.h
+index 4d65428..98f9d7d 100644
+--- a/arch/arm64/include/asm/thread_info.h
++++ b/arch/arm64/include/asm/thread_info.h
+@@ -84,8 +84,9 @@ static inline struct thread_info *current_thread_info(void) __attribute_const__;
  
  static inline struct thread_info *current_thread_info(void)
  {
@@ -12,3 +28,6 @@
  }
  
  #define thread_saved_pc(tsk)	\
+-- 
+1.8.3.2
+

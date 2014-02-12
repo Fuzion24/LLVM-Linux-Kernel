@@ -1,16 +1,31 @@
+From 462a72cd045ea0303e669fd6c281de807d114cd5 Mon Sep 17 00:00:00 2001
+From: Mark Charlebois <charlebm@gmail.com>
+Date: Wed, 12 Feb 2014 12:16:55 -0800
+Subject: [PATCH] arm64: LLVMLinux: Remove cmpxchg warning about uninitialized
+ return variable
+
+Make sure the return value in AARCH64 __xchg() and __cmpxchg() is initialized
+in the default case of the switch so that we never return an uninitialized
+value.
+
+Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+---
+ arch/arm64/include/asm/cmpxchg.h | 2 ++
+ 1 file changed, 2 insertions(+)
+
 diff --git a/arch/arm64/include/asm/cmpxchg.h b/arch/arm64/include/asm/cmpxchg.h
-index e0e65b0..7c83c9f 100644
+index 57c0fa7..3a2e63c 100644
 --- a/arch/arm64/include/asm/cmpxchg.h
 +++ b/arch/arm64/include/asm/cmpxchg.h
 @@ -64,6 +64,7 @@ static inline unsigned long __xchg(unsigned long x, volatile void *ptr, int size
- 			: "memory", "cc");
+ 			: "memory");
  		break;
  	default:
 +		ret=0;
  		BUILD_BUG();
  	}
  
-@@ -140,6 +141,7 @@ static inline unsigned long __cmpxchg(volatile void *ptr, unsigned long old,
+@@ -141,6 +142,7 @@ static inline unsigned long __cmpxchg(volatile void *ptr, unsigned long old,
  		break;
  
  	default:
@@ -18,3 +33,6 @@ index e0e65b0..7c83c9f 100644
  		BUILD_BUG();
  	}
  
+-- 
+1.8.3.2
+
