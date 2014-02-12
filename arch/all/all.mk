@@ -252,6 +252,7 @@ kernel-settings:
 	) | $(call configfilter)
 
 include ${ARCHDIR}/all/quilt.mk
+include ${ARCHDIR}/all/quilt2git.mk
 
 #############################################################################
 # The shared kernel is a bare repository of Linus' kernel.org kernel
