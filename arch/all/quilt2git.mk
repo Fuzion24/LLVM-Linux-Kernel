@@ -24,7 +24,7 @@ TMP_BRANCH	?= tmp
 PUSH_BRANCH	?= $(shell date +llvmlinux-%Y.%m.%d-%H%M)
 
 #############################################################################
-kernel-git-import-quilt-patches: kernel-quilt-link-patches
+kernel-git-import-quilt-patches: kernel-fetch kernel-quilt-link-patches
 	@$(call banner,Importing quilt patch series into git branch: ${TMP_BRANCH}...)
 	@$(call gitcheckout,${KERNELDIR},${KERNEL_BRANCH})
 	@$(call unpatch,${KERNELDIR})
