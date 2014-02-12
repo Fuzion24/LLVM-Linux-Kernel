@@ -1,4 +1,4 @@
-From 19c0b3983c0682bbdc7a7ac17d882440addd867c Mon Sep 17 00:00:00 2001
+From 68bc019c5eacd4de9ff527aefc9e89b88bf89653 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 3 Sep 2013 22:27:26 -0400
 Subject: [PATCH] Kbuild arm64: LLVMLinux: Add Kbuild support for building arch
@@ -11,7 +11,6 @@ well.
 Author: Behan Webster <behanw@converseincode.com>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
-
 ---
  arch/arm64/Makefile | 15 +++++++++++----
  1 file changed, 11 insertions(+), 4 deletions(-)

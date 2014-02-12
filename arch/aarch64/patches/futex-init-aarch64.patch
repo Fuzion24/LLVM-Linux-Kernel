@@ -1,4 +1,4 @@
-From 2b8022764a1a89df0d60289a2acec0a649c46efe Mon Sep 17 00:00:00 2001
+From 38f6ab46b6551f6792cc8a5c0fdfe58ce7f74a29 Mon Sep 17 00:00:00 2001
 From: Mark Charlebois <charlebm@gmail.com>
 Date: Wed, 12 Feb 2014 12:16:58 -0800
 Subject: [PATCH] arm64: LLVMLinux: Check for NULL in
@@ -9,12 +9,14 @@ to xzr and compilation will fail.
 
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 ---
- arch/arm64/include/asm/futex.h | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ arch/arm64/include/asm/futex.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- linux.orig/arch/arm64/include/asm/futex.h
-+++ linux/arch/arm64/include/asm/futex.h
-@@ -108,7 +108,7 @@
+diff --git a/arch/arm64/include/asm/futex.h b/arch/arm64/include/asm/futex.h
+index 5f750dc..b6f9792 100644
+--- a/arch/arm64/include/asm/futex.h
++++ b/arch/arm64/include/asm/futex.h
+@@ -108,7 +108,7 @@ futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
  	int ret = 0;
  	u32 val, tmp;
  
@@ -23,3 +25,6 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
  		return -EFAULT;
  
  	asm volatile("// futex_atomic_cmpxchg_inatomic\n"
+-- 
+1.8.3.2
+
