@@ -26,10 +26,13 @@ PUSH_BRANCH	?= $(shell date +llvmlinux-%Y.%m.%d-%H%M)
 #############################################################################
 kernel-git-import-quilt-patches: kernel-quilt-link-patches
 	@$(call banner,Importing quilt patch series into git branch: ${TMP_BRANCH}...)
+	@$(call gitcheckout,${KERNELDIR},${KERNEL_BRANCH})
 	@$(call unpatch,${KERNELDIR})
 	@$(call leavestate,${STATEDIR},kernel-patch)
+	-@$(call git,${KERNELDIR}, rebase --continue)
 	-@$(call git,${KERNELDIR}, branch -D ${TMP_BRANCH})
 	@$(call gitcheckout,${KERNELDIR},-b ${TMP_BRANCH})
+	-@$(call git,${KERNELDIR}, rebase --continue)
 	@$(call git,${KERNELDIR}, quiltimport ${TMP_BRANCH})
 	@$(call gitcheckout,${KERNELDIR},${KERNEL_BRANCH})
 
@@ -56,7 +59,8 @@ kernel-quilt-rename-patches:
 		[ -n "$$FILE" ] && mv $$NEWPATCH $$FILE; \
 	done)
 
-kernel-quilt-import-git-patches: kernel-git-export-patches kernel-quilt-rename-patches kernel-quilt-link-patches
+kernel-quilt-import-git-patches: kernel-git-export-patches kernel-quilt-rename-patches
+	$(MAKE) kernel-quilt-link-patches
 
 kernel-git-quilt-delete-branch:
 	@$(call banner,Deleting git branch: ${TMP_BRANCH}...)
