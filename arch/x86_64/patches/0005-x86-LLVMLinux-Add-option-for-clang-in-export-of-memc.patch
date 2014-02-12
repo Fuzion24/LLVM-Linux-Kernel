@@ -1,8 +1,7 @@
-From b46cb8fe5d9dd47851c8b7ffd6fab318dee02d1a Mon Sep 17 00:00:00 2001
+From 935bbe4f50caae2ccda0b1c6ba70bcce201c2910 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
 Date: Wed, 14 Nov 2012 12:45:08 +0100
-Subject: [PATCH 05/10] x86: LLVMLinux: Add option for clang in export of
- memcpy.
+Subject: [PATCH] x86: LLVMLinux: Add option for clang in export of memcpy.
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit

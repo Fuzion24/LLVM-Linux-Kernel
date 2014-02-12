@@ -1,7 +1,7 @@
-From f84ac35019cec8aee839aa8efb89e28de2c5219e Mon Sep 17 00:00:00 2001
+From d710f510b590cb8b65cc6714ad41e0ec07a6ec9d Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
 Date: Wed, 14 Nov 2012 11:38:47 +0100
-Subject: [PATCH 08/10] KBuild, x86: LLVMLinux: Ad no-integrated-as to
+Subject: [PATCH] KBuild, x86: LLVMLinux: Ad no-integrated-as to
  arch/x86/realmode/rm/Makefile.
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
