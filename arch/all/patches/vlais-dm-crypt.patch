@@ -1,4 +1,4 @@
-From 27bcd2d873f6fe592911c736fca3daff37656e14 Mon Sep 17 00:00:00 2001
+From cdb4be8984cbd9f68803f8d30d0570fe7d6bdc48 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
 Date: Mon, 2 Jul 2012 13:50:54 +0200
 Subject: [PATCH] crypto, dm: LLVMLinux: Remove VLAIS usage from dm-crypt
@@ -23,10 +23,10 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
  1 file changed, 11 insertions(+), 11 deletions(-)
 
 diff --git a/drivers/md/dm-crypt.c b/drivers/md/dm-crypt.c
-index 6d2d41a..c511e30 100644
+index 784695d..8b45281 100644
 --- a/drivers/md/dm-crypt.c
 +++ b/drivers/md/dm-crypt.c
-@@ -525,29 +525,29 @@ static int crypt_iv_lmk_one(struct crypt_config *cc, u8 *iv,
+@@ -543,29 +543,29 @@ static int crypt_iv_lmk_one(struct crypt_config *cc, u8 *iv,
  			    u8 *data)
  {
  	struct iv_lmk_private *lmk = &cc->iv_gen_private.lmk;
@@ -65,7 +65,7 @@ index 6d2d41a..c511e30 100644
  	if (r)
  		return r;
  
-@@ -556,12 +556,12 @@ static int crypt_iv_lmk_one(struct crypt_config *cc, u8 *iv,
+@@ -574,12 +574,12 @@ static int crypt_iv_lmk_one(struct crypt_config *cc, u8 *iv,
  	buf[1] = cpu_to_le32((((u64)dmreq->iv_sector >> 32) & 0x00FFFFFF) | 0x80000000);
  	buf[2] = cpu_to_le32(4024);
  	buf[3] = 0;
@@ -81,5 +81,5 @@ index 6d2d41a..c511e30 100644
  		return r;
  
 -- 
-1.8.1.2
+1.8.3.2
 

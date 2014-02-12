@@ -1,4 +1,4 @@
-From a77e70342ad8ee91e9e7473b8feac284fa2d1310 Mon Sep 17 00:00:00 2001
+From 1d720b4494f1689aba3269442e6285c6d411ec32 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
 Date: Wed, 14 Nov 2012 10:55:00 +0100
 Subject: [PATCH] Documentation: LLVMLinux: Update Documentation/dontdiff
@@ -46,5 +46,5 @@ index b89a739..9de9813 100644
  *.pot
  *.ps
 -- 
-1.8.1.2
+1.8.3.2
 

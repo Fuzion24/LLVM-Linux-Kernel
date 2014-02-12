@@ -1,8 +1,11 @@
-From 99e2eb26e1510a8ee975e07b935243fba39742d2 Mon Sep 17 00:00:00 2001
+From 11fe968560751cdeff3f3057ebfcbc982ca13f06 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 3 Sep 2013 22:27:23 -0400
-Subject: [PATCH] Kbuild: LLVMLinux: Add Kbuild support for building
- kernel with Clang
+Subject: [PATCH] Kbuild: LLVMLinux: Add Kbuild support for building kernel
+ with Clang
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
 Add support to toplevel Makefile for compiling with clang, both for
 HOSTCC and CC
@@ -11,10 +14,16 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
 Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Cc: PaX Team <pageexec@freemail.hu>
+---
+ Makefile               | 32 +++++++++++++++++++++++++++++++-
+ scripts/Kbuild.include |  2 +-
+ 2 files changed, 32 insertions(+), 2 deletions(-)
 
---- linux.orig/Makefile
-+++ linux/Makefile
-@@ -247,6 +247,15 @@
+diff --git a/Makefile b/Makefile
+index 4231023..099d615 100644
+--- a/Makefile
++++ b/Makefile
+@@ -247,6 +247,15 @@ HOSTCXX      = g++
  HOSTCFLAGS   = -Wall -Wmissing-prototypes -Wstrict-prototypes -O2 -fomit-frame-pointer
  HOSTCXXFLAGS = -O2
  
@@ -30,7 +39,7 @@ Cc: PaX Team <pageexec@freemail.hu>
  # Decide whether to build built-in, modular, or both.
  # Normally, just do built-in.
  
-@@ -317,6 +326,12 @@
+@@ -323,6 +332,12 @@ endif
  
  export quiet Q KBUILD_VERBOSE
  
@@ -43,7 +52,7 @@ Cc: PaX Team <pageexec@freemail.hu>
  
  # Look for make include files relative to root of kernel src
  MAKEFLAGS += --include-dir=$(srctree)
-@@ -376,7 +391,7 @@
+@@ -382,7 +397,7 @@ KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
  		   -fno-strict-aliasing -fno-common \
  		   -Werror-implicit-function-declaration \
  		   -Wno-format-security \
@@ -52,7 +61,7 @@ Cc: PaX Team <pageexec@freemail.hu>
  KBUILD_AFLAGS_KERNEL :=
  KBUILD_CFLAGS_KERNEL :=
  KBUILD_AFLAGS   := -D__ASSEMBLY__
-@@ -614,9 +629,24 @@
+@@ -620,9 +635,24 @@ else
  endif
  KBUILD_CFLAGS += $(stackp-flag)
  
@@ -77,9 +86,11 @@ Cc: PaX Team <pageexec@freemail.hu>
  
  ifdef CONFIG_FRAME_POINTER
  KBUILD_CFLAGS	+= -fno-omit-frame-pointer -fno-optimize-sibling-calls
---- linux.orig/scripts/Kbuild.include
-+++ linux/scripts/Kbuild.include
-@@ -125,7 +125,7 @@
+diff --git a/scripts/Kbuild.include b/scripts/Kbuild.include
+index 547e15d..4846a1b 100644
+--- a/scripts/Kbuild.include
++++ b/scripts/Kbuild.include
+@@ -125,7 +125,7 @@ cc-option-align = $(subst -functions=0,,\
  # cc-disable-warning
  # Usage: cflags-y += $(call cc-disable-warning,unused-but-set-variable)
  cc-disable-warning = $(call try-run,\
@@ -88,3 +99,6 @@ Cc: PaX Team <pageexec@freemail.hu>
  
  # cc-version
  # Usage gcc-ver := $(call cc-version)
+-- 
+1.8.3.2
+

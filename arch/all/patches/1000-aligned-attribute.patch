@@ -1,4 +1,4 @@
-From b9f1598eb38769a0801bb24d374d09c3aa575403 Mon Sep 17 00:00:00 2001
+From 4193e0ab0d1dd778db2446e7caa3651b6fefea67 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
 Date: Tue, 20 Nov 2012 21:18:16 +0100
 Subject: [PATCH] crypto: LLVMLinux: aligned-attribute.patch
@@ -30,5 +30,5 @@ index 929058a..8fbb4c8 100644
  
  static int shash_update_unaligned(struct shash_desc *desc, const u8 *data,
 -- 
-1.8.1.2
+1.8.3.2
 

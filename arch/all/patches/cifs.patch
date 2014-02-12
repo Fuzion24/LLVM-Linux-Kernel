@@ -1,4 +1,4 @@
-From a9afb4ef6ff8923517515c00590699e233581e67 Mon Sep 17 00:00:00 2001
+From 9f1d0678046c803462f14a6f6bd1e399e8f3e42a Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
 Date: Tue, 4 Jun 2013 19:17:28 +0200
 Subject: [PATCH] crypto, cifs: LLVMLinux: Remove used of VLIAS from cifs
@@ -20,10 +20,10 @@ Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
  1 file changed, 1 deletion(-)
 
 diff --git a/fs/cifs/cifsglob.h b/fs/cifs/cifsglob.h
-index 52ca861..daa5ad6 100644
+index f918a99..f5882c2 100644
 --- a/fs/cifs/cifsglob.h
 +++ b/fs/cifs/cifsglob.h
-@@ -118,7 +118,6 @@ struct session_key {
+@@ -114,7 +114,6 @@ struct session_key {
  /* crypto security descriptor definition */
  struct sdesc {
  	struct shash_desc shash;
@@ -32,5 +32,5 @@ index 52ca861..daa5ad6 100644
  
  /* crypto hashing related structure/fields, not specific to a sec mech */
 -- 
-1.8.1.2
+1.8.3.2
 

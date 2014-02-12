@@ -1,11 +1,16 @@
+From f3d1fcee0c42e48463a591128988370ac2c3253e Mon Sep 17 00:00:00 2001
+From: Mark Charlebois <charlebm@gmail.com>
+Date: Tue, 11 Feb 2014 19:26:05 -0800
+Subject: [PATCH] vlais-netfilter
+
 Replaced use of non-standard C use of variable length arrays in
 structs (VLAIS) in xt_repldata.h with a flexible array member
 and the calculated offsets of other struct members and used pointers
 to the data. Per the file, these data are not reference by name
 and the memory layout is preserved.
 
-This patch was updated for corrections and to add any trailing 
-padding that the structure would have originally allocated using 
+This patch was updated for corrections and to add any trailing
+padding that the structure would have originally allocated using
 VLAIS.
 
 The code also seems to assume that there will be no pad bytes
@@ -24,11 +29,13 @@ This patch makes no attempt to change the existing behavior.
 Author: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 ---
- net/netfilter/xt_repldata.h | 31 +++++++++++++++++++++++++------
- 1 file changed, 25 insertions(+), 6 deletions(-)
+ net/netfilter/xt_repldata.h | 32 ++++++++++++++++++++++++++------
+ 1 file changed, 26 insertions(+), 6 deletions(-)
 
---- linux.orig/net/netfilter/xt_repldata.h
-+++ linux/net/netfilter/xt_repldata.h
+diff --git a/net/netfilter/xt_repldata.h b/net/netfilter/xt_repldata.h
+index 6efe4e5..ef56bfb 100644
+--- a/net/netfilter/xt_repldata.h
++++ b/net/netfilter/xt_repldata.h
 @@ -5,29 +5,49 @@
   * they serve as the hanging-off data accessed through repl.data[].
   */
@@ -85,3 +92,6 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
  			typ2##_STANDARD_INIT(NF_ACCEPT); \
  		bytes += sizeof(struct type##_standard); \
  	} \
+-- 
+1.8.3.2
+

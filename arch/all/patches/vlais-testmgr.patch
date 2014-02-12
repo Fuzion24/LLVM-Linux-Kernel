@@ -1,8 +1,7 @@
-From 5c2c83ce7d2eb34eef895da7bcbc0f9026d29bb5 Mon Sep 17 00:00:00 2001
+From 65db04369fb411d5d797292ca21b9b57f8f91968 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
 Date: Mon, 2 Jul 2012 13:48:30 +0200
-Subject: [PATCH] crypto: LLVMLinux: Remove VLAIS usage from
- crypto/testmgr.c
+Subject: [PATCH] crypto: LLVMLinux: Remove VLAIS usage from crypto/testmgr.c
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -25,10 +24,10 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
  1 file changed, 9 insertions(+), 8 deletions(-)
 
 diff --git a/crypto/testmgr.c b/crypto/testmgr.c
-index ecddf92..32f233d 100644
+index 7795550..81519ca 100644
 --- a/crypto/testmgr.c
 +++ b/crypto/testmgr.c
-@@ -1665,16 +1665,17 @@ static int alg_test_crc32c(const struct alg_test_desc *desc,
+@@ -1663,16 +1663,17 @@ static int alg_test_crc32c(const struct alg_test_desc *desc,
  	}
  
  	do {
@@ -55,5 +54,5 @@ index ecddf92..32f233d 100644
  			printk(KERN_ERR "alg: crc32c: Operation failed for "
  			       "%s: %d\n", driver, err);
 -- 
-1.8.1.2
+1.8.3.2
 

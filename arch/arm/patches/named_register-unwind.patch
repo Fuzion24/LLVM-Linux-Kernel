@@ -1,8 +1,7 @@
-From ed890c4c6f24b9558b60261ad870b4ce45be973e Mon Sep 17 00:00:00 2001
+From 3526d5f0102528b785ff5606bd98e6537cd0030d Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 3 Sep 2013 22:27:27 -0400
-Subject: [PATCH 39/39] arm: LLVMLinux: Use current_stack_pointer in
- unwind_backtrace
+Subject: [PATCH] arm: LLVMLinux: Use current_stack_pointer in unwind_backtrace
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -15,12 +14,14 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
 Reviewed-by: Mark Charlebois <charlebm@gmail.com>
 Reviewed-by: Jan-Simon Möller <dl9pf@gmx.de>
 ---
- arch/arm/kernel/unwind.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ arch/arm/kernel/unwind.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- linux.orig/arch/arm/kernel/unwind.c
-+++ linux/arch/arm/kernel/unwind.c
-@@ -409,6 +409,7 @@
+diff --git a/arch/arm/kernel/unwind.c b/arch/arm/kernel/unwind.c
+index 00df012..a66a404 100644
+--- a/arch/arm/kernel/unwind.c
++++ b/arch/arm/kernel/unwind.c
+@@ -409,6 +409,7 @@ void unwind_backtrace(struct pt_regs *regs, struct task_struct *tsk)
  {
  	struct stackframe frame;
  	register unsigned long current_sp asm ("sp");
@@ -28,3 +29,6 @@ Reviewed-by: Jan-Simon Möller <dl9pf@gmx.de>
  
  	pr_debug("%s(regs = %p tsk = %p)\n", __func__, regs, tsk);
  
+-- 
+1.8.3.2
+

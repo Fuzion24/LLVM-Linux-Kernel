@@ -1,8 +1,7 @@
-From 95f51cb3e4ccb923a0309008cfc75e7d267224f0 Mon Sep 17 00:00:00 2001
+From 4ca0702e8421a0bf51fcdbfa8e4fdec9a9add6bb Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
 Date: Mon, 2 Jul 2012 13:47:40 +0200
-Subject: [PATCH] crypto: LLVMLinux: Remove VLAIS usage from
- crypto/hmac.c
+Subject: [PATCH] crypto: LLVMLinux: Remove VLAIS usage from crypto/hmac.c
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -75,5 +74,5 @@ index 8d9544c..1061255 100644
  
  static int hmac_export(struct shash_desc *pdesc, void *out)
 -- 
-1.8.1.2
+1.8.3.2
 

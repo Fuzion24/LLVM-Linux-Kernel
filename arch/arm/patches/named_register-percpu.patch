@@ -1,7 +1,7 @@
-From 11b6a7bbb461b183a347bf0d3aeb9a837f2cc963 Mon Sep 17 00:00:00 2001
+From a40054dac6c192e8c076952fd2d7a9f2021c74e9 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 3 Sep 2013 22:27:27 -0400
-Subject: [PATCH 34/39] arm: LLVMLinux: use current_stack_pointer for percpu
+Subject: [PATCH] arm: LLVMLinux: use current_stack_pointer for percpu
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -14,12 +14,14 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
 Reviewed-by: Mark Charlebois <charlebm@gmail.com>
 Reviewed-by: Jan-Simon Möller <dl9pf@gmx.de>
 ---
- arch/arm/include/asm/percpu.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/arm/include/asm/percpu.h | 1 +
+ 1 file changed, 1 insertion(+)
 
---- linux-gcc.orig/arch/arm/include/asm/percpu.h
-+++ linux-gcc/arch/arm/include/asm/percpu.h
-@@ -31,6 +31,7 @@
+diff --git a/arch/arm/include/asm/percpu.h b/arch/arm/include/asm/percpu.h
+index 209e650..019062b 100644
+--- a/arch/arm/include/asm/percpu.h
++++ b/arch/arm/include/asm/percpu.h
+@@ -31,6 +31,7 @@ static inline unsigned long __my_cpu_offset(void)
  {
  	unsigned long off;
  	register unsigned long *sp asm ("sp");
@@ -27,3 +29,6 @@ Reviewed-by: Jan-Simon Möller <dl9pf@gmx.de>
  
  	/*
  	 * Read TPIDRPRW.
+-- 
+1.8.3.2
+

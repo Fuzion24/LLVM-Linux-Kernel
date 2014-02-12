@@ -1,7 +1,7 @@
-From 4cdf05f567f44e71ffbb689444c29f45baacdb21 Mon Sep 17 00:00:00 2001
+From d0904c6f0f366da59a1d1daa696bbdf0e3bd455d Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 3 Sep 2013 22:27:27 -0400
-Subject: [PATCH 37/39] arm: LLVMLinux: Use current_stack_pointer in
+Subject: [PATCH] arm: LLVMLinux: Use current_stack_pointer in
  save_stack_trace_tsk
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -15,12 +15,14 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
 Reviewed-by: Mark Charlebois <charlebm@gmail.com>
 Reviewed-by: Jan-Simon Möller <dl9pf@gmx.de>
 ---
- arch/arm/kernel/stacktrace.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ arch/arm/kernel/stacktrace.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- linux.orig/arch/arm/kernel/stacktrace.c
-+++ linux/arch/arm/kernel/stacktrace.c
-@@ -110,6 +110,7 @@
+diff --git a/arch/arm/kernel/stacktrace.c b/arch/arm/kernel/stacktrace.c
+index af4e8c8..b05b70e 100644
+--- a/arch/arm/kernel/stacktrace.c
++++ b/arch/arm/kernel/stacktrace.c
+@@ -110,6 +110,7 @@ void save_stack_trace_tsk(struct task_struct *tsk, struct stack_trace *trace)
  #endif
  	} else {
  		register unsigned long current_sp asm ("sp");
@@ -28,3 +30,6 @@ Reviewed-by: Jan-Simon Möller <dl9pf@gmx.de>
  
  		data.no_sched_functions = 0;
  		frame.fp = (unsigned long)__builtin_frame_address(0);
+-- 
+1.8.3.2
+

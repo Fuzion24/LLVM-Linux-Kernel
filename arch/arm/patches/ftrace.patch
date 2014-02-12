@@ -1,8 +1,7 @@
-From f0e1b85302fa75337ac94a069b5d62f2d25a3ae7 Mon Sep 17 00:00:00 2001
+From 462d608f1f7ff1b8c3c2e77c646c5f3a41354f8d Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 3 Sep 2013 22:27:26 -0400
-Subject: [PATCH V2] arm: LLVMLinux: use static inline in ARM ftrace.h
-In-Reply-To: 52292B75.8080705@converseincode.com
+Subject: [PATCH] arm: LLVMLinux: use static inline in ARM ftrace.h
 
 With compilers which follow the C99 standard (like modern versions of gcc and
 clang), "extern inline" does the wrong thing (emits code for an externally
@@ -47,5 +46,5 @@ index fafedd8..f6aa84d 100644
  
  EXPORT_SYMBOL_GPL(return_address);
 -- 
-1.8.1.2
+1.8.3.2
 
