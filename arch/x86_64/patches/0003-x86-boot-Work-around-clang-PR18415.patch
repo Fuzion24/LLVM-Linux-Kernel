@@ -1,7 +1,7 @@
-From 6217d158691a62b379873d16adfb0af4f47d172c Mon Sep 17 00:00:00 2001
+From 69cbff315578ef3b9497c5ce5dd552d12470453b Mon Sep 17 00:00:00 2001
 From: David Woodhouse <David.Woodhouse@intel.com>
 Date: Wed, 8 Jan 2014 11:21:23 +0000
-Subject: [PATCH 03/10] x86, boot: Work around clang PR18415.
+Subject: [PATCH] x86, boot: Work around clang PR18415.
 
 Clang's intrinsics ignore -mregparm=3 when they fall back to calling the
 out-of-line implementations. Putting the args on the stack when memcpy()
@@ -22,10 +22,10 @@ Not-signed-off-by: David Woodhouse <David.Woodhouse@intel.com>
  2 files changed, 8 insertions(+), 1 deletion(-)
 
 diff --git a/arch/x86/boot/boot.h b/arch/x86/boot/boot.h
-index ef72bae..1182dc9 100644
+index 50f8c5e..756ddb1 100644
 --- a/arch/x86/boot/boot.h
 +++ b/arch/x86/boot/boot.h
-@@ -232,8 +232,10 @@ void *copy_from_gs(void *dst, addr_t src, size_t len);
+@@ -231,8 +231,10 @@ void *copy_from_gs(void *dst, addr_t src, size_t len);
  void *memcpy(void *dst, void *src, size_t len);
  void *memset(void *dst, int c, size_t len);
  

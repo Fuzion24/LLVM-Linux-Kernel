@@ -1,7 +1,7 @@
-From 3d157e3901b36d71980abcb53b2856c3803be37d Mon Sep 17 00:00:00 2001
+From 0c575f56e990413808dbc095b783327f5a8f71d9 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
 Date: Sun, 20 Oct 2013 00:36:47 +0200
-Subject: [PATCH 10/10] clang.
+Subject: [PATCH] clang.
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -12,10 +12,10 @@ Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
  1 file changed, 6 insertions(+), 1 deletion(-)
 
 diff --git a/arch/x86/Makefile b/arch/x86/Makefile
-index eccbead..9a62f66 100644
+index eeda43a..0dd9887 100644
 --- a/arch/x86/Makefile
 +++ b/arch/x86/Makefile
-@@ -107,7 +107,7 @@ else
+@@ -108,7 +108,7 @@ else
  
          # this works around some issues with generating unwind tables in older gccs
          # newer gccs do it by default
@@ -23,8 +23,8 @@ index eccbead..9a62f66 100644
 +        KBUILD_CFLAGS += $(call cc-option,-maccumulate-outgoing-args)
  endif
  
- ifdef CONFIG_CC_STACKPROTECTOR
-@@ -145,6 +145,11 @@ endif
+ # Make sure compiler does not have buggy stack-protector support.
+@@ -144,6 +144,11 @@ endif
  sp-$(CONFIG_X86_32) := esp
  sp-$(CONFIG_X86_64) := rsp
  
