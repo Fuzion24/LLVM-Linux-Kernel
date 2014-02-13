@@ -7,3 +7,4 @@
 0009-Kbuild-LLVMLinux-Add-no-integrated-as-to-arch-x86-bo.patch
 0010-clang.patch
 9001-LLVMLinux-NOUPSTREAM-support-older-versions-of-clang.patch
+incomplete_type_for_struct_x86cpu_device_id.patch
