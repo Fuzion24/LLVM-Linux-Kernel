@@ -15,3 +15,4 @@ vlais-mac80211.patch
 vlais-netfilter.patch
 vlais-testmgr.patch
 disable-clang-integrated-as.patch
+dwarf3.patch
