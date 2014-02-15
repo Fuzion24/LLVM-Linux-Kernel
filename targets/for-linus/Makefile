@@ -24,6 +24,8 @@
 
 TARGETDIR	= ${CURDIR}
 TOPDIR		= $(realpath ${TARGETDIR}/../..)
+LLVM_BRANCH	= master
+CLANG_BRANCH	= master
 CLANG_TOOLCHAIN	= prebuilt
 
 KERNEL_CFG	= ${KERNELDIR}/arch/x86/configs/x86_64_defconfig
