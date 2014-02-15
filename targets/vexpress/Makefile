@@ -25,9 +25,9 @@
 TARGETDIR	= ${CURDIR}
 TOPDIR		= $(realpath ${TARGETDIR}/../..)
 CROSS_ARM_TOOLCHAIN = codesourcery
-LLVM_COMMIT = master
-CLANG_COMMIT = master
-#CLANG_TOOLCHAIN=prebuilt
+LLVM_COMMIT	= master
+CLANG_COMMIT	= master
+#CLANG_TOOLCHAIN	= prebuilt
 
 # Need to add EXT4 support to vexpress_defconfig
 KERNEL_CFG	= ${TARGETDIR}/config_vexpress
@@ -71,6 +71,7 @@ include ${ARCHDIR}/arm/arm.mk
 include ${TARGETDIR}/vexpress-linaro.mk
 include ${TARGETDIR}/vexpress-ltp.mk
 
+KERNEL_PATCH_DIR+= ${TARGETDIR}/patches-overlay
 KERNEL_PATCH_DIR+= ${TARGETDIR}/patches
 
 include ${CONFIG}
