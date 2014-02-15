@@ -39,7 +39,7 @@ KERNELDIR	= ${SRCDIR}/linaro-aarch64
 KERNEL_REPO_PATCHES=${KERNEL_BRANCH}
 
 # Need to add EXT4 support to vexpress_defconfig
-KERNEL_CFG	= ${KERNELDIR}/arch/arm64/configs/defconfig
+KERNEL_CFG	= ${KERNELDIR}/arch/arm64/configs/vexpress_defconfig
 KERNEL_DTB	= arch/arm64/boot/dts/foundation-v8.dts
 ZIMAGE		= arch/arm64/boot/zImage
 
