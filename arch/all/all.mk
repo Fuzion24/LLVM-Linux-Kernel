@@ -349,6 +349,11 @@ kernel-patch-status:
 	@$(call patch_series_status,${PATCHDIR})
 
 #############################################################################
+kernel-patch-status-leftover:
+	@$(call banner,Patches which are in the status list which aren\'t being used)
+	@$(call patch_series_status_leftover,${PATCHDIR})
+
+#############################################################################
 kernel-configure: state/kernel-configure
 state/kernel-configure: state/kernel-patch
 	@make -s build-dep-check

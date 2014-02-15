@@ -24,6 +24,7 @@
 import ConfigParser
 from optparse import OptionParser
 import re, os
+import sys
 
 import gdata.docs
 import gdata.docs.service
@@ -33,17 +34,30 @@ import prettytable
 
 #-------------------------------------------------------------------------------
 parser = OptionParser()
-parser.add_option("-f", "--file", dest="filename",
+parser.add_option("-f", "--file", dest="filename", default='patchstatus.conf',
                   help="write report to FILE", metavar="FILE")
 parser.add_option("-q", "--quiet",
                   action="store_false", dest="verbose", default=True,
                   help="don't print status messages to stdout")
+parser.add_option("-l", "--for-linus",
+                  action="store_const", const="for-linus", dest="column",
+                  help="Patches for the for-linus branch")
+parser.add_option("-n", "--for-next",
+                  action="store_const", const="for-next", dest="column",
+                  help="Patches for the for-next branch")
+parser.add_option("-o", "--left-over",
+                  action="store_true", dest="leftover", default=False,
+                  help="List which patches in spreadsheet aren't being used")
 
 (options, args) = parser.parse_args()
 
+def verbose(txt):
+    if options.verbose:
+        print txt,
+
 #-------------------------------------------------------------------------------
 config = ConfigParser.RawConfigParser()
-config.read(['patchstatus.conf', os.path.expanduser('~/.patchstatus.conf'), os.path.expanduser('~/.config/patchstatus/patchstatus.conf')])
+config.read([options.filename, os.path.expanduser('~/.patchstatus.conf'), os.path.expanduser('~/.config/patchstatus/patchstatus.conf')])
 
 #-------------------------------------------------------------------------------
 # Connect to Google Drive
@@ -68,12 +82,32 @@ worksheet_id = feed.entry[2].id.text.rsplit('/',1)[1]
 rows = gd_client.GetListFeed(spreadsheet_id, worksheet_id).entry
 
 #-------------------------------------------------------------------------------
+def enabled(row, col):
+    return re.match('^y', row.custom[col].text, flags=re.IGNORECASE)
+
+#-------------------------------------------------------------------------------
+# Print out patch names if column is 'Y'
+if options.column:
+    for row in rows:
+        if enabled(row, 'upstream-able') and enabled(row, options.column):
+            print row.custom['patchname'].text
+    sys.exit(0)
+
+#-------------------------------------------------------------------------------
+if options.leftover:
+    for row in rows:
+        patchname = row.custom['patchname'].text
+        if patchname not in args:
+            print patchname
+    sys.exit(0)
+
+#-------------------------------------------------------------------------------
 # Build lists of table headers for later
 # ['arch', 'boots', 'conclusion', 'done', 'handledby', 'inout', 'patchinspection', 'patchname', 'remarks', 'summarytodo']
 headers = sorted(rows[0].custom)
 headers.remove('patchname')
-fixedhdr = ('arch', 'required', 'finalpatchforlinus', 'upstream-able', 'boots', 'inout', 'summarytodo', 'handledby', 'submittedupstream', 'acceptedupstream')
-fixednames = ('Arch', 'Req?', 'Linus', 'up-able?', 'Boots', 'In?', 'Summary', 'Handled by', 'Sent?', 'Done!')
+fixedhdr = ('arch', 'required', 'upstream-able', 'for-next', 'for-linus', 'boots', 'inout', 'summarytodo', 'handledby', 'submittedupstream', 'acceptedupstream')
+fixednames = ('Arch', 'Req', 'Up', 'Linus', 'Next', 'Boot', 'In?', 'Summary', 'Handled by', 'Sent', 'Done')
 [headers.remove(x) for x in fixedhdr]
 
 #-------------------------------------------------------------------------------
@@ -89,22 +123,20 @@ for row in rows:
     patchname = row.custom['patchname'].text
     if patchname in args:
         numpatches += 1
-	print patchname,
+	verbose(patchname,)
 
-	vals = [patchname]
+	vals = [re.sub('\.patch$','',patchname)]
         for key in fixedhdr:
             value = str(row.custom[key].text)
-            print "  %s: %s" % (key, value),
-            #value = nopatch.sub("", value)
-            value = re.sub(r"\.patch$", "", value)
+            verbose(" %s: %s" % (key, value))
             vals.append(value)
-        print
+        verbose("\n")
         table.add_row(vals)
 
         for key in headers:
             val = row.custom[key].text
             if val and val != None and val != "None" and val != "-":
-                print "  %s: %s" % (key, val)
+                verbose("  %s: %s\n" % (key, val))
 
 	args.remove(patchname)
 
@@ -120,6 +152,6 @@ if args:
     print "Adding missing patches to spreadsheet:"
     for patch in args:
 	print "  "+patch
-	data = {'patchname':patch, 'arch':'?', 'required':'?', 'finalpatchforlinus':'?', 'upstream-able':'?', 'boots':'?', 'summarytodo':'?', 'inout':'In', 'submittedupstream':'N', 'acceptedupstream':'N'}
+	data = {'patchname':patch, 'arch':'?', 'required':'?', 'upstream-able':'?', 'for-next':'?','for-linus':'?',  'boots':'?', 'summarytodo':'?', 'inout':'In', 'submittedupstream':'N', 'acceptedupstream':'N'}
         gd_client.InsertRow(data, spreadsheet_id, worksheet_id)
 
