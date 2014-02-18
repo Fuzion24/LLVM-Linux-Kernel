@@ -14,26 +14,21 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
  arch/arm64/include/asm/thread_info.h | 9 +++++++++
  1 file changed, 9 insertions(+)
 
-diff --git a/arch/arm64/include/asm/thread_info.h b/arch/arm64/include/asm/thread_info.h
-index 720e70b..4d65428 100644
---- a/arch/arm64/include/asm/thread_info.h
-+++ b/arch/arm64/include/asm/thread_info.h
-@@ -69,6 +69,15 @@ struct thread_info {
+--- linaro-aarch64.orig/arch/arm64/include/asm/thread_info.h
++++ linaro-aarch64/arch/arm64/include/asm/thread_info.h
+@@ -69,6 +69,15 @@
  #define init_stack		(init_thread_union.stack)
  
  /*
 + * how to get the current stack pointer from C
 + */
-+#define current_stack_pointer ({ \
-+	unsigned long current_sp; \
-+	asm ("mov %0, sp" : "=r" (current_sp)); \
-+	current_sp; \
++#define current_stack_pointer ({                    \
++	register unsigned long sp asm("sp") __used; \
++	asm("" : "=r" (sp));                        \
++	sp;                                         \
 +})
 +
 +/*
   * how to get the thread information struct from C
   */
  static inline struct thread_info *current_thread_info(void) __attribute_const__;
--- 
-1.8.3.2
-
