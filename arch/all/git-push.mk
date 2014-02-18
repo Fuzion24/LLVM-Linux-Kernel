@@ -77,7 +77,7 @@ LLVMLINUX_BRANCHES = ${PUSH_BRANCH} ${LATEST_BRANCH} ${MASTER_BRANCH}
 kernel-git-push-latest:
 	@$(call banner,Pushing ${TMP_BRANCH} to ${PUSH_BRANCH})
 	@$(call gitprepare,${TMP_BRANCH})
-	@$(foreach B,${LLVMLINUX_BRANCHES},$(call git,${KERNELDIR}, push -f ${REMOTE_REPO} ${TMP_BRANCH}:${B}))
+	@$(foreach B,${LLVMLINUX_BRANCHES},$(call git,${KERNELDIR}, push -f ${REMOTE_REPO} ${TMP_BRANCH}:${B});)
 	@$(call gitcheckout,${KERNELDIR},${KERNEL_BRANCH})
 
 #############################################################################
