@@ -1,5 +1,5 @@
 #############################################################################
-# Copyright (c) 2012 Behan Webster
+# Copyright (c) 2014 Behan Webster
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to 
@@ -20,41 +20,46 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
-TMP_BRANCH	?= tmp
-PUSH_BRANCH	?= $(shell date +llvmlinux-%Y.%m.%d)
-
-REMOTE_REPO	?= ssh://git-lf@git.linuxfoundation.org/llvmlinux/kernel.git
+LATEST_BRANCH	?= llvmlinux-latest
+TMP_BRANCH	?= ${LATEST_BRANCH}
 
 #############################################################################
-kernel-git-import-quilt-patches: kernel-fetch kernel-quilt-link-patches
+HELP_TARGETS   += kernel-git-quilt-help
+
+#############################################################################
+kernel-git-quilt-help:
+	@echo
+	@echo "These are the kernel git/quilt make targets:"
+	@echo "* make kernel-git-import-quilt-patches  Import quilt patches into kernel git"
+	@echo "* make kernel-quilt-import-git-patches  Export kernel git patches back into quilt"
+	@echo "* make kernel-git-quilt-roundtrip       Send patches to git, then back to quilt (formatting)"
+
+importprepare	= ($(call gitcheckout,${KERNELDIR},${KERNEL_BRANCH}) ; \
+		$(call git,${KERNELDIR}, pull) ; \
+		$(call unpatch,${KERNELDIR}) ; \
+		$(call leavestate,${STATEDIR},kernel-patch) ; \
+		$(call git,${KERNELDIR}, rebase --continue) || true ; \
+		$(call git,${KERNELDIR}, branch -D ${1}) || true ; \
+		$(call gitcheckout,${KERNELDIR},-b ${1}) ; \
+		$(call git,${KERNELDIR}, rebase --continue) || true ; \
+		${MAKE} kernel-quilt-link-patches ; \
+		) >/dev/null 2>&1
+
+gitprepare	= ($(call unpatch,${KERNELDIR}); \
+		$(call leavestate,${STATEDIR},kernel-patch) ; \
+		$(call gitcheckout,${KERNELDIR},${1})) >/dev/null 2>&1
+
+#############################################################################
+kernel-git-import-quilt-patches: kernel-fetch
 	@$(call banner,Importing quilt patch series into git branch: ${TMP_BRANCH}...)
-	@$(call gitcheckout,${KERNELDIR},${KERNEL_BRANCH})
-	@$(call unpatch,${KERNELDIR})
-	@$(call leavestate,${STATEDIR},kernel-patch)
-	-@$(call git,${KERNELDIR}, rebase --continue) >/dev/null 2>&1
-	-@$(call git,${KERNELDIR}, branch -D ${TMP_BRANCH}) >/dev/null 2>&1
-	@$(call gitcheckout,${KERNELDIR},-b ${TMP_BRANCH})
-	-@$(call git,${KERNELDIR}, rebase --continue) >/dev/null 2>&1
+	@$(call importprepare,${TMP_BRANCH})
 	@$(call git,${KERNELDIR}, quiltimport ${TMP_BRANCH})
 	@$(call gitcheckout,${KERNELDIR},${KERNEL_BRANCH})
 
 #############################################################################
-kernel-git-push-branch:
-	@$(call banner,Pushing ${TMP_BRANCH} to ${REMOTE_REPO})
-	@$(call unpatch,${KERNELDIR})
-	@$(call leavestate,${STATEDIR},kernel-patch)
-	@$(call gitcheckout,${KERNELDIR},${TMP_BRANCH})
-	@$(call git,${KERNELDIR}, push ${REMOTE_REPO} ${TMP_BRANCH}:${PUSH_BRANCH})
-#	@$(call git,${KERNELDIR}, push ${REMOTE_REPO} ${TMP_BRANCH}:master)
-	@$(call gitcheckout,${KERNELDIR},${KERNEL_BRANCH})
-	@$(call git,${KERNELDIR}, push ${REMOTE_REPO} ${KERNEL_BRANCH}:master)
-
-#############################################################################
 kernel-git-export-patches:
 	@$(call banner,Exporting quilt patch series from git branch: ${TMP_BRANCH}...)
-	@$(call unpatch,${KERNELDIR})
-	@$(call leavestate,${STATEDIR},kernel-patch)
-	@$(call gitcheckout,${KERNELDIR},${TMP_BRANCH})
+	@$(call gitprepare,${TMP_BRANCH})
 	@$(call git,${KERNELDIR}, format-patch --no-numbered ${KERNEL_BRANCH})
 	@$(call gitcheckout,${KERNELDIR},${KERNEL_BRANCH})
 
@@ -87,9 +92,9 @@ kernel-quilt-fix-unchanged-patches:
 
 #############################################################################
 kernel-quilt-import-git-patches: kernel-git-export-patches
-	$(MAKE) kernel-quilt-rename-patches
-	$(MAKE) kernel-quilt-link-patches
-	$(MAKE) kernel-quilt-fix-unchanged-patches
+	@$(MAKE) kernel-quilt-rename-patches
+	@$(MAKE) kernel-quilt-link-patches >/dev/null 2>&1
+	@$(MAKE) kernel-quilt-fix-unchanged-patches
 	@$(call banner,Patches successfully sent through git back to quilt series)
 
 #############################################################################

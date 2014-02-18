@@ -39,6 +39,12 @@ parser.add_option("-f", "--file", dest="filename", default='patchstatus.conf',
 parser.add_option("-q", "--quiet",
                   action="store_false", dest="verbose", default=True,
                   help="don't print status messages to stdout")
+parser.add_option("-a", "--for-arm",
+                  action="store_const", const="for-arm", dest="column",
+                  help="Patches for the for-arm branch")
+parser.add_option("-A", "--for-aarch64",
+                  action="store_const", const="for-aarch64", dest="column",
+                  help="Patches for the for-aarch64 branch")
 parser.add_option("-l", "--for-linus",
                   action="store_const", const="for-linus", dest="column",
                   help="Patches for the for-linus branch")
@@ -106,8 +112,8 @@ if options.leftover:
 # ['arch', 'boots', 'conclusion', 'done', 'handledby', 'inout', 'patchinspection', 'patchname', 'remarks', 'summarytodo']
 headers = sorted(rows[0].custom)
 headers.remove('patchname')
-fixedhdr = ('arch', 'required', 'upstream-able', 'for-next', 'for-linus', 'boots', 'inout', 'summarytodo', 'handledby', 'submittedupstream', 'acceptedupstream')
-fixednames = ('Arch', 'Req', 'Up', 'Linus', 'Next', 'Boot', 'In?', 'Summary', 'Handled by', 'Sent', 'Done')
+fixedhdr = ('arch', 'required', 'upstream-able', 'for-next', 'for-linus', 'for-arm', 'for-aarch64', 'boots', 'inout', 'summarytodo', 'handledby', 'submittedupstream', 'acceptedupstream')
+fixednames = ('Arch', 'Req', 'Up', 'Linus', 'Next', 'Arm', 'A64', 'Boot', 'In?', 'Summary', 'Handled by', 'Sent', 'Done')
 [headers.remove(x) for x in fixedhdr]
 
 #-------------------------------------------------------------------------------
@@ -142,7 +148,7 @@ for row in rows:
 
 #-------------------------------------------------------------------------------
 print
-print table
+print table.get_string(sortby='patchname')
 print "Number of patches: %d" % (numpatches)
 
 #-------------------------------------------------------------------------------
@@ -152,6 +158,6 @@ if args:
     print "Adding missing patches to spreadsheet:"
     for patch in args:
 	print "  "+patch
-	data = {'patchname':patch, 'arch':'?', 'required':'?', 'upstream-able':'?', 'for-next':'?','for-linus':'?',  'boots':'?', 'summarytodo':'?', 'inout':'In', 'submittedupstream':'N', 'acceptedupstream':'N'}
+	data = {'patchname':patch, 'arch':'?', 'required':'?', 'upstream-able':'?', 'for-next':'?','for-linus':'?',  'for-arm':'?', 'for-aarch64':'?', 'boots':'?', 'summarytodo':'?', 'inout':'In', 'submittedupstream':'N', 'acceptedupstream':'N'}
         gd_client.InsertRow(data, spreadsheet_id, worksheet_id)
 
