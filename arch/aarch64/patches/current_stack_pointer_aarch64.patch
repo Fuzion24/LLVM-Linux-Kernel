@@ -1,4 +1,4 @@
-From e03fe6a4bec1d057f0030f2066066297363623e4 Mon Sep 17 00:00:00 2001
+From a66c516d7057c96459ea5527940a3ada4404bc46 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Wed, 12 Feb 2014 12:16:28 -0800
 Subject: [PATCH] arm64: LLVMLinux: Add current_stack_pointer() for arm64
@@ -14,9 +14,11 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
  arch/arm64/include/asm/thread_info.h | 9 +++++++++
  1 file changed, 9 insertions(+)
 
---- linaro-aarch64.orig/arch/arm64/include/asm/thread_info.h
-+++ linaro-aarch64/arch/arm64/include/asm/thread_info.h
-@@ -69,6 +69,15 @@
+diff --git a/arch/arm64/include/asm/thread_info.h b/arch/arm64/include/asm/thread_info.h
+index 720e70b..e17cf40 100644
+--- a/arch/arm64/include/asm/thread_info.h
++++ b/arch/arm64/include/asm/thread_info.h
+@@ -69,6 +69,15 @@ struct thread_info {
  #define init_stack		(init_thread_union.stack)
  
  /*
@@ -32,3 +34,6 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
   * how to get the thread information struct from C
   */
  static inline struct thread_info *current_thread_info(void) __attribute_const__;
+-- 
+1.8.3.2
+
