@@ -29,8 +29,8 @@ TOPDIR		= $(realpath ${TARGETDIR}/../..)
 CLANG_TOOLCHAIN	= prebuilt
 CROSS_AARCH64_TOOLCHAIN = linaro
 
-LLVM_COMMIT = master
-CLANG_COMMIT = master
+LLVM_BRANCH = master
+CLANG_BRANCH = master
 
 KERNEL_BRANCH	= linaro-aarch64
 KERNEL_GIT	= git://git.linaro.org/kernel/linaro-aarch64.git
