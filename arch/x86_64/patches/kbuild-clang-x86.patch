@@ -1,4 +1,4 @@
-From 0c575f56e990413808dbc095b783327f5a8f71d9 Mon Sep 17 00:00:00 2001
+From ec1f0acfdf6fe4d2b469b03769f7f04225b3c75d Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
 Date: Sun, 20 Oct 2013 00:36:47 +0200
 Subject: [PATCH] clang.
@@ -6,13 +6,18 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
+Protect more options for x86 with cc-option so that we don't get errors when
+using clang instead of gcc.  Add more or different options when using clang as
+well. Also need to enforce that SSE is off for clang.
+
 Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
+Signed-off-by: Behan Webster <behanw@converseincode.com>
 ---
- arch/x86/Makefile | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ arch/x86/Makefile | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
 diff --git a/arch/x86/Makefile b/arch/x86/Makefile
-index eeda43a..0dd9887 100644
+index eeda43a..852d8f0 100644
 --- a/arch/x86/Makefile
 +++ b/arch/x86/Makefile
 @@ -108,7 +108,7 @@ else
@@ -24,18 +29,19 @@ index eeda43a..0dd9887 100644
  endif
  
  # Make sure compiler does not have buggy stack-protector support.
-@@ -144,6 +144,11 @@ endif
+@@ -144,6 +144,12 @@ endif
  sp-$(CONFIG_X86_32) := esp
  sp-$(CONFIG_X86_64) := rsp
  
-+# enforce no-sse atm for clang
++# enforce no-sse for clang
 +ifneq ($(COMPILER),clang)
-+        KBUILD_CFLAGS += $(call cc-option,-mno-sse -mpreferred-stack-boundary=3)
++        KBUILD_CFLAGS += $(call cc-option,-mno-sse)
++        KBUILD_CFLAGS += $(call cc-option,-mpreferred-stack-boundary=3)
 +endif
 +
  # do binutils support CFI?
  cfi := $(call as-instr,.cfi_startproc\n.cfi_rel_offset $(sp-y)$(comma)0\n.cfi_endproc,-DCONFIG_AS_CFI=1)
  # is .cfi_signal_frame supported too?
 -- 
-1.8.1.4
+1.8.3.2
 

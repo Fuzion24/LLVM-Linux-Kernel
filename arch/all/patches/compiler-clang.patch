@@ -1,4 +1,4 @@
-From c863c51e33f851cb77921954a5bc2e10e3210902 Mon Sep 17 00:00:00 2001
+From b240920d5f3745288aed23481f6a4d25fbf0da95 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
 Date: Tue, 20 Nov 2012 22:13:10 +0100
 Subject: [PATCH] LLVMLinux: Add support for clang to compiler.h and new
@@ -12,6 +12,7 @@ compiler for a purposefully uninintialized variable.
 
 Author: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+Signed-off-by: Behan Webster <behanw@converseincode.com>
 ---
  include/linux/compiler-clang.h | 12 ++++++++++++
  include/linux/compiler.h       |  7 +++++++

@@ -1,4 +1,4 @@
-From 11fe968560751cdeff3f3057ebfcbc982ca13f06 Mon Sep 17 00:00:00 2001
+From 204ad457b93d70e447ebef84f902bf0381ffa726 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 3 Sep 2013 22:27:23 -0400
 Subject: [PATCH] Kbuild: LLVMLinux: Add Kbuild support for building kernel
@@ -8,10 +8,10 @@ Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
 Add support to toplevel Makefile for compiling with clang, both for
-HOSTCC and CC
+HOSTCC and CC. Use cc-option to prevent gcc option from breaking clang, and
+from clang options from breaking gcc.
 
-Part of this patch disables the use of -fno-delete-null-pointer-checks when
-used with clang (PR9251)
+Based on patches from Pax Team.
 
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
@@ -23,7 +23,7 @@ Cc: PaX Team <pageexec@freemail.hu>
  2 files changed, 32 insertions(+), 2 deletions(-)
 
 diff --git a/Makefile b/Makefile
-index 4231023..099d615 100644
+index 893d6f0..1e9142b 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -247,6 +247,15 @@ HOSTCXX      = g++

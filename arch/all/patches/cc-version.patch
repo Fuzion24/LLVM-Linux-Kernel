@@ -1,4 +1,4 @@
-From 2bc3ec4c105c8d71596bb11992a4214dd49e321d Mon Sep 17 00:00:00 2001
+From 61884f26259adb93b37b2c8a96bd927f1dcd1262 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
 Date: Wed, 14 Nov 2012 10:55:48 +0100
 Subject: [PATCH] Kbuild: LLVMLinux: Fix LINUX_COMPILER definition script for
@@ -7,7 +7,9 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Fix LINUX_COMPILER definition script to work with gcc or clang
+When building the LINUX_COMPILER definition, instead of merely taking the last
+line from "$(CC) -v", grep for ' version ' in the output. This supports both
+gcc and clang.
 
 Author:  PaX Team <pageexec@freemail.hu>
 ML-Post: http://lists.cs.uiuc.edu/pipermail/llvm-commits/Week-of-Mon-20120507/142707.html
