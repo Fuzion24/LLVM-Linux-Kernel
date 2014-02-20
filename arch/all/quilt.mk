@@ -217,13 +217,25 @@ list-kernel-patches:
 list-kernel-maintainer: list-kernel-get_maintainer
 list-kernel-checkpatch list-kernel-get_maintainer: list-kernel-%:
 	@$(call banner,Running $* for patches PATCH_FILTER_REGEX="${PATCH_FILTER_REGEX}")
+	@[ -n "$$NOPASS" ] || echo "You can suppress passes by setting env variable NOPASS=1"
+	@[ -n "$$NOFAIL" ] || echo "You can suppress verbose failures by setting env variable NOFAIL=1"
 	@(REVDIRS=`$(call reverselist,${KERNEL_PATCH_DIR})` ; \
 	cd ${KERNELDIR} ; \
 	for PATCH in `cat ${ALL_PATCH_SERIES} | grep "${PATCH_FILTER_REGEX}"` ; do \
 		for DIR in $$REVDIRS ; do \
 			if [ -f "$$DIR/$$PATCH" -a ! -L "$$DIR/$$PATCH" ] ; then \
-				$(call echo,$$DIR/$$PATCH) ; \
-				./scripts/$*.pl "$$DIR/$$PATCH" ; \
+				OUTPUT=`./scripts/$*.pl "$$DIR/$$PATCH"` ; \
+				if echo "$$OUTPUT" | grep -q "total: 0 errors, 0 warnings," ; then \
+					[ -z "$$NOPASS" ] && echo "PASS\t$$DIR/$$PATCH" ; \
+				else \
+					[ $@ = list-kernel-checkpatch ] && echo -n "FAIL\t" ; \
+					echo "$$DIR/$$PATCH" ; \
+					if [ -z "$$NOFAIL" ] ; then \
+						echo "${seperator}" ; \
+						echo "$$OUTPUT" ; \
+						echo "${seperator}" ; \
+					fi ; \
+				fi ; \
 				break; \
 			fi ; \
 		done ; \
