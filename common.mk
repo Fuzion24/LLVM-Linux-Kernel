@@ -1,7 +1,7 @@
 ##############################################################################
 # Copyright (c) 2012 Mark Charlebois
 #               2012 Jan-Simon Möller
-#               2012 Behan Webster
+#               2012-2014 Behan Webster
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to 
@@ -26,6 +26,7 @@ TOOLCHAIN	= ${TOPDIR}/toolchain
 TOOLSDIR	= ${TOPDIR}/tools
 ARCHDIR		= ${TOPDIR}/arch
 TESTDIR		= ${TOPDIR}/test
+DOCDIR		= ${TOPDIR}/Documentation
 
 COMMON_TARGETS	= list-config list-jobs list-targets list-fetch-all list-patch-applied list-path list-versions \
 			clean-all fetch-all mrproper-all raze-all sync-all tmp-mrproper
@@ -75,6 +76,7 @@ check_llvmlinux_commit_error_msg = (echo "Current HEAD does not match with check
 gitclone = [ -d ${2}/.git ] || (rm -rf ${2} && git clone ${1} ${2} ${3})
 gitcheckout = (cd ${1} && git checkout ${2} && ([ -z "${3}" ] || git pull && git checkout ${3}))
 gitcommit = [ ! -d ${1}/.git ] || (cd ${1} && $(call prsetting,${2},`git rev-parse HEAD`))
+gitconfig = $(call git,${TOPDIR},config --get ${1})
 gitmove = (cd ${1} && git branch --move ${2} $3 >/dev/null 2>&1)
 gitpull = (cd ${1} && git checkout ${2} && git pull origin ${2})
 gitreset = ([ -d ${1} ] && cd ${1} && $(call echo,Reseting git tree ${1}) && git reset --hard HEAD && git clean -d -f) || true
