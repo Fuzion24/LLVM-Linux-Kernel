@@ -1,9 +1,11 @@
-From b410254fa3d447fe45f6ee542e18e233b2f5b738 Mon Sep 17 00:00:00 2001
+From ebf6d2393116554713e6a50269a56afb5dbd627a Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Fri, 14 Feb 2014 15:19:17 -0800
 Subject: [PATCH] all: LLVMLinux: Change DWARF flag to support gcc and clang
 
-Both gcc and clang accept the this version of the command line option.
+Both gcc (well, actually gnu as) and clang support the "-Wa,-gdwarf-2" option
+(though clang does not support "-Wa,--gdwarf-2"). Since these flags are equivalent
+in meaning, this patch uses the one which is better supported across compilers.
 
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 ---
@@ -11,7 +13,7 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/Makefile b/Makefile
-index 43a0fe4..4952606 100644
+index fa0f0ee..138fedf 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -670,7 +670,7 @@ endif
