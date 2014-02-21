@@ -1,5 +1,5 @@
-From b240920d5f3745288aed23481f6a4d25fbf0da95 Mon Sep 17 00:00:00 2001
-From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
+From 023eb365f22916f172e64e68262c993d624bb947 Mon Sep 17 00:00:00 2001
+From: Mark Charlebois <charlebm@gmail.com>
 Date: Tue, 20 Nov 2012 22:13:10 +0100
 Subject: [PATCH] LLVMLinux: Add support for clang to compiler.h and new
  compiler-clang.h
