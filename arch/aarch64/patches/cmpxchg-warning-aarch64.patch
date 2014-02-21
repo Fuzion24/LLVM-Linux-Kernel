@@ -9,6 +9,7 @@ in the default case of the switch so that we never return an uninitialized
 value.
 
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+Signed-off-by: Behan Webster <behanw@converseincode.com>
 ---
  arch/arm64/include/asm/cmpxchg.h | 2 ++
  1 file changed, 2 insertions(+)
