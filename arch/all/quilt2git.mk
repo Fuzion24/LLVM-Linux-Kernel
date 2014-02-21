@@ -60,7 +60,7 @@ kernel-git-import-quilt-patches: kernel-fetch
 kernel-git-export-patches:
 	@$(call banner,Exporting quilt patch series from git branch: ${TMP_BRANCH}...)
 	@$(call gitprepare,${TMP_BRANCH})
-	@$(call git,${KERNELDIR}, format-patch --no-numbered ${KERNEL_BRANCH})
+	@$(call git,${KERNELDIR}, format-patch --find-renames --find-copies --no-numbered ${KERNEL_BRANCH})
 	@$(call gitcheckout,${KERNELDIR},${KERNEL_BRANCH})
 
 #############################################################################
@@ -71,12 +71,16 @@ kernel-quilt-rename-patches:
 		[ "$$NEWPATCH" = '0*.patch' ] && exit 0; \
 		FILE=""; SAMENESS=99999; \
 		for OLDPATCH in `cat patches/series` ; do \
-			SCORE=`diff --suppress-common-lines $$NEWPATCH patches/$$OLDPATCH | wc -l` ; \
+			SCORE=`diff --suppress-common-lines $$NEWPATCH patches/$$OLDPATCH | wc -l`; \
 			if [ $$SCORE -lt $$SAMENESS ] ; then \
 				FILE=patches/$$OLDPATCH; SAMENESS=$$SCORE; \
 			fi ; \
 		done ; \
-		[ -n "$$FILE" ] && mv $$NEWPATCH $$FILE; \
+		if [ -n "$$FILE" ] ; then \
+			mv $$NEWPATCH $$FILE; \
+		else \
+			echo "$$NEWPATCH is a new patch, and needs to be added to quilt manually"; \
+		fi ; \
 	done)
 
 #############################################################################
