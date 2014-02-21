@@ -1,5 +1,5 @@
 #############################################################################
-# Copyright (c) 2012 Behan Webster
+# Copyright (c) 2012-2014 Behan Webster
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to 
@@ -126,7 +126,7 @@ kernel-quilt-update-series-dot-target: ${SERIES_DOT_TARGET}
 		>> ${SERIES_DOT_TARGET}; touch ${SERIES_DOT_TARGET})
 
 ##############################################################################
-uniq = perl -ne 'print unless $$u{$$_}; $$u{$$_}=1'
+catuniq = cat $(1) | perl -ne 'print unless $$u{$$_}; $$u{$$_}=1'
 
 ##############################################################################
 # Generate target series file from relevant kernel quilt patch series files
@@ -134,7 +134,7 @@ kernel-quilt-generate-series: ${TARGET_PATCH_SERIES}
 ${TARGET_PATCH_SERIES}: ${ALL_PATCH_SERIES}
 	@$(MAKE) kernel-quilt-update-series-dot-target
 	@$(call banner,Building quilt series file for kernel...)
-	@cat ${ALL_PATCH_SERIES} | $(call uniq) > $@
+	@$(call catuniq,${ALL_PATCH_SERIES}) > $@
 
 ##############################################################################
 # Have git ignore extra patch files
@@ -217,11 +217,14 @@ list-kernel-patches:
 list-kernel-maintainer: list-kernel-get_maintainer
 list-kernel-checkpatch list-kernel-get_maintainer: list-kernel-%:
 	@$(call banner,Running $* for patches PATCH_FILTER_REGEX="${PATCH_FILTER_REGEX}")
-	@[ -n "$$NOPASS" ] || echo "You can suppress passes by setting env variable NOPASS=1"
-	@[ -n "$$NOFAIL" ] || echo "You can suppress verbose failures by setting env variable NOFAIL=1"
+	@if [ $@ = list-kernel-checkpatch ] ; then \
+		[ -n "$$NOPASS" ] || echo "You can suppress passes by setting env variable NOPASS=1"; \
+		[ -n "$$NOFAIL" ] || echo "You can suppress verbose failures by setting env variable NOFAIL=1"; \
+	fi
 	@(REVDIRS=`$(call reverselist,${KERNEL_PATCH_DIR})` ; \
 	cd ${KERNELDIR} ; \
-	for PATCH in `cat ${ALL_PATCH_SERIES} | grep "${PATCH_FILTER_REGEX}"` ; do \
+	[ -n "$$PATCH_LIST" ] || PATCH_LIST=`cat ${ALL_PATCH_SERIES} | grep "${PATCH_FILTER_REGEX}"`; \
+	for PATCH in $$PATCH_LIST ; do \
 		for DIR in $$REVDIRS ; do \
 			if [ -f "$$DIR/$$PATCH" -a ! -L "$$DIR/$$PATCH" ] ; then \
 				OUTPUT=`./scripts/$*.pl "$$DIR/$$PATCH"` ; \
@@ -239,7 +242,7 @@ list-kernel-checkpatch list-kernel-get_maintainer: list-kernel-%:
 				break; \
 			fi ; \
 		done ; \
-	done)
+	done) | sed -e 's|$(TOPDIR)/||g'
 
 ##############################################################################
 kernel-quilt-clean: ${SERIES_DOT_TARGET}

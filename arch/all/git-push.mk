@@ -53,7 +53,7 @@ kernel-git-for-linus kernel-git-for-next kernel-git-for-arm kernel-git-for-aarch
 	@$(call importprepare,for-$*)
 	@${PATCHSTATUS} --for-$* > ${TARGET_PATCH_SERIES}.for-$*
 	@rm -f ${TARGET_PATCH_SERIES}.tmp
-	@for PATCH in `cat ${TARGET_PATCH_SERIES}`; do \
+	@for PATCH in `$(call catuniq,${ALL_PATCH_SERIES})`; do \
 		grep $$PATCH ${TARGET_PATCH_SERIES}.for-$* >> ${TARGET_PATCH_SERIES}.tmp || true; \
 	done
 	@mv ${TARGET_PATCH_SERIES}.tmp ${TARGET_PATCH_SERIES}

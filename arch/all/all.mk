@@ -1,6 +1,6 @@
 #############################################################################
 # Copyright (c) 2012 Mark Charlebois
-#               2012 Behan Webster
+#               2012-2014 Behan Webster
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to 
@@ -253,6 +253,7 @@ kernel-settings:
 
 include ${ARCHDIR}/all/quilt.mk
 include ${ARCHDIR}/all/quilt2git.mk
+include ${ARCHDIR}/all/git-submit.mk
 
 #############################################################################
 # The shared kernel is a bare repository of Linus' kernel.org kernel
