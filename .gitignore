@@ -23,6 +23,7 @@ patch.log
 *.pyc
 qemu_log
 rootfs_custom.img.xz
+series.tmp
 src/
 state/
 .*.swp
