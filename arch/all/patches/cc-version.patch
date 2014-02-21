@@ -11,12 +11,9 @@ When building the LINUX_COMPILER definition, instead of merely taking the last
 line from "$(CC) -v", grep for ' version ' in the output. This supports both
 gcc and clang.
 
-Author:  PaX Team <pageexec@freemail.hu>
-ML-Post: http://lists.cs.uiuc.edu/pipermail/llvm-commits/Week-of-Mon-20120507/142707.html
-URL:     http://llvm.linuxfoundation.org
-Merge:   Jan-Simon Möller <dl9pf@gmx.de>
 Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
+Cc: PaX Team <pageexec@freemail.hu>
 ---
  scripts/mkcompile_h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)

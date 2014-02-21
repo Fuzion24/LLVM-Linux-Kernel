@@ -11,8 +11,6 @@ Add support to toplevel Makefile for compiling with clang, both for
 HOSTCC and CC. Use cc-option to prevent gcc option from breaking clang, and
 from clang options from breaking gcc.
 
-Based on patches from Pax Team.
-
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>

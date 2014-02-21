@@ -8,13 +8,10 @@ Content-Transfer-Encoding: 8bit
 
 When compiling kernel with clang, disable warnings which are too noisy.
 
-Author:  PaX Team <pageexec@freemail.hu>
-ML-Post: http://lists.cs.uiuc.edu/pipermail/llvm-commits/Week-of-Mon-20120507/142707.html
-URL:     http://llvm.linuxfoundation.org
-Merge:   Jan-Simon Möller <dl9pf@gmx.de>
 Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Reviewed-by: Mark Charlebois <mcharleb@gmail.com>
+Cc: PaX Team <pageexec@freemail.hu>
 ---
  scripts/Makefile.build | 13 ++++++++++++-
  1 file changed, 12 insertions(+), 1 deletion(-)

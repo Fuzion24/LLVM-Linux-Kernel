@@ -1,4 +1,4 @@
-From 935bbe4f50caae2ccda0b1c6ba70bcce201c2910 Mon Sep 17 00:00:00 2001
+From 8614060c66f08588f13a3fba68d18a60a3971361 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
 Date: Wed, 14 Nov 2012 12:45:08 +0100
 Subject: [PATCH] x86: LLVMLinux: Add option for clang in export of memcpy.
@@ -8,11 +8,8 @@ Content-Transfer-Encoding: 8bit
 
 Along with gcc >= 4.3, clang also needs memcpy exported.
 
-Author:  PaX Team <pageexec@freemail.hu>
-ML-Post: http://lists.cs.uiuc.edu/pipermail/llvm-commits/Week-of-Mon-20120507/142707.html
-URL:     http://llvm.linuxfoundation.org
-Merge:   Jan-Simon Möller <dl9pf@gmx.de>
 Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
+Cc: PaX Team <pageexec@freemail.hu>
 ---
  arch/x86/um/ksyms.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
@@ -31,5 +28,5 @@ index 2e8f43e..04aedce 100644
  #else
  EXPORT_SYMBOL(__memcpy);
 -- 
-1.8.1.4
+1.8.3.2
 

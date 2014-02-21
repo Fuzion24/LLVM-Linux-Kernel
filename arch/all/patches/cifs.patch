@@ -9,12 +9,8 @@ Content-Transfer-Encoding: 8bit
 Clang warns about shash not being the last variable-sized element.
 ctx[] is never used and can be deleted.
 
-Author:  PaX Team <pageexec@freemail.hu>
-ML-Post: http://lists.cs.uiuc.edu/pipermail/llvm-commits/Week-of-Mon-201205
-07/142707.html
-URL:     http://llvm.linuxfoundation.org
-
 Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
+Cc: PaX Team <pageexec@freemail.hu>
 ---
  fs/cifs/cifsglob.h | 1 -
  1 file changed, 1 deletion(-)

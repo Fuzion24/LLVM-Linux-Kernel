@@ -11,14 +11,9 @@ precludes the use of compilers which don't implement VLAIS (for instance the
 Clang compiler). This patch instead allocates the appropriate amount of memory
 using an char array.
 
-Patch from series at
-http://lists.cs.uiuc.edu/pipermail/llvm-commits/Week-of-Mon-20120507/142707.html
-by PaX Team.
-
 Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
-Cc: pageexec@freemail.hu
-[Use shash_desc_ctx() to calculate address of ctx]
 Signed-off-by: Behan Webster <behanw@converseincode.com>
+Cc: pageexec@freemail.hu
 ---
  crypto/testmgr.c | 17 +++++++++--------
  1 file changed, 9 insertions(+), 8 deletions(-)

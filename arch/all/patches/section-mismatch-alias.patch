@@ -11,12 +11,9 @@ As a result, the linking section needs to be explicitly specified when building
 a module. This behavior is undefined in the standard which is why it differs from
 compiler to compiler.
 
-Author:  PaX Team <pageexec@freemail.hu>
-ML-Post: http://lists.cs.uiuc.edu/pipermail/llvm-commits/Week-of-Mon-20120507/142707.html
-URL:     http://llvm.linuxfoundation.org
-Merge:   Jan-Simon Möller <dl9pf@gmx.de>
 Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
+Cc: PaX Team <pageexec@freemail.hu>
 ---
  include/linux/init.h | 5 +++--
  1 file changed, 3 insertions(+), 2 deletions(-)
