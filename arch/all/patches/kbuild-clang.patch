@@ -1,7 +1,7 @@
-From 204ad457b93d70e447ebef84f902bf0381ffa726 Mon Sep 17 00:00:00 2001
+From aae7f082db178e8c091eaf9e1f057abdc984cad1 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 3 Sep 2013 22:27:23 -0400
-Subject: [PATCH] Kbuild: LLVMLinux: Add Kbuild support for building kernel
+Subject: [PATCH] kbuild: LLVMLinux: Add Kbuild support for building kernel
  with Clang
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8

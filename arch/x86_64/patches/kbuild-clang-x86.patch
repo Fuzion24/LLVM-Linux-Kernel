@@ -1,7 +1,7 @@
-From ec1f0acfdf6fe4d2b469b03769f7f04225b3c75d Mon Sep 17 00:00:00 2001
+From 5fad4e6259afe1565a146bdc7bd7e414234e9045 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
 Date: Sun, 20 Oct 2013 00:36:47 +0200
-Subject: [PATCH] clang.
+Subject: [PATCH] x86 kbuild: LLVMLinux: More cc-options added for clang
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit

@@ -1,8 +1,8 @@
-From 1b6c66662da073bb95c603c9b64a7b8b6f4b8d51 Mon Sep 17 00:00:00 2001
+From 413ac8a967fffc96dab80d761083643e64c88a45 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 3 Sep 2013 22:27:26 -0400
 Subject: [PATCH] arm64: LLVMLinux: Provide __aeabi_* symbols which are needed
- for Clang
+ for clang
 
 These symbols are required when compiling the Linux kernel for arch ARM64 with
 clang.

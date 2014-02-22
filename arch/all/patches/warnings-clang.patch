@@ -1,7 +1,7 @@
-From d521716986abbbd219c724ec51a1e0f3663d1a23 Mon Sep 17 00:00:00 2001
+From 075c5df9acb33d3bad28d2e3e7d8e052b38be5d3 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
 Date: Wed, 14 Nov 2012 10:39:57 +0100
-Subject: [PATCH] Kbuild: LLVMLinux: Adapt warnings for compilation with clang
+Subject: [PATCH] kbuild: LLVMLinux: Adapt warnings for compilation with clang
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit

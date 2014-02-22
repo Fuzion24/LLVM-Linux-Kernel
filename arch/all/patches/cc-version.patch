@@ -1,7 +1,7 @@
-From 61884f26259adb93b37b2c8a96bd927f1dcd1262 Mon Sep 17 00:00:00 2001
+From 928672d7ee45d3c99ad8ec5bd1e875b4b089c2c2 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
 Date: Wed, 14 Nov 2012 10:55:48 +0100
-Subject: [PATCH] Kbuild: LLVMLinux: Fix LINUX_COMPILER definition script for
+Subject: [PATCH] kbuild: LLVMLinux: Fix LINUX_COMPILER definition script for
  compilation with clang
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
