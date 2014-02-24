@@ -214,7 +214,7 @@ list-kernel-patches:
 # List maintainers who are relevant to a particular patch
 # You can specify a regex to narrow down the patches by setting PATCH_FILTER_REGEX
 # e.g. make PATCH_FILTER_REGEX=vlais\* list-kernel-maintainer
-list-kernel-maintainer: list-kernel-get_maintainer
+kernel-checkpatch kernel-get_maintainer: kernel-%: list-kernel-$*
 list-kernel-checkpatch list-kernel-get_maintainer: list-kernel-%:
 	@$(call banner,Running $* for patches PATCH_FILTER_REGEX="${PATCH_FILTER_REGEX}")
 	@if [ $@ = list-kernel-checkpatch ] ; then \
