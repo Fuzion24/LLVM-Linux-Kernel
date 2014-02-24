@@ -162,6 +162,8 @@ include ${TOPDIR}/arch/all/checkpoint.mk
 include ${TOPDIR}/arch/all/dependency.mk
 include ${TOPDIR}/arch/all/tmpfs-build.mk
 include ${TOOLCHAIN}/toolchain.mk
+-include ${TOPDOR}/local.mk
+-include local.mk
 
 ##############################################################################
 help:
