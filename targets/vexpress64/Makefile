@@ -25,8 +25,8 @@
 TARGETDIR	= ${CURDIR}
 TOPDIR		= $(realpath ${TARGETDIR}/../..)
 
-#CLANG_TOOLCHAIN	= source
-CLANG_TOOLCHAIN	= prebuilt
+#CLANG_TOOLCHAIN	= from-source
+#CLANG_TOOLCHAIN	= prebuilt
 CROSS_AARCH64_TOOLCHAIN = linaro
 
 LLVM_BRANCH = master
