@@ -32,7 +32,7 @@ endif
 endif
 
 #############################################################################
-GENERIC_PATCH_DIR	= $(filter-out %${KERNEL_REPO_PATCHES},$(filter-out ${TARGETDIR}/%,${KERNEL_PATCH_DIR}))
+GENERIC_PATCH_DIR	= $(filter-out %${KERNEL_REPO_PATCHES},$(filter-out ${TARGETDIR}/patches,${KERNEL_PATCH_DIR}))
 GENERIC_PATCH_SERIES	= $(addsuffix /series,$(GENERIC_PATCH_DIR))
 TARGET_PATCH_SERIES	= ${PATCHDIR}/series
 SERIES_DOT_TARGET	= ${TARGET_PATCH_SERIES}.target
@@ -48,7 +48,7 @@ mv_n_ln		= mv "${1}" "${2}" ; ln -sv "${2}" "${1}"
 #############################################################################
 QUILT_TARGETS		= kernel-quilt kernel-quilt-clean kernel-quilt-generate-series kernel-quilt-update-series-dot-target \
 				kernel-quilt-link-patches kernel-patches-tar kernel-quilt-clean-broken-symlinks \
-				list-kernel-patches list-kernel-patches-path list-kernel-maintainer list-kernel-checkpatch
+				list-kernel-patches list-kernel-patches-path list-kernel-patches-series list-kernel-maintainer list-kernel-checkpatch
 TARGETS_BUILD		+= ${QUILT_TARGETS}
 CLEAN_TARGETS		+= kernel-quilt-clean
 HELP_TARGETS		+= kernel-quilt-help
@@ -75,6 +75,8 @@ kernel-quilt-help:
 	@echo "			- Remove links to deleted kernel patches from target patches directory"
 	@echo "* make list-kernel-patches-path"
 	@echo "			- List the order in which kernel patches directories are searched for patch filenames"
+	@echo "* make list-kernel-patches-series"
+	@echo "			- List the series files which will make up the target/*/patches/series file"
 	@echo "* make list-kernel-patches"
 	@echo "			- List which kernel patches will be applied"
 	@echo
@@ -127,6 +129,7 @@ kernel-quilt-update-series-dot-target: ${SERIES_DOT_TARGET}
 
 ##############################################################################
 catuniq = grep --no-filename --invert-match '^\#' $(1) | perl -ne 'print unless $$u{$$_}; $$u{$$_}=1'
+ignore_if_empty = perl -ne '{chomp; print "$$_\n" unless -z "${1}/$$_"}'
 
 ##############################################################################
 # Generate target series file from relevant kernel quilt patch series files
@@ -134,7 +137,7 @@ kernel-quilt-generate-series: ${TARGET_PATCH_SERIES}
 ${TARGET_PATCH_SERIES}: ${ALL_PATCH_SERIES}
 	@$(MAKE) kernel-quilt-update-series-dot-target
 	@$(call banner,Building quilt series file for kernel...)
-	@$(call catuniq,${ALL_PATCH_SERIES}) > $@
+	@$(call catuniq,${ALL_PATCH_SERIES}) | $(call ignore_if_empty,$(dir $@)) > $@
 
 ##############################################################################
 # Have git ignore extra patch files
@@ -145,7 +148,7 @@ ${QUILT_GITIGNORE}: ${GENERIC_PATCH_SERIES}
 	@mkdir -p $(dir $@)
 	@echo .gitignore > $@
 	@echo series >> $@
-	@cat ${GENERIC_PATCH_SERIES} >> $@
+	@$(call catuniq,${GENERIC_PATCH_SERIES}) > $@
 
 ##############################################################################
 # Remove broken symbolic links to old patches
@@ -196,6 +199,11 @@ ${QUILT_STATE}: state/prep state/kernel-fetch
 # List patch search path
 list-kernel-patches-path:
 	@$(call reverselist,${KERNEL_PATCH_DIR})
+
+##############################################################################
+# List series file paths
+list-kernel-patches-series:
+	@echo $(subst ${TOPDIR}/,,${GENERIC_PATCH_SERIES}) | sed -e 's/ /\n/g'
 
 ##############################################################################
 # List all patches which are being applied to the kernel
