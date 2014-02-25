@@ -39,6 +39,19 @@ PATH		:= ${PATH}:${ARCH_ALL_BINDIR}
 MAINLINEURI	= git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
 SHARED_KERNEL	= ${ARCH_ALL_DIR}/kernel.git
 
+#############################################################################
+TOPLOGDIR	= ${TOPDIR}/log
+
+LOGDIR		= ${TARGETDIR}/log
+PATCHDIR	= ${TARGETDIR}/patches
+SRCDIR		= ${TARGETDIR}/src
+BUILDDIR	= ${TARGETDIR}/build
+STATEDIR	= ${TARGETDIR}/state
+TMPDIR		= $(subst ${TOPDIR},${BUILDROOT},${TARGETDIR}/tmp)
+
+TMPDIRS		+= ${TMPDIR}
+
+#############################################################################
 export TIME
 TIME		= $(shell echo ${seperator})\n\
 $(shell echo Build Time)\n\
@@ -69,17 +82,12 @@ endif
 ifeq "${KERNELDIR}" ""
 KERNELDIR	= ${SRCDIR}/linux
 endif
-ifeq "${KERNELGCC}" ""
-KERNELGCC	= ${KERNELDIR}-gcc
-endif
 
 #############################################################################
-KERNEL_BUILD	= $(subst ${TOPDIR},${BUILDROOT},${KERNELDIR})
-KERNELGCC_BUILD	= $(subst ${TOPDIR},${BUILDROOT},${KERNELGCC})
-ifneq (${TOPDIR},${BUILDROOT})
+KERNEL_BUILD	= $(subst ${TOPDIR},${BUILDROOT},${BUILDDIR})/kernel-clang
+KERNELGCC_BUILD	= $(subst ${TOPDIR},${BUILDROOT},${BUILDDIR})/kernel-gcc
 KERNEL_ENV	+= KBUILD_OUTPUT=${KERNEL_BUILD}
 KERNELGCC_ENV	+= KBUILD_OUTPUT=${KERNELGCC_BUILD}
-endif
 
 #############################################################################
 ifneq "${BITCODE}" ""
@@ -135,18 +143,7 @@ list-var: list-buildroot
 	@echo "${CLANG} -print-file-name=include"
 	@${CLANG} -print-file-name=include
 	@echo 'kernel-build -> $(call make-kernel,${KERNELDIR},${KERNEL_ENV},CC="${CLANGCC}")'
-	@echo 'kernel-gcc-build -> $(call make-kernel,${KERNELGCC},${KERNELGCC_ENV} ${SPARSE})'
-
-#############################################################################
-TOPLOGDIR	= ${TOPDIR}/log
-
-LOGDIR		= ${TARGETDIR}/log
-PATCHDIR	= ${TARGETDIR}/patches
-SRCDIR		= ${TARGETDIR}/src
-STATEDIR	= ${TARGETDIR}/state
-TMPDIR		= $(subst ${TOPDIR},${BUILDROOT},${TARGETDIR}/tmp)
-
-TMPDIRS		+= ${TMPDIR}
+	@echo 'kernel-gcc-build -> $(call make-kernel,${KERNELDIR},${KERNELGCC_ENV} ${SPARSE})'
 
 #############################################################################
 catfile		= ([ -f ${1} ] && cat ${1})
@@ -168,10 +165,10 @@ make-kernel		= (cd ${1} && ${2} time ${3} make ${MAKE_FLAGS} ${KERNEL_VAR} ${4} 
 
 #############################################################################
 KERNEL_TARGETS_CLANG	= kernel-[fetch,patch,configure,build,clean,sync]
-KERNEL_TARGETS_GCC	= kernel-gcc-[fetch,patch,configure,build,clean,sync] kernel-gcc-sparse
-KERNEL_TARGETS_APPLIED	= kernel-patch-applied kernel-gcc-patch-applied
+KERNEL_TARGETS_GCC	= kernel-gcc-[configure,build,clean,sync] kernel-gcc-sparse
+KERNEL_TARGETS_APPLIED	= kernel-patch-applied
 KERNEL_TARGETS_CLEAN	= tmp-clean
-KERNEL_TARGETS_VERSION	= kernel-version kernel-gcc-version
+KERNEL_TARGETS_VERSION	= kernel-version
 
 #############################################################################
 
@@ -180,7 +177,7 @@ KERNEL_BISECT_START_DATE := 2012-11-01
 #############################################################################
 TARGETS_BUILD		+= ${KERNEL_TARGETS_CLANG} ${KERNEL_TARGETS_GCC} ${KERNEL_TARGETS_APPLIED} ${KERNEL_TARGETS_CLEAN}
 CLEAN_TARGETS		+= ${KERNEL_TARGETS_CLEAN}
-FETCH_TARGETS		+= kernel-fetch kernel-gcc-fetch
+FETCH_TARGETS		+= kernel-fetch
 HELP_TARGETS		+= kernel-help
 MRPROPER_TARGETS	+= kernel-clean kernel-gcc-clean
 PATCH_APPLIED_TARGETS	+= ${KERNEL_TARGETS_APPLIED}
@@ -208,7 +205,7 @@ kernel-help:
 	@echo
 	@echo "These are the kernel make targets:"
 	@echo "* make kernel-[fetch,patch,configure,build,sync,clean]"
-	@echo "* make kernel-gcc-[fetch,patch,configure,build,sync,clean]"
+	@echo "* make kernel-gcc-[configure,build,sync,clean]"
 	@echo "               fetch     - clone kernel code"
 	@echo "               patch     - patch kernel code"
 	@echo "               configure - configure kernel code (add .config file, etc)"
@@ -246,7 +243,6 @@ kernel-settings:
 	$(call prsetting,KERNEL_TAG,${KERNEL_TAG}) ; \
 	$(call gitcommit,${KERNELDIR},KERNEL_COMMIT) ; \
 	$(call prsetting,KERNELDIR,${KERNELDIR}) ; \
-	$(call prsetting,KERNELGCC,${KERNELGCC}) ; \
 	[ -n "${CHECKPOINT}" ] && $(call prsetting,KERNEL_CFG,${CHECKPOINT_KERNEL_CONFIG}) \
 	|| $(call prsetting,KERNEL_CFG,${KERNEL_CFG}) ; \
 	) | $(call configfilter)
@@ -276,7 +272,7 @@ ${SHARED_KERNEL}:
 #############################################################################
 kernel-raze:
 	@$(call banner,Razing kernel)
-	@rm -rf ${SHARED_KERNEL} ${KERNELDIR} ${KERNELGCC}
+	@rm -rf ${SHARED_KERNEL} ${KERNELDIR} ${BUILDDIR}
 	@rm -f $(addsuffix /*,${LOGDIR} ${TMPDIR})
 	@$(call leavestate,${STATEDIR},*)
 
@@ -298,24 +294,6 @@ state/kernel-fetch: ${SHARED_KERNEL} state/prep
 	$(call state,$@,kernel-patch)
 
 #############################################################################
-kernel-gcc-fetch: state/kernel-gcc-fetch
-state/kernel-gcc-fetch: state/kernel-fetch
-	@$(call banner,Cloning kernel for gcc...)
-	$(call gitclone,${KERNELDIR},${KERNELGCC})
-	@if [ -n "${KERNEL_COMMIT}" ] ; then \
-		$(call echo,Checking out commit-ish kernel for gcc...) ; \
-		$(call gitcheckout,${KERNELGCC},${KERNEL_BRANCH},${KERNEL_COMMIT}) ; \
-	elif [ -n "${KERNEL_TAG}" ] ; then \
-		$(call echo,Checking out tagged kernel for gcc...) ; \
-		$(call gitmove,${KERNELGCC},${KERNEL_TAG},tag-${KERNEL_TAG}) ; \
-		$(call gitcheckout,${KERNELGCC},${KERNEL_TAG}) ; \
-	elif [ -n "${KERNEL_BRANCH}" ] ; then \
-		$(call echo,Checking out kernel branch for gcc...) ; \
-		$(call gitcheckout,${KERNELGCC},${KERNEL_BRANCH}) ; \
-	fi
-	$(call state,$@,kernel-gcc-patch)
-
-#############################################################################
 kernel-patch: state/kernel-patch
 state/kernel-patch: state/kernel-fetch state/kernel-quilt
 	@$(call banner,Patching kernel...)
@@ -326,23 +304,9 @@ state/kernel-patch: state/kernel-fetch state/kernel-quilt
 	$(call state,$@,kernel-configure)
 
 #############################################################################
-kernel-gcc-patch: state/kernel-gcc-patch
-state/kernel-gcc-patch: state/kernel-gcc-fetch state/kernel-quilt
-	@$(call banner,Patching kernel for gcc...)
-	@$(call patches_dir,${PATCHDIR},${KERNELGCC}/patches)
-	@$(call optional_gitreset,${KERNELGCC})
-	@$(call patch,${KERNELGCC})
-	$(call state,$@,kernel-gcc-configure)
-
-#############################################################################
 kernel-patch-applied:
 	@$(call banner,Patches applied for Clang kernel)
 	@$(call applied,${KERNELDIR})
-
-#############################################################################
-kernel-gcc-patch-applied:
-	@$(call banner,Patches applied for gcc kernel)
-	@$(call applied,${KERNELGCC})
 
 #############################################################################
 kernel-patch-status:
@@ -360,13 +324,16 @@ state/kernel-configure: state/kernel-patch
 	@make -s build-dep-check
 	@$(call banner,Configuring kernel...)
 	@mkdir -p ${KERNEL_BUILD}
-	@cp ${KERNEL_CFG} ${KERNEL_BUILD}/.config
-	if [ -n "${CLANGDIR}" ] ; then \
-		(cd ${CLANGDIR} ; xx=$$(git log -1 --oneline | cut -d" " -f1) ; sed -i -e "s#-llvmlinux#-llvmlinux-C.$$xx#g" ${KERNEL_BUILD}/.config) ; \
-	fi
-	if [ -n "${LLVMDIR}" ] ; then \
-		(cd ${LLVMDIR} ; xx=$$(git log -1 --oneline | cut -d" " -f1) ; sed -i -e "s#-llvmlinux#-llvmlinux-L.$$xx#g" ${KERNEL_BUILD}/.config) ; \
-	fi
+	cp ${KERNEL_CFG} ${KERNEL_BUILD}/.config
+	# git log -1 | awk '/git-svn-id:/ {gsub(".*@",""); print $1}'
+	@if [ -n "${CLANGDIR}" ] ; then ( \
+		cd ${CLANGDIR}; REV=$$(git svn find-rev $$(git rev-parse HEAD)); \
+		sed -i -e "s/-llvmlinux/-llvmlinux-Cr$$REV/g" ${KERNEL_BUILD}/.config; \
+	) fi
+	@if [ -n "${LLVMDIR}" ] ; then ( \
+		cd ${LLVMDIR}; REV=$$(git svn find-rev $$(git rev-parse HEAD)); \
+		sed -i -e "s/-llvmlinux/-llvmlinux-Lr$$REV/g" ${KERNEL_BUILD}/.config; \
+	) fi
 	(cd ${KERNELDIR} && echo "" | ${KERNEL_ENV} make ${MAKE_FLAGS} oldconfig)
 	$(call state,$@,kernel-build)
 
@@ -383,13 +350,12 @@ kernel-cpconfig: state/kernel-configure
 
 #############################################################################
 kernel-gcc-configure: state/kernel-gcc-configure
-state/kernel-gcc-configure: state/kernel-gcc-patch
+state/kernel-gcc-configure: state/kernel-patch
 	@make -s build-dep-check
 	@$(call banner,Configuring gcc kernel...)
 	@mkdir -p ${KERNELGCC_BUILD}
-	@cp ${KERNEL_CFG} ${KERNELGCC_BUILD}/.config
-	@echo "CONFIG_ARM_UNWIND=y" >> ${KERNELGCC_BUILD}/.config
-	(cd ${KERNELGCC} && echo "" | ${KERNELGCC_ENV} make ${MAKE_FLAGS} oldconfig)
+	cp ${KERNEL_CFG} ${KERNELGCC_BUILD}/.config
+	(cd ${KERNELDIR} && echo "" | ${KERNELGCC_ENV} make ${MAKE_FLAGS} oldconfig)
 	$(call state,$@,kernel-gcc-build)
 
 #############################################################################
@@ -409,9 +375,7 @@ state/kernel-gcc-build: ${STATE_TOOLCHAIN} state/kernel-gcc-configure
 	@[ -d ${KERNELGCC_BUILD} ] || ($(call leavestate,${STATEDIR},kernel-gcc-configure) && ${MAKE} kernel-gcc-configure)
 	@$(MAKE) kernel-quilt-link-patches
 	@$(call banner,Building kernel with gcc...)
-#	(cd ${KERNELGCC} ; sed -i -e "s#-Qunused-arguments##g" Makefile)
-#	(cd ${KERNELGCC} ; for ix in `git grep integrated-as | cut -d":" -f1 ` ; do sed -i -e "s#-no-integrated-as##g" $$ix ; done )
-	$(call make-kernel,${KERNELGCC},${KERNELGCC_ENV} ${SPARSE})
+	$(call make-kernel,${KERNELDIR},${KERNELGCC_ENV} ${SPARSE})
 	@$(call get-kernel-size,gcc,${CROSS_GCC},${KERNELGCC_BUILD})
 	$(call state,$@,done)
 
@@ -437,12 +401,12 @@ kernel-build-force kernel-gcc-build-force: %-force:
 kernel-gcc-sparse:
 	@$(call assert_found_in_path,sparse)
 	${MAKE} kernel-gcc-configure
-	@$(call patches_dir,${PATCHDIR},${KERNELGCC}/patches)
+	@$(call patches_dir,${PATCHDIR},${KERNELDIR}/patches)
 	@$(call banner,Building unpatched gcc kernel for eventual analysis with sparse...)
-	@$(call unpatch,${KERNELGCC})
+	@$(call unpatch,${KERNELDIR})
 	${MAKE} kernel-gcc-build-force
 	@$(call banner,Rebuilding patched gcc kernel with sparse (changed files only)...)
-	@$(call patch,${KERNELGCC})
+	@$(call patch,${KERNELDIR})
 	${MAKE} SPARSE=C=1 kernel-gcc-build-force
 
 #############################################################################
@@ -462,15 +426,10 @@ kernel-sync: state/kernel-fetch kernel-clean kernel-shared-sync
 	@$(call gitsync,${KERNELDIR},${KERNEL_COMMIT},${KERNEL_BRANCH},${KERNEL_TAG})
 
 #############################################################################
-kernel-gcc-sync: state/kernel-gcc-fetch kernel-gcc-clean kernel-shared-sync
-	@$(call banner,Syncing gcc kernel...)
-	@$(call check_llvmlinux_commit,${CONFIG})
-	@$(call gitsync,${KERNELGCC},${KERNEL_COMMIT},${KERNEL_BRANCH},${KERNEL_TAG})
-
-#############################################################################
 kernel-clean kernel-mrproper:
 	@$(call makemrproper,${KERNELDIR})
 	@rm -f ${LOGDIR}/*.log
+	@rm -rf ${KERNEL_BUILD}
 	@$(call unpatch,${KERNELDIR})
 	@$(call optional_gitreset,${KERNELDIR})
 	@$(call leavestate,${STATEDIR},kernel-quilt kernel-patch kernel-configure kernel-build)
@@ -479,9 +438,8 @@ kernel-clean kernel-mrproper:
 #############################################################################
 kernel-gcc-clean kernel-gcc-mrproper:
 	@$(call makemrproper,${KERNELGCC})
-	@$(call unpatch,${KERNELGCC})
-	@$(call optional_gitreset,${KERNELGCC})
-	@$(call leavestate,${STATEDIR},kernel-gcc-configure kernel-gcc-patch kernel-gcc-build)
+	@rm -rf ${KERNELGCC_BUILD}
+	@$(call leavestate,${STATEDIR},kernel-gcc-configure kernel-gcc-build)
 	@$(call banner,Gcc compiled Kernel is now clean)
 
 #############################################################################
@@ -513,11 +471,9 @@ warnings-kind: ${BUILD_WARNINGS}
 #############################################################################
 kernel-version:
 	@$(call get-kernel-version,${KERNELDIR})
-kernel-gcc-version:
-	@$(call get-kernel-version,${KERNELGCC})
 
 #############################################################################
-kernel-bisect-start: kernel-clean kernel-mrproper
+kernel-bisect-start: kernel-mrproper
 	@(cd ${KERNELDIR} ; git bisect reset ; git bisect start ; git bisect bad ; git bisect good `git log --pretty=format:'%ai §%H' | grep ${KERNEL_BISECT_START_DATE} | head -1 | cut -d"§" -f2` )
 
 kernel-bisect-skip: kernel-clean
@@ -529,17 +485,18 @@ kernel-bisect-good: kernel-clean
 kernel-bisect-bad: kernel-clean
 	@(cd ${KERNELDIR} ; git bisect bad)
 
-kernel-gcc-bisect: kernel-clean kernel-mrproper
-	@(cd ${KERNELGCC} ; git bisect reset ; git bisect start ; git bisect bad ; git bisect good `git log --pretty=format:'%ai §%H' |
+kernel-gcc-bisect: kernel-gcc-mrproper
+	@(cd ${KERNELDIR} ; git bisect reset ; git bisect start ; git bisect bad ; git bisect good `git log --pretty=format:'%ai §%H' | grep ${KERNEL_BISECT_START_DATE} | head -1 | cut -d"§" -f2` )
 
-kernel-gcc-bisect-skip: kernel-clean
-	@(cd ${KERNELGCC} ; git bisect skip )
+kernel-gcc-bisect-skip: kernel-gcc-clean
+	@(cd ${KERNELDIR} ; git bisect skip )
 
-kernel-gcc-bisect-good: kernel-clean
-	@(cd ${KERNELGCC} ; git bisect good )
+kernel-gcc-bisect-good: kernel-gcc-clean
+	@(cd ${KERNELDIR} ; git bisect good )
 
-kernel-gcc-bisect-bad: kernel-clean
-	@(cd ${KERNELGCC} ; git bisect bad)
+kernel-gcc-bisect-bad: kernel-gcc-clean
+	@(cd ${KERNELDIR} ; git bisect bad)
+
 #############################################################################
 tmp tmpdir: ${TMPDIR}
 ${TMPDIR}:
