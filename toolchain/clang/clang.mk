@@ -46,6 +46,15 @@ clang-toolchain-settings:
 
 CLANG_TOOLCHAIN ?= from-source
 
+##############################################################################
+llvm-version::
+	@[ ! -e $(dir ${CLANG})llc -o -n "${LLVMDIR}" ] || echo `$(dir ${CLANG})llc --version | grep version`
+
+##############################################################################
+clang-version::
+	@[ ! -e ${CLANG} -o -n "${CLANGDIR}" ] || echo "`${CLANG} --version | grep version`"
+
+##############################################################################
 ifeq (${CLANG_TOOLCHAIN},prebuilt)
   include ${LLVMTOP}/clang-prebuilt.mk
 else
@@ -55,12 +64,3 @@ else
     include ${LLVMTOP}/clang-from-source.mk
   endif
 endif
-
-##############################################################################
-llvm-version::
-	@[ ! -e $(dir ${CLANG})llc ] || echo `$(dir ${CLANG})llc --version | grep version`
-
-##############################################################################
-clang-version::
-	@[ ! -e ${CLANG} ] || echo "`${CLANG} --version | grep version`"
-
