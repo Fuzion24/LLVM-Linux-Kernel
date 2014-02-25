@@ -8,10 +8,12 @@ Content-Transfer-Encoding: 8bit
 
 Protect more options for x86 with cc-option so that we don't get errors when
 using clang instead of gcc.  Add more or different options when using clang as
-well. Also need to enforce that SSE is off for clang.
+well. Also need to enforce that SSE is off for clang and the stack is 8-byte
+aligned.
 
 Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
+Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 ---
  arch/x86/Makefile | 8 +++++++-
  1 file changed, 7 insertions(+), 1 deletion(-)

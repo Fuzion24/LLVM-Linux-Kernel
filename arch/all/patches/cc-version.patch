@@ -13,6 +13,7 @@ gcc and clang.
 
 Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
+Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Cc: PaX Team <pageexec@freemail.hu>
 ---
  scripts/mkcompile_h | 2 +-
