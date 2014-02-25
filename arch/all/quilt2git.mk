@@ -85,7 +85,7 @@ kernel-quilt-rename-patches:
 
 #############################################################################
 kernel-quilt-fix-unchanged-patches:
-	@for PATCH in `git status | awk '/#.*modified.*patch/ {print $$3}'`; do \
+	@for PATCH in `git status | awk '/#.*modified.*\.patch/ {print $$3}'`; do \
 		CHANGED=`GIT_EXTERNAL_DIFF=${TOOLSDIR}/patchdiff git diff $$PATCH 2>/dev/null | wc -l`; \
 		if [ $$CHANGED -eq 0 ] ; then \
 			git checkout $$PATCH; \
