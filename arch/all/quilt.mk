@@ -126,7 +126,7 @@ kernel-quilt-update-series-dot-target: ${SERIES_DOT_TARGET}
 		>> ${SERIES_DOT_TARGET}; touch ${SERIES_DOT_TARGET})
 
 ##############################################################################
-catuniq = cat $(1) | perl -ne 'print unless $$u{$$_}; $$u{$$_}=1'
+catuniq = grep --no-filename --invert-match '^\#' $(1) | perl -ne 'print unless $$u{$$_}; $$u{$$_}=1'
 
 ##############################################################################
 # Generate target series file from relevant kernel quilt patch series files
