@@ -1,4 +1,4 @@
-From aae7f082db178e8c091eaf9e1f057abdc984cad1 Mon Sep 17 00:00:00 2001
+From ff8420f46fa8b7e08934beaaaa972a3de44b6996 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 3 Sep 2013 22:27:23 -0400
 Subject: [PATCH] kbuild: LLVMLinux: Add Kbuild support for building kernel
@@ -20,12 +20,11 @@ Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Cc: PaX Team <pageexec@freemail.hu>
 ---
- Makefile               | 32 +++++++++++++++++++++++++++++++-
- scripts/Kbuild.include |  2 +-
- 2 files changed, 32 insertions(+), 2 deletions(-)
+ Makefile | 32 +++++++++++++++++++++++++++++++-
+ 1 file changed, 31 insertions(+), 1 deletion(-)
 
 diff --git a/Makefile b/Makefile
-index 893d6f0..1e9142b 100644
+index 831b36a..c4ab30d 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -247,6 +247,15 @@ HOSTCXX      = g++
