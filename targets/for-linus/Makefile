@@ -36,6 +36,7 @@ all: prep kernel-build
 
 include ${TOPDIR}/common.mk
 include ${ARCHDIR}/x86_64/x86_64.mk
+include ${ARCHDIR}/all/git-push.mk
 
 # Add ARM patches
 ARCH_ARM_DIR	= ${ARCHDIR}/arm
