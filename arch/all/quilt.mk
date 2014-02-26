@@ -138,7 +138,7 @@ kernel-quilt-generate-series: ${TARGET_PATCH_SERIES}
 ${TARGET_PATCH_SERIES}: ${ALL_PATCH_SERIES}
 	@$(MAKE) kernel-quilt-update-series-dot-target
 	@$(call banner,Building quilt series file for kernel...)
-	if [ -n '${PATCH_FILTER_REGEX}' -a -z "$$PATCH_LIST" ] ; then \
+	@if [ -n '${PATCH_FILTER_REGEX}' -a -z "$$PATCH_LIST" ] ; then \
 		PATCH_LIST=`$(call catuniq,${ALL_PATCH_SERIES}) | grep "${PATCH_FILTER_REGEX}"`; \
 	fi; \
 	if [ -n "$$PATCH_LIST" ] ; then \
