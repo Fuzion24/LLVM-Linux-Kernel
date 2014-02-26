@@ -101,9 +101,10 @@ kernel-git-submit-patch: kernel-fetch kernel-git-submit-patch-check
 	[ -z $$REPLYTO ] || REPLYTO="--in-reply-to $$REPLYTO"; \
 	[ -z $$DRYRUN ] || DRYRUN="--dry-run"; \
 	PATCHES=`find ${SUBMIT_TMP} -name '*.patch' | grep -v 0000-`; \
-	git send-email --from "$$FROM" $$REPLYTO $$DRYRUN ${GIT_SEND_EMAIL_OPTS} \
+	git send-email --from "$$FROM" $$REPLYTO $$DRYRUN \
 		--annotate --confirm=always --signed-off-by-cc --thread \
-		`$(call email_addresses,$$PATCHES)` ${SUBMIT_TMP}/*
+		`$(call email_addresses,$$PATCHES)` ${GIT_SEND_EMAIL_OPTS} \
+		${SUBMIT_TMP}/*
 	@$(call banner,Mark patches as submitted)
 	@${PATCHSTATUS} -s `cat ${TARGET_PATCH_SERIES}.${SUBMIT_BRANCH}`
 
