@@ -1,4 +1,4 @@
-From 5fad4e6259afe1565a146bdc7bd7e414234e9045 Mon Sep 17 00:00:00 2001
+From 6afc257b7b83547519711d7181a9626382f27274 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
 Date: Sun, 20 Oct 2013 00:36:47 +0200
 Subject: [PATCH] x86 kbuild: LLVMLinux: More cc-options added for clang
@@ -15,11 +15,11 @@ Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 ---
- arch/x86/Makefile | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ arch/x86/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/x86/Makefile b/arch/x86/Makefile
-index eeda43a..852d8f0 100644
+index eeda43a..d5a5a91 100644
 --- a/arch/x86/Makefile
 +++ b/arch/x86/Makefile
 @@ -108,7 +108,7 @@ else
@@ -31,19 +31,6 @@ index eeda43a..852d8f0 100644
  endif
  
  # Make sure compiler does not have buggy stack-protector support.
-@@ -144,6 +144,12 @@ endif
- sp-$(CONFIG_X86_32) := esp
- sp-$(CONFIG_X86_64) := rsp
- 
-+# enforce no-sse for clang
-+ifneq ($(COMPILER),clang)
-+        KBUILD_CFLAGS += $(call cc-option,-mno-sse)
-+        KBUILD_CFLAGS += $(call cc-option,-mpreferred-stack-boundary=3)
-+endif
-+
- # do binutils support CFI?
- cfi := $(call as-instr,.cfi_startproc\n.cfi_rel_offset $(sp-y)$(comma)0\n.cfi_endproc,-DCONFIG_AS_CFI=1)
- # is .cfi_signal_frame supported too?
 -- 
 1.8.3.2
 
