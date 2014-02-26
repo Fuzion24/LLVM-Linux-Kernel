@@ -54,6 +54,13 @@ TARGETS+= clean mrproper
 .PHONY: prep clean mrproper
 
 #############################################################################
+ifneq (${LINUS},)
+GIT_SEND_EMAIL_OPTS += -cc torvalds@linux-foundation.org
+endif
+GIT_SEND_EMAIL_OPTS += -cc dwmw2@infradead.org
+GIT_SEND_EMAIL_OPTS += -cc pageexec@freemail.hu
+
+#############################################################################
 prep: state/prep
 state/prep:
 	$(MAKE) ${TMPDIR}
