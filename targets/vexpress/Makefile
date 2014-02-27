@@ -46,6 +46,7 @@ GDB_OPTS=
 endif
 
 all: prep kernel-build test-boot-poweroff
+all-gcc: prep kernel-gcc-build test-boot-poweroff
 
 NAME	= vexpress
 BOARD	= ${NAME}-a9
@@ -71,7 +72,7 @@ include ${ARCHDIR}/arm/arm.mk
 include ${TARGETDIR}/vexpress-linaro.mk
 include ${TARGETDIR}/vexpress-ltp.mk
 
-KERNEL_PATCH_DIR+= ${TARGETDIR}/patches-overlay
+#KERNEL_PATCH_DIR+= ${TARGETDIR}/patches-overlay
 KERNEL_PATCH_DIR+= ${TARGETDIR}/patches
 
 include ${CONFIG}
