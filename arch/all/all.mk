@@ -387,6 +387,16 @@ state/kernel-gcc-build: ${STATE_TOOLCHAIN} state/kernel-gcc-configure
 	$(call state,$@,done)
 
 #############################################################################
+kernel-build-pristine:
+	@$(call banner,Building pristine kernel...)
+	@$(MAKE) kernel-unpatch NO_PATCH=1 series kernel-build
+
+#############################################################################
+kernel-gcc-build-pristine:
+	@$(call banner,Building pristine gcc kernel...)
+	@$(MAKE) kernel-unpatch NO_PATCH=1 series kernel-gcc-build
+
+#############################################################################
 kernel-scan-build: ${STATE_CLANG_TOOLCHAIN} ${STATE_TOOLCHAIN} state/kernel-configure
 	@$(call assert_found_in_path,ccc-analyzer,"(prebuilt and native clang doesn't always provide ccc-analyzer)")
 	@$(eval CHECKER := ${SCAN_BUILD} ${SCAN_BUILD_FLAGS})

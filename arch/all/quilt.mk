@@ -133,7 +133,7 @@ ignore_if_empty = perl -ne '{chomp; print "$$_\n" unless -z "${1}/$$_"}'
 
 ##############################################################################
 # Generate target series file from relevant kernel quilt patch series files
-export PATCH_LIST
+export NO_PATCH
 kernel-quilt-generate-series: ${TARGET_PATCH_SERIES}
 ${TARGET_PATCH_SERIES}: ${ALL_PATCH_SERIES}
 	@$(MAKE) kernel-quilt-update-series-dot-target
@@ -141,11 +141,16 @@ ${TARGET_PATCH_SERIES}: ${ALL_PATCH_SERIES}
 	@if [ -n '${PATCH_FILTER_REGEX}' -a -z "$$PATCH_LIST" ] ; then \
 		PATCH_LIST=`$(call catuniq,${ALL_PATCH_SERIES}) | grep "${PATCH_FILTER_REGEX}"`; \
 	fi; \
-	if [ -n "$$PATCH_LIST" ] ; then \
+	if [ -n "${NO_PATCH}" ] ; then \
+		> $@; \
+	elif [ -n "$$PATCH_LIST" ] ; then \
 		echo $$PATCH_LIST | sed -e 's/ /\n/g' > $@; \
 	else \
 		$(call catuniq,${ALL_PATCH_SERIES}) | $(call ignore_if_empty,$(dir $@)) > $@; \
 	fi
+series:
+	@rm -f ${TARGET_PATCH_SERIES}
+	@$(MAKE) ${TARGET_PATCH_SERIES}
 
 ##############################################################################
 # Have git ignore extra patch files
@@ -185,8 +190,8 @@ kernel-quilt-link-patches refresh: ${QUILT_GITIGNORE}
 				break; \
 			fi ; \
 		done ; \
-	done | sed -e 's|${TARGETDIR}|.|g; s|${TOPDIR}|...|g' ; \
-	$(MAKE) ${TARGET_PATCH_SERIES})
+	done | sed -e 's|${TARGETDIR}|.|g; s|${TOPDIR}|...|g')
+	@$(MAKE) ${TARGET_PATCH_SERIES}
 
 ##############################################################################
 KERNEL_PATCHES_TAR = patches.tar.bz2
