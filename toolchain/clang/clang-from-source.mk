@@ -81,10 +81,10 @@ LLVM_GIT	= "http://llvm.org/git/llvm.git"
 CLANG_GIT	= "http://llvm.org/git/clang.git"
 #COMPILERRT_GIT	= "http://llvm.org/git/compiler-rt.git"
 
-LLVM_BRANCH	?= release_34
-CLANG_BRANCH	?= release_34
-#LLVM_BRANCH	?= master
-#CLANG_BRANCH	?= master
+#LLVM_BRANCH	?= release_34
+#CLANG_BRANCH	?= release_34
+LLVM_BRANCH	?= master
+CLANG_BRANCH	?= master
 #COMPILERRT_BRANCH = master
 # The buildbot takes quite long to build the debug-version of clang (debug+asserts).
 # Introducing this option to switch between debug and optimized.
@@ -377,15 +377,32 @@ clang-sync: clang-clean
 
 ##############################################################################
 llvm-version::
-	@(cd ${LLVMDIR} && [ -f "${LLVMINSTALLDIR}/bin/llc" ] \
-		&& echo "`${LLVMINSTALLDIR}/bin/llc --version | grep version | xargs echo` commit `git rev-parse HEAD`" \
-		|| echo "LLVM version ? commit `git rev-parse HEAD`")
+	@LLC=${LLVMINSTALLDIR}/bin/llc; \
+	if [ -e "$$LLC" ] ; then \
+		echo -n `$$LLC --version | grep version` ; \
+	else \
+		echo -n "LLVM version ?"; \
+	fi; \
+	if [ -d ${LLVMDIR} ] ; then (\
+		cd ${LLVMDIR}; \
+		COMMIT=`git rev-parse HEAD`; \
+		REV=`git svn find-rev $$COMMIT`; \
+		echo " r$$REV commit $$COMMIT" \
+	) fi
 
 ##############################################################################
 clang-version::
-	@(cd ${CLANGDIR} && [ -f "${CLANG}" ] \
-		&& echo "`${CLANG} --version | grep version | xargs echo` commit `git rev-parse HEAD`" \
-		|| echo "clang version ? commit `git rev-parse HEAD`")
+	@if [ -e "${CLANG}" ] ; then \
+		echo -n `${CLANG} --version | grep version` ; \
+	else \
+		echo -n "clang version ?"; \
+	fi; \
+	if [ -d ${CLANGDIR} ] ; then (\
+		cd ${CLANGDIR}; \
+		COMMIT=`git rev-parse HEAD`; \
+		REV=`git svn find-rev $$COMMIT`; \
+		echo " r$$REV commit $$COMMIT" \
+	) fi
 
 ##############################################################################
 #compilerrt-version:

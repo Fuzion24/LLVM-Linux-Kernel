@@ -48,6 +48,9 @@ parser.add_option("-c", "--category",
 parser.add_option("-L", "--list-categories",
                   action="store_true", dest="listcat", default=False,
                   help="List possible categories")
+parser.add_option("-s", "--submit-patch",
+                  action="store_true", dest="submit", default=False,
+                  help="Mark patch as being submitted upstream")
 parser.add_option("", "--for-arm",
                   action="store_const", const="for-arm", dest="branch",
                   help="Patches for the for-arm branch")
@@ -72,14 +75,21 @@ def verbose(txt):
 
 #-------------------------------------------------------------------------------
 config = ConfigParser.RawConfigParser()
-config.read([options.filename, os.path.expanduser('~/.patchstatus.conf'), os.path.expanduser('~/.config/patchstatus/patchstatus.conf')])
+files = config.read([options.filename, os.path.expanduser('~/.patchstatus.conf'), os.path.expanduser('~/.config/patchstatus/patchstatus.conf')])
+if len(files) == 0:
+    print "E: No valid config file found to specify status spreadsheet: "+options.filename
+    sys.exit(0)
 
 #-------------------------------------------------------------------------------
 # Connect to Google Drive
 gd_client = gdata.spreadsheet.service.SpreadsheetsService()
-gd_client.email = config.get('spreadsheet', 'userid')
-gd_client.password = config.get('spreadsheet', 'password')
-gd_client.source = 'LLVMLinux patch script'
+try:
+    gd_client.email = config.get('spreadsheet', 'userid')
+    gd_client.password = config.get('spreadsheet', 'password')
+    gd_client.source = 'LLVMLinux patch script'
+except:
+    print "E: No valid patch status spreadsheet information found in "+options.filename
+    sys.exit(0)
 gd_client.ProgrammaticLogin()
 
 #-------------------------------------------------------------------------------
@@ -103,6 +113,17 @@ if options.listcat:
         categories[row.custom["category"].text] = 1
     for cat in sorted(categories):
         print cat
+    sys.exit(0)
+
+#-------------------------------------------------------------------------------
+if options.submit:
+    for row in rows:
+        if row.custom['patchname'].text in args:
+            data = {}
+            for column in row.custom:
+                data[column] = row.custom[column].text
+            data['submittedupstream'] = 'Y'
+            gd_client.UpdateRow(row, data)
     sys.exit(0)
 
 #-------------------------------------------------------------------------------

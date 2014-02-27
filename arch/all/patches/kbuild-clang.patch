@@ -1,4 +1,4 @@
-From aae7f082db178e8c091eaf9e1f057abdc984cad1 Mon Sep 17 00:00:00 2001
+From ff8420f46fa8b7e08934beaaaa972a3de44b6996 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 3 Sep 2013 22:27:23 -0400
 Subject: [PATCH] kbuild: LLVMLinux: Add Kbuild support for building kernel
@@ -11,17 +11,20 @@ Add support to toplevel Makefile for compiling with clang, both for
 HOSTCC and CC. Use cc-option to prevent gcc option from breaking clang, and
 from clang options from breaking gcc.
 
+Clang 3.4 semantics are the same as gcc semantics for unsupported flags. For
+unsupported warnings clang 3.4 returns true but shows a warning and gcc shows
+a warning and returns false.
+
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Cc: PaX Team <pageexec@freemail.hu>
 ---
- Makefile               | 32 +++++++++++++++++++++++++++++++-
- scripts/Kbuild.include |  2 +-
- 2 files changed, 32 insertions(+), 2 deletions(-)
+ Makefile | 32 +++++++++++++++++++++++++++++++-
+ 1 file changed, 31 insertions(+), 1 deletion(-)
 
 diff --git a/Makefile b/Makefile
-index 893d6f0..1e9142b 100644
+index 831b36a..c4ab30d 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -247,6 +247,15 @@ HOSTCXX      = g++
@@ -87,19 +90,6 @@ index 893d6f0..1e9142b 100644
  
  ifdef CONFIG_FRAME_POINTER
  KBUILD_CFLAGS	+= -fno-omit-frame-pointer -fno-optimize-sibling-calls
-diff --git a/scripts/Kbuild.include b/scripts/Kbuild.include
-index 547e15d..4846a1b 100644
---- a/scripts/Kbuild.include
-+++ b/scripts/Kbuild.include
-@@ -125,7 +125,7 @@ cc-option-align = $(subst -functions=0,,\
- # cc-disable-warning
- # Usage: cflags-y += $(call cc-disable-warning,unused-but-set-variable)
- cc-disable-warning = $(call try-run,\
--	$(CC) $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) -W$(strip $(1)) -c -x c /dev/null -o "$$TMP",-Wno-$(strip $(1)))
-+	$(CC) $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) -w -W$(strip $(1)) -c -x c /dev/null -o "$$TMP",-Wno-$(strip $(1)))
- 
- # cc-version
- # Usage gcc-ver := $(call cc-version)
 -- 
 1.8.3.2
 

@@ -61,6 +61,12 @@ email_addresses = cd ${KERNELDIR} ; \
 	| sed -e 's/ .*</ /g; s/>.*//g; s/ (.*)//g'
 
 #############################################################################
+kernel-git-submit-patch-get_maintainers:
+	@[ -n "$$PATCH_LIST" ] || PATCH_LIST=`$(call catuniq,${ALL_PATCH_SERIES}) | grep "${PATCH_FILTER_REGEX}"`; \
+	PATCH_LIST=`for PATCH in $$PATCH_LIST; do echo patches/$$PATCH; done`; \
+	(cd ${KERNELDIR} && $(call email_addresses,$$PATCH_LIST))
+
+#############################################################################
 SUBMIT_BRANCH=for-upstream
 SUBMIT_TMP=${KERNELDIR}/for-upstream
 SUBMIT_COVER=${SUBMIT_TMP}/0000-cover-letter.patch
@@ -82,6 +88,7 @@ kernel-git-submit-patch: kernel-fetch kernel-git-submit-patch-check
 	@$(call banner,Patches saved to ${SUBMIT_TMP})
 	@$(call gitcheckout,${KERNELDIR},${KERNEL_BRANCH})
 	@$(MAKE) kernel-quilt-link-patches >/dev/null 2>&1
+	@$(call banner,Submit patches)
 	@if [ `find ${SUBMIT_TMP} -name '*.patch' | wc -l` -eq 2 ] ; then \
 		rm ${SUBMIT_COVER}; \
 	else \
@@ -89,16 +96,18 @@ kernel-git-submit-patch: kernel-fetch kernel-git-submit-patch-check
 			s|\*\*\* SUBJECT HERE \*\*\*|${SUBMIT_COVER_SUBJECT}|; \
 			s|\*\*\* BLURB HERE \*\*\*|`cat ${SUBMIT_COVER_BLURB}`|e; \
 			print' ${SUBMIT_COVER}; \
-		[ -n "$$VISUAL" ] || VISUAL=$$EDITOR; \
-		[ -n "$$VISUAL" ] || VISUAL=vim; \
-		$$VISUAL ${SUBMIT_COVER}; \
 	fi
-	@E=`cd ${TOPDIR}; git config --get user.email`; \
+	@FROM=`cd ${TOPDIR}; git config --get user.email`; \
+	[ -z $$REPLYTO ] || REPLYTO="--in-reply-to $$REPLYTO"; \
+	[ -z $$DRYRUN ] || DRYRUN="--dry-run"; \
 	PATCHES=`find ${SUBMIT_TMP} -name '*.patch' | grep -v 0000-`; \
-	echo git send-email --from "$$E" \
+	git send-email --from "$$FROM" $$REPLYTO $$DRYRUN \
 		--annotate --confirm=always --signed-off-by-cc --thread \
-		`$(call email_addresses,$$PATCHES)` ${SUBMIT_TMP}/*
+		`$(call email_addresses,$$PATCHES)` ${GIT_SEND_EMAIL_OPTS} \
+		${SUBMIT_TMP}/*
+	@$(call banner,Mark patches as submitted)
+	@${PATCHSTATUS} -s `cat ${TARGET_PATCH_SERIES}.${SUBMIT_BRANCH}`
 
 #	sed -i 's|\*\*\* SUBJECT HERE \*\*\*|${SUBMIT_COVER_SUBJECT}|' ${SUBMIT_COVER}
 #	sed -i '/\*\*\* BLURB HERE \*\*\*/{ s/\*\*\* BLURB HERE \*\*\*//g; r ${SUBMIT_COVER_BLURB}\
-}' ${SUBMIT_COVER}
+#}' ${SUBMIT_COVER}

@@ -36,6 +36,7 @@ all: prep kernel-build
 
 include ${TOPDIR}/common.mk
 include ${ARCHDIR}/x86_64/x86_64.mk
+include ${ARCHDIR}/all/git-push.mk
 
 # Add ARM patches
 ARCH_ARM_DIR	= ${ARCHDIR}/arm
@@ -51,6 +52,13 @@ include ${CONFIG}
 
 TARGETS+= clean mrproper
 .PHONY: prep clean mrproper
+
+#############################################################################
+ifneq (${LINUS},)
+GIT_SEND_EMAIL_OPTS += -cc torvalds@linux-foundation.org
+endif
+GIT_SEND_EMAIL_OPTS += -cc dwmw2@infradead.org
+GIT_SEND_EMAIL_OPTS += -cc pageexec@freemail.hu
 
 #############################################################################
 prep: state/prep
