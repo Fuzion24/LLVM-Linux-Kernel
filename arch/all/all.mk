@@ -304,6 +304,13 @@ state/kernel-patch: state/kernel-fetch state/kernel-quilt
 	$(call state,$@,kernel-configure)
 
 #############################################################################
+kernel-unpatch: state/kernel-fetch state/kernel-quilt
+	@$(call banner,Unpatching kernel...)
+	@$(call unpatch,${KERNELDIR})
+	@$(call optional_gitreset,${KERNELDIR})
+	@$(call leavestate,${STATEDIR},kernel-patch)
+
+#############################################################################
 kernel-patch-applied:
 	@$(call banner,Patches applied for Clang kernel)
 	@$(call applied,${KERNELDIR})
@@ -340,7 +347,7 @@ state/kernel-configure: state/kernel-patch
 #############################################################################
 kernel-menuconfig: state/kernel-configure
 	${KERNEL_ENV} make -C ${KERNELDIR} ${MAKE_FLAGS} menuconfig
-	@$(call leavestate,state,kernel-build)
+	@$(call leavestate,${STATEDIR},kernel-build)
 
 kernel-cmpconfig: state/kernel-configure
 	diff -Nau ${KERNEL_CFG} ${KERNEL_BUILD}/.config
@@ -426,17 +433,15 @@ kernel-sync: state/kernel-fetch kernel-clean kernel-shared-sync
 	@$(call gitsync,${KERNELDIR},${KERNEL_COMMIT},${KERNEL_BRANCH},${KERNEL_TAG})
 
 #############################################################################
-kernel-clean kernel-mrproper:
+kernel-clean kernel-mrproper: kernel-unpatch
 	@$(call makemrproper,${KERNELDIR})
 	@rm -f ${LOGDIR}/*.log
 	@rm -rf ${KERNEL_BUILD}
-	@$(call unpatch,${KERNELDIR})
-	@$(call optional_gitreset,${KERNELDIR})
 	@$(call leavestate,${STATEDIR},kernel-quilt kernel-patch kernel-configure kernel-build)
 	@$(call banner,Clang compiled Kernel is now clean)
 
 #############################################################################
-kernel-gcc-clean kernel-gcc-mrproper:
+kernel-gcc-clean kernel-gcc-mrproper: kernel-unpatch
 	@$(call makemrproper,${KERNELGCC})
 	@rm -rf ${KERNELGCC_BUILD}
 	@$(call leavestate,${STATEDIR},kernel-gcc-configure kernel-gcc-build)
