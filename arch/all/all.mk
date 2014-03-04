@@ -90,6 +90,8 @@ KERNEL_ENV	+= KBUILD_OUTPUT=${KERNEL_BUILD}
 KERNELGCC_ENV	+= KBUILD_OUTPUT=${KERNELGCC_BUILD}
 
 #############################################################################
+GCC             ?= gcc
+
 ifneq "${BITCODE}" ""
 export CLANG
 CLANGCC		= ${ARCH_ALL_BINDIR}/clang-emit-bc.sh ${CCOPTS}
@@ -142,8 +144,8 @@ list-var: list-buildroot
 	@echo ${seperator}
 	@echo "${CLANG} -print-file-name=include"
 	@${CLANG} -print-file-name=include
-	@echo 'kernel-build -> $(call make-kernel,${KERNELDIR},${KERNEL_ENV},CC="${CLANGCC}")'
-	@echo 'kernel-gcc-build -> $(call make-kernel,${KERNELDIR},${KERNELGCC_ENV} ${SPARSE})'
+	@echo 'kernel-build -> $(call make-kernel,${KERNELDIR},${KERNEL_ENV},${CHECKER},${CHECK_VARS} CC?="${CCACHE} ${CLANGCC}")'
+	@echo 'kernel-gcc-build -> $(call make-kernel,${KERNELDIR},${KERNELGCC_ENV} ${SPARSE},,CC?="${CCACHE} ${CROSS_COMPILE}${GCC}")'
 
 #############################################################################
 catfile		= ([ -f ${1} ] && cat ${1})
@@ -161,7 +163,7 @@ get-kernel-size		= mkdir -p ${TOPLOGDIR} ; \
 			( ${2} --version | head -1 ; \
 			cd ${3} && wc -c ${KERNEL_SIZE_ARTIFACTS} ) \
 			| tee $(call sizelog,${TOPLOGDIR},{1})
-make-kernel		= (cd ${1} && ${2} time ${3} make ${MAKE_FLAGS} ${KERNEL_VAR} ${4} ${5} ${KERNEL_MAKE_TARGETS} ${6} ${7})
+make-kernel		= (cd ${1} && ${2} time ${3} make ${MAKE_FLAGS} ${KERNEL_VAR} ${4} ${KERNEL_MAKE_TARGETS} ${5})
 
 #############################################################################
 KERNEL_TARGETS_CLANG	= kernel-[fetch,patch,configure,build,clean,sync]
@@ -225,6 +227,10 @@ kernel-help:
 	@echo "* make kernel-check-build - Use the kbuild's \$CHECK to run clang's"
 	@echo "                            static analyzer"
 	@echo "* make BITCODE=1          - Output llvm bitcode to *.bc files"
+	@echo
+	@echo "* make kernel-patch-status - Read status of patches from patch triage spreadsheet"
+	@echo "* make kernel-patch-status-leftover"
+	@echo "                          - Patches on the triage list which aren't used for this triage"
 
 ##############################################################################
 CHECKPOINT_TARGETS		+= kernel-checkpoint
@@ -371,7 +377,7 @@ state/kernel-build: ${STATE_CLANG_TOOLCHAIN} ${STATE_TOOLCHAIN} state/kernel-con
 	@[ -d ${KERNEL_BUILD} ] || ($(call leavestate,${STATEDIR},kernel-configure) && ${MAKE} kernel-configure)
 	@$(MAKE) kernel-quilt-link-patches
 	@$(call banner,Building kernel with clang...)
-	$(call make-kernel,${KERNELDIR},${KERNEL_ENV},${CHECKER},${CHECK_VARS},CC?="${CLANGCC}",${KERNELMAKETARGET})
+	$(call make-kernel,${KERNELDIR},${KERNEL_ENV},${CHECKER},${CHECK_VARS} CC?="${CCACHE} ${CLANGCC} ${CCACHE_CLANG_OPTS}")
 	@$(call banner,Successfully Built kernel with clang!)
 	@$(call get-kernel-size,clang,${CLANG},${KERNEL_BUILD})
 	$(call state,$@,done)
@@ -382,7 +388,7 @@ state/kernel-gcc-build: ${STATE_TOOLCHAIN} state/kernel-gcc-configure
 	@[ -d ${KERNELGCC_BUILD} ] || ($(call leavestate,${STATEDIR},kernel-gcc-configure) && ${MAKE} kernel-gcc-configure)
 	@$(MAKE) kernel-quilt-link-patches
 	@$(call banner,Building kernel with gcc...)
-	$(call make-kernel,${KERNELDIR},${KERNELGCC_ENV} ${SPARSE})
+	$(call make-kernel,${KERNELDIR},${KERNELGCC_ENV} ${SPARSE},,CC?="${CCACHE} ${CROSS_COMPILE}${GCC}")
 	@$(call get-kernel-size,gcc,${CROSS_GCC},${KERNELGCC_BUILD})
 	$(call state,$@,done)
 
@@ -470,9 +476,12 @@ kernel-rebuild-verbose kernel-gcc-rebuild-verbose: kernel-%rebuild-verbose:
 #############################################################################
 BUILD_LOG	= ${TMPDIR}/build.log
 BUILD_WARNINGS	= ${TMPDIR}/build-warnings.log
-warnings-save: ${BUILD_LOG}
+warnings-save:
+	@rm -f ${BUILD_LOG}
+	${MAKE} ${BUILD_LOG}
 ${BUILD_LOG}:
 	@$(MAKE) kernel-clean kernel-build 2>&1 | tee $@
+	@sed -ir 's:\x1B\[[0-9;]*[mK]::g' $@
 warnings-grep: ${BUILD_WARNINGS}
 ${BUILD_WARNINGS}: ${BUILD_LOG}
 	@grep ': warning:' $< > $@
@@ -523,3 +532,4 @@ tmp-clean:
 # The order of these includes is important
 include ${TESTDIR}/test.mk
 include ${TOOLSDIR}/tools.mk
+include ${ARCHDIR}/all/ccache.mk
