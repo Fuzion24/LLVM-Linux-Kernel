@@ -56,8 +56,8 @@ BUSYBOXURL	= "http://busybox.net/downloads/binaries/1.20.0/busybox-${ARCHSTR}"
 
 endif
 
-GCC		= gcc
-CPP		= ${CC} -E
+GCC		?= gcc
+CPP		?= ${CC} -E
 
 HELP_TARGETS	+= initramfs-help
 SETTINGS_TARGETS+= initramfs-settings
