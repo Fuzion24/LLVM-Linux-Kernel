@@ -1,4 +1,4 @@
-From 075c5df9acb33d3bad28d2e3e7d8e052b38be5d3 Mon Sep 17 00:00:00 2001
+From 2281eb085acd212dd3cb5bb0ac2c227f32131863 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
 Date: Wed, 14 Nov 2012 10:39:57 +0100
 Subject: [PATCH] kbuild: LLVMLinux: Adapt warnings for compilation with clang
@@ -14,14 +14,14 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
 Signed-off-by: Mark Charlebois <mcharleb@gmail.com>
 Cc: PaX Team <pageexec@freemail.hu>
 ---
- scripts/Makefile.build | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+ scripts/Makefile.build | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
 diff --git a/scripts/Makefile.build b/scripts/Makefile.build
-index d5d859c..27c4098 100644
+index d5d859c..5cd6651 100644
 --- a/scripts/Makefile.build
 +++ b/scripts/Makefile.build
-@@ -65,12 +65,23 @@ warning-  := $(empty)
+@@ -65,12 +65,22 @@ warning-  := $(empty)
  warning-1 := -Wextra -Wunused -Wno-unused-parameter
  warning-1 += -Wmissing-declarations
  warning-1 += -Wmissing-format-attribute
@@ -37,7 +37,6 @@ index d5d859c..27c4098 100644
 +warning-1 += $(call cc-disable-warning, unused-value)
 +warning-1 += $(call cc-disable-warning, format)
 +warning-1 += $(call cc-disable-warning, unknown-warning-option)
-+warning-1 += $(call cc-disable-warning, self-assign)
 +warning-1 += $(call cc-disable-warning, sign-compare)
 +warning-1 += $(call cc-disable-warning, format-zero-length)
 +warning-1 += $(call cc-disable-warning, uninitialized)
