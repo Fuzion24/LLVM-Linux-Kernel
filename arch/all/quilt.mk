@@ -63,8 +63,10 @@ kernel-quilt-help:
 	@echo "These are the quilt (patching) make targets:"
 	@echo "* make kernel-quilt - Setup kernel(s) to be patched by quilt"
 	@echo "* make kernel-quilt-clean - Remove quilt setup"
-	@echo "* make kernel-quilt-generate-series"
+	@echo "* make kernel-quilt-generate-series (or make series)"
 	@echo "			- Build kernel quilt series file"
+	@echo "                   - You can specify a list of patches with PATCH_LIST"
+	@echo "                   - or a patch regex with PATCH_FILTER_REGEX"
 	@echo "* make kernel-quilt-update-series-dot-target"
 	@echo "			- Save updates from kernel quilt series file to series.target file"
 	@echo "* make kernel-quilt-link-patches"
@@ -82,6 +84,8 @@ kernel-quilt-help:
 	@echo
 	@echo "* make list-kernel-checkpatch [PATCH_FILTER_REGEX=<regex>]"
 	@echo "			- List which kernel maintainers should be contacted for each patch"
+	@echo "			- NOFAIL=1 hides the failure details"
+	@echo "			- NOPASS=1 hides passes (if all you care about is FAILs)"
 	@echo "* make list-kernel-maintainer [PATCH_FILTER_REGEX=<regex>]"
 	@echo "			- List which kernel maintainers should be contacted for each patch"
 
@@ -235,8 +239,8 @@ list-kernel-patches:
 # List maintainers who are relevant to a particular patch
 # You can specify a regex to narrow down the patches by setting PATCH_FILTER_REGEX
 # e.g. make PATCH_FILTER_REGEX=vlais\* list-kernel-maintainer
-kernel-checkpatch kernel-get_maintainer: kernel-%: list-kernel-$*
-list-kernel-checkpatch list-kernel-get_maintainer: list-kernel-%:
+kernel-checkpatch kernel-get_maintainer: kernel-%: list-kernel-%
+list-kernel-checkpatch list-kernel-get_maintainer: list-kernel-%: kernel-fetch
 	@$(call banner,Running $* for patches PATCH_FILTER_REGEX="${PATCH_FILTER_REGEX}")
 	@if [ $@ = list-kernel-checkpatch ] ; then \
 		[ -n "$$NOPASS" ] || echo "You can suppress passes by setting env variable NOPASS=1"; \

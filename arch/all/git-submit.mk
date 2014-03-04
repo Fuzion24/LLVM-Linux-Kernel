@@ -33,6 +33,8 @@ kernel-git-submit-help:
 	@echo "    CHECKPATCH=ignore       Ignore checkpatch.pl failures (for known problems)"
 	@echo "    PATCH_LIST='patch list' List of patches to submit"
 	@echo "    PATCH_FILTER_REGX=regex Choose patches from current patchset by regex"
+	@echo "    REPLYTO=message-id      Send the patch as a reply to a message id"
+	@echo "    DRYRUN=1                Don't send email at the end (for test purposes)"
 
 #############################################################################
 kernel-git-submit-patch-check:
