@@ -1,40 +1,32 @@
-From f3d1fcee0c42e48463a591128988370ac2c3253e Mon Sep 17 00:00:00 2001
+From 3261b84fa906a7794110287d65456e2b95e92824 Mon Sep 17 00:00:00 2001
 From: Mark Charlebois <charlebm@gmail.com>
 Date: Tue, 11 Feb 2014 19:26:05 -0800
-Subject: [PATCH] vlais-netfilter
+Subject: [PATCH] net: inetfilter: LLVMLinux: vlais-netfilter
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Replaced use of non-standard C use of variable length arrays in
-structs (VLAIS) in xt_repldata.h with a flexible array member
-and the calculated offsets of other struct members and used pointers
-to the data. Per the file, these data are not reference by name
-and the memory layout is preserved.
+Replaced non-standard C use of Variable Length Arrays In Structs (VLAIS) in
+xt_repldata.h with a C99 compliant flexible array member and then calculated
+offsets to the other struct members. These other members aren't referenced by
+name in this code, however this patch maintains the same memory layout and
+padding as was previously accomplished using VLAIS.
 
-This patch was updated for corrections and to add any trailing
-padding that the structure would have originally allocated using
-VLAIS.
+This patch makes no attempt to change the existing behavior, merely the way in
+which the current layout is accomplished using standard C99 constructs.
 
-The code also seems to assume that there will be no pad bytes
-after tbl->repl or between tbl->entries[nhooks] and tbl->term or
-the following calculation would be incorrect:
-
-tbl->repl.size = nhooks * sizeof(struct type##_standard) + \
-                        sizeof(struct type##_error); \
-
-and tbl->repl.data[tbl->repl.size] would only contain part of
-tbl->term and tbl->entries[0] would not start at repl.data[0]
-unless there was no structure padding after tbl->repl.
-
-This patch makes no attempt to change the existing behavior.
+This patch allows this code to be compiled with either gcc or clang.
 
 Author: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
+Signed-off-by: Vinícius Tinti <viniciustinti@gmail.com>
 ---
  net/netfilter/xt_repldata.h | 32 ++++++++++++++++++++++++++------
  1 file changed, 26 insertions(+), 6 deletions(-)
 
 diff --git a/net/netfilter/xt_repldata.h b/net/netfilter/xt_repldata.h
-index 6efe4e5..ef56bfb 100644
+index 6efe4e5..51c2b0a 100644
 --- a/net/netfilter/xt_repldata.h
 +++ b/net/netfilter/xt_repldata.h
 @@ -5,29 +5,49 @@
@@ -43,7 +35,7 @@ index 6efe4e5..ef56bfb 100644
  
 +#define padbytes(offset, type) ((-offset) & (__alignof__(type)-1))
 +
-+/* tbl has the following structure equivalent, but is C compliant:
++/* tbl has the following structure equivalent, but is C99 compliant:
 + * struct {
 + *	struct type##_replace repl;
 + *	struct type##_standard entries[nhooks];
@@ -64,17 +56,17 @@ index 6efe4e5..ef56bfb 100644
 +	} *tbl; \
 +	struct type##_standard *entries; \
 +	struct type##_error *term; \
-+	size_t pad1 = padbytes(sizeof(tbl->repl), *entries); \
-+	size_t offset = pad1 + nhooks * sizeof(*entries); \
-+	size_t pad2 = padbytes(sizeof(tbl->repl)+offset, *term); \
-+	size_t offset2 = offset + pad2 + sizeof(*term); \
-+	size_t pad3 = padbytes(sizeof(tbl->repl)+offset2, tbl->repl); \
-+	size_t tbl_sz = sizeof(tbl->repl) + offset2 + pad3; \
++	size_t entries_offset = padbytes(sizeof(tbl->repl), *entries); \
++	size_t entries_end = entries_offset + nhooks * sizeof(*entries); \
++	size_t term_offset = entries_end + padbytes(sizeof(tbl->repl) + entries_end, *term); \
++	size_t term_end = term_offset + sizeof(*term); \
++	size_t data_sz = term_end + padbytes(sizeof(tbl->repl) + term_end, tbl->repl); \
++	size_t tbl_sz = sizeof(tbl->repl) + data_sz; \
 +	tbl = kzalloc(tbl_sz, GFP_KERNEL); \
  	if (tbl == NULL) \
  		return NULL; \
-+	entries = (struct type##_standard *)&tbl->data[pad1]; \
-+	term = (struct type##_error *)&tbl->data[offset+pad2]; \
++	entries = (struct type##_standard *)&tbl->data[entries_offset]; \
++	term = (struct type##_error *)&tbl->data[term_offset]; \
  	strncpy(tbl->repl.name, info->name, sizeof(tbl->repl.name)); \
 -	tbl->term = (struct type##_error)typ2##_ERROR_INIT;  \
 +	*term = (struct type##_error)typ2##_ERROR_INIT;  \
