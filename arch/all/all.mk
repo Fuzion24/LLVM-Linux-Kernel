@@ -377,7 +377,7 @@ state/kernel-build: ${STATE_CLANG_TOOLCHAIN} ${STATE_TOOLCHAIN} state/kernel-con
 	@[ -d ${KERNEL_BUILD} ] || ($(call leavestate,${STATEDIR},kernel-configure) && ${MAKE} kernel-configure)
 	@$(MAKE) kernel-quilt-link-patches
 	@$(call banner,Building kernel with clang...)
-	$(call make-kernel,${KERNELDIR},${KERNEL_ENV},${CHECKER},${CHECK_VARS} CC?="${CCACHE} ${CLANGCC} ${CCACHE_CLANG_OPTS}")
+	$(call make-kernel,${KERNELDIR},${KERNEL_ENV},${CHECKER},${CHECK_VARS} CC?="${CLANGCC}")
 	@$(call banner,Successfully Built kernel with clang!)
 	@$(call get-kernel-size,clang,${CLANG},${KERNEL_BUILD})
 	$(call state,$@,done)
