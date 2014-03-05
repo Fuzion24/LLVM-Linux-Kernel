@@ -1,34 +1,39 @@
-From a0b998aa21a9685b8fd34c0f92b4178907ff6096 Mon Sep 17 00:00:00 2001
+From 19efa3256bbedaf1ed859d319324fb8ee11f4975 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 3 Sep 2013 22:27:27 -0400
 Subject: [PATCH] arm: LLVMLinux: Use current_stack_pointer for return_address
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 
-Clang requires an extra asm annotation in order to be able to use a named
-register. This change supports being able to compile the kernel with both gcc
-and Clang.
+The existing code uses named registers to get the value of the stack pointer.
+The new current_stack_pointer macro is more readable and allows for a central
+portable implementation of how to get the stack pointer with ASM. This change
+supports being able to compile the kernel with both gcc and Clang.
 
+Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
-Reviewed-by: Mark Charlebois <charlebm@gmail.com>
-Reviewed-by: Jan-Simon Möller <dl9pf@gmx.de>
+Reviewed-by: Jan-Simon M??ller <dl9pf@gmx.de>
 ---
- arch/arm/kernel/return_address.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm/kernel/return_address.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/arch/arm/kernel/return_address.c b/arch/arm/kernel/return_address.c
-index f6aa84d..98adaaf 100644
+index f6aa84d..4dc8ecb 100644
 --- a/arch/arm/kernel/return_address.c
 +++ b/arch/arm/kernel/return_address.c
-@@ -40,6 +40,7 @@ void *return_address(unsigned int level)
+@@ -39,13 +39,12 @@ void *return_address(unsigned int level)
+ {
  	struct return_address_data data;
  	struct stackframe frame;
- 	register unsigned long current_sp asm ("sp");
-+	asm("" : "=r"(current_sp));
+-	register unsigned long current_sp asm ("sp");
  
  	data.level = level + 2;
  	data.addr = NULL;
+ 
+ 	frame.fp = (unsigned long)__builtin_frame_address(0);
+-	frame.sp = current_sp;
++	frame.sp = __builtin_stack_pointer();
+ 	frame.lr = (unsigned long)__builtin_return_address(0);
+ 	frame.pc = (unsigned long)return_address;
+ 
 -- 
 1.8.3.2
 

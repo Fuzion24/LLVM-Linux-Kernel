@@ -1,35 +1,38 @@
-From d0904c6f0f366da59a1d1daa696bbdf0e3bd455d Mon Sep 17 00:00:00 2001
+From 207c9408c78bfc60611bbc300bf21a9bf5661038 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 3 Sep 2013 22:27:27 -0400
 Subject: [PATCH] arm: LLVMLinux: Use current_stack_pointer in
  save_stack_trace_tsk
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 
-Clang requires an extra asm annotation in order to be able to use a named
-register. This change supports being able to compile the kernel with both gcc
-and Clang.
+The existing code uses named registers to get the value of the stack pointer.
+The new current_stack_pointer macro is more readable and allows for a central
+portable implementation of how to get the stack pointer with ASM.  This change
+supports being able to compile the kernel with both gcc and Clang.
 
+Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
-Reviewed-by: Mark Charlebois <charlebm@gmail.com>
-Reviewed-by: Jan-Simon Möller <dl9pf@gmx.de>
+Reviewed-by: Jan-Simon M??ller <dl9pf@gmx.de>
 ---
- arch/arm/kernel/stacktrace.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm/kernel/stacktrace.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
 diff --git a/arch/arm/kernel/stacktrace.c b/arch/arm/kernel/stacktrace.c
-index af4e8c8..b05b70e 100644
+index af4e8c8..8b83eaf 100644
 --- a/arch/arm/kernel/stacktrace.c
 +++ b/arch/arm/kernel/stacktrace.c
-@@ -110,6 +110,7 @@ void save_stack_trace_tsk(struct task_struct *tsk, struct stack_trace *trace)
+@@ -109,11 +109,9 @@ void save_stack_trace_tsk(struct task_struct *tsk, struct stack_trace *trace)
+ 		frame.pc = thread_saved_pc(tsk);
  #endif
  	} else {
- 		register unsigned long current_sp asm ("sp");
-+		asm("" : "=r"(current_sp));
- 
+-		register unsigned long current_sp asm ("sp");
+-
  		data.no_sched_functions = 0;
  		frame.fp = (unsigned long)__builtin_frame_address(0);
+-		frame.sp = current_sp;
++		frame.sp = __builtin_stack_pointer();
+ 		frame.lr = (unsigned long)__builtin_return_address(0);
+ 		frame.pc = (unsigned long)save_stack_trace_tsk;
+ 	}
 -- 
 1.8.3.2
 

@@ -1,34 +1,37 @@
-From 93dc779755da6d23d7df38cc9ef32765bda44db1 Mon Sep 17 00:00:00 2001
+From 1fe5b671283f280f439144f4d87adf67b117f3a5 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 3 Sep 2013 22:27:27 -0400
 Subject: [PATCH] arm: LLVMLinux: Calculate pt_regs address from fp
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 
-Clang requires an extra asm annotation in order to be able to use a named
-register. This change supports being able to compile the kernel with both gcc
-and Clang.
+Use the frame pointer to calculate the end of the stack for current_pt_regs()
+The existing code uses the stack pointer to do this calculation.
+Using the frame pointer yeilds the same value in a more portable way.
+This change supports being able to compile the kernel with gcc and clang.
 
+Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
-Reviewed-by: Mark Charlebois <charlebm@gmail.com>
-Reviewed-by: Jan-Simon Möller <dl9pf@gmx.de>
+Reviewed-by: Jan-Simon M??ller <dl9pf@gmx.de>
 ---
- arch/arm/include/asm/ptrace.h | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm/include/asm/ptrace.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/arch/arm/include/asm/ptrace.h b/arch/arm/include/asm/ptrace.h
-index 04c99f3..81dfe50 100644
+index 04c99f3..ac8f6ca 100644
 --- a/arch/arm/include/asm/ptrace.h
 +++ b/arch/arm/include/asm/ptrace.h
-@@ -140,6 +140,7 @@ static inline unsigned long user_stack_pointer(struct pt_regs *regs)
+@@ -138,9 +138,9 @@ static inline unsigned long user_stack_pointer(struct pt_regs *regs)
+ 	return regs->ARM_sp;
+ }
  
- #define current_pt_regs(void) ({				\
- 	register unsigned long sp asm ("sp");			\
-+	asm("" : "=r"(sp));					\
- 	(struct pt_regs *)((sp | (THREAD_SIZE - 1)) - 7) - 1;	\
+-#define current_pt_regs(void) ({				\
+-	register unsigned long sp asm ("sp");			\
+-	(struct pt_regs *)((sp | (THREAD_SIZE - 1)) - 7) - 1;	\
++#define current_pt_regs(void) ({					\
++	(struct pt_regs *)(((unsigned long)(__builtin_stack_pointer())	\
++		| (THREAD_SIZE - 1)) - 7) - 1;				\
  })
  
+ #endif /* __ASSEMBLY__ */
 -- 
 1.8.3.2
 

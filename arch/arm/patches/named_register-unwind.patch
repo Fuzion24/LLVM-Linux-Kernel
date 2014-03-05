@@ -1,34 +1,41 @@
-From 3526d5f0102528b785ff5606bd98e6537cd0030d Mon Sep 17 00:00:00 2001
+From 98109d23b7cf28677c75c430fca5cc19e36027a9 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 3 Sep 2013 22:27:27 -0400
 Subject: [PATCH] arm: LLVMLinux: Use current_stack_pointer in unwind_backtrace
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 
-Clang requires an extra asm annotation in order to be able to use a named
-register. This change supports being able to compile the kernel with both gcc
-and Clang.
+The existing code uses named registers to get the value of the stack pointer.
+The new current_stack_pointer macro is more readable and allows for a central
+portable implementation of how to get the stack pointer with ASM.  This change
+supports being able to compile the kernel with both gcc and Clang.
 
+Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
-Reviewed-by: Mark Charlebois <charlebm@gmail.com>
-Reviewed-by: Jan-Simon Möller <dl9pf@gmx.de>
+Reviewed-by: Jan-Simon M??ller <dl9pf@gmx.de>
 ---
- arch/arm/kernel/unwind.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm/kernel/unwind.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/arch/arm/kernel/unwind.c b/arch/arm/kernel/unwind.c
-index 00df012..a66a404 100644
+index 00df012..9dcde89 100644
 --- a/arch/arm/kernel/unwind.c
 +++ b/arch/arm/kernel/unwind.c
-@@ -409,6 +409,7 @@ void unwind_backtrace(struct pt_regs *regs, struct task_struct *tsk)
+@@ -408,7 +408,6 @@ int unwind_frame(struct stackframe *frame)
+ void unwind_backtrace(struct pt_regs *regs, struct task_struct *tsk)
  {
  	struct stackframe frame;
- 	register unsigned long current_sp asm ("sp");
-+	asm("" : "=r"(current_sp));
+-	register unsigned long current_sp asm ("sp");
  
  	pr_debug("%s(regs = %p tsk = %p)\n", __func__, regs, tsk);
  
+@@ -424,7 +423,7 @@ void unwind_backtrace(struct pt_regs *regs, struct task_struct *tsk)
+ 			 ? regs->ARM_pc : regs->ARM_lr;
+ 	} else if (tsk == current) {
+ 		frame.fp = (unsigned long)__builtin_frame_address(0);
+-		frame.sp = current_sp;
++		frame.sp = __builtin_stack_pointer();
+ 		frame.lr = (unsigned long)__builtin_return_address(0);
+ 		frame.pc = (unsigned long)unwind_backtrace;
+ 	} else {
 -- 
 1.8.3.2
 
