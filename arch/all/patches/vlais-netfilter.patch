@@ -28,6 +28,7 @@ This patch makes no attempt to change the existing behavior.
 
 Author: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+Signed-off-by: Behan Webster <behanw@converseincode.com>
 ---
  net/netfilter/xt_repldata.h | 32 ++++++++++++++++++++++++++------
  1 file changed, 26 insertions(+), 6 deletions(-)
