@@ -3,7 +3,7 @@ disable-clang-integrated-as.patch
 warnings-clang.patch
 dontdiff.patch
 cc-version.patch
-section-mismatch-alias.patch
+#section-mismatch-alias.patch
 aligned-attribute.patch
 cmpxchg-local-fix-uninitialized-return-code.patch
 compiler-clang.patch
