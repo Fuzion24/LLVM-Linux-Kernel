@@ -1,5 +1,5 @@
 From 4193e0ab0d1dd778db2446e7caa3651b6fefea67 Mon Sep 17 00:00:00 2001
-From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
+From: Mark Charlebois <charlebm@gmail.com>
 Date: Tue, 20 Nov 2012 21:18:16 +0100
 Subject: [PATCH] crypto: LLVMLinux: aligned-attribute.patch
 
@@ -13,6 +13,7 @@ This is also reported as LLVM PR11071
 
 Author: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+Signed-off-by: Behan Webster <behanw@converseincode.com>
 ---
  crypto/shash.c | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)

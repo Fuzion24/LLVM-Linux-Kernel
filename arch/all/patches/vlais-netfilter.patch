@@ -1,4 +1,4 @@
-From 3261b84fa906a7794110287d65456e2b95e92824 Mon Sep 17 00:00:00 2001
+From d2bec01b41dfaee974f77640128bffee1f7e62c9 Mon Sep 17 00:00:00 2001
 From: Mark Charlebois <charlebm@gmail.com>
 Date: Tue, 11 Feb 2014 19:26:05 -0800
 Subject: [PATCH] net: inetfilter: LLVMLinux: vlais-netfilter
@@ -12,24 +12,28 @@ offsets to the other struct members. These other members aren't referenced by
 name in this code, however this patch maintains the same memory layout and
 padding as was previously accomplished using VLAIS.
 
-This patch makes no attempt to change the existing behavior, merely the way in
-which the current layout is accomplished using standard C99 constructs.
+Had the original structure been ordered differently, with the entries VLA at
+the end, then it could have been a flexible member, and this patch would have
+been a lot simpler. However since the data stored in this structure is
+ultimately exported to userspace, the order of this structure can't be changed.
 
-This patch allows this code to be compiled with either gcc or clang.
+This patch makes no attempt to change the existing behavior, merely the way in
+which the current layout is accomplished using standard C99 constructs. As such
+the code can now be compiled with either gcc or clang.
 
 Author: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Signed-off-by: Vinícius Tinti <viniciustinti@gmail.com>
 ---
- net/netfilter/xt_repldata.h | 32 ++++++++++++++++++++++++++------
- 1 file changed, 26 insertions(+), 6 deletions(-)
+ net/netfilter/xt_repldata.h | 34 ++++++++++++++++++++++++++++------
+ 1 file changed, 28 insertions(+), 6 deletions(-)
 
 diff --git a/net/netfilter/xt_repldata.h b/net/netfilter/xt_repldata.h
-index 6efe4e5..51c2b0a 100644
+index 6efe4e5..c138fea 100644
 --- a/net/netfilter/xt_repldata.h
 +++ b/net/netfilter/xt_repldata.h
-@@ -5,29 +5,49 @@
+@@ -5,29 +5,51 @@
   * they serve as the hanging-off data accessed through repl.data[].
   */
  
@@ -58,9 +62,11 @@ index 6efe4e5..51c2b0a 100644
 +	struct type##_error *term; \
 +	size_t entries_offset = padbytes(sizeof(tbl->repl), *entries); \
 +	size_t entries_end = entries_offset + nhooks * sizeof(*entries); \
-+	size_t term_offset = entries_end + padbytes(sizeof(tbl->repl) + entries_end, *term); \
++	size_t term_offset = entries_end \
++		+ padbytes(sizeof(tbl->repl) + entries_end, *term); \
 +	size_t term_end = term_offset + sizeof(*term); \
-+	size_t data_sz = term_end + padbytes(sizeof(tbl->repl) + term_end, tbl->repl); \
++	size_t data_sz = term_end \
++		+ padbytes(sizeof(tbl->repl) + term_end, tbl->repl); \
 +	size_t tbl_sz = sizeof(tbl->repl) + data_sz; \
 +	tbl = kzalloc(tbl_sz, GFP_KERNEL); \
  	if (tbl == NULL) \

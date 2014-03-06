@@ -231,6 +231,12 @@ kernel-help:
 	@echo "* make kernel-patch-status - Read status of patches from patch triage spreadsheet"
 	@echo "* make kernel-patch-status-leftover"
 	@echo "                          - Patches on the triage list which aren't used for this triage"
+	@echo
+	@echo "Warning collection:"
+	@echo "* make warning-save      - Save build log to tmp/build.log"
+	@echo "* make warning-grep      - Grep out warnings to tmp/build-warnings.log"
+	@echo "* make warning-sort      - Sort out warnings from tmp/build-warnings.log"
+	@echo "* make warning-kind      - Break down warnings by type from tmp/build-warnings.log"
 
 ##############################################################################
 CHECKPOINT_TARGETS		+= kernel-checkpoint
@@ -480,8 +486,10 @@ warnings-save:
 	@rm -f ${BUILD_LOG}
 	${MAKE} ${BUILD_LOG}
 ${BUILD_LOG}:
-	@$(MAKE) kernel-clean kernel-build 2>&1 | tee $@
-	@sed -ir 's:\x1B\[[0-9;]*[mK]::g' $@
+	@$(MAKE) kernel-clean kernel-build 2>&1 | tee $@.tmp
+	@sed -ir 's:\x1B\[[0-9;]*[mK]::g' $@.tmp
+	-@savelog $@
+	@mv $@.tmp $@
 warnings-grep: ${BUILD_WARNINGS}
 ${BUILD_WARNINGS}: ${BUILD_LOG}
 	@grep ': warning:' $< > $@

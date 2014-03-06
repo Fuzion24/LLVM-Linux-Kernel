@@ -1,3 +1,8 @@
+From cbeede06e08420087ef2db5873922452b6e78a51 Mon Sep 17 00:00:00 2001
+From: Mark Charlebois <charlebm@gmail.com>
+Date: Thu, 6 Mar 2014 11:26:07 -0800
+Subject: [PATCH] module: LLVMLinux: Remove unused function warning from
+
 Converts a compile time type check that generates an unused function
 warning to an unused variable warning which is suppressed when
 building the kernel.
@@ -6,7 +11,10 @@ This patch allows this code to be compiled with either gcc or clang.
 
 Author: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+Signed-off-by: Behan Webster <behanw@converseincode.com>
 ---
+ include/linux/moduleparam.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/include/linux/moduleparam.h b/include/linux/moduleparam.h
 index c3eb102..f0cf1a2 100644
@@ -22,3 +30,6 @@ index c3eb102..f0cf1a2 100644
  
  extern struct kernel_param_ops param_ops_byte;
  extern int param_set_byte(const char *val, const struct kernel_param *kp);
+-- 
+1.8.3.2
+
