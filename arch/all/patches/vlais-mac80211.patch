@@ -1,4 +1,4 @@
-From 71e6e8d3bccf6f9049a01027038e970874966107 Mon Sep 17 00:00:00 2001
+From 18ed0f6a8eae2611fec70dd55bd8db8f958e1cc9 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
 Date: Mon, 2 Jul 2012 12:54:28 +0200
 Subject: [PATCH] mac80211: LLVMLinux: Remove VLAIS usage from mac80211
@@ -6,11 +6,8 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-The use of variable length arrays in structs (VLAIS) in the Linux Kernel code
-precludes the use of compilers which don't implement VLAIS (for instance the
-Clang compiler).
-
-This is the original VLAIS struct.
+Replaced the use of a Variable Length Array In Struct (VLAIS) with a C99
+compliant equivalent. This is the original VLAIS struct.
 
 struct {
 	struct aead_request     req;
@@ -20,14 +17,18 @@ struct {
 This patch instead allocates the appropriate amount of memory using an char
 array.
 
+The new code can be compiled with both gcc and clang.
+
 Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
+Signed-off-by: Vinícius Tinti <viniciustinti@gmail.com>
+Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 ---
  net/mac80211/aes_ccm.c | 44 ++++++++++++++++++++++++++------------------
  1 file changed, 26 insertions(+), 18 deletions(-)
 
 diff --git a/net/mac80211/aes_ccm.c b/net/mac80211/aes_ccm.c
-index 7c7df47..b83b68b 100644
+index 7c7df47..9612e95 100644
 --- a/net/mac80211/aes_ccm.c
 +++ b/net/mac80211/aes_ccm.c
 @@ -23,12 +23,16 @@ void ieee80211_aes_ccm_encrypt(struct crypto_aead *tfm, u8 *b_0, u8 *aad,
@@ -40,14 +41,14 @@ index 7c7df47..b83b68b 100644
 -	} aead_req;
  
 -	memset(&aead_req, 0, sizeof(aead_req));
-+	char aead_req_novlais[sizeof(struct aead_request)
++	char aead_req_data[sizeof(struct aead_request)
 +				+ crypto_aead_reqsize(tfm)
 +				+ CRYPTO_MINALIGN] CRYPTO_MINALIGN_ATTR;
 +
-+	struct aead_request *aead_reqnv
-+		= (struct aead_request *) aead_req_novlais;
++	struct aead_request *aead_req
++		= (struct aead_request *) aead_req_data;
 +
-+	memset(&aead_req_novlais, 0, (sizeof(struct aead_request)+
++	memset(&aead_req_data, 0, (sizeof(struct aead_request)+
 +		crypto_aead_reqsize(tfm) + CRYPTO_MINALIGN));
  
  	sg_init_one(&pt, data, data_len);
@@ -59,12 +60,12 @@ index 7c7df47..b83b68b 100644
 -	aead_request_set_tfm(&aead_req.req, tfm);
 -	aead_request_set_assoc(&aead_req.req, &assoc, assoc.length);
 -	aead_request_set_crypt(&aead_req.req, &pt, ct, data_len, b_0);
-+	aead_request_set_tfm(aead_reqnv, tfm);
-+	aead_request_set_assoc(aead_reqnv, &assoc, assoc.length);
-+	aead_request_set_crypt(aead_reqnv, &pt, ct, data_len, b_0);
++	aead_request_set_tfm(aead_req, tfm);
++	aead_request_set_assoc(aead_req, &assoc, assoc.length);
++	aead_request_set_crypt(aead_req, &pt, ct, data_len, b_0);
  
 -	crypto_aead_encrypt(&aead_req.req);
-+	crypto_aead_encrypt(aead_reqnv);
++	crypto_aead_encrypt(aead_req);
  }
  
  int ieee80211_aes_ccm_decrypt(struct crypto_aead *tfm, u8 *b_0, u8 *aad,
@@ -77,14 +78,14 @@ index 7c7df47..b83b68b 100644
 -	} aead_req;
  
 -	memset(&aead_req, 0, sizeof(aead_req));
-+	char aead_req_novlais[sizeof(struct aead_request)
++	char aead_req_data[sizeof(struct aead_request)
 +				+ crypto_aead_reqsize(tfm)
 +				+ CRYPTO_MINALIGN] CRYPTO_MINALIGN_ATTR;
 +
-+	struct aead_request *aead_reqnv
-+		= (struct aead_request *) aead_req_novlais;
++	struct aead_request *aead_req
++		= (struct aead_request *) aead_req_data;
 +
-+	memset(&aead_req_novlais, 0, (sizeof(struct aead_request)+
++	memset(&aead_req_data, 0, (sizeof(struct aead_request)+
 +		crypto_aead_reqsize(tfm) + CRYPTO_MINALIGN));
  
  	sg_init_one(&pt, data, data_len);
@@ -96,13 +97,13 @@ index 7c7df47..b83b68b 100644
 -	aead_request_set_tfm(&aead_req.req, tfm);
 -	aead_request_set_assoc(&aead_req.req, &assoc, assoc.length);
 -	aead_request_set_crypt(&aead_req.req, ct, &pt,
-+	aead_request_set_tfm(aead_reqnv, tfm);
-+	aead_request_set_assoc(aead_reqnv, &assoc, assoc.length);
-+	aead_request_set_crypt(aead_reqnv, ct, &pt,
++	aead_request_set_tfm(aead_req, tfm);
++	aead_request_set_assoc(aead_req, &assoc, assoc.length);
++	aead_request_set_crypt(aead_req, ct, &pt,
  			       data_len + IEEE80211_CCMP_MIC_LEN, b_0);
  
 -	return crypto_aead_decrypt(&aead_req.req);
-+	return crypto_aead_decrypt(aead_reqnv);
++	return crypto_aead_decrypt(aead_req);
  }
  
  struct crypto_aead *ieee80211_aes_key_setup_encrypt(const u8 key[])
