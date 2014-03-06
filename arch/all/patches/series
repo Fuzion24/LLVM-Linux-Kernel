@@ -16,3 +16,4 @@ vlais-netfilter.patch
 vlais-testmgr.patch
 disable-clang-integrated-as.patch
 dwarf2.patch
+unused-func.patch
