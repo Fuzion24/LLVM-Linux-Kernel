@@ -1,3 +1,8 @@
+From d0f0f2d168eef6404d07e4aff45bac67971cfe15 Mon Sep 17 00:00:00 2001
+From: Mark Charlebois <charlebm@gmail.com>
+Date: Thu, 6 Mar 2014 11:26:07 -0800
+Subject: [PATCH] module: LLVMLinux: Remove unused function warning from
+
 Converts a compile time type check that generates an unused function
 warning to an unused variable warning which is suppressed when
 building the kernel.
@@ -7,18 +12,27 @@ This patch allows this code to be compiled with either gcc or clang.
 Author: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 ---
+ include/linux/moduleparam.h | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/include/linux/moduleparam.h b/include/linux/moduleparam.h
-index c3eb102..f0cf1a2 100644
+index c3eb102..6fde6a9 100644
 --- a/include/linux/moduleparam.h
 +++ b/include/linux/moduleparam.h
-@@ -346,7 +346,8 @@ static inline void destroy_params(const struct kernel_param *params,
- /* The macros to do compile-time type checking stolen from Jakub
-    Jelinek, who IIRC came up with this idea for the 2.4 module init code. */
- #define __param_check(name, p, type) \
--	static inline type *__check_##name(void) { return(p); }
-+	static inline type *__check_##name(void) { return(p); } \
-+	static void *silence_warning_##name = (void *)__check_##name;
+@@ -123,10 +123,13 @@ struct kparam_array
+  * same, but that's harder if the variable must be non-static or is inside a
+  * structure.  This allows exposure under a different name.
+  */
++#pragma clang diagnostic push
++#pragma clang diagnostic ignored "-Wunused-function"
+ #define module_param_named(name, value, type, perm)			   \
+ 	param_check_##type(name, &(value));				   \
+ 	module_param_cb(name, &param_ops_##type, &value, perm);		   \
+ 	__MODULE_PARM_TYPE(name, #type)
++#pragma clang diagnostic pop
  
- extern struct kernel_param_ops param_ops_byte;
- extern int param_set_byte(const char *val, const struct kernel_param *kp);
+ /**
+  * module_param_cb - general callback for a module/cmdline parameter
+-- 
+1.8.3.2
+
