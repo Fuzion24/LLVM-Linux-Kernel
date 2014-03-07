@@ -17,4 +17,3 @@ vlais-testmgr.patch
 disable-clang-integrated-as.patch
 dwarf2.patch
 unused-func.patch
-percpu.patch
