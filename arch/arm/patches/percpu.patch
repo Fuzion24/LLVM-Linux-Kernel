@@ -36,7 +36,7 @@ index 8155db2..715af47 100644
 + * instead use a fake stack read to hazard against barrier().
 + */
 +#if defined(__clang__)
-+static inline unsigned long read_TPIDRPRW() {
++static inline unsigned long read_TPIDRPRW(void) {
 +	unsigned long off;
 +
 +	/*
@@ -47,7 +47,7 @@ index 8155db2..715af47 100644
 +	return off;
 +}
 +#else 
-+static inline unsigned long read_TPIDRPRW() {
++static inline unsigned long read_TPIDRPRW(void) {
 +	unsigned long off;
 +	register unsigned long *sp asm ("sp");
 +
