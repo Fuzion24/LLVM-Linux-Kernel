@@ -7,7 +7,8 @@ Converts a compile time type check that generates an unused function
 warning to an unused variable warning which is suppressed when
 building the kernel.
 
-This patch allows this code to be compiled with either gcc or clang.
+This code cannot be upstreamed as it is because it causes GCC to report
+an equal number of unused-variable warnings.
 
 Author: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
