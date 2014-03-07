@@ -1,39 +1,37 @@
-From cbeede06e08420087ef2db5873922452b6e78a51 Mon Sep 17 00:00:00 2001
+From b5a52f11e26a8eadfdee99963b2e38fdeb3df572 Mon Sep 17 00:00:00 2001
 From: Mark Charlebois <charlebm@gmail.com>
 Date: Thu, 6 Mar 2014 11:26:07 -0800
 Subject: [PATCH] module: LLVMLinux: Remove unused function warning from
+ __param_check macro
 
-The code make a compile time type check that is optimized away. Clang
-complains that it is an unused function.
+This code makes a compile time type check that is optimized away. Clang
+complains that it generates an unused function.
 
 I believe GCC won't complain for a static inline fuction but would if it
-was just a static fiunction.
+was just a static function.
 
-Adding the unused attribute to the function definition removes the warning.
+Adding the unused attribute to the function declaration removes the warning.
 
-This code works for both GCC and clang.
+This code works for both gcc and clang.
 
-Author: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 ---
- include/linux/moduleparam.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ include/linux/moduleparam.h | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/include/linux/moduleparam.h b/include/linux/moduleparam.h
-index c3eb102..f0cf1a2 100644
+index c3eb102..5ce1f67 100644
 --- a/include/linux/moduleparam.h
 +++ b/include/linux/moduleparam.h
-@@ -346,7 +346,8 @@ static inline void destroy_params(const struct kernel_param *params,
+@@ -346,6 +346,7 @@ static inline void destroy_params(const struct kernel_param *params,
  /* The macros to do compile-time type checking stolen from Jakub
     Jelinek, who IIRC came up with this idea for the 2.4 module init code. */
  #define __param_check(name, p, type) \
--	static inline type *__check_##name(void) { return(p); }
 +	static inline type *__check_##name(void) __attribute__ ((unused)); \
-+	static inline type *__check_##name(void) { return(p); } 
+ 	static inline type *__check_##name(void) { return(p); }
  
  extern struct kernel_param_ops param_ops_byte;
- extern int param_set_byte(const char *val, const struct kernel_param *kp);
 -- 
 1.8.3.2
 
