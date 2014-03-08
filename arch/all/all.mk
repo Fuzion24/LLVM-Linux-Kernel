@@ -427,6 +427,19 @@ kernel-build-force kernel-gcc-build-force: %-force:
 	${MAKE} $*
 
 #############################################################################
+kernel-gcc-build-test: kernel-gcc-clean series kernel-gcc-build
+
+#############################################################################
+kernel-rebuild kernel-gcc-rebuild: kernel-%rebuild:
+	@$(call leavestate,${STATEDIR},kernel-$*build)
+	@$(MAKE) kernel-$*build
+
+#############################################################################
+kernel-rebuild-verbose kernel-gcc-rebuild-verbose: kernel-%rebuild-verbose:
+	@$(call leavestate,${STATEDIR},kernel-$*build)
+	@$(MAKE) JOBS=1 V=1 kernel-$*build
+
+#############################################################################
 kernel-gcc-sparse:
 	@$(call assert_found_in_path,sparse)
 	${MAKE} kernel-gcc-configure
@@ -468,16 +481,6 @@ kernel-gcc-clean kernel-gcc-mrproper: kernel-unpatch
 	@rm -rf ${KERNELGCC_BUILD}
 	@$(call leavestate,${STATEDIR},kernel-gcc-configure kernel-gcc-build)
 	@$(call banner,Gcc compiled Kernel is now clean)
-
-#############################################################################
-kernel-rebuild kernel-gcc-rebuild: kernel-%rebuild:
-	@$(call leavestate,${STATEDIR},kernel-$*build)
-	@$(MAKE) kernel-$*build
-
-#############################################################################
-kernel-rebuild-verbose kernel-gcc-rebuild-verbose: kernel-%rebuild-verbose:
-	@$(call leavestate,${STATEDIR},kernel-$*build)
-	@$(MAKE) JOBS=1 V=1 kernel-$*build
 
 #############################################################################
 BUILD_LOG	= ${TMPDIR}/build.log
