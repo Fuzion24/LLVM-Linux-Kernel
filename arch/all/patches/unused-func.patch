@@ -1,4 +1,4 @@
-From b5a52f11e26a8eadfdee99963b2e38fdeb3df572 Mon Sep 17 00:00:00 2001
+From d0624bf218a8ff9699062315f8a1fe9d211b91a6 Mon Sep 17 00:00:00 2001
 From: Mark Charlebois <charlebm@gmail.com>
 Date: Thu, 6 Mar 2014 11:26:07 -0800
 Subject: [PATCH] module: LLVMLinux: Remove unused function warning from
@@ -41,6 +41,8 @@ This code works for both GCC and clang.
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 ---
+ include/linux/moduleparam.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/include/linux/moduleparam.h b/include/linux/moduleparam.h
 index c3eb102..175f699 100644
