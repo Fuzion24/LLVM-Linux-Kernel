@@ -1,7 +1,7 @@
-From d2bec01b41dfaee974f77640128bffee1f7e62c9 Mon Sep 17 00:00:00 2001
+From cac3a7cad63ec9b1100ef0c798e78caa0c83bdd7 Mon Sep 17 00:00:00 2001
 From: Mark Charlebois <charlebm@gmail.com>
 Date: Tue, 11 Feb 2014 19:26:05 -0800
-Subject: [PATCH] net: inetfilter: LLVMLinux: vlais-netfilter
+Subject: [PATCH] net: netfilter: LLVMLinux: vlais-netfilter
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -26,19 +26,17 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Signed-off-by: Vinícius Tinti <viniciustinti@gmail.com>
 ---
- net/netfilter/xt_repldata.h | 34 ++++++++++++++++++++++++++++------
- 1 file changed, 28 insertions(+), 6 deletions(-)
+ net/netfilter/xt_repldata.h | 32 ++++++++++++++++++++++++++------
+ 1 file changed, 26 insertions(+), 6 deletions(-)
 
 diff --git a/net/netfilter/xt_repldata.h b/net/netfilter/xt_repldata.h
-index 6efe4e5..c138fea 100644
+index 6efe4e5..d1c6cc6 100644
 --- a/net/netfilter/xt_repldata.h
 +++ b/net/netfilter/xt_repldata.h
-@@ -5,29 +5,51 @@
+@@ -5,29 +5,49 @@
   * they serve as the hanging-off data accessed through repl.data[].
   */
  
-+#define padbytes(offset, type) ((-offset) & (__alignof__(type)-1))
-+
 +/* tbl has the following structure equivalent, but is C99 compliant:
 + * struct {
 + *	struct type##_replace repl;
@@ -60,13 +58,13 @@ index 6efe4e5..c138fea 100644
 +	} *tbl; \
 +	struct type##_standard *entries; \
 +	struct type##_error *term; \
-+	size_t entries_offset = padbytes(sizeof(tbl->repl), *entries); \
++	size_t entries_offset = (-sizeof(tbl->repl)) & (__alignof__(*entries)-1); \
 +	size_t entries_end = entries_offset + nhooks * sizeof(*entries); \
-+	size_t term_offset = entries_end \
-+		+ padbytes(sizeof(tbl->repl) + entries_end, *term); \
++	size_t term_offset = entries_end + \
++		(-sizeof(tbl->repl) - entries_end) & (__alignof__(*term)-1); \
 +	size_t term_end = term_offset + sizeof(*term); \
-+	size_t data_sz = term_end \
-+		+ padbytes(sizeof(tbl->repl) + term_end, tbl->repl); \
++	size_t data_sz = term_end + \
++		(-sizeof(tbl->repl) - term_end) & (__alignof__(tbl->repl)-1); \
 +	size_t tbl_sz = sizeof(tbl->repl) + data_sz; \
 +	tbl = kzalloc(tbl_sz, GFP_KERNEL); \
  	if (tbl == NULL) \

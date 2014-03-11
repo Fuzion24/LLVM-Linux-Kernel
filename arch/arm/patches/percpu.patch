@@ -22,6 +22,8 @@ until it can be verified that it is in fact an issue for clang.
 
 
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+Signed-off-by: Behan Webster <behanw@converseincode.com>
+
 ---
  arch/arm/include/asm/compiler.h | 30 ++++++++++++++++++++++++++++++
  arch/arm/include/asm/percpu.h   | 15 ++-------------
