@@ -1,7 +1,12 @@
+From 912aa1f50d5992eee256132951b2bdab253ce745 Mon Sep 17 00:00:00 2001
+From: Mark Charlebois <charlebm@gmail.com>
+Date: Tue, 11 Mar 2014 10:43:45 -0700
+Subject: [PATCH] percpu
+
 See http://kernel.opensuse.org/cgit/kernel/commit/?id=509eb76ebf97
 
 The use of sp as a register variable is not supported in clang and
-the behavior they are working around in GCC may not even be present 
+the behavior they are working around in GCC may not even be present
 in clang.
 
 From the link above:
@@ -18,9 +23,12 @@ until it can be verified that it is in fact an issue for clang.
 
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 ---
+ arch/arm/include/asm/compiler.h | 30 ++++++++++++++++++++++++++++++
+ arch/arm/include/asm/percpu.h   | 15 ++-------------
+ 2 files changed, 32 insertions(+), 13 deletions(-)
 
 diff --git a/arch/arm/include/asm/compiler.h b/arch/arm/include/asm/compiler.h
-index 8155db2..715af47 100644
+index 8155db2..04a3a93 100644
 --- a/arch/arm/include/asm/compiler.h
 +++ b/arch/arm/include/asm/compiler.h
 @@ -11,5 +11,35 @@
@@ -60,18 +68,10 @@ index 8155db2..715af47 100644
  
  #endif /* __ASM_ARM_COMPILER_H */
 diff --git a/arch/arm/include/asm/percpu.h b/arch/arm/include/asm/percpu.h
-index 209e650..5a76f3b 100644
+index 209e650..208c7e5 100644
 --- a/arch/arm/include/asm/percpu.h
 +++ b/arch/arm/include/asm/percpu.h
-@@ -16,6 +16,7 @@
- #ifndef _ASM_ARM_PERCPU_H_
- #define _ASM_ARM_PERCPU_H_
- 
-+
- /*
-  * Same as asm-generic/percpu.h, except that we store the per cpu offset
-  * in the TPIDRPRW. TPIDRPRW only exists on V6K and V7
-@@ -27,21 +28,10 @@ static inline void set_my_cpu_offset(unsigned long off)
+@@ -27,21 +27,10 @@ static inline void set_my_cpu_offset(unsigned long off)
  	asm volatile("mcr p15, 0, %0, c13, c0, 4" : : "r" (off) : "memory");
  }
  
@@ -95,3 +95,6 @@ index 209e650..5a76f3b 100644
  #else
  #define set_my_cpu_offset(x)	do {} while(0)
  
+-- 
+1.8.3.2
+
