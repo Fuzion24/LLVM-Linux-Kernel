@@ -1,4 +1,4 @@
-From ad4c74bc44c2178f4bd90881a3a08785ad49cb63 Mon Sep 17 00:00:00 2001
+From 5c04ee0610a5e1d6947d23d52bffa9b961669f38 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 3 Sep 2013 22:27:26 -0400
 Subject: [PATCH] Kbuild arm: LLVMLinux: Add Kbuild support for building arch
@@ -12,30 +12,28 @@ Author: Behan Webster <behanw@converseincode.com>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 ---
- arch/arm/Makefile                 | 18 +++++++++++++++---
+ arch/arm/Makefile                 | 14 ++++++++++----
  arch/arm/boot/compressed/Makefile |  2 +-
- 2 files changed, 16 insertions(+), 4 deletions(-)
+ 2 files changed, 11 insertions(+), 5 deletions(-)
 
 diff --git a/arch/arm/Makefile b/arch/arm/Makefile
-index 08a9ef5..1d86695 100644
+index 08a9ef5..d32551a 100644
 --- a/arch/arm/Makefile
 +++ b/arch/arm/Makefile
-@@ -23,6 +23,14 @@ OBJCOPYFLAGS	:=-O binary -R .comment -S
+@@ -23,6 +23,12 @@ OBJCOPYFLAGS	:=-O binary -R .comment -S
  GZFLAGS		:=-9
  #KBUILD_CFLAGS	+=-pipe
  
 +ifeq ($(COMPILER),clang)
 +# Clang options
-+KBUILD_CPPFLAGS	+= $(call cc-option,-target $(CROSS_COMPILE:-=),)
-+KBUILD_CFLAGS   += $(call cc-option,-fno-builtin,)
-+KBUILD_CFLAGS   += $(call cc-disable-warning,asm-operand-widths)
-+KBUILD_CFLAGS   += $(call cc-option,-Xassembler -mno-warn-deprecated,)
++KBUILD_CPPFLAGS	+= -target $(CROSS_COMPILE:-=)
++KBUILD_CFLAGS   += -fno-builtin -Wno-asm-operand-widths -Xassembler -mno-warn-deprecated
 +endif
 +
  # Never generate .eh_frame
  KBUILD_CFLAGS	+= $(call cc-option,-fno-dwarf2-cfi-asm)
  
-@@ -41,11 +49,11 @@ KBUILD_CFLAGS	+=-fno-omit-frame-pointer -mapcs -mno-sched-prolog
+@@ -41,11 +47,11 @@ KBUILD_CFLAGS	+=-fno-omit-frame-pointer -mapcs -mno-sched-prolog
  endif
  
  ifeq ($(CONFIG_CPU_BIG_ENDIAN),y)
@@ -49,7 +47,7 @@ index 08a9ef5..1d86695 100644
  AS		+= -EL
  LD		+= -EL
  endif
-@@ -96,7 +104,7 @@ tune-$(CONFIG_CPU_V6K)		=$(call cc-option,-mtune=arm1136j-s,-mtune=strongarm)
+@@ -96,7 +102,7 @@ tune-$(CONFIG_CPU_V6K)		=$(call cc-option,-mtune=arm1136j-s,-mtune=strongarm)
  tune-y := $(tune-y)
  
  ifeq ($(CONFIG_AEABI),y)
@@ -58,15 +56,12 @@ index 08a9ef5..1d86695 100644
  else
  CFLAGS_ABI	:=$(call cc-option,-mapcs-32,-mabi=apcs-gnu) $(call cc-option,-mno-thumb-interwork,)
  endif
-@@ -120,7 +128,11 @@ AFLAGS_ISA	:=$(CFLAGS_ISA)
+@@ -120,7 +126,7 @@ AFLAGS_ISA	:=$(CFLAGS_ISA)
  endif
  
  # Need -Uarm for gcc < 3.x
-+ifeq ($(COMPILER),clang)
-+KBUILD_CFLAGS	+=$(CFLAGS_ABI) $(CFLAGS_THUMB2) $(arch-y) $(tune-y) -msoft-float
-+else
- KBUILD_CFLAGS	+=$(CFLAGS_ABI) $(CFLAGS_ISA) $(arch-y) $(tune-y) $(call cc-option,-mshort-load-bytes,$(call cc-option,-malignment-traps,)) -msoft-float -Uarm
-+endif
+-KBUILD_CFLAGS	+=$(CFLAGS_ABI) $(CFLAGS_ISA) $(arch-y) $(tune-y) $(call cc-option,-mshort-load-bytes,$(call cc-option,-malignment-traps,)) -msoft-float -Uarm
++KBUILD_CFLAGS	+=$(CFLAGS_ABI) $(CFLAGS_ISA) $(arch-y) $(tune-y) $(call cc-option,-mshort-load-bytes,$(call cc-option,-malignment-traps,)) -msoft-float $(call cc-option, -Uarm,)
  KBUILD_AFLAGS	+=$(CFLAGS_ABI) $(AFLAGS_ISA) $(arch-y) $(tune-y) -include asm/unified.h -msoft-float
  
  CHECKFLAGS	+= -D__arm__
