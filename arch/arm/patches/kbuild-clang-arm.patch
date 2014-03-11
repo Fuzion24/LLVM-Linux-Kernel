@@ -8,6 +8,9 @@ Protect more options for arm with cc-option so that we don't get errors when
 using clang instead of gcc.  Add more or different options when using clang as
 well.
 
+DO NOT UPSTREAM - Need to test native compilation on ARM
+		- Likely issue with KBUILD_CPPFLAGS += -target $(CROSS_COMPILE:-=)
+
 Author: Behan Webster <behanw@converseincode.com>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
