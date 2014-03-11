@@ -1,7 +1,7 @@
-From d2bec01b41dfaee974f77640128bffee1f7e62c9 Mon Sep 17 00:00:00 2001
+From 908d7694651e10becf2e1381444a5f8a63d51726 Mon Sep 17 00:00:00 2001
 From: Mark Charlebois <charlebm@gmail.com>
 Date: Tue, 11 Feb 2014 19:26:05 -0800
-Subject: [PATCH] net: inetfilter: LLVMLinux: vlais-netfilter
+Subject: [PATCH] net: netfilter: LLVMLinux: vlais-netfilter
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
