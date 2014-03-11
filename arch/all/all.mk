@@ -368,6 +368,14 @@ kernel-cpconfig: state/kernel-configure
 	@cp -v ${KERNEL_BUILD}/.config ${KERNEL_CFG}
 
 #############################################################################
+kernel-cscope: state/kernel-configure
+	@${KERNEL_ENV} make -C ${KERNELDIR} ${MAKE_FLAGS} cscope
+cscope:
+	@(cd ${KERNELDIR}; cscope)
+kernel-tags: state/kernel-configure
+	${KERNEL_ENV} make -C ${KERNELDIR} ${MAKE_FLAGS} tags
+
+#############################################################################
 kernel-gcc-configure: state/kernel-gcc-configure
 state/kernel-gcc-configure: state/kernel-patch
 	@make -s build-dep-check
