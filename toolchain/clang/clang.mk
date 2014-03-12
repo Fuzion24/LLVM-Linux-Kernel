@@ -62,5 +62,6 @@ else
     include ${LLVMTOP}/clang-native.mk
   else
     include ${LLVMTOP}/clang-from-source.mk
+    include ${LLVMTOP}/clang-arm-from-source.mk
   endif
 endif
