@@ -39,16 +39,18 @@ index 1a2628e..db2cd6e 100644
  # Decide whether to build built-in, modular, or both.
  # Normally, just do built-in.
  
-@@ -323,6 +328,12 @@ endif
+@@ -323,6 +328,14 @@ endif
  
  export quiet Q KBUILD_VERBOSE
  
++ifneq ($(CC),)
 +ifeq ($(shell $(CC) -v 2>&1 | grep -c "clang version"), 1)
 +COMPILER := clang
 +else
 +COMPILER := gcc
 +endif
 +export COMPILER
++endif
  
  # Look for make include files relative to root of kernel src
  MAKEFLAGS += --include-dir=$(srctree)
