@@ -21,13 +21,13 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
-# Note: use CROSS_ARM_TOOLCHAIN=native to include this file
+# Note: use CROSS_ARM_TOOLCHAIN=native-armhf to include this file
 
-HOST		= arm-linux-gnueabi
+HOST		= arm-linux-gnueabihf
 HOST_TRIPLE	= ${HOST}
 COMPILER_BIN	= /usr/bin
 
-CROSS_GCC	= ${COMPILER_BIN}/${HOST}-gcc
+CROSS_GCC	= ${COMPILER_BIN}/gcc
 arm-cc: ${CROSS_GCC}
 
 state/arm-cc: arm-cc

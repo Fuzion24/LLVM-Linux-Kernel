@@ -30,7 +30,6 @@ STATE_TOOLCHAIN	= state/arm-cc
 
 # ARCH must be defined before all.mk
 ARCH		= arm
-CROSS_COMPILE	= ${HOST}-
 MARCH		?= armv7-a
 MFLOAT		?= -mfloat-abi=softfp -mfpu=neon
 
