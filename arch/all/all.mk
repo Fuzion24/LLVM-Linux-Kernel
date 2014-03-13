@@ -99,8 +99,11 @@ else
 CLANGCC		= ${CLANG} ${CCOPTS}
 endif
 
+ifneq ("${ARCH}", "")
+MAKE_FLAGS	+= ARCH=${ARCH}
+endif
 ifneq ("${CROSS_COMPILE}", "")
-MAKE_FLAGS	+= ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE}
+MAKE_FLAGS	+= CROSS_COMPILE=${CROSS_COMPILE}
 endif
 ifneq ("${JOBS}", "")
 KERNEL_VAR	+= -j${JOBS}

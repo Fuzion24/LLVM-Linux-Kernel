@@ -33,6 +33,7 @@ arm-gcc-toolchain-help:
 	@echo "  CROSS_ARM_TOOLCHAIN=codesourcery       Download and use Code sourcery toolchain (Default)"
 	@echo "  CROSS_ARM_TOOLCHAIN=linaro             Download and use Linaro gcc cross-toolchain"
 	@echo "  CROSS_ARM_TOOLCHAIN=native             Use distro installed gcc cross-toolchain"
+	@echo "  CROSS_ARM_TOOLCHAIN=native-arm         Use distro installed native gcc on ARM HW"
 
 # Configure the requested ARM cross compiler
 # Sets CROSS_GCC, PATH, HOST, HOST_TRIPLE
@@ -41,18 +42,28 @@ arm-gcc-toolchain-help:
 # compiler being used. These files must define
 # arm-cc which will be a build dep for ARM
 ifeq (${CROSS_ARM_TOOLCHAIN},android)
+  CROSS_COMPILE	= ${HOST}-
   include ${ARCH_ARM_TOOLCHAIN}/android/android.mk
 else
   ifeq (${CROSS_ARM_TOOLCHAIN},android-linaro)
-  include ${ARCH_ARM_TOOLCHAIN}/android-linaro/android-linaro.mk
+    CROSS_COMPILE	= ${HOST}-
+    include ${ARCH_ARM_TOOLCHAIN}/android-linaro/android-linaro.mk
   else
     ifeq (${CROSS_ARM_TOOLCHAIN},linaro)
+      CROSS_COMPILE	= ${HOST}-
       include ${ARCH_ARM_TOOLCHAIN}/linaro/linaro.mk
     else
       ifeq (${CROSS_ARM_TOOLCHAIN},native)
+        CROSS_COMPILE	= ${HOST}-
         include ${ARCH_ARM_TOOLCHAIN}/native.mk
       else
-        include ${ARCH_ARM_TOOLCHAIN}/codesourcery/codesourcery.mk
+        ifeq (${CROSS_ARM_TOOLCHAIN},native-arm)
+	   # Make sure CROSS_COMPILE is not defined for build on ARM HW
+           include ${ARCH_ARM_TOOLCHAIN}/native-arm.mk
+        else
+           CROSS_COMPILE	= ${HOST}-
+           include ${ARCH_ARM_TOOLCHAIN}/codesourcery/codesourcery.mk
+        endif
       endif
     endif
   endif
