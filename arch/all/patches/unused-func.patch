@@ -7,22 +7,22 @@ Subject: [PATCH] module: LLVMLinux: Remove unused function warning from
 This code makes a compile time type check that is optimized away. Clang
 complains that it generates an unused function:
 
-/topdir/vexpress/src/linux/kernel/panic.c:471:1: warning: unused function '__check_panic'
+linux/kernel/panic.c:471:1: warning: unused function '__check_panic'
       [-Wunused-function]
 core_param(panic, panic_timeout, int, 0644);
 ^
-/topdir/vexpress/src/linux/include/linux/moduleparam.h:283:2: note: expanded from macro
+linux/moduleparam.h:283:2: note: expanded from macro
       'core_param'
         param_check_##type(name, &(var));                               \
         ^
 <scratch space>:87:1: note: expanded from here
 param_check_int
 ^
-/topdir/vexpress/src/linux/include/linux/moduleparam.h:369:34: note: expanded from macro
+linux/moduleparam.h:369:34: note: expanded from macro
       'param_check_int'
 #define param_check_int(name, p) __param_check(name, p, int)
                                  ^
-/topdir/vexpress/src/linux/include/linux/moduleparam.h:349:22: note: expanded from macro
+linux/moduleparam.h:349:22: note: expanded from macro
       '__param_check'
         static inline type *__check_##name(void) { return(p); }
                             ^
