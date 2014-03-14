@@ -8,9 +8,6 @@ Protect more options for arm with cc-option so that we don't get errors when
 using clang instead of gcc.  Add more or different options when using clang as
 well.
 
-DO NOT UPSTREAM - Need to test native compilation on ARM
-		- Likely issue with KBUILD_CPPFLAGS += -target $(CROSS_COMPILE:-=)
-
 Author: Behan Webster <behanw@converseincode.com>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
@@ -23,13 +20,15 @@ diff --git a/arch/arm/Makefile b/arch/arm/Makefile
 index 08a9ef5..d32551a 100644
 --- a/arch/arm/Makefile
 +++ b/arch/arm/Makefile
-@@ -23,6 +23,12 @@ OBJCOPYFLAGS	:=-O binary -R .comment -S
+@@ -23,6 +23,14 @@ OBJCOPYFLAGS	:=-O binary -R .comment -S
  GZFLAGS		:=-9
  #KBUILD_CFLAGS	+=-pipe
  
 +ifeq ($(COMPILER),clang)
 +# Clang options
++ifneq ($(CROSS_COMPILE,))
 +KBUILD_CPPFLAGS	+= -target $(CROSS_COMPILE:-=)
++endif
 +KBUILD_CFLAGS   += -fno-builtin -Wno-asm-operand-widths -Xassembler -mno-warn-deprecated
 +endif
 +
