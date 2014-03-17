@@ -1,23 +1,21 @@
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 --- msm.orig/arch/arm/Makefile
 +++ msm/arch/arm/Makefile
-@@ -18,8 +18,16 @@
- OBJCOPYFLAGS	:=-O binary -R .comment -S
- GZFLAGS		:=-9
- #KBUILD_CFLAGS	+=-pipe
-+
-+#ifeq ($(COMPILER),clang)
-+# Clang options
+@@ -21,6 +21,14 @@ GZFLAGS		:=-9
  # Explicitly specifiy 32-bit ARM ISA since toolchain default can be -mthumb:
  KBUILD_CFLAGS	+=$(call cc-option,-marm,)
-+KBUILD_CPPFLAGS	+= $(call cc-option,-target $(CROSS_COMPILE:-=),)
-+KBUILD_CFLAGS   += $(call cc-option,-fno-builtin,)
-+KBUILD_CFLAGS   += $(call cc-disable-warning,asm-operand-widths)
-+KBUILD_CFLAGS   += $(call cc-option,-Xassembler -mno-warn-deprecated,)
-+#endif
  
++ifeq ($(COMPILER),clang)
++# Clang options
++ifneq ($(CROSS_COMPILE),)
++KBUILD_CPPFLAGS	+= -target $(CROSS_COMPILE:-=)
++endif
++KBUILD_CFLAGS   += -fno-builtin -Wno-asm-operand-widths -Xassembler -mno-warn-deprecated
++endif
++
  # Never generate .eh_frame
  KBUILD_CFLAGS	+= $(call cc-option,-fno-dwarf2-cfi-asm)
+ 
 @@ -42,11 +51,11 @@
  endif
  
