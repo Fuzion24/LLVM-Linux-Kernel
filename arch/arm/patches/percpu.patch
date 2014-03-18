@@ -1,4 +1,4 @@
-From 912aa1f50d5992eee256132951b2bdab253ce745 Mon Sep 17 00:00:00 2001
+From 0b4e3cfc7d4c0a77364eb367f9940644f134a7bd Mon Sep 17 00:00:00 2001
 From: Mark Charlebois <charlebm@gmail.com>
 Date: Tue, 11 Mar 2014 10:43:45 -0700
 Subject: [PATCH] percpu
@@ -23,7 +23,6 @@ until it can be verified that it is in fact an issue for clang.
 
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
-
 ---
  arch/arm/include/asm/compiler.h | 30 ++++++++++++++++++++++++++++++
  arch/arm/include/asm/percpu.h   | 15 ++-------------
@@ -33,20 +32,21 @@ diff --git a/arch/arm/include/asm/compiler.h b/arch/arm/include/asm/compiler.h
 index 8155db2..04a3a93 100644
 --- a/arch/arm/include/asm/compiler.h
 +++ b/arch/arm/include/asm/compiler.h
-@@ -11,5 +11,35 @@
+@@ -11,5 +11,37 @@
   */
  #define __asmeq(x, y)  ".ifnc " x "," y " ; .err ; .endif\n\t"
  
 +#if defined(CONFIG_SMP) && !defined(CONFIG_CPU_V6)
 +/*
 + * Read TPIDRPRW.
-+ * GCC requires a workaround as it does not treat a "memory" clobber on a 
++ * GCC requires a workaround as it does not treat a "memory" clobber on a
 + * non-volatile asm block as a side-effect.
 + * We want to allow caching the value, so for GCC avoid using volatile and
 + * instead use a fake stack read to hazard against barrier().
 + */
 +#if defined(__clang__)
-+static inline unsigned long read_TPIDRPRW(void) {
++static inline unsigned long read_TPIDRPRW(void)
++{
 +	unsigned long off;
 +
 +	/*
@@ -56,8 +56,9 @@ index 8155db2..04a3a93 100644
 +
 +	return off;
 +}
-+#else 
-+static inline unsigned long read_TPIDRPRW(void) {
++#else
++static inline unsigned long read_TPIDRPRW(void)
++{
 +	unsigned long off;
 +	register unsigned long *sp asm ("sp");
 +
