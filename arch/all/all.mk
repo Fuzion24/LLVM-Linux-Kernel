@@ -188,7 +188,7 @@ MRPROPER_TARGETS	+= kernel-clean kernel-gcc-clean
 PATCH_APPLIED_TARGETS	+= ${KERNEL_TARGETS_APPLIED}
 RAZE_TARGETS		+= kernel-raze
 SETTINGS_TARGETS	+= kernel-settings
-SYNC_TARGETS		+= kernels-sync
+SYNC_TARGETS		+= kernel-sync
 VERSION_TARGETS		+= ${KERNEL_TARGETS_VERSION}
 
 .PHONY:			${KERNEL_TARGETS_CLANG} ${KERNEL_TARGETS_GCC} ${KERNEL_TARGETS_APPLIED} ${KERNEL_TARGETS_CLEAN} ${KERNEL_TARGETS_VERSION}
@@ -464,7 +464,6 @@ kernel-gcc-sparse:
 
 #############################################################################
 kernels: kernel-build kernel-gcc-build
-kernels-sync: kernel-sync kernel-gcc-sync
 kernels-clean: kernel-clean kernel-gcc-clean
 
 #############################################################################
