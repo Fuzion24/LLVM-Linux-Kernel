@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <stddef.h>
  
 #define padbytes(offset, type) ((-offset) & (__alignof__(type)-1))
 
@@ -32,12 +34,12 @@ struct foo_error {
 		struct type##_standard entries[nhooks]; \
 		struct type##_error term; \
 	} *tbl = malloc(sizeof(*tbl)); \
-	printf("tbl size %d\n", sizeof(*tbl)); \
-	printf("offset of entries %d\n", (void *)&tbl->entries[0]-(void *)tbl); \
-	printf("offset of term %d\n", (void *)&tbl->term-(void *)tbl); \
-	printf("repl size %d\n", sizeof(tbl->repl)); \
-	printf("entry size %d\n", sizeof(tbl->entries[0])); \
-	printf("term size %d\n", sizeof(tbl->term)); \
+	printf("tbl size %lu\n", sizeof(*tbl)); \
+	printf("offset of entries %lu\n", (void *)&tbl->entries[0]-(void *)tbl); \
+	printf("offset of term %lu\n", (void *)&tbl->term-(void *)tbl); \
+	printf("repl size %lu\n", sizeof(tbl->repl)); \
+	printf("entry size %lu\n", sizeof(tbl->entries[0])); \
+	printf("term size %lu\n", sizeof(tbl->term)); \
 	free(tbl); \
 })
 #endif
@@ -47,26 +49,22 @@ struct foo_error {
 	unsigned int nhooks = 5; \
  	struct { \
  		struct type##_replace repl; \
-		char data[0]; \
+		struct type##_standard entries[]; \
 	} *tbl2; \
-	struct type##_standard *entries; \
 	struct type##_error *term; \
-	size_t pad1 = padbytes(sizeof(tbl2->repl), *entries); \
-	size_t offset = pad1 + nhooks * sizeof(*entries); \
-	size_t pad2 = padbytes(sizeof(tbl2->repl)+offset, *term); \
-	size_t offset2 = offset + pad2 + sizeof(*term); \
-	size_t pad3 = padbytes(sizeof(tbl2->repl)+offset2, tbl2->repl); \
-	size_t tbl_sz = sizeof(tbl2->repl) + offset2 + pad3; \
-	tbl2 = malloc(sizeof(tbl_sz)); \
-	entries = (struct type##_standard *)&tbl2->data[pad1]; \
-	term = (struct type##_error *)&tbl2->data[offset+pad2]; \
-	printf("tbl2 size %d\n", tbl_sz); \
-	printf("offset of entries %d\n", (void *)entries-(void *)tbl2); \
-	printf("offset of term %d\n", (void *)term-(void *)tbl2); \
-	printf("p1 %d p2 %d p3 %d\n", pad1, pad2, pad3); \
-	printf("repl size %d\n", sizeof(tbl2->repl)); \
-	printf("entry size %d\n", sizeof(entries[0])); \
-	printf("term size %d\n", sizeof(*term)); \
+	size_t entries_end = offsetof(typeof(*tbl2), entries[nhooks-1])+sizeof(tbl2->entries[0]); \
+	size_t term_offset = (entries_end + __alignof__(*term) - 1) & ~(__alignof__(*term) - 1); \
+	size_t term_end = term_offset + sizeof(*term); \
+	size_t tbl_sz = (term_end + __alignof__(tbl2->repl) - 1) & ~(__alignof__(tbl2->repl) - 1); \
+	tbl2 = malloc(tbl_sz); \
+	term = (struct type##_error *)&(((char *)tbl2)[term_offset]); \
+	printf("tbl2 size %lu\n", tbl_sz); \
+	printf("offset of entries %lu\n", (void *)&tbl2->entries[0]-(void *)tbl2); \
+	printf("offset of term %lu\n", (void *)term-(void *)tbl2); \
+	printf("p2 %lu p3 %lu\n", term_offset-entries_end, tbl_sz-term_end); \
+	printf("repl size %lu\n", sizeof(tbl2->repl)); \
+	printf("entry size %lu\n", sizeof(tbl2->entries[0])); \
+	printf("term size %lu\n", sizeof(*term)); \
 	free(tbl2); \
 })
 
@@ -78,7 +76,7 @@ int main()
 	printf("------------\n");
 #endif
 	xt_alloc_initial_table2(foo);
-	printf("Sz %d %d\n", sizeof(*bar), sizeof(struct foo_standard));
+	printf("Sz %lu %lu\n", sizeof(*bar), sizeof(struct foo_standard));
 }
 
 

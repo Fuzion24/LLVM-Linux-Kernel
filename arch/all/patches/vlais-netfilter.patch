@@ -26,14 +26,12 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Signed-off-by: Vinícius Tinti <viniciustinti@gmail.com>
 ---
- net/netfilter/xt_repldata.h | 32 ++++++++++++++++++++++++++------
- 1 file changed, 26 insertions(+), 6 deletions(-)
 
 diff --git a/net/netfilter/xt_repldata.h b/net/netfilter/xt_repldata.h
-index 6efe4e5..d1c6cc6 100644
+index 6efe4e5..c0f63c9 100644
 --- a/net/netfilter/xt_repldata.h
 +++ b/net/netfilter/xt_repldata.h
-@@ -5,29 +5,49 @@
+@@ -5,23 +5,37 @@
   * they serve as the hanging-off data accessed through repl.data[].
   */
  
@@ -54,23 +52,17 @@ index 6efe4e5..d1c6cc6 100644
 -		struct type##_standard entries[nhooks]; \
 -		struct type##_error term; \
 -	} *tbl = kzalloc(sizeof(*tbl), GFP_KERNEL); \
-+		char data[0]; \
++		struct type##_standard entries[]; \
 +	} *tbl; \
-+	struct type##_standard *entries; \
 +	struct type##_error *term; \
-+	size_t entries_offset = (-sizeof(tbl->repl)) & (__alignof__(*entries)-1); \
-+	size_t entries_end = entries_offset + nhooks * sizeof(*entries); \
-+	size_t term_offset = entries_end + \
-+		(-sizeof(tbl->repl) - entries_end) & (__alignof__(*term)-1); \
++	size_t entries_end = offsetof(typeof(*tbl), entries[nhooks-1]) + sizeof(tbl->entries[0]); \
++	size_t term_offset = (entries_end + __alignof__(*term) - 1) & ~(__alignof__(*term) - 1); \
 +	size_t term_end = term_offset + sizeof(*term); \
-+	size_t data_sz = term_end + \
-+		(-sizeof(tbl->repl) - term_end) & (__alignof__(tbl->repl)-1); \
-+	size_t tbl_sz = sizeof(tbl->repl) + data_sz; \
++	size_t tbl_sz = (term_end + __alignof__(tbl->repl) - 1) & ~(__alignof__(tbl->repl) - 1); \
 +	tbl = kzalloc(tbl_sz, GFP_KERNEL); \
  	if (tbl == NULL) \
  		return NULL; \
-+	entries = (struct type##_standard *)&tbl->data[entries_offset]; \
-+	term = (struct type##_error *)&tbl->data[term_offset]; \
++	term = (struct type##_error *)&(((char *)tbl)[term_offset]); \
  	strncpy(tbl->repl.name, info->name, sizeof(tbl->repl.name)); \
 -	tbl->term = (struct type##_error)typ2##_ERROR_INIT;  \
 +	*term = (struct type##_error)typ2##_ERROR_INIT;  \
@@ -82,13 +74,6 @@ index 6efe4e5..d1c6cc6 100644
  	for (; hook_mask != 0; hook_mask >>= 1, ++hooknum) { \
  		if (!(hook_mask & 1)) \
  			continue; \
- 		tbl->repl.hook_entry[hooknum] = bytes; \
- 		tbl->repl.underflow[hooknum]  = bytes; \
--		tbl->entries[i++] = (struct type##_standard) \
-+		entries[i++] = (struct type##_standard) \
- 			typ2##_STANDARD_INIT(NF_ACCEPT); \
- 		bytes += sizeof(struct type##_standard); \
- 	} \
 -- 
 1.8.3.2
 
