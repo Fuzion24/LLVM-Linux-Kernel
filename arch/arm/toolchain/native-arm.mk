@@ -21,7 +21,7 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
-# Note: use CROSS_ARM_TOOLCHAIN=native-armhf to include this file
+# Note: use CROSS_ARM_TOOLCHAIN=native-arm to include this file
 
 HOST		= arm-linux-gnueabihf
 HOST_TRIPLE	= ${HOST}
