@@ -1,4 +1,4 @@
-From 5c04ee0610a5e1d6947d23d52bffa9b961669f38 Mon Sep 17 00:00:00 2001
+From 78c7c82f23260121bb0f226436336ffc36c5936d Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 3 Sep 2013 22:27:26 -0400
 Subject: [PATCH] Kbuild arm: LLVMLinux: Add Kbuild support for building arch
@@ -12,12 +12,12 @@ Author: Behan Webster <behanw@converseincode.com>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 ---
- arch/arm/Makefile                 | 14 ++++++++++----
+ arch/arm/Makefile                 | 16 ++++++++++++----
  arch/arm/boot/compressed/Makefile |  2 +-
- 2 files changed, 11 insertions(+), 5 deletions(-)
+ 2 files changed, 13 insertions(+), 5 deletions(-)
 
 diff --git a/arch/arm/Makefile b/arch/arm/Makefile
-index 08a9ef5..d32551a 100644
+index 08a9ef5..4aa0a53 100644
 --- a/arch/arm/Makefile
 +++ b/arch/arm/Makefile
 @@ -23,6 +23,14 @@ OBJCOPYFLAGS	:=-O binary -R .comment -S
@@ -26,7 +26,7 @@ index 08a9ef5..d32551a 100644
  
 +ifeq ($(COMPILER),clang)
 +# Clang options
-+ifneq ($(CROSS_COMPILE,))
++ifneq ($(CROSS_COMPILE),)
 +KBUILD_CPPFLAGS	+= -target $(CROSS_COMPILE:-=)
 +endif
 +KBUILD_CFLAGS   += -fno-builtin -Wno-asm-operand-widths -Xassembler -mno-warn-deprecated
@@ -35,7 +35,7 @@ index 08a9ef5..d32551a 100644
  # Never generate .eh_frame
  KBUILD_CFLAGS	+= $(call cc-option,-fno-dwarf2-cfi-asm)
  
-@@ -41,11 +47,11 @@ KBUILD_CFLAGS	+=-fno-omit-frame-pointer -mapcs -mno-sched-prolog
+@@ -41,11 +49,11 @@ KBUILD_CFLAGS	+=-fno-omit-frame-pointer -mapcs -mno-sched-prolog
  endif
  
  ifeq ($(CONFIG_CPU_BIG_ENDIAN),y)
@@ -49,7 +49,7 @@ index 08a9ef5..d32551a 100644
  AS		+= -EL
  LD		+= -EL
  endif
-@@ -96,7 +102,7 @@ tune-$(CONFIG_CPU_V6K)		=$(call cc-option,-mtune=arm1136j-s,-mtune=strongarm)
+@@ -96,7 +104,7 @@ tune-$(CONFIG_CPU_V6K)		=$(call cc-option,-mtune=arm1136j-s,-mtune=strongarm)
  tune-y := $(tune-y)
  
  ifeq ($(CONFIG_AEABI),y)
@@ -58,7 +58,7 @@ index 08a9ef5..d32551a 100644
  else
  CFLAGS_ABI	:=$(call cc-option,-mapcs-32,-mabi=apcs-gnu) $(call cc-option,-mno-thumb-interwork,)
  endif
-@@ -120,7 +126,7 @@ AFLAGS_ISA	:=$(CFLAGS_ISA)
+@@ -120,7 +128,7 @@ AFLAGS_ISA	:=$(CFLAGS_ISA)
  endif
  
  # Need -Uarm for gcc < 3.x
