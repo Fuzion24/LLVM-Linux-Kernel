@@ -1,4 +1,4 @@
-From 0b4e3cfc7d4c0a77364eb367f9940644f134a7bd Mon Sep 17 00:00:00 2001
+From 22c82af2c64e02bb10bde3be46de34706487772c Mon Sep 17 00:00:00 2001
 From: Mark Charlebois <charlebm@gmail.com>
 Date: Tue, 11 Mar 2014 10:43:45 -0700
 Subject: [PATCH] percpu
@@ -24,12 +24,12 @@ until it can be verified that it is in fact an issue for clang.
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 ---
- arch/arm/include/asm/compiler.h | 30 ++++++++++++++++++++++++++++++
+ arch/arm/include/asm/compiler.h | 32 ++++++++++++++++++++++++++++++++
  arch/arm/include/asm/percpu.h   | 15 ++-------------
- 2 files changed, 32 insertions(+), 13 deletions(-)
+ 2 files changed, 34 insertions(+), 13 deletions(-)
 
 diff --git a/arch/arm/include/asm/compiler.h b/arch/arm/include/asm/compiler.h
-index 8155db2..04a3a93 100644
+index 8155db2..009eafa 100644
 --- a/arch/arm/include/asm/compiler.h
 +++ b/arch/arm/include/asm/compiler.h
 @@ -11,5 +11,37 @@
