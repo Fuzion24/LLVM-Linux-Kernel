@@ -1,4 +1,4 @@
-From cac3a7cad63ec9b1100ef0c798e78caa0c83bdd7 Mon Sep 17 00:00:00 2001
+From e2b5138a27d2f3a5285d682c578a14c4ccd42cc6 Mon Sep 17 00:00:00 2001
 From: Mark Charlebois <charlebm@gmail.com>
 Date: Tue, 11 Feb 2014 19:26:05 -0800
 Subject: [PATCH] net: netfilter: LLVMLinux: vlais-netfilter
@@ -26,12 +26,14 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Signed-off-by: Vinícius Tinti <viniciustinti@gmail.com>
 ---
+ net/netfilter/xt_repldata.h | 27 ++++++++++++++++++++++-----
+ 1 file changed, 22 insertions(+), 5 deletions(-)
 
 diff --git a/net/netfilter/xt_repldata.h b/net/netfilter/xt_repldata.h
-index 6efe4e5..c0f63c9 100644
+index 6efe4e5..343599e 100644
 --- a/net/netfilter/xt_repldata.h
 +++ b/net/netfilter/xt_repldata.h
-@@ -5,23 +5,37 @@
+@@ -5,23 +5,40 @@
   * they serve as the hanging-off data accessed through repl.data[].
   */
  
@@ -55,10 +57,13 @@ index 6efe4e5..c0f63c9 100644
 +		struct type##_standard entries[]; \
 +	} *tbl; \
 +	struct type##_error *term; \
-+	size_t entries_end = offsetof(typeof(*tbl), entries[nhooks-1]) + sizeof(tbl->entries[0]); \
-+	size_t term_offset = (entries_end + __alignof__(*term) - 1) & ~(__alignof__(*term) - 1); \
++	size_t entries_end = offsetof(typeof(*tbl), \
++		entries[nhooks-1]) + sizeof(tbl->entries[0]); \
++	size_t term_offset = (entries_end + __alignof__(*term) - 1) \
++		& ~(__alignof__(*term) - 1); \
 +	size_t term_end = term_offset + sizeof(*term); \
-+	size_t tbl_sz = (term_end + __alignof__(tbl->repl) - 1) & ~(__alignof__(tbl->repl) - 1); \
++	size_t tbl_sz = (term_end + __alignof__(tbl->repl) - 1) \
++		& ~(__alignof__(tbl->repl) - 1); \
 +	tbl = kzalloc(tbl_sz, GFP_KERNEL); \
  	if (tbl == NULL) \
  		return NULL; \
