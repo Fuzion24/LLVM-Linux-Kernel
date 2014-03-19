@@ -53,15 +53,15 @@ struct foo_error {
 	} *tbl2; \
 	struct type##_error *term; \
 	size_t entries_end = offsetof(typeof(*tbl2), entries[nhooks-1])+sizeof(tbl2->entries[0]); \
-	size_t term_offset = (entries_end + __alignof__(*term) - 1) & ~(__alignof__(*term) - 1); \
-	size_t term_end = term_offset + sizeof(*term); \
-	size_t tbl_sz = (term_end + __alignof__(tbl2->repl) - 1) & ~(__alignof__(tbl2->repl) - 1); \
-	tbl2 = malloc(tbl_sz); \
+	size_t term_offset = (offsetof(typeof(*tbl2), entries[nhooks-1]) \
+		+ sizeof(tbl2->entries[0]) + __alignof__(*term) - 1) \
+		& ~(__alignof__(*term) - 1); \
+	tbl2 = malloc(term_offset + sizeof(*term)); \
 	term = (struct type##_error *)&(((char *)tbl2)[term_offset]); \
-	printf("tbl2 size %lu\n", tbl_sz); \
+	printf("tbl2 size %lu\n", term_offset + sizeof(*term)); \
 	printf("offset of entries %lu\n", (void *)&tbl2->entries[0]-(void *)tbl2); \
 	printf("offset of term %lu\n", (void *)term-(void *)tbl2); \
-	printf("p2 %lu p3 %lu\n", term_offset-entries_end, tbl_sz-term_end); \
+	printf("p2 %lu\n", term_offset-entries_end); \
 	printf("repl size %lu\n", sizeof(tbl2->repl)); \
 	printf("entry size %lu\n", sizeof(tbl2->entries[0])); \
 	printf("term size %lu\n", sizeof(*term)); \

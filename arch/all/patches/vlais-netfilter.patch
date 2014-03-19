@@ -1,4 +1,4 @@
-From e2b5138a27d2f3a5285d682c578a14c4ccd42cc6 Mon Sep 17 00:00:00 2001
+From 72a08029299bc290abb79c3df6c6a08d46da6cd3 Mon Sep 17 00:00:00 2001
 From: Mark Charlebois <charlebm@gmail.com>
 Date: Tue, 11 Feb 2014 19:26:05 -0800
 Subject: [PATCH] net: netfilter: LLVMLinux: vlais-netfilter
@@ -21,19 +21,22 @@ This patch makes no attempt to change the existing behavior, merely the way in
 which the current layout is accomplished using standard C99 constructs. As such
 the code can now be compiled with either gcc or clang.
 
+This version of the patch removes the trailing alignment that the VLAIS 
+structure would allocate in order to simplify the patch.
+
 Author: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Signed-off-by: Vinícius Tinti <viniciustinti@gmail.com>
 ---
- net/netfilter/xt_repldata.h | 27 ++++++++++++++++++++++-----
- 1 file changed, 22 insertions(+), 5 deletions(-)
+ net/netfilter/xt_repldata.h | 23 ++++++++++++++++++-----
+ 1 file changed, 18 insertions(+), 5 deletions(-)
 
 diff --git a/net/netfilter/xt_repldata.h b/net/netfilter/xt_repldata.h
-index 6efe4e5..343599e 100644
+index 6efe4e5..551c641 100644
 --- a/net/netfilter/xt_repldata.h
 +++ b/net/netfilter/xt_repldata.h
-@@ -5,23 +5,40 @@
+@@ -5,23 +5,36 @@
   * they serve as the hanging-off data accessed through repl.data[].
   */
  
@@ -57,14 +60,10 @@ index 6efe4e5..343599e 100644
 +		struct type##_standard entries[]; \
 +	} *tbl; \
 +	struct type##_error *term; \
-+	size_t entries_end = offsetof(typeof(*tbl), \
-+		entries[nhooks-1]) + sizeof(tbl->entries[0]); \
-+	size_t term_offset = (entries_end + __alignof__(*term) - 1) \
++	size_t term_offset = (offsetof(typeof(*tbl), entries[nhooks-1]) \
++		+ sizeof(tbl->entries[0]) + __alignof__(*term) - 1) \
 +		& ~(__alignof__(*term) - 1); \
-+	size_t term_end = term_offset + sizeof(*term); \
-+	size_t tbl_sz = (term_end + __alignof__(tbl->repl) - 1) \
-+		& ~(__alignof__(tbl->repl) - 1); \
-+	tbl = kzalloc(tbl_sz, GFP_KERNEL); \
++	tbl = kzalloc(term_offset + sizeof(*term), GFP_KERNEL); \
  	if (tbl == NULL) \
  		return NULL; \
 +	term = (struct type##_error *)&(((char *)tbl)[term_offset]); \
