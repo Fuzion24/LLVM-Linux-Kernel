@@ -27,11 +27,9 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
  net/mac80211/aes_ccm.c | 40 ++++++++++++++++++++++------------------
  1 file changed, 22 insertions(+), 18 deletions(-)
 
-diff --git a/net/mac80211/aes_ccm.c b/net/mac80211/aes_ccm.c
-index 7c7df47..dc8b4e8 100644
---- a/net/mac80211/aes_ccm.c
-+++ b/net/mac80211/aes_ccm.c
-@@ -23,12 +23,14 @@ void ieee80211_aes_ccm_encrypt(struct crypto_aead *tfm, u8 *b_0, u8 *aad,
+--- linux.orig/net/mac80211/aes_ccm.c
++++ linux/net/mac80211/aes_ccm.c
+@@ -23,12 +23,12 @@
  			       u8 *data, size_t data_len, u8 *mic)
  {
  	struct scatterlist assoc, pt, ct[2];
@@ -44,14 +42,12 @@ index 7c7df47..dc8b4e8 100644
 +	char aead_req_data[sizeof(struct aead_request) +
 +				crypto_aead_reqsize(tfm)]
 +				__aligned(__alignof__(struct aead_request));
-+
 +	struct aead_request *aead_req = (void *) aead_req_data;
-+
 +	memset(aead_req, 0, sizeof(aead_req_data));
  
  	sg_init_one(&pt, data, data_len);
  	sg_init_one(&assoc, &aad[2], be16_to_cpup((__be16 *)aad));
-@@ -36,23 +38,25 @@ void ieee80211_aes_ccm_encrypt(struct crypto_aead *tfm, u8 *b_0, u8 *aad,
+@@ -36,23 +36,22 @@
  	sg_set_buf(&ct[0], data, data_len);
  	sg_set_buf(&ct[1], mic, IEEE80211_CCMP_MIC_LEN);
  
@@ -74,19 +70,17 @@ index 7c7df47..dc8b4e8 100644
 -		struct aead_request	req;
 -		u8			priv[crypto_aead_reqsize(tfm)];
 -	} aead_req;
- 
+-
 -	memset(&aead_req, 0, sizeof(aead_req));
 +	char aead_req_data[sizeof(struct aead_request) +
 +				crypto_aead_reqsize(tfm)]
 +				__aligned(__alignof__(struct aead_request));
-+
 +	struct aead_request *aead_req = (void *) aead_req_data;
-+
 +	memset(aead_req, 0, sizeof(aead_req_data));
  
  	sg_init_one(&pt, data, data_len);
  	sg_init_one(&assoc, &aad[2], be16_to_cpup((__be16 *)aad));
-@@ -60,12 +64,12 @@ int ieee80211_aes_ccm_decrypt(struct crypto_aead *tfm, u8 *b_0, u8 *aad,
+@@ -60,12 +59,12 @@
  	sg_set_buf(&ct[0], data, data_len);
  	sg_set_buf(&ct[1], mic, IEEE80211_CCMP_MIC_LEN);
  
@@ -103,6 +97,3 @@ index 7c7df47..dc8b4e8 100644
  }
  
  struct crypto_aead *ieee80211_aes_key_setup_encrypt(const u8 key[])
--- 
-1.8.3.2
-
