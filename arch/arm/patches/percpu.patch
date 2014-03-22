@@ -1,15 +1,13 @@
 From 22c82af2c64e02bb10bde3be46de34706487772c Mon Sep 17 00:00:00 2001
 From: Mark Charlebois <charlebm@gmail.com>
 Date: Tue, 11 Mar 2014 10:43:45 -0700
-Subject: [PATCH] percpu
+Subject: [PATCH] LLVMLinux: Remove use of named register for ARM percpu
 
-See http://kernel.opensuse.org/cgit/kernel/commit/?id=509eb76ebf97
-
-The use of sp as a register variable is not supported in clang and
+The use of sp as a named register variable is not supported in clang and
 the behavior they are working around in GCC may not even be present
 in clang.
 
-From the link above:
+See commit 509eb76ebf97
 
 Unfortunately, GCC doesn't treat a "memory" clobber on a non-volatile
 asm block as a side-effect, and will happily re-order it before other
