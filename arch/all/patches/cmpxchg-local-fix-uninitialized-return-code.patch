@@ -24,7 +24,7 @@ index d8d4c89..4c41bb8 100644
  		break;
  	default:
  		wrong_size_cmpxchg(ptr);
-+		prev = 0;
++		__builtin_unreachable();
  	}
  	raw_local_irq_restore(flags);
  	return prev;
