@@ -27,7 +27,7 @@ index 929058a..8fbb4c8 100644
  						   unsigned long mask)
  {
 -	return len + (mask & ~(__alignof__(u8 __attribute__ ((aligned))) - 1));
-+	typedef __attribute__ ((aligned)) u8 u8_aligned;
++	typedef u8 __attribute__ ((aligned)) u8_aligned;
 +	return len + (mask & ~(__alignof__(u8_aligned) - 1));
  }
  
