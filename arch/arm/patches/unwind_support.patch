@@ -13,8 +13,8 @@ This version of GCC gets flagged as buggy, but it isn't actually an
 issue with clang so the patch will do what it did before unless clang
 is defined and then it will not report the GCC version as an issue.
 
-Author: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+Signed-off-by: Behan Webster <behanw@converseincode.com>
 ---
  arch/arm/kernel/unwind.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
