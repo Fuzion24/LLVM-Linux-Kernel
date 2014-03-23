@@ -32,11 +32,9 @@ Signed-off-by: Vinícius Tinti <viniciustinti@gmail.com>
  net/netfilter/xt_repldata.h | 23 ++++++++++++++++++-----
  1 file changed, 18 insertions(+), 5 deletions(-)
 
-diff --git a/net/netfilter/xt_repldata.h b/net/netfilter/xt_repldata.h
-index 6efe4e5..551c641 100644
---- a/net/netfilter/xt_repldata.h
-+++ b/net/netfilter/xt_repldata.h
-@@ -5,23 +5,36 @@
+--- linux.orig/net/netfilter/xt_repldata.h
++++ linux/net/netfilter/xt_repldata.h
+@@ -5,23 +5,35 @@
   * they serve as the hanging-off data accessed through repl.data[].
   */
  
@@ -60,9 +58,8 @@ index 6efe4e5..551c641 100644
 +		struct type##_standard entries[]; \
 +	} *tbl; \
 +	struct type##_error *term; \
-+	size_t term_offset = (offsetof(typeof(*tbl), entries[nhooks-1]) \
-+		+ sizeof(tbl->entries[0]) + __alignof__(*term) - 1) \
-+		& ~(__alignof__(*term) - 1); \
++	size_t term_offset = (offsetof(typeof(*tbl), entries[nhooks]) + \
++		__alignof__(*term) - 1) & ~(__alignof__(*term) - 1); \
 +	tbl = kzalloc(term_offset + sizeof(*term), GFP_KERNEL); \
  	if (tbl == NULL) \
  		return NULL; \
@@ -78,6 +75,3 @@ index 6efe4e5..551c641 100644
  	for (; hook_mask != 0; hook_mask >>= 1, ++hooknum) { \
  		if (!(hook_mask & 1)) \
  			continue; \
--- 
-1.8.3.2
-
