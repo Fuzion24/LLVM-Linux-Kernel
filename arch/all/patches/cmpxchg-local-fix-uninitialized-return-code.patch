@@ -16,18 +16,18 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
  include/asm-generic/cmpxchg-local.h | 1 +
  1 file changed, 1 insertion(+)
 
+---
 diff --git a/include/asm-generic/cmpxchg-local.h b/include/asm-generic/cmpxchg-local.h
-index d8d4c89..4c41bb8 100644
+index d8d4c89..70bef78 100644
 --- a/include/asm-generic/cmpxchg-local.h
 +++ b/include/asm-generic/cmpxchg-local.h
-@@ -41,6 +41,7 @@ static inline unsigned long __cmpxchg_local_generic(volatile void *ptr,
- 		break;
- 	default:
- 		wrong_size_cmpxchg(ptr);
-+		__builtin_unreachable();
- 	}
- 	raw_local_irq_restore(flags);
- 	return prev;
--- 
-1.8.3.2
-
+@@ -4,7 +4,8 @@
+ #include <linux/types.h>
+ #include <linux/irqflags.h>
+ 
+-extern unsigned long wrong_size_cmpxchg(volatile void *ptr);
++extern unsigned long wrong_size_cmpxchg(volatile void *ptr)
++	__noreturn;
+ 
+ /*
+  * Generic version of __cmpxchg_local (disables interrupts). Takes an unsigned
