@@ -152,7 +152,7 @@ clean:
 distclean: clean
 	rm -f *.asm *.dat *.log
 
-
+netfilter: netfilter_clang netfilter_gcc
 netfilter_clang: netfilter.c
 	${CLANG} $< -o $@
 

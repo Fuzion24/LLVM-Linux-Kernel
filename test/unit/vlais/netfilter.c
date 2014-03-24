@@ -53,9 +53,8 @@ struct foo_error {
 	} *tbl2; \
 	struct type##_error *term; \
 	size_t entries_end = offsetof(typeof(*tbl2), entries[nhooks-1])+sizeof(tbl2->entries[0]); \
-	size_t term_offset = (offsetof(typeof(*tbl2), entries[nhooks-1]) \
-		+ sizeof(tbl2->entries[0]) + __alignof__(*term) - 1) \
-		& ~(__alignof__(*term) - 1); \
+	size_t term_offset = (offsetof(typeof(*tbl2), entries[nhooks]) + \
+		__alignof__(*term) - 1) & ~(__alignof__(*term) - 1); \
 	tbl2 = malloc(term_offset + sizeof(*term)); \
 	term = (struct type##_error *)&(((char *)tbl2)[term_offset]); \
 	printf("tbl2 size %lu\n", term_offset + sizeof(*term)); \
