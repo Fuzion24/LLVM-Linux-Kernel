@@ -1,4 +1,4 @@
-From 43b26933fab8570d5f228c4feb24c4385e6b025d Mon Sep 17 00:00:00 2001
+From 3a30e83170a51adc07e62d1c7e6a621b5dc50339 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 20 Nov 2012 21:19:50 +0100
 Subject: [PATCH] LLVMLinux: Remove warning about returning an uninitialized
@@ -13,10 +13,9 @@ Linux kernel with clang.
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 ---
- include/asm-generic/cmpxchg-local.h | 1 +
- 1 file changed, 1 insertion(+)
+ include/asm-generic/cmpxchg-local.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
----
 diff --git a/include/asm-generic/cmpxchg-local.h b/include/asm-generic/cmpxchg-local.h
 index d8d4c89..70bef78 100644
 --- a/include/asm-generic/cmpxchg-local.h
@@ -31,3 +30,6 @@ index d8d4c89..70bef78 100644
  
  /*
   * Generic version of __cmpxchg_local (disables interrupts). Takes an unsigned
+-- 
+1.8.3.2
+

@@ -1,4 +1,4 @@
-From 72a08029299bc290abb79c3df6c6a08d46da6cd3 Mon Sep 17 00:00:00 2001
+From e9351eee3fc23ddfc1e3d1bb92845052481c6317 Mon Sep 17 00:00:00 2001
 From: Mark Charlebois <charlebm@gmail.com>
 Date: Tue, 11 Feb 2014 19:26:05 -0800
 Subject: [PATCH] net: netfilter: LLVMLinux: vlais-netfilter
@@ -21,7 +21,7 @@ This patch makes no attempt to change the existing behavior, merely the way in
 which the current layout is accomplished using standard C99 constructs. As such
 the code can now be compiled with either gcc or clang.
 
-This version of the patch removes the trailing alignment that the VLAIS 
+This version of the patch removes the trailing alignment that the VLAIS
 structure would allocate in order to simplify the patch.
 
 Author: Mark Charlebois <charlebm@gmail.com>
@@ -29,11 +29,13 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Signed-off-by: Vinícius Tinti <viniciustinti@gmail.com>
 ---
- net/netfilter/xt_repldata.h | 23 ++++++++++++++++++-----
- 1 file changed, 18 insertions(+), 5 deletions(-)
+ net/netfilter/xt_repldata.h | 22 +++++++++++++++++-----
+ 1 file changed, 17 insertions(+), 5 deletions(-)
 
---- linux.orig/net/netfilter/xt_repldata.h
-+++ linux/net/netfilter/xt_repldata.h
+diff --git a/net/netfilter/xt_repldata.h b/net/netfilter/xt_repldata.h
+index 6efe4e5..8fd3241 100644
+--- a/net/netfilter/xt_repldata.h
++++ b/net/netfilter/xt_repldata.h
 @@ -5,23 +5,35 @@
   * they serve as the hanging-off data accessed through repl.data[].
   */
@@ -75,3 +77,6 @@ Signed-off-by: Vinícius Tinti <viniciustinti@gmail.com>
  	for (; hook_mask != 0; hook_mask >>= 1, ++hooknum) { \
  		if (!(hook_mask & 1)) \
  			continue; \
+-- 
+1.8.3.2
+
