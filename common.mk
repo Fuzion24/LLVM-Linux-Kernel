@@ -218,6 +218,7 @@ list-settings settings list-config config:
 list-versions:
 	@cmake --version
 	@gcc --version | head -1
+	@$(CC) --version | head -1
 	@git --version
 	@make --version | head -1
 	@echo "quilt version `quilt --version`"
