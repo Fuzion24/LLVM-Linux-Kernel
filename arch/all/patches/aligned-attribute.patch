@@ -1,25 +1,25 @@
-From 4193e0ab0d1dd778db2446e7caa3651b6fefea67 Mon Sep 17 00:00:00 2001
+From 4ca45c0db0945a04c8292273b0ccd42a4932de95 Mon Sep 17 00:00:00 2001
 From: Mark Charlebois <charlebm@gmail.com>
 Date: Tue, 20 Nov 2012 21:18:16 +0100
 Subject: [PATCH] crypto: LLVMLinux: aligned-attribute.patch
 
-__attribute((aligned)) can only be used in type definitions, but
-gcc allows it to be applied to a defined type.
+__attribute__((aligned)) applies the default alignment for the largest scalar
+type for the target ABI. gcc allows it to be applied inline to a defined type.
+Clang only allows it to be applied to a type definition (PR11071).
 
-This patch fixes errors when compiling the Linux kernel with Clang.
-Breaking this code into 2 lines also makes it more understandable.
-
-This is also reported as LLVM PR11071
+Making it into 2 lines makes it more readable and works with both compilers.
 
 Author: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Jonathan Corbet <corbet@lwn.net>
 ---
  crypto/shash.c | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/crypto/shash.c b/crypto/shash.c
-index 929058a..8fbb4c8 100644
+index 929058a..47c7139 100644
 --- a/crypto/shash.c
 +++ b/crypto/shash.c
 @@ -67,7 +67,8 @@ EXPORT_SYMBOL_GPL(crypto_shash_setkey);
