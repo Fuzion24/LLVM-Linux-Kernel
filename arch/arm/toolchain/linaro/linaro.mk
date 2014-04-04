@@ -25,11 +25,10 @@
 
 TARGETS		+= linaro-gcc
 
-LINARO_VER_MONTH	?= 2012.10
-LINARO_VERSION		?= ${LINARO_VER_MONTH}-20121022
-#https://launchpad.net/linaro-toolchain-binaries/trunk/2012.10/+download/gcc-linaro-arm-linux-gnueabihf-4.7-2012.10-20121022_linux.tar.bz2
-LINARO_CC_NAME		?= gcc-linaro-arm-linux-gnueabihf-4.7-${LINARO_VERSION}_linux
-LINARO_CC_URL		?= https://launchpad.net/linaro-toolchain-binaries/trunk/${LINARO_VER_MONTH}/+download/${LINARO_CC_NAME}.tar.bz2
+LINARO_VERSION		?= 13.12
+LINARO_GCC_VERSION	?= 4.8
+LINARO_CC_NAME		?= gcc-linaro-arm-linux-gnueabihf
+LINARO_CC_URL		?= http://releases.linaro.org/${LINARO_VERSION}/components/toolchain/binaries/${LINARO_CC_NAME}-${LINARO_GCC_VERSION}-20${LINARO_VERSION}_linux.tar.bz2
 LINARO_DIR		?= ${ARCH_ARM_TOOLCHAIN}/linaro
 LINARO_TMPDIR		= ${LINARO_DIR}/tmp
 TMPDIRS			+= ${LINARO_TMPDIR}
