@@ -15,6 +15,7 @@ vlais-mac80211.patch
 vlais-netfilter.patch
 vlais-testmgr.patch
 vlais-apparmor.patch
+vlais-btrfs.patch
 disable-clang-integrated-as.patch
 dwarf2.patch
 unused-func.patch
