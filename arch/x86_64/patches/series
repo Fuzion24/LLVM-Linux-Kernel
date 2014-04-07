@@ -8,3 +8,4 @@ no-ia-code16.patch
 kbuild-clang-x86.patch
 support-older-versions-of-clang.patch
 incomplete_type_for_struct_x86cpu_device_id.patch
+WORKAROUND-NON-UPSTREAM-Temporarily-disable-M16_CFLA.patch
