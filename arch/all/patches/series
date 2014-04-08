@@ -7,7 +7,7 @@ cc-version.patch
 aligned-attribute.patch
 cmpxchg-local-fix-uninitialized-return-code.patch
 compiler-clang.patch
-cifs.patch
+#cifs.patch
 vlais-dm-crypt.patch
 vlais-hmac.patch
 vlais-libcrc32c.patch
@@ -16,4 +16,3 @@ vlais-netfilter.patch
 vlais-testmgr.patch
 disable-clang-integrated-as.patch
 dwarf2.patch
-unused-func.patch
