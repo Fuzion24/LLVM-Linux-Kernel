@@ -15,11 +15,9 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
  arch/arm64/mm/mmu.c                 |  2 +-
  5 files changed, 29 insertions(+), 29 deletions(-)
 
-diff --git a/arch/arm64/include/asm/arch_timer.h b/arch/arm64/include/asm/arch_timer.h
-index 9400596..bcd992e 100644
---- a/arch/arm64/include/asm/arch_timer.h
-+++ b/arch/arm64/include/asm/arch_timer.h
-@@ -37,19 +37,19 @@ void arch_timer_reg_write_cp15(int access, enum arch_timer_reg reg, u32 val)
+--- linux.orig/arch/arm64/include/asm/arch_timer.h
++++ linux/arch/arm64/include/asm/arch_timer.h
+@@ -37,19 +37,19 @@
  	if (access == ARCH_TIMER_PHYS_ACCESS) {
  		switch (reg) {
  		case ARCH_TIMER_REG_CTRL:
@@ -43,7 +41,7 @@ index 9400596..bcd992e 100644
  			break;
  		}
  	}
-@@ -60,7 +60,7 @@ void arch_timer_reg_write_cp15(int access, enum arch_timer_reg reg, u32 val)
+@@ -60,7 +60,7 @@
  static __always_inline
  u32 arch_timer_reg_read_cp15(int access, enum arch_timer_reg reg)
  {
@@ -52,7 +50,7 @@ index 9400596..bcd992e 100644
  
  	if (access == ARCH_TIMER_PHYS_ACCESS) {
  		switch (reg) {
-@@ -82,7 +82,7 @@ u32 arch_timer_reg_read_cp15(int access, enum arch_timer_reg reg)
+@@ -82,7 +82,7 @@
  		}
  	}
  
@@ -61,24 +59,20 @@ index 9400596..bcd992e 100644
  }
  
  static inline u32 arch_timer_get_cntfrq(void)
-diff --git a/arch/arm64/include/asm/uaccess.h b/arch/arm64/include/asm/uaccess.h
-index 6c0f684..2d31fa4 100644
---- a/arch/arm64/include/asm/uaccess.h
-+++ b/arch/arm64/include/asm/uaccess.h
-@@ -93,7 +93,7 @@ static inline void set_fs(mm_segment_t fs)
+--- linux.orig/arch/arm64/include/asm/uaccess.h
++++ linux/arch/arm64/include/asm/uaccess.h
+@@ -93,7 +93,7 @@
  	__chk_user_ptr(addr);						\
- 	asm("adds %1, %1, %3; ccmp %1, %4, #2, cc; cset %0, cc"		\
+ 	asm("adds %1, %1, %3; ccmp %1, %4, #2, cc; cset %0, ls"		\
  		: "=&r" (flag), "=&r" (roksum)				\
 -		: "1" (addr), "Ir" (size),				\
 +		: "1" (addr), "r" ((u64)size),				\
  		  "r" (current_thread_info()->addr_limit)		\
  		: "cc");						\
  	flag;								\
-diff --git a/arch/arm64/kernel/debug-monitors.c b/arch/arm64/kernel/debug-monitors.c
-index 636ba8b..dc88a27 100644
---- a/arch/arm64/kernel/debug-monitors.c
-+++ b/arch/arm64/kernel/debug-monitors.c
-@@ -52,15 +52,15 @@ static void mdscr_write(u32 mdscr)
+--- linux.orig/arch/arm64/kernel/debug-monitors.c
++++ linux/arch/arm64/kernel/debug-monitors.c
+@@ -52,15 +52,15 @@
  {
  	unsigned long flags;
  	local_dbg_save(flags);
@@ -97,20 +91,18 @@ index 636ba8b..dc88a27 100644
  }
  
  /*
-@@ -136,7 +136,7 @@ void disable_debug_monitors(enum debug_el el)
+@@ -136,7 +136,7 @@
   */
  static void clear_os_lock(void *unused)
  {
 -	asm volatile("msr oslar_el1, %0" : : "r" (0));
 +	asm volatile("msr oslar_el1, %0" : : "r" ((u64)0));
- 	isb();
  }
  
-diff --git a/arch/arm64/kernel/perf_event.c b/arch/arm64/kernel/perf_event.c
-index 5b1cd79..8037057 100644
---- a/arch/arm64/kernel/perf_event.c
-+++ b/arch/arm64/kernel/perf_event.c
-@@ -844,16 +844,16 @@ static const unsigned armv8_pmuv3_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
+ static int os_lock_notify(struct notifier_block *self,
+--- linux.orig/arch/arm64/kernel/perf_event.c
++++ linux/arch/arm64/kernel/perf_event.c
+@@ -844,16 +844,16 @@
  
  static inline u32 armv8pmu_pmcr_read(void)
  {
@@ -130,7 +122,7 @@ index 5b1cd79..8037057 100644
  }
  
  static inline int armv8pmu_has_overflowed(u32 pmovsr)
-@@ -893,7 +893,7 @@ static inline int armv8pmu_select_counter(int idx)
+@@ -893,7 +893,7 @@
  	}
  
  	counter = ARMV8_IDX_TO_COUNTER(idx);
@@ -139,7 +131,7 @@ index 5b1cd79..8037057 100644
  	isb();
  
  	return idx;
-@@ -901,7 +901,7 @@ static inline int armv8pmu_select_counter(int idx)
+@@ -901,7 +901,7 @@
  
  static inline u32 armv8pmu_read_counter(int idx)
  {
@@ -148,7 +140,7 @@ index 5b1cd79..8037057 100644
  
  	if (!armv8pmu_counter_valid(idx))
  		pr_err("CPU%u reading wrong counter %d\n",
-@@ -911,7 +911,7 @@ static inline u32 armv8pmu_read_counter(int idx)
+@@ -911,7 +911,7 @@
  	else if (armv8pmu_select_counter(idx) == idx)
  		asm volatile("mrs %0, pmxevcntr_el0" : "=r" (value));
  
@@ -157,7 +149,7 @@ index 5b1cd79..8037057 100644
  }
  
  static inline void armv8pmu_write_counter(int idx, u32 value)
-@@ -920,16 +920,16 @@ static inline void armv8pmu_write_counter(int idx, u32 value)
+@@ -920,16 +920,16 @@
  		pr_err("CPU%u writing wrong counter %d\n",
  			smp_processor_id(), idx);
  	else if (idx == ARMV8_IDX_CYCLE_COUNTER)
@@ -177,7 +169,7 @@ index 5b1cd79..8037057 100644
  	}
  }
  
-@@ -944,7 +944,7 @@ static inline int armv8pmu_enable_counter(int idx)
+@@ -944,7 +944,7 @@
  	}
  
  	counter = ARMV8_IDX_TO_COUNTER(idx);
@@ -186,7 +178,7 @@ index 5b1cd79..8037057 100644
  	return idx;
  }
  
-@@ -959,7 +959,7 @@ static inline int armv8pmu_disable_counter(int idx)
+@@ -959,7 +959,7 @@
  	}
  
  	counter = ARMV8_IDX_TO_COUNTER(idx);
@@ -195,7 +187,7 @@ index 5b1cd79..8037057 100644
  	return idx;
  }
  
-@@ -974,7 +974,7 @@ static inline int armv8pmu_enable_intens(int idx)
+@@ -974,7 +974,7 @@
  	}
  
  	counter = ARMV8_IDX_TO_COUNTER(idx);
@@ -204,7 +196,7 @@ index 5b1cd79..8037057 100644
  	return idx;
  }
  
-@@ -989,17 +989,17 @@ static inline int armv8pmu_disable_intens(int idx)
+@@ -989,17 +989,17 @@
  	}
  
  	counter = ARMV8_IDX_TO_COUNTER(idx);
@@ -225,7 +217,7 @@ index 5b1cd79..8037057 100644
  
  	/* Read */
  	asm volatile("mrs %0, pmovsclr_el0" : "=r" (value));
-@@ -1008,7 +1008,7 @@ static inline u32 armv8pmu_getreset_flags(void)
+@@ -1008,7 +1008,7 @@
  	value &= ARMV8_OVSR_MASK;
  	asm volatile("msr pmovsclr_el0, %0" :: "r" (value));
  
@@ -234,7 +226,7 @@ index 5b1cd79..8037057 100644
  }
  
  static void armv8pmu_enable_event(struct hw_perf_event *hwc, int idx)
-@@ -1217,7 +1217,7 @@ static void armv8pmu_reset(void *info)
+@@ -1217,7 +1217,7 @@
  	armv8pmu_pmcr_write(ARMV8_PMCR_P | ARMV8_PMCR_C);
  
  	/* Disable access from userspace. */
@@ -243,11 +235,9 @@ index 5b1cd79..8037057 100644
  }
  
  static int armv8_pmuv3_map_event(struct perf_event *event)
-diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
-index f8dc7e8..6cb136c 100644
---- a/arch/arm64/mm/mmu.c
-+++ b/arch/arm64/mm/mmu.c
-@@ -98,7 +98,7 @@ static int __init early_cachepolicy(char *p)
+--- linux.orig/arch/arm64/mm/mmu.c
++++ linux/arch/arm64/mm/mmu.c
+@@ -98,7 +98,7 @@
  	 */
  	asm volatile(
  	"	mrs	%0, mair_el1\n"
@@ -256,6 +246,3 @@ index f8dc7e8..6cb136c 100644
  	"	msr	mair_el1, %0\n"
  	"	isb\n"
  	: "=&r" (tmp)
--- 
-1.8.3.2
-
