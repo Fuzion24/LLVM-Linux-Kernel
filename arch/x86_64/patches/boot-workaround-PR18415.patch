@@ -21,26 +21,22 @@ Not-signed-off-by: David Woodhouse <David.Woodhouse@intel.com>
  arch/x86/boot/memory.c | 7 ++++++-
  2 files changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/boot/boot.h b/arch/x86/boot/boot.h
-index 50f8c5e..756ddb1 100644
---- a/arch/x86/boot/boot.h
-+++ b/arch/x86/boot/boot.h
-@@ -231,8 +231,10 @@ void *copy_from_gs(void *dst, addr_t src, size_t len);
- void *memcpy(void *dst, void *src, size_t len);
- void *memset(void *dst, int c, size_t len);
- 
+--- linux.orig/arch/x86/boot/string.h
++++ linux/arch/x86/boot/string.h
+@@ -14,8 +14,10 @@
+  * Access builtin version by default. If one needs to use optimized version,
+  * do "undef memcpy" in .c file and link against right string.c
+  */
 +#ifndef __clang__ /* PR18415 */
  #define memcpy(d,s,l) __builtin_memcpy(d,s,l)
  #define memset(d,c,l) __builtin_memset(d,c,l)
+ #define memcmp	__builtin_memcmp
 +#endif
  
- /* a20.c */
- int enable_a20(void);
-diff --git a/arch/x86/boot/memory.c b/arch/x86/boot/memory.c
-index db75d07..7af6504 100644
---- a/arch/x86/boot/memory.c
-+++ b/arch/x86/boot/memory.c
-@@ -63,8 +63,13 @@ static int detect_memory_e820(void)
+ #endif /* BOOT_STRING_H */
+--- linux.orig/arch/x86/boot/memory.c
++++ linux/arch/x86/boot/memory.c
+@@ -63,8 +63,13 @@
  			count = 0;
  			break;
  		}
@@ -55,6 +51,3 @@ index db75d07..7af6504 100644
  		count++;
  	} while (ireg.ebx && count < ARRAY_SIZE(boot_params.e820_map));
  
--- 
-1.8.1.4
-
