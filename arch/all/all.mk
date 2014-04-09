@@ -342,7 +342,7 @@ kernel-patch-status-leftover:
 
 #############################################################################
 kernel-configure: state/kernel-configure
-state/kernel-configure: state/kernel-patch
+state/kernel-configure: state/kernel-patch ${KERNEL_CFG}
 	@make -s build-dep-check
 	@$(call banner,Configuring kernel...)
 	@mkdir -p ${KERNEL_BUILD}
