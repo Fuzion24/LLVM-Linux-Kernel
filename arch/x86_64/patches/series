@@ -1,7 +1,6 @@
-boot-workaround-PR18415.patch
+#boot-workaround-PR18415.patch
 hweight-x86.patch
 export-memcpy-clang-x86_64.patch
-thinkpad-nested-functions.patch
 no-ia-realmode.patch
 no-ia-code16.patch
 kbuild-clang-x86.patch
