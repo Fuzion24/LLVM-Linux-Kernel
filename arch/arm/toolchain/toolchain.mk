@@ -70,7 +70,7 @@ else
 endif
 
 ifneq ("${COMPILER_PATH}", "")
-CCOPTS	= -gcc-toolchain ${COMPILER_PATH}
+CCOPTS	= -gcc-toolchain ${COMPILER_PATH} -target ${HOST_TRIPLE}
 endif
 
 include ${ARCHDIR}/arm/toolchain/compiler-rt/compiler-rt.mk

@@ -11,3 +11,4 @@ named_register-thread_info.patch
 named_register-unwind.patch
 unwind_support.patch
 percpu.patch
+use_libgcc.patch
