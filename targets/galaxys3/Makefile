@@ -42,6 +42,9 @@ all: prep kernel-build
 include ${TOPDIR}/common.mk
 include ${ARCHDIR}/arm/arm.mk
 
+KERNEL_PATCH_DIR	+= ${TOPDIR}/arch/all/patches/v3.14
+KERNEL_PATCH_DIR	+= ${TOPDIR}/arch/all/patches/v3.4
+KERNEL_PATCH_DIR	+= ${TOPDIR}/arch/arm/patches/v3.4
 KERNEL_PATCH_DIR	+= ${TARGETDIR}/patches-overlay
 KERNEL_PATCH_DIR	+= ${TARGETDIR}/patches
 
