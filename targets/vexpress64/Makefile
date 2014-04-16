@@ -25,21 +25,21 @@
 TARGETDIR	= ${CURDIR}
 TOPDIR		= $(realpath ${TARGETDIR}/../..)
 
-#CLANG_TOOLCHAIN	= from-source
+CLANG_TOOLCHAIN	= from-source
 #CLANG_TOOLCHAIN	= prebuilt
 CROSS_AARCH64_TOOLCHAIN = linaro
 
 LLVM_BRANCH = master
 CLANG_BRANCH = master
 
-KERNEL_BRANCH	= linaro-aarch64
-KERNEL_GIT	= git://git.linaro.org/kernel/linaro-aarch64.git
-KERNELDIR	= ${SRCDIR}/linaro-aarch64
+#KERNEL_BRANCH	= linaro-aarch64
+#KERNEL_GIT	= git://git.linaro.org/kernel/linaro-aarch64.git
+#KERNELDIR	= ${SRCDIR}/linaro-aarch64
 
 KERNEL_REPO_PATCHES=${KERNEL_BRANCH}
 
 # Need to add EXT4 support to vexpress_defconfig
-KERNEL_CFG	= ${KERNELDIR}/arch/arm64/configs/vexpress_defconfig
+KERNEL_CFG	= ${KERNELDIR}/arch/arm64/configs/defconfig
 KERNEL_DTB	= arch/arm64/boot/dts/foundation-v8.dts
 ZIMAGE		= arch/arm64/boot/zImage
 
@@ -60,7 +60,6 @@ RAZE_TARGETS		+= aarch64-raze
 include ${TOPDIR}/common.mk
 include ${ARCHDIR}/aarch64/aarch64.mk
 
-KERNEL_PATCH_DIR	+= ${TARGETDIR}/patches-overlay
 KERNEL_PATCH_DIR	+= ${TARGETDIR}/patches
 
 include ${CONFIG}
