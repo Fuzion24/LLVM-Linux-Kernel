@@ -16,6 +16,9 @@ is converted to an unsigned int.
 
 Using ilog2 is much more appropriate and efficient.
 
+Another side effect of using __builtin_log2 is that is uses
+__aeabi_* functions for ARM that require linking with libgcc.a.
+
 
 Author: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
