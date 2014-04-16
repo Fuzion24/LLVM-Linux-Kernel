@@ -38,3 +38,4 @@ targets/*/tmp
 test/cross/bin
 tmp
 toolchain/libcxx
+toolchain/clang/arm/user-libs/
