@@ -1,0 +1,6 @@
+kbuild-clang.patch
+warnings-clang.patch
+dontdiff.patch
+cc-version.patch
+cmpxchg-local-fix-uninitialized-return-code.patch
+compiler-clang.patch
