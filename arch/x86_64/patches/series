@@ -3,8 +3,6 @@ hweight-x86.patch
 export-memcpy-clang-x86_64.patch
 no-ia-realmode.patch
 no-ia-code16.patch
-kbuild-clang-x86.patch
 support-older-versions-of-clang.patch
-incomplete_type_for_struct_x86cpu_device_id.patch
 no-387.patch
 WORKAROUND-NON-UPSTREAM-Temporarily-disable-M16_CFLA.patch
