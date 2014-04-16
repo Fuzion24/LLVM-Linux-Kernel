@@ -17,17 +17,16 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
 
 --- odroidxu.orig/arch/arm/Makefile
 +++ odroidxu/arch/arm/Makefile
-@@ -21,6 +21,15 @@
+@@ -21,6 +21,14 @@
  # Explicitly specifiy 32-bit ARM ISA since toolchain default can be -mthumb:
  KBUILD_CFLAGS	+=$(call cc-option,-marm,)
  
 +ifeq ($(COMPILER),clang)
 +# Clang options
-+KBUILD_CPPFLAGS	+= $(call cc-option,-target $(CROSS_COMPILE:-=),)
-+KBUILD_CFLAGS   += $(call cc-option,-fno-builtin,)
-+KBUILD_CFLAGS   += $(call cc-disable-warning,asm-operand-widths)
-+KBUILD_CFLAGS   += $(call cc-option,-Xassembler,)
-+KBUILD_CFLAGS   += $(call cc-option,-mno-warn-deprecated,)
++ifneq ($(CROSS_COMPILE),)
++KBUILD_CPPFLAGS	+= -target $(CROSS_COMPILE:-=)
++endif
++KBUILD_CFLAGS   += -fno-builtin -Wno-asm-operand-widths -Xassembler -mno-warn-deprecated
 +endif
 +
  # Never generate .eh_frame

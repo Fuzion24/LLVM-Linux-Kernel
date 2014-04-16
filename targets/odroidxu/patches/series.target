@@ -6,5 +6,4 @@ remove-unused-function-gpu-pvr-services4-srvkm-env-linux-mm.c
 remove-unknown-option-conserve-stack.patch
 fix-self-assignment-variable.patch
 remove-module-parameters-from-multiple-files-in-gpu.patch
-vlais-gadget.patch
 export-header.patch
