@@ -148,7 +148,7 @@ sizes-graph: sizes.dat
 sizes.svg: sizes.dat
 	@echo $(SIZESVG) $(SIZESPLOT) | gnuplot
 clean:
-	rm -f $(TARGET) *.o
+	rm -f $(TARGET) netfilter_clang netfilter_gcc *.o a.out
 distclean: clean
 	rm -f *.asm *.dat *.log
 
