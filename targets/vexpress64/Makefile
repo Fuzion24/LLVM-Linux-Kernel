@@ -85,3 +85,6 @@ clean: aarch64-clean
 
 mrproper: clean aarch64-mrproper tmp-mrproper
 	@$(call banner,Very Clean)
+
+testlibgcc:
+	echo $(shell $(CLANGCC) $(KBUILD_CFLAGS) -print-libgcc-file-name)
