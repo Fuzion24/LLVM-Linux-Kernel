@@ -9,13 +9,12 @@ diff --git a/arch/arm64/include/asm/arch_timer.h b/arch/arm64/include/asm/arch_t
 index 9400596..8240969 100644
 --- a/arch/arm64/include/asm/arch_timer.h
 +++ b/arch/arm64/include/asm/arch_timer.h
-@@ -80,6 +80,9 @@ u32 arch_timer_reg_read_cp15(int access, enum arch_timer_reg reg)
+@@ -80,6 +80,8 @@ u32 arch_timer_reg_read_cp15(int access, enum arch_timer_reg reg)
  			asm volatile("mrs %0, cntv_tval_el0" : "=r" ((u64)val));
  			break;
  		}
 +	} else {
 +		BUG();
-+		unreachable();
  	}
  
  	return (u32)val;
