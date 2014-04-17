@@ -25,6 +25,8 @@
 TARGETDIR	= ${CURDIR}
 TOPDIR		= $(realpath ${TARGETDIR}/../..)
 
+# pin to stable version
+CONFIG ?= checkpoints/v3.14/config.mk
 KERNEL_CFG	= ${TARGETDIR}/config_x86_64
 # override KERNEL_TAG to v3.3
 #KERNEL_TAG = v3.3
