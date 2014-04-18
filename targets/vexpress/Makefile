@@ -150,7 +150,7 @@ test-gcc-boot-poweroff: state/prep ${KERNELGCCDTB_IMG} ${QEMUSTATE}/qemu-build $
 # Create the generic initramfs, add in the kernel modules, then create the cpio
 test2: state/prep ${QEMUSTATE}/qemu-build ${KERNELDTB_IMG} initramfs-unpacked
 	@rm -rf ${INITBUILDFSDIR}/lib
-	(cd ${KERNELDIR} && make INSTALL_MOD_PATH=${INITBUILDFSDIR} ARCH=arm modules_install)
+	(cd ${KERNELDIR} && ${KERNEL_ENV} make INSTALL_MOD_PATH=${INITBUILDFSDIR} ARCH=arm modules_install)
 	mkdir -p ${INITBUILDFSDIR}/usr/lib
 	@rm -f ${INITRAMFS}
 	@make ${INITRAMFS}
