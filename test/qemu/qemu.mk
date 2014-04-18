@@ -54,8 +54,8 @@ VERSION_TARGETS		+= qemu-version
 ##############################################################################
 #QEMU_GIT	= "git://git.linaro.org/qemu/qemu-linaro.git"
 QEMU_GIT	= "git://git.qemu.org/qemu.git"
-QEMU_BRANCH	= "stable-1.6"
-#QEMU_BRANCH	= "master"
+#QEMU_BRANCH	= "stable-1.6"
+QEMU_BRANCH	= "master"
 #QEMU_COMMIT	= 6d6c9f59ca1b1a76ade7ad868bef191818f58819
 
 ##############################################################################
