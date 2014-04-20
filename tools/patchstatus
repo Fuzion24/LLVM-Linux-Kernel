@@ -164,13 +164,13 @@ if options.leftover:
 
 #-------------------------------------------------------------------------------
 # Build lists of table headers for later
-# ['arch', 'boots', 'conclusion', 'done', 'handledby', 'inout', 'patchinspection', 'patchname', 'remarks', 'category']
+# ['arch', 'boots', 'comments', 'done', 'handledby', 'inout', 'patchinspection', 'patchname', 'remarks', 'category']
 headers = sorted(rows[0].custom)
 headers.remove('patchname')
-fixedhdr = ('arch', 'required', 'upstream-able', 'for-next', 'for-linus', 'for-arm', 'for-aarch64', 'boots', 'category', 'handledby', 'submittedupstream', 'acceptedupstream')
-ignoredhdr = ('conclusion', 'inout', 'oldpatchname') + fixedhdr
+fixedhdr = ('arch', 'required', 'upstream-able', 'for-next', 'for-linus', 'for-arm', 'for-aarch64', 'boots', 'category', 'handledby', 'submittedupstream', 'ackedupstream', 'acceptedupstream')
+ignoredhdr = ('comments', 'inout', 'oldpatchname') + fixedhdr
 #fixednames = ('Arch', 'Req', 'Up', 'Linus', 'Next', 'Arm', 'A64', 'Boot', 'In?', 'Category', 'Handled by', 'Sent', 'Done')
-fixednames = ('Arch', 'Req', 'Up', 'Next', 'Linux', 'Arm', 'A64', 'Boot', 'Category', 'Handled by', 'Sent', 'Done')
+fixednames = ('Arch', 'Req', 'Up', 'Next', 'Linux', 'Arm', 'A64', 'Boot', 'Category', 'Handled by', 'Sent', 'Acked', 'Done')
 [headers.remove(x) for x in ignoredhdr]
 
 #-------------------------------------------------------------------------------
