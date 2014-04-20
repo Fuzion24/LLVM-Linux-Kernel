@@ -67,6 +67,8 @@ kernel-quilt-help:
 	@echo "			- Build kernel quilt series file"
 	@echo "                   - You can specify a list of patches with PATCH_LIST"
 	@echo "                   - or a patch regex with PATCH_FILTER_REGEX"
+	@echo "                   - or list a predefined patches/series.foo file to use with SERIES=foo"
+	@echo "                   - or use no patches by setting NO_PATCH=1"
 	@echo "* make kernel-quilt-update-series-dot-target"
 	@echo "			- Save updates from kernel quilt series file to series.target file"
 	@echo "* make kernel-quilt-link-patches"
@@ -147,6 +149,9 @@ ${TARGET_PATCH_SERIES}: ${ALL_PATCH_SERIES}
 	fi; \
 	if [ -n "${NO_PATCH}" ] ; then \
 		> $@; \
+	elif [ -n "${SERIES}" ] ; then \
+		[ -f "$@.${SERIES}" ] && (echo "Using $@.${SERIES}"; cp $@.${SERIES} $@) \
+			|| (echo "$@.${SERIES} not found"; false); \
 	elif [ -n "$$PATCH_LIST" ] ; then \
 		echo $$PATCH_LIST | sed -e 's/ /\n/g' > $@; \
 	else \
