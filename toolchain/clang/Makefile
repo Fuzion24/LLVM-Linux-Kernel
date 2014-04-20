@@ -31,6 +31,8 @@ all: warning clang-build
 
 clean: llvm-clean
 
+state/prep:
+
 warning:
 	@$(call banner,Convenience Makefile. Normally this is run from one of the target directories)
 
