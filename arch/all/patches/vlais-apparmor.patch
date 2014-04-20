@@ -1,7 +1,7 @@
-From f35db8a7d39a199d3d4a7f73807971b4c297da08 Mon Sep 17 00:00:00 2001
+From e01df4b41dea38657749918886104a9618209182 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Vin=C3=ADcius=20Tinti?= <viniciustinti@gmail.com>
 Date: Fri, 4 Apr 2014 18:18:00 -0300
-Subject: [PATCH 1/2] apparmor: LLVMLinux: Remove VLAIS
+Subject: [PATCH] apparmor: LLVMLinux: Remove VLAIS
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -29,7 +29,7 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
  1 file changed, 10 insertions(+), 10 deletions(-)
 
 diff --git a/security/apparmor/crypto.c b/security/apparmor/crypto.c
-index 532471d..ce613d8 100644
+index 532471d..7ab929f 100644
 --- a/security/apparmor/crypto.c
 +++ b/security/apparmor/crypto.c
 @@ -32,10 +32,10 @@ unsigned int aa_hash_size(void)
