@@ -1,6 +1,19 @@
---- linux.orig/arch/x86/Makefile
-+++ linux/arch/x86/Makefile
-@@ -84,7 +84,9 @@
+From 7fbe62b74eefcf6487324c9d3379819525382ae3 Mon Sep 17 00:00:00 2001
+From: Behan Webster <behanw@converseincode.com>
+Date: Sat, 19 Apr 2014 22:58:59 -0700
+Subject: [PATCH] no-387
+
+Wrap no-386 gcc options with cc-option so they don't break clang.
+
+---
+ arch/x86/Makefile | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/Makefile b/arch/x86/Makefile
+index b20ac32..6dc4b0e 100644
+--- a/arch/x86/Makefile
++++ b/arch/x86/Makefile
+@@ -84,7 +84,9 @@ else
          KBUILD_CFLAGS += -m64
  
          # Don't autogenerate traditional x87, MMX or SSE instructions
@@ -11,3 +24,6 @@
  
  	# Use -mpreferred-stack-boundary=3 if supported.
  	KBUILD_CFLAGS += $(call cc-option,-mpreferred-stack-boundary=3)
+-- 
+1.8.3.2
+
