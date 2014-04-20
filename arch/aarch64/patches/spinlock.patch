@@ -1,7 +1,14 @@
-I have no idea if this is correct. Clang would complain about the "I" 
+From cdb4aedd83034dd23bf6fd6baa97a7421f073626 Mon Sep 17 00:00:00 2001
+From: Mark Charlebois <charlebm@gmail.com>
+Date: Sat, 19 Apr 2014 23:00:03 -0700
+Subject: [PATCH] spinlock
+
+I have no idea if this is correct. Clang would complain about the "I"
 constraint being invalid and then crash. This workaround just lets me
 move on to fix the next bug for now.
 ---
+ arch/arm64/include/asm/spinlock.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/arch/arm64/include/asm/spinlock.h b/arch/arm64/include/asm/spinlock.h
 index c45b7b1..682508b 100644
@@ -25,3 +32,6 @@ index c45b7b1..682508b 100644
  	: "memory");
  
  	return !tmp;
+-- 
+1.8.3.2
+

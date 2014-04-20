@@ -1,38 +1,15 @@
-diff --git a/arch/arm64/include/asm/percpu.h b/arch/arm64/include/asm/percpu.h
-index 453a179..5d51078 100644
---- a/arch/arm64/include/asm/percpu.h
-+++ b/arch/arm64/include/asm/percpu.h
-@@ -18,25 +18,14 @@
- 
- #ifdef CONFIG_SMP
- 
-+#include "asm/compiler.h"
-+
- static inline void set_my_cpu_offset(unsigned long off)
- {
- 	asm volatile("msr tpidr_el1, %0" :: "r" (off) : "memory");
- }
- 
--static inline unsigned long __my_cpu_offset(void)
--{
--	unsigned long off;
--	register unsigned long *sp asm ("sp");
--
--	/*
--	 * We want to allow caching the value, so avoid using volatile and
--	 * instead use a fake stack read to hazard against barrier().
--	 */
--	asm("mrs %0, tpidr_el1" : "=r" (off) : "Q" (*sp));
--
--	return off;
--}
--#define __my_cpu_offset __my_cpu_offset()
-+#define __my_cpu_offset read_TPIDRPRW()
- 
- #else	/* !CONFIG_SMP */
- 
+From da8988187251e0695b4729150a9e1f40e7c147a5 Mon Sep 17 00:00:00 2001
+From: Mark Charlebois <charlebm@gmail.com>
+Date: Sat, 19 Apr 2014 22:59:24 -0700
+Subject: [PATCH] percpu
+
+---
+ arch/arm64/include/asm/compiler.h | 33 +++++++++++++++++++++++++++++++++
+ arch/arm64/include/asm/percpu.h   | 17 +++--------------
+ 2 files changed, 36 insertions(+), 14 deletions(-)
+
 diff --git a/arch/arm64/include/asm/compiler.h b/arch/arm64/include/asm/compiler.h
-index ee35fd0..760a455 100644
+index ee35fd0..d96919d 100644
 --- a/arch/arm64/include/asm/compiler.h
 +++ b/arch/arm64/include/asm/compiler.h
 @@ -27,4 +27,37 @@
@@ -73,3 +50,39 @@ index ee35fd0..760a455 100644
 +#endif
 +
  #endif	/* __ASM_COMPILER_H */
+diff --git a/arch/arm64/include/asm/percpu.h b/arch/arm64/include/asm/percpu.h
+index 453a179..5d51078 100644
+--- a/arch/arm64/include/asm/percpu.h
++++ b/arch/arm64/include/asm/percpu.h
+@@ -18,25 +18,14 @@
+ 
+ #ifdef CONFIG_SMP
+ 
++#include "asm/compiler.h"
++
+ static inline void set_my_cpu_offset(unsigned long off)
+ {
+ 	asm volatile("msr tpidr_el1, %0" :: "r" (off) : "memory");
+ }
+ 
+-static inline unsigned long __my_cpu_offset(void)
+-{
+-	unsigned long off;
+-	register unsigned long *sp asm ("sp");
+-
+-	/*
+-	 * We want to allow caching the value, so avoid using volatile and
+-	 * instead use a fake stack read to hazard against barrier().
+-	 */
+-	asm("mrs %0, tpidr_el1" : "=r" (off) : "Q" (*sp));
+-
+-	return off;
+-}
+-#define __my_cpu_offset __my_cpu_offset()
++#define __my_cpu_offset read_TPIDRPRW()
+ 
+ #else	/* !CONFIG_SMP */
+ 
+-- 
+1.8.3.2
+

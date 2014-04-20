@@ -1,16 +1,23 @@
+From 6c1c193299424023e9d6c748aba355dc6f19c93e Mon Sep 17 00:00:00 2001
+From: Mark Charlebois <charlebm@gmail.com>
+Date: Sat, 19 Apr 2014 22:59:49 -0700
+Subject: [PATCH] unhandled_else
+
 Clang complains about using val undefined which could happen if enum
 value was corrupted.
 
 Authored-by: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 ---
+ arch/arm64/include/asm/arch_timer.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/arch/arm64/include/asm/arch_timer.h b/arch/arm64/include/asm/arch_timer.h
-index 9400596..8240969 100644
+index d038116..622cbef 100644
 --- a/arch/arm64/include/asm/arch_timer.h
 +++ b/arch/arm64/include/asm/arch_timer.h
 @@ -80,6 +80,8 @@ u32 arch_timer_reg_read_cp15(int access, enum arch_timer_reg reg)
- 			asm volatile("mrs %0, cntv_tval_el0" : "=r" ((u64)val));
+ 			asm volatile("mrs %0, cntv_tval_el0" : "=r" (val));
  			break;
  		}
 +	} else {
@@ -18,3 +25,6 @@ index 9400596..8240969 100644
  	}
  
  	return (u32)val;
+-- 
+1.8.3.2
+

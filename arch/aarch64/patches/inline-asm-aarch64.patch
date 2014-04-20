@@ -1,4 +1,4 @@
-From 0f657048a51f8c79f4b0070ed8a07018c3263c69 Mon Sep 17 00:00:00 2001
+From b522b183d5714e0e6e7a8ad44b96618438096631 Mon Sep 17 00:00:00 2001
 From: Mark Charlebois <charlebm@gmail.com>
 Date: Wed, 12 Feb 2014 12:16:58 -0800
 Subject: [PATCH] arm64: LLVMLinux: Fix inline arm64 assembly for use with
@@ -8,16 +8,18 @@ Fix variable types for 64-bit inline assembly.
 
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 ---
- arch/arm64/include/asm/arch_timer.h | 12 ++++++------
+ arch/arm64/include/asm/arch_timer.h | 22 +++++++++++-----------
  arch/arm64/include/asm/uaccess.h    |  2 +-
  arch/arm64/kernel/debug-monitors.c  |  8 ++++----
  arch/arm64/kernel/perf_event.c      | 34 +++++++++++++++++-----------------
  arch/arm64/mm/mmu.c                 |  2 +-
- 5 files changed, 29 insertions(+), 29 deletions(-)
+ 5 files changed, 34 insertions(+), 34 deletions(-)
 
---- linux.orig/arch/arm64/include/asm/arch_timer.h
-+++ linux/arch/arm64/include/asm/arch_timer.h
-@@ -37,19 +37,19 @@
+diff --git a/arch/arm64/include/asm/arch_timer.h b/arch/arm64/include/asm/arch_timer.h
+index 9400596..d038116 100644
+--- a/arch/arm64/include/asm/arch_timer.h
++++ b/arch/arm64/include/asm/arch_timer.h
+@@ -37,19 +37,19 @@ void arch_timer_reg_write_cp15(int access, enum arch_timer_reg reg, u32 val)
  	if (access == ARCH_TIMER_PHYS_ACCESS) {
  		switch (reg) {
  		case ARCH_TIMER_REG_CTRL:
@@ -41,7 +43,7 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
  			break;
  		}
  	}
-@@ -60,7 +60,7 @@
+@@ -60,7 +60,7 @@ void arch_timer_reg_write_cp15(int access, enum arch_timer_reg reg, u32 val)
  static __always_inline
  u32 arch_timer_reg_read_cp15(int access, enum arch_timer_reg reg)
  {
@@ -50,7 +52,7 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
  
  	if (access == ARCH_TIMER_PHYS_ACCESS) {
  		switch (reg) {
-@@ -82,26 +82,26 @@
+@@ -82,26 +82,26 @@ u32 arch_timer_reg_read_cp15(int access, enum arch_timer_reg reg)
  		}
  	}
  
@@ -83,9 +85,11 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
  }
  
  static inline void arch_counter_set_user_access(void)
---- linux.orig/arch/arm64/include/asm/uaccess.h
-+++ linux/arch/arm64/include/asm/uaccess.h
-@@ -93,7 +93,7 @@
+diff --git a/arch/arm64/include/asm/uaccess.h b/arch/arm64/include/asm/uaccess.h
+index 3bf8f4e..104719b 100644
+--- a/arch/arm64/include/asm/uaccess.h
++++ b/arch/arm64/include/asm/uaccess.h
+@@ -93,7 +93,7 @@ static inline void set_fs(mm_segment_t fs)
  	__chk_user_ptr(addr);						\
  	asm("adds %1, %1, %3; ccmp %1, %4, #2, cc; cset %0, ls"		\
  		: "=&r" (flag), "=&r" (roksum)				\
@@ -94,9 +98,11 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
  		  "r" (current_thread_info()->addr_limit)		\
  		: "cc");						\
  	flag;								\
---- linux.orig/arch/arm64/kernel/debug-monitors.c
-+++ linux/arch/arm64/kernel/debug-monitors.c
-@@ -52,15 +52,15 @@
+diff --git a/arch/arm64/kernel/debug-monitors.c b/arch/arm64/kernel/debug-monitors.c
+index ed3955a..6ddbd36 100644
+--- a/arch/arm64/kernel/debug-monitors.c
++++ b/arch/arm64/kernel/debug-monitors.c
+@@ -52,15 +52,15 @@ static void mdscr_write(u32 mdscr)
  {
  	unsigned long flags;
  	local_dbg_save(flags);
@@ -115,7 +121,7 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
  }
  
  /*
-@@ -136,7 +136,7 @@
+@@ -136,7 +136,7 @@ void disable_debug_monitors(enum debug_el el)
   */
  static void clear_os_lock(void *unused)
  {
@@ -124,9 +130,11 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
  }
  
  static int os_lock_notify(struct notifier_block *self,
---- linux.orig/arch/arm64/kernel/perf_event.c
-+++ linux/arch/arm64/kernel/perf_event.c
-@@ -844,16 +844,16 @@
+diff --git a/arch/arm64/kernel/perf_event.c b/arch/arm64/kernel/perf_event.c
+index baf5afb..4139373 100644
+--- a/arch/arm64/kernel/perf_event.c
++++ b/arch/arm64/kernel/perf_event.c
+@@ -844,16 +844,16 @@ static const unsigned armv8_pmuv3_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
  
  static inline u32 armv8pmu_pmcr_read(void)
  {
@@ -146,7 +154,7 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
  }
  
  static inline int armv8pmu_has_overflowed(u32 pmovsr)
-@@ -893,7 +893,7 @@
+@@ -893,7 +893,7 @@ static inline int armv8pmu_select_counter(int idx)
  	}
  
  	counter = ARMV8_IDX_TO_COUNTER(idx);
@@ -155,7 +163,7 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
  	isb();
  
  	return idx;
-@@ -901,7 +901,7 @@
+@@ -901,7 +901,7 @@ static inline int armv8pmu_select_counter(int idx)
  
  static inline u32 armv8pmu_read_counter(int idx)
  {
@@ -164,7 +172,7 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
  
  	if (!armv8pmu_counter_valid(idx))
  		pr_err("CPU%u reading wrong counter %d\n",
-@@ -911,7 +911,7 @@
+@@ -911,7 +911,7 @@ static inline u32 armv8pmu_read_counter(int idx)
  	else if (armv8pmu_select_counter(idx) == idx)
  		asm volatile("mrs %0, pmxevcntr_el0" : "=r" (value));
  
@@ -173,7 +181,7 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
  }
  
  static inline void armv8pmu_write_counter(int idx, u32 value)
-@@ -920,16 +920,16 @@
+@@ -920,16 +920,16 @@ static inline void armv8pmu_write_counter(int idx, u32 value)
  		pr_err("CPU%u writing wrong counter %d\n",
  			smp_processor_id(), idx);
  	else if (idx == ARMV8_IDX_CYCLE_COUNTER)
@@ -193,7 +201,7 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
  	}
  }
  
-@@ -944,7 +944,7 @@
+@@ -944,7 +944,7 @@ static inline int armv8pmu_enable_counter(int idx)
  	}
  
  	counter = ARMV8_IDX_TO_COUNTER(idx);
@@ -202,7 +210,7 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
  	return idx;
  }
  
-@@ -959,7 +959,7 @@
+@@ -959,7 +959,7 @@ static inline int armv8pmu_disable_counter(int idx)
  	}
  
  	counter = ARMV8_IDX_TO_COUNTER(idx);
@@ -211,7 +219,7 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
  	return idx;
  }
  
-@@ -974,7 +974,7 @@
+@@ -974,7 +974,7 @@ static inline int armv8pmu_enable_intens(int idx)
  	}
  
  	counter = ARMV8_IDX_TO_COUNTER(idx);
@@ -220,7 +228,7 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
  	return idx;
  }
  
-@@ -989,17 +989,17 @@
+@@ -989,17 +989,17 @@ static inline int armv8pmu_disable_intens(int idx)
  	}
  
  	counter = ARMV8_IDX_TO_COUNTER(idx);
@@ -241,7 +249,7 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
  
  	/* Read */
  	asm volatile("mrs %0, pmovsclr_el0" : "=r" (value));
-@@ -1008,7 +1008,7 @@
+@@ -1008,7 +1008,7 @@ static inline u32 armv8pmu_getreset_flags(void)
  	value &= ARMV8_OVSR_MASK;
  	asm volatile("msr pmovsclr_el0, %0" :: "r" (value));
  
@@ -250,7 +258,7 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
  }
  
  static void armv8pmu_enable_event(struct hw_perf_event *hwc, int idx)
-@@ -1217,7 +1217,7 @@
+@@ -1217,7 +1217,7 @@ static void armv8pmu_reset(void *info)
  	armv8pmu_pmcr_write(ARMV8_PMCR_P | ARMV8_PMCR_C);
  
  	/* Disable access from userspace. */
@@ -259,9 +267,11 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
  }
  
  static int armv8_pmuv3_map_event(struct perf_event *event)
---- linux.orig/arch/arm64/mm/mmu.c
-+++ linux/arch/arm64/mm/mmu.c
-@@ -98,7 +98,7 @@
+diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+index 6b7e895..924864c 100644
+--- a/arch/arm64/mm/mmu.c
++++ b/arch/arm64/mm/mmu.c
+@@ -98,7 +98,7 @@ static int __init early_cachepolicy(char *p)
  	 */
  	asm volatile(
  	"	mrs	%0, mair_el1\n"
@@ -270,3 +280,6 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
  	"	msr	mair_el1, %0\n"
  	"	isb\n"
  	: "=&r" (tmp)
+-- 
+1.8.3.2
+
