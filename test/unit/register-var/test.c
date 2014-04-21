@@ -12,5 +12,7 @@ int main()
 
 	get_sp(sp2);
 	printf("sp = %lu\n", sp2);
+
+	return 0;
 }
 

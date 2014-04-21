@@ -15,7 +15,7 @@ test: test.c
 	${CLANGCC} -Wall --sysroot=${ARMGCCSYSROOT} $< -static -o $@
 
 test_gcc: test.c
-	arm-none-linux-gnueabi-gcc -Wall $< -static -o $@
+	${CROSS_COMPILE}gcc -Wall $< -static -o $@
 
 clean:
-	rm -f test
+	rm -f test test_gcc
