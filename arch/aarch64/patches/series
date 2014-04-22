@@ -1,9 +1,9 @@
 eabi-aarch64.patch
 kbuild-clang-aarch64.patch
 current_stack_pointer_aarch64.patch
-named_register-stacktrace-aarch64.patch
-named_register-thread_info-aarch64.patch
-named_register-traps-aarch64.patch
+#named_register-stacktrace-aarch64.patch
+#named_register-thread_info-aarch64.patch
+#named_register-traps-aarch64.patch
 inline-asm-aarch64.patch
 cmpxchg-warning-aarch64.patch
 futex-init-aarch64.patch
