@@ -1,7 +1,7 @@
-From 2a60bac1a0a19befc75ce9bb5680d780c454c4ee Mon Sep 17 00:00:00 2001
+From c644650078e2d0a25489cda9ec0c5b08aa2db230 Mon Sep 17 00:00:00 2001
 From: Mark Charlebois <charlebm@gmail.com>
 Date: Tue, 15 Apr 2014 17:36:37 +0100
-Subject: [PATCH] mbcache: LLVMLinux: mbcache.patch
+Subject: [PATCH] mbcache: LLVMLinux: Remove double calculation from mbcache
 
 The call to __builtin_log2 presumes there is a
 double log2(double x) function defined in the kernel.
@@ -20,9 +20,9 @@ Using ilog2 is much more appropriate and efficient.
 Another side effect of using __builtin_log2 is that is uses
 __aeabi_* functions for ARM that require linking with libgcc.a.
 
-
 Author: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+Signed-off-by: Behan Webster <behanw@converseincode.com>
 ---
  fs/mbcache.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
