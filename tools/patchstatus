@@ -181,6 +181,8 @@ table.align = "l"
 #-------------------------------------------------------------------------------
 # Print out the rows and build the pretty table
 numpatches = 0
+stats = {}
+stats['any'] = 0
 #nopatch = re.compile(r"\.patch$")
 for row in rows:
     patchname = row.custom['patchname'].text
@@ -188,6 +190,17 @@ for row in rows:
 	args.remove(patchname)
         if ignored(row):
             continue
+
+        #print row.custom['acceptedupstream'].text+" != 'Y'"
+        if row.custom['acceptedupstream'].text != 'Y':
+            stats['any'] += 1
+            key = row.custom['arch'].text
+            if key in stats:
+                #print "stats: inc "+patchname
+                stats[key] += 1
+            else:
+                #print "stats: new "+patchname
+                stats[key] = 1
 
         numpatches += 1
 	verbose(patchname,)
@@ -209,6 +222,10 @@ for row in rows:
 print
 print table.get_string(sortby='patchname')
 print "Number of patches: %d" % (numpatches)
+
+#-------------------------------------------------------------------------------
+for stat in stats:
+    print stat+": "+str(stats[stat])
 
 #-------------------------------------------------------------------------------
 if args:
