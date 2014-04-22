@@ -1,19 +1,20 @@
-From 7fbe62b74eefcf6487324c9d3379819525382ae3 Mon Sep 17 00:00:00 2001
+From 4e7a573c237188b4eb3de1af2cb5958d4180c4b9 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Sat, 19 Apr 2014 22:58:59 -0700
-Subject: [PATCH] no-387
+Subject: [PATCH] x86: LLVMLinux: Wrap -mno-80387 with cc-option
 
-Wrap no-386 gcc options with cc-option so they don't break clang.
+Wrap -mno-80387 gcc options with cc-option so they don't break clang.
 
+Signed-off-by: Behan Webster <behanw@converseincode.com>
 ---
  arch/x86/Makefile | 4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/arch/x86/Makefile b/arch/x86/Makefile
-index b20ac32..6dc4b0e 100644
+index d1b7c37..ce6ad7e 100644
 --- a/arch/x86/Makefile
 +++ b/arch/x86/Makefile
-@@ -84,7 +84,9 @@ else
+@@ -83,7 +83,9 @@ else
          KBUILD_CFLAGS += -m64
  
          # Don't autogenerate traditional x87, MMX or SSE instructions
