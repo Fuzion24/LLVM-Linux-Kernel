@@ -190,12 +190,13 @@ ${LLVMSTATE}/clang-unpatched-fetch: ${LLVMSTATE}/clang-fetch
 llvmsubpatchdir = $(filter-out master,$(if ${1},${1},${2}))
 llvmpatch = $(call banner,Patching ${1}...) ; \
 	$(call patches_dir,${2}/$(call llvmsubpatchdir,${3},${4}),${5}/patches) ; \
-	$(call patch,${3})
+	$(call patch,${5})
 
 ##############################################################################
 llvm-patch: ${LLVMSTATE}/llvm-patch
 ${LLVMSTATE}/llvm-patch: ${LLVMSTATE}/llvm-fetch
-	@$(call llvmpatch,LLVM,${LLVMPATCHES}/llvm,${LLVM_COMMIT},${LLVM_BRANCH},${LLVMDIR})
+	echo ${LLVMPATCHES}
+	$(call llvmpatch,LLVM,${LLVMPATCHES}/llvm,${LLVM_COMMIT},${LLVM_BRANCH},${LLVMDIR})
 	$(call state,$@,llvm-configure)
 
 ##############################################################################
