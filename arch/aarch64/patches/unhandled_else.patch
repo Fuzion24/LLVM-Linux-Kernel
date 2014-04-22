@@ -6,7 +6,7 @@ Subject: [PATCH] unhandled_else
 Clang complains about using val undefined which could happen if enum
 value was corrupted.
 
-Authored-by: Mark Charlebois <charlebm@gmail.com>
+Author: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 ---
  arch/arm64/include/asm/arch_timer.h | 2 ++
