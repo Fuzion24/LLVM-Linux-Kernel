@@ -6,3 +6,4 @@ no-ia-code16.patch
 support-older-versions-of-clang.patch
 no-387.patch
 WORKAROUND-NON-UPSTREAM-Temporarily-disable-M16_CFLA.patch
+boot-workaround-PR18415.patch
