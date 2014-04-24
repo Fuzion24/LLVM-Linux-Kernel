@@ -17,5 +17,9 @@ test: test.c
 test_gcc: test.c
 	${CROSS_COMPILE}gcc -Wall $< -static -o $@
 
+debug:
+	gdb -tui -x gdbcmds /local2/mnt/workspace/llvmlinux/toolchain/clang/install/bin/clang-3.5
+hexdump:
+	cat test.c | hexdump -v  -e '/1  "%_ad#  "' -e '/1 " _%_u\_\n"'
 clean:
 	rm -f test test_gcc
