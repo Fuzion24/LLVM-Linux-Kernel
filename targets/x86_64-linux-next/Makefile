@@ -68,7 +68,7 @@ mrproper: clean kernel-mrproper kernel-gcc-mrproper tmp-mrproper
 
 ${INITRAMFS}.clang: initramfs-unpacked
 	@rm -rf ${INITBUILDFSDIR}/lib/modules
-#	(cd ${KERNEL_BUILD} && make V=0 INSTALL_MOD_PATH=${INITBUILDFSDIR} modules_install 2>&1 > /dev/null)
+	(cd ${KERNEL_BUILD} && make V=0 INSTALL_MOD_PATH=${INITBUILDFSDIR} modules_install 2>&1 > /dev/null)
 	mkdir -p ${INITBUILDFSDIR}/usr/lib
 	@rm -f ${INITRAMFS}
 	@make ${INITRAMFS}
@@ -77,15 +77,31 @@ ${INITRAMFS}.clang: initramfs-unpacked
 # Create the generic initramfs, add in the kernel modules, then create the cpio
 test: state/prep ${QEMUSTATE}/qemu-build ${INITRAMFS}.clang
 	$(call qemu,${BOARD},${KERNEL_BUILD}/arch/x86/boot/bzImage,512,/dev/ram0,rw console=ttyS0 earlyprintk ,-initrd ${INITRAMFS}.clang -net none )
-#	$(call qemu,${BOARD},${KERNEL_BUILD}/arch/x86/boot/bzImage,2048,/dev/ram0,ramdisk_size=512000 rdinit=/init console=ttyS0 earlyprintk,-initrd ${INITRAMFS}.clang -curses)
 
 test-qemu: ${INITRAMFS}.clang ${QEMUSTATE}/qemu-build
 	$(call qemu,${BOARD},${KERNEL_BUILD}/arch/x86/boot/bzImage,512,/dev/ram0,rw console=ttyS0 earlyprintk ,-initrd ${INITRAMFS}.clang -net none )
-#	$(call qemu,${BOARD},${KERNEL_BUILD}/arch/x86/boot/bzImage,2048,/dev/ram0,ramdisk_size=512000 rdinit=/init console=ttyS0 earlyprintk,-M q35 -cpu SandyBridge -initrd ${INITRAMFS}.clang -curses)
 
 test-qemu-debug: ${INITRAMFS}.clang
 	$(call qemu,${BOARD},${KERNEL_BUILD}/arch/x86/boot/bzImage,512,/dev/ram0,rw console=ttyS0 earlyprintk ,-initrd ${INITRAMFS}.clang -net none -D qemulog.log -d in_asm,op,int,exec,cpu,cpu_reset,)
-#	$(call qemu,${BOARD},${KERNEL_BUILD}/arch/x86/boot/bzImage,2048,/dev/ram0,ramdisk_size=512000 rdinit=/init console=ttyS0 earlyprintk,-M q35 -cpu SandyBridge -initrd ${INITRAMFS}.clang -curses)
+
+test-qemu-debug-kill: ${INITRAMFS}.clang
+	@rm -rf ${INITBUILDFSDIR}/lib/modules
+	(cd ${KERNEL_BUILD} && make V=0 INSTALL_MOD_PATH=${INITBUILDFSDIR} modules_install 2>&1 > /dev/null)
+	mkdir -p ${INITBUILDFSDIR}/usr/lib
+	sed -i -e "s/### SUCCESS ### //g" ${INITBUILDFSDIR}/etc/init.d/rcS
+	echo 'echo "### SUCCESS ### "' >> ${INITBUILDFSDIR}/etc/init.d/rcS
+	@rm -f ${INITRAMFS}
+	@make ${INITRAMFS}
+	mv ${INITRAMFS} ${INITRAMFS}.clang
+	( $(call qemu,${BOARD},${KERNEL_BUILD}/arch/x86/boot/bzImage,512,/dev/ram0,rw console=ttyS0 earlyprintk init=/bin/busybox ,-initrd ${INITRAMFS}.clang -net none -D qemulog.log -d in_asm,op,int,exec,cpu,cpu_reset, ) \
+		| tee ${TMPDIR}/qemu_log ) &
+	( sleep 12 && killall -s 9 qemu-system-x86_64 ) || exit 0
+
+test-qemu-debug-parse: test-qemu-debug-kill
+	(rm a2llog ; for i in `cat qemulog.log | grep ^0x | tail -n 3000 | cut -d":" -f1 ` ; do addr2line -f -p -e ${KERNEL_BUILD}/vmlinux $$i >> a2llog ; done)
+	$$EDITOR a2llog 
+
+#addr2line -f -p -e ../../build/targets/x86_64/build/kernel-clang/vmlinux
 
 test-qemu-smp:
 	$(call qemu,${BOARD},${KERNEL_BUILD}/arch/x86/boot/bzImage,2048,/dev/ram0,ramdisk_size=512000 rdinit=/init console=ttyS0 earlyprintk,-M q35 -cpu SandyBridge -smp 4 -initrd ${INITRAMFS}.clang)
@@ -101,3 +117,18 @@ test-gcc:  state/prep ${QEMUSTATE}/qemu-build initramfs-unpacked
 
 test-gcc-qemu:
 	$(call qemu,${BOARD},${KERNEL_BUILD}/arch/x86/boot/bzImage,2048,/dev/ram0,ramdisk_size=512000 rdinit=/init console=ttyS0 earlyprintk,-initrd ${INITRAMFS}.gcc)
+
+test-kill: test-boot-poweroff
+test-boot-poweroff: state/prep ${QEMUSTATE}/qemu-build initramfs-unpacked
+	@rm -rf ${INITBUILDFSDIR}/lib/modules
+	(cd ${KERNEL_BUILD} && make V=0 INSTALL_MOD_PATH=${INITBUILDFSDIR} modules_install 2>&1 > /dev/null)
+	mkdir -p ${INITBUILDFSDIR}/usr/lib
+	sed -i -e "s/### SUCCESS ### //g" ${INITBUILDFSDIR}/etc/init.d/rcS
+	echo 'echo "### SUCCESS ### "' >> ${INITBUILDFSDIR}/etc/init.d/rcS
+	@rm -f ${INITRAMFS}
+	@make ${INITRAMFS}
+	mv ${INITRAMFS} ${INITRAMFS}.clang
+	( $(call qemu,${BOARD},${KERNEL_BUILD}/arch/x86/boot/bzImage,512,/dev/ram0,rw console=ttyS0 earlyprintk init=/bin/busybox ,-initrd ${INITRAMFS}.clang -net none ) \
+		| tee ${TMPDIR}/qemu_log ) &
+	( sleep 20 && killall -s 9 qemu-system-x86_64 ) || exit 0
+	@grep -a "SUCCESS" ${TMPDIR}/qemu_log
