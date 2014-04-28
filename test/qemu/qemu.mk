@@ -175,5 +175,5 @@ QEMUOPTS	= -nographic ${GDB_OPTS}
 ##############################################################################
 # The runqemu command is called from the the specific <arch>.mk file with the appropriate arch specific param
 # ${1}=qemu-system-<arch> ${2}=Machine_type ${3}=kernel ${4}=RAM ${5}=rootfs ${6}=Kernel_opts ${7}=QEMU_opts
-runqemu = ${DRYRUN} ${1} -M ${2} -kernel ${3} -m ${4} -append "mem=${4}M root=${5} ${6}" ${7} ${QEMUOPTS}
+runqemu = QEMU_AUDIO_DRV=none ${DRYRUN} ${1} -M ${2} -kernel ${3} -m ${4} -append "mem=${4}M root=${5} ${6}" ${7} ${QEMUOPTS}
 
