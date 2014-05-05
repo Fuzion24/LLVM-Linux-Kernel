@@ -269,7 +269,7 @@ index 154c1d7..938ef0a 100644
  
 +  unsigned getRegisterByName(const char* RegName) const;
 +
-   virtual SDValue PerformDAGCombine(SDNode *N, DAGCombinerInfo &DCI) const;
+   SDValue PerformDAGCombine(SDNode *N,DAGCombinerInfo &DCI) const override;
  
    /// isFMAFasterThanFMulAndFAdd - Return true if an FMA operation is faster
 diff --git a/lib/Target/ARM/ARMISelLowering.cpp b/lib/Target/ARM/ARMISelLowering.cpp
