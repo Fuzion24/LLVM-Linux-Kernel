@@ -57,8 +57,13 @@ TARGETS+= clean mrproper
 ifneq (${LINUS},)
 GIT_SEND_EMAIL_OPTS += -cc torvalds@linux-foundation.org
 endif
+ifneq (${HPA},)
+GIT_SEND_EMAIL_OPTS += -cc hpa@zytor.com
+endif
 GIT_SEND_EMAIL_OPTS += -cc dwmw2@infradead.org
+ifneq (${PIPACS},)
 GIT_SEND_EMAIL_OPTS += -cc pageexec@freemail.hu
+endif
 
 #############################################################################
 prep: state/prep
