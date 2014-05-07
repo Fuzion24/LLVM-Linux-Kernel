@@ -38,7 +38,7 @@ TARGET_PATCH_SERIES	= ${PATCHDIR}/series
 SERIES_DOT_TARGET	= ${TARGET_PATCH_SERIES}.target
 ALL_PATCH_SERIES	= ${GENERIC_PATCH_SERIES} ${SERIES_DOT_TARGET}
 PATCH_FILTER_REGEX	= .*
-KERNEL_LOG_CACHE	= ${KERNEL_BUILD}/git-log-cache.txt.gz
+KERNEL_LOG_CACHE	= $(dir ${KERNEL_BUILD})/git-log-cache.txt.gz
 
 #############################################################################
 checkfilefor	= grep -q ${2} ${1} || echo "${2}${3}" >> ${1}
@@ -127,7 +127,7 @@ ${SERIES_DOT_TARGET}:
 ##############################################################################
 # Save any new patches from the generated series file to the series.target file
 kernel-quilt-update-series-dot-target: ${SERIES_DOT_TARGET}
-	-@[ ! -d ${TARGET_PATCH_SERIES} ] \
+	-@[ ! -f ${TARGET_PATCH_SERIES} ] \
 		|| [ `stat -c %Z ${TARGET_PATCH_SERIES}` -le `stat -c %Z ${SERIES_DOT_TARGET}` ] \
 		|| ($(call echo,Saving quilt changes to series.target file for kernel...) ; \
 		diff ${TARGET_PATCH_SERIES} ${SERIES_DOT_TARGET} \
@@ -141,13 +141,22 @@ ignore_if_empty = perl -ne '{chomp; print "$$_\n" unless -z "${1}/$$_"}'
 ##############################################################################
 # Generate git log cache file
 ${KERNEL_LOG_CACHE}: state/kernel-fetch ${KERNELDIR}/.git
-	@$(call banner,Building commit log cache...)
 	@mkdir -p $(dir $@)
-	(cd ${KERNELDIR} && git log --pretty=oneline | gzip -9c > $@)
+	@cd ${KERNELDIR} ; \
+	ls -l $@; \
+	if [ -f $@ ] ; then \
+		TOPLOG=`git log --pretty=oneline -n1 HEAD`; \
+		zgrep -q "$$TOPLOG" $@ && FOUND=1; \
+	fi; \
+	if [ -z "$$FOUND" ] ; then \
+		$(call banner,Building commit log cache...); \
+		git log --pretty=oneline | gzip -9c > $@; \
+	fi
 
 ##############################################################################
 check_if_already_commited = cd ${PATCHDIR}; \
 	for P in ${1}; do \
+		echo "Considering $$P..." >&2; \
 		SUBJ=`grep '^Subject: ' $$P | sed -e 's/^.*] //'`; \
 		if [ -n "$$SUBJ" ] ; then \
 			zgrep -q "$$SUBJ" ${KERNEL_LOG_CACHE} || echo $$P; \
@@ -179,6 +188,7 @@ ${TARGET_PATCH_SERIES}: ${KERNEL_LOG_CACHE} ${ALL_PATCH_SERIES}
 		$(call check_if_already_commited,$$PATCH_LIST) > $@; \
 	fi
 series:
+	@$(call banner,Forcing quilt series file rebuild for kernel...)
 	@rm -f ${TARGET_PATCH_SERIES}
 	@$(MAKE) ${TARGET_PATCH_SERIES}
 
@@ -216,7 +226,6 @@ kernel-quilt-link-patches refresh: ${QUILT_GITIGNORE}
 				else \
 					$(call ln_if_new,$$DIR/$$PATCH,$$PATCHLINK) ; \
 				fi ; \
-				rm -f ${TARGET_PATCH_SERIES} ; \
 				break; \
 			fi ; \
 		done ; \
