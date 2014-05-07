@@ -89,6 +89,7 @@ ${QEMUSTATE}/qemu-fetch:
 	@mkdir -p ${QEMUSRCDIR}
 	$(call gitclone,${QEMU_GIT} -b ${QEMU_BRANCH},${QEMUSRCDIR})
 	@[ -z "${QEMU_COMMIT}" ] || $(call gitcheckout,${QEMUSRCDIR},${QEMU_BRANCH},${QEMU_COMMIT})
+	@(cd ${QEMUSRCDIR} && git submodule update --init dtc)
 	$(call state,$@,qemu-patch)
 
 ##############################################################################
