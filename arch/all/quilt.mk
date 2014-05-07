@@ -141,6 +141,7 @@ ignore_if_empty = perl -ne '{chomp; print "$$_\n" unless -z "${1}/$$_"}'
 ##############################################################################
 # Generate git log cache file
 ${KERNEL_LOG_CACHE}: state/kernel-fetch ${KERNELDIR}/.git
+	@$(call banner,Building commit log cache...)
 	@mkdir -p $(dir $@)
 	(cd ${KERNELDIR} && git log --pretty=oneline | gzip -9c > $@)
 
