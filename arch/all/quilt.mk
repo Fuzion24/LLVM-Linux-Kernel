@@ -148,7 +148,11 @@ ${KERNEL_LOG_CACHE}: state/kernel-fetch ${KERNELDIR}/.git
 check_if_already_commited = cd ${PATCHDIR}; \
 	for P in ${1}; do \
 		SUBJ=`grep '^Subject: ' $$P | sed -e 's/^.*] //'`; \
-		zgrep -q "$$SUBJ" ${KERNEL_LOG_CACHE} || echo $$P; \
+		if [ -n "$$SUBJ" ] ; then \
+			zgrep -q "$$SUBJ" ${KERNEL_LOG_CACHE} || echo $$P; \
+		else \
+			echo $$P; \
+		fi \
 	done
 
 ##############################################################################
