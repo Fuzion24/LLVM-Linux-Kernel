@@ -1,0 +1,13 @@
+--- linux.orig/drivers/clk/ti/divider.c
++++ linux/drivers/clk/ti/divider.c
+@@ -295,8 +295,8 @@
+ 	return clk;
+ }
+ 
+-static struct clk_div_table
+-__init *ti_clk_get_div_table(struct device_node *node)
++static struct clk_div_table *
++__init ti_clk_get_div_table(struct device_node *node)
+ {
+ 	struct clk_div_table *table;
+ 	const __be32 *divspec;

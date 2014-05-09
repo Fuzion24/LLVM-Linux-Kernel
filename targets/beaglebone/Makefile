@@ -22,10 +22,6 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
-# This is a template file with the kinds of settings and make targets filled in.
-# Those settings with defaults are commented out.
-# Delete make targets you don't need.
-
 TARGETDIR	= ${CURDIR}
 TOPDIR		= $(realpath ${TARGETDIR}/../..)
 
@@ -33,93 +29,36 @@ ARCH		= arm
 BOARD		= beaglebone
 
 # Kernel settings
-BBONE_GIT		= https://github.com/beagleboard/kernel.git
-BBONE_BRANCH		= 3.7
-BBONE_DIR		= ${TARGETDIR}/src/bbone
-#KERNEL_GIT		= git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-#KERNEL_BRANCH		= master
-#KERNEL_TAG		= 
-KERNELDIR		= ${BBONE_DIR}/kernel
-KERNELGCC		= ${BBONE_DIR}-gcc/kernel
-KERNEL_CFG		= ${BBONE_DIR}/configs/beaglebone
-#KERNEL_REPO_PATCHES	= master
-KERNEL_MAKE_TARGETS	= uImage dtbs
-#EXTRAFLAGS		=
+KERNEL_CFG		= ${KERNELDIR}/arch/arm/configs/multi_v7_defconfig
+KERNEL_UIMAGE		= arch/arm/boot/uImage
+KERNEL_DTBS		= arch/arm/boot/dts/am335x-bone*.dtb
+KERNEL_MAKE_TARGETS	= LOADADDR=0x80008000 uImage dtbs
 
-# Arm specific
-#MARCH			= armv7-a
-#MARCH			= armv6
-#MFLOAT			= -mfloat-abi=hard -mfpu=vfp
-# EXTRAFLAGS isn't used anymore
-EXTRAFLAGS		= -mcpu=cortex-a8
-
-BOARD_TARGETS		= beaglebone-clean beaglebone-help beaglebone-fetch \
-				beaglebone-mrproper beaglebone-raze beaglebone-settings \
-				beaglebone-sync clean mrproper
-TARGETS			+= ${BOARD_TARGETS}
-CLEAN_TARGETS		+= beaglebone-clean
-HELP_TARGETS		+= beaglebone-help
-FETCH_TARGETS		+= beaglebone-fetch
-MRPROPER_TARGETS	+= beaglebone-mrproper
-RAZE_TARGETS		+= beaglebone-raze
-SETTINGS_TARGETS	+= beaglebone-settings
-SYNC_TARGETS		+= beaglebone-sync
 .PHONY:			${BOARD_TARGETS} clean mrproper
 
-all: prep beaglebone-fetch kernel-build
+all all-clang: prep kernel-build
+	@ls -l ${KERNEL_BUILD}/${KERNEL_UIMAGE} $(wildcard ${KERNEL_BUILD}/${KERNEL_DTBS})
+
+all-gcc: prep kernel-gcc-build
+	@ls -l ${KERNELGCC_BUILD}/${KERNEL_UIMAGE} $(wildcard ${KERNELGCC_BUILD}/${KERNEL_DTBS})
 
 include ${TOPDIR}/common.mk
 include ${ARCHDIR}/${ARCH}/${ARCH}.mk
+
+KERNEL_PATCH_DIR	+= ${TARGETDIR}/patches
+KERNEL_PATCH_DIR	+= ${PATCHDIR} ${PATCHDIR}/${KERNEL_REPO_PATCHES}
+
 include ${CONFIG}
 
-export REFREPO
-REFREPO			= ${SHARED_KERNEL}
-
-KERNEL_PATCH_DIR	+= ${PATCHDIR} ${PATCHDIR}/${KERNEL_REPO_PATCHES}
 prep: state/prep
 state/prep:
 	$(MAKE) ${TMPDIR}
 	@mkdir -p ${LOGDIR}
 	$(call state,$@)
 
-beaglebone-help:
-	@echo "targets/${BOARD} has these options:"
-	@echo
-	@echo "* make <your make target here>	- Description"
-
-beaglebone-settings:
-	@$(call prsetting,FOO,${FOO})
-
-beaglebone-fetch: state/beaglebone-fetch
-state/beaglebone-fetch:
-	@$(call banner,Fetching beaglebone meta-repo)
-	@$(call gitclone,${BBONE_GIT},${BBONE_DIR})
-	@$(call banner,Checkout beaglebone ${BBONE_BRANCH})
-	@$(call gitcheckout,${BBONE_DIR},${BBONE_BRANCH})
-	@$(call banner,Patch beaglebone script)
-	@$(call apply_patch,${BBONE_DIR},${PATCHDIR}/bbone/local_shared_kernel.patch)
-	@$(call banner,Patch beaglebone kernel)
-	@(cd ${BBONE_DIR} && ./patch.sh)
-	@$(call state,$@)
-
-beaglebone-sync: state/beaglebone-fetch beaglebone-clean
-	@$(call banner,Syncing beaglebone...)
-	@$(call gitsync,${BBONE_DIR},${BBONE_COMMIT},${BBONE_BRANCH},${BBONE_TAG})
-
-beaglebone-build: beaglebone-fetch kernel-build
-
-beaglebone-clean:
-	@$(call banner,Cleaning foo)
-
-beaglebone-mrproper:
-	@$(call banner,Really cleaning foo)
-
-beaglebone-raze:
-	@$(call banner,Getting rid of all downloaded files for foo)
-
-clean: kernel-clean kernel-gcc-clean beaglebone-clean
+clean: kernel-clean kernel-gcc-clean
 	@$(call banner,Clean)
 
-mrproper: clean kernel-mrproper kernel-gcc-mrproper beaglebone-mrproper tmp-mrproper
+mrproper: clean kernel-mrproper kernel-gcc-mrproper tmp-mrproper
 	@rm -rf ${LOGDIR}/*
 	@$(call banner,Very Clean)

@@ -38,6 +38,7 @@ TARGET_PATCH_SERIES	= ${PATCHDIR}/series
 SERIES_DOT_TARGET	= ${TARGET_PATCH_SERIES}.target
 ALL_PATCH_SERIES	= ${GENERIC_PATCH_SERIES} ${SERIES_DOT_TARGET}
 PATCH_FILTER_REGEX	= .*
+KERNEL_LOG_CACHE	= $(dir ${KERNEL_BUILD})/git-log-cache.txt.gz
 
 #############################################################################
 checkfilefor	= grep -q ${2} ${1} || echo "${2}${3}" >> ${1}
@@ -126,7 +127,7 @@ ${SERIES_DOT_TARGET}:
 ##############################################################################
 # Save any new patches from the generated series file to the series.target file
 kernel-quilt-update-series-dot-target: ${SERIES_DOT_TARGET}
-	-@[ ! -d ${TARGET_PATCH_SERIES} ] \
+	-@[ ! -f ${TARGET_PATCH_SERIES} ] \
 		|| [ `stat -c %Z ${TARGET_PATCH_SERIES}` -le `stat -c %Z ${SERIES_DOT_TARGET}` ] \
 		|| ($(call echo,Saving quilt changes to series.target file for kernel...) ; \
 		diff ${TARGET_PATCH_SERIES} ${SERIES_DOT_TARGET} \
@@ -138,26 +139,56 @@ catuniq = grep --no-filename --invert-match '^\#' $(1) | perl -ne 'print unless 
 ignore_if_empty = perl -ne '{chomp; print "$$_\n" unless -z "${1}/$$_"}'
 
 ##############################################################################
+# Generate git log cache file
+${KERNEL_LOG_CACHE}: state/kernel-fetch ${KERNELDIR}/.git
+	@mkdir -p $(dir $@)
+	@cd ${KERNELDIR} ; \
+	ls -l $@; \
+	if [ -f $@ ] ; then \
+		TOPLOG=`git log --pretty=oneline -n1 HEAD`; \
+		zgrep -q "$$TOPLOG" $@ && FOUND=1; \
+	fi; \
+	if [ -z "$$FOUND" ] ; then \
+		$(call banner,Building commit log cache...); \
+		git log --pretty=oneline | gzip -9c > $@; \
+	fi
+
+##############################################################################
+check_if_already_commited = cd ${PATCHDIR}; \
+	for P in ${1}; do \
+		echo "Considering $$P..." >&2; \
+		SUBJ=`grep '^Subject: ' $$P | sed -e 's/^.*] //'`; \
+		if [ -n "$$SUBJ" ] ; then \
+			zgrep -q "$$SUBJ" ${KERNEL_LOG_CACHE} || echo $$P; \
+		else \
+			echo $$P; \
+		fi \
+	done
+
+##############################################################################
 # Generate target series file from relevant kernel quilt patch series files
 export NO_PATCH
 kernel-quilt-generate-series: ${TARGET_PATCH_SERIES}
-${TARGET_PATCH_SERIES}: ${ALL_PATCH_SERIES}
+${TARGET_PATCH_SERIES}: ${KERNEL_LOG_CACHE} ${ALL_PATCH_SERIES}
 	@$(MAKE) kernel-quilt-update-series-dot-target
 	@$(call banner,Building quilt series file for kernel...)
-	@if [ -n '${PATCH_FILTER_REGEX}' -a -z "$$PATCH_LIST" ] ; then \
-		PATCH_LIST=`$(call catuniq,${ALL_PATCH_SERIES}) | grep "${PATCH_FILTER_REGEX}"`; \
-	fi; \
-	if [ -n "${NO_PATCH}" ] ; then \
+	@if [ -n "${NO_PATCH}" ] ; then \
 		> $@; \
 	elif [ -n "${SERIES}" ] ; then \
 		[ -f "$@.${SERIES}" ] && (echo "Using $@.${SERIES}"; cp $@.${SERIES} $@) \
 			|| (echo "$@.${SERIES} not found"; false); \
-	elif [ -n "$$PATCH_LIST" ] ; then \
-		echo $$PATCH_LIST | sed -e 's/ /\n/g' > $@; \
 	else \
-		$(call catuniq,${ALL_PATCH_SERIES}) | $(call ignore_if_empty,$(dir $@)) > $@; \
+		if [ -z "$$PATCH_LIST" ] ; then \
+			if [ -n '${PATCH_FILTER_REGEX}' ] ; then \
+				PATCH_LIST=`$(call catuniq,${ALL_PATCH_SERIES}) | grep "${PATCH_FILTER_REGEX}"`; \
+			else \
+				PATCH_LIST=`$(call catuniq,${ALL_PATCH_SERIES}) | $(call ignore_if_empty,$(dir $@))`; \
+			fi ; \
+		fi ; \
+		$(call check_if_already_commited,$$PATCH_LIST) > $@; \
 	fi
 series:
+	@$(call banner,Forcing quilt series file rebuild for kernel...)
 	@rm -f ${TARGET_PATCH_SERIES}
 	@$(MAKE) ${TARGET_PATCH_SERIES}
 
@@ -195,7 +226,6 @@ kernel-quilt-link-patches refresh: ${QUILT_GITIGNORE}
 				else \
 					$(call ln_if_new,$$DIR/$$PATCH,$$PATCHLINK) ; \
 				fi ; \
-				rm -f ${TARGET_PATCH_SERIES} ; \
 				break; \
 			fi ; \
 		done ; \

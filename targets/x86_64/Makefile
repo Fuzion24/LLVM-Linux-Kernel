@@ -28,6 +28,7 @@ TOPDIR		= $(realpath ${TARGETDIR}/../..)
 # pin to stable version
 CONFIG ?= checkpoints/v3.14/config.mk
 KERNEL_CFG	= ${TARGETDIR}/config_x86_64
+KERNEL_BRANCH	= master
 # override KERNEL_TAG to v3.3
 #KERNEL_TAG = v3.3
 # around 3.10-rc7
@@ -42,6 +43,13 @@ all: prep kernel-build
 
 include ${TOPDIR}/common.mk
 include ${ARCHDIR}/x86_64/x86_64.mk
+
+# we overlay the patches with even newer versions of it 
+PATCHDIR = ${TARGETDIR}/patches
+BKERNEL_REPO_PATCHES = master
+KERNEL_PATCH_DIR += ${PATCHDIR}/${KERNEL_REPO_PATCHES}
+
+# no, use CONFIG !
 include ${CONFIG}
 
 TARGETS+= clean mrproper test test2
