@@ -38,7 +38,8 @@ TARGET_PATCH_SERIES	= ${PATCHDIR}/series
 SERIES_DOT_TARGET	= ${TARGET_PATCH_SERIES}.target
 ALL_PATCH_SERIES	= ${GENERIC_PATCH_SERIES} ${SERIES_DOT_TARGET}
 PATCH_FILTER_REGEX	= .*
-KERNEL_LOG_CACHE	= $(dir ${KERNEL_BUILD})/git-log-cache.txt.gz
+KERNEL_LOG_CACHE	= $(dir ${KERNEL_BUILD})git-log-cache.txt.gz
+KERNEL_LOG_DB		= ${KERNEL_LOG_CACHE:%.txt.gz=%.db}
 
 #############################################################################
 checkfilefor	= grep -q ${2} ${1} || echo "${2}${3}" >> ${1}
@@ -154,22 +155,27 @@ ${KERNEL_LOG_CACHE}: state/kernel-fetch ${KERNELDIR}/.git
 	fi
 
 ##############################################################################
-check_if_already_commited = cd ${PATCHDIR}; \
-	for P in ${1}; do \
-		echo "Considering $$P..." >&2; \
-		SUBJ=`grep '^Subject: ' $$P | sed -e 's/^.*] //'`; \
-		if [ -n "$$SUBJ" ] ; then \
-			zgrep -q "$$SUBJ" ${KERNEL_LOG_CACHE} || echo $$P; \
-		else \
-			echo $$P; \
-		fi \
-	done
+${KERNEL_LOG_DB}: ${KERNEL_LOG_CACHE}
+	@$(call banner,Building commit db cache...); \
+	zcat $< | perl -ne 'BEGIN{use DB_File; tie %d, "DB_File", "$@"} $$d{$$2}=$$1 if /(\S+)\s+(.*)$$/;'
+
+##############################################################################
+check_if_already_commited = perl -e 'use DB_File; tie %d, "DB_File", "${KERNEL_LOG_DB}"; \
+	chdir "${PATCHDIR}"; \
+	foreach $$p (@ARGV) { \
+		open(F, "$$p") || die "$$p: $$!"; \
+		undef $$/; $$f = <F>; \
+		close F; \
+		if( $$f =~ /Subject: (.*)\n/ ) { \
+			print "$$p\n" unless defined $$d{$$1}; \
+		} \
+	}' ${1}
 
 ##############################################################################
 # Generate target series file from relevant kernel quilt patch series files
 export NO_PATCH
 kernel-quilt-generate-series: ${TARGET_PATCH_SERIES}
-${TARGET_PATCH_SERIES}: ${KERNEL_LOG_CACHE} ${ALL_PATCH_SERIES}
+${TARGET_PATCH_SERIES}: ${KERNEL_LOG_DB} ${ALL_PATCH_SERIES}
 	@$(MAKE) kernel-quilt-update-series-dot-target
 	@$(call banner,Building quilt series file for kernel...)
 	@if [ -n "${NO_PATCH}" ] ; then \
