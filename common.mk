@@ -79,7 +79,7 @@ gitcommit = [ ! -d ${1}/.git ] || (cd ${1} && $(call prsetting,${2},`git rev-par
 gitconfig = $(call git,${TOPDIR},config --get ${1})
 gitmove = (cd ${1} && git branch --move ${2} $3 >/dev/null 2>&1)
 gitpull = (cd ${1} && git checkout ${2} && git pull origin ${2})
-gitreset = ([ -d ${1} ] && cd ${1} && $(call echo,Reseting git tree ${1}) && git reset --hard HEAD && git clean -d -f) || true
+gitreset = ([ -d ${1} ] && cd ${1} && $(call echo,Reseting git tree ${1}) && git remote update && git reset --hard origin/master && git clean -d -f) || true
 git = (cd ${1} && git ${2})
 ifneq "${GIT_HARD_RESET}" ""
 optional_gitreset = $(call gitreset,${1})

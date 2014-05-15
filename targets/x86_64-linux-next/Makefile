@@ -36,6 +36,9 @@ GDB_OPTS	=
 
 all: prep kernel-build
 
+# linux-next is rebased every day
+GIT_HARD_RESET	= 1
+
 include ${TOPDIR}/common.mk
 include ${ARCHDIR}/x86_64/x86_64.mk
 include ${CONFIG}
