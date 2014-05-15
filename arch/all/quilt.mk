@@ -160,30 +160,39 @@ ${KERNEL_LOG_DB}: ${KERNEL_LOG_CACHE}
 	zcat $< | perl -ne 'BEGIN{use DB_File; tie %d, "DB_File", "$@"} $$d{$$2}=$$1 if /(\S+)\s+(.*)$$/;'
 
 ##############################################################################
+# Check to see if Subject line of patches are found in the short git log already
 check_if_already_commited = perl -e 'use DB_File; tie %d, "DB_File", "${KERNEL_LOG_DB}"; \
-	chdir "${PATCHDIR}"; \
+	chdir "$(dir ${2})"; \
+	undef $$/; \
 	foreach $$p (@ARGV) { \
-		open(F, "$$p") || die "$$p: $$!"; \
-		undef $$/; $$f = <F>; \
+		print STDERR "I: Considering patch $$p\n"; \
+		open( F, "$$p" ) || die "$$p: $$!"; \
+		$$f = <F>; \
 		close F; \
 		if( $$f =~ /Subject: (.*)\n/ ) { \
-			print "$$p\n" unless defined $$d{$$1}; \
+			if( defined $$d{$$1} ) { \
+				print STDERR "W: Patch $$p is already applied\n"; \
+			} else { \
+				print "$$p\n"; \
+			} \
 		} \
-	}' ${1}
+	}' ${1} 2>&1 >${2}
 
 ##############################################################################
 # Generate target series file from relevant kernel quilt patch series files
 export NO_PATCH
 kernel-quilt-generate-series: ${TARGET_PATCH_SERIES}
-${TARGET_PATCH_SERIES}: ${KERNEL_LOG_DB} ${ALL_PATCH_SERIES}
-	@$(MAKE) kernel-quilt-update-series-dot-target
-	@$(call banner,Building quilt series file for kernel...)
-	@if [ -n "${NO_PATCH}" ] ; then \
+${TARGET_PATCH_SERIES}: ${ALL_PATCH_SERIES}
+	@if [ -n "${CHECKPOINT}" ] ; then \
+		$(call banner,You shouldn\'t be able to get here. $@ shouldn\'t be generated.); \
+	elif [ -n "${NO_PATCH}" ] ; then \
 		> $@; \
 	elif [ -n "${SERIES}" ] ; then \
 		[ -f "$@.${SERIES}" ] && (echo "Using $@.${SERIES}"; cp $@.${SERIES} $@) \
 			|| (echo "$@.${SERIES} not found"; false); \
 	else \
+		$(MAKE) kernel-quilt-update-series-dot-target; \
+		$(call banner,Building quilt series file for kernel...); \
 		if [ -z "$$PATCH_LIST" ] ; then \
 			if [ -n '${PATCH_FILTER_REGEX}' ] ; then \
 				PATCH_LIST=`$(call catuniq,${ALL_PATCH_SERIES}) | grep "${PATCH_FILTER_REGEX}"`; \
@@ -191,12 +200,15 @@ ${TARGET_PATCH_SERIES}: ${KERNEL_LOG_DB} ${ALL_PATCH_SERIES}
 				PATCH_LIST=`$(call catuniq,${ALL_PATCH_SERIES}) | $(call ignore_if_empty,$(dir $@))`; \
 			fi ; \
 		fi ; \
-		$(call check_if_already_commited,$$PATCH_LIST) > $@; \
+		$(MAKE) ${KERNEL_LOG_DB}; \
+		$(call check_if_already_commited,$$PATCH_LIST,$@); \
 	fi
 series:
-	@$(call banner,Forcing quilt series file rebuild for kernel...)
-	@rm -f ${TARGET_PATCH_SERIES}
-	@$(MAKE) ${TARGET_PATCH_SERIES}
+	@if [ -z "${CHECKPOINT}" ] ; then \
+		$(call banner,Forcing quilt series file rebuild for kernel...); \
+		rm -f ${TARGET_PATCH_SERIES}; \
+		$(MAKE) ${TARGET_PATCH_SERIES}; \
+	fi
 
 ##############################################################################
 # Have git ignore extra patch files
