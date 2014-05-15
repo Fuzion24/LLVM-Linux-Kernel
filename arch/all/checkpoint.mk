@@ -21,6 +21,8 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
+export CHECKPOINT
+
 # Need to set CHECKPOINT before invoking this target
 # CHECKPOINT		= some name
 CHECKPOINT_TOPDIR	= ${TARGETDIR}/checkpoints
