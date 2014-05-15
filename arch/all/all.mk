@@ -475,6 +475,7 @@ kernel-shared-sync:
 kernel-sync: state/kernel-fetch kernel-clean kernel-shared-sync
 	@$(call banner,Syncing kernel...)
 	@$(call check_llvmlinux_commit,${CONFIG})
+	@$(call optinal_gitreset,${KERNELDIR})
 	@$(call gitsync,${KERNELDIR},${KERNEL_COMMIT},${KERNEL_BRANCH},${KERNEL_TAG})
 
 #############################################################################
