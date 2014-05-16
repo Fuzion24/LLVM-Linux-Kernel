@@ -55,6 +55,11 @@ clang-version::
 	@[ ! -e ${CLANG} -o -n "${CLANGDIR}" ] || echo "`${CLANG} --version | grep version`"
 
 ##############################################################################
+list-toolchain::
+	@echo "CLANG_TOOLCHAIN=${CLANG_TOOLCHAIN}"
+	@which ${CLANG}
+
+##############################################################################
 ifeq (${CLANG_TOOLCHAIN},prebuilt)
   include ${LLVMTOP}/clang-prebuilt.mk
 else

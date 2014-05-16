@@ -35,6 +35,11 @@ arm-gcc-toolchain-help:
 	@echo "  CROSS_ARM_TOOLCHAIN=native             Use distro installed gcc cross-toolchain"
 	@echo "  CROSS_ARM_TOOLCHAIN=native-arm         Use distro installed native gcc on ARM HW"
 
+##############################################################################
+list-toolchain::
+	@echo "CROSS_ARM_TOOLCHAIN=${CROSS_ARM_TOOLCHAIN}"
+	@which ${CROSS_COMPILE}gcc
+
 # Configure the requested ARM cross compiler
 # Sets CROSS_GCC, PATH, HOST, HOST_TRIPLE
 # and state/arm-cc
