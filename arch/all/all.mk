@@ -396,7 +396,7 @@ state/kernel-build: ${STATE_CLANG_TOOLCHAIN} ${STATE_TOOLCHAIN} state/kernel-con
 	@[ -d ${KERNEL_BUILD} ] || ($(call leavestate,${STATEDIR},kernel-configure) && ${MAKE} kernel-configure)
 	@$(MAKE) kernel-quilt-link-patches
 	@$(call banner,Building kernel with clang...)
-	@mkdir -p ${CCACHE_DIR}
+	@[ -z "${CCACHE_DIR}" ] || mkdir -p ${CCACHE_DIR}
 	$(call make-kernel,${KERNELDIR},${KERNEL_ENV},${CHECKER},${CHECK_VARS} CC?="${CLANGCC}")
 	@$(call banner,Successfully Built kernel with clang!)
 	@$(call get-kernel-size,clang,${CLANG},${KERNEL_BUILD})
@@ -408,7 +408,7 @@ state/kernel-gcc-build: ${STATE_TOOLCHAIN} state/kernel-gcc-configure
 	@[ -d ${KERNELGCC_BUILD} ] || ($(call leavestate,${STATEDIR},kernel-gcc-configure) && ${MAKE} kernel-gcc-configure)
 	@$(MAKE) kernel-quilt-link-patches
 	@$(call banner,Building kernel with gcc...)
-	@mkdir -p ${CCACHE_DIR}
+	@[ -z "${CCACHE_DIR}" ] || mkdir -p ${CCACHE_DIR}
 	$(call make-kernel,${KERNELDIR},${KERNELGCC_ENV} ${SPARSE},,CC?="${CCACHE} ${CROSS_COMPILE}${GCC}")
 	@$(call get-kernel-size,gcc,${CROSS_GCC},${KERNELGCC_BUILD})
 	$(call state,$@,done)
