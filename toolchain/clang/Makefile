@@ -39,4 +39,6 @@ warning:
 include ${TOPDIR}/common.mk
 include ${TOPDIR}/arch/all/all.mk
 
+CLANG_TOOLCHAIN=from-known-good-source
+
 # clang.mk is included by toolchain.mk which is included by common.mk

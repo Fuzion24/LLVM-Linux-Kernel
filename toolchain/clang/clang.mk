@@ -40,6 +40,8 @@ clang-toolchain-help:
 	@echo "  CLANG_TOOLCHAIN=prebuilt     Download and use llvm.org clang"
 	@echo "  CLANG_TOOLCHAIN=native       Use distro installed clang"
 	@echo "  CLANG_TOOLCHAIN=from-source  Download and build from source (Default)"
+	@echo "  CLANG_TOOLCHAIN=from-known-good-source"
+	@echo "                               Download clang version info from buildbot"
 
 clang-toolchain-settings:
 	@$(call prsetting,CLANG_TOOLCHAIN,${CLANG_TOOLCHAIN})
@@ -48,11 +50,11 @@ CLANG_TOOLCHAIN ?= from-source
 
 ##############################################################################
 llvm-version::
-	@[ ! -e $(dir ${CLANG})llc -o -n "${LLVMDIR}" ] || echo `$(dir ${CLANG})llc --version | grep version`
+	@[ ! -e $(dir ${CLANG})llc -o -n "${LLVMDIR}" ] || echo "LLVM\t\t= `$(dir ${CLANG})llc --version | grep version`"
 
 ##############################################################################
 clang-version::
-	@[ ! -e ${CLANG} -o -n "${CLANGDIR}" ] || echo "`${CLANG} --version | grep version`"
+	@[ ! -e ${CLANG} -o -n "${CLANGDIR}" ] || echo "CLANG\t\t= `${CLANG} --version | grep version`"
 
 ##############################################################################
 list-toolchain::
@@ -66,7 +68,11 @@ else
   ifeq (${CLANG_TOOLCHAIN},native)
     include ${LLVMTOP}/clang-native.mk
   else
-    include ${LLVMTOP}/clang-from-source.mk
-    include ${LLVMTOP}/clang-arm-from-source.mk
+    ifeq (${CLANG_TOOLCHAIN},from-known-good-source)
+      include ${LLVMTOP}/clang-from-known-good-source.mk
+    else
+      include ${LLVMTOP}/clang-from-source.mk
+      include ${LLVMTOP}/clang-arm-from-source.mk
+    endif
   endif
 endif
