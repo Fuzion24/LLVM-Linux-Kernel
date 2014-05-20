@@ -28,6 +28,7 @@ CROSS_ARM_TOOLCHAIN = codesourcery
 LLVM_COMMIT	= master
 CLANG_COMMIT	= master
 #CLANG_TOOLCHAIN	= prebuilt
+#CLANG_TOOLCHAIN	= from-known-good-source
 
 # Need to add EXT4 support to vexpress_defconfig
 KERNEL_CFG	= ${TARGETDIR}/config_vexpress
@@ -46,7 +47,7 @@ GDB_OPTS=
 endif
 
 all: prep kernel-build test-boot-poweroff
-all-gcc: prep kernel-gcc-build test-boot-poweroff
+all-gcc: prep kernel-gcc-build test-gcc-boot-poweroff
 
 NAME	= vexpress
 BOARD	= ${NAME}-a9
@@ -133,14 +134,14 @@ parse-qemulog:
 	( cat a2llog | more )
 
 # state/fetch-initrd
-test-kill: test-boot-poweroff
+kernel-test test-kill:: test-boot-poweroff
 test-boot-poweroff: state/prep ${KERNELDTB_IMG} ${QEMUSTATE}/qemu-build ${INITRAMIMG}
 	( $(call qemu_arm,${BOARD},${KERNELDTB_IMG},256,/dev/ram0,rw,-initrd ${INITRAMIMG} -net none ) \
 		| tee ${TMPDIR}/qemu_log ) &
 	( sleep 10 && killall -s 9 qemu-system-arm ) || exit 0
 	@grep -a "SUCCESS" ${TMPDIR}/qemu_log
 
-test-gcc-kill: test-gcc-boot-poweroff
+kernel-gcc-test test-gcc-kill:: test-gcc-boot-poweroff
 test-gcc-boot-poweroff: state/prep ${KERNELGCCDTB_IMG} ${QEMUSTATE}/qemu-build ${INITRAMIMG}
 	( $(call qemu_arm,${BOARD},${KERNELGCCDTB_IMG},256,/dev/ram0,ramdisk_size=65536 rw POWEROFF,-initrd ${INITRAMIMG} -net none) \
 		| tee ${TMPDIR}/qemu_gcc_log ) &
