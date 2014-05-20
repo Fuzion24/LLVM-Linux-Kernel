@@ -21,7 +21,7 @@
 ##############################################################################
 
 #############################################################################
-export CCACHE_COMPRESS CCACHE_CPP2 CCACHE_DIR
+export USE_CCACHE CCACHE_COMPRESS CCACHE_CPP2 CCACHE_DIR
 
 ifneq "${USE_CCACHE}" ""
 CCACHE		= ccache
@@ -48,7 +48,7 @@ ccache-stats:
 	@[ -z "${USE_CCACHE}" ] || ccache --show-stats
 
 #############################################################################
-list-ccache-dir:
-	@[ -z "${USE_CCACHE}" ] || echo ${CCACHE_DIR}
-	@echo ${GCC}
+list-ccache-dir::
+	@[ -z "${USE_CCACHE}" ] || echo CCACHE_DIR=${CCACHE_DIR}
+	@which ${GCC}
 

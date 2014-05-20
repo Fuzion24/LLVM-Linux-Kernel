@@ -62,7 +62,7 @@ LLVM_TARGETS_APPLIED	= llvm-patch-applied clang-patch-applied
 LLVM_VERSION_TARGETS	= llvm-version clang-version
 #compilerrt-version
 
-LLVM_TARGETS_TO_BUILD	?= 'AArch64;ARM;X86'
+LLVM_TARGETS_TO_BUILD	?= 'ARM64;ARM;X86'
 
 TARGETS_TOOLCHAIN	+= ${LLVM_TARGETS} ${CLANG_TARGETS}
 #${COMPILERRT_TARGETS}
@@ -100,6 +100,8 @@ PATH		:= ${LLVMINSTALLDIR}/bin:${PATH}
 # Default bisect good date
 LLVM_CLANG_BISECT_START_DATE := 2012-11-01
 
+include ${LLVMTOP}/buildbot.mk
+
 ##############################################################################
 llvm-help:
 	@echo
@@ -129,6 +131,7 @@ llvm-settings:
 	$(call prsetting,LLVM_GIT,${LLVM_GIT}) ; \
 	$(call prsetting,LLVM_BRANCH,${LLVM_BRANCH}) ; \
 	$(call gitcommit,${LLVMDIR},LLVM_COMMIT) ; \
+	$(call prsetting,LLVM_REV,$(call gitsvnrev,${LLVMDIR})) ; \
 	$(call prsetting,LLVM_OPTIMIZED,${LLVM_OPTIMIZED}) ; \
 	[ -z "${CHECKPOINT}" ] || $(call prsetting,LLVMPATCHES,${CHECKPOINT_PATCHES}) ; \
 	$(call prsetting,LLVM_TARGETS_TO_BUILD,${LLVM_TARGETS_TO_BUILD}) ; \
@@ -136,6 +139,7 @@ llvm-settings:
 	$(call prsetting,CLANG_GIT,${CLANG_GIT}) ; \
 	$(call prsetting,CLANG_BRANCH,${CLANG_BRANCH}) ; \
 	$(call gitcommit,${CLANGDIR},CLANG_COMMIT) ; \
+	$(call prsetting,CLANG_REV,$(call gitsvnrev,${CLANGDIR})) ; \
 	) | $(call configfilter)
 #	@$(call prsetting,COMPILERRT_GIT,${COMPILERRT_GIT})
 #	@$(call prsetting,COMPILERRT_BRANCH,${COMPILERRT_BRANCH})
@@ -219,12 +223,17 @@ ${LLVM_TARGETS_APPLIED}: %-patch-applied:
 ##############################################################################
 ifneq (${CLANG_SELFHOST},)
 CLANG_CMAKE_FLAGS	= CC=clang CXX=clang++
+else
+ifneq (${USE_CCACHE},)
+CCACHE_LLVM_DIR		= $(subst ${TOPDIR},${BUILDROOT},${LLVMTOP})/ccache
+CLANG_CMAKE_FLAGS	= CCACHE_DIR=${CCACHE_LLVM_DIR} CC="ccache gcc" CXX="ccache g++"
+endif
 endif
 
 ##############################################################################
 llvmconfig = $(call banner,Configure ${1}...) ; \
-	mkdir -p ${2} ${3} && \
-	(cd ${2} && ${CLANG_CMAKE_FLAGS} cmake -DCMAKE_BUILD_TYPE=Release -DLLVM_BINUTILS_INCDIR=/usr/include/ \
+	mkdir -p ${2} ${3} ${CCACHE_LLVM_DIR} && \
+	(cd ${2}; ${CLANG_CMAKE_FLAGS} cmake -DCMAKE_BUILD_TYPE=Release -DLLVM_BINUTILS_INCDIR=/usr/include/ \
 	-DLLVM_TARGETS_TO_BUILD="${LLVM_TARGETS_TO_BUILD}" -DCMAKE_INSTALL_PREFIX=${3} ${4} ${5})
 ###### LLVM_FORCE_USE_OLD_TOOLCHAIN used to allow buildbot to work until we could update it.
 
@@ -349,7 +358,7 @@ clang-mrproper: clang-clean
 	(cd ${CLANGDIR} && git clean -f)
 
 ##############################################################################
-clang-raze: clang-clean-noreset
+clang-raze:: clang-clean-noreset
 	@$(call banner,Razing Clang...)
 	@rm -rf ${CLANGDIR}
 	@$(call leavestate,${LLVMSTATE},clang-*)
@@ -385,29 +394,27 @@ clang-sync: clang-clean
 ##############################################################################
 llvm-version::
 	@LLC=${LLVMINSTALLDIR}/bin/llc; \
+	echo -n "LLVM\t\t= "; \
 	if [ -e "$$LLC" ] ; then \
 		echo -n `$$LLC --version | grep version` ; \
 	else \
 		echo -n "LLVM version ?"; \
 	fi; \
 	if [ -d ${LLVMDIR} ] ; then (\
-		cd ${LLVMDIR}; \
-		COMMIT=`git rev-parse HEAD`; \
-		REV=`git svn find-rev $$COMMIT`; \
+		REV=$(call gitsvnrev,${LLVMDIR}); \
 		echo " r$$REV commit $$COMMIT" \
 	) fi
 
 ##############################################################################
 clang-version::
+	@echo -n "CLANG\t\t= "
 	@if [ -e "${CLANG}" ] ; then \
 		echo -n `${CLANG} --version | grep version` ; \
 	else \
 		echo -n "clang version ?"; \
 	fi; \
 	if [ -d ${CLANGDIR} ] ; then (\
-		cd ${CLANGDIR}; \
-		COMMIT=`git rev-parse HEAD`; \
-		REV=`git svn find-rev $$COMMIT`; \
+		REV=$(call gitsvnrev,${CLANGDIR}); \
 		echo " r$$REV commit $$COMMIT" \
 	) fi
 
@@ -419,6 +426,11 @@ clang-version::
 clang-update-all: llvm-sync clang-sync llvm-build clang-build
 #compilerrt-sync
 
+#############################################################################
+list-ccache-dir::
+	@[ -z "${USE_CCACHE}" ] || echo CCACHE_LLVM_DIR=${CCACHE_LLVM_DIR}
+
+#############################################################################
 llvm-clang-bisect: llvm-mrproper clang-mrproper
 	@(cd ${LLVMDIR} ; git bisect reset ; git bisect start ; git bisect bad ; git bisect good `git log --pretty=format:'%ai §%H' | grep ${LLVM_CLANG_BISECT_START_DATE} | head -1 | cut -d"§" -f2` )
 	@(cd ${CLANGDIR} ; git bisect reset ; git bisect start ; git bisect bad ; git bisect good `git log --pretty=format:'%ai §%H' | grep ${LLVM_CLANG_BISECT_START_DATE} | head -1 | cut -d"§" -f2` )
