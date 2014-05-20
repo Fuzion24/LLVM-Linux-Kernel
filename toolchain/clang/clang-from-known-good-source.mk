@@ -38,8 +38,8 @@ CLANG_CONFIG	= ${CLANG_TMPDIR}/clang.cfg
 # Get known good config from continue integration buildbot
 #${CLANG_CONFIG}: # Can't be this or will auto-download with the above include
 clang-config:
-	-@$(call wget,${KNOWN_GOOD_CLANG_CONFIG_URL},$(dir $@)) \
-		&& rm -f $@; ln -sf $(notdir ${KNOWN_GOOD_CLANG_CONFIG_URL}) $@
+	-@$(call wget,${KNOWN_GOOD_CLANG_CONFIG_URL},$(dir ${CLANG_CONFIG})) \
+		&& rm -f $@; ln -sf $(notdir ${KNOWN_GOOD_CLANG_CONFIG_URL}) ${CLANG_CONFIG}
 
 ##############################################################################
 clang-build-known-good: ${LLVMSTATE}/clang-build-known-good
@@ -57,13 +57,13 @@ clang-rebuild-known-good:
 ##############################################################################
 llvm-resync:
 	@$(call banner,Sync known good LLVM)
-	@grep LLVM ${CLANG_CONFIG}
+	-@grep LLVM ${CLANG_CONFIG}
 	@$(call llvmsync,LLVM,${LLVMDIR},${LLVM_BRANCH},${LLVM_COMMIT})
 
 ##############################################################################
 clang-resync:
 	@$(call banner,Sync known good clang)
-	@grep CLANG ${CLANG_CONFIG}
+	-@grep CLANG ${CLANG_CONFIG}
 	@$(call llvmsync,Clang,${CLANGDIR},${CLANG_BRANCH},${CLANG_COMMIT})
 
 ##############################################################################
