@@ -161,7 +161,7 @@ sizelog	= ${1}/${2}-${ARCH}-`date +%Y-%m-%d_%H:%M:%S`-kernel-size.log
 KERNEL_SIZE_CLANG_LOG	= clang-`date +%Y-%m-%d_%H:%M:%S`-kernel-size.log
 KERNEL_SIZE_GCC_LOG	= gcc-`date +%Y-%m-%d_%H:%M:%S`-kernel-size.log
 
-get-kernel-version	= [ ! -d ${1} ] || (cd ${1} && echo "src/$(notdir ${1}) version `make kernelversion 2>/dev/null | grep -v ^make` commit `git rev-parse HEAD`")
+get-kernel-version	= [ ! -d ${1} ] || (cd ${1} && echo "src/$(notdir ${1}) version `make -s kernelversion 2>/dev/null` commit `git rev-parse HEAD`")
 get-kernel-size		= mkdir -p ${TOPLOGDIR} ; \
 			( ${2} --version | head -1 ; \
 			cd ${3} && wc -c ${KERNEL_SIZE_ARTIFACTS} ) \
@@ -265,6 +265,8 @@ kernel-settings:
 include ${ARCHDIR}/all/quilt.mk
 include ${ARCHDIR}/all/quilt2git.mk
 include ${ARCHDIR}/all/git-submit.mk
+include ${ARCHDIR}/all/known-good.mk
+include ${ARCHDIR}/all/buildbot.mk
 
 #############################################################################
 # The shared kernel is a bare repository of Linus' kernel.org kernel
@@ -285,7 +287,7 @@ ${SHARED_KERNEL}:
 		|| echo -e "[remote \"origin\"]\n\turl = ${MAINLINEURI}" >> $@/config;
 
 #############################################################################
-kernel-raze:
+kernel-raze::
 	@$(call banner,Razing kernel)
 	@rm -rf ${SHARED_KERNEL} ${KERNELDIR} ${BUILDDIR}
 	@rm -f $(addsuffix /*,${LOGDIR} ${TMPDIR})
@@ -349,11 +351,11 @@ state/kernel-configure: state/kernel-patch ${KERNEL_CFG}
 	cp ${KERNEL_CFG} ${KERNEL_BUILD}/.config
 	# git log -1 | awk '/git-svn-id:/ {gsub(".*@",""); print $1}'
 	@if [ -n "${CLANGDIR}" ] ; then ( \
-		cd ${CLANGDIR}; REV=$$(git svn find-rev $$(git rev-parse HEAD)); \
+		REV=$(call gitsvnrev,${CLANGDIR}); \
 		sed -i -e "s/-llvmlinux/-llvmlinux-Cr$$REV/g" ${KERNEL_BUILD}/.config; \
 	) fi
 	@if [ -n "${LLVMDIR}" ] ; then ( \
-		cd ${LLVMDIR}; REV=$$(git svn find-rev $$(git rev-parse HEAD)); \
+		REV=$(call gitsvnrev,${LLVMDIR}); \
 		sed -i -e "s/-llvmlinux/-llvmlinux-Lr$$REV/g" ${KERNEL_BUILD}/.config; \
 	) fi
 	(cd ${KERNELDIR} && echo "" | ${KERNEL_ENV} make ${MAKE_FLAGS} oldconfig)
@@ -394,6 +396,7 @@ state/kernel-build: ${STATE_CLANG_TOOLCHAIN} ${STATE_TOOLCHAIN} state/kernel-con
 	@[ -d ${KERNEL_BUILD} ] || ($(call leavestate,${STATEDIR},kernel-configure) && ${MAKE} kernel-configure)
 	@$(MAKE) kernel-quilt-link-patches
 	@$(call banner,Building kernel with clang...)
+	@mkdir -p ${CCACHE_DIR}
 	$(call make-kernel,${KERNELDIR},${KERNEL_ENV},${CHECKER},${CHECK_VARS} CC?="${CLANGCC}")
 	@$(call banner,Successfully Built kernel with clang!)
 	@$(call get-kernel-size,clang,${CLANG},${KERNEL_BUILD})
@@ -405,6 +408,7 @@ state/kernel-gcc-build: ${STATE_TOOLCHAIN} state/kernel-gcc-configure
 	@[ -d ${KERNELGCC_BUILD} ] || ($(call leavestate,${STATEDIR},kernel-gcc-configure) && ${MAKE} kernel-gcc-configure)
 	@$(MAKE) kernel-quilt-link-patches
 	@$(call banner,Building kernel with gcc...)
+	@mkdir -p ${CCACHE_DIR}
 	$(call make-kernel,${KERNELDIR},${KERNELGCC_ENV} ${SPARSE},,CC?="${CCACHE} ${CROSS_COMPILE}${GCC}")
 	@$(call get-kernel-size,gcc,${CROSS_GCC},${KERNELGCC_BUILD})
 	$(call state,$@,done)
@@ -437,8 +441,10 @@ kernel-build-force kernel-gcc-build-force: %-force:
 	@rm -f state/$*
 	${MAKE} $*
 
-#############################################################################
-kernel-gcc-build-test: kernel-gcc-clean series kernel-gcc-build
+##############################################################################
+# To be defined by target Makefiles
+kernel-test::
+kernel-gcc-test::
 
 #############################################################################
 kernel-rebuild kernel-gcc-rebuild: kernel-%rebuild:
@@ -516,6 +522,7 @@ warnings-kind: ${BUILD_WARNINGS}
 
 #############################################################################
 kernel-version:
+	@echo -n "KERNEL\t\t= "
 	@$(call get-kernel-version,${KERNELDIR})
 
 #############################################################################
