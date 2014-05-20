@@ -42,7 +42,7 @@ clang-config:
 		&& rm -f $@; ln -sf $(notdir ${KNOWN_GOOD_CLANG_CONFIG_URL}) $@
 
 ##############################################################################
-clang-known-good clang-build-known-good: ${LLVMSTATE}/clang-build-known-good
+clang-build-known-good: ${LLVMSTATE}/clang-build-known-good
 ${LLVMSTATE}/clang-build-known-good: clang-config
 	@$(MAKE) llvm-resync clang-resync
 	@$(call leavestate,${LLVMSTATE},llvm-configure llvm-build clang-configure clang-build)
@@ -50,7 +50,7 @@ ${LLVMSTATE}/clang-build-known-good: clang-config
 	$(call state,$@)
 
 ##############################################################################
-clang-known-good-rebuild clang-rebuild-known-good:
+clang-rebuild-known-good:
 	@$(call leavestate,${LLVMSTATE},clang-build-known-good)
 	@$(MAKE) ${LLVMSTATE}/clang-build-known-good
 

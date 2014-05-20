@@ -45,4 +45,4 @@ buildbot-clang-ci-build::
 ############################################################################
 # Kernel is tested after this
 buildbot-kernel-ci-build::
-	$(MAKE) clang-known-good-rebuild
+	$(MAKE) clang-rebuild-known-good
