@@ -73,5 +73,5 @@ android-gcc-clean arm-cc-clean:
 	@rm -rf ${LINARO_CC_DIR}
 
 arm-cc-version: ${ARCH_ARM_TOOLCHAIN_STATE}/android-gcc
-	@${ANDROID_GCC} --version | head -1
+	@echo "ANDROID_GCC\t= `${ANDROID_GCC} --version | head -1`"
 
