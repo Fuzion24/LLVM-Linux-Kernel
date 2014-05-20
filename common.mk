@@ -27,7 +27,10 @@ TOOLSDIR	= ${TOPDIR}/tools
 ARCHDIR		= ${TOPDIR}/arch
 TESTDIR		= ${TOPDIR}/test
 DOCDIR		= ${TOPDIR}/Documentation
+TARGET		= $(notdir ${TARGETDIR})
+BUILDBOTDIR	= ${TMPDIR}/buildbot
 
+##############################################################################
 COMMON_TARGETS	= list-config list-jobs list-targets list-fetch-all list-patch-applied list-path list-versions \
 			clean-all fetch-all mrproper-all raze-all sync-all tmp-mrproper
 TARGETS_UTILS	+= ${COMMON_TARGETS}
@@ -101,9 +104,16 @@ gitsync = if [ -n "${2}" ] ; then \
 svncheckout = [ -d ${2}/.svn ] || svn --quiet checkout ${1} -r ${3} ${2}
 svnupdate = (cd ${1} && svn update)
 
+gitsvnrev = $$(cd ${1}; git svn find-rev $$(git rev-parse HEAD))
+
+#############################################################################
+ini_section	= (echo "\n${2}"; $(MAKE) -s ${3} | egrep -v '^$$' ) >> $1
+ini_file_entry	= [ -f "${2}" ] && echo "${1}= ${2}"
+
 ##############################################################################
 # general download macros
-wget = mkdir -p ${2} && wget -P ${2} -c ${1}
+raw_wget = mkdir -p "${2}" && wget -P "${2}" -c "${1}"
+wget = if [ -d "${2}" ] ; then $(call raw_wget,${1},${2}) ; else $(call raw_wget,${1},$(dir ${2})); fi
 untgz = $(call echo,Unpacking $(notdir ${1}) into ${2}) \
 		&& mkdir -p ${2} && tar --extract --gunzip --file ${1} --directory ${2}
 unbz2 = $(call echo,Unpacking $(notdir ${1}) into ${2}) \
@@ -216,13 +226,13 @@ list-settings settings list-config config:
 
 ##############################################################################
 list-versions:
-	@cmake --version
-	@gcc --version | head -1
-	@$(CC) --version | head -1
-	@git --version
-	@make --version | head -1
-	@echo "quilt version `quilt --version`"
-	@${MAKE} ${VERSION_TARGETS} | grep -v ^make
+	@echo "CMAKE\t\t= `cmake --version`"
+	@echo "GCC\t\t= `gcc --version | head -1`"
+	@echo "CC\t\t= `$(CC) --version | head -1`"
+	@echo "GIT\t\t= `git --version`"
+	@echo "MAKE\t\t= `make --version | head -1`"
+	@echo "QUILT\t\t= quilt version `quilt --version`"
+	@${MAKE} -s ${VERSION_TARGETS}
 
 ##############################################################################
 clean-all:
@@ -273,4 +283,3 @@ tmp-mrproper:
 	@$(call banner,Scrubbing tmp dirs...)
 	rm -rf $(addsuffix /*,${TMPDIRS})
 	@$(call banner,All tmp dirs very clean!)
-

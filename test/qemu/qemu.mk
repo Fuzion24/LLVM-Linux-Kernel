@@ -169,7 +169,7 @@ qemu-sync: ${QEMUSTATE}/qemu-fetch
 
 ##############################################################################
 qemu-version: ${QEMUSTATE}/qemu-fetch
-	@(cd ${QEMUSRCDIR} && echo "QEMU version `cat VERSION` commit `git rev-parse HEAD`")
+	@(cd ${QEMUSRCDIR} && echo "QEMU\t\t= QEMU version `cat VERSION` commit `git rev-parse HEAD`")
 
 ##############################################################################
 QEMUOPTS	= -nographic ${GDB_OPTS}
