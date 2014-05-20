@@ -28,7 +28,7 @@ CROSS_ARM_TOOLCHAIN = codesourcery
 LLVM_COMMIT	= master
 CLANG_COMMIT	= master
 #CLANG_TOOLCHAIN	= prebuilt
-#CLANG_TOOLCHAIN	= from-known-good-source
+CLANG_TOOLCHAIN	= from-known-good-source
 
 # Need to add EXT4 support to vexpress_defconfig
 KERNEL_CFG	= ${TARGETDIR}/config_vexpress
