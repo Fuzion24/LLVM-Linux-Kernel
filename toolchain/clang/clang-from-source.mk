@@ -264,7 +264,7 @@ ${LLVMSTATE}/clang-unpatched-configure: ${LLVMSTATE}/clang-unpatched-fetch
 
 ##############################################################################
 llvmbuild = $(call banner,Building ${1}...) ; \
-	make -C ${2} -j${JOBS} install
+	${CLANG_CMAKE_FLAGS} make -C ${2} -j${JOBS} install
 
 ##############################################################################
 llvm llvm-build: ${LLVMSTATE}/llvm-build
