@@ -50,6 +50,7 @@ kernel-resync: state/kernel-fetch kernel-config
 	@$(call banner,Sync known good kernel)
 	@cat ${KERNEL_CONFIG}
 	@$(call unpatch,${KERNELDIR})
+	@$(call leavestate,${STATEDIR},kernel-patch)
 	@$(call optinal_gitreset,${KERNELDIR})
 	@$(call gitsync,${KERNELDIR},${KERNEL_COMMIT},${KERNEL_BRANCH},${KERNEL_TAG})
 

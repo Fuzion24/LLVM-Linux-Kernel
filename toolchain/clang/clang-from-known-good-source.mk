@@ -58,12 +58,14 @@ clang-rebuild-known-good:
 llvm-resync: ${LLVMSTATE}/llvm-fetch clang-config
 	@$(call banner,Sync known good LLVM)
 	-@grep LLVM ${CLANG_CONFIG}
+	@$(call leavestate,${LLVMSTATE},llvm-patch)
 	@$(call llvmsync,LLVM,${LLVMDIR},${LLVM_BRANCH},${LLVM_COMMIT})
 
 ##############################################################################
 clang-resync: ${LLVMSTATE}/clang-fetch clang-config
 	@$(call banner,Sync known good clang)
 	-@grep CLANG ${CLANG_CONFIG}
+	@$(call leavestate,${LLVMSTATE},clang-patch)
 	@$(call llvmsync,Clang,${CLANGDIR},${CLANG_BRANCH},${CLANG_COMMIT})
 
 ##############################################################################
