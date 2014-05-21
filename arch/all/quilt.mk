@@ -170,12 +170,10 @@ check_if_already_commited = perl -e 'use DB_File; tie %d, "DB_File", "${KERNEL_L
 		open( F, "$$p" ) || die "$$p: $$!"; \
 		$$f = <F>; \
 		close F; \
-		if( $$f =~ /Subject: (.*)\n/ ) { \
-			if( defined $$d{$$1} ) { \
-				print STDERR "W: Patch $$p is already applied\n"; \
-			} else { \
-				print "$$p\n"; \
-			} \
+		if( $$f =~ /Subject: (.*)\n/ && defined $$d{$$1} ) { \
+			print STDERR "W: Patch $$p is already applied\n"; \
+		} else { \
+			print "$$p\n"; \
 		} \
 	}' ${1} 2>&1 >${2}
 
