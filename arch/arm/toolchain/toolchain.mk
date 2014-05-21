@@ -75,7 +75,7 @@ else
 endif
 
 ifneq ("${COMPILER_PATH}", "")
-CCOPTS	= -gcc-toolchain ${COMPILER_PATH} -target ${HOST_TRIPLE}
+KERNEL_ENV	+= GCC_TOOLCHAIN=${COMPILER_PATH}
 endif
 
 include ${ARCHDIR}/arm/toolchain/compiler-rt/compiler-rt.mk

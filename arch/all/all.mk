@@ -86,7 +86,7 @@ endif
 #############################################################################
 KERNEL_BUILD	= $(subst ${TOPDIR},${BUILDROOT},${BUILDDIR})/kernel-clang
 KERNELGCC_BUILD	= $(subst ${TOPDIR},${BUILDROOT},${BUILDDIR})/kernel-gcc
-KERNEL_ENV	+= KBUILD_OUTPUT=${KERNEL_BUILD}
+KERNEL_ENV	+= KBUILD_OUTPUT=${KERNEL_BUILD} HOSTCC="${CLANG}" CC="${CLANGCC}"
 KERNELGCC_ENV	+= KBUILD_OUTPUT=${KERNELGCC_BUILD}
 
 #############################################################################
@@ -147,7 +147,7 @@ list-var: list-buildroot
 	@echo ${seperator}
 	@echo "${CLANG} -print-file-name=include"
 	@${CLANG} -print-file-name=include
-	@echo 'kernel-build -> $(call make-kernel,${KERNELDIR},${KERNEL_ENV},${CHECKER},${CHECK_VARS} CC?="${CCACHE} ${CLANGCC}")'
+	@echo 'kernel-build -> $(call make-kernel,${KERNELDIR},${KERNEL_ENV},${CHECKER},${CHECK_VARS})'
 	@echo 'kernel-gcc-build -> $(call make-kernel,${KERNELDIR},${KERNELGCC_ENV} ${SPARSE},,CC?="${CCACHE} ${CROSS_COMPILE}${GCC}")'
 
 #############################################################################
@@ -397,7 +397,7 @@ state/kernel-build: ${STATE_CLANG_TOOLCHAIN} ${STATE_TOOLCHAIN} state/kernel-con
 	@$(MAKE) kernel-quilt-link-patches
 	@$(call banner,Building kernel with clang...)
 	@[ -z "${CCACHE_DIR}" ] || mkdir -p ${CCACHE_DIR}
-	$(call make-kernel,${KERNELDIR},${KERNEL_ENV},${CHECKER},${CHECK_VARS} CC?="${CLANGCC}")
+	$(call make-kernel,${KERNELDIR},${KERNEL_ENV},${CHECKER},${CHECK_VARS})
 	@$(call banner,Successfully Built kernel with clang!)
 	@$(call get-kernel-size,clang,${CLANG},${KERNEL_BUILD})
 	$(call state,$@,done)
