@@ -34,7 +34,7 @@ kernel-config:
 
 ##############################################################################
 kernel-build-known-good: ${STATEDIR}/kernel-build-known-good
-${STATEDIR}/kernel-build-known-good: kernel-config
+${STATEDIR}/kernel-build-known-good:
 	@$(MAKE) kernel-resync
 	@$(call leavestate,${STATEDIR},kernel-configure kernel-build)
 	@$(MAKE) state/kernel-build
@@ -46,7 +46,7 @@ kernel-rebuild-known-good:
 	@$(MAKE) ${STATEDIR}/kernel-build-known-good
 
 ##############################################################################
-kernel-resync:
+kernel-resync: state/kernel-fetch kernel-config
 	@$(call banner,Sync known good kernel)
 	@cat ${KERNEL_CONFIG}
 	@$(call unpatch,${KERNELDIR})

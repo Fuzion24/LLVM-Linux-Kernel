@@ -43,7 +43,7 @@ clang-config:
 
 ##############################################################################
 clang-build-known-good: ${LLVMSTATE}/clang-build-known-good
-${LLVMSTATE}/clang-build-known-good: clang-config
+${LLVMSTATE}/clang-build-known-good:
 	@$(MAKE) llvm-resync clang-resync
 	@$(call leavestate,${LLVMSTATE},llvm-configure llvm-build clang-configure clang-build)
 	@$(MAKE) ${LLVMSTATE}/clang-build
@@ -55,13 +55,13 @@ clang-rebuild-known-good:
 	@$(MAKE) ${LLVMSTATE}/clang-build-known-good
 
 ##############################################################################
-llvm-resync:
+llvm-resync: ${LLVMSTATE}/llvm-fetch clang-config
 	@$(call banner,Sync known good LLVM)
 	-@grep LLVM ${CLANG_CONFIG}
 	@$(call llvmsync,LLVM,${LLVMDIR},${LLVM_BRANCH},${LLVM_COMMIT})
 
 ##############################################################################
-clang-resync:
+clang-resync: ${LLVMSTATE}/clang-fetch clang-config
 	@$(call banner,Sync known good clang)
 	-@grep CLANG ${CLANG_CONFIG}
 	@$(call llvmsync,Clang,${CLANGDIR},${CLANG_BRANCH},${CLANG_COMMIT})
