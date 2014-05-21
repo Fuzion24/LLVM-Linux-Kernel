@@ -54,7 +54,8 @@ QUILT_TARGETS		= kernel-quilt kernel-quilt-clean kernel-quilt-generate-series ke
 TARGETS_BUILD		+= ${QUILT_TARGETS}
 CLEAN_TARGETS		+= kernel-quilt-clean
 HELP_TARGETS		+= kernel-quilt-help
-MRPROPER_TARGETS	+= kernel-quilt-clean
+MRPROPER_TARGETS	+= kernel-quilt-mrproper
+RAZE_TARGETS		+= kernel-quilt-raze
 SETTINGS_TARGETS	+= kernel-quilt-settings
 
 .PHONY:			${QUILT_TARGETS} kernel-quilt-help kernel-quilt-settings
@@ -323,7 +324,7 @@ list-kernel-checkpatch list-kernel-get_maintainer: list-kernel-%: kernel-fetch
 	done) | sed -e 's|$(TOPDIR)/||g'
 
 ##############################################################################
-kernel-quilt-clean: ${SERIES_DOT_TARGET}
+kernel-quilt-clean kernel-quilt-mrproper kernel-quilt-raze: ${SERIES_DOT_TARGET}
 	@$(call banner,Removing symbolic linked quilt patches for kernel...)
 	@rm -f ${QUILT_GITIGNORE}
 	@[ ! -f ${SERIES_DOT_TARGET} ] || rm -f ${TARGET_PATCH_SERIES}
