@@ -43,11 +43,13 @@ list-buildbot-artifacts::
 #############################################################################
 bb_settings: ${BB_SETTINGS_CFG}
 ${BB_SETTINGS_CFG}:
+	@mkdir -p $(dir $@)
 	@$(MAKE) -s list-settings > $@
 
 #############################################################################
 bb_kernel: ${BB_KERNEL_CFG}
 ${BB_KERNEL_CFG}:
+	@mkdir -p $(dir $@)
 	@$(MAKE) -s kernel-settings > $@
 
 #############################################################################

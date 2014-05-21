@@ -31,6 +31,7 @@ list-buildbot-artifacts::
 #############################################################################
 .PHONY: ${BB_TOOLCHAIN_CFG}
 bb_toolchain::
+	@mkdir -p $(dir ${BB_TOOLCHAIN_CFG})
 	@$(MAKE) -s llvm-settings > ${BB_TOOLCHAIN_CFG}
 
 ############################################################################
