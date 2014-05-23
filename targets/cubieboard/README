@@ -1,0 +1,10 @@
+For some reason specifying an external initrd does not work for cubieboard. 
+
+The initrd has to be built into the kernel and a console device needs to be
+created as it is not created by mdev.
+
+In order for the kernel to be built with the initramfs you have to build 
+the initramfs before building the kernel.
+
+make initramfs-build
+make kernel-build
