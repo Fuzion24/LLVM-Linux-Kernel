@@ -33,17 +33,17 @@ kernel-config:
 		&& rm -f $@; ln -sf $(notdir ${KNOWN_GOOD_KERNEL_CONFIG_URL}) ${KERNEL_CONFIG}
 
 ##############################################################################
-kernel-build-known-good: ${STATEDIR}/kernel-build-known-good
-${STATEDIR}/kernel-build-known-good:
-	@$(MAKE) kernel-resync
-	@$(call leavestate,${STATEDIR},kernel-configure kernel-build)
-	@$(MAKE) state/kernel-build
+kernel-build-known-good kernel-gcc-build-known-good: %: ${STATEDIR}/%
+${STATEDIR}/kernel-build-known-good ${STATEDIR}/kernel-gcc-build-known-good: ${STATEDIR}/%-build-known-good:
+	@$(MAKE) GIT_HARD_RESET=1 kernel-resync
+	@$(call leavestate,${STATEDIR},$*-configure $*-build)
+	@$(MAKE) state/$*-build
 	@$(call state,$@)
 
 ##############################################################################
-kernel-rebuild-known-good:
-	@$(call leavestate,${STATEDIR},kernel-build-known-good)
-	@$(MAKE) ${STATEDIR}/kernel-build-known-good
+kernel-rebuild-known-good kernel-gcc-rebuild-known-good: %-rebuild-known-good:
+	@$(call leavestate,${STATEDIR},$*-build-known-good)
+	@$(MAKE) ${STATEDIR}/$*-build-known-good
 
 ##############################################################################
 kernel-resync: state/kernel-fetch kernel-config
@@ -56,13 +56,5 @@ kernel-resync: state/kernel-fetch kernel-config
 
 ##############################################################################
 kernel-raze::
-	@rm -rf ${STATEDIR}/kernel-build-known-good ${KERNEL_CONFIG}
-
-foo-known-good:
-	@echo KERNEL_CONFIG=${KERNEL_CONFIG}
-	@echo TOPDIR=${TOPDIR}
-	@echo TARGETDIR=${TARGETDIR}
-	@echo TMPDIR=${TMPDIR}
-	@echo TARGET=${TARGET}
-	@echo KNOWN_GOOD_KERNEL_CONFIG_URL=${KNOWN_GOOD_KERNEL_CONFIG_URL}
-	@echo KERNEL_CONFIG=${KERNEL_CONFIG}
+	@$(call leavestate,${STATEDIR},*-build-known-good)
+	@rm -rf ${KERNEL_CONFIG}
