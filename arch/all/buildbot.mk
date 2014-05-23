@@ -68,6 +68,11 @@ buildbot-llvm-ci-build buildbot-clang-ci-build::
 ############################################################################
 # Clang is already built before this
 buildbot-kernel-ci-build::
+	@$(call banner,Build/test kernel with gcc)
+	$(MAKE) GIT_HARD_RESET=1 kernel-gcc-clean
+	$(MAKE) kernel-gcc-build
+	$(MAKE) kernel-gcc-test
+	@$(call banner,Build/test kernel with clang)
 	$(MAKE) GIT_HARD_RESET=1 kernel-clean
 	$(MAKE) kernel-build
 	$(MAKE) kernel-test
