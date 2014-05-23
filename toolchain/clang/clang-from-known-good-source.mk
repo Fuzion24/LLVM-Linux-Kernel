@@ -45,6 +45,7 @@ clang-config:
 clang-build-known-good: ${LLVMSTATE}/clang-build-known-good
 ${LLVMSTATE}/clang-build-known-good:
 	@$(MAKE) llvm-resync clang-resync
+	@$(call banner,Build known good clang)
 	@$(call leavestate,${LLVMSTATE},llvm-configure llvm-build clang-configure clang-build)
 	@$(MAKE) ${LLVMSTATE}/clang-build
 	$(call state,$@)
