@@ -31,9 +31,9 @@ list-buildbot-artifacts::
 #############################################################################
 .PHONY: ${BB_TOOLCHAIN_CFG}
 bb_toolchain::
-	@$(call banner,Building $@)
+	@$(call banner,Building ${BB_TOOLCHAIN_CFG})
 	@mkdir -p $(dir ${BB_TOOLCHAIN_CFG})
-	@$(MAKE) -s llvm-settings > ${BB_TOOLCHAIN_CFG}
+	@$(MAKE) -s llvm-settings | grep -v ^make > ${BB_TOOLCHAIN_CFG}
 
 ############################################################################
 # Kernel is tested after this

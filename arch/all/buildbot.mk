@@ -45,14 +45,14 @@ bb_settings: ${BB_SETTINGS_CFG}
 ${BB_SETTINGS_CFG}:
 	@$(call banner,Building $@)
 	@mkdir -p $(dir $@)
-	@$(MAKE) -s list-settings > $@
+	@$(MAKE) -s list-settings | grep -v ^make > $@
 
 #############################################################################
 bb_kernel: ${BB_KERNEL_CFG}
 ${BB_KERNEL_CFG}:
 	@$(call banner,Building $@)
 	@mkdir -p $(dir $@)
-	@$(MAKE) -s kernel-settings > $@
+	@$(MAKE) -s kernel-settings | grep -v ^make > $@
 
 #############################################################################
 # Updated in toolchain/clang/buildbot.mk
