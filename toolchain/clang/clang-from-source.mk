@@ -199,8 +199,7 @@ llvmpatch = $(call banner,Patching ${1}...) ; \
 ##############################################################################
 llvm-patch: ${LLVMSTATE}/llvm-patch
 ${LLVMSTATE}/llvm-patch: ${LLVMSTATE}/llvm-fetch
-	echo ${LLVMPATCHES}
-	$(call llvmpatch,LLVM,${LLVMPATCHES}/llvm,${LLVM_COMMIT},${LLVM_BRANCH},${LLVMDIR})
+	@$(call llvmpatch,LLVM,${LLVMPATCHES}/llvm,${LLVM_COMMIT},${LLVM_BRANCH},${LLVMDIR})
 	$(call state,$@,llvm-configure)
 
 ##############################################################################
