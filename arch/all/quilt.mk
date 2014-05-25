@@ -200,7 +200,8 @@ ${TARGET_PATCH_SERIES}: ${ALL_PATCH_SERIES}
 			fi ; \
 		fi ; \
 		$(MAKE) ${KERNEL_LOG_DB}; \
-		$(call check_if_already_commited,$$PATCH_LIST,$@); \
+		$(call check_if_already_commited,$$PATCH_LIST,$@) \
+			|| (rm -f $@; $(MAKE) kernel-quilt-link-patches); \
 	fi
 series:
 	@if [ -z "${CHECKPOINT}" ] ; then \
