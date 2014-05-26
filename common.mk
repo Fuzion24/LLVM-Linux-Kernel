@@ -107,8 +107,9 @@ svnupdate = (cd ${1} && svn update)
 gitsvnrev = $$(cd ${1}; git svn find-rev $$(git rev-parse HEAD))
 
 #############################################################################
-ini_section	= (echo "\n${2}"; $(MAKE) -s ${3} | egrep -v '^$$' ) >> $1
-ini_file_entry	= [ ! -f "${2}" ] || echo "${1}= ${2}"
+ini_section	= (echo "\n${2}"; $(MAKE) -s ${3} | egrep -v '^$$' | \
+			sed -e '/[ \t]*+=/d; s/[ \t]*=[ \t]*/=/;') >> $1
+ini_file_entry	= [ ! -f "${2}" ] || echo "${1}=${2}"
 
 ##############################################################################
 # general download macros
