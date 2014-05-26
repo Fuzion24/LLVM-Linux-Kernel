@@ -21,7 +21,7 @@
 ##############################################################################
 
 ##############################################################################
-KNOWN_GOOD_KERNEL_CONFIG_URL = http://buildbot.llvm.linuxfoundation.org/configs/${TARGET}.cfg
+KNOWN_GOOD_KERNEL_CONFIG_URL = http://buildbot.llvm.linuxfoundation.org/configs/kernel-${TARGET}.cfg
 KERNEL_CONFIG	= ${TMPDIR}/kernel.cfg
 -include ${KERNEL_CONFIG}
 

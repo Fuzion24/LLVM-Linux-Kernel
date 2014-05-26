@@ -22,18 +22,18 @@
 
 # Should be included from clang-from-source.mk
 
-BB_TOOLCHAIN_CFG	= ${BUILDBOTDIR}/clang-${ARCH}.cfg
+BB_CLANG_CFG	= ${BUILDBOTDIR}/clang-${ARCH}.cfg
 
 #############################################################################
 list-buildbot-artifacts::
-	@$(call ini_file_entry,TOOLCHAIN\t,${BB_TOOLCHAIN_CFG})
+	@$(call ini_file_entry,TOOLCHAIN\t,${BB_CLANG_CFG})
 
 #############################################################################
-.PHONY: ${BB_TOOLCHAIN_CFG}
-bb_toolchain::
-	@$(call banner,Building ${BB_TOOLCHAIN_CFG})
-	@mkdir -p $(dir ${BB_TOOLCHAIN_CFG})
-	@$(MAKE) -s llvm-settings | grep -v ^make > ${BB_TOOLCHAIN_CFG}
+.PHONY: ${BB_CLANG_CFG}
+bb_clang::
+	@$(call banner,Building ${BB_CLANG_CFG})
+	@mkdir -p $(dir ${BB_CLANG_CFG})
+	@$(MAKE) -s llvm-settings | grep -v ^make > ${BB_CLANG_CFG}
 
 ############################################################################
 # Kernel is tested after this

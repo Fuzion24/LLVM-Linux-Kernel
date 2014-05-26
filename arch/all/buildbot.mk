@@ -21,11 +21,11 @@
 ##############################################################################
 
 BB_ARTIFACT_MANIFEST	= ${BUILDBOTDIR}/manifest.ini
-BB_SETTINGS_CFG		= ${BUILDBOTDIR}/${TARGET}.cfg
+BB_TARGET_CFG		= ${BUILDBOTDIR}/target-${TARGET}.cfg
 BB_KERNEL_CFG		= ${BUILDBOTDIR}/kernel-${TARGET}.cfg
 
 #############################################################################
-.PHONY: ${BB_ARTIFACT_MANIFEST} ${BB_SETTINGS_CFG} ${BB_KERNEL_CFG}
+.PHONY: ${BB_ARTIFACT_MANIFEST} ${BB_TARGET_CFG} ${BB_KERNEL_CFG}
 bb_manifest: ${BB_ARTIFACT_MANIFEST}
 ${BB_ARTIFACT_MANIFEST}:
 	@$(call banner,Building $@)
@@ -37,12 +37,12 @@ ${BB_ARTIFACT_MANIFEST}:
 
 #############################################################################
 list-buildbot-artifacts::
-	@$(call ini_file_entry,CONFIG\t\t,${BB_SETTINGS_CFG})
+	@$(call ini_file_entry,TARGET\t\t,${BB_TARGET_CFG})
 	@$(call ini_file_entry,KERNEL\t\t,${BB_KERNEL_CFG})
 
 #############################################################################
-bb_settings: ${BB_SETTINGS_CFG}
-${BB_SETTINGS_CFG}:
+bb_target: ${BB_TARGET_CFG}
+${BB_TARGET_CFG}:
 	@$(call banner,Building $@)
 	@mkdir -p $(dir $@)
 	@$(MAKE) -s list-settings | grep -v ^make > $@
@@ -56,14 +56,14 @@ ${BB_KERNEL_CFG}:
 
 #############################################################################
 # Updated in toolchain/clang/buildbot.mk
-bb_toolchain::
+bb_clang::
 
 ############################################################################
 # Clang is already built before this
 buildbot-llvm-ci-build buildbot-clang-ci-build::
 	$(MAKE) kernel-rebuild-known-good
 	$(MAKE) kernel-test
-	$(MAKE) bb_toolchain bb_manifest
+	$(MAKE) bb_clang bb_manifest
 
 ############################################################################
 # Clang is already built before this
@@ -76,4 +76,4 @@ buildbot-kernel-ci-build::
 	$(MAKE) GIT_HARD_RESET=1 kernel-clean
 	$(MAKE) kernel-build
 	$(MAKE) kernel-test
-	$(MAKE) bb_settings bb_kernel bb_manifest
+	$(MAKE) bb_target bb_kernel bb_manifest
