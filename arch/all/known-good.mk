@@ -56,6 +56,12 @@ kernel-resync: state/kernel-fetch kernel-config
 	@$(call gitsync,${KERNELDIR},${KERNEL_COMMIT},${KERNEL_BRANCH},${KERNEL_TAG})
 
 ##############################################################################
+kernel-sync-latest:
+	@$(call banner,Sync latest kernel)
+	@rm -f ${KERNEL_CONFIG}
+	@$(MAKE) $*-sync
+
+##############################################################################
 kernel-raze::
 	@$(call leavestate,${STATEDIR},*-build-known-good)
 	@rm -rf ${KERNEL_CONFIG}

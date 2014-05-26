@@ -70,5 +70,11 @@ clang-resync: ${LLVMSTATE}/clang-fetch clang-config
 	@$(call llvmsync,Clang,${CLANGDIR},${CLANG_BRANCH},${CLANG_COMMIT})
 
 ##############################################################################
+llvm-sync-latest clang-sync-latest: %-sync-latest:
+	@$(call banner,Sync latest $*)
+	@rm -f ${CLANG_CONFIG}
+	@$(MAKE) $*-sync
+
+##############################################################################
 clang-raze::
 	@rm -rf ${LLVMSTATE}/clang-build-known-good ${CLANG_CONFIG}
