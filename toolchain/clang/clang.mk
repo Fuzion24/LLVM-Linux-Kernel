@@ -46,7 +46,7 @@ clang-toolchain-help:
 clang-toolchain-settings:
 	@$(call prsetting,CLANG_TOOLCHAIN,${CLANG_TOOLCHAIN})
 
-CLANG_TOOLCHAIN ?= from-source
+CLANG_TOOLCHAIN ?= from-known-good-source
 
 ##############################################################################
 llvm-version::
