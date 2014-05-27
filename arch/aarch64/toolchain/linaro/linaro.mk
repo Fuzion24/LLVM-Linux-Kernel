@@ -71,5 +71,4 @@ linaro-gcc-clean aarch64-cc-clean:
 	@rm -rf ${LINARO_CC_DIR}
 
 aarch64-cc-version: ${ARCH_AARCH64_TOOLCHAIN_STATE}/linaro-gcc
-	env
 	@${LINARO_GCC} --version | head -1
