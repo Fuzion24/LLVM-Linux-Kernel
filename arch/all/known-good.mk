@@ -59,7 +59,7 @@ kernel-resync: state/kernel-fetch kernel-config
 kernel-sync-latest:
 	@$(call banner,Sync latest kernel)
 	@rm -f ${KERNEL_CONFIG}
-	@$(MAKE) $*-sync
+	@$(MAKE) kernel-sync
 
 ##############################################################################
 kernel-raze::
