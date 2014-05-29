@@ -382,7 +382,7 @@ kernel-tags: state/kernel-configure
 
 #############################################################################
 kernel-gcc-configure: state/kernel-gcc-configure
-state/kernel-gcc-configure: state/kernel-patch
+state/kernel-gcc-configure: state/kernel-patch ${STATE_CLANG_TOOLCHAIN} ${STATE_TOOLCHAIN}
 	@make -s build-dep-check
 	@$(call banner,Configuring gcc kernel...)
 	@mkdir -p ${KERNELGCC_BUILD}
@@ -392,7 +392,7 @@ state/kernel-gcc-configure: state/kernel-patch
 
 #############################################################################
 kernel-build: state/kernel-build
-state/kernel-build: ${STATE_CLANG_TOOLCHAIN} ${STATE_TOOLCHAIN} state/kernel-configure
+state/kernel-build: state/kernel-configure
 	@[ -d ${KERNEL_BUILD} ] || ($(call leavestate,${STATEDIR},kernel-configure) && ${MAKE} kernel-configure)
 	@$(MAKE) kernel-quilt-link-patches
 	@$(call banner,Building kernel with clang...)
