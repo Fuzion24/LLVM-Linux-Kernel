@@ -34,6 +34,8 @@ KERNEL_UIMAGE		= arch/arm/boot/uImage
 KERNEL_DTBS		= arch/arm/boot/dts/am335x-bone*.dtb
 KERNEL_MAKE_TARGETS	= LOADADDR=0x80008000 uImage dtbs
 
+DEBDEP			+= u-boot-tools
+
 .PHONY:			${BOARD_TARGETS} clean mrproper
 
 all all-clang: prep kernel-build
