@@ -344,7 +344,7 @@ kernel-patch-status-leftover:
 
 #############################################################################
 kernel-configure: state/kernel-configure
-state/kernel-configure: state/kernel-patch ${KERNEL_CFG}
+state/kernel-configure: state/kernel-patch ${KERNEL_CFG} ${STATE_CLANG_TOOLCHAIN} ${STATE_TOOLCHAIN}
 	@make -s build-dep-check
 	@$(call banner,Configuring kernel...)
 	@mkdir -p ${KERNEL_BUILD}
@@ -382,7 +382,7 @@ kernel-tags: state/kernel-configure
 
 #############################################################################
 kernel-gcc-configure: state/kernel-gcc-configure
-state/kernel-gcc-configure: state/kernel-patch ${STATE_CLANG_TOOLCHAIN} ${STATE_TOOLCHAIN}
+state/kernel-gcc-configure: state/kernel-patch ${STATE_TOOLCHAIN}
 	@make -s build-dep-check
 	@$(call banner,Configuring gcc kernel...)
 	@mkdir -p ${KERNELGCC_BUILD}
@@ -404,7 +404,7 @@ state/kernel-build: state/kernel-configure
 
 #############################################################################
 kernel-gcc-build: state/kernel-gcc-build
-state/kernel-gcc-build: ${STATE_TOOLCHAIN} state/kernel-gcc-configure
+state/kernel-gcc-build: state/kernel-gcc-configure
 	@[ -d ${KERNELGCC_BUILD} ] || ($(call leavestate,${STATEDIR},kernel-gcc-configure) && ${MAKE} kernel-gcc-configure)
 	@$(MAKE) kernel-quilt-link-patches
 	@$(call banner,Building kernel with gcc...)
