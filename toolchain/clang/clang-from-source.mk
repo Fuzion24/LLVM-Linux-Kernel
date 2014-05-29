@@ -350,10 +350,10 @@ clang-clean-noreset: llvm-clean-noreset
 	@rm -rf ${LLVMINSTALLDIR}/clang ${CLANGBUILDDIR} ${CLANGBUILDDIR2}
 
 ##############################################################################
-clang-clean: clang-reset clang-clean-noreset
+clang-clean:: clang-reset clang-clean-noreset
 
 ##############################################################################
-clang-mrproper: clang-clean
+clang-mrproper:: clang-clean
 	(cd ${CLANGDIR} && git clean -f)
 
 ##############################################################################

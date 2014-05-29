@@ -76,5 +76,5 @@ llvm-sync-latest clang-sync-latest: %-sync-latest:
 	@$(MAKE) $*-sync
 
 ##############################################################################
-clang-raze::
+clang-clean clang-mrproper clang-raze::
 	@rm -rf ${LLVMSTATE}/clang-build-known-good ${CLANG_CONFIG}
