@@ -60,9 +60,13 @@ bb_clang::
 
 ############################################################################
 # Clang is already built before this
-buildbot-llvm-ci-build buildbot-clang-ci-build::
+buildbot-llvmlinux-ci-build buildbot-llvm-ci-build buildbot-clang-ci-build::
 	$(MAKE) kernel-rebuild-known-good
 	$(MAKE) kernel-test
+
+############################################################################
+# Kernel is already built before this (see above)
+buildbot-llvm-ci-build buildbot-clang-ci-build::
 	$(MAKE) bb_clang bb_manifest
 
 ############################################################################

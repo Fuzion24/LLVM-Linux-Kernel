@@ -38,13 +38,13 @@ bb_clang::
 ############################################################################
 # Kernel is tested after this
 buildbot-llvm-ci-build::
-	$(MAKE) GIT_HARD_RESET=1 llvm-clean
+	$(MAKE) GIT_HARD_RESET=1 llvm-mrproper
 	$(MAKE) clang
 buildbot-clang-ci-build::
-	$(MAKE) GIT_HARD_RESET=1 clang-clean
+	$(MAKE) GIT_HARD_RESET=1 clang-mrproper
 	$(MAKE) clang
 
 ############################################################################
 # Kernel is tested after this
-buildbot-kernel-ci-build::
+buildbot-llvmlinux-ci-build buildbot-kernel-ci-build::
 	$(MAKE) clang-rebuild-known-good
