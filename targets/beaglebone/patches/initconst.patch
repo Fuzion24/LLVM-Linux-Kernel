@@ -1,0 +1,39 @@
+From 3b7b0c063f5c4f190781910efb9e439ff8e74424 Mon Sep 17 00:00:00 2001
+From: Behan Webster <behanw@converseincode.com>
+Date: Fri, 30 May 2014 11:35:54 -0700
+Subject: [PATCH] gpio, bcm-kona, LLVMLinux: Remove use of __initconst
+
+Remove use of __initconst since these datascrtuctures are references by
+non-init datastructures.
+
+Instead merely make them const.
+
+Signed-off-by: Behan Webster <behanw@converseincode.com>
+
+---
+ drivers/gpio/gpio-bcm-kona.c      | 2 +-
+ drivers/mmc/host/sdhci-bcm-kona.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+--- linux.orig/drivers/gpio/gpio-bcm-kona.c
++++ linux/drivers/gpio/gpio-bcm-kona.c
+@@ -496,7 +496,7 @@
+ 	.irq_release_resources = bcm_kona_gpio_irq_relres,
+ };
+ 
+-static struct __initconst of_device_id bcm_kona_gpio_of_match[] = {
++static struct of_device_id const bcm_kona_gpio_of_match[] = {
+ 	{ .compatible = "brcm,kona-gpio" },
+ 	{}
+ };
+--- linux.orig/drivers/mmc/host/sdhci-bcm-kona.c
++++ linux/drivers/mmc/host/sdhci-bcm-kona.c
+@@ -221,7 +221,7 @@
+ 		SDHCI_QUIRK_CAP_CLOCK_BASE_BROKEN,
+ };
+ 
+-static struct __initconst of_device_id sdhci_bcm_kona_of_match[] = {
++static struct of_device_id const sdhci_bcm_kona_of_match[] = {
+ 	{ .compatible = "brcm,kona-sdhci"},
+ 	{ .compatible = "bcm,kona-sdhci"}, /* deprecated name */
+ 	{}

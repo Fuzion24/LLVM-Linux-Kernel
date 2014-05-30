@@ -1,6 +1,44 @@
---- linux.orig/drivers/clk/ti/divider.c
-+++ linux/drivers/clk/ti/divider.c
-@@ -295,8 +295,8 @@
+From 4165310013a75e3dfd02ad5f3e27e668db838250 Mon Sep 17 00:00:00 2001
+From: Behan Webster <behanw@converseincode.com>
+Date: Fri, 30 May 2014 11:35:52 -0700
+Subject: [PATCH] clk, ti, LLVMLinux: Move __init outside of type definition
+
+This is a workaround patch. Possible clang bug.
+
+/home/behanw/src/kernel/llvmlinux/targets/beaglebone/src/linux/drivers/clk/ti/divider.c:298:28: error: expected ';' after struct
+static struct clk_div_table
+                           ^
+                           ;
+/home/behanw/src/kernel/llvmlinux/targets/beaglebone/src/linux/drivers/clk/ti/divider.c:298:1: warning: 'static' ignored on this
+      declaration [-Wmissing-declarations]
+static struct clk_div_table
+^
+/home/behanw/src/kernel/llvmlinux/targets/beaglebone/src/linux/drivers/clk/ti/divider.c:299:9: error: type specifier missing,
+      defaults to 'int' [-Werror,-Wimplicit-int]
+__init *ti_clk_get_div_table(struct device_node *node)
+~~~~~~  ^
+/home/behanw/src/kernel/llvmlinux/targets/beaglebone/src/linux/drivers/clk/ti/divider.c:345:9: warning: incompatible pointer types
+      returning 'struct clk_div_table *' from a function with result type 'int *' [-Wincompatible-pointer-types]
+        return table;
+               ^~~~~
+/home/behanw/src/kernel/llvmlinux/targets/beaglebone/src/linux/drivers/clk/ti/divider.c:419:9: warning: incompatible pointer types
+      assigning to 'const struct clk_div_table *' from 'int *' [-Wincompatible-pointer-types]
+        *table = ti_clk_get_div_table(node);
+               ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~
+3 warnings and 2 errors generated.
+
+
+Not-Signed-off-by: Behan Webster <behanw@converseincode.com>
+
+---
+ drivers/clk/ti/divider.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/clk/ti/divider.c b/drivers/clk/ti/divider.c
+index e6aa10d..636061e 100644
+--- a/drivers/clk/ti/divider.c
++++ b/drivers/clk/ti/divider.c
+@@ -295,8 +295,8 @@ static struct clk *_register_divider(struct device *dev, const char *name,
  	return clk;
  }
  
@@ -11,3 +49,6 @@
  {
  	struct clk_div_table *table;
  	const __be32 *divspec;
+-- 
+1.9.1
+
