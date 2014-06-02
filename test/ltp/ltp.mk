@@ -36,7 +36,7 @@ LTPINSTALLDIR	= ${TOPLTPINSTALLDIR}/opt/ltp
 LTPBUILDDIR	= ${LTPSRCDIR}/$(basename $(notdir ${LTPSF_TAR}))
 LTPSTATE	= ${LTPDIR}/state
 LTPSCRIPTS	= ${LTPDIR}/scripts
-FETCH_TARGETS	+= ltp-fetch
+#FETCH_TARGETS	+= ltp-fetch
 #SYNC_TARGETS	+= ltp-sync
 
 TMPDIRS		+= ${LTPTMPDIR}

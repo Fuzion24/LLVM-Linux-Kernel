@@ -41,7 +41,7 @@ BUILDROOT_TARGETS	= buildroot buildroot-[fetch,configure,build,clean,sync] build
 ##############################################################################
 TARGETS_TEST		+= ${BUILDROOT_TARGETS}
 CLEAN_TARGETS		+= buildroot-clean
-FETCH_TARGETS		+= buildroot-fetch
+#FETCH_TARGETS		+= buildroot-fetch
 HELP_TARGETS		+= buildroot-help
 MRPROPER_TARGETS	+= buildroot-mrproper
 PATCH_APPLIED_TARGETS	+= buildroot-patch-applied
