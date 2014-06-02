@@ -22,6 +22,8 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
+SHELL		= /bin/bash
+
 TOOLCHAIN	= ${TOPDIR}/toolchain
 TOOLSDIR	= ${TOPDIR}/tools
 ARCHDIR		= ${TOPDIR}/arch
@@ -42,7 +44,7 @@ HELP_TARGETS	+= common-help
 ##############################################################################
 seperator = ---------------------------------------------------------------------
 #banner	= ($(info ${seperator}) $(info ${1}) $(info ${seperator}))
-banner	= (echo ${seperator}; echo ${1}; echo ${seperator})
+banner	= (echo ${seperator}; echo ${1} | sed 's|\\n|\n|g; s|${TOPDIR}/||g'; echo ${seperator})
 echo	= (echo ${seperator}; echo ${1}; echo ${seperator})
 state	= @mkdir -p $(dir ${1}) && touch ${1} \
 	  && $(call echo,Finished state $(notdir ${1})) \
