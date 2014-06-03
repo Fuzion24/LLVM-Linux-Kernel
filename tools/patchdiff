@@ -26,5 +26,5 @@
 # We don't care if the "^From " line has changed, or the version of git
 
 diff --suppress-common-lines --text --unified=0 \
-	<(sed -r '/^From /d; /^index [0-9a-f]{7}\.{2}[0-9a-f]{7} [0-9]+$/d; /^([0-9]+\.){3}[0-9]/d; /^\@\@ /d' $1) \
-	<(sed -r '/^From /d; /^index [0-9a-f]{7}\.{2}[0-9a-f]{7} [0-9]+$/d; /^([0-9]+\.){3}[0-9]/d; /^\@\@ /d' $2)
+	<(sed -r '/^From /d; /^index [0-9a-f]{7}\.{2}[0-9a-f]{7} [0-9]+$/d; /^([0-9]+\.){2,3}[0-9]/d; /^\@\@ /d' $1) \
+	<(sed -r '/^From /d; /^index [0-9a-f]{7}\.{2}[0-9a-f]{7} [0-9]+$/d; /^([0-9]+\.){2,3}[0-9]/d; /^\@\@ /d' $2)
