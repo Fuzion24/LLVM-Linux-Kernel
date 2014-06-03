@@ -3,12 +3,13 @@ From: Behan Webster <behanw@converseincode.com>
 Date: Fri, 30 May 2014 11:35:54 -0700
 Subject: [PATCH] gpio, bcm-kona, LLVMLinux: Remove use of __initconst
 
-Remove use of __initconst since these datascrtuctures are references by
-non-init datastructures.
+The __initconst is in the wrong place, and when moved to the correct place
+it uncovers an error where the variable is used by non-init data structures.
 
-Instead merely make them const.
+Instead merely make them const and put the const in the right spot.
 
 Signed-off-by: Behan Webster <behanw@converseincode.com>
+Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 
 ---
  drivers/gpio/gpio-bcm-kona.c      | 2 +-
