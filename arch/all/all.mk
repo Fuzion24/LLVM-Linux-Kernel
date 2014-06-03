@@ -66,10 +66,6 @@ $(shell echo ${seperator})\n\
 	Voluntary context switches: %w\n\
 	Involuntary context switches: %c\n\
 	Command being timed: "%C"\n\
-	Swaps: %W\n\
-	File system inputs: %I\n\
-	File system outputs: %O\n\
-	Page size (bytes): %Z\n\
 	Exit status: %x
 
 #############################################################################
@@ -88,6 +84,9 @@ KERNEL_BUILD	= $(subst ${TOPDIR},${BUILDROOT},${BUILDDIR})/kernel-clang
 KERNELGCC_BUILD	= $(subst ${TOPDIR},${BUILDROOT},${BUILDDIR})/kernel-gcc
 KERNEL_ENV	+= KBUILD_OUTPUT=${KERNEL_BUILD} HOSTCC="${CLANG}" CC="${CLANGCC}"
 KERNELGCC_ENV	+= KBUILD_OUTPUT=${KERNELGCC_BUILD}
+
+KERNEL_CLANG_LOG= ${TMPDIR}/kernel-clang-stderr.log
+ERROR_ZIP	= ${TMPDIR}/llvmlinux-clang-error.zip
 
 #############################################################################
 GCC             ?= gcc
@@ -167,6 +166,16 @@ get-kernel-size		= mkdir -p ${TOPLOGDIR} ; \
 			cd ${3} && wc -c ${KERNEL_SIZE_ARTIFACTS} ) \
 			| tee $(call sizelog,${TOPLOGDIR},{1})
 make-kernel		= (cd ${1} && ${2} time ${3} make ${MAKE_FLAGS} ${KERNEL_VAR} ${4} ${KERNEL_MAKE_TARGETS} ${5})
+zip-error		= ($(call banner,Error file: ${1}); cat "${1}"; \
+				$(call banner,Error file: ${1}); \
+				cd `dirname "${1}"`; \
+				rm ${2}; \
+				zip "${2}" `basename "${1}"` `egrep "^clang.*diagnostic msg: ${TMPDIR}/" ${1} | sed 's|^.*/||'`; \
+				$(call banner,Error log and files: ${2}); \
+			)
+save-log		= (echo '${1}'; rm -f "${2}"; ${1} 2> >(tee "${2}") \
+				|| ($(call zip-error,${2},${3}); false); \
+			)
 
 #############################################################################
 KERNEL_TARGETS_CLANG	= kernel-[fetch,patch,configure,build,clean,sync]
@@ -397,7 +406,8 @@ state/kernel-build: state/kernel-configure
 	@$(MAKE) kernel-quilt-link-patches
 	@$(call banner,Building kernel with clang...)
 	@[ -z "${CCACHE_DIR}" ] || mkdir -p ${CCACHE_DIR}
-	$(call make-kernel,${KERNELDIR},${KERNEL_ENV},${CHECKER},${CHECK_VARS})
+	@[ -z "${NOLOG}" ] && $(call save-log,$(call make-kernel,${KERNELDIR},${KERNEL_ENV},${CHECKER},${CHECK_VARS}),${KERNEL_CLANG_LOG},${ERROR_ZIP}) \
+		|| $(call make-kernel,${KERNELDIR},${KERNEL_ENV},${CHECKER},${CHECK_VARS})
 	@$(call banner,Successfully Built kernel with clang!)
 	@$(call get-kernel-size,clang,${CLANG},${KERNEL_BUILD})
 	$(call state,$@,done)
