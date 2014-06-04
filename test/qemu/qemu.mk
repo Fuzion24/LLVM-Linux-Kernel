@@ -39,7 +39,11 @@ RPMDEP		+=
 
 ifneq (${USE_CCACHE},)
 CCACHE_QEMU_DIR	= $(subst ${TOPDIR},${CCACHE_ROOT},${QEMUDIR}/build/ccache)
+CCACHE_DIRS	+= ${CCACHE_QEMU_DIR}
 QEMU_MAKE_FLAGS	= CCACHE_DIR=${CCACHE_QEMU_DIR} CC="ccache gcc" CXX="ccache g++"
+
+list-ccache-dir::
+	@$(call echovar,CCACHE_QEMU_DIR)
 endif
 
 ##############################################################################

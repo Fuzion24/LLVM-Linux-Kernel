@@ -225,7 +225,11 @@ CLANG_CMAKE_FLAGS	= CC=clang CXX=clang++
 else
 ifneq (${USE_CCACHE},)
 CCACHE_LLVM_DIR		= $(subst ${TOPDIR},${CCACHE_ROOT},${LLVMTOP})/ccache
+CCACHE_DIRS		+= ${CCACHE_LLVM_DIR}
 CLANG_CMAKE_FLAGS	= CCACHE_DIR=${CCACHE_LLVM_DIR} CC="ccache gcc" CXX="ccache g++"
+
+list-ccache-dir::
+	@$(call echovar,CCACHE_LLVM_DIR)
 endif
 endif
 
@@ -424,10 +428,6 @@ clang-version::
 ##############################################################################
 clang-update-all: llvm-sync clang-sync llvm-build clang-build
 #compilerrt-sync
-
-#############################################################################
-list-ccache-dir::
-	@[ -z "${USE_CCACHE}" ] || echo CCACHE_LLVM_DIR=${CCACHE_LLVM_DIR}
 
 #############################################################################
 llvm-clang-bisect: llvm-mrproper clang-mrproper

@@ -46,6 +46,7 @@ seperator = --------------------------------------------------------------------
 #banner	= ($(info ${seperator}) $(info ${1}) $(info ${seperator}))
 banner	= (echo ${seperator}; echo -e ${1} | sed 's|\\n|\n|g; s|${TOPDIR}/||g'; echo -e ${seperator})
 echo	= (echo ${seperator}; echo -e ${1}; echo ${seperator})
+echovar	= ([ -z "$($(1))" ] || echo -e "$(1)\t= $($(1))")
 state	= @mkdir -p $(dir ${1}) && touch ${1} \
 	  && $(call echo,Finished state $(notdir ${1})) \
 	  && ( [ -d $(dir ${1})${2} ] || rm -f $(dir ${1})${2} )

@@ -23,33 +23,37 @@
 #############################################################################
 export USE_CCACHE CCACHE_COMPRESS CCACHE_CPP2 CCACHE_DIR
 
+PAGER		= less
+
 ifneq "${USE_CCACHE}" ""
-CCACHE		= ccache
-CCACHE_COMPRESS	= true
-CCACHE_CPP2	= true
-CCACHE_ROOT	= ${BUILDROOT}
+CCACHE		?= ccache
+CCACHE_COMPRESS	?= true
+CCACHE_CPP2	?= true
+CCACHE_ROOT	?= ${BUILDROOT}
 CCACHE_DIR	= $(subst ${TOPDIR},${CCACHE_ROOT},${BUILDDIR})/ccache
 #CCACHE_CLANG_OPTS = -fcolor-diagnostics
+CCACHE_DIRS	+= ${CCACHE_DIR}
 endif
+
+foreach_ccache	= for C in ${CCACHE_DIRS}; do $(call banner,$$C); (CCACHE_DIR=$$C $(1)); done
 
 #############################################################################
 ccache-clean:
-	@[ -z "${USE_CCACHE}" ] || ccache --cleanup
+	@$(call foreach_ccache,ccache --cleanup)
 
 #############################################################################
 ccache-mrproper:
-	@[ -z "${USE_CCACHE}" ] || ccache --clear
+	@$(call foreach_ccache,ccache --clear)
 
 #############################################################################
 ccache-raze:
-	@[ -z "${USE_CCACHE}" ] || rm -rf ${CCACHE_DIR}
+	@$(call foreach_ccache,rm -rf $$C)
 
 #############################################################################
 ccache-stats:
-	@[ -z "${USE_CCACHE}" ] || ccache --show-stats
+	@$(call foreach_ccache,ccache --show-stats) | ${PAGER}
 
 #############################################################################
 list-ccache-dir::
-	@[ -z "${USE_CCACHE}" ] || echo CCACHE_DIR=${CCACHE_DIR}
-	@which ${GCC}
-
+	@$(call echovar,CCACHE_DIR)
+	@$(call echovar,CCACHE_ROOT)
