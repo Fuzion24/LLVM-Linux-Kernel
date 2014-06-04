@@ -40,21 +40,16 @@ Reviewed-by: Mark Charlebois <charlebm@gmail.com>
  drivers/clk/ti/divider.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/clk/ti/divider.c b/drivers/clk/ti/divider.c
-index e6aa10d..636061e 100644
---- a/drivers/clk/ti/divider.c
-+++ b/drivers/clk/ti/divider.c
-@@ -295,8 +295,8 @@ static struct clk *_register_divider(struct device *dev, const char *name,
+--- linux.orig/drivers/clk/ti/divider.c
++++ linux/drivers/clk/ti/divider.c
+@@ -295,8 +295,8 @@
  	return clk;
  }
  
 -static struct clk_div_table
 -__init *ti_clk_get_div_table(struct device_node *node)
-+static struct clk_div_table *
-+ti_clk_get_div_table(struct device_node *node) __init
++static struct clk_div_table * __init
++ti_clk_get_div_table(struct device_node *node)
  {
  	struct clk_div_table *table;
  	const __be32 *divspec;
--- 
-1.9.1
-
