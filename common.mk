@@ -171,7 +171,7 @@ list-jobs:
 	@echo "-j${JOBS}"
 
 # The order of these includes is important
--include ${TOPDOR}/local.mk
+-include ${TOPDIR}/local.mk
 -include local.mk
 include ${TOPDIR}/arch/all/checkpoint.mk
 include ${TOPDIR}/arch/all/dependency.mk
