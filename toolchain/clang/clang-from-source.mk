@@ -229,7 +229,7 @@ CCACHE_LLVM_OLD_DIR	= $(subst ${TOPDIR},${CCACHE_ROOT},${LLVMTOP})/ccache
 CCACHE_DIRS		+= ${CCACHE_LLVM_DIR}
 CLANG_CMAKE_FLAGS	= CCACHE_DIR=${CCACHE_LLVM_DIR} CC="ccache gcc" CXX="ccache g++"
 
-move_dir = [ -d $(1) ] && [ -d $(2) ] && rm -rf $(1) || mv $(1) $(2) 2>/dev/null || true
+move_dir = [ -d $(1) ] && [ -d $(2) ] && rm -rf $(1) || (mkdir -p `dirname $(2)`; mv $(1) $(2)) 2>/dev/null || true
 
 list-ccache-dir::
 	@$(call echovar,CCACHE_LLVM_DIR)
