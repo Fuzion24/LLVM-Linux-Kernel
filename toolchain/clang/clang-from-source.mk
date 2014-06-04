@@ -224,7 +224,7 @@ ifneq (${CLANG_SELFHOST},)
 CLANG_CMAKE_FLAGS	= CC=clang CXX=clang++
 else
 ifneq (${USE_CCACHE},)
-CCACHE_LLVM_DIR		= $(subst ${TOPDIR},${BUILDROOT},${LLVMTOP})/ccache
+CCACHE_LLVM_DIR		= $(subst ${TOPDIR},${CCACHE_ROOT},${LLVMTOP})/ccache
 CLANG_CMAKE_FLAGS	= CCACHE_DIR=${CCACHE_LLVM_DIR} CC="ccache gcc" CXX="ccache g++"
 endif
 endif

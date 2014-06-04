@@ -27,7 +27,8 @@ ifneq "${USE_CCACHE}" ""
 CCACHE		= ccache
 CCACHE_COMPRESS	= true
 CCACHE_CPP2	= true
-CCACHE_DIR	= $(subst ${TOPDIR},${BUILDROOT},${BUILDDIR})/ccache
+CCACHE_ROOT	= ${BUILDROOT}
+CCACHE_DIR	= $(subst ${TOPDIR},${CCACHE_ROOT},${BUILDDIR})/ccache
 #CCACHE_CLANG_OPTS = -fcolor-diagnostics
 endif
 

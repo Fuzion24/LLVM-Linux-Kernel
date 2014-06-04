@@ -38,7 +38,7 @@ DEBDEP		+= libfdt-dev libglib2.0-dev libpixman-1-dev
 RPMDEP		+= 
 
 ifneq (${USE_CCACHE},)
-CCACHE_QEMU_DIR	= $(subst ${TOPDIR},${BUILDROOT},${QEMUDIR}/build/ccache)
+CCACHE_QEMU_DIR	= $(subst ${TOPDIR},${CCACHE_ROOT},${QEMUDIR}/build/ccache)
 QEMU_MAKE_FLAGS	= CCACHE_DIR=${CCACHE_QEMU_DIR} CC="ccache gcc" CXX="ccache g++"
 endif
 
@@ -127,7 +127,7 @@ ${QEMUSTATE}/qemu-configure: ${QEMUSTATE}/qemu-patch
 #${QEMUSTATE}/qemu-dtc-submodule 
 	@make -s build-dep-check
 	@$(call banner,Configure QEMU...)
-	@mkdir -p ${QEMUBUILDDIR}
+	@mkdir -p ${QEMUBUILDDIR} ${CCACHE_QEMU_DIR}
 	(cd ${QEMUBUILDDIR} && ${QEMU_MAKE_FLAGS} ${QEMUSRCDIR}/configure \
 		--target-list=arm-softmmu,i386-softmmu,x86_64-softmmu --disable-kvm --disable-vnc \
 		--audio-drv-list="" --enable-fdt \
