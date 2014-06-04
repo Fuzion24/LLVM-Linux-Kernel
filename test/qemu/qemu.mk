@@ -37,6 +37,11 @@ QEMU_TARGETS	= qemu qemu-[fetch,configure,build,clean,sync] qemu-patch-applied q
 DEBDEP		+= libfdt-dev libglib2.0-dev libpixman-1-dev
 RPMDEP		+= 
 
+ifneq (${USE_CCACHE},)
+CCACHE_QEMU_DIR	= $(subst ${TOPDIR},${BUILDROOT},${QEMUDIR}/build/ccache)
+QEMU_MAKE_FLAGS	= CCACHE_DIR=${CCACHE_QEMU_DIR} CC="ccache gcc" CXX="ccache g++"
+endif
+
 ##############################################################################
 TARGETS_TEST		+= ${QEMU_TARGETS}
 CLEAN_TARGETS		+= qemu-clean
@@ -123,7 +128,7 @@ ${QEMUSTATE}/qemu-configure: ${QEMUSTATE}/qemu-patch
 	@make -s build-dep-check
 	@$(call banner,Configure QEMU...)
 	@mkdir -p ${QEMUBUILDDIR}
-	(cd ${QEMUBUILDDIR} && ${QEMUSRCDIR}/configure \
+	(cd ${QEMUBUILDDIR} && ${QEMU_MAKE_FLAGS} ${QEMUSRCDIR}/configure \
 		--target-list=arm-softmmu,i386-softmmu,x86_64-softmmu --disable-kvm --disable-vnc \
 		--audio-drv-list="" --enable-fdt \
 		--disable-docs --prefix=${QEMUINSTALLDIR})
@@ -134,8 +139,8 @@ qemu qemu-build: ${QEMUSTATE}/qemu-build
 ${QEMUSTATE}/qemu-build: ${QEMUSTATE}/qemu-configure
 	@[ -d ${QEMUBUILDDIR} ] || ${MAKE} qemu-clean $^ # build in tmpfs
 	@$(call banner,Building QEMU...)
-	@mkdir -p ${QEMUINSTALLDIR}
-	make -C ${QEMUBUILDDIR} -j${JOBS} install
+	@mkdir -p ${QEMUINSTALLDIR} ${CCACHE_QEMU_DIR}
+	${QEMU_MAKE_FLAGS} make -C ${QEMUBUILDDIR} -j${JOBS} install
 	$(call state,$@)
 	
 ##############################################################################
