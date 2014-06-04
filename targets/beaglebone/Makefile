@@ -32,7 +32,8 @@ BOARD		= beaglebone
 KERNEL_CFG		= ${KERNELDIR}/arch/arm/configs/multi_v7_defconfig
 KERNEL_UIMAGE		= arch/arm/boot/uImage
 KERNEL_DTBS		= arch/arm/boot/dts/am335x-bone*.dtb
-KERNEL_MAKE_TARGETS	= LOADADDR=0x80008000 uImage zImage dtbs
+#KERNEL_MAKE_TARGETS	= LOADADDR=0x80008000 uImage dtbs
+KERNEL_MAKE_TARGETS	= zImage dtbs
 
 DEBDEP			+= u-boot-tools
 
