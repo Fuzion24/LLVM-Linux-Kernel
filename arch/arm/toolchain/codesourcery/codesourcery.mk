@@ -78,7 +78,7 @@ codesourcery-gcc-clean arm-cc-clean:
 	@rm -rf ${CSCC_DIR} ${CSCC_TMPDIR}
 
 arm-cc-version: ${ARCH_ARM_TOOLCHAIN_STATE}/codesourcery-gcc-${CSCC_NAME}
-	@echo "CODESOURCERY\t= `${CROSS_GCC} --version | head -1`"
+	@echo -e "CODESOURCERY\t= `${CROSS_GCC} --version | head -1`"
 
 ${ARCH_ARM_TMPDIR}:
 	@mkdir -p $@

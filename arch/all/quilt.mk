@@ -307,9 +307,9 @@ list-kernel-checkpatch list-kernel-get_maintainer: list-kernel-%: kernel-fetch
 			if [ -f "$$DIR/$$PATCH" -a ! -L "$$DIR/$$PATCH" ] ; then \
 				OUTPUT=`./scripts/$*.pl "$$DIR/$$PATCH"` ; \
 				if echo "$$OUTPUT" | grep -q "total: 0 errors, 0 warnings," ; then \
-					[ -z "$$NOPASS" ] && echo "PASS\t$$DIR/$$PATCH" ; \
+					[ -z "$$NOPASS" ] && echo -e "PASS\t$$DIR/$$PATCH" ; \
 				else \
-					[ $@ = list-kernel-checkpatch ] && echo -n "FAIL\t" ; \
+					[ $@ = list-kernel-checkpatch ] && echo -e -n "FAIL\t" ; \
 					echo "$$DIR/$$PATCH" ; \
 					if [ -z "$$NOFAIL" ] ; then \
 						echo "${seperator}" ; \

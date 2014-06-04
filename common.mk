@@ -44,15 +44,15 @@ HELP_TARGETS	+= common-help
 ##############################################################################
 seperator = ---------------------------------------------------------------------
 #banner	= ($(info ${seperator}) $(info ${1}) $(info ${seperator}))
-banner	= (echo ${seperator}; echo ${1} | sed 's|\\n|\n|g; s|${TOPDIR}/||g'; echo ${seperator})
-echo	= (echo ${seperator}; echo ${1}; echo ${seperator})
+banner	= (echo ${seperator}; echo -e ${1} | sed 's|\\n|\n|g; s|${TOPDIR}/||g'; echo -e ${seperator})
+echo	= (echo ${seperator}; echo -e ${1}; echo ${seperator})
 state	= @mkdir -p $(dir ${1}) && touch ${1} \
 	  && $(call echo,Finished state $(notdir ${1})) \
 	  && ( [ -d $(dir ${1})${2} ] || rm -f $(dir ${1})${2} )
 leavestate = rm -f $(wildcard $(addprefix ${1}/,${2}))
-error1	= ( echo Error: ${1}; false )
+error1	= ( echo -e Error: ${1}; false )
 assert	= [ ${1} ] || $(call error1,${2})
-assert_found_in_path = which ${1} || (echo "${1}: Not found in PATH" ${2}; false)
+assert_found_in_path = which ${1} || (echo -e "${1}: Not found in PATH" ${2}; false)
 
 ##############################################################################
 # recursive Make macros
@@ -102,6 +102,10 @@ gitsync = if [ -n "${2}" ] ; then \
 	fi
 
 ##############################################################################
+modified:
+	@git status | awk -e '/modified:/ {print $$2}'
+
+##############################################################################
 # Subversion macros used by all subsystems
 svncheckout = [ -d ${2}/.svn ] || svn --quiet checkout ${1} -r ${3} ${2}
 svnupdate = (cd ${1} && svn update)
@@ -109,7 +113,7 @@ svnupdate = (cd ${1} && svn update)
 gitsvnrev = $$(cd ${1}; git svn find-rev $$(git rev-parse HEAD))
 
 #############################################################################
-ini_section	= (echo "\n${2}"; $(MAKE) -s ${3} | egrep -v '^$$' | \
+ini_section	= (echo -e "\n${2}"; $(MAKE) -s ${3} | egrep -v '^$$' | \
 			sed -e '/[ \t]*+=/d; s/[ \t]*=[ \t]*/=/;') >> $1
 ini_file_entry	= [ ! -f "${2}" ] || echo "${1}=${2}"
 
@@ -186,23 +190,23 @@ help:
 list-targets:
 ifneq "${TARGETS}" ""
 	@echo "List of unclassified make targets:"
-	@for t in ${TARGETS}; do echo "\t"$$t; done | sort -u
+	@for t in ${TARGETS}; do echo -e "\t"$$t; done | sort -u
 	@echo
 endif
 	@echo "List of available make targets for test tools:"
-	@for t in ${TARGETS_TEST}; do echo "\t"$$t; done | sort -u
+	@for t in ${TARGETS_TEST}; do echo -e "\t"$$t; done | sort -u
 	@echo
 	@echo "List of available make targets for toolchain:"
-	@for t in ${TARGETS_TOOLCHAIN}; do echo "\t"$$t; done | sort -u
+	@for t in ${TARGETS_TOOLCHAIN}; do echo -e "\t"$$t; done | sort -u
 	@echo
 	@echo "List of available make targets for platform:"
-	@for t in ${TARGETS_BUILD}; do echo "\t"$$t; done | sort -u
+	@for t in ${TARGETS_BUILD}; do echo -e "\t"$$t; done | sort -u
 	@echo
 	@echo "List of available utility make targets:"
-	@for t in ${TARGETS_UTILS}; do echo "\t"$$t; done | sort -u
+	@for t in ${TARGETS_UTILS}; do echo -e "\t"$$t; done | sort -u
 	@echo
 	@echo "List of available command-line make variables:"
-	@for t in ${CMDLINE_VARS}; do echo "\t"$$t; done | sort -u
+	@for t in ${CMDLINE_VARS}; do echo -e "\t"$$t; done | sort -u
 
 ##############################################################################
 list-fetch-all:
@@ -229,12 +233,12 @@ list-settings settings list-config config:
 
 ##############################################################################
 list-versions:
-	@echo "CMAKE\t\t= `cmake --version`"
-	@echo "GCC\t\t= `gcc --version | head -1`"
-	@echo "CC\t\t= `$(CC) --version | head -1`"
-	@echo "GIT\t\t= `git --version`"
-	@echo "MAKE\t\t= `make --version | head -1`"
-	@echo "QUILT\t\t= quilt version `quilt --version`"
+	@echo -e "CMAKE\t\t= `cmake --version`"
+	@echo -e "GCC\t\t= `gcc --version | head -1`"
+	@echo -e "CC\t\t= `$(CC) --version | head -1`"
+	@echo -e "GIT\t\t= `git --version`"
+	@echo -e "MAKE\t\t= `make --version | head -1`"
+	@echo -e "QUILT\t\t= quilt version `quilt --version`"
 	@${MAKE} -s ${VERSION_TARGETS}
 
 ##############################################################################

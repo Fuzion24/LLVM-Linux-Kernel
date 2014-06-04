@@ -50,11 +50,11 @@ CLANG_TOOLCHAIN ?= from-known-good-source
 
 ##############################################################################
 llvm-version::
-	@[ ! -e $(dir ${CLANG})llc -o -n "${LLVMDIR}" ] || echo "LLVM\t\t= `$(dir ${CLANG})llc --version | grep version`"
+	@[ ! -e $(dir ${CLANG})llc -o -n "${LLVMDIR}" ] || echo -e "LLVM\t\t= `$(dir ${CLANG})llc --version | grep version`"
 
 ##############################################################################
 clang-version::
-	@[ ! -e ${CLANG} -o -n "${CLANGDIR}" ] || echo "CLANG\t\t= `${CLANG} --version | grep version`"
+	@[ ! -e ${CLANG} -o -n "${CLANGDIR}" ] || echo -e "CLANG\t\t= `${CLANG} --version | grep version`"
 
 ##############################################################################
 list-toolchain::

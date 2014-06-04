@@ -187,4 +187,4 @@ buildroot-sync: ${BUILDROOT_STATE}/buildroot-fetch
 buildroot-version: ${BUILDROOT_STATE}/buildroot-fetch
 	@[ -d ${BUILDROOT_SRCDIR} ] \
 	&& (cd ${BUILDROOT_SRCDIR} \
-	&& echo "BUILDROOT\t= buildroot version `awk -F= '/^export BR2_VERSION:=/ {print $$2}' Makefile` commit `git rev-parse HEAD`")
+	&& echo -e "BUILDROOT\t= buildroot version `awk -F= '/^export BR2_VERSION:=/ {print $$2}' Makefile` commit `git rev-parse HEAD`")

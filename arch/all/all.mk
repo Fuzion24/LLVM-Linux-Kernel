@@ -536,7 +536,7 @@ warnings-kind: ${BUILD_WARNINGS}
 
 #############################################################################
 kernel-version:
-	@echo -n "KERNEL\t\t= "
+	@echo -e -n "KERNEL\t\t= "
 	@$(call get-kernel-version,${KERNELDIR})
 
 #############################################################################

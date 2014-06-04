@@ -135,7 +135,7 @@ ltp-raze: ltp-mrproper
 	rm -rf ${LTPSTATE} ${LTPTMPDIR} ${LTPSRCDIR}
 
 ltp-version:
-	@echo "LTP\t\t= LTP version ${LTPSF_RELEASE} (from sourceforge)"
+	@echo -e "LTP\t\t= LTP version ${LTPSF_RELEASE} (from sourceforge)"
 
 # ${1}=logdir ${2}=toolchain ${3}=testname
 ltplog	= ${1}/${2}-${ARCH}-`date +%Y-%m-%d_%H:%M:%S`-${3}.log

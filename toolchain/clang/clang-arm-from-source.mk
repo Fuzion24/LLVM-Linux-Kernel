@@ -42,8 +42,8 @@ llvm-arm: ${LLVMSTATE}/llvm-arm-build
 ${LLVMSTATE}/llvm-arm-build: ${LLVMSTATE}/clang-build
 	$(shell mkdir -p ${ARMINSTALLDIR})
 	$(shell mkdir -p ${ARMLLVMBUILDDIR})
-	[ -d ${ARMLIBDIR} ] || (echo "missing ARMLIBDIR" && false)
-	[ -d ${ARMINCLUDEDIR} ] || (echo "missing ARMINCLUDEDIR" && false)
+	$(call assert,-d ${ARMLIBDIR},"missing ARMLIBDIR")
+	$(call assert,-d ${ARMINCLUDEDIR},"missing ARMINCLUDEDIR")
 	cd ${ARMLLVMBUILDDIR} && CC=arm-linux-gnueabihf-gcc CXX=arm-linux-gnueabihf-g++-4.8 cmake -G Ninja ${LLVMTOP}/src/llvm -DCMAKE_CROSSCOMPILING=True \
 		-DCMAKE_INSTALL_PREFIX=${ARMINSTALLDIR} \
 		-DLLVM_TABLEGEN=${LLVMBINDIR}/llvm-tblgen \
@@ -62,8 +62,8 @@ clang-arm-help:
 	@echo "These are the make targets for building LLVM and Clang for ARM:"
 	@echo "* make clang-arm - cross compile clang (and LLVM) for armhf"
 	@echo "* make arm-clang-dep-install-deb - install the required packages"
-##############################################################################
 
+##############################################################################
 clang-arm: ${LLVMSTATE}/clang-arm-build 
 ${LLVMSTATE}/clang-arm-build: ${LLVMSTATE}/clang-build ${LLVMSTATE}/llvm-arm-build \
 		arm-clang-build-dep-check-deb clang-arm-user-libs
@@ -89,7 +89,7 @@ DEPLIST		= $(shell \
 	fi)
 
 debdep  = DEBS=`dpkg -l $(1) | awk '/^[pu]/ {print $$2}'` ; \
-        [ -z "$$DEBS" ] || ( echo "$(2)"; echo "  sudo apt-get install" $$DEBS ; false )
+        $(call assert,-z "$$DEBS","$(2)\n  sudo apt-get install" $$DEBS)
 arm-clang-build-dep-check-deb:
 	@$(call debdep,${ARMCLANGDEBDEP},${DEPMSG})
 

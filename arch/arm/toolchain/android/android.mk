@@ -51,11 +51,8 @@ ${ANDROID_DIR}:
 
 android-gcc arm-cc: ${ARCH_ARM_TOOLCHAIN_STATE}/android-gcc
 ${ARCH_ARM_TOOLCHAIN_STATE}/android-gcc: ${ANDROID_DIR}
-	@if [ ! `uname -i | grep -v i386` ]; then \
-		echo "Android compiler only supported on x86_64"; \
-		echo "set CROSS_ARM_TOOLCHAIN=codesourcery for i386"; \
-		false; \
-	fi
+	$(call assert,`uname -i | grep -v i386`,"Android compiler only supported on x86_64\n" \
+		"set CROSS_ARM_TOOLCHAIN=codesourcery for i386")
 	@$(call banner,Installing Android compiler...)
 	@$(call gitclone,${ANDROID_SDK_GIT},${ANDROID_CC_DIR},-b ${ANDROID_SDK_BRANCH})
 	$(call state,$@)
@@ -73,5 +70,5 @@ android-gcc-clean arm-cc-clean:
 	@rm -rf ${LINARO_CC_DIR}
 
 arm-cc-version: ${ARCH_ARM_TOOLCHAIN_STATE}/android-gcc
-	@echo "ANDROID_GCC\t= `${ANDROID_GCC} --version | head -1`"
+	@echo -e "ANDROID_GCC\t= `${ANDROID_GCC} --version | head -1`"
 

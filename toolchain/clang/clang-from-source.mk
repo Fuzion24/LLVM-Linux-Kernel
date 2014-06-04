@@ -393,7 +393,7 @@ clang-sync: clang-clean
 ##############################################################################
 llvm-version::
 	@LLC=${LLVMINSTALLDIR}/bin/llc; \
-	echo -n "LLVM\t\t= "; \
+	echo -e -n "LLVM\t\t= "; \
 	if [ -e "$$LLC" ] ; then \
 		echo -n `$$LLC --version | grep version` ; \
 	else \
@@ -406,7 +406,7 @@ llvm-version::
 
 ##############################################################################
 clang-version::
-	@echo -n "CLANG\t\t= "
+	@echo -e -n "CLANG\t\t= "
 	@if [ -e "${CLANG}" ] ; then \
 		echo -n `${CLANG} --version | grep version` ; \
 	else \

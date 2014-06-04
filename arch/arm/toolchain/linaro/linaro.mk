@@ -67,6 +67,5 @@ linaro-gcc-clean arm-cc-clean:
 	@rm -rf ${LINARO_CC_DIR}
 
 arm-cc-version: ${ARCH_ARM_TOOLCHAIN_STATE}/linaro-gcc
-	env
-	@echo "LINARO_GCC\t= `${LINARO_GCC} --version | head -1`"
+	@echo -e "LINARO_GCC\t= `${LINARO_GCC} --version | head -1`"
 
