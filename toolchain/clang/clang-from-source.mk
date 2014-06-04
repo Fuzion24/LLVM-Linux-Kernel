@@ -229,7 +229,7 @@ CCACHE_LLVM_OLD_DIR	= $(subst ${TOPDIR},${CCACHE_ROOT},${LLVMTOP})/ccache
 CCACHE_DIRS		+= ${CCACHE_LLVM_DIR}
 CLANG_CMAKE_FLAGS	= CCACHE_DIR=${CCACHE_LLVM_DIR} CC="ccache gcc" CXX="ccache g++"
 
-move_dir = [ -d $(1) ] && [ -d $(2) ] && rm -rf $(1) || mv $(1) $(2) 2>/dev/null
+move_dir = [ -d $(1) ] && [ -d $(2) ] && rm -rf $(1) || mv $(1) $(2) 2>/dev/null || true
 
 list-ccache-dir::
 	@$(call echovar,CCACHE_LLVM_DIR)
@@ -272,7 +272,6 @@ ${LLVMSTATE}/clang-unpatched-configure: ${LLVMSTATE}/clang-unpatched-fetch
 ##############################################################################
 llvmbuild = $(call banner,Building ${1}...) ; \
 	$(call move_dir,${CCACHE_LLVM_OLD_DIR},${CCACHE_LLVM_DIR}); \
-	false; exit; \
 	${CLANG_CMAKE_FLAGS} make -C ${2} -j${JOBS} install
 
 ##############################################################################
@@ -292,7 +291,6 @@ clang clang-build: ${LLVMSTATE}/clang-build
 ${LLVMSTATE}/clang-build: ${LLVMSTATE}/llvm-build ${LLVMSTATE}/clang-configure
 	@[ -d ${LLVMBUILDDIR} ] || ${MAKE} llvm-clean llvm-build $^ # build in tmpfs
 	@$(call llvmbuild,Clang,${CLANGBUILDDIR})
-	false
 	cp -a ${CLANGDIR}/tools/scan-build/* ${LLVMINSTALLDIR}/bin
 	cp -a ${CLANGDIR}/tools/scan-view/* ${LLVMINSTALLDIR}/bin
 	$(call state,$@)
