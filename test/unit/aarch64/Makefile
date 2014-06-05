@@ -1,12 +1,12 @@
 BASE=../../..
 
 # Prebuilt Clang
-#CLANGDIR=${BASE}/toolchain/clang/clang+llvm-3.3-Ubuntu-13.04-x86_64-linux-gnu/bin
-#VERSION=3.3
+CLANGDIR=${BASE}/toolchain/clang/clang+llvm-3.4-x86_64-linux-gnu-ubuntu-13.10/bin
+VERSION=3.4
 
 # Src Clang
-CLANGDIR=${BASE}/toolchain/clang/install/bin
-VERSION=3.4
+#CLANGDIR=${BASE}/toolchain/clang/install/bin
+#VERSION=3.5
 
 VEXPRESSDIR=${BASE}/targets/vexpress
 
@@ -30,6 +30,7 @@ all:
 	make t3-gcc
 	make t4-gcc
 	make t5-gcc
+	make x1-gcc
 	@echo
 	@echo "=========== building with Clang  ========="
 	@echo
@@ -38,6 +39,7 @@ all:
 	-make t3
 	-make t4
 	-make t5
+	-make x1
 
 t%: t%.c
 	@echo
@@ -60,5 +62,15 @@ t5-gcc:  t5.c
 	${ARMCC} ${OPTIONS2} -o $@ $< 
 	@echo "+++ $@ built successfully +++"
 
+x1-gcc:  x1.c
+	@echo
+	${ARMCC} ${OPTIONS2} -o $@ $< 
+	@echo "+++ $@ built successfully +++"
+
+x1:  x1.c
+	@echo
+	(CROSS_COMPILE=aarch64-linux-gnu- ${CLANGDIR}/clang ${OPTIONS1} ${OPTIONS2} -o $@ $?)
+	@echo "+++ $@ built successfully +++"
+
 clean:
-	rm -f t? t?-gcc
+	rm -f t? t?-gcc x? x?-gcc
