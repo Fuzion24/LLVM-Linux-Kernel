@@ -1,12 +1,12 @@
 BASE=../../..
 
 # Prebuilt Clang
-CLANGDIR=${BASE}/toolchain/clang/clang+llvm-3.4-x86_64-linux-gnu-ubuntu-13.10/bin
-VERSION=3.4
+#CLANGDIR=${BASE}/toolchain/clang/clang+llvm-3.4-x86_64-linux-gnu-ubuntu-13.10/bin
+#VERSION=3.4
 
 # Src Clang
-#CLANGDIR=${BASE}/toolchain/clang/install/bin
-#VERSION=3.5
+CLANGDIR=${BASE}/toolchain/clang/install/bin
+VERSION=3.5.0
 
 VEXPRESSDIR=${BASE}/targets/vexpress
 
@@ -15,7 +15,7 @@ ARMLIBC=${BASE}/arch/aarch64/toolchain/linaro/gcc-linaro-aarch64-linux-gnu-4.8-2
 
 OPTIONS=-O2
 
-OPTIONS1=-cc1 -triple aarch64--linux-gnu -S -disable-free -disable-llvm-verifier -mrelocation-model static -mdisable-fp-elim -relaxed-aliasing -mdisable-tail-calls -fmath-errno -masm-verbose -mconstructor-aliases -fuse-init-array -g -nostdsysteminc -nobuiltininc -resource-dir /local2/mnt/workspace/llvmlinux/toolchain/clang/install/bin/../lib/clang/3.4 -sys-header-deps -isystem /local2/mnt/workspace/llvmlinux/toolchain/clang/install/bin/../lib/clang/3.4/include -fcolor-diagnostics -vectorize-loops -vectorize-slp -fobjc-runtime=gcc -fno-dwarf-directory-asm -fdebug-compilation-dir /local2/mnt/workspace/llvmlinux/targets/vexpress64/src/linaro-aarch64 -ferror-limit 19 -fmessage-length 127 -mstackrealign -Wno-gnu -Wno-tautological-compare -Wno-format-invalid-specifier -Wno-asm-operand-widths 
+OPTIONS1=-cc1 -triple aarch64--linux-gnu -S -disable-free -disable-llvm-verifier -mrelocation-model static -mdisable-fp-elim -relaxed-aliasing -mdisable-tail-calls -fmath-errno -masm-verbose -mconstructor-aliases -fuse-init-array -g -nostdsysteminc -nobuiltininc -resource-dir /local2/mnt/workspace/llvmlinux/toolchain/clang/install/bin/../lib/clang/${VERSION} -sys-header-deps -isystem /local2/mnt/workspace/llvmlinux/toolchain/clang/install/bin/../lib/clang/${VERSION}/include -fcolor-diagnostics -vectorize-loops -vectorize-slp -fobjc-runtime=gcc -fno-dwarf-directory-asm -fdebug-compilation-dir /local2/mnt/workspace/llvmlinux/targets/vexpress64/src/linaro-aarch64 -ferror-limit 19 -fmessage-length 127 -mstackrealign -Wno-gnu -Wno-tautological-compare -Wno-format-invalid-specifier -Wno-asm-operand-widths 
 
 
 OPTIONS2=-D __KERNEL__ -D CC_HAVE_ASM_GOTO -I /local2/mnt/workspace/llvmlinux/targets/vexpress64/src/linaro-aarch64/arch/arm64/include -I /local2/mnt/workspace/llvmlinux/targets/vexpress64/src/linaro-aarch64/arch/arm64/include/uapi -I /local2/mnt/workspace/llvmlinux/targets/vexpress64/src/linaro-aarch64/include/uapi -O2 -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -Werror-implicit-function-declaration -Wno-format-security -Wno-unused-variable -Wdeclaration-after-statement -Wno-pointer-sign -fwrapv -fno-builtin -fno-signed-char -fno-common -fdiagnostics-show-option 
