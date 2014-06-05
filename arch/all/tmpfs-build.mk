@@ -20,10 +20,16 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
+TMPFS_BUILD_STATE	= ${TOPDIR}/build/tmpfs-build-dir
+
 # Look to see if we have a tmpfs mounted. If so use it. Use default if provided
 ifndef ${BUILDROOT}
 BUILDROOT	:= $(shell (mount | egrep "tmpfs on ${TOPDIR}.*/build .* tmpfs" \
 			|| echo . . ${TOPDIR}) | head -1 | awk '{print $$3}')
+endif
+
+ifdef ${TMPFS_REQUIRED_FOR_BUILD}
+TMPFS_MOUNT	= ${TMPFS_BUILD_STATE}
 endif
 
 HELP_TARGETS		+= tmpfs-build-help
@@ -48,6 +54,10 @@ check-tmpfs = if [ "${1}" = "${2}" ] ; then \
 	fi
 
 ##############################################################################
+${TMPFS_BUILD_STATE}:
+	$(MAKE) tmpfs-build-setup
+
+##############################################################################
 tmpfs-build-setup:
 	@mkdir -p ${TOPDIR}/build
 	@mount | egrep -q "tmpfs on ${TOPDIR}/build .* tmpfs" \
@@ -58,6 +68,7 @@ tmpfs-build-setup:
 			echo "run the following once before building:" ; \
 			echo ; \
 			echo "export BUILDROOT=${TOPDIR}/build" )
+	@touch ${TMPFS_BUILD_STATE}
 
 ##############################################################################
 tmpfs-build-teardown:

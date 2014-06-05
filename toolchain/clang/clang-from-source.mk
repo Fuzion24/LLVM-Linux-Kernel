@@ -247,26 +247,26 @@ llvmconfig = $(call banner,Configure ${1}...) ; \
 
 ##############################################################################
 llvm-configure: ${LLVMSTATE}/llvm-configure
-${LLVMSTATE}/llvm-configure: ${LLVMSTATE}/llvm-patch
+${LLVMSTATE}/llvm-configure: ${LLVMSTATE}/llvm-patch ${TMPFS_BUILD_STATE}
 	@make -s build-dep-check
 	@$(call llvmconfig,LLVM,${LLVMBUILDDIR},${LLVMINSTALLDIR},,${LLVMDIR})
 	$(call state,$@,llvm-build)
 
 ##############################################################################
 clang-configure: ${LLVMSTATE}/clang-configure
-${LLVMSTATE}/clang-configure: ${LLVMSTATE}/clang-patch
+${LLVMSTATE}/clang-configure: ${LLVMSTATE}/clang-patch ${TMPFS_BUILD_STATE}
 	@$(call llvmconfig,Clang,${CLANGBUILDDIR},${LLVMINSTALLDIR},-DCLANG_PATH_TO_LLVM_SOURCE=${LLVMDIR} -DCLANG_PATH_TO_LLVM_BUILD=${LLVMBUILDDIR},${CLANGDIR})
 	$(call state,$@,clang-build)
 
 ##############################################################################
 llvm-unpatched-configure: ${LLVMSTATE}/llvm-unpatched-configure
-${LLVMSTATE}/llvm-unpatched-configure: ${LLVMSTATE}/llvm-unpatched-fetch
+${LLVMSTATE}/llvm-unpatched-configure: ${LLVMSTATE}/llvm-unpatched-fetch ${TMPFS_BUILD_STATE}
 	@$(call llvmconfig,LLVM-unpatched,${LLVMBUILDDIR2},${LLVMINSTALLDIR2},-DCMAKE_EXECUTABLE_SUFFIX=-unpatched,${LLVMDIR2})
 	$(call state,$@,llvm-unpatched-build)
 
 ##############################################################################
 clang-unpatched-configure: ${LLVMSTATE}/clang-unpatched-configure
-${LLVMSTATE}/clang-unpatched-configure: ${LLVMSTATE}/clang-unpatched-fetch
+${LLVMSTATE}/clang-unpatched-configure: ${LLVMSTATE}/clang-unpatched-fetch ${TMPFS_BUILD_STATE}
 	@$(call llvmconfig,Clang-unpatched,${CLANGBUILDDIR2},${LLVMINSTALLDIR2},-DCLANG_PATH_TO_LLVM_SOURCE=${LLVMDIR2} -DCLANG_PATH_TO_LLVM_BUILD=${LLVMBUILDDIR2} -DCMAKE_EXECUTABLE_SUFFIX=-unpatched,${CLANGDIR2})
 	$(call state,$@,clang-unpatched-build)
 
