@@ -229,7 +229,8 @@ CCACHE_LLVM_OLD_DIR	= $(subst ${TOPDIR},${CCACHE_ROOT},${LLVMTOP})/ccache
 CCACHE_DIRS		+= ${CCACHE_LLVM_DIR}
 CLANG_CMAKE_FLAGS	= CCACHE_DIR=${CCACHE_LLVM_DIR} CC="ccache gcc" CXX="ccache g++"
 
-move_dir = [ -d $(1) ] && [ -d $(2) ] && rm -rf $(1) || (mkdir -p `dirname $(2)`; mv $(1) $(2)) 2>/dev/null || true
+# Note this includes a trailing ';' since it isn't always defined.
+move_dir = [ -d $(1) ] && [ -d $(2) ] && rm -rf $(1) || (mkdir -p `dirname $(2)`; mv $(1) $(2)) 2>/dev/null || true;
 
 list-ccache-dir::
 	@$(call echovar,CCACHE_LLVM_DIR)
@@ -238,7 +239,7 @@ endif
 
 ##############################################################################
 llvmconfig = $(call banner,Configure ${1}...) ; \
-	$(call move_dir,${CCACHE_LLVM_OLD_DIR},${CCACHE_LLVM_DIR}); \
+	$(call move_dir,${CCACHE_LLVM_OLD_DIR},${CCACHE_LLVM_DIR}) \
 	mkdir -p ${2} ${3} ${CCACHE_LLVM_DIR} && \
 	(cd ${2}; ${CLANG_CMAKE_FLAGS} cmake -DCMAKE_BUILD_TYPE=Release -DLLVM_BINUTILS_INCDIR=/usr/include/ \
 	-DLLVM_TARGETS_TO_BUILD="${LLVM_TARGETS_TO_BUILD}" -DCMAKE_INSTALL_PREFIX=${3} ${4} ${5})
@@ -271,7 +272,7 @@ ${LLVMSTATE}/clang-unpatched-configure: ${LLVMSTATE}/clang-unpatched-fetch
 
 ##############################################################################
 llvmbuild = $(call banner,Building ${1}...) ; \
-	$(call move_dir,${CCACHE_LLVM_OLD_DIR},${CCACHE_LLVM_DIR}); \
+	$(call move_dir,${CCACHE_LLVM_OLD_DIR},${CCACHE_LLVM_DIR}) \
 	${CLANG_CMAKE_FLAGS} make -C ${2} -j${JOBS} install
 
 ##############################################################################
