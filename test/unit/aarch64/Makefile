@@ -72,5 +72,15 @@ x1:  x1.c
 	(CROSS_COMPILE=aarch64-linux-gnu- ${CLANGDIR}/clang ${OPTIONS1} ${OPTIONS2} -o $@ $?)
 	@echo "+++ $@ built successfully +++"
 
+x2-gcc:  x2.c
+	@echo
+	${ARMCC} ${OPTIONS2} -o $@ $< 
+	@echo "+++ $@ built successfully +++"
+
+x2:  x2.c
+	@echo
+	(CROSS_COMPILE=aarch64-linux-gnu- ${CLANGDIR}/clang ${OPTIONS1} ${OPTIONS2} -o $@ $?)
+	@echo "+++ $@ built successfully +++"
+
 clean:
 	rm -f t? t?-gcc x? x?-gcc
