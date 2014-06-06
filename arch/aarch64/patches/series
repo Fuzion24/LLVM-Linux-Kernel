@@ -10,5 +10,4 @@ futex-init-aarch64.patch
 abort-missing-aarch64.patch
 percpu.patch
 unhandled_else.patch
-spinlock.patch
 overflow-warn.patch
