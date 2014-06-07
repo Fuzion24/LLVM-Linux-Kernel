@@ -298,7 +298,8 @@ ${SHARED_KERNEL}:
 #############################################################################
 kernel-raze::
 	@$(call banner,Razing kernel)
-	@rm -rf ${SHARED_KERNEL} ${KERNELDIR} ${BUILDDIR}
+	@rm -rf ${KERNELDIR} ${BUILDDIR}
+	@$(call notshared,rm -rf ${SHARED_KERNEL})
 	@rm -f $(addsuffix /*,${LOGDIR} ${TMPDIR})
 	@$(call leavestate,${STATEDIR},*)
 
@@ -491,7 +492,8 @@ kernel-shared-sync:
 kernel-sync: state/kernel-fetch kernel-clean kernel-shared-sync
 	@$(call banner,Syncing kernel...)
 	@$(call check_llvmlinux_commit,${CONFIG})
-	@$(call optinal_gitreset,${KERNELDIR})
+	@$(call optional_gitreset,${KERNELDIR})
+	$(call gitref,${KERNELDIR},${SHARED_KERNEL})
 	@$(call gitsync,${KERNELDIR},${KERNEL_COMMIT},${KERNEL_BRANCH},${KERNEL_TAG})
 
 #############################################################################

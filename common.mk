@@ -106,6 +106,9 @@ gitsync = if [ -n "${2}" ] ; then \
 		$(call gitpull,${1},${3}) ; \
 	fi
 
+GIT_ALTERNATES	= .git/objects/info/alternates
+gitref = grep -q "$(2)" "$(1)/${GIT_ALTERNATES}" || sed -i -e 's|^.*$(notdir $(2))|$(2)|' $(1)/${GIT_ALTERNATES}
+
 ##############################################################################
 modified:
 	@git status | sed -e 's/new file:/newfile:/' | awk -e '/(modified|newfile|renamed):/ {print $$2}'
