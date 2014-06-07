@@ -1,8 +1,13 @@
-From 485e451087e4865bb21255ef481a78d5c16642d6 Mon Sep 17 00:00:00 2001
+From 8133df4b6afd8fab5390f6fa95a7782dfeb85314 Mon Sep 17 00:00:00 2001
 From: Mark Charlebois <charlebm@gmail.com>
 Date: Sat, 19 Apr 2014 23:00:15 -0700
-Subject: [PATCH] overflow-warn
+Subject: [PATCH] fs, LLVMLinux: Remove warning from COMPATIBLE_IOCTL
 
+cmd in COMPATIBLE_IOCTL is always a u32, so cast it so there isn't a warning
+about an overflow in XFORM.
+
+Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+Signed-off-by: Behan Webster <behanw@converseincode.com>
 ---
  fs/compat_ioctl.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
@@ -21,5 +26,5 @@ index e822890..c374c73 100644
     Valid reasons to use this:
     - It is implemented with ->compat_ioctl on some device, but programs
 -- 
-1.8.3.2
+1.9.1
 
