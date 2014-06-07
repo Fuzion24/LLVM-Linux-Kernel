@@ -1,4 +1,2 @@
 mach-vt8500.patch
-ti-divider.patch
-initconst.patch
 tps65217-regulator-config.patch

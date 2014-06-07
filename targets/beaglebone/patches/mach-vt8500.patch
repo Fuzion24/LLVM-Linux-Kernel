@@ -1,7 +1,7 @@
 From 39f127ea4fb3f287fe84e8b68ff0d3675f90506e Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Fri, 30 May 2014 11:35:50 -0700
-Subject: [PATCH donotupstream] arm, vt8500, LLVMLlinux: Comment out mcr if used with clang
+Subject: [PATCH] DO-NOT-UPSTREAM arm, vt8500, LLVMLlinux: Comment out mcr if used with clang
 
 This is a workaround patch. There is no documentation about the "mcr%?" syntax for GNU
 inline assembly. This may be to choose between MCR and MCRR but its impossible to know.
