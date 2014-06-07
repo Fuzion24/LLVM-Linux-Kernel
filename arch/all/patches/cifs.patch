@@ -1,7 +1,7 @@
 From 9f1d0678046c803462f14a6f6bd1e399e8f3e42a Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
 Date: Tue, 4 Jun 2013 19:17:28 +0200
-Subject: [PATCH] crypto, cifs: LLVMLinux: Remove used of VLIAS from cifs
+Subject: [PATCH] crypto, cifs: LLVMLinux: Remove used of VLAIS from cifs
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit

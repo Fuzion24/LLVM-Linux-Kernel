@@ -1,4 +1,4 @@
-From 4ca45c0db0945a04c8292273b0ccd42a4932de95 Mon Sep 17 00:00:00 2001
+From b83791310646498410f26fa37e4a792c26871b31 Mon Sep 17 00:00:00 2001
 From: Mark Charlebois <charlebm@gmail.com>
 Date: Tue, 20 Nov 2012 21:18:16 +0100
 Subject: [PATCH] crypto: LLVMLinux: aligned-attribute.patch
@@ -12,8 +12,6 @@ Making it into 2 lines makes it more readable and works with both compilers.
 Author: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Jonathan Corbet <corbet@lwn.net>
 ---
  crypto/shash.c | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
@@ -33,5 +31,5 @@ index 929058a..47c7139 100644
  
  static int shash_update_unaligned(struct shash_desc *desc, const u8 *data,
 -- 
-1.8.3.2
+1.9.1
 
