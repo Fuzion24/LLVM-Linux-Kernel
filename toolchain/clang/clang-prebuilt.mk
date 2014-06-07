@@ -24,6 +24,7 @@
 
 CLANG_TMPDIR	= ${LLVMTOP}/tmp
 TMPDIRS		+= ${CLANG_TMPDIR}
+FETCH_TARGETS	+= clang-fetch
 RAZE_TARGETS	+= clang-raze
 
 ifeq ($(shell uname -i), i686)
@@ -49,13 +50,13 @@ PATH		:= ${CLANG_BINDIR}:${PATH}
 
 ${CLANG}: ${LLVMSTATE}/clang-prebuilt
 
-clang-get: ${CLANG_TAR_FILE}
+clang-get clang-fetch: ${CLANG_TAR_FILE}
 ${CLANG_TAR_FILE}:
-	@$(call wget,${CLANG_URL},${CLANG_TMPDIR})
+	@$(call wget,${CLANG_URL},$(dir $@))
 
 clang-unpack: ${LLVMSTATE}/clang-prebuilt
 ${LLVMSTATE}/clang-prebuilt: ${CLANG_TAR_FILE}
-	$(call ${CLANG_UNPACK},$<,${LLVMTOP})
+	@$(call ${CLANG_UNPACK},$<,${LLVMTOP})
 	$(call state,$@)
 
 clang-raze:
