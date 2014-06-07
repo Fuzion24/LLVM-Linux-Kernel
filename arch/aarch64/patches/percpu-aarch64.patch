@@ -1,10 +1,10 @@
 From 44c5841a19bddd62556c99092775cd9a3d45de33 Mon Sep 17 00:00:00 2001
 From: Mark Charlebois <charlebm@gmail.com>
 Date: Tue, 11 Mar 2014 10:43:45 -0700
-Subject: [PATCH] arm64, LLVMLinux: Remove use of named register for ARM64
+Subject: [PATCH] NO UPSTREAM arm64, LLVMLinux: Remove use of named register for ARM64
  percpu
 
-This is a port of the similar patch for arm
+This is a port of the similar patch for arm (currently broken)
 
 The use of sp as a named register variable is not supported in clang and
 the behavior they are working around in GCC may not even be present
