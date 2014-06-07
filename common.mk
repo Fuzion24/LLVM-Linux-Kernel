@@ -44,19 +44,20 @@ HELP_TARGETS	+= common-help
 
 ##############################################################################
 seperator = ---------------------------------------------------------------------
-#banner	= ($(info ${seperator}) $(info ${1}) $(info ${seperator}))
-banner	= (echo ${seperator}; echo -e ${1} | sed 's|${TOPDIR}/||g'; echo -e ${seperator})
-echo	= (echo ${seperator}; echo -e ${1}; echo ${seperator})
+banner	= (echo -e "${seperator}\nI:" ${1} | sed 's|${TOPDIR}/||g')
+echo	= (echo -e "${seperator}\nI:" ${1} | sed 's|${TOPDIR}/||g')
+warn	= (echo -e "${seperator}\nW:" ${1} | sed 's|${TOPDIR}/||g')
 echovar	= ([ -z '$($(1))' ] || printf '%-15s = %s\n' '$(1)' '$($(1))' | unexpand --all | sed 's|${TOPDIR}/||g')
 which	= (echo -e "$(1) -> `which $(1)`")
 state	= @mkdir -p $(dir ${1}) && touch ${1} \
 	  && $(call echo,Finished state $(notdir ${1})) \
 	  && ( [ -d $(dir ${1})${2} ] || rm -f $(dir ${1})${2} )
 leavestate = rm -f $(wildcard $(addprefix ${1}/,${2}))
-error1	= ( echo -e Error: ${1}; false )
+error1	= ( echo -e E: ${1}; false )
 assert	= [ ${1} ] || $(call error1,${2})
 assert_found_in_path = which ${1} || (echo -e "${1}: Not found in PATH" ${2}; false)
 shared	= $(subst ${TOPDIR},${SHARED_ROOT},${1})
+notshared = [ ${TOPDIR} != ${SHARED_ROOT} || $(1)
 
 ##############################################################################
 # recursive Make macros
@@ -68,7 +69,7 @@ makemrproper = if [ -f ${1}/Makefile ]; then ${3} make --quiet -C ${1} ${2} mrpr
 patches_dir = [ "`stat -c "%N" ${2}`" = "'${2}' -> '${1}'" ] || (rm -f ${2}; ln -sf ${1} ${2})
 applied	= ( [ -d ${1} ] && cd ${1} && quilt applied || true )
 patch	= mkdir -p ${TMPDIR}; [ ! -d ${1} ] || (cd ${1} && if [ -e patches ] && $(call echo,Applying patches to ${1}) && quilt unapplied ; then quilt push -a ; else >/dev/null ; fi)
-unpatch	= mkdir -p ${TMPDIR}; [ ! -d ${1} ] || (cd ${1} && if [ -e patches ] && $(call echo,Unapplying patches from ${1}) && quilt applied ; then quilt pop -af ; else >/dev/null ; fi)
+unpatch	= mkdir -p ${TMPDIR}; [ ! -d ${1} ] || (cd ${1} && if [ -e patches ] && $(call echo,Unapplying patches from ${1}) && quilt applied ; then quilt pop -afq ; else >/dev/null ; fi)
 apply_patch = (cd ${1} && cat ${2} | patch -s -p1)
 
 ##############################################################################
