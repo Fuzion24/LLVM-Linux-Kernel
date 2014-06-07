@@ -1,7 +1,7 @@
-From d824a485e19641d36009145fcd9839aea35e277f Mon Sep 17 00:00:00 2001
+From 4b11fc440f71b186ac4ac756e438fff5122a0011 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
 Date: Mon, 7 Apr 2014 14:50:09 +0200
-Subject: [PATCH WORKAROUND NON-UPSTREAM] Temporarily disable M16_CFLAGS
+Subject: [PATCH] WORKAROUND NON-UPSTREAM Temporarily disable M16_CFLAGS
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -15,7 +15,7 @@ Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/x86/Makefile b/arch/x86/Makefile
-index 6dc4b0e..2707081 100644
+index 829b87e..6b56403 100644
 --- a/arch/x86/Makefile
 +++ b/arch/x86/Makefile
 @@ -24,7 +24,7 @@ CODE16GCC_CFLAGS := -m32 -include $(srctree)/arch/x86/boot/code16gcc.h \
@@ -28,5 +28,5 @@ index 6dc4b0e..2707081 100644
  		   -Wall -Wstrict-prototypes -march=i386 -mregparm=3 \
  		   -fno-strict-aliasing -fomit-frame-pointer -fno-pic \
 -- 
-1.8.3.2
+1.9.1
 

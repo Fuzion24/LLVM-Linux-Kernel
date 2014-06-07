@@ -1,7 +1,8 @@
-From dbcc965e26aef7eb7274bf9e4605d3c02ba575bc Mon Sep 17 00:00:00 2001
+From 92289101e16a881d3a78d456c23c0005803b9d51 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
 Date: Wed, 23 Apr 2014 17:14:02 +0200
-Subject: [PATCH] [PATCH] x86, boot: Work around clang PR18415.
+Subject: [PATCH] WORKAROUND NOT-UPSTREAMED x86, boot: Work around clang
+ PR18415.
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -60,5 +61,5 @@ index 725e820..3e07af1 100644
  
  #endif /* BOOT_STRING_H */
 -- 
-1.8.1.4
+1.9.1
 
