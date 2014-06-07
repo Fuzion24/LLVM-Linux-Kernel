@@ -30,6 +30,7 @@ ARCHDIR		= ${TOPDIR}/arch
 TESTDIR		= ${TOPDIR}/test
 DOCDIR		= ${TOPDIR}/Documentation
 TARGET		= $(notdir ${TARGETDIR})
+SHARED_ROOT	= ${TOPDIR}
 BUILDBOTDIR	= ${TMPDIR}/buildbot
 
 ##############################################################################
@@ -46,7 +47,8 @@ seperator = --------------------------------------------------------------------
 #banner	= ($(info ${seperator}) $(info ${1}) $(info ${seperator}))
 banner	= (echo ${seperator}; echo -e ${1} | sed 's|${TOPDIR}/||g'; echo -e ${seperator})
 echo	= (echo ${seperator}; echo -e ${1}; echo ${seperator})
-echovar	= ([ -z "$($(1))" ] || echo -e "$(1)\t= $($(1))")
+echovar	= ([ -z '$($(1))' ] || printf '%-15s = %s\n' '$(1)' '$($(1))' | unexpand --all | sed 's|${TOPDIR}/||g')
+which	= (echo -e "$(1) -> `which $(1)`")
 state	= @mkdir -p $(dir ${1}) && touch ${1} \
 	  && $(call echo,Finished state $(notdir ${1})) \
 	  && ( [ -d $(dir ${1})${2} ] || rm -f $(dir ${1})${2} )
@@ -54,6 +56,7 @@ leavestate = rm -f $(wildcard $(addprefix ${1}/,${2}))
 error1	= ( echo -e Error: ${1}; false )
 assert	= [ ${1} ] || $(call error1,${2})
 assert_found_in_path = which ${1} || (echo -e "${1}: Not found in PATH" ${2}; false)
+shared	= $(subst ${TOPDIR},${SHARED_ROOT},${1})
 
 ##############################################################################
 # recursive Make macros

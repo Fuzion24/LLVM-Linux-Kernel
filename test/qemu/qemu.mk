@@ -26,7 +26,7 @@
 
 QEMUSRCDIR	= ${QEMUDIR}/src/qemu
 QEMUINSTALLDIR	= ${QEMUDIR}/install
-QEMUBUILDDIR	= $(subst ${TOPDIR},${BUILDROOT},${QEMUDIR}/build/qemu)
+QEMUBUILDDIR	= $(call buildroot,${QEMUDIR}/build/qemu)
 QEMUSTATE	= ${QEMUDIR}/state
 QEMUPATCHES	= ${QEMUDIR}/patches
 

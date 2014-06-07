@@ -166,7 +166,7 @@ test2-gcc: state/prep ${QEMUSTATE}/qemu-build ${KERNELGCCDTB_IMG} initramfs-unpa
 	@$(call qemu_arm,${BOARD},${KERNELGCCDTB_IMG},256,/dev/ram0,rdinit=/init,-initrd ${INITRAMFS})
 
 # Get prebuilt vexpress image
-VEXPRESS_IMG_GZ	= ${TMPDIR}/${NANOIMG}.gz
+VEXPRESS_IMG_GZ	= $(call shared,${TMPDIR}/${NANOIMG}.gz)
 ${VEXPRESS_IMG_GZ}:
 	$(call get_linaro_prebuilt,$@)
 

@@ -30,7 +30,7 @@ NANOIMG			= ${NANOBOARD}.img
 
 DEBDEP_EXTRAS		+= linaro-image-tools
 
-get_linaro_prebuilt	= mkdir -p $(dir ${1}) && wget -P $(dir ${1}) -c ${LINARORELEASEURL}/$(notdir ${1})
+get_linaro_prebuilt	= $(call wget,${LINARORELEASEURL}/$(notdir ${1}),$(dir ${1}))
 
 TARGETS			+= 
 CLEAN_TARGETS		+= vexpress-linaro-clean
@@ -47,7 +47,7 @@ ${TMPDIR}/sources.txt:
 linaro-board-sources: ${TMPDIR}/board-sources.txt
 ${TMPDIR}/board-sources.txt: ${TMPDIR}/sources.txt
 	perl -ne 'if(/^${NANOBOARD}:/){$$f=1} elsif($$f && m|(http://\S+)|){print "$$1/"} elsif($$f && /(\S*\.tar\..*): md5sum/){print "$$1\n"} elsif(/^\s+:/) {$$f=0}' $< >$@
-	wget -c -P ${TMPDIR} `cat $@`
+	$(call wget,`cat $@`,${TMPDIR})
 
 # Build an SD image with the files downloaded from board-sources.txt
 linaro-image: ${NANOIMG}

@@ -29,7 +29,7 @@ CSCC_URL	= https://sourcery.mentor.com/GNUToolchain/package11447/public/arm-none
 CSCC_NAME	= arm-2013.05
 CSCC_TAR	= ${notdir ${CSCC_URL}}
 CSCC_TOPDIR	= ${ARCH_ARM_TOOLCHAIN}/codesourcery
-CSCC_TMPDIR	= ${CSCC_TOPDIR}/tmp
+CSCC_TMPDIR	= $(call shared,${CSCC_TOPDIR}/tmp)
 
 HOST		= arm-none-linux-gnueabi
 CSCC_DIR	= ${CSCC_TOPDIR}/${CSCC_NAME}
@@ -46,7 +46,7 @@ PATH           := ${CSCC_BINDIR}:${PATH}
 # Get ARM cross compiler
 ${CSCC_TMPDIR}/${CSCC_TAR}:
 	@mkdir -p ${CSCC_TMPDIR}
-	wget -c -P ${CSCC_TMPDIR} "${CSCC_URL}"
+	@$(call wget,${CSCC_URL},${CSCC_TMPDIR})
 
 CROSS_GCC=${CSCC_BINDIR}/${CROSS_COMPILE}gcc
 codesourcery-gcc arm-cc: ${ARCH_ARM_TOOLCHAIN_STATE}/codesourcery-gcc-${CSCC_NAME}

@@ -30,7 +30,7 @@ LINARO_GCC_VERSION	?= 4.8
 LINARO_CC_NAME		?= gcc-linaro-arm-linux-gnueabihf
 LINARO_CC_URL		?= http://releases.linaro.org/${LINARO_VERSION}/components/toolchain/binaries/${LINARO_CC_NAME}-${LINARO_GCC_VERSION}-20${LINARO_VERSION}_linux.tar.bz2
 LINARO_DIR		?= ${ARCH_ARM_TOOLCHAIN}/linaro
-LINARO_TMPDIR		= ${LINARO_DIR}/tmp
+LINARO_TMPDIR		= $(call shared,${LINARO_DIR}/tmp)
 TMPDIRS			+= ${LINARO_TMPDIR}
 
 LINARO_CC_TAR		= ${notdir ${LINARO_CC_URL}}
@@ -50,7 +50,7 @@ PATH			:= ${LINARO_CC_BINDIR}:${PATH}
 
 # Get Linaro cross compiler
 ${LINARO_TMPDIR}/${LINARO_CC_TAR}:
-	@$(call wget,"${LINARO_CC_URL}",${LINARO_TMPDIR})
+	@$(call wget,${LINARO_CC_URL},${LINARO_TMPDIR})
 
 linaro-gcc arm-cc: ${ARCH_ARM_TOOLCHAIN_STATE}/linaro-gcc
 ${ARCH_ARM_TOOLCHAIN_STATE}/linaro-gcc: ${LINARO_TMPDIR}/${LINARO_CC_TAR}

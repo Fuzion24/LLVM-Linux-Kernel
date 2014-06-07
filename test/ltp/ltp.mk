@@ -22,13 +22,6 @@
 
 # Assumes has been included from ../test.mk
 
-LTPCVS=":pserver:anonymous@ltp.cvs.sourceforge.net:/cvsroot/ltp"
-LTPBRANCH="stable-1.0"
-
-LTPSF_RELEASE=20120614
-LTPSF_TAR=ltp-full-${LTPSF_RELEASE}.bz2
-LTPSF_URI=http://downloads.sourceforge.net/project/ltp/LTP%20Source/ltp-${LTPSF_RELEASE}/${LTPSF_TAR}
-
 LTPTMPDIR	= ${LTPDIR}/tmp
 LTPSRCDIR	= ${LTPDIR}/src
 TOPLTPINSTALLDIR= ${LTPDIR}/install
@@ -36,11 +29,18 @@ LTPINSTALLDIR	= ${TOPLTPINSTALLDIR}/opt/ltp
 LTPBUILDDIR	= ${LTPSRCDIR}/$(basename $(notdir ${LTPSF_TAR}))
 LTPSTATE	= ${LTPDIR}/state
 LTPSCRIPTS	= ${LTPDIR}/scripts
-#FETCH_TARGETS	+= ltp-fetch
-#SYNC_TARGETS	+= ltp-sync
+
+LTPCVS=":pserver:anonymous@ltp.cvs.sourceforge.net:/cvsroot/ltp"
+LTPBRANCH="stable-1.0"
+
+LTPSF_RELEASE	= 20120614
+LTPSF_TAR	= ltp-full-${LTPSF_RELEASE}.bz2
+LTPSF_URI	= http://downloads.sourceforge.net/project/ltp/LTP%20Source/ltp-${LTPSF_RELEASE}/${LTPSF_TAR}
+LTPSF_FILE	= $(call shared,${LTPTMPDIR}/${LTPSF_TAR})
 
 TMPDIRS		+= ${LTPTMPDIR}
 
+.PHONY:		${LTP_TARGETS}
 LTP_TARGETS	= ltp-fetch ltp-configure ltp-build ltp-sync ltp-clean ltp-mrproper ltp-raze ltp-version
 TARGETS_TEST	+= ltp-[fetch,configure,build,sync,settings,clean,mrproper,raze]
 CLEAN_TARGETS	+= ltp-clean
@@ -48,10 +48,9 @@ HELP_TARGETS	+= ltp-help
 MRPROPER_TARGETS+= ltp-mrproper
 RAZE_TARGETS	+= ltp-raze
 SETTINGS_TARGETS+= ltp-settings
-SYNC_TARGETS	+= ltp-sync
+#FETCH_TARGETS	+= ltp-fetch
+#SYNC_TARGETS	+= ltp-sync
 VERSION_TARGETS	+= ltp-version
-
-.PHONY:		${LTP_TARGETS}
 
 ltpstate=mkdir -p ${LTPSTATE}; touch $(1); echo "Entering state $(notdir $(1))"; rm -f ${LTPSTATE}/ltp-$(2)
 
@@ -66,13 +65,12 @@ ltp-settings:
 	@$(call prsetting,LTPSF_TAR,${LTPSF_TAR})
 	@$(call prsetting,LTPSF_URI,${LTPSF_URI})
 
-${LTPTMPDIR}/${LTPSF_TAR}:
-	@mkdir -p $(dir $@)
-	wget -nd -P $(dir $@) -c ${LTPSF_URI}
+${LTPSF_FILE}:
+	@$(call wget,${LTPSF_URI},$(dir $@))
 
 ltp-fetch: ltp-sf
 ltp-sf: ${LTPSTATE}/ltp-fetch
-${LTPSTATE}/ltp-fetch: ${LTPTMPDIR}/${LTPSF_TAR}
+${LTPSTATE}/ltp-fetch: ${LTPSF_FILE}
 	@$(call banner,Fetching LTP...)
 	@mkdir -p ${LTPSRCDIR}
 	@rm -rf ${LTPBUILDDIR}
@@ -86,7 +84,7 @@ ltp-cvs:
 ltp-sync: ${LTPSTATE}/ltp-fetch
 	@$(call banner,Updating LTP...)
 	@make ltp-clean
-	(( test -e ${LTPTMPDIR}/${LTPSF_TAR} && echo "Skipping cvs up (tarball present)" )|| ( cd ${LTPBUILDDIR} && cvs update ))
+	(( test -e ${LTPSF_FILE} && echo "Skipping cvs up (tarball present)" )|| ( cd ${LTPBUILDDIR} && cvs update ))
 
 ltp-configure: ${LTPSTATE}/ltp-configure
 ${LTPSTATE}/ltp-configure: ${LTPSTATE}/ltp-fetch

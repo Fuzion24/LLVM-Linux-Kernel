@@ -37,7 +37,7 @@ ARCH_ALL_PATCHES= ${ARCH_ALL_DIR}/patches
 PATH		:= ${PATH}:${ARCH_ALL_BINDIR}
 
 MAINLINEURI	= git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-SHARED_KERNEL	= ${ARCH_ALL_DIR}/kernel.git
+SHARED_KERNEL	= $(call shared,${ARCH_ALL_DIR}/kernel.git)
 
 #############################################################################
 TOPLOGDIR	= ${TOPDIR}/log
@@ -47,7 +47,7 @@ PATCHDIR	= ${TARGETDIR}/patches
 SRCDIR		= ${TARGETDIR}/src
 BUILDDIR	= ${TARGETDIR}/build
 STATEDIR	= ${TARGETDIR}/state
-TMPDIR		= $(subst ${TOPDIR},${BUILDROOT},${TARGETDIR}/tmp)
+TMPDIR		= $(call buildroot,${TARGETDIR}/tmp)
 
 TMPDIRS		+= ${TMPDIR}
 
@@ -80,8 +80,8 @@ KERNELDIR	= ${SRCDIR}/linux
 endif
 
 #############################################################################
-KERNEL_BUILD	= $(subst ${TOPDIR},${BUILDROOT},${BUILDDIR})/kernel-clang
-KERNELGCC_BUILD	= $(subst ${TOPDIR},${BUILDROOT},${BUILDDIR})/kernel-gcc
+KERNEL_BUILD	= $(call buildroot,${BUILDDIR})/kernel-clang
+KERNELGCC_BUILD	= $(call buildroot,${BUILDDIR})/kernel-gcc
 KERNEL_ENV	+= KBUILD_OUTPUT=${KERNEL_BUILD} HOSTCC="${CLANG}" CC="${CLANGCC}"
 KERNELGCC_ENV	+= KBUILD_OUTPUT=${KERNELGCC_BUILD}
 
@@ -117,37 +117,40 @@ KERNEL_VAR	+= CONFIG_NO_ERROR_ON_MISMATCH=y
 KERNEL_VAR	+= ${EXTRAFLAGS}
 
 list-var: list-buildroot
-	@which clang gcc ${CROSS_COMPILE}gcc
-	@echo ${seperator}
-	@echo "ARCH=${ARCH}"
-	@echo "BITCODE='${BITCODE}'"
-	@echo "CC=${CC}"
-	@echo "CFLAGS=${CFLAGS}"
-	@echo "CLANGCC=${CLANGCC}"
-	@echo "COMPILER_PATH='${COMPILER_PATH}'"
-	@echo "CROSS_COMPILE=${CROSS_COMPILE}"
-	@echo "CROSS_GCC=${CROSS_GCC}"
-	@echo "GENERIC_PATCH_DIR=${GENERIC_PATCH_DIR}"
-	@echo "HOST=${HOST}"
-	@echo "HOST_TRIPLE=${HOST_TRIPLE}"
-	@echo "JOBS=${JOBS}"
-	@echo "KBUILD_OUTPUT=${KBUILD_OUTPUT}"
-	@echo "KERNELDIR=${KERNELDIR}"
-	@echo "KERNEL_BUILD=${KERNEL_BUILD}"
-	@echo "KERNEL_ENV=${KERNEL_ENV}"
-	@echo "KERNEL_VAR=${KERNEL_VAR}"
-	@echo "MAKE_FLAGS=${MAKE_FLAGS}"
-	@echo "MARCH=${MARCH}"
-	@echo "MFLOAT=${MFLOAT}"
-	@echo "PATH=${PATH}"
-	@echo "TMPDIR=${TMPDIR}"
-	@echo "USE_CCACHE=${USE_CCACHE}"
-	@echo "V=${V}"
-	@echo ${seperator}
-	@echo "${CLANG} -print-file-name=include"
-	@${CLANG} -print-file-name=include
-	@echo 'kernel-build -> $(call make-kernel,${KERNELDIR},${KERNEL_ENV},${CHECKER},${CHECK_VARS})'
-	@echo 'kernel-gcc-build -> $(call make-kernel,${KERNELDIR},${KERNELGCC_ENV} ${SPARSE},,CC?="${CCACHE} ${CROSS_COMPILE}${GCC}")'
+	@( $(call which,clang); \
+	$(call which,gcc); \
+	$(call which,${CROSS_COMPILE}gcc); \
+	echo ${seperator}; \
+	$(call echovar,ARCH); \
+	$(call echovar,BITCODE); \
+	$(call echovar,CC); \
+	$(call echovar,CFLAGS); \
+	$(call echovar,CLANGCC); \
+	$(call echovar,COMPILER_PATH); \
+	$(call echovar,CROSS_COMPILE); \
+	$(call echovar,CROSS_GCC); \
+	$(call echovar,GENERIC_PATCH_DIR); \
+	$(call echovar,HOST); \
+	$(call echovar,HOST_TRIPLE); \
+	$(call echovar,JOBS); \
+	$(call echovar,KBUILD_OUTPUT); \
+	$(call echovar,KERNELDIR); \
+	$(call echovar,KERNEL_BUILD); \
+	$(call echovar,KERNEL_ENV); \
+	$(call echovar,KERNEL_VAR); \
+	$(call echovar,MAKE_FLAGS); \
+	$(call echovar,MARCH); \
+	$(call echovar,MFLOAT); \
+	$(call echovar,PATH); \
+	$(call echovar,TMPDIR); \
+	$(call echovar,USE_CCACHE); \
+	$(call echovar,V); \
+	echo ${seperator}; \
+	echo "${CLANG} -print-file-name=include"; \
+	${CLANG} -print-file-name=include; \
+	echo 'kernel-build -> $(call make-kernel,${KERNELDIR},${KERNEL_ENV},${CHECKER},${CHECK_VARS})'; \
+	echo 'kernel-gcc-build -> $(call make-kernel,${KERNELDIR},${KERNELGCC_ENV} ${SPARSE},,CC?="${CCACHE} ${CROSS_COMPILE}${GCC}")'; \
+	) | sed 's|${TOPDIR}/||g'
 
 #############################################################################
 catfile		= ([ -f ${1} ] && cat ${1})
@@ -288,14 +291,7 @@ include ${ARCHDIR}/all/buildbot.mk
 kernel-shared: ${SHARED_KERNEL}
 ${SHARED_KERNEL}:
 	@$(call banner,Cloning shared kernel repo...)
-	@[ -d ${@:.git=} ] && ( \
-		$(call echo,Moving kernel/.git to kernel.git); \
-		mv ${@:.git=}/.git $@; \
-		echo -e "[core]\n\trepositoryformatversion = 0\n\tfilemode = true\n\tbare = true" > $@/config; \
-		echo -e "[remote \"origin\"]\n\turl = ${MAINLINEURI}" >> $@/config; \
-		rm -rf ${@:.git=} & \
-		${MAKE} kernel-shared-sync; \
-	) || $(call gitclone,--bare ${MAINLINEURI},$@)
+	@$(call gitclone,--bare ${MAINLINEURI},$@)
 	@grep -q '\[remote "origin"\]' $@/config \
 		|| echo -e "[remote \"origin\"]\n\turl = ${MAINLINEURI}" >> $@/config;
 
@@ -424,7 +420,7 @@ state/kernel-gcc-build: state/kernel-gcc-configure
 	@$(call banner,Building kernel with gcc...)
 	@[ -z "${CCACHE_DIR}" ] || mkdir -p ${CCACHE_DIR}
 	$(call make-kernel,${KERNELDIR},${KERNELGCC_ENV} ${SPARSE},,CC?="${CCACHE} ${CROSS_COMPILE}${GCC}")
-	@$(call get-kernel-size,gcc,${CROSS_GCC},${KERNELGCC_BUILD})
+	@$(call get-kernel-size,gcc,${CROSS_COMPILE}${GCC},${KERNELGCC_BUILD})
 	$(call state,$@,done)
 
 #############################################################################

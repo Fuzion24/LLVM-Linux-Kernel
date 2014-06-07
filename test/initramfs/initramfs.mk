@@ -32,13 +32,18 @@ RAZE_TARGETS	+= initramfs-raze
 
 INITRAMFS	= initramfs.img.gz
 INITBUILDDIR	= ${TARGETDIR}/initramfs
-INITDOWNLOADDIR	= ${INITBUILDDIR}/initramfs_download
+INITTMPDIR	= $(call shared,${INITBUILDDIR}/tmp)
 INITBUILDFSDIR	= ${INITBUILDDIR}/initramfs_root
 INITCPIO	= ${INITBUILDFSDIR}.cpio
 
+TMPDIRS		+= ${INITTMPDIR}
+
 LTPVER		= 20120104
 LTP		= ltp-full-${LTPVER}
-LTPURL		= http://prdownloads.sourceforge.net/ltp/${LTP}.bz2?download
+LTPEXT		= .bz2
+LTPURL		= http://prdownloads.sourceforge.net/ltp/${LTP}${LTPEXT}?download
+LTPFILE		= ${INITTMPDIR}/${LTP}${LTPEXT}
+INITBUILDLTP	= ${INITBUILDDIR}/${LTP}
 STRACEURL	=
 STRACEBIN 	=
 
@@ -100,38 +105,40 @@ initramfs-mrproper initramfs-raze:
 	@$(call initramfs-busybox-clean, removing busybox)
 	rm -f ${INITRAMFS}
 	rm -rf ${INITBUILDDIR}
-	rm -rf ${INITDOWNLOADDIR}
+	rm -rf ${INITTMPDIR}
 
 ${INITBUILDDIR}:
 	mkdir -p ${INITBUILDDIR}
 
-${INITDOWNLOADDIR}:
-	mkdir -p ${INITDOWNLOADDIR}
+${INITTMPDIR}:
+	mkdir -p ${INITTMPDIR}
 
-${INITBUILDDIR}/strace: ${INITDOWNLOADDIR}/strace
-	cp ${INITDOWNLOADDIR}/strace ${INITBUILDDIR}/strace
+${INITBUILDDIR}/strace: ${INITTMPDIR}/strace
+	cp ${INITTMPDIR}/strace ${INITBUILDDIR}/strace
 	@chmod +x ${INITBUILDDIR}/strace
 
-${INITDOWNLOADDIR}/strace: ${INITDOWNLOADDIR} ${INITBUILDDIR}
-	(if test ! -e ${INITDOWNLOADDIR}/strace ; then wget -O ${INITDOWNLOADDIR}/strace ${STRACEURL} ; fi )
+${INITTMPDIR}/strace: ${INITTMPDIR} ${INITBUILDDIR}
+	(if test ! -e ${INITTMPDIR}/strace ; then $(call wget,${STRACEURL},$(dir $@)) ; fi )
 
-${INITBUILDDIR}/busybox: ${INITDOWNLOADDIR}/busybox
-	cp ${INITDOWNLOADDIR}/busybox ${INITBUILDDIR}/busybox
+${INITBUILDDIR}/busybox: ${INITTMPDIR}/busybox
+	cp ${INITTMPDIR}/busybox ${INITBUILDDIR}/busybox
 	@chmod +x ${INITBUILDDIR}/busybox
 
-${INITDOWNLOADDIR}/busybox: ${INITDOWNLOADDIR} ${INITBUILDDIR}
-	mkdir -p ${INITDOWNLOADDIR}
-	(if test ! -e ${INITDOWNLOADDIR}/busybox ; then wget -O ${INITDOWNLOADDIR}/busybox ${BUSYBOXURL} ; fi )
+${INITTMPDIR}/busybox: ${INITTMPDIR} ${INITBUILDDIR}
+	(if test ! -e ${INITTMPDIR}/busybox ; then $(call wget,${BUSYBOXURL},$(dir $@)) ; fi )
 
 initramfs-busybox-clean:
-	rm -f ${INITDOWNLOADDIR}/busybox ${INITBUILDDIR}/busybox
+	rm -f ${INITTMPDIR}/busybox ${INITBUILDDIR}/busybox
 	rm state/busybox
 
-ltp: ${INITBUILDDIR}/${LTP}/Version
-${INITBUILDDIR}/${LTP}/Version:
-	([ ! -d ${INITBUILDDIR} ] && mkdir -p ${INITBUILDDIR} || true)
-	@wget -P ${INITBUILDDIR} -c ${LTPURL}
-	@rm -rf ${INITBUILDDIR}/${LTP}
-	(cd ${INITBUILDDIR} && tar xjf ${LTP}.bz2 && cd ${LTP} && patch -p1 < ${INITRAMFSDIR}/patches/ltp.patch)
-	(cd ${INITBUILDDIR}/${LTP} && CFLAGS="-D_GNU_SOURCE=1 -std=gnu89" CC=${GCC} CPP="${CPP}" ./configure --prefix=${INITBUILDFSDIR} --without-expect --without-perl --without-python --host=${HOST})
-	(cd ${INITBUILDDIR}/${LTP} && make)
+${LTPFILE}:
+	@$(call wget,$LTPURL,$(dir $@))
+
+ltp: ${INITBUILDLTP}/Version
+${INITBUILDLTP}/Version: ${LTPFILE}
+	@mkdir -p ${INITBUILDDIR}
+	@rm -rf ${INITBUILDLTP}
+	tar -C ${INITBUILDDIR} -x -j -f ${LTPFILE}
+	cd ${INITBUILDLTP} && patch -p1 < ${INITRAMFSDIR}/patches/ltp.patch
+	(cd ${INITBUILDLTP} && CFLAGS="-D_GNU_SOURCE=1 -std=gnu89" CC=${GCC} CPP="${CPP}" ./configure --prefix=${INITBUILDFSDIR} --without-expect --without-perl --without-python --host=${HOST})
+	make -C ${INITBUILDLTP}

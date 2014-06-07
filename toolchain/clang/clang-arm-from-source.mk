@@ -96,10 +96,12 @@ arm-clang-build-dep-check-deb:
 arm-clang-dep-install-deb:
 	@[ -n "${DEPLIST}" ] && sudo apt-get install ${DEPLIST} || echo "Already installed"
 
-clang-arm-user-libs: ${ARMTMPDIR}/libxml2-2.9.1-arm-1.tgz
-	@mkdir -p ${ARMULIBROOT}
-	(cd ${ARMULIBROOT} && tar xvzf ${ARMTMPDIR}/libxml2-2.9.1-arm-1.tgz)
+ARM_LIBXML_URL	= ftp://ftp.arm.slackware.com/slackwarearm/slackwarearm-14.1/slackware/l/libxml2-2.9.1-arm-1.tgz
+ARM_LIBXML	= $(call shared,${ARMTMPDIR}/libxml2-2.9.1-arm-1.tgz)
 
-${ARMTMPDIR}/libxml2-2.9.1-arm-1.tgz:
-	@mkdir -p ${ARMTMPDIR}
-	(cd ${ARMTMPDIR} && wget ftp://ftp.arm.slackware.com/slackwarearm/slackwarearm-14.1/slackware/l/libxml2-2.9.1-arm-1.tgz)
+${ARM_LIBXML}:
+	@$(call wget,${ARM_LIBXML_URL},$(dir $@))
+
+clang-arm-user-libs: ${ARM_LIBXML}
+	@mkdir -p ${ARMULIBROOT}
+	(cd ${ARMULIBROOT} && tar xvzf ${ARM_LIBXML})

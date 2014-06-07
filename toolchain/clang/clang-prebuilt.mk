@@ -35,6 +35,7 @@ CLANG_DIR	= clang+llvm-3.4-x86_64-linux-gnu-ubuntu-13.10
 CLANG_TAR	= ${CLANG_DIR}.tar.xz
 CLANG_UNPACK 	= unxz
 endif
+CLANG_TAR_FILE	= $(call shared,${CLANG_TMPDIR}/${CLANG_TAR})
 
 CLANG_PATH	= ${LLVMTOP}/${CLANG_DIR}
 CLANG_BINDIR	= ${CLANG_PATH}/bin
@@ -48,14 +49,14 @@ PATH		:= ${CLANG_BINDIR}:${PATH}
 
 ${CLANG}: ${LLVMSTATE}/clang-prebuilt
 
-clang-get: ${CLANG_TMPDIR}/${CLANG_TAR}
-${CLANG_TMPDIR}/${CLANG_TAR}:
+clang-get: ${CLANG_TAR_FILE}
+${CLANG_TAR_FILE}:
 	@$(call wget,${CLANG_URL},${CLANG_TMPDIR})
 
 clang-unpack: ${LLVMSTATE}/clang-prebuilt
-${LLVMSTATE}/clang-prebuilt: ${CLANG_TMPDIR}/${CLANG_TAR}
+${LLVMSTATE}/clang-prebuilt: ${CLANG_TAR_FILE}
 	$(call ${CLANG_UNPACK},$<,${LLVMTOP})
 	$(call state,$@)
 
 clang-raze:
-	@rm -rf ${LLVMSTATE}/clang-prebuilt ${CLANG_PATH} ${CLANG_TMPDIR}/${CLANG_TAR}
+	@rm -rf ${LLVMSTATE}/clang-prebuilt ${CLANG_PATH} ${CLANG_TAR_FILE}

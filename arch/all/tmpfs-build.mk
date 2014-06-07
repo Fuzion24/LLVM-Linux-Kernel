@@ -35,8 +35,12 @@ endif
 HELP_TARGETS		+= tmpfs-build-help
 
 ##############################################################################
+# Convenience macro
+buildroot	= $(subst ${TOPDIR},${BUILDROOT},${1})
+
+##############################################################################
 list-buildroot:
-	@echo BUILDROOT=${BUILDROOT}
+	@$(call echovar,BUILDROOT)
 
 ##############################################################################
 tmpfs-build-help:
@@ -45,6 +49,8 @@ tmpfs-build-help:
 	@echo "* make tmpfs-build-setup     - Mount tmpfs for use with build system"
 	@echo "* make tmpfs-build-teardown  - Unmount tmpfs build directory"
 	@echo "* make tmpfs-build-clean     - Remount tmpfs build directory"
+	@echo
+	@echo "Set TMPFS_REQUIRED_FOR_BUILD=1 in your local.mk if you want to always use this"
 
 #############################################################################
 check-tmpfs = if [ "${1}" = "${2}" ] ; then \

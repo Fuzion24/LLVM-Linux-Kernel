@@ -25,7 +25,7 @@
 # Assumes has been included from clang.mk
 
 LLVMSRCDIR	= ${LLVMTOP}/src
-LLVMBUILD	= $(subst ${TOPDIR},${BUILDROOT},${LLVMTOP}/build)
+LLVMBUILD	= $(call buildroot,${LLVMTOP}/build)
 LLVMINSTALLDIR	:= ${LLVMTOP}/install
 LLVMPATCHES	?= ${LLVMTOP}/patches
 

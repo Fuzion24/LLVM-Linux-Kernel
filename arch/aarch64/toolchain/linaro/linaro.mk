@@ -35,7 +35,7 @@ LINARO_DIR		= ${ARCH_AARCH64_TOOLCHAIN}/linaro
 ARCH_ARM_TOOLCHAIN_STATE = ${ARCH_AARCH64_TOOLCHAIN_STATE}
 
 LINARO_CC_URL		?= https://launchpad.net/linaro-toolchain-binaries/trunk/${LINARO_VER_MONTH}/+download/${LINARO_CC_NAME}.tar.bz2
-LINARO_TMPDIR		= ${LINARO_DIR}/tmp
+LINARO_TMPDIR		= $(call shared,${LINARO_DIR}/tmp)
 TMPDIRS			+= ${LINARO_TMPDIR}
 
 LINARO_CC_TAR		= ${notdir ${LINARO_CC_URL}}
@@ -54,7 +54,7 @@ PATH			:= ${LINARO_CC_BINDIR}:${PATH}
 
 # Get Linaro cross compiler
 ${LINARO_TMPDIR}/${LINARO_CC_TAR}:
-	@$(call wget,"${LINARO_CC_URL}",${LINARO_TMPDIR})
+	@$(call wget,${LINARO_CC_URL},${LINARO_TMPDIR})
 
 linaro-gcc aarch64-cc: ${ARCH_ARM_TOOLCHAIN_STATE}/linaro-gcc
 ${ARCH_AARCH64_TOOLCHAIN_STATE}/linaro-gcc: ${LINARO_TMPDIR}/${LINARO_CC_TAR}
