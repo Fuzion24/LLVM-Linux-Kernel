@@ -204,11 +204,11 @@ ${TARGET_PATCH_SERIES}: ${ALL_PATCH_SERIES}
 			|| (rm -f $@; $(MAKE) kernel-quilt-link-patches); \
 	fi
 series:
-	@if [ -z "${CHECKPOINT}" ] ; then \
+	@echo ${TARGET_PATCH_SERIES} | grep -q checkpoint || ( \
 		$(call banner,Forcing quilt series file rebuild for kernel...); \
 		rm -f ${TARGET_PATCH_SERIES}; \
 		$(MAKE) ${TARGET_PATCH_SERIES}; \
-	fi
+	)
 
 ##############################################################################
 # Have git ignore extra patch files
@@ -219,7 +219,7 @@ ${QUILT_GITIGNORE}: ${GENERIC_PATCH_SERIES}
 	@mkdir -p $(dir $@)
 	@echo .gitignore > $@
 	@echo series >> $@
-	@$(call catuniq,${GENERIC_PATCH_SERIES}) > $@
+	@$(call catuniq,${GENERIC_PATCH_SERIES}) >> $@
 
 ##############################################################################
 # Remove broken symbolic links to old patches
