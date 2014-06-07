@@ -49,12 +49,11 @@ endif
 all: prep kernel-build test-boot-poweroff
 all-gcc: prep kernel-gcc-build test-gcc-boot-poweroff
 
-NAME	= vexpress
-BOARD	= ${NAME}-a9
+BOARD	= ${TARGET}-a9
 
 NET	= -net nic,macaddr=52:54:00:12:34:57
 
-BUILDBOT_PREBUILT_URL	= http://buildbot.llvm.linuxfoundation.org/prebuilt/arm/${NAME}
+BUILDBOT_PREBUILT_URL	= http://buildbot.llvm.linuxfoundation.org/prebuilt/arm/${TARGET}
 get_prebuilt		= mkdir -p $(dir ${1}) && wget -P $(dir ${1}) -c ${BUILDBOT_PREBUILT_URL}/$(notdir ${1})
 
 VEXPRESS_TARGETS	= test test2 test3 \
