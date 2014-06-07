@@ -1,7 +1,7 @@
-From 22c82af2c64e02bb10bde3be46de34706487772c Mon Sep 17 00:00:00 2001
+From 588501907bb010ba8facd8cbfb49f6667370f685 Mon Sep 17 00:00:00 2001
 From: Mark Charlebois <charlebm@gmail.com>
 Date: Tue, 11 Mar 2014 10:43:45 -0700
-Subject: [PATCH] LLVMLinux: Remove use of named register for ARM percpu
+Subject: [PATCH] arm, LLVMLinux: Remove use of named register for ARM percpu
 
 The use of sp as a named register variable is not supported in clang and
 the behavior they are working around in GCC may not even be present
@@ -17,7 +17,6 @@ allocator, leading to livelock in kmem_cache_alloc in mainline kernels.
 
 Because the GCC workaround causes numerous warnings, revert the change
 until it can be verified that it is in fact an issue for clang.
-
 
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
@@ -97,5 +96,5 @@ index 209e650..208c7e5 100644
  #define set_my_cpu_offset(x)	do {} while(0)
  
 -- 
-1.8.3.2
+1.9.1
 
