@@ -1,3 +1,4 @@
+*-old
 *.pyc
 .*.swp
 .pc
@@ -29,13 +30,19 @@ rootfs_custom.img.xz
 series.tmp
 src/
 state/
+targets/*/build
 targets/*/initramfs/
 targets/*/kernel-filter
 targets/*/log
 targets/*/patches/.gitignore
 targets/*/test-results/
 targets/*/tmp
+targets/*/tmp-build
 test/cross/bin
 tmp
-toolchain/libcxx
+tmpfs
 toolchain/clang/arm/user-libs/
+toolchain/libcxx
+foo*
+blah*
+bar*
