@@ -4,3 +4,5 @@
 *.o.asm
 *.svg
 test-vlais
+*_clang
+*_gcc
