@@ -107,7 +107,7 @@ gitsync = if [ -n "${2}" ] ; then \
 
 ##############################################################################
 modified:
-	@git status | awk -e '/modified:/ {print $$2}'
+	@git status | sed -e 's/new file:/newfile:/' | awk -e '/(modified|newfile|renamed):/ {print $$2}'
 
 ##############################################################################
 # Subversion macros used by all subsystems
@@ -183,6 +183,7 @@ list-jobs:
 -include local.mk
 include ${TOPDIR}/arch/all/checkpoint.mk
 include ${TOPDIR}/arch/all/dependency.mk
+include ${TOPDIR}/arch/all/distrib.mk
 include ${TOPDIR}/arch/all/tmpfs-build.mk
 include ${TOOLCHAIN}/toolchain.mk
 
