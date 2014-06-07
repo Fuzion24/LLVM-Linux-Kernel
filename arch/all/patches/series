@@ -15,3 +15,5 @@ dwarf2.patch
 mbcache.patch
 kbuild-cross-build.patch
 overflow-warn.patch
+ti-divider.patch
+initconst.patch

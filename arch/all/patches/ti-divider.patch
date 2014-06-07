@@ -1,4 +1,4 @@
-From 4165310013a75e3dfd02ad5f3e27e668db838250 Mon Sep 17 00:00:00 2001
+From 908645b1a1a30a3a0967b857548b8ab176de4089 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Fri, 30 May 2014 11:35:52 -0700
 Subject: [PATCH] clk, ti, LLVMLinux: Move __init outside of type definition
@@ -35,14 +35,15 @@ https://gcc.gnu.org/onlinedocs/gcc-4.1.2/gcc/Function-Attributes.html#Function-A
 
 Not-Signed-off-by: Behan Webster <behanw@converseincode.com>
 Reviewed-by: Mark Charlebois <charlebm@gmail.com>
-
 ---
  drivers/clk/ti/divider.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
---- linux.orig/drivers/clk/ti/divider.c
-+++ linux/drivers/clk/ti/divider.c
-@@ -295,8 +295,8 @@
+diff --git a/drivers/clk/ti/divider.c b/drivers/clk/ti/divider.c
+index e6aa10d..104941d 100644
+--- a/drivers/clk/ti/divider.c
++++ b/drivers/clk/ti/divider.c
+@@ -295,8 +295,8 @@ static struct clk *_register_divider(struct device *dev, const char *name,
  	return clk;
  }
  
@@ -53,3 +54,6 @@ Reviewed-by: Mark Charlebois <charlebm@gmail.com>
  {
  	struct clk_div_table *table;
  	const __be32 *divspec;
+-- 
+1.9.1
+
