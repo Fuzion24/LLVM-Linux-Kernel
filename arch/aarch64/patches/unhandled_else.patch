@@ -1,9 +1,9 @@
-From 6c1c193299424023e9d6c748aba355dc6f19c93e Mon Sep 17 00:00:00 2001
+From 3602cf3384ed7f348576b1bedab4ee320ed673b9 Mon Sep 17 00:00:00 2001
 From: Mark Charlebois <charlebm@gmail.com>
 Date: Sat, 19 Apr 2014 22:59:49 -0700
-Subject: [PATCH] unhandled_else
+Subject: [PATCH] unhandled else in arch_timer_reg_read_cp15
 
-Clang complains about using val undefined which could happen if enum
+Clang complains about return value being undefined which could happen if enum
 value was corrupted.
 
 Author: Mark Charlebois <charlebm@gmail.com>
@@ -26,5 +26,5 @@ index d038116..622cbef 100644
  
  	return (u32)val;
 -- 
-1.8.3.2
+1.9.1
 

@@ -1,8 +1,8 @@
-From dfb93617deed44ba76f30992787cac1c25bc09c5 Mon Sep 17 00:00:00 2001
+From fe4434656732ce75b65496f587b0c8590319b8fb Mon Sep 17 00:00:00 2001
 From: Mark Charlebois <charlebm@gmail.com>
 Date: Tue, 11 Feb 2014 19:26:08 -0800
-Subject: [PATCH] arm, unwind, LLVMLinux: Enable clang to be used for unwinding the
- stack
+Subject: [PATCH] arm, unwind, LLVMLinux: Enable clang to be used for unwinding
+ the stack
 
 Patch to prevent warning of a buggy compiler when using clang and
 the ARM_UNWIND option.
