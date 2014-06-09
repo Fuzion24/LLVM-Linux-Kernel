@@ -1,4 +1,4 @@
-From 207c9408c78bfc60611bbc300bf21a9bf5661038 Mon Sep 17 00:00:00 2001
+From 2042df9737e7bffc8f5f99aabee35cf486436419 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 3 Sep 2013 22:27:27 -0400
 Subject: [PATCH] arm: LLVMLinux: Use current_stack_pointer in
@@ -17,22 +17,23 @@ Reviewed-by: Jan-Simon M??ller <dl9pf@gmx.de>
  1 file changed, 1 insertion(+), 3 deletions(-)
 
 diff --git a/arch/arm/kernel/stacktrace.c b/arch/arm/kernel/stacktrace.c
-index af4e8c8..8b83eaf 100644
+index f065eb0..f0bb49b 100644
 --- a/arch/arm/kernel/stacktrace.c
 +++ b/arch/arm/kernel/stacktrace.c
-@@ -109,11 +109,9 @@ void save_stack_trace_tsk(struct task_struct *tsk, struct stack_trace *trace)
+@@ -134,12 +134,10 @@ static noinline void __save_stack_trace(struct task_struct *tsk,
  		frame.pc = thread_saved_pc(tsk);
  #endif
  	} else {
 -		register unsigned long current_sp asm ("sp");
 -
- 		data.no_sched_functions = 0;
+ 		/* We don't want this function nor the caller */
+ 		data.skip += 2;
  		frame.fp = (unsigned long)__builtin_frame_address(0);
 -		frame.sp = current_sp;
 +		frame.sp = __builtin_stack_pointer();
  		frame.lr = (unsigned long)__builtin_return_address(0);
- 		frame.pc = (unsigned long)save_stack_trace_tsk;
+ 		frame.pc = (unsigned long)__save_stack_trace;
  	}
 -- 
-1.8.3.2
+1.9.1
 
