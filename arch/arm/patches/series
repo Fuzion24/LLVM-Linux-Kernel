@@ -1,5 +1,5 @@
 eabi-arm.patch
-arm-glue-cache-extern-inline.patch
+#arm-glue-cache-extern-inline.patch
 ftrace.patch
 kbuild-clang-arm.patch
 current_stack_pointer_arm.patch
@@ -9,5 +9,5 @@ named_register-return_address.patch
 named_register-stacktrace.patch
 named_register-thread_info.patch
 named_register-unwind.patch
-unwind_support.patch
+#unwind_support.patch
 percpu.patch
