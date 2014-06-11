@@ -1,0 +1,33 @@
+Clang does not pass the -march flag to the assembler, but gcc does.
+
+Clang must be explicitly told to pass the flag to the assembler. 
+Without the flag set the GNU assember reports the following error:
+
+/llvmlinux/build/targets/vexpress64/tmp/aes-ce-cipher-5b96de.s: Assembler messages:
+/llvmlinux/build/targets/vexpress64/tmp/aes-ce-cipher-5b96de.s:210: Error: selected processor does not support `aese v0.16b,v2.16b'
+/llvmlinux/build/targets/vexpress64/tmp/aes-ce-cipher-5b96de.s:210: Error: selected processor does not support `aesmc v0.16b,v0.16b'
+/llvmlinux/build/targets/vexpress64/tmp/aes-ce-cipher-5b96de.s:210: Error: selected processor does not support `aese v0.16b,v3.16b'
+...
+clang-3.5: error: assembler command failed with exit code 1 (use -v to see invocation)
+make[3]: *** [arch/arm64/crypto/aes-ce-cipher.o] Error 1
+make[2]: *** [arch/arm64/crypto] Error 2
+
+The change was also tested with GCC. GCC requires the flag to be 
+passed without -Xassembler.
+
+
+Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+
+diff --git a/arch/arm64/crypto/Makefile b/arch/arm64/crypto/Makefile
+index 2070a56..506cde1 100644
+--- a/arch/arm64/crypto/Makefile
++++ b/arch/arm64/crypto/Makefile
+@@ -18,7 +18,7 @@ obj-$(CONFIG_CRYPTO_GHASH_ARM64_CE) += ghash-ce.o
+ ghash-ce-y := ghash-ce-glue.o ghash-ce-core.o
+ 
+ obj-$(CONFIG_CRYPTO_AES_ARM64_CE) += aes-ce-cipher.o
+-CFLAGS_aes-ce-cipher.o += -march=armv8-a+crypto
++CFLAGS_aes-ce-cipher.o += -march=armv8-a+crypto -Xassembler -march=armv8-a+crypto
+ 
+ obj-$(CONFIG_CRYPTO_AES_ARM64_CE_CCM) += aes-ce-ccm.o
+ aes-ce-ccm-y := aes-ce-ccm-glue.o aes-ce-ccm-core.o
