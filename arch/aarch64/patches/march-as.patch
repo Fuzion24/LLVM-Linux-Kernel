@@ -13,7 +13,7 @@ make[3]: *** [arch/arm64/crypto/aes-ce-cipher.o] Error 1
 make[2]: *** [arch/arm64/crypto] Error 2
 
 The change was also tested with GCC. GCC requires the flag to be 
-passed without -Xassembler.
+passed without -Xassembler. Both GCC and Clang work when -Wa is used.
 
 
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
