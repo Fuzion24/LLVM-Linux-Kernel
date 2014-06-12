@@ -29,6 +29,8 @@ REMOTE_REPO	?= ssh://git-lf@git.linuxfoundation.org/llvmlinux/kernel.git
 #############################################################################
 HELP_TARGETS	+= kernel-git-push-help
 
+include ${ARCHDIR}/all/git-request-pull.mk
+
 #############################################################################
 kernel-git-push-help:
 	@echo
@@ -48,7 +50,7 @@ kernel-git-push-help:
 
 #############################################################################
 kernel-git-latest: kernel-git-import-quilt-patches
-kernel-git-for-linus kernel-git-for-next kernel-git-for-arm kernel-git-for-aarch64: kernel-git-for-%: kernel-fetch
+kernel-git-for-linus kernel-git-for-next kernel-git-for-arm kernel-git-for-aarch64 kernel-git-for-test: kernel-git-for-%: kernel-fetch
 	@$(call banner,Building for-$*)
 	@$(call importprepare,for-$*)
 	@${PATCHSTATUS} --for-$* > ${TARGET_PATCH_SERIES}.for-$*

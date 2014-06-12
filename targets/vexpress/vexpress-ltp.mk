@@ -49,8 +49,8 @@ LTPTESTS = ltplite
 
 VEXPRESS_LTP_IMG	= vexpress-ltp.img
 VEXPRESS_LTP_BZ		= ${VEXPRESS_LTP_IMG}.bz2
-VEXPRESS_LTP_IMG_TMP	= ${TMPDIR}/${VEXPRESS_LTP_IMG}
-VEXPRESS_LTP_GCCIMG_TMP	= ${TMPDIR}/vexpress-ltp-gcc.img
+VEXPRESS_LTP_IMG_TMP	= $(call shared,${TMPDIR}/${VEXPRESS_LTP_IMG})
+VEXPRESS_LTP_GCCIMG_TMP	= $(call shared,${TMPDIR}/vexpress-ltp-gcc.img)
 VEXPRESS_LTP_BZ_TMP	= ${VEXPRESS_LTP_IMG_TMP}.bz2
 LTP_RESULTS_DIR		= test-results
 

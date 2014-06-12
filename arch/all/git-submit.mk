@@ -20,7 +20,6 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
-
 #############################################################################
 HELP_TARGETS	+= kernel-git-submit-help
 
@@ -37,7 +36,7 @@ kernel-git-submit-help:
 	@echo "    DRYRUN=1                Don't send email at the end (for test purposes)"
 
 #############################################################################
-kernel-git-submit-patch-check:
+kernel-git-submit-patch-check: kernel-fetch
 	@$(call banner,Checking patches for obvious syntax problems)
 	@OUTPUT=`$(MAKE) list-kernel-checkpatch NOPASS=1 NOFAIL=1 | grep ^FAIL`; \
 	if [ -n "$$OUTPUT" ] ; then \
@@ -63,7 +62,7 @@ email_addresses = cd ${KERNELDIR} ; \
 	| sed -e 's/ .*</ /g; s/>.*//g; s/ (.*)//g'
 
 #############################################################################
-kernel-git-submit-patch-get_maintainers:
+kernel-git-submit-patch-get_maintainers: kernel-fetch
 	@[ -n "$$PATCH_LIST" ] || PATCH_LIST=`$(call catuniq,${ALL_PATCH_SERIES}) | grep "${PATCH_FILTER_REGEX}"`; \
 	PATCH_LIST=`for PATCH in $$PATCH_LIST; do echo patches/$$PATCH; done`; \
 	(cd ${KERNELDIR} && $(call email_addresses,$$PATCH_LIST))
@@ -74,7 +73,7 @@ SUBMIT_TMP=${KERNELDIR}/for-upstream
 SUBMIT_COVER=${SUBMIT_TMP}/0000-cover-letter.patch
 SUBMIT_COVER_SUBJECT=LLVMLinux: Patches to enable the kernel to be compiled with clang/LLVM
 SUBMIT_COVER_BLURB=${DOCDIR}/patch-blurb.txt
-kernel-git-submit-patch: kernel-fetch kernel-git-submit-patch-check
+kernel-git-submit-patch: kernel-git-submit-patch-check
 	@$(call banner,Importing patches into git)
 	@$(call importprepare,${SUBMIT_BRANCH})
 	@cd ${KERNELDIR} ; \
@@ -99,7 +98,7 @@ kernel-git-submit-patch: kernel-fetch kernel-git-submit-patch-check
 			s|\*\*\* BLURB HERE \*\*\*|`cat ${SUBMIT_COVER_BLURB}`|e; \
 			print' ${SUBMIT_COVER}; \
 	fi
-	@FROM=`cd ${TOPDIR}; git config --get user.email`; \
+	@FROM=`$(call git,${TOPDIR},config --get user.email)`; \
 	[ -z $$REPLYTO ] || REPLYTO="--in-reply-to $$REPLYTO"; \
 	[ -z $$DRYRUN ] || DRYRUN="--dry-run"; \
 	PATCHES=`find ${SUBMIT_TMP} -name '*.patch' | grep -v 0000-`; \
@@ -109,7 +108,3 @@ kernel-git-submit-patch: kernel-fetch kernel-git-submit-patch-check
 		${SUBMIT_TMP}/*
 	@$(call banner,Mark patches as submitted)
 	@${PATCHSTATUS} -s `cat ${TARGET_PATCH_SERIES}.${SUBMIT_BRANCH}`
-
-#	sed -i 's|\*\*\* SUBJECT HERE \*\*\*|${SUBMIT_COVER_SUBJECT}|' ${SUBMIT_COVER}
-#	sed -i '/\*\*\* BLURB HERE \*\*\*/{ s/\*\*\* BLURB HERE \*\*\*//g; r ${SUBMIT_COVER_BLURB}\
-#}' ${SUBMIT_COVER}

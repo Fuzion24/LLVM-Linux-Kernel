@@ -311,11 +311,7 @@ list-kernel-checkpatch list-kernel-get_maintainer: list-kernel-%: kernel-fetch
 				else \
 					[ $@ = list-kernel-checkpatch ] && echo -e -n "FAIL\t" ; \
 					echo "$$DIR/$$PATCH" ; \
-					if [ -z "$$NOFAIL" ] ; then \
-						echo "${seperator}" ; \
-						echo "$$OUTPUT" ; \
-						echo "${seperator}" ; \
-					fi ; \
+					[ -n "$$NOFAIL" ] || echo -e "${seperator}\n$$OUTPUT\n${seperator}" ; \
 				fi ; \
 				break; \
 			fi ; \
