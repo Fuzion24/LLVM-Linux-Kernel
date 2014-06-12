@@ -63,6 +63,9 @@ parser.add_option("", "--for-linus",
 parser.add_option("", "--for-next",
                   action="store_const", const="for-next", dest="branch",
                   help="Patches for the for-next branch")
+parser.add_option("", "--for-test",
+                  action="store_const", const="for-test", dest="branch",
+                  help="This is merely for testing the buildsystem")
 parser.add_option("-o", "--left-over",
                   action="store_true", dest="leftover", default=False,
                   help="List which patches in spreadsheet aren't being used")
