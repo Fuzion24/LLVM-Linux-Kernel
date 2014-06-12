@@ -486,23 +486,25 @@ kernels-clean: kernel-clean kernel-gcc-clean
 #############################################################################
 kernel-shared-sync:
 	@$(call banner,Syncing shared kernel.org kernel...)
-	@(cd ${SHARED_KERNEL} && git fetch origin +refs/heads/*:refs/heads/*)
+	@$(call git,${SHARED_KERNEL},fetch origin +refs/heads/*:refs/heads/*)
 
 #############################################################################
 kernel-sync: state/kernel-fetch kernel-clean kernel-shared-sync
 	@$(call banner,Syncing kernel...)
 	@$(call check_llvmlinux_commit,${CONFIG})
+	-@$(call gitabort,${KERNELDIR})
 	@$(call optional_gitreset,${KERNELDIR})
 	$(call gitref,${KERNELDIR},${SHARED_KERNEL})
 	@$(call gitsync,${KERNELDIR},${KERNEL_COMMIT},${KERNEL_BRANCH},${KERNEL_TAG})
 
 #############################################################################
-kernel-clean kernel-mrproper: kernel-unpatch
+kernel-clean kernel-mrproper:: kernel-unpatch
 	@$(call makemrproper,${KERNELDIR})
 	@rm -f ${LOGDIR}/*.log
 	@rm -rf ${KERNEL_BUILD}
 	@$(call leavestate,${STATEDIR},kernel-quilt kernel-patch kernel-configure kernel-build)
 	@$(call banner,Clang compiled Kernel is now clean)
+kernel-mrproper:: kernel-quilt-clear
 
 #############################################################################
 kernel-gcc-clean kernel-gcc-mrproper: kernel-unpatch
@@ -562,29 +564,24 @@ kernel-version:
 	@$(call get-kernel-version,${KERNELDIR})
 
 #############################################################################
-kernel-bisect-start: kernel-mrproper
-	@(cd ${KERNELDIR} ; git bisect reset ; git bisect start ; git bisect bad ; git bisect good `git log --pretty=format:'%ai §%H' | grep ${KERNEL_BISECT_START_DATE} | head -1 | cut -d"§" -f2` )
+kernel-bisect-start kernel-gcc-bisect-start: kernel-%bisect-start: kernel-%mrproper
+	@(cd ${KERNELDIR} ; \
+		git bisect reset ; \
+		git bisect start ; \
+		git bisect bad ; \
+		git bisect good `git log --pretty=format:'%ai §%H'\
+			| grep ${KERNEL_BISECT_START_DATE} \
+			| head -1 \
+			| cut -d"§" -f2` )
 
-kernel-bisect-skip: kernel-clean
-	@(cd ${KERNELDIR} ; git bisect skip )
+kernel-bisect-skip kernel-gcc-bisect-skip: kernel-%bisect-skip: kernel-%clean
+	@$(call git,${KERNELDIR},bisect skip)
 
-kernel-bisect-good: kernel-clean
-	@(cd ${KERNELDIR} ; git bisect good )
+kernel-bisect-good kernel-gcc-bisect-good: kernel-%bisect-good: kernel-%clean
+	@$(call git,${KERNELDIR},bisect good)
 
-kernel-bisect-bad: kernel-clean
-	@(cd ${KERNELDIR} ; git bisect bad)
-
-kernel-gcc-bisect: kernel-gcc-mrproper
-	@(cd ${KERNELDIR} ; git bisect reset ; git bisect start ; git bisect bad ; git bisect good `git log --pretty=format:'%ai §%H' | grep ${KERNEL_BISECT_START_DATE} | head -1 | cut -d"§" -f2` )
-
-kernel-gcc-bisect-skip: kernel-gcc-clean
-	@(cd ${KERNELDIR} ; git bisect skip )
-
-kernel-gcc-bisect-good: kernel-gcc-clean
-	@(cd ${KERNELDIR} ; git bisect good )
-
-kernel-gcc-bisect-bad: kernel-gcc-clean
-	@(cd ${KERNELDIR} ; git bisect bad)
+kernel-bisect-bad kernel-gcc-bisect-bad: kernel-%bisect-bad: kernel-%clean
+	@$(call git,${KERNELDIR},bisect bad)
 
 #############################################################################
 tmp tmpdir: ${TMPDIR}

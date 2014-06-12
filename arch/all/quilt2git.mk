@@ -38,10 +38,10 @@ importprepare	= ($(call gitcheckout,${KERNELDIR},${KERNEL_BRANCH}) ; \
 		$(call git,${KERNELDIR}, pull) ; \
 		$(call unpatch,${KERNELDIR}) ; \
 		$(call leavestate,${STATEDIR},kernel-patch) ; \
-		$(call git,${KERNELDIR}, rebase --continue) || true ; \
+		$(call gitabort,${KERNELDIR}) || true ; \
 		$(call git,${KERNELDIR}, branch -D ${1}) || true ; \
 		$(call gitcheckout,${KERNELDIR},-b ${1}) ; \
-		$(call git,${KERNELDIR}, rebase --continue) || true ; \
+		$(call gitabort,${KERNELDIR}) || true ; \
 		${MAKE} kernel-quilt-link-patches ; \
 		) >/dev/null 2>&1
 
