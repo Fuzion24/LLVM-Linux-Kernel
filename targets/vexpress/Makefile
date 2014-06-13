@@ -72,7 +72,7 @@ include ${ARCHDIR}/arm/arm.mk
 include ${TARGETDIR}/vexpress-linaro.mk
 include ${TARGETDIR}/vexpress-ltp.mk
 
-#KERNEL_PATCH_DIR+= ${TARGETDIR}/patches-overlay
+KERNEL_PATCH_DIR+= ${TARGETDIR}/patches-overlay
 KERNEL_PATCH_DIR+= ${TARGETDIR}/patches
 
 include ${CONFIG}
