@@ -1,0 +1,78 @@
+From f2c540ff5c3d579221ce99d92e6ae3c24aa46d48 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Vin=C3=ADcius=20Tinti?= <viniciustinti@gmail.com>
+Date: Thu, 12 Jun 2014 21:16:24 -0300
+Subject: [PATCH] kbuild: add support to generate LLVM bitcode files
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Allows kbuild to generate LLVM bitcode files with the .ll extension when
+building with Clang.
+
+  # c code
+  make kernel/pid.ll
+
+  # asm code
+  make arch/arm/kernel/calls.ll
+
+Signed-off-by: Vinícius Tinti <viniciustinti@gmail.com>
+---
+ Makefile               |  7 +++++++
+ scripts/Makefile.build | 16 ++++++++++++++++
+ 2 files changed, 23 insertions(+)
+
+diff --git a/Makefile b/Makefile
+index fb1b838..7e1ba15 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1461,6 +1461,13 @@ else
+         target-dir = $(if $(KBUILD_EXTMOD),$(dir $<),$(dir $@))
+ endif
+ 
++ifeq ($(COMPILER),clang)
++%.ll: %.c prepare scripts FORCE
++	$(Q)$(MAKE) $(build)=$(build-dir) $(target-dir)$(notdir $@)
++%.ll: %.S prepare scripts FORCE
++	$(Q)$(MAKE) $(build)=$(build-dir) $(target-dir)$(notdir $@)
++endif
++
+ %.s: %.c prepare scripts FORCE
+ 	$(Q)$(MAKE) $(build)=$(build-dir) $(target-dir)$(notdir $@)
+ %.i: %.c prepare scripts FORCE
+diff --git a/scripts/Makefile.build b/scripts/Makefile.build
+index 003bc26..c9a6a4e 100644
+--- a/scripts/Makefile.build
++++ b/scripts/Makefile.build
+@@ -207,6 +207,14 @@ $(multi-objs-y:.o=.i)   : modname = $(modname-multi)
+ $(multi-objs-y:.o=.s)   : modname = $(modname-multi)
+ $(multi-objs-y:.o=.lst) : modname = $(modname-multi)
+ 
++ifeq ($(COMPILER),clang)
++quiet_cmd_cc_ll_c = CC $(quiet_modtag)  $@
++cmd_cc_ll_c       = $(CC) $(c_flags) $(DISABLE_LTO) -fverbose-asm -emit-llvm -S -o $@ $<
++
++$(obj)/%.ll: $(src)/%.c FORCE
++	$(call if_changed_dep,cc_ll_c)
++endif
++
+ quiet_cmd_cc_s_c = CC $(quiet_modtag)  $@
+ cmd_cc_s_c       = $(CC) $(c_flags) $(DISABLE_LTO) -fverbose-asm -S -o $@ $<
+ 
+@@ -341,6 +349,14 @@ modkern_aflags := $(KBUILD_AFLAGS_KERNEL) $(AFLAGS_KERNEL)
+ $(real-objs-m)      : modkern_aflags := $(KBUILD_AFLAGS_MODULE) $(AFLAGS_MODULE)
+ $(real-objs-m:.o=.s): modkern_aflags := $(KBUILD_AFLAGS_MODULE) $(AFLAGS_MODULE)
+ 
++ifeq ($(COMPILER),clang)
++quiet_cmd_as_ll_S = CPP $(quiet_modtag) $@
++cmd_as_ll_S       = $(CPP) $(a_flags)   -o $@ $<
++
++$(obj)/%.ll: $(src)/%.S FORCE
++	$(call if_changed_dep,as_ll_S)
++endif
++
+ quiet_cmd_as_s_S = CPP $(quiet_modtag) $@
+ cmd_as_s_S       = $(CPP) $(a_flags)   -o $@ $< 
+ 
+-- 
+1.9.1
+

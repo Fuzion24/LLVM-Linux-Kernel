@@ -17,3 +17,4 @@ kbuild-cross-build.patch
 overflow-warn.patch
 ti-divider.patch
 initconst.patch
+kbuild-llvm-bitcode.patch
