@@ -37,8 +37,11 @@ parser = OptionParser()
 parser.add_option("-f", "--file", dest="filename", default='patchstatus.conf',
                   help="write report to FILE", metavar="FILE")
 parser.add_option("-q", "--quiet",
-                  action="store_false", dest="verbose", default=True,
+                  action="store_true", dest="quiet", default=False,
                   help="don't print status messages to stdout")
+parser.add_option("-v", "--verbose",
+                  action="store_true", dest="verbose", default=False,
+                  help="print output to stdout as well as to --output")
 parser.add_option("-a", "--arch",
                   action="store", type="string", dest="arch", default="any",
                   help="Limit patches to arch")
@@ -66,21 +69,36 @@ parser.add_option("", "--for-next",
 parser.add_option("", "--for-test",
                   action="store_const", const="for-test", dest="branch",
                   help="This is merely for testing the buildsystem")
-parser.add_option("-o", "--left-over",
+parser.add_option("", "--left-over",
                   action="store_true", dest="leftover", default=False,
                   help="List which patches in spreadsheet aren't being used")
+parser.add_option("-o", "--output", dest="output", default='-',
+                  help="write output to FILE")
 
 (options, args) = parser.parse_args()
+
+def echo(txt):
+    if not(options.quiet):
+        print txt,
 
 def verbose(txt):
     if options.verbose:
         print txt,
 
+def writeoutput(data):
+    if data:
+        if options.output == '-':
+            print data,
+        else:
+            verbose(data)
+            f = open(options.output, "w")
+            f.write(data)
+
 #-------------------------------------------------------------------------------
 config = ConfigParser.RawConfigParser()
 files = config.read([options.filename, os.path.expanduser('~/.patchstatus.conf'), os.path.expanduser('~/.config/patchstatus/patchstatus.conf')])
 if len(files) == 0:
-    print "E: No valid config file found to specify status spreadsheet: "+options.filename
+    sys.stderr.write("E: No valid config file found to specify status spreadsheet: "+options.filename+"\n")
     sys.exit(0)
 
 #-------------------------------------------------------------------------------
@@ -91,9 +109,13 @@ try:
     gd_client.password = config.get('spreadsheet', 'password')
     gd_client.source = 'LLVMLinux patch script'
 except:
-    print "E: No valid patch status spreadsheet information found in "+options.filename
-    sys.exit(0)
-gd_client.ProgrammaticLogin()
+    sys.stderr.write("E: No valid patch status spreadsheet information found in "+options.filename+"\n")
+    sys.exit(1)
+try:
+    gd_client.ProgrammaticLogin()
+except:
+    sys.stderr.write("E: Can't access spreadsheet (no network?)\n")
+    sys.exit(1)
 
 #-------------------------------------------------------------------------------
 # Query spreadsheet by name
@@ -112,10 +134,12 @@ rows = gd_client.GetListFeed(spreadsheet_id, worksheet_id).entry
 #-------------------------------------------------------------------------------
 if options.listcat:
     categories = {}
+    data = ''
     for row in rows:
         categories[row.custom["category"].text] = 1
     for cat in sorted(categories):
-        print cat
+        data += cat+"\n"
+    writeoutput(data)
     sys.exit(0)
 
 #-------------------------------------------------------------------------------
@@ -148,21 +172,25 @@ def enabled(row, col):
 #-------------------------------------------------------------------------------
 # Print out patch names if value in for-branch is 'Y'
 if options.branch:
+    data = ''
     for row in rows:
         if ignored(row):
             continue
         if enabled(row, 'upstream-able') and enabled(row, options.branch):
-            print row.custom['patchname'].text
+            data += row.custom['patchname'].text+"\n"
+    writeoutput(data)
     sys.exit(0)
 
 #-------------------------------------------------------------------------------
 if options.leftover:
+    data = ''
     for row in rows:
         if ignored(row):
             continue
         patchname = row.custom['patchname'].text
         if patchname not in args:
-            print patchname
+            data += patchname+"\n"
+    writeoutput(data)
     sys.exit(0)
 
 #-------------------------------------------------------------------------------
@@ -206,20 +234,20 @@ for row in rows:
                 stats[key] = 1
 
         numpatches += 1
-	verbose(patchname,)
+	echo(patchname,)
 
 	vals = [re.sub('\.patch$','',patchname)]
         for key in fixedhdr:
             value = str(row.custom[key].text)
-            verbose(" %s: %s" % (key, value))
+            echo(" %s: %s" % (key, value))
             vals.append(value)
-        verbose("\n")
+        echo("\n")
         table.add_row(vals)
 
         for key in headers:
             val = row.custom[key].text
             if val and val != None and val != "None" and val != "-":
-                verbose("  %s: %s\n" % (key, val))
+                echo("  %s: %s\n" % (key, val))
 
 #-------------------------------------------------------------------------------
 print
@@ -232,11 +260,11 @@ for stat in stats:
 
 #-------------------------------------------------------------------------------
 if args:
-    print "Patches not found: ",
-    print args
-    print "Adding missing patches to spreadsheet:"
+    sys.stderr.write("Patches not found: ")
+    sys.stderr.write(str(args)+"\n")
+    sys.stderr.write("Adding missing patches to spreadsheet:")
     for patch in args:
-	print "  "+patch
+	sys.stderr.write("  "+patch+"\n")
 	data = {'patchname':patch, 'arch':'?', 'required':'?', 'upstream-able':'?', 'for-next':'?','for-linus':'?', 'for-arm':'?', 'for-aarch64':'?', 'boots':'?', 'category':'?', 'submittedupstream':'N', 'acceptedupstream':'N'}
         gd_client.InsertRow(data, spreadsheet_id, worksheet_id)
 

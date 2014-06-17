@@ -53,7 +53,7 @@ kernel-git-latest: kernel-git-import-quilt-patches
 kernel-git-for-linus kernel-git-for-next kernel-git-for-arm kernel-git-for-aarch64 kernel-git-for-test: kernel-git-for-%: kernel-fetch
 	@$(call banner,Building for-$*)
 	@$(call importprepare,for-$*)
-	@${PATCHSTATUS} --for-$* > ${TARGET_PATCH_SERIES}.for-$*
+	@${PATCHSTATUS} --for-$* -o ${TARGET_PATCH_SERIES}.for-$*
 	@rm -f ${TARGET_PATCH_SERIES}.tmp
 	@for PATCH in `$(call catuniq,${ALL_PATCH_SERIES})`; do \
 		grep $$PATCH ${TARGET_PATCH_SERIES}.for-$* >> ${TARGET_PATCH_SERIES}.tmp || true; \
