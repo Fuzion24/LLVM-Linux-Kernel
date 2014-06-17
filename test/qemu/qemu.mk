@@ -87,6 +87,7 @@ qemu-settings:
 	$(call prsetting,QEMU_BRANCH,${QEMU_BRANCH}) ; \
 	$(call prsetting,QEMU_TAG,${QEMU_TAG}) ; \
 	$(call prsetting,QEMU_GIT,${QEMU_GIT}) ; \
+	$(call gitdate,${QEMUSRCDIR},QEMU_DATE) ; \
 	$(call gitcommit,${QEMUSRCDIR},QEMU_COMMIT) ; \
 	[ -z "${CHECKPOINT}" ] || $(call prsetting,QEMUPATCHES,${CHECKPOINT_QEMU_PATCHES}) \
 	) | $(call configfilter)

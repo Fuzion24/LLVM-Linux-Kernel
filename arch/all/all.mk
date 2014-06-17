@@ -272,6 +272,7 @@ kernel-settings:
 	$(call prsetting,KERNEL_GIT,${KERNEL_GIT}) ; \
 	$(call prsetting,KERNEL_BRANCH,${KERNEL_BRANCH}) ; \
 	$(call prsetting,KERNEL_TAG,${KERNEL_TAG}) ; \
+	$(call gitdate,${KERNELDIR},KERNEL_DATE) ; \
 	$(call gitcommit,${KERNELDIR},KERNEL_COMMIT) ; \
 	$(call prsetting,KERNELDIR,${KERNELDIR}) ; \
 	[ -n "${CHECKPOINT}" ] && $(call prsetting,KERNEL_CFG,${CHECKPOINT_KERNEL_CONFIG}) \
@@ -407,8 +408,11 @@ state/kernel-build: state/kernel-configure
 	@$(MAKE) kernel-quilt-link-patches
 	@$(call banner,Building kernel with clang...)
 	@[ -z "${CCACHE_DIR}" ] || mkdir -p ${CCACHE_DIR}
-	@[ -z "${NOLOG}" ] && $(call save-log,$(call make-kernel,${KERNELDIR},${KERNEL_ENV},${CHECKER},${CHECK_VARS}),${KERNEL_CLANG_LOG},${ERROR_ZIP}) \
-		|| $(call make-kernel,${KERNELDIR},${KERNEL_ENV},${CHECKER},${CHECK_VARS})
+	@if [ -z "${NOLOG}" ] ; then \
+		$(call save-log,$(call make-kernel,${KERNELDIR},${KERNEL_ENV},${CHECKER},${CHECK_VARS}),${KERNEL_CLANG_LOG},${ERROR_ZIP}) || (${MAKE} bb_manifest; false) ; \
+	else \
+		$(call make-kernel,${KERNELDIR},${KERNEL_ENV},${CHECKER},${CHECK_VARS}); \
+	fi
 	@$(call banner,Successfully Built kernel with clang!)
 	@$(call get-kernel-size,clang,${CLANG},${KERNEL_BUILD})
 	$(call state,$@,done)

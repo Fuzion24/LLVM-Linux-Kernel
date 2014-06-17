@@ -52,20 +52,20 @@ kernel-git-submit-patch-check: kernel-fetch
 
 
 #############################################################################
-email_addresses = cd ${KERNELDIR} ; \
+email_addresses = (cd ${KERNELDIR} ; \
 	./scripts/get_maintainer.pl ${1} | while read ENTRY; do \
 		case "$$ENTRY" in \
 			*maintainer*|*authored*) echo "--to $$ENTRY";; \
 			*) echo "--cc $$ENTRY";; \
 		esac; \
 	done \
-	| sed -e 's/ .*</ /g; s/>.*//g; s/ (.*)//g'
+	| sed -e 's/ .*</ /g; s/>.*//g; s/ (.*)//g' | sort)
 
 #############################################################################
 kernel-git-submit-patch-get_maintainers: kernel-fetch
 	@[ -n "$$PATCH_LIST" ] || PATCH_LIST=`$(call catuniq,${ALL_PATCH_SERIES}) | grep "${PATCH_FILTER_REGEX}"`; \
 	PATCH_LIST=`for PATCH in $$PATCH_LIST; do echo patches/$$PATCH; done`; \
-	(cd ${KERNELDIR} && $(call email_addresses,$$PATCH_LIST))
+	$(call email_addresses,$$PATCH_LIST)
 
 #############################################################################
 SUBMIT_BRANCH=for-upstream

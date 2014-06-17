@@ -87,6 +87,7 @@ buildroot-settings:
 	$(call prsetting,BUILDROOT_BRANCH,${BUILDROOT_BRANCH}) ; \
 	$(call prsetting,BUILDROOT_TAG,${BUILDROOT_TAG}) ; \
 	$(call prsetting,BUILDROOT_GIT,${BUILDROOT_GIT}) ; \
+	$(call gitdate,${BUILDROOT_SRCDIR},BUILDROOT_DATE) ; \
 	$(call gitcommit,${BUILDROOT_SRCDIR},BUILDROOT_COMMIT) ; \
 	[ -n "${CHECKPOINT}" ] && $(call prsetting,BUILDROOT_PATCHES,${CHECKPOINT_BUILDROOT_PATCHES}) \
 		&& $(call prsetting,BUILDROOT_CONFIG,${CHECKPOINT_BUILDROOT_CONFIG}) \

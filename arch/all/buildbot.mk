@@ -20,7 +20,9 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
+.PHONY: ${BB_ARTIFACT_MANIFEST} ${BB_LLVMLINUX_CFG} ${BB_TARGET_CFG} ${BB_KERNEL_CFG}
 BB_ARTIFACT_MANIFEST	= ${BUILDBOTDIR}/manifest.ini
+BB_LLVMLINUX_CFG	= ${BUILDBOTDIR}/llvmlinux-${ARCH}.cfg
 BB_TARGET_CFG		= ${BUILDBOTDIR}/target-${TARGET}.cfg
 BB_KERNEL_CFG		= ${BUILDBOTDIR}/kernel-${TARGET}.cfg
 
@@ -37,22 +39,36 @@ ${BB_ARTIFACT_MANIFEST}:
 
 #############################################################################
 list-buildbot-artifacts::
+	@$(call ini_file_entry,LLVMLINUX\t\t,${BB_LLVMLINUX_CFG})
 	@$(call ini_file_entry,TARGET\t\t,${BB_TARGET_CFG})
 	@$(call ini_file_entry,KERNEL\t\t,${BB_KERNEL_CFG})
+	@echo foo 1>&2
+	@$(call ini_file_entry,WARNINGS\t,${KERNEL_CLANG_LOG})
+	@$(call ini_file_entry,ERROR_ZIP\t\t,${ERROR_ZIP})
+
+#############################################################################
+bb_all: bb_llvmlinux bb_clang bb_kernel bb_target bb_manifest
+
+#############################################################################
+bb_llvmlinux: ${BB_LLVMLINUX_CFG}
+${BB_LLVMLINUX_CFG}:
+	@$(call banner,Building $@)
+	@mkdir -p $(dir $@)
+	@$(call makequiet,common-settings) > $@
 
 #############################################################################
 bb_target: ${BB_TARGET_CFG}
 ${BB_TARGET_CFG}:
 	@$(call banner,Building $@)
 	@mkdir -p $(dir $@)
-	@$(MAKE) -s list-settings | grep -v ^make > $@
+	@$(call makequiet,list-settings) > $@
 
 #############################################################################
 bb_kernel: ${BB_KERNEL_CFG}
 ${BB_KERNEL_CFG}:
 	@$(call banner,Building $@)
 	@mkdir -p $(dir $@)
-	@$(MAKE) -s kernel-settings | grep -v ^make > $@
+	@$(call makequiet,kernel-settings) > $@
 
 #############################################################################
 # Updated in toolchain/clang/buildbot.mk
@@ -60,18 +76,14 @@ bb_clang::
 
 ############################################################################
 # Clang is already built before this
-buildbot-llvmlinux-ci-build buildbot-llvm-ci-build buildbot-clang-ci-build::
+buildbot-llvm-ci-build buildbot-clang-ci-build::
 	$(MAKE) kernel-rebuild-known-good
 	$(MAKE) kernel-test
-
-############################################################################
-# Kernel is already built before this (see above)
-buildbot-llvm-ci-build buildbot-clang-ci-build::
 	$(MAKE) bb_clang bb_manifest
 
 ############################################################################
 # Clang is already built before this
-buildbot-kernel-ci-build::
+buildbot-llvmlinux-ci-build buildbot-kernel-ci-build::
 	@$(call banner,Build/test kernel with gcc)
 	$(MAKE) GIT_HARD_RESET=1 kernel-gcc-clean
 	$(MAKE) kernel-gcc-build
@@ -80,4 +92,13 @@ buildbot-kernel-ci-build::
 	$(MAKE) GIT_HARD_RESET=1 kernel-clean
 	$(MAKE) kernel-build
 	$(MAKE) kernel-test
+
+############################################################################
+# Kernel is already built before this
+buildbot-llvmlinux-ci-build::
+	$(MAKE) bb_llvmlinux bb_manifest
+
+############################################################################
+# Kernel is already built before this
+buildbot-llvmlinux-ci-build buildbot-kernel-ci-build::
 	$(MAKE) bb_target bb_kernel bb_manifest

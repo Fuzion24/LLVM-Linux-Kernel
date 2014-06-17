@@ -63,6 +63,7 @@ notshared = [ ${TOPDIR} != ${SHARED_ROOT} || $(1)
 # recursive Make macros
 makeclean = if [ -f ${1}/Makefile ]; then ${3} make --quiet -C ${1} ${2} clean ; fi
 makemrproper = if [ -f ${1}/Makefile ]; then ${3} make --quiet -C ${1} ${2} mrproper ; fi
+makequiet = ($(MAKE) -s ${1} | grep -v ^make)
 
 ##############################################################################
 # Quilt patch macros used by all subsystems
@@ -90,6 +91,7 @@ git = (cd ${1} && git ${2})
 gitabort = $(call git,${1},config --get ${1})
 gitabort = $(call git,${1},rebase --abort 2>/dev/null)
 gitconfig = $(call git,${TOPDIR},config --get ${1})
+gitdate	= $(call prsetting,${2},`$(call git,${1},show -s --format=%ci HEAD)`)
 gitmove = $(call git,${1},branch --move ${2} $3 >/dev/null 2>&1)
 gitpull = $(call git,${1},checkout ${2} && git pull origin ${2})
 gitreset = ([ -d ${1} ] && cd ${1} && $(call echo,Reseting git tree ${1}) && git remote update && git reset --hard origin/master && git clean -d -f) || true
@@ -125,7 +127,7 @@ gitsvnrev = $$(cd ${1}; git svn find-rev $$(git rev-parse HEAD))
 #############################################################################
 ini_section	= (echo -e "\n${2}"; $(MAKE) -s ${3} | egrep -v '^$$' | \
 			sed -e '/[ \t]*+=/d; s/[ \t]*=[ \t]*/=/;') >> $1
-ini_file_entry	= [ ! -f "${2}" ] || echo -e "${1}=${2}"
+ini_file_entry	= echo ${2} 1>&2; [ ! -f "${2}" ] || echo -e "${1}=${2}"
 
 ##############################################################################
 # general download macros
@@ -177,8 +179,9 @@ common-help:
 
 ##############################################################################
 SETTINGS_TARGETS += common-settings
-common-settings:
+common-settings llvmlinux-settings:
 	@$(call gitcommit,${TOPDIR},LLVMLINUX_COMMIT)
+	@$(call gitdate,${TOPDIR},LLVMLINUX_DATE)
 
 ##############################################################################
 list-jobs:

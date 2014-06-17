@@ -92,7 +92,7 @@ CLANG_BRANCH	?= master
 LLVM_OPTIMIZED	= --enable-optimized --enable-assertions
 
 HELP_TARGETS	+= llvm-help
-SETTINGS_TARGETS+= llvm-settings
+SETTINGS_TARGETS+= llvm-settings clang-settings
 
 # Add clang to the path
 PATH		:= ${LLVMINSTALLDIR}/bin:${PATH}
@@ -130,19 +130,29 @@ llvm-settings:
 	@(echo "# LLVM settings" ; \
 	$(call prsetting,LLVM_GIT,${LLVM_GIT}) ; \
 	$(call prsetting,LLVM_BRANCH,${LLVM_BRANCH}) ; \
+	$(call gitdate,${LLVMDIR},LLVM_DATE) ; \
 	$(call gitcommit,${LLVMDIR},LLVM_COMMIT) ; \
 	$(call prsetting,LLVM_REV,$(call gitsvnrev,${LLVMDIR})) ; \
 	$(call prsetting,LLVM_OPTIMIZED,${LLVM_OPTIMIZED}) ; \
 	[ -z "${CHECKPOINT}" ] || $(call prsetting,LLVMPATCHES,${CHECKPOINT_PATCHES}) ; \
 	$(call prsetting,LLVM_TARGETS_TO_BUILD,${LLVM_TARGETS_TO_BUILD}) ; \
-	echo "# Clang settings" ; \
+	) | $(call configfilter)
+
+##############################################################################
+clang-settings:
+	@(echo "# Clang settings" ; \
 	$(call prsetting,CLANG_GIT,${CLANG_GIT}) ; \
 	$(call prsetting,CLANG_BRANCH,${CLANG_BRANCH}) ; \
+	$(call gitdate,${CLANGDIR},CLANG_DATE) ; \
 	$(call gitcommit,${CLANGDIR},CLANG_COMMIT) ; \
 	$(call prsetting,CLANG_REV,$(call gitsvnrev,${CLANGDIR})) ; \
 	) | $(call configfilter)
+
+##############################################################################
+#compilerrt-settings:
 #	@$(call prsetting,COMPILERRT_GIT,${COMPILERRT_GIT})
 #	@$(call prsetting,COMPILERRT_BRANCH,${COMPILERRT_BRANCH})
+#	@$(call gitdate,${COMPILERRTDIR},COMPILERRT_DATE)
 #	@$(call gitcommit,${COMPILERRTDIR},COMPILERRT_COMMIT)
 
 ##############################################################################
