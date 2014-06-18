@@ -20,11 +20,11 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
-DEBDEP		+= build-essential git patch quilt sparse time bc
+DEBDEP		+= build-essential git patch quilt sparse time bc zip
 DEBDEP_32	+= libc6:i386 libncurses5:i386
 DEBDEP_EXTRAS	+= sparse
 
-RPMDEP		+= gcc git make patch quilt
+RPMDEP		+= gcc git make patch quilt zip
 RPMDEP_EXTRAS	+= sparse
 
 ##############################################################################
