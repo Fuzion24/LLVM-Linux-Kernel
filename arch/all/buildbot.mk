@@ -76,7 +76,7 @@ bb_clang::
 ############################################################################
 # Clang is already built before this
 buildbot-llvm-ci-build buildbot-clang-ci-build::
-	$(MAKE) kernel-rebuild-known-good
+	$(MAKE) kernel-rebuild-known-good || $(MAKE) kernel-sync-latest kernel-rebuild
 	$(MAKE) kernel-test
 	$(MAKE) bb_clang bb_manifest
 
@@ -85,7 +85,7 @@ buildbot-llvm-ci-build buildbot-clang-ci-build::
 buildbot-llvmlinux-ci-build buildbot-kernel-ci-build::
 	@$(call banner,Build/test kernel with gcc)
 	$(MAKE) GIT_HARD_RESET=1 kernel-gcc-clean
-	$(MAKE) kernel-gcc-build || $(MAKE) kernel-sync-latest kernel-gcc-build
+	$(MAKE) kernel-gcc-build || $(MAKE) kernel-sync-latest kernel-gcc-rebuild
 	$(MAKE) kernel-gcc-test
 	@$(call banner,Build/test kernel with clang)
 	$(MAKE) GIT_HARD_RESET=1 kernel-clean
