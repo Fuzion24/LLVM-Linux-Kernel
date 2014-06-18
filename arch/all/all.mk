@@ -508,7 +508,7 @@ kernel-clean kernel-mrproper:: kernel-unpatch
 	@rm -rf ${KERNEL_BUILD}
 	@$(call leavestate,${STATEDIR},kernel-quilt kernel-patch kernel-configure kernel-build)
 	@$(call banner,Clang compiled Kernel is now clean)
-kernel-mrproper:: kernel-quilt-clear
+kernel-mrproper:: kernel-quilt-clean
 
 #############################################################################
 kernel-gcc-clean kernel-gcc-mrproper: kernel-unpatch
