@@ -141,6 +141,8 @@ unbz2 = $(call echo,Unpacking $(notdir ${1}) into ${2}) \
 unxz = $(call echo,Unpacking $(notdir ${1}) into ${2}) \
 		&& mkdir -p ${2} && tar --extract --xz --file ${1} --directory ${2}
 
+getlink = rm -f $(notdir ${1}) ${2}; $(call wget,${1},$(dir ${2})); ln -sf $(notdir ${1}) ${2}
+
 ##############################################################################
 # Settings macros used by all subsystems
 prsetting = (printf "%-24s= %s\n" "${1}" "${2}" | unexpand --all)

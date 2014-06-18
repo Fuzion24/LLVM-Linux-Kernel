@@ -29,8 +29,7 @@ KERNEL_CONFIG	= ${TMPDIR}/kernel.cfg
 # Get known good config from continue integration buildbot
 # ${KERNEL_CONFIG}: # Can't be this or will autodownload on above include
 kernel-config:
-	-@$(call wget,${KNOWN_GOOD_KERNEL_CONFIG_URL},$(dir ${KERNEL_CONFIG})) \
-		&& rm -f $@; ln -sf $(notdir ${KNOWN_GOOD_KERNEL_CONFIG_URL}) ${KERNEL_CONFIG}
+	-@$(call getlink,${KNOWN_GOOD_KERNEL_CONFIG_URL},${KERNEL_CONFIG})
 
 ##############################################################################
 kernel-build-known-good kernel-gcc-build-known-good: %: ${STATEDIR}/%
