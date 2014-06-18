@@ -25,11 +25,17 @@ KNOWN_GOOD_KERNEL_CONFIG_URL = http://buildbot.llvm.linuxfoundation.org/configs/
 KERNEL_CONFIG	= ${TMPDIR}/kernel.cfg
 -include ${KERNEL_CONFIG}
 
+CLEAN_TARGETS		+= kernel-config-clean
+CLEAN_CONFIG_TARGETS	+= kernel-config-clean
+
 ##############################################################################
 # Get known good config from continue integration buildbot
 # ${KERNEL_CONFIG}: # Can't be this or will autodownload on above include
 kernel-config:
 	-@$(call getlink,${KNOWN_GOOD_KERNEL_CONFIG_URL},${KERNEL_CONFIG})
+kernel-config-clean:
+	@$(call leavestate,${STATEDIR},kernel-build-known-good kernel-gcc-build-known-good)
+	@rm -f ${KERNEL_CONFIG}
 
 ##############################################################################
 kernel-build-known-good kernel-gcc-build-known-good: %: ${STATEDIR}/%
@@ -56,9 +62,8 @@ kernel-resync: state/kernel-fetch kernel-config
 	@$(call gitsync,${KERNELDIR},${KERNEL_COMMIT},${KERNEL_BRANCH},${KERNEL_TAG})
 
 ##############################################################################
-kernel-sync-latest:
+kernel-sync-latest: kernel-config-clean
 	@$(call banner,Sync latest kernel)
-	@rm -f ${KERNEL_CONFIG}
 	@$(MAKE) kernel-sync
 
 ##############################################################################

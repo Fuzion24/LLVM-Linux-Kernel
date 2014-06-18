@@ -22,9 +22,10 @@
 
 # Assumes has been included from clang.mk
 
-CLANG_TMPDIR	= ${LLVMTOP}/tmp
-TMPDIRS		+= ${CLANG_TMPDIR}
-RAZE_TARGETS	+= clang-raze
+CLANG_TMPDIR		= ${LLVMTOP}/tmp
+TMPDIRS			+= ${CLANG_TMPDIR}
+CLEAN_TARGETS		+= clang-config-clean
+CONFIG_CLEAN_TARGETS	+= clang-config-clean
 
 include ${LLVMTOP}/clang-from-source.mk
 STATE_CLANG_TOOLCHAIN = ${LLVMSTATE}/clang-build-known-good
@@ -40,6 +41,9 @@ CLANG_CONFIG	= ${CLANG_TMPDIR}/clang.cfg
 clang-config:
 	-@rm ${CLANG_CONFIG}
 	-@$(call getlink,${KNOWN_GOOD_CLANG_CONFIG_URL},${CLANG_CONFIG})
+clang-config-clean:
+	@$(call leavestate,${STATEDIR},clang-build-known-goof)
+	@rm -f ${CLANG_CONFIG}
 
 ##############################################################################
 clang-build-known-good: ${LLVMSTATE}/clang-build-known-good
@@ -70,9 +74,8 @@ clang-resync: ${LLVMSTATE}/clang-fetch clang-config
 	@$(call llvmsync,Clang,${CLANGDIR},${CLANG_BRANCH},${CLANG_COMMIT})
 
 ##############################################################################
-llvm-sync-latest clang-sync-latest: %-sync-latest:
+llvm-sync-latest clang-sync-latest: %-sync-latest: clang-config-clean
 	@$(call banner,Sync latest $*)
-	@rm -f ${CLANG_CONFIG}
 	@$(MAKE) $*-sync
 
 ##############################################################################
