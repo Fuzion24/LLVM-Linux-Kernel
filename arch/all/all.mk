@@ -173,7 +173,7 @@ zip-error		= ($(call banner,Error file: ${1}); cat "${1}"; \
 				$(call banner,Error file: ${1}); \
 				cd `dirname "${1}"`; \
 				rm -f ${2}; \
-				zip "${2}" `basename "${1}"` `egrep "^clang.*diagnostic msg: ${TMPDIR}/|Assembler messages: |Error: " ${1} | sed 's|^.*/||'`; \
+				zip "${2}" `basename "${1}"` `egrep "^clang.*diagnostic msg: ${TMPDIR}/" ${1} | sed 's|^.*/||'`; \
 				$(call banner,Error log and files: ${2}); \
 			)
 save-log		= (echo '${1}'; rm -f "${2}"; ${1} 2> >(tee "${2}") \
