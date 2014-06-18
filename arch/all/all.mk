@@ -172,7 +172,7 @@ make-kernel		= (cd ${1} && ${2} time ${3} make ${MAKE_FLAGS} ${KERNEL_VAR} ${4} 
 zip-error		= ($(call banner,Error file: ${1}); cat "${1}"; \
 				$(call banner,Error file: ${1}); \
 				cd `dirname "${1}"`; \
-				rm ${2}; \
+				rm -f ${2}; \
 				zip "${2}" `basename "${1}"` `egrep "^clang.*diagnostic msg: ${TMPDIR}/|Assembler messages: |Error: " ${1} | sed 's|^.*/||'`; \
 				$(call banner,Error log and files: ${2}); \
 			)
