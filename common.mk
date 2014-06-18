@@ -35,7 +35,7 @@ BUILDBOTDIR	= ${TMPDIR}/buildbot
 
 ##############################################################################
 COMMON_TARGETS	= list-config list-jobs list-targets list-fetch-all list-patch-applied list-path list-versions \
-			clean-all fetch-all mrproper-all raze-all sync-all tmp-mrproper
+			clean-all config-clean-all fetch-all mrproper-all raze-all sync-all tmp-mrproper
 TARGETS_UTILS	+= ${COMMON_TARGETS}
 CMDLINE_VARS	+= 'CONFIG=<file>' JOBS=n GIT_HARD_RESET=1
 
@@ -64,7 +64,7 @@ notshared = [ ${TOPDIR} != ${SHARED_ROOT} || $(1)
 # recursive Make macros
 makeclean = if [ -f ${1}/Makefile ]; then ${3} make --quiet -C ${1} ${2} clean ; fi
 makemrproper = if [ -f ${1}/Makefile ]; then ${3} make --quiet -C ${1} ${2} mrproper ; fi
-makequiet = ($(MAKE) -s ${1} | grep -v ^make)
+makequiet = (${MAKE} --silent ${1} | grep -v ^make)
 
 ##############################################################################
 # Quilt patch macros used by all subsystems
@@ -126,7 +126,7 @@ svnupdate = (cd ${1} && svn update)
 gitsvnrev = $$(cd ${1}; git svn find-rev $$(git rev-parse HEAD))
 
 #############################################################################
-ini_section	= (echo -e "\n${2}"; $(MAKE) -s ${3} | egrep -v '^$$' | \
+ini_section	= (echo -e "\n${2}"; $(MAKE) --silent ${3} | egrep -v '^$$' | \
 			sed -e '/[ \t]*+=/d; s/[ \t]*=[ \t]*/=/;') >> $1
 ini_file_entry	= [ ! -f "${2}" ] || echo -e "${1}=${2}"
 
@@ -163,6 +163,7 @@ common-help:
 	@echo
 	@echo "These are the generic make targets for all build targets:"
 	@echo "* make clean-all	- clean all code"
+	@echo "* make config-clean-all	- clean all code"
 	@echo "* make fetch-all	- fetch all repos and external files"
 	@echo "* make mproper-all	- scrub all code (cleaner than clean)"
 	@echo "* make raze-all		- Remove most things not in the llvmlinux repo"
@@ -201,7 +202,7 @@ include ${TOOLCHAIN}/toolchain.mk
 
 ##############################################################################
 help:
-	@${MAKE} --silent ${HELP_TARGETS} | less
+	@$(call makequiet,${HELP_TARGETS}) | less
 
 ##############################################################################
 list-targets:
@@ -231,7 +232,7 @@ list-fetch-all:
 
 ##############################################################################
 list-patch-applied:
-	${MAKE} ${PATCH_APPLIED_TARGETS}
+	@$(call makequiet,${PATCH_APPLIED_TARGETS})
 
 ##############################################################################
 list-path:
@@ -239,14 +240,13 @@ list-path:
 
 ##############################################################################
 list-settings settings list-config config:
-	@${MAKE} --silent ${SETTINGS_TARGETS} 2>/dev/null | sed \
+	@$(call makequiet,${SETTINGS_TARGETS}) 2>/dev/null | sed \
 		-e 's|${TARGETDIR}|$${TARGETDIR}|g' \
 		-e 's|${ARCHDIR}|$${ARCHDIR}|g' \
 		-e 's|${TESTDIR}|$${TESTDIR}|g' \
 		-e 's|${TOOLCHAIN}|$${TOOLCHAIN}|g' \
 		-e 's|${TOOLSDIR}|$${TOOLSDIR}|g' \
-		-e 's|${TOPDIR}|$${TOPDIR}|g' \
-		-e 's|^make[:\[].*$$||g'
+		-e 's|${TOPDIR}|$${TOPDIR}|g'
 
 ##############################################################################
 list-versions:
@@ -256,18 +256,24 @@ list-versions:
 	@echo -e "GIT\t\t= `git --version`"
 	@echo -e "MAKE\t\t= `make --version | head -1`"
 	@echo -e "QUILT\t\t= quilt version `quilt --version`"
-	@${MAKE} -s ${VERSION_TARGETS}
+	@$(call makequiet,${VERSION_TARGETS})
 
 ##############################################################################
 clean-all:
 	@$(call banner,Cleaning everything...)
-	${MAKE} ${CLEAN_TARGETS}
+	-$(call makequiet,${CLEAN_TARGETS})
 	@$(call banner,All clean!)
+
+##############################################################################
+config-clean-all:
+	@$(call banner,Cleaning config files...)
+	-$(call makequiet,${CONFIG_CLEAN_TARGETS})
+	@$(call banner,Cleaned all config files!)
 
 ##############################################################################
 fetch-all:
 	@$(call banner,Fetching external repos...)
-	${MAKE} ${FETCH_TARGETS}
+	$(call makequiet,${FETCH_TARGETS})
 	@$(call banner,All external sources fetched!)
 
 ##############################################################################
@@ -281,19 +287,19 @@ gc-all:
 ##############################################################################
 mrproper-all: tmp-mrproper
 	@$(call banner,Scrubbing everything...)
-	${MAKE} ${MRPROPER_TARGETS}
+	-$(call makequiet,${MRPROPER_TARGETS})
 	@$(call banner,All very clean!)
 
 ##############################################################################
 raze-all: tmp-mrproper
 	@$(call banner,Removing everything...)
-	${MAKE} ${RAZE_TARGETS}
+	-$(call makequiet,${RAZE_TARGETS})
 	@$(call banner,All external sources razed!)
 
 ##############################################################################
 sync-all: state/prep
 	@$(call banner,Syncing everything...)
-	${MAKE} ${SYNC_TARGETS}
+	$(call makequiet,${SYNC_TARGETS})
 	@$(call banner,All external sources synced!)
 list-sync:
 	@echo ${SYNC_TARGETS}
