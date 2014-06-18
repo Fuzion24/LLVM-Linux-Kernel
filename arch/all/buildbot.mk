@@ -42,7 +42,6 @@ list-buildbot-artifacts::
 	@$(call ini_file_entry,LLVMLINUX\t\t,${BB_LLVMLINUX_CFG})
 	@$(call ini_file_entry,TARGET\t\t,${BB_TARGET_CFG})
 	@$(call ini_file_entry,KERNEL\t\t,${BB_KERNEL_CFG})
-	@echo foo 1>&2
 	@$(call ini_file_entry,WARNINGS\t,${KERNEL_CLANG_LOG})
 	@$(call ini_file_entry,ERROR_ZIP\t\t,${ERROR_ZIP})
 
