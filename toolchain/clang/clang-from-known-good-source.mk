@@ -38,12 +38,12 @@ CLANG_CONFIG	= ${CLANG_TMPDIR}/clang.cfg
 # Get known good config from continue integration buildbot
 #${CLANG_CONFIG}: # Can't be this or will auto-download with the above include
 clang-config:
+	-@rm ${CLANG_CONFIG}
 	-@$(call getlink,${KNOWN_GOOD_CLANG_CONFIG_URL},${CLANG_CONFIG})
 
 ##############################################################################
 clang-build-known-good: ${LLVMSTATE}/clang-build-known-good
 ${LLVMSTATE}/clang-build-known-good:
-	@$(MAKE) llvm-sync-latest clang-sync-latest
 	@$(MAKE) llvm-resync clang-resync
 	@$(call banner,Build known good clang)
 	@$(call leavestate,${LLVMSTATE},llvm-configure llvm-build clang-configure clang-build)
