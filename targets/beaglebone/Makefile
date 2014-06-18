@@ -30,7 +30,7 @@ BOARD		= beaglebone
 
 # Kernel settings
 KERNEL_CFG		= ${KERNELDIR}/arch/arm/configs/multi_v7_defconfig
-KERNEL_UIMAGE		= arch/arm/boot/uImage
+KERNEL_IMAGES		= arch/arm/boot/*Image
 KERNEL_DTBS		= arch/arm/boot/dts/am335x-bone*.dtb
 #KERNEL_MAKE_TARGETS	= LOADADDR=0x80008000 uImage dtbs
 KERNEL_MAKE_TARGETS	= zImage dtbs
@@ -40,10 +40,10 @@ DEBDEP			+= u-boot-tools
 .PHONY:			${BOARD_TARGETS} clean mrproper
 
 all all-clang: prep kernel-build
-	@ls -l ${KERNEL_BUILD}/${KERNEL_UIMAGE} $(wildcard ${KERNEL_BUILD}/${KERNEL_DTBS})
+	@$(call ls,$(wildcard ${KERNEL_BUILD}/${KERNEL_IMAGES}) $(wildcard ${KERNEL_BUILD}/${KERNEL_DTBS}))
 
 all-gcc: prep kernel-gcc-build
-	@ls -l ${KERNELGCC_BUILD}/${KERNEL_UIMAGE} $(wildcard ${KERNELGCC_BUILD}/${KERNEL_DTBS})
+	@$(call ls,$(wildcard ${KERNELGCC_BUILD}/${KERNEL_IMAGES}) $(wildcard ${KERNELGCC_BUILD}/${KERNEL_DTBS}))
 
 include ${TOPDIR}/common.mk
 include ${ARCHDIR}/${ARCH}/${ARCH}.mk

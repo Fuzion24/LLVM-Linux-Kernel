@@ -47,6 +47,7 @@ seperator = --------------------------------------------------------------------
 banner	= (echo -e "${seperator}\nI:" ${1} | sed 's|${TOPDIR}/||g')
 echo	= (echo -e "${seperator}\nI:" ${1} | sed 's|${TOPDIR}/||g')
 warn	= (echo -e "${seperator}\nW:" ${1} | sed 's|${TOPDIR}/||g')
+ls	= (ls -l ${1} | sed 's|${TOPDIR}/||g')
 echovar	= ([ -z '$($(1))' ] || printf '%-15s = %s\n' '$(1)' '$($(1))' | unexpand --all | sed 's|${TOPDIR}/||g')
 which	= (echo -e "$(1) -> `which $(1)`")
 state	= @mkdir -p $(dir ${1}) && touch ${1} \
