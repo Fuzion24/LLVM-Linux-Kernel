@@ -33,7 +33,9 @@ STATE_CLANG_TOOLCHAIN = ${LLVMSTATE}/clang-build-known-good
 ##############################################################################
 KNOWN_GOOD_CLANG_CONFIG_URL = http://buildbot.llvm.linuxfoundation.org/configs/clang-${ARCH}.cfg
 CLANG_CONFIG	= ${CLANG_TMPDIR}/clang.cfg
+ifndef NOCONFIG
 -include ${CLANG_CONFIG}
+endif
 
 ##############################################################################
 # Get known good config from continue integration buildbot

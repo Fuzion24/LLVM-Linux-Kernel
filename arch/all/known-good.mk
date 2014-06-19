@@ -23,7 +23,10 @@
 ##############################################################################
 KNOWN_GOOD_KERNEL_CONFIG_URL = http://buildbot.llvm.linuxfoundation.org/configs/kernel-${TARGET}.cfg
 KERNEL_CONFIG	= ${TMPDIR}/kernel.cfg
+
+ifndef NOCONFIG
 -include ${KERNEL_CONFIG}
+endif
 
 CLEAN_TARGETS		+= kernel-config-clean
 CLEAN_CONFIG_TARGETS	+= kernel-config-clean
