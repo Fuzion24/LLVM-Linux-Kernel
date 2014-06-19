@@ -39,7 +39,6 @@ CLANG_CONFIG	= ${CLANG_TMPDIR}/clang.cfg
 # Get known good config from continue integration buildbot
 #${CLANG_CONFIG}: # Can't be this or will auto-download with the above include
 clang-config:
-	-@rm ${CLANG_CONFIG}
 	-@$(call getlink,${KNOWN_GOOD_CLANG_CONFIG_URL},${CLANG_CONFIG})
 clang-config-clean:
 	@$(call leavestate,${STATEDIR},clang-build-known-goof)
