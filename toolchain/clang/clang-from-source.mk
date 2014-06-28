@@ -22,11 +22,15 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
+# TOOLCHAINTOP may have already been set by clang-from-known-source
+TOOLCHAINTOP ?= ${LLVMTOP}/head
+
 # Assumes has been included from clang.mk
 
-LLVMSRCDIR	= ${LLVMTOP}/src
-LLVMBUILD	= $(call buildroot,${LLVMTOP}/build)
-LLVMINSTALLDIR	:= ${LLVMTOP}/install
+LLVMSTATE	= ${TOOLCHAINTOP}/state
+LLVMSRCDIR	= ${TOOLCHAINTOP}/src
+LLVMBUILD	= $(call buildroot,${TOOLCHAINTOP}/build)
+LLVMINSTALLDIR	:= ${TOOLCHAINTOP}/install
 LLVMPATCHES	?= ${LLVMTOP}/patches
 
 # Workaround for LLVM breakage
@@ -53,7 +57,7 @@ CLANGDIR2	= ${LLVMSRCDIR}/clang-unpatched
 #COMPILERRTDIR2	= ${LLVMDIR2}/projects/compiler-rt
 LLVMBUILDDIR2	= ${LLVMBUILD}/llvm-unpatched
 CLANGBUILDDIR2	= ${LLVMBUILD}/clang-unpatched
-LLVMINSTALLDIR2	:= ${LLVMTOP}/install-unpatched
+LLVMINSTALLDIR2	:= ${TOOLCHAINTOP}/install-unpatched
 
 LLVM_TARGETS 		= llvm llvm-[fetch,patch,configure,build,clean,sync]
 CLANG_TARGETS 		= clang clang-[fetch,patch,configure,build,sync] clang-update-all
@@ -234,8 +238,8 @@ ifneq (${CLANG_SELFHOST},)
 CLANG_CMAKE_FLAGS	= CC=clang CXX=clang++
 else
 ifneq (${USE_CCACHE},)
-CCACHE_LLVM_DIR		= $(subst ${TOPDIR},${CCACHE_ROOT},${LLVMTOP})/build/ccache
-CCACHE_LLVM_OLD_DIR	= $(subst ${TOPDIR},${CCACHE_ROOT},${LLVMTOP})/ccache
+CCACHE_LLVM_DIR		= $(subst ${TOPDIR},${CCACHE_ROOT},${TOOLCHAINTOP})/build/ccache
+CCACHE_LLVM_OLD_DIR	= $(subst ${TOPDIR},${CCACHE_ROOT},${TOOLCHAINTOP})/ccache
 CCACHE_DIRS		+= ${CCACHE_LLVM_DIR}
 CLANG_CMAKE_FLAGS	= CCACHE_DIR=${CCACHE_LLVM_DIR} CC="ccache gcc" CXX="ccache g++"
 

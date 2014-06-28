@@ -30,8 +30,8 @@ ARMLIBDIRS	= -L${LLVMTOP}/arm/user-libs/usr/lib -L${LLVMTOP}/arm/user-libs/usr/l
 ARMINCLUDEDIR	= ${LLVMTOP}/arm/user-libs/usr/include
 ARMLLVMBUILDDIR	= ${LLVMTOP}/arm/build/llvm
 ARMCLANGBUILDDIR	= ${LLVMTOP}/arm/build/clang
-LLVMBINDIR	= ${LLVMTOP}/build/llvm/bin
-CLANGBINDIR	= ${LLVMTOP}/build/clang/bin
+LLVMBINDIR	= ${TOOLCHAINTOP}/build/llvm/bin
+CLANGBINDIR	= ${TOOLCHAINTOP}/build/clang/bin
 
 ARMCLANGDEBDEP += wget cmake ninja-build gcc-4.8-arm-linux-gnueabihf \
 	gcc-4.8-multilib-arm-linux-gnueabihf binutils-arm-linux-gnueabihf \
@@ -44,7 +44,7 @@ ${LLVMSTATE}/llvm-arm-build: ${LLVMSTATE}/clang-build
 	$(shell mkdir -p ${ARMLLVMBUILDDIR})
 	$(call assert,-d ${ARMLIBDIR},"missing ARMLIBDIR")
 	$(call assert,-d ${ARMINCLUDEDIR},"missing ARMINCLUDEDIR")
-	cd ${ARMLLVMBUILDDIR} && CC=arm-linux-gnueabihf-gcc CXX=arm-linux-gnueabihf-g++-4.8 cmake -G Ninja ${LLVMTOP}/src/llvm -DCMAKE_CROSSCOMPILING=True \
+	cd ${ARMLLVMBUILDDIR} && CC=arm-linux-gnueabihf-gcc CXX=arm-linux-gnueabihf-g++-4.8 cmake -G Ninja ${TOOLCHAINTOP}/src/llvm -DCMAKE_CROSSCOMPILING=True \
 		-DCMAKE_INSTALL_PREFIX=${ARMINSTALLDIR} \
 		-DLLVM_TABLEGEN=${LLVMBINDIR}/llvm-tblgen \
 		-DLLVM_DEFAULT_TARGET_TRIPLE=arm-linux-gnueabihf \
@@ -68,7 +68,7 @@ clang-arm: ${LLVMSTATE}/clang-arm-build
 ${LLVMSTATE}/clang-arm-build: ${LLVMSTATE}/clang-build ${LLVMSTATE}/llvm-arm-build \
 		arm-clang-build-dep-check-deb clang-arm-user-libs
 	$(shell mkdir -p ${ARMCLANGBUILDDIR})
-	cd ${ARMCLANGBUILDDIR} && CC=arm-linux-gnueabihf-gcc CXX=arm-linux-gnueabihf-g++-4.8 cmake -G Ninja ${LLVMTOP}/src/clang -DCMAKE_CROSSCOMPILING=True \
+	cd ${ARMCLANGBUILDDIR} && CC=arm-linux-gnueabihf-gcc CXX=arm-linux-gnueabihf-g++-4.8 cmake -G Ninja ${TOOLCHAINTOP}/src/clang -DCMAKE_CROSSCOMPILING=True \
 		-DCMAKE_INSTALL_PREFIX=${ARMINSTALLDIR} \
 		-DCLANG_TABLEGEN=${CLANGBINDIR}/clang-tblgen \
 		-DLLVM_TARGETS_TO_BUILD=ARM \

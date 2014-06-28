@@ -21,8 +21,9 @@
 ##############################################################################
 
 # Assumes has been included from clang.mk
+TOOLCHAINTOP		= ${LLVMTOP}/known_good
 
-CLANG_TMPDIR		= ${LLVMTOP}/tmp
+CLANG_TMPDIR		= ${TOOLCHAINTOP}/tmp
 TMPDIRS			+= ${CLANG_TMPDIR}
 CLEAN_TARGETS		+= clang-config-clean
 CONFIG_CLEAN_TARGETS	+= clang-config-clean

@@ -26,8 +26,6 @@
 
 VERSION_TARGETS	+= llvm-version clang-version
 
-LLVMSTATE	= ${LLVMTOP}/state
-
 # The following export is needed by make_kernel.sh and clang_wrap.sh
 export CLANG
 
