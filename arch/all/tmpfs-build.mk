@@ -23,12 +23,12 @@
 TMPFS_BUILD_STATE	= ${TOPDIR}/build/tmpfs-build-dir
 
 # Look to see if we have a tmpfs mounted. If so use it. Use default if provided
-ifndef ${BUILDROOT}
+ifeq (${BUILDROOT},)
 BUILDROOT	:= $(shell (mount | egrep "tmpfs on ${TOPDIR}.*/build .* tmpfs" \
 			|| echo . . ${TOPDIR}) | head -1 | awk '{print $$3}')
 endif
 
-ifdef ${TMPFS_REQUIRED_FOR_BUILD}
+ifneq (${TMPFS_REQUIRED_FOR_BUILD},)
 TMPFS_MOUNT	= ${TMPFS_BUILD_STATE}
 endif
 
@@ -65,6 +65,7 @@ ${TMPFS_BUILD_STATE}:
 
 ##############################################################################
 tmpfs-build-setup:
+	@$(call banner,setting up tmpfs-build)
 	@mkdir -p ${TOPDIR}/build
 	@mount | egrep -q "tmpfs on ${TOPDIR}/build .* tmpfs" \
 		&& echo "${TOPDIR}/build already mounted" \

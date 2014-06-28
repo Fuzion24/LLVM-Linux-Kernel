@@ -355,7 +355,7 @@ kernel-patch-status-leftover:
 
 #############################################################################
 kernel-configure: state/kernel-configure
-state/kernel-configure: state/kernel-patch ${TMPFS_BUILD_STATE} ${KERNEL_CFG} ${STATE_CLANG_TOOLCHAIN} ${STATE_TOOLCHAIN}
+state/kernel-configure: state/kernel-patch ${TMPFS_MOUNT} ${KERNEL_CFG} ${STATE_CLANG_TOOLCHAIN} ${STATE_TOOLCHAIN}
 	@make -s build-dep-check
 	@$(call banner,Configuring kernel...)
 	@mkdir -p ${KERNEL_BUILD}
@@ -393,7 +393,7 @@ kernel-tags: state/kernel-configure
 
 #############################################################################
 kernel-gcc-configure: state/kernel-gcc-configure
-state/kernel-gcc-configure: state/kernel-patch ${TMPFS_BUILD_STATE} ${STATE_TOOLCHAIN}
+state/kernel-gcc-configure: state/kernel-patch ${TMPFS_MOUNT} ${STATE_TOOLCHAIN}
 	@make -s build-dep-check
 	@$(call banner,Configuring gcc kernel...)
 	@mkdir -p ${KERNELGCC_BUILD}
