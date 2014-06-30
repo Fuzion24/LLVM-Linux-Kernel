@@ -22,6 +22,7 @@
 
 # Assumes has been included from clang.mk
 
+LLVMSTATE	= ${LLVMTOP}/state
 CLANG_TMPDIR	= ${LLVMTOP}/tmp
 TMPDIRS		+= ${CLANG_TMPDIR}
 FETCH_TARGETS	+= clang-fetch
