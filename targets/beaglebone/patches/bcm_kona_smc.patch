@@ -1,0 +1,20 @@
+--- linux.orig/arch/arm/mach-bcm/bcm_kona_smc.c
++++ linux/arch/arm/mach-bcm/bcm_kona_smc.c
+@@ -108,7 +108,7 @@
+  */
+ static int bcm_kona_do_smc(u32 service_id, u32 buffer_phys)
+ {
+-	register u32 ip asm("ip");	/* Also called r12 */
++	register u32 ip asm("r12");	/* Also called r12 */
+ 	register u32 r0 asm("r0");
+ 	register u32 r4 asm("r4");
+ 	register u32 r5 asm("r5");
+@@ -120,7 +120,7 @@
+ 
+ 	asm volatile (
+ 		/* Make sure we got the registers we want */
+-		__asmeq("%0", "ip")
++		__asmeq("%0", "r12")
+ 		__asmeq("%1", "r0")
+ 		__asmeq("%2", "r4")
+ 		__asmeq("%3", "r5")

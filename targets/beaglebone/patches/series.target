@@ -1,2 +1,3 @@
 mach-vt8500.patch
 tps65217-regulator-config.patch
+bcm_kona_smc.patch
