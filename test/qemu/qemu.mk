@@ -65,8 +65,7 @@ VERSION_TARGETS		+= qemu-version
 QEMU_GIT	= "git://git.qemu.org/qemu.git"
 #QEMU_BRANCH	= "stable-1.7"
 QEMU_BRANCH	= "master"
-# Check out tag v2.0.0
-QEMU_COMMIT	= a9e8aeb3755bccb7b51174adcf4a3fc427e0d147
+#QEMU_TAG	= v2.0.0
 
 ##############################################################################
 qemu-help:
@@ -134,9 +133,10 @@ ${QEMUSTATE}/qemu-configure: ${QEMUSTATE}/qemu-patch ${TMPFS_BUILD_STATE}
 	@$(call banner,Configure QEMU...)
 	@mkdir -p ${QEMUBUILDDIR} ${CCACHE_QEMU_DIR}
 	(cd ${QEMUBUILDDIR} && ${QEMU_MAKE_FLAGS} ${QEMUSRCDIR}/configure \
-		--target-list=arm-softmmu,i386-softmmu,x86_64-softmmu --disable-kvm --disable-vnc \
-		--audio-drv-list="" --enable-fdt \
-		--disable-docs --prefix=${QEMUINSTALLDIR})
+		--prefix=${QEMUINSTALLDIR} \
+		--target-list=aarch64-softmmu,arm-softmmu,i386-softmmu,x86_64-softmmu \
+		--disable-docs --disable-kvm --disable-vnc --enable-fdt \
+		--audio-drv-list="")
 	$(call state,$@,qemu-build)
 
 ##############################################################################
