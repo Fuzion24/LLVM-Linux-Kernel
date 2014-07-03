@@ -1,18 +1,14 @@
 From 027774e557cd44620db246a75eac7ee17f789878 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 3 Sep 2013 22:27:26 -0400
-Subject: [PATCH] arm: LLVMLinux: Add current_stack_pointer macro for ARM
+Subject: [PATCH] arm: LLVMLinux: Add global named register current_stack_pointer for ARM
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-The current kernel code uses a named register to get the stack pointer which is
-only supported in gcc. For clang an alternative is to use a macro to get the
-current stack pointer using ASM (which is less efficient than a named
-resgiter). Long term the LLVMLinux project is hoping to introduce a new
-__builtin_stack_pointer() which will be added to both LLVM and gcc.
+Define a global named register for current_stack_pointer. The use of this new
+variable guarantees that both gcc and clang can access this register in C code.
 
-Author: Behan Webster <behanw@converseincode.com>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Reviewed-by: Jan-Simon Möller <dl9pf@gmx.de>
 Reviewed-by: Mark Charlebois <charlebm@gmail.com>
@@ -20,36 +16,17 @@ Reviewed-by: Mark Charlebois <charlebm@gmail.com>
  arch/arm/include/asm/thread_info.h | 19 +++++++++++++++++++
  1 file changed, 19 insertions(+)
 
-diff --git a/arch/arm/include/asm/thread_info.h b/arch/arm/include/asm/thread_info.h
-index 71a06b2..f894bd0 100644
---- a/arch/arm/include/asm/thread_info.h
-+++ b/arch/arm/include/asm/thread_info.h
-@@ -100,6 +100,25 @@ struct thread_info {
+--- linux.orig/arch/arm/include/asm/thread_info.h
++++ linux/arch/arm/include/asm/thread_info.h
+@@ -100,6 +100,11 @@
  #define init_stack		(init_thread_union.stack)
  
  /*
 + * how to get the current stack pointer in C
 + */
-+#if defined(CONFIG_BUILTIN_STACK_POINTER)
-+/* compiler has __builtin_stack_pointer support already */
-+
-+#elif defined(__clang__)
-+#define __builtin_stack_pointer() ({ \
-+	unsigned long current_sp; \
-+	asm ("mov %0, sp" : "=r" (current_sp)); \
-+	current_sp; \
-+})
-+#define current_stack_pointer __builtin_stack_pointer()
-+
-+#else /* gcc */
 +register unsigned long current_stack_pointer asm ("sp");
-+#define __builtin_stack_pointer() current_stack_pointer
-+#endif
 +
 +/*
   * how to get the thread information struct from C
   */
  static inline struct thread_info *current_thread_info(void) __attribute_const__;
--- 
-1.8.3.2
-
