@@ -18,3 +18,4 @@ overflow-warn.patch
 ti-divider.patch
 initconst.patch
 kbuild-llvm-bitcode.patch
+clang-warnings.patch

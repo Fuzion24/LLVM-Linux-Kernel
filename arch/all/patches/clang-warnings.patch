@@ -1,0 +1,36 @@
+From 2aa99cd7d5cb1c5cad42e1c2a77110f55d7af0dd Mon Sep 17 00:00:00 2001
+From: Behan Webster <behanw@converseincode.com>
+Date: Mon, 30 Jun 2014 17:38:09 -0700
+Subject: [PATCH] kbuild, LLVMLinux: only use warnings when using clang
+
+Only consider clang warnings in Kbuild when using the clang compiler.
+
+Signed-off-by: Behan Webster <behanw@converseincode.com>
+---
+ scripts/Makefile.extrawarn | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/scripts/Makefile.extrawarn b/scripts/Makefile.extrawarn
+index 6564350..e350127 100644
+--- a/scripts/Makefile.extrawarn
++++ b/scripts/Makefile.extrawarn
+@@ -26,7 +26,7 @@ warning-1 += $(call cc-option, -Wmissing-include-dirs)
+ warning-1 += $(call cc-option, -Wunused-but-set-variable)
+ warning-1 += $(call cc-disable-warning, missing-field-initializers)
+ 
+-# Clang
++ifeq ($(COMPILER),clang)
+ warning-1 += $(call cc-disable-warning, initializer-overrides)
+ warning-1 += $(call cc-disable-warning, unused-value)
+ warning-1 += $(call cc-disable-warning, format)
+@@ -35,6 +35,7 @@ warning-1 += $(call cc-disable-warning, sign-compare)
+ warning-1 += $(call cc-disable-warning, format-zero-length)
+ warning-1 += $(call cc-disable-warning, uninitialized)
+ warning-1 += $(call cc-option, -fcatch-undefined-behavior)
++endif
+ 
+ warning-2 := -Waggregate-return
+ warning-2 += -Wcast-align
+-- 
+1.9.1
+
