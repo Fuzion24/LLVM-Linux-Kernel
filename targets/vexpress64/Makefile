@@ -43,6 +43,10 @@ KERNEL_CFG	= ${KERNELDIR}/arch/arm64/configs/defconfig
 KERNEL_DTB	= arch/arm64/boot/dts/foundation-v8.dts
 ZIMAGE		= arch/arm64/boot/zImage
 
+BUILDROOT_ARCH	= qemu_arm_vexpress
+BUILDROOT_CONFIG= config_vexpress64_buildroot
+TOOLCHAINDIR	= $(ARM_CROSS_GCC_TOOLCHAIN)
+
 all: prep kernel-build
 
 NAME	= foundation-v8
