@@ -1,7 +1,8 @@
-From 027774e557cd44620db246a75eac7ee17f789878 Mon Sep 17 00:00:00 2001
+From bfcf26549b2577cafb761b436dd8aec6943746f7 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 3 Sep 2013 22:27:26 -0400
-Subject: [PATCH] arm: LLVMLinux: Add global named register current_stack_pointer for ARM
+Subject: [PATCH] arm: LLVMLinux: Add global named register
+ current_stack_pointer for ARM
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -13,12 +14,14 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
 Reviewed-by: Jan-Simon Möller <dl9pf@gmx.de>
 Reviewed-by: Mark Charlebois <charlebm@gmail.com>
 ---
- arch/arm/include/asm/thread_info.h | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+ arch/arm/include/asm/thread_info.h | 5 +++++
+ 1 file changed, 5 insertions(+)
 
---- linux.orig/arch/arm/include/asm/thread_info.h
-+++ linux/arch/arm/include/asm/thread_info.h
-@@ -100,6 +100,11 @@
+diff --git a/arch/arm/include/asm/thread_info.h b/arch/arm/include/asm/thread_info.h
+index e4e4208..9cb9c66 100644
+--- a/arch/arm/include/asm/thread_info.h
++++ b/arch/arm/include/asm/thread_info.h
+@@ -100,6 +100,11 @@ struct thread_info {
  #define init_stack		(init_thread_union.stack)
  
  /*
@@ -30,3 +33,6 @@ Reviewed-by: Mark Charlebois <charlebm@gmail.com>
   * how to get the thread information struct from C
   */
  static inline struct thread_info *current_thread_info(void) __attribute_const__;
+-- 
+1.9.1
+

@@ -1,7 +1,8 @@
-From 1fe5b671283f280f439144f4d87adf67b117f3a5 Mon Sep 17 00:00:00 2001
+From 5cadd15929418649ea19f56cca3f0cee94f76d07 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 3 Sep 2013 22:27:27 -0400
-Subject: [PATCH] arm: LLVMLinux: Use current_stack_pointer to calculate pt_regs address
+Subject: [PATCH] arm: LLVMLinux: Use current_stack_pointer to calculate
+ pt_regs address
 
 Use the global current_stack_pointer to calculate the end of the stack for
 current_pt_regs()
@@ -10,12 +11,14 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Reviewed-by: Jan-Simon M??ller <dl9pf@gmx.de>
 ---
- arch/arm/include/asm/ptrace.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/arm/include/asm/ptrace.h | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
---- linux.orig/arch/arm/include/asm/ptrace.h
-+++ linux/arch/arm/include/asm/ptrace.h
-@@ -148,9 +148,8 @@
+diff --git a/arch/arm/include/asm/ptrace.h b/arch/arm/include/asm/ptrace.h
+index c877654..45bc592 100644
+--- a/arch/arm/include/asm/ptrace.h
++++ b/arch/arm/include/asm/ptrace.h
+@@ -148,9 +148,8 @@ static inline unsigned long user_stack_pointer(struct pt_regs *regs)
  	return regs->ARM_sp;
  }
  
@@ -27,3 +30,6 @@ Reviewed-by: Jan-Simon M??ller <dl9pf@gmx.de>
  })
  
  #endif /* __ASSEMBLY__ */
+-- 
+1.9.1
+

@@ -1,7 +1,8 @@
-From afbe9f9a4944a3b190072af497f45d2aa4f98546 Mon Sep 17 00:00:00 2001
+From ccbf70392b01b275c81739e31f40921fcd4ba517 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 3 Sep 2013 22:27:27 -0400
-Subject: [PATCH] arm: LLVMLinux: Calculate current_thread_info from current_stack_pointer
+Subject: [PATCH] arm: LLVMLinux: Calculate current_thread_info from
+ current_stack_pointer
 
 Use the global current_stack_pointer to get the value of the stack pointer.
 This change supports being able to compile the kernel with both gcc and clang.
@@ -10,12 +11,14 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Reviewed-by: Jan-Simon M??ller <dl9pf@gmx.de>
 ---
- arch/arm/include/asm/thread_info.h | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ arch/arm/include/asm/thread_info.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- linux.orig/arch/arm/include/asm/thread_info.h
-+++ linux/arch/arm/include/asm/thread_info.h
-@@ -111,8 +111,8 @@
+diff --git a/arch/arm/include/asm/thread_info.h b/arch/arm/include/asm/thread_info.h
+index 9cb9c66..3184d94 100644
+--- a/arch/arm/include/asm/thread_info.h
++++ b/arch/arm/include/asm/thread_info.h
+@@ -111,8 +111,8 @@ static inline struct thread_info *current_thread_info(void) __attribute_const__;
  
  static inline struct thread_info *current_thread_info(void)
  {
@@ -26,3 +29,6 @@ Reviewed-by: Jan-Simon M??ller <dl9pf@gmx.de>
  }
  
  #define thread_saved_pc(tsk)	\
+-- 
+1.9.1
+
