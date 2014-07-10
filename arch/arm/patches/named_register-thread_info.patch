@@ -10,6 +10,7 @@ This change supports being able to compile the kernel with both gcc and clang.
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Reviewed-by: Jan-Simon M??ller <dl9pf@gmx.de>
+Acked-by: Will Deacon <will.deacon@arm.com>
 ---
  arch/arm/include/asm/thread_info.h | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)

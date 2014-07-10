@@ -10,6 +10,7 @@ current_pt_regs()
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Reviewed-by: Jan-Simon M??ller <dl9pf@gmx.de>
+Acked-by: Will Deacon <will.deacon@arm.com>
 ---
  arch/arm/include/asm/ptrace.h | 5 ++---
  1 file changed, 2 insertions(+), 3 deletions(-)
