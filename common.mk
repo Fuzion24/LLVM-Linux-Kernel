@@ -133,7 +133,7 @@ ini_file_entry	= [ ! -f "${2}" ] || echo -e "${1}=${2}"
 ##############################################################################
 # general download macros
 raw_wget = mkdir -p "${2}" && wget -P "${2}" -c "${1}"
-wget = if [ -d "${2}" ] ; then $(call raw_wget,${1},${2}) ; else $(call raw_wget,${1},$(dir ${2})); fi
+wget = if [ -e "${2}" ] ; then $(call raw_wget,${1},${2}); elif [ -d "${2}" ] ; then $(call raw_wget,${1},${2}) ; else $(call raw_wget,${1},$(dir ${2})); fi
 untgz = $(call echo,Unpacking $(notdir ${1}) into ${2}) \
 		&& mkdir -p ${2} && tar --extract --gunzip --file ${1} --directory ${2}
 unbz2 = $(call echo,Unpacking $(notdir ${1}) into ${2}) \

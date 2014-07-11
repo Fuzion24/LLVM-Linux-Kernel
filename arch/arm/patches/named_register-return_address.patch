@@ -1,4 +1,4 @@
-From 19efa3256bbedaf1ed859d319324fb8ee11f4975 Mon Sep 17 00:00:00 2001
+From 11ac45cf87a439450ef849cc87574bbbef16bd5d Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 3 Sep 2013 22:27:27 -0400
 Subject: [PATCH] arm: LLVMLinux: Use current_stack_pointer for return_address
@@ -13,9 +13,11 @@ Reviewed-by: Jan-Simon M??ller <dl9pf@gmx.de>
  arch/arm/kernel/return_address.c | 3 +--
  1 file changed, 1 insertion(+), 2 deletions(-)
 
---- linux.orig/arch/arm/kernel/return_address.c
-+++ linux/arch/arm/kernel/return_address.c
-@@ -39,13 +39,12 @@
+diff --git a/arch/arm/kernel/return_address.c b/arch/arm/kernel/return_address.c
+index fafedd8..5bceaef 100644
+--- a/arch/arm/kernel/return_address.c
++++ b/arch/arm/kernel/return_address.c
+@@ -39,13 +39,12 @@ void *return_address(unsigned int level)
  {
  	struct return_address_data data;
  	struct stackframe frame;
@@ -30,3 +32,6 @@ Reviewed-by: Jan-Simon M??ller <dl9pf@gmx.de>
  	frame.lr = (unsigned long)__builtin_return_address(0);
  	frame.pc = (unsigned long)return_address;
  
+-- 
+1.9.1
+
