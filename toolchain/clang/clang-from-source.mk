@@ -45,6 +45,9 @@ RPMDEP		+= cmake flex subversion zlib-devel
 STATE_CLANG_TOOLCHAIN = ${LLVMSTATE}/clang-build
 CLANG		= ${LLVMINSTALLDIR}/bin/clang
 
+SHARED_LLVM	= $(call shared,${LLVMTOP}/llvm.git)
+SHARED_CLANG	= $(call shared,${LLVMTOP}/clang.git)
+
 LLVMDIR		= ${LLVMSRCDIR}/llvm
 CLANGDIR	= ${LLVMSRCDIR}/clang
 #COMPILERRTDIR	= ${LLVMDIR}/projects/compiler-rt
@@ -159,10 +162,26 @@ clang-settings:
 #	@$(call gitdate,${COMPILERRTDIR},COMPILERRT_DATE)
 #	@$(call gitcommit,${COMPILERRTDIR},COMPILERRT_COMMIT)
 
+#############################################################################
+llvm-shared: ${SHARED_LLVM}
+${SHARED_LLVM}:
+	@$(call banner,Cloning shared llvm repo...)
+	@$(call gitclone,--bare ${LLVM_GIT},$@)
+	@grep -q '\[remote "origin"\]' $@/config \
+		|| echo -e "[remote \"origin\"]\n\turl = ${LLVM_GIT}" >> $@/config;
+
+#############################################################################
+clang-shared: ${SHARED_CLANG}
+${SHARED_CLANG}:
+	@$(call banner,Cloning shared clang repo...)
+	@$(call gitclone,--bare ${CLANG_GIT},$@)
+	@grep -q '\[remote "origin"\]' $@/config \
+		|| echo -e "[remote \"origin\"]\n\turl = ${CLANG_GIT}" >> $@/config;
+
 ##############################################################################
 llvmfetch = $(call banner,Fetching ${1}...) ; \
 	mkdir -p $(dir ${2}) ; \
-	$(call gitclone,${4} -b ${5},${3}) ; \
+	$(call gitclone,--reference $< ${4} -b ${5},${3}) ; \
 	if [ -n "${6}" ] ; then \
 		$(call banner,Fetching commit-ish ${1}...) ; \
 		$(call gitcheckout,${3},${5},${6}) ; \
@@ -170,7 +189,7 @@ llvmfetch = $(call banner,Fetching ${1}...) ; \
 
 ##############################################################################
 llvm-fetch: ${LLVMSTATE}/llvm-fetch
-${LLVMSTATE}/llvm-fetch:
+${LLVMSTATE}/llvm-fetch: ${SHARED_LLVM}
 	@$(call llvmfetch,LLVM,${LLVMSRCDIR},${LLVMDIR},${LLVM_GIT},${LLVM_BRANCH},${LLVM_COMMIT})
 	$(call state,$@,llvm-patch)
 
@@ -182,13 +201,13 @@ ${LLVMSTATE}/llvm-fetch:
 
 ##############################################################################
 clang-fetch: ${LLVMSTATE}/clang-fetch
-${LLVMSTATE}/clang-fetch:
+${LLVMSTATE}/clang-fetch: ${SHARED_CLANG}
 	@$(call llvmfetch,Clang,${LLVMSRCDIR},${CLANGDIR},${CLANG_GIT},${CLANG_BRANCH},${CLANG_COMMIT})
 	$(call state,$@,clang-patch)
 
 ##############################################################################
 llvm-unpatched-fetch: ${LLVMSTATE}/llvm-unpatched-fetch
-${LLVMSTATE}/llvm-unpatched-fetch: ${LLVMSTATE}/llvm-fetch
+${LLVMSTATE}/llvm-unpatched-fetch: ${SHARED_LLVM} ${LLVMSTATE}/llvm-fetch
 	@$(call llvmfetch,LLVM-unpatched,${LLVMSRCDIR},${LLVMDIR2},${LLVMDIR}/.git,${LLVM_BRANCH},${LLVM_COMMIT})
 	$(call state,$@,llvm-unpatched-configure)
 
@@ -200,7 +219,7 @@ ${LLVMSTATE}/llvm-unpatched-fetch: ${LLVMSTATE}/llvm-fetch
 
 ##############################################################################
 clang-unpatched-fetch: ${LLVMSTATE}/clang-unpatched-fetch
-${LLVMSTATE}/clang-unpatched-fetch: ${LLVMSTATE}/clang-fetch
+${LLVMSTATE}/clang-unpatched-fetch: ${SHARED_CLANG} ${LLVMSTATE}/clang-fetch
 	@$(call llvmfetch,Clang-unpatched,${LLVMSRCDIR},${CLANGDIR2},${CLANGDIR}/.git,${CLANG_BRANCH},${CLANG_COMMIT})
 	$(call state,$@,clang-unpatched-configure)
 
@@ -362,6 +381,7 @@ llvm-mrproper: llvm-clean clang-mrproper
 llvm-raze: llvm-clean-noreset clang-raze
 	@$(call banner,Razing LLVM...)
 	@rm -rf ${LLVMDIR}
+	@$(call notshared,rm -rf ${SHARED_LLVM})
 	@$(call leavestate,${LLVMSTATE},llvm-*)
 
 ##############################################################################
@@ -394,28 +414,40 @@ clang-mrproper:: clang-clean
 clang-raze:: clang-clean-noreset
 	@$(call banner,Razing Clang...)
 	@rm -rf ${CLANGDIR}
+	@$(call notshared,rm -rf ${SHARED_CLANG})
 	@$(call leavestate,${LLVMSTATE},clang-*)
+
+#############################################################################
+llvm-shared-sync:
+	@$(call banner,Syncing shared llvm.org llvm...)
+	@$(call git,${SHARED_LLVM},fetch origin +refs/heads/*:refs/heads/*)
+
+#############################################################################
+clang-shared-sync:
+	@$(call banner,Syncing shared llvm.org clang...)
+	@$(call git,${SHARED_CLANG},fetch origin +refs/heads/*:refs/heads/*)
 
 ##############################################################################
 llvmsync = $(call banner,Updating ${1}...) ; \
 	$(call unpatch,${2}) ; \
-	[ ! -d ${2} ] || if [ -n "${4}" ] ; then \
+	$(call gitref,${2},${3}) ; \
+	[ ! -d ${2} ] || if [ -n "${5}" ] ; then \
 		$(call banner,Syncing commit-ish ${1}...) ; \
-		$(call gitcheckout,${2},${3},${4}) ; \
+		$(call gitcheckout,${2},${4},${5}) ; \
 	else \
-		$(call gitpull,${2},${3}) ; \
+		$(call gitpull,${2},${4}) ; \
 	fi
 
 ##############################################################################
-llvm-sync: llvm-clean
+llvm-sync: llvm-clean llvm-shared-sync
 	@$(call check_llvmlinux_commit,${CONFIG})
-	@$(call llvmsync,LLVM,${LLVMDIR},${LLVM_BRANCH},${LLVM_COMMIT})
+	@$(call llvmsync,LLVM,${LLVMDIR},${SHARED_LLVM},${LLVM_BRANCH},${LLVM_COMMIT})
 	@$(call llvmsync,unpatched LLVM,${LLVMDIR2},${LLVM_BRANCH},${LLVM_COMMIT})
 
 ##############################################################################
-clang-sync: clang-clean
+clang-sync: clang-clean clang-shared-sync
 	@$(call check_llvmlinux_commit,${CONFIG})
-	@$(call llvmsync,Clang,${CLANGDIR},${CLANG_BRANCH},${CLANG_COMMIT})
+	@$(call llvmsync,Clang,${CLANGDIR},${SHARED_CLANG},${CLANG_BRANCH},${CLANG_COMMIT})
 	@$(call llvmsync,Unpatched Clang,${CLANGDIR2},${CLANG_BRANCH},${CLANG_COMMIT})
 
 ##############################################################################
