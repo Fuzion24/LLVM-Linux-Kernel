@@ -58,7 +58,7 @@ error1	= ( echo -e E: ${1}; false )
 assert	= [ ${1} ] || $(call error1,${2})
 assert_found_in_path = which ${1} || (echo -e "${1}: Not found in PATH" ${2}; false)
 shared	= $(subst ${TOPDIR},${SHARED_ROOT},${1})
-notshared = [ ${TOPDIR} != ${SHARED_ROOT} || $(1)
+notshared = [ ${TOPDIR} != ${SHARED_ROOT} ] || $(1)
 
 ##############################################################################
 # recursive Make macros
