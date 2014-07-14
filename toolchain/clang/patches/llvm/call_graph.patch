@@ -1,0 +1,45 @@
+Add option to print call graph
+
+Pass "-mllvm -print-call-graph" to clang to invoke.
+
+This will generate dot files for every file compiled.
+
+There will be an extra Node0x12345678 type node generated
+by LLVM that can be removed by a post processing script.
+
+Author: Harsh Vardhan Dwivedi <hdwivedi@codeaurora.org>
+Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+---
+diff --git a/lib/Transforms/IPO/PassManagerBuilder.cpp b/lib/Transforms/IPO/PassManagerBuilder.cpp
+index 46a3187..5f37b7f 100644
+--- a/lib/Transforms/IPO/PassManagerBuilder.cpp
++++ b/lib/Transforms/IPO/PassManagerBuilder.cpp
+@@ -16,6 +16,7 @@
+ #include "llvm/Transforms/IPO/PassManagerBuilder.h"
+ #include "llvm-c/Transforms/PassManagerBuilder.h"
+ #include "llvm/ADT/SmallVector.h"
++#include "llvm/Analysis/CallPrinter.h"
+ #include "llvm/Analysis/Passes.h"
+ #include "llvm/IR/Verifier.h"
+ #include "llvm/PassManager.h"
+@@ -45,6 +46,10 @@ UseGVNAfterVectorization("use-gvn-after-vectorization",
+   cl::init(false), cl::Hidden,
+   cl::desc("Run GVN instead of Early CSE after vectorization passes"));
+ 
++static cl::opt<bool>
++PrintCallGraph("print-call-graph", cl::Hidden, cl::ZeroOrMore,
++			   cl::desc("Print the call graph"));
++
+ static cl::opt<bool> UseNewSROA("use-new-sroa",
+   cl::init(true), cl::Hidden,
+   cl::desc("Enable the new, experimental SROA pass"));
+@@ -113,6 +118,9 @@ PassManagerBuilder::addInitialAliasAnalysisPasses(PassManagerBase &PM) const {
+ void PassManagerBuilder::populateFunctionPassManager(FunctionPassManager &FPM) {
+   addExtensionsToPM(EP_EarlyAsPossible, FPM);
+ 
++  if (PrintCallGraph)
++	  FPM.add(createCallGraphPrinterPass());
++
+   // Add LibraryInfo if we have some.
+   if (LibraryInfo) FPM.add(new TargetLibraryInfo(*LibraryInfo));
+ 
