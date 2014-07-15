@@ -30,6 +30,9 @@ CLANG_COMMIT	= master
 #CLANG_TOOLCHAIN	= prebuilt
 CLANG_TOOLCHAIN	= from-known-good-source
 
+# Enable the following line to generate dot files for each file compiled file
+#EXTRAFLAGS = CFLAGS_KERNEL=" -mllvm -print-call-graph"
+
 # Need to add EXT4 support to vexpress_defconfig
 KERNEL_CFG	= ${TARGETDIR}/config_vexpress
 #KERNEL_CFG	= ${KERNELDIR}/arch/arm/configs/vexpress_defconfig
