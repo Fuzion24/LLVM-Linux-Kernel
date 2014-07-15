@@ -1,4 +1,7 @@
-Add option to print call graph
+From 4ad1177422ef1f940fa4a2416ce1e84836276fe0 Mon Sep 17 00:00:00 2001
+From: Harsh Vardhan Dwivedi <hdwivedi@codeaurora.org>
+Date: Mon, 14 Jul 2014 23:46:07 -0600
+Subject: [PATCH] Add option to print call graph
 
 Pass "-mllvm -print-call-graph" to clang to invoke.
 
@@ -7,11 +10,16 @@ This will generate dot files for every file compiled.
 There will be an extra Node0x12345678 type node generated
 by LLVM that can be removed by a post processing script.
 
-Author: Harsh Vardhan Dwivedi <hdwivedi@codeaurora.org>
+Author:Harsh Vardhan Dwivedi <hdwivedi@codeaurora.org>
+Signed-off-by: David Peixotto <dpeixott@codeaurora.org>
+Signed-off-by: Harsh Vardhan Dwivedi <hdwivedi@codeaurora.org>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 ---
+ lib/Transforms/IPO/PassManagerBuilder.cpp |    9 +++++++++
+ 1 file changed, 9 insertions(+)
+
 diff --git a/lib/Transforms/IPO/PassManagerBuilder.cpp b/lib/Transforms/IPO/PassManagerBuilder.cpp
-index 46a3187..5f37b7f 100644
+index 46a3187..5d75059 100644
 --- a/lib/Transforms/IPO/PassManagerBuilder.cpp
 +++ b/lib/Transforms/IPO/PassManagerBuilder.cpp
 @@ -16,6 +16,7 @@
@@ -22,24 +30,28 @@ index 46a3187..5f37b7f 100644
  #include "llvm/Analysis/Passes.h"
  #include "llvm/IR/Verifier.h"
  #include "llvm/PassManager.h"
-@@ -45,6 +46,10 @@ UseGVNAfterVectorization("use-gvn-after-vectorization",
-   cl::init(false), cl::Hidden,
-   cl::desc("Run GVN instead of Early CSE after vectorization passes"));
+@@ -53,6 +54,10 @@ static cl::opt<bool>
+ RunLoopRerolling("reroll-loops", cl::Hidden,
+                  cl::desc("Run the loop rerolling pass"));
  
 +static cl::opt<bool>
 +PrintCallGraph("print-call-graph", cl::Hidden, cl::ZeroOrMore,
 +			   cl::desc("Print the call graph"));
 +
- static cl::opt<bool> UseNewSROA("use-new-sroa",
-   cl::init(true), cl::Hidden,
-   cl::desc("Enable the new, experimental SROA pass"));
-@@ -113,6 +118,9 @@ PassManagerBuilder::addInitialAliasAnalysisPasses(PassManagerBase &PM) const {
- void PassManagerBuilder::populateFunctionPassManager(FunctionPassManager &FPM) {
-   addExtensionsToPM(EP_EarlyAsPossible, FPM);
+ static cl::opt<bool> RunLoadCombine("combine-loads", cl::init(false),
+                                     cl::Hidden,
+                                     cl::desc("Run the load combining pass"));
+@@ -130,6 +135,10 @@ void PassManagerBuilder::populateFunctionPassManager(FunctionPassManager &FPM) {
+ }
  
-+  if (PrintCallGraph)
-+	  FPM.add(createCallGraphPrinterPass());
+ void PassManagerBuilder::populateModulePassManager(PassManagerBase &MPM) {
 +
-   // Add LibraryInfo if we have some.
-   if (LibraryInfo) FPM.add(new TargetLibraryInfo(*LibraryInfo));
- 
++	if (PrintCallGraph)
++		MPM.add(createCallGraphPrinterPass());
++
+   // If all optimizations are disabled, just run the always-inline pass.
+   if (OptLevel == 0) {
+     if (Inliner) {
+-- 
+1.7.9.5
+
