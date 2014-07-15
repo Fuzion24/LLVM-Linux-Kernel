@@ -10,13 +10,14 @@ This will generate dot files for every file compiled.
 There will be an extra Node0x12345678 type node generated
 by LLVM that can be removed by a post processing script.
 
-Author:Harsh Vardhan Dwivedi <hdwivedi@codeaurora.org>
+Author: Harsh Vardhan Dwivedi <hdwivedi@codeaurora.org>
 Signed-off-by: David Peixotto <dpeixott@codeaurora.org>
 Signed-off-by: Harsh Vardhan Dwivedi <hdwivedi@codeaurora.org>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 ---
- lib/Transforms/IPO/PassManagerBuilder.cpp |    9 +++++++++
- 1 file changed, 9 insertions(+)
+ lib/Transforms/IPO/PassManagerBuilder.cpp  |    9 +++++++++
+ include/llvm/Analysis/DOTGraphTraitsPass.h |    8 +++++++-
+ 2 files changed, 16 insertions(+), 1 deletion(-)
 
 diff --git a/lib/Transforms/IPO/PassManagerBuilder.cpp b/lib/Transforms/IPO/PassManagerBuilder.cpp
 index 46a3187..5d75059 100644
@@ -52,6 +53,32 @@ index 46a3187..5d75059 100644
    // If all optimizations are disabled, just run the always-inline pass.
    if (OptLevel == 0) {
      if (Inliner) {
+diff --git a/include/llvm/Analysis/DOTGraphTraitsPass.h b/include/llvm/Analysis/DOTGraphTraitsPass.h
+index 53c832c..ec6083c 100644
+--- a/include/llvm/Analysis/DOTGraphTraitsPass.h
++++ b/include/llvm/Analysis/DOTGraphTraitsPass.h
+@@ -16,6 +16,8 @@
+ 
+ #include "llvm/Analysis/CFGPrinter.h"
+ #include "llvm/Pass.h"
++#include "llvm/IR/Module.h"
++#include <sstream>
+ #include "llvm/Support/FileSystem.h"
+ 
+ namespace llvm {
+@@ -128,7 +130,11 @@ public:
+ 
+   bool runOnModule(Module &M) override {
+     GraphT Graph = AnalysisGraphTraitsT::getGraph(&getAnalysis<AnalysisT>());
+-    std::string Filename = Name + ".dot";
++    std::string ModuleFileName = M.getModuleIdentifier();
++    std::istringstream s(ModuleFileName);
++    std::string fileonly;
++    std::getline(s, fileonly, '.');
++    std::string Filename = fileonly + ".dot";
+     std::string ErrorInfo;
+ 
+     errs() << "Writing '" << Filename << "'...";
 -- 
 1.7.9.5
 
