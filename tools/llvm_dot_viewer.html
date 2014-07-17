@@ -1,0 +1,243 @@
+<!doctype html>
+<!--
+##############################################################################
+# Copyright (c) 2014 Mark Charlebois
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to 
+# deal in the Software without restriction, including without limitation the 
+# rights to use, copy, modify, merge, publish, distribute, sublicense, and/or 
+# sell copies of the Software, and to permit persons to whom the Software is 
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in 
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+# FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+# IN THE SOFTWARE.
+##############################################################################
+<!-->
+<html>
+<meta charset="utf-8">
+<title>LLVM Generated Dot File Viewer</title>
+
+<script src="http://d3js.org/d3.v3.js"></script>
+<script src="http://cpettitt.github.io/project/dagre-d3/latest/dagre-d3.js"></script>
+<script src="http://cpettitt.github.io/project/graphlib-dot/latest/graphlib-dot.min.js"></script>
+
+<style>
+svg {
+  border: 1px solid #999;
+  overflow: hidden;
+}
+
+text {
+  font-weight: 300;
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-size: 14px;
+}
+
+h2 {
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-size: 16px;
+}
+
+span {
+  font-weight: 300;
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-size: 14px;
+}
+
+.node rect {
+  stroke: #333;
+  stroke-width: 2px;
+  fill: #fff;
+}
+
+.edgeLabel rect {
+  fill: #fff;
+}
+
+.edgePath path {
+  stroke: #333;
+  stroke-width: 1.5px;
+  fill: none;
+}
+</style>
+
+<style>
+h1 {
+  color: #333;
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-size: 24px;
+}
+
+</style>
+
+<body>
+
+<h1>LLVM Dot File Viewer</h1>
+
+<div id="topContainer">
+<div style="width:250px;float:left;">
+<h2>Select the dot file to render</h2>
+<input type="file" id="dotFilePicker"/></div>
+<div style="width:250px;float:left;">
+<h2>Options</h2>
+<input type="checkbox" id="removeNode"><span>Remove extra LLVM node</span><br>
+<input type="checkbox" id="removeExternal"><span>Remove external LLVM node</span><br>
+<button id="redraw" onclick="redraw()" disabled="true">Redraw</button>
+</div>
+<div style="width:250px;float:left;"><h2>Status:</h2>
+<span id="status"/></div>
+</div>
+<div style="height:20px;clear:both;"></div>
+<div>
+<svg id="svgContainer">
+  <g id="graph"/>
+</svg>
+</div>
+
+<script>
+var origDotFile = "";
+var inputGraph = null;
+
+window.addEventListener('resize', function(event){
+	var w = window.innerWidth;
+	var h = window.innerHeight;
+	var svg = document.getElementById('svgContainer');
+
+        svg.style.width=w - 50.0 + "px";
+        svg.style.height=h - 30.0 + "px";
+
+	if (inputGraph != null) {
+		redraw();
+	}
+});
+
+window.onload = function() {
+	var dotFilePicker = document.getElementById('dotFilePicker');
+	var status = document.getElementById('status');
+	status.innerHTML = "Waiting for file selection";
+	dotFilePicker.addEventListener('change', function(e) { 
+		var file = dotFilePicker.files[0];
+		var reader = new FileReader();
+
+		status.innerHTML = "Reading file...";
+		reader.onload = function(e) {
+			origDotFile = reader.result;
+			redraw();
+		};
+		reader.readAsText(file);
+	});
+}
+
+function redraw() {
+	var status = document.getElementById('status');
+	status.innerHTML = "Filtering Graph...";
+	inputGraph = filterGraph(origDotFile);
+	status.innerHTML = "Drawing Graph...";
+	setTimeout(drawGraph,10);
+}
+
+function filterGraph(graph) {
+	var status = document.getElementById('status');
+	var removeNode = document.getElementById('removeNode').checked;
+	var removeExternal = document.getElementById('removeExternal').checked;
+	var filteredGraph = "";
+
+	if (removeNode || removeExternal) {
+		status.innerHTML = "Filtering graph...";
+		var startnode = {};
+		var externalNode = null;
+		// Split into lines
+		lines = graph.split(/[\r\n]+/g);
+		var i = 0;
+		for (; i<lines.length; ++i) {
+			var line = lines[i];
+			// Get all starting nodes
+			if (line.substring(1, 5) == "Node") {
+				var haslabel = line.indexOf("label")+1;
+				var n = line.substring(1).replace(/ .*/, "");
+				// keep track of which nodes have lables
+				if (n in startnode) {
+					startnode[n] += haslabel;
+				}
+				else {
+					startnode[n] = 1 + haslabel;
+				}
+			}
+			if (removeExternal) {
+				// remove all lines containing "{external node}"
+				var isExternalNode = line.indexOf("{external node}");
+				if (isExternalNode > -1) {
+					externalNode = line.substring(1).replace(/ .*/, "");
+				}
+			}
+					
+		}
+		for (i=0; i<lines.length; ++i) {
+			var line = lines[i];
+			var ok = true;
+			if (line.substring(1, 5) == "Node") {
+				var n = line.substring(1).replace(/ .*/, "");
+				// keep line if it was not a pruned external node
+				if (externalNode && line.indexOf(externalNode) > -1) {
+					ok = false;
+				}
+			}
+			var tmp = line.replace(/.* -> /, "");
+			if (removeNode && tmp.substring(0,4) == "Node") {
+				var n = tmp.substring(0,13);
+				if (!(n in startnode)) {
+					// remove line if it points to LLVM node
+					ok = false;
+				}
+			}
+			if (ok) {
+				filteredGraph += line + "\n";
+			}
+		}
+	}
+	else {
+		filteredGraph = graph;
+	}
+	return filteredGraph;
+}
+	
+function drawGraph() {
+	var status = document.getElementById('status');
+	var result;
+	try {
+		var redrawButton = document.getElementById('redraw');
+		result = graphlibDot.parse(inputGraph);
+		redrawButton.disabled = false;
+	} catch (e) {
+		status.innerHTML = "Error Parsing Selected Dot File";
+		throw e;
+	}
+
+	if (result) {
+		var renderer = new dagreD3.Renderer();
+
+		// Custom transition function
+		function transition(selection) {
+			return selection.transition().duration(500);
+		}
+
+		renderer.transition(transition);
+
+		var d3svg = d3.select("svg");
+		var layout = renderer.run(result, d3svg.select("g"));
+		transition(d3.select("svg"));
+		status.innerHTML = "Complete";
+	}
+}
+</script>
+</body>
+</html>
