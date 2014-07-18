@@ -31,6 +31,13 @@
 <script src="http://cpettitt.github.io/project/graphlib-dot/latest/graphlib-dot.min.js"></script>
 
 <style>
+body {
+    background: -webkit-linear-gradient(white, rgba(100,100,255,10)); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(white, rgba(100,100,255,10)); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(white, rgba(100,100,255,10)); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(white, rgba(100,100,255,10)); /* Standard syntax (must be last) */
+}
+
 svg {
   border: 1px solid #999;
   overflow: hidden;
@@ -84,6 +91,9 @@ h1 {
 <h1>LLVM Dot File Viewer</h1>
 
 <div id="topContainer">
+<div style="width:150px;float:left;">
+<img src="http://llvm.linuxfoundation.org/skins/common/images/tux-with-dragon-wings-135.png"/>
+</div>
 <div style="width:250px;float:left;">
 <h2>Select the dot file to render</h2>
 <input type="file" id="dotFilePicker"/></div>
@@ -96,7 +106,6 @@ h1 {
 <div style="width:250px;float:left;"><h2>Status:</h2>
 <span id="status"/></div>
 </div>
-<div style="height:20px;clear:both;"></div>
 <div>
 <svg id="svgContainer">
   <g id="graph"/>
