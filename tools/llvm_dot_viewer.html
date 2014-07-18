@@ -107,22 +107,21 @@ h1 {
 var origDotFile = "";
 var inputGraph = null;
 
-window.addEventListener('resize', function(event){
+function resize() {
 	var w = window.innerWidth;
 	var h = window.innerHeight;
 	var svg = document.getElementById('svgContainer');
 
         svg.style.width=w - 50.0 + "px";
-        svg.style.height=h - 30.0 + "px";
+        svg.style.height=h - 250.0 + "px";
+};
 
-	if (inputGraph != null) {
-		redraw();
-	}
-});
+window.addEventListener('resize', resize);
 
 window.onload = function() {
 	var dotFilePicker = document.getElementById('dotFilePicker');
 	var status = document.getElementById('status');
+	resize();
 	status.innerHTML = "Waiting for file selection";
 	dotFilePicker.addEventListener('change', function(e) { 
 		var file = dotFilePicker.files[0];
@@ -139,7 +138,9 @@ window.onload = function() {
 
 function redraw() {
 	var status = document.getElementById('status');
+	var redrawButton = document.getElementById('redraw');
 	status.innerHTML = "Filtering Graph...";
+	redrawButton.disabled = true;
 	inputGraph = filterGraph(origDotFile);
 	status.innerHTML = "Drawing Graph...";
 	setTimeout(drawGraph,10);
@@ -216,7 +217,6 @@ function drawGraph() {
 	try {
 		var redrawButton = document.getElementById('redraw');
 		result = graphlibDot.parse(inputGraph);
-		redrawButton.disabled = false;
 	} catch (e) {
 		status.innerHTML = "Error Parsing Selected Dot File";
 		throw e;
@@ -236,6 +236,7 @@ function drawGraph() {
 		var layout = renderer.run(result, d3svg.select("g"));
 		transition(d3.select("svg"));
 		status.innerHTML = "Complete";
+		redrawButton.disabled = false;
 	}
 }
 </script>
