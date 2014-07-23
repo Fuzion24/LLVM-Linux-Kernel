@@ -73,13 +73,14 @@ ${BB_KERNEL_CFG}:
 # Updated in toolchain/clang/buildbot.mk
 bb_clang::
 
-BB_KERNELOPT	= CLANG_TOOLCHAIN=from-source
+BB_KERNELOPT		= CLANG_TOOLCHAIN=from-knoen-good-source
+BB_CLANG_KERNELOPT	= CLANG_TOOLCHAIN=from-source
 
 ############################################################################
 # Clang is already built before this
 buildbot-llvm-ci-build buildbot-clang-ci-build::
-	$(MAKE) ${BB_KERNELOPT} kernel-rebuild-known-good \
-		|| $(MAKE) ${BB_KERNELOPT} kernel-sync-latest kernel-rebuild
+	$(MAKE) ${BB_CLANG_KERNELOPT} kernel-rebuild-known-good \
+		|| $(MAKE) ${BB_CLANG_KERNELOPT} kernel-sync-latest kernel-rebuild
 	$(MAKE) kernel-test
 	$(MAKE) bb_clang bb_manifest
 
