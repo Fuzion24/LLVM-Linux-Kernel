@@ -199,6 +199,7 @@ ${TARGET_PATCH_SERIES}: ${ALL_PATCH_SERIES}
 				PATCH_LIST=`$(call catuniq,${ALL_PATCH_SERIES}) | $(call ignore_if_empty,$(dir $@))`; \
 			fi ; \
 		fi ; \
+		$(MAKE) kernel-quilt-clean-broken-symlinks; \
 		$(MAKE) ${KERNEL_LOG_DB}; \
 		$(call check_if_already_commited,$$PATCH_LIST,$@) \
 			|| (rm -f $@; $(MAKE) kernel-quilt-link-patches); \
