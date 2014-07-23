@@ -7,3 +7,4 @@ support-older-versions-of-clang.patch
 #no-387.patch
 WORKAROUND-NON-UPSTREAM-Temporarily-disable-M16_CFLA.patch
 boot-workaround-PR18415.patch
+Move-the-section-attribute-in-front-of-the-variable-.patch
