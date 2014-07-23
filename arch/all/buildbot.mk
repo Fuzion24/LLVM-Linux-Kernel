@@ -73,7 +73,7 @@ ${BB_KERNEL_CFG}:
 # Updated in toolchain/clang/buildbot.mk
 bb_clang::
 
-BB_KERNELOPT		= CLANG_TOOLCHAIN=from-knoen-good-source
+BB_KERNELOPT		= CLANG_TOOLCHAIN=from-known-good-source
 BB_CLANG_KERNELOPT	= CLANG_TOOLCHAIN=from-source
 
 ############################################################################
