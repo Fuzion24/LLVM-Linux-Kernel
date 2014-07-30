@@ -1,4 +1,4 @@
-From 3f7f937b7bcabb5bb2fe544e75e6214ccabb137c Mon Sep 17 00:00:00 2001
+From 6aba14b47814f57deb93438b7ba35ff005a432da Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Wed, 21 May 2014 12:02:30 -0700
 Subject: [PATCH] kbuild, LLVMLinux: Add better clang cross build support
@@ -12,11 +12,11 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
  1 file changed, 9 insertions(+)
 
 diff --git a/Makefile b/Makefile
-index 9fdfdd3..f2950c5 100644
+index d805666..f9a12d4 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -349,7 +349,16 @@ include $(srctree)/scripts/Kbuild.include
- 
+@@ -360,7 +360,16 @@ include $(srctree)/scripts/Kbuild.include
+ # Make variables (CC, etc...)
  AS		= $(CROSS_COMPILE)as
  LD		= $(CROSS_COMPILE)ld
 +ifeq ($(COMPILER),clang)

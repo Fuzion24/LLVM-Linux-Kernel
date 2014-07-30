@@ -1,4 +1,4 @@
-From 1ff2d73ccbae9dc6d35f71dfc73d62ff855f4c5e Mon Sep 17 00:00:00 2001
+From 32670da40f9dbb75b9e359f9d489551c9afed0b1 Mon Sep 17 00:00:00 2001
 From: Mark Charlebois <charlebm@gmail.com>
 Date: Tue, 20 Nov 2012 21:21:12 +0100
 Subject: [PATCH] Kbuild: LLVMLinux: Disable the use of the Integrated
@@ -14,9 +14,11 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
  Makefile | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
---- linux.orig/Makefile
-+++ linux/Makefile
-@@ -400,11 +400,12 @@
+diff --git a/Makefile b/Makefile
+index f6a7794..d805666 100644
+--- a/Makefile
++++ b/Makefile
+@@ -406,11 +406,12 @@ KBUILD_CPPFLAGS := -D__KERNEL__
  KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
  		   -fno-strict-aliasing -fno-common \
  		   -Werror-implicit-function-declaration \
@@ -30,3 +32,6 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
  KBUILD_AFLAGS_MODULE  := -DMODULE
  KBUILD_CFLAGS_MODULE  := -DMODULE
  KBUILD_LDFLAGS_MODULE := -T $(srctree)/scripts/module-common.lds
+-- 
+1.9.1
+
