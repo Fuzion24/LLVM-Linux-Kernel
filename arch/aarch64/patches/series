@@ -8,6 +8,9 @@ inline-asm-aarch64.patch
 cmpxchg-warning-aarch64.patch
 futex-init-aarch64.patch
 abort-missing-aarch64.patch
-#percpu-aarch64.patch
 unhandled_else.patch
 march-as.patch
+prfm.patch
+sp-percpu-aarch64.patch
+sp-return-address.patch
+#percpu-aarch64.patch
