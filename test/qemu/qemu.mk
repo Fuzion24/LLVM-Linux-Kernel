@@ -127,7 +127,7 @@ ${QEMUSTATE}/qemu-dtc-submodule: ${QEMUSTATE}/qemu-fetch
 
 ##############################################################################
 qemu-configure: ${QEMUSTATE}/qemu-configure 
-${QEMUSTATE}/qemu-configure: ${QEMUSTATE}/qemu-patch ${TMPFS_BUILD_STATE}
+${QEMUSTATE}/qemu-configure: ${QEMUSTATE}/qemu-patch ${TMPFS_MOUNT}
 #${QEMUSTATE}/qemu-dtc-submodule 
 	@make -s build-dep-check
 	@$(call banner,Configure QEMU...)
