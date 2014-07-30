@@ -1,23 +1,24 @@
-From 1ed891beb0041f2511069baba326a2ab7ef9a01d Mon Sep 17 00:00:00 2001
+From 589c8b8432bac83862910b6bbbe0ca2703b08e03 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Wed, 12 Feb 2014 12:16:37 -0800
-Subject: [PATCH] arm64: LLVMLinux: named_register-stacktrace-aarch64
+Subject: [PATCH] arm64: LLVMLinux: Use current_stack_pointer in
+ save_stack_trace_tsk
 
-The existing code uses named registers to get the value of the stack pointer.
-The new current_stack_pointer macro is more readable and allows for a central
-portable implementation of how to get the stack pointer with ASM.  This change
-supports being able to compile the kernel with both gcc and Clang.
+Use the global current_stack_pointer to get the value of the stack pointer.
+This change supports being able to compile the kernel with both gcc and clang.
 
 Signed-off-by: Behan Webster <behanw@converseincode.com>
+Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+Reviewed-by: Jan-Simon M??ller <dl9pf@gmx.de>
 ---
  arch/arm64/kernel/stacktrace.c | 3 +--
  1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktrace.c
-index c3b6c63..29ccda5 100644
+index 55437ba..407991b 100644
 --- a/arch/arm64/kernel/stacktrace.c
 +++ b/arch/arm64/kernel/stacktrace.c
-@@ -107,10 +107,9 @@ void save_stack_trace_tsk(struct task_struct *tsk, struct stack_trace *trace)
+@@ -111,10 +111,9 @@ void save_stack_trace_tsk(struct task_struct *tsk, struct stack_trace *trace)
  		frame.sp = thread_saved_sp(tsk);
  		frame.pc = thread_saved_pc(tsk);
  	} else {
@@ -30,5 +31,5 @@ index c3b6c63..29ccda5 100644
  	}
  
 -- 
-1.8.3.2
+1.9.1
 
