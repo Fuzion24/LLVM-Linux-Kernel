@@ -54,7 +54,7 @@ PATH			:= ${LINARO_CC_BINDIR}:${PATH}
 
 # Get Linaro cross compiler
 ${LINARO_TMPDIR}/${LINARO_CC_TAR}:
-	@$(call wget,${LINARO_CC_URL},${LINARO_TMPDIR})
+	@$(call wget,${LINARO_CC_URL},${LINARO_TMPDIR}/${LINARO_CC_TAR})
 
 linaro-gcc aarch64-cc: ${ARCH_ARM_TOOLCHAIN_STATE}/linaro-gcc
 ${ARCH_AARCH64_TOOLCHAIN_STATE}/linaro-gcc: ${LINARO_TMPDIR}/${LINARO_CC_TAR}
