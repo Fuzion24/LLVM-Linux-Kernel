@@ -1,4 +1,4 @@
-From 413ac8a967fffc96dab80d761083643e64c88a45 Mon Sep 17 00:00:00 2001
+From e9e0281fd9c3e99874272801c6f8993eeaf25dd4 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 3 Sep 2013 22:27:26 -0400
 Subject: [PATCH] arm64: LLVMLinux: Provide __aeabi_* symbols which are needed
@@ -17,12 +17,12 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
  create mode 100644 arch/arm64/lib/eabi.c
 
 diff --git a/arch/arm64/lib/Makefile b/arch/arm64/lib/Makefile
-index 328ce1a..8f96db4 100644
+index d98d3e3..0d3407c 100644
 --- a/arch/arm64/lib/Makefile
 +++ b/arch/arm64/lib/Makefile
-@@ -2,3 +2,7 @@ lib-y		:= bitops.o clear_user.o delay.o copy_from_user.o	\
- 		   copy_to_user.o copy_in_user.o copy_page.o		\
+@@ -3,3 +3,7 @@ lib-y		:= bitops.o clear_user.o delay.o copy_from_user.o	\
  		   clear_page.o memchr.o memcpy.o memmove.o memset.o	\
+ 		   memcmp.o strcmp.o strncmp.o strlen.o strnlen.o	\
  		   strchr.o strrchr.o
 +
 +ifeq ($(COMPILER),clang)
@@ -67,5 +67,5 @@ index 0000000..41b27b2
 +}
 +EXPORT_SYMBOL(__aeabi_memset);
 -- 
-1.8.3.2
+1.9.1
 
