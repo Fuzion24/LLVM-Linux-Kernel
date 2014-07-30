@@ -11,3 +11,4 @@ abort-missing-aarch64.patch
 #percpu-aarch64.patch
 unhandled_else.patch
 march-as.patch
+do_not_upstream_prfm.patch
