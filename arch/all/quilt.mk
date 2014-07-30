@@ -167,7 +167,7 @@ check_if_already_commited = perl -e 'use DB_File; tie %d, "DB_File", "${KERNEL_L
 	undef $$/; \
 	foreach $$p (@ARGV) { \
 		print STDERR "I: Considering patch $$p\n"; \
-		open( F, "$$p" ) || die "$$p: $$!"; \
+		open( F, "$$p" ) || warn "$$p: $$!"; \
 		$$f = <F>; \
 		close F; \
 		if( $$f =~ /Subject: (.*)\n/ && defined $$d{$$1} ) { \
