@@ -10,6 +10,7 @@ futex-init-aarch64.patch
 abort-missing-aarch64.patch
 unhandled_else.patch
 march-as.patch
-do_not_upstream_prfm.patch
-percpu-stack-pointer-aarch64.patch
+prfm.patch
+sp-percpu-aarch64.patch
+sp-return-address.patch
 #percpu-aarch64.patch
