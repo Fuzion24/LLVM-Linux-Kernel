@@ -8,6 +8,7 @@ This patch fixes a logic bug where warnings in clang were disabled when W was se
 
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
+Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 ---
  scripts/Makefile.extrawarn | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
