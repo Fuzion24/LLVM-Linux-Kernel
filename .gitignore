@@ -43,6 +43,8 @@ tmp
 tmpfs
 toolchain/clang/arm/user-libs/
 toolchain/libcxx
+toolchain/clang/clang.git/
+toolchain/clang/llvm.git/
 foo*
 blah*
 bar*
