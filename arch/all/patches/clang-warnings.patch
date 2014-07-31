@@ -1,36 +1,62 @@
 From 2aa99cd7d5cb1c5cad42e1c2a77110f55d7af0dd Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Mon, 30 Jun 2014 17:38:09 -0700
-Subject: [PATCH] kbuild, LLVMLinux: only use warnings when using clang
+Subject: [PATCH] kbuild, LLVMLinux: Supress warnings unless W=1-3
 
-Only consider clang warnings in Kbuild when using the clang compiler.
+clang has more warnings enabled by default. Turn them off unless W is set.
+This patch fixes a logic bug where warnings in clang were disabled when W was set.
 
 Signed-off-by: Behan Webster <behanw@converseincode.com>
+Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
 ---
  scripts/Makefile.extrawarn | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/scripts/Makefile.extrawarn b/scripts/Makefile.extrawarn
-index 6564350..e350127 100644
---- a/scripts/Makefile.extrawarn
-+++ b/scripts/Makefile.extrawarn
-@@ -26,7 +26,7 @@ warning-1 += $(call cc-option, -Wmissing-include-dirs)
+--- linux.orig/scripts/Makefile.extrawarn
++++ linux/scripts/Makefile.extrawarn
+@@ -26,16 +26,6 @@
  warning-1 += $(call cc-option, -Wunused-but-set-variable)
  warning-1 += $(call cc-disable-warning, missing-field-initializers)
  
 -# Clang
-+ifeq ($(COMPILER),clang)
- warning-1 += $(call cc-disable-warning, initializer-overrides)
- warning-1 += $(call cc-disable-warning, unused-value)
- warning-1 += $(call cc-disable-warning, format)
-@@ -35,6 +35,7 @@ warning-1 += $(call cc-disable-warning, sign-compare)
- warning-1 += $(call cc-disable-warning, format-zero-length)
- warning-1 += $(call cc-disable-warning, uninitialized)
- warning-1 += $(call cc-option, -fcatch-undefined-behavior)
-+endif
- 
+-warning-1 += $(call cc-disable-warning, initializer-overrides)
+-warning-1 += $(call cc-disable-warning, unused-value)
+-warning-1 += $(call cc-disable-warning, format)
+-warning-1 += $(call cc-disable-warning, unknown-warning-option)
+-warning-1 += $(call cc-disable-warning, sign-compare)
+-warning-1 += $(call cc-disable-warning, format-zero-length)
+-warning-1 += $(call cc-disable-warning, uninitialized)
+-warning-1 += $(call cc-option, -fcatch-undefined-behavior)
+-
  warning-2 := -Waggregate-return
  warning-2 += -Wcast-align
--- 
-1.9.1
-
+ warning-2 += -Wdisabled-optimization
+@@ -55,6 +45,18 @@
+ warning-3 += $(call cc-option, -Wpacked-bitfield-compat)
+ warning-3 += $(call cc-option, -Wvla)
+ 
++ifeq ($(COMPILER),clang)
++ifndef $(W)
++KBUILD_CFLAGS += $(call cc-disable-warning, initializer-overrides)
++KBUILD_CFLAGS += $(call cc-disable-warning, unused-value)
++KBUILD_CFLAGS += $(call cc-disable-warning, format)
++KBUILD_CFLAGS += $(call cc-disable-warning, unknown-warning-option)
++KBUILD_CFLAGS += $(call cc-disable-warning, sign-compare)
++KBUILD_CFLAGS += $(call cc-disable-warning, format-zero-length)
++KBUILD_CFLAGS += $(call cc-disable-warning, uninitialized)
++endif
++endif
++
+ warning := $(warning-$(findstring 1, $(KBUILD_ENABLE_EXTRA_GCC_CHECKS)))
+ warning += $(warning-$(findstring 2, $(KBUILD_ENABLE_EXTRA_GCC_CHECKS)))
+ warning += $(warning-$(findstring 3, $(KBUILD_ENABLE_EXTRA_GCC_CHECKS)))
+--- linux.orig/Makefile
++++ linux/Makefile
+@@ -678,6 +678,7 @@
+ # source of a reference will be _MergedGlobals and not on of the whitelisted names.
+ # See modpost pattern 2
+ KBUILD_CFLAGS += $(call cc-option, -mno-global-merge,)
++KBUILD_CFLAGS += $(call cc-option, -fcatch-undefined-behavior)
+ else
+ 
+ # This warning generated too much noise in a regular build.

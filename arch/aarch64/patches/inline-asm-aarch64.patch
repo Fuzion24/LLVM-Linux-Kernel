@@ -1,4 +1,4 @@
-From b522b183d5714e0e6e7a8ad44b96618438096631 Mon Sep 17 00:00:00 2001
+From f69211ae982c718287a35ecf5ef861d37ef9da49 Mon Sep 17 00:00:00 2001
 From: Mark Charlebois <charlebm@gmail.com>
 Date: Wed, 12 Feb 2014 12:16:58 -0800
 Subject: [PATCH] arm64: LLVMLinux: Fix inline arm64 assembly for use with
@@ -16,7 +16,7 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
  5 files changed, 34 insertions(+), 34 deletions(-)
 
 diff --git a/arch/arm64/include/asm/arch_timer.h b/arch/arm64/include/asm/arch_timer.h
-index 9400596..d038116 100644
+index 9400596..34cb7e6 100644
 --- a/arch/arm64/include/asm/arch_timer.h
 +++ b/arch/arm64/include/asm/arch_timer.h
 @@ -37,19 +37,19 @@ void arch_timer_reg_write_cp15(int access, enum arch_timer_reg reg, u32 val)
@@ -24,7 +24,7 @@ index 9400596..d038116 100644
  		switch (reg) {
  		case ARCH_TIMER_REG_CTRL:
 -			asm volatile("msr cntp_ctl_el0,  %0" : : "r" (val));
-+			asm volatile("msr cntp_ctl_el0,  %0" : : "r" ((u64)val));
++			asm volatile("msr cntp_ctl_el0, %0" : : "r" ((u64)val));
  			break;
  		case ARCH_TIMER_REG_TVAL:
 -			asm volatile("msr cntp_tval_el0, %0" : : "r" (val));
@@ -35,7 +35,7 @@ index 9400596..d038116 100644
  		switch (reg) {
  		case ARCH_TIMER_REG_CTRL:
 -			asm volatile("msr cntv_ctl_el0,  %0" : : "r" (val));
-+			asm volatile("msr cntv_ctl_el0,  %0" : : "r" ((u64)val));
++			asm volatile("msr cntv_ctl_el0, %0" : : "r" ((u64)val));
  			break;
  		case ARCH_TIMER_REG_TVAL:
 -			asm volatile("msr cntv_tval_el0, %0" : : "r" (val));
@@ -99,7 +99,7 @@ index 3bf8f4e..104719b 100644
  		: "cc");						\
  	flag;								\
 diff --git a/arch/arm64/kernel/debug-monitors.c b/arch/arm64/kernel/debug-monitors.c
-index ed3955a..6ddbd36 100644
+index a7fb874..d564b16 100644
 --- a/arch/arm64/kernel/debug-monitors.c
 +++ b/arch/arm64/kernel/debug-monitors.c
 @@ -52,15 +52,15 @@ static void mdscr_write(u32 mdscr)
@@ -107,7 +107,7 @@ index ed3955a..6ddbd36 100644
  	unsigned long flags;
  	local_dbg_save(flags);
 -	asm volatile("msr mdscr_el1, %0" :: "r" (mdscr));
-+	asm volatile("msr mdscr_el1, %0" :: "r" ((u64)mdscr));
++	asm volatile("msr mdscr_el1, %0" : : "r" ((u64)mdscr));
  	local_dbg_restore(flags);
  }
  
@@ -131,7 +131,7 @@ index ed3955a..6ddbd36 100644
  
  static int os_lock_notify(struct notifier_block *self,
 diff --git a/arch/arm64/kernel/perf_event.c b/arch/arm64/kernel/perf_event.c
-index baf5afb..4139373 100644
+index baf5afb..f2e399c 100644
 --- a/arch/arm64/kernel/perf_event.c
 +++ b/arch/arm64/kernel/perf_event.c
 @@ -844,16 +844,16 @@ static const unsigned armv8_pmuv3_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
@@ -150,7 +150,7 @@ index baf5afb..4139373 100644
  	val &= ARMV8_PMCR_MASK;
  	isb();
 -	asm volatile("msr pmcr_el0, %0" :: "r" (val));
-+	asm volatile("msr pmcr_el0, %0" :: "r" ((u64)val));
++	asm volatile("msr pmcr_el0, %0" : : "r" ((u64)val));
  }
  
  static inline int armv8pmu_has_overflowed(u32 pmovsr)
@@ -159,7 +159,7 @@ index baf5afb..4139373 100644
  
  	counter = ARMV8_IDX_TO_COUNTER(idx);
 -	asm volatile("msr pmselr_el0, %0" :: "r" (counter));
-+	asm volatile("msr pmselr_el0, %0" :: "r" ((u64)counter));
++	asm volatile("msr pmselr_el0, %0" : : "r" ((u64)counter));
  	isb();
  
  	return idx;
@@ -186,10 +186,10 @@ index baf5afb..4139373 100644
  			smp_processor_id(), idx);
  	else if (idx == ARMV8_IDX_CYCLE_COUNTER)
 -		asm volatile("msr pmccntr_el0, %0" :: "r" (value));
-+		asm volatile("msr pmccntr_el0, %0" :: "r" ((u64)value));
++		asm volatile("msr pmccntr_el0, %0" : : "r" ((u64)value));
  	else if (armv8pmu_select_counter(idx) == idx)
 -		asm volatile("msr pmxevcntr_el0, %0" :: "r" (value));
-+		asm volatile("msr pmxevcntr_el0, %0" :: "r" ((u64)value));
++		asm volatile("msr pmxevcntr_el0, %0" : : "r" ((u64)value));
  }
  
  static inline void armv8pmu_write_evtype(int idx, u32 val)
@@ -197,7 +197,7 @@ index baf5afb..4139373 100644
  	if (armv8pmu_select_counter(idx) == idx) {
  		val &= ARMV8_EVTYPE_MASK;
 -		asm volatile("msr pmxevtyper_el0, %0" :: "r" (val));
-+		asm volatile("msr pmxevtyper_el0, %0" :: "r" ((u64)val));
++		asm volatile("msr pmxevtyper_el0, %0" : : "r" ((u64)val));
  	}
  }
  
@@ -206,7 +206,7 @@ index baf5afb..4139373 100644
  
  	counter = ARMV8_IDX_TO_COUNTER(idx);
 -	asm volatile("msr pmcntenset_el0, %0" :: "r" (BIT(counter)));
-+	asm volatile("msr pmcntenset_el0, %0" :: "r" ((u64)BIT(counter)));
++	asm volatile("msr pmcntenset_el0, %0" : : "r" ((u64)BIT(counter)));
  	return idx;
  }
  
@@ -215,7 +215,7 @@ index baf5afb..4139373 100644
  
  	counter = ARMV8_IDX_TO_COUNTER(idx);
 -	asm volatile("msr pmcntenclr_el0, %0" :: "r" (BIT(counter)));
-+	asm volatile("msr pmcntenclr_el0, %0" :: "r" ((u64)BIT(counter)));
++	asm volatile("msr pmcntenclr_el0, %0" : : "r" ((u64)BIT(counter)));
  	return idx;
  }
  
@@ -224,7 +224,7 @@ index baf5afb..4139373 100644
  
  	counter = ARMV8_IDX_TO_COUNTER(idx);
 -	asm volatile("msr pmintenset_el1, %0" :: "r" (BIT(counter)));
-+	asm volatile("msr pmintenset_el1, %0" :: "r" ((u64)BIT(counter)));
++	asm volatile("msr pmintenset_el1, %0" : : "r" ((u64)BIT(counter)));
  	return idx;
  }
  
@@ -233,11 +233,11 @@ index baf5afb..4139373 100644
  
  	counter = ARMV8_IDX_TO_COUNTER(idx);
 -	asm volatile("msr pmintenclr_el1, %0" :: "r" (BIT(counter)));
-+	asm volatile("msr pmintenclr_el1, %0" :: "r" ((u64)BIT(counter)));
++	asm volatile("msr pmintenclr_el1, %0" : : "r" ((u64)BIT(counter)));
  	isb();
  	/* Clear the overflow flag in case an interrupt is pending. */
 -	asm volatile("msr pmovsclr_el0, %0" :: "r" (BIT(counter)));
-+	asm volatile("msr pmovsclr_el0, %0" :: "r" ((u64)BIT(counter)));
++	asm volatile("msr pmovsclr_el0, %0" : : "r" ((u64)BIT(counter)));
  	isb();
  	return idx;
  }
@@ -263,15 +263,15 @@ index baf5afb..4139373 100644
  
  	/* Disable access from userspace. */
 -	asm volatile("msr pmuserenr_el0, %0" :: "r" (0));
-+	asm volatile("msr pmuserenr_el0, %0" :: "r" ((u64)0));
++	asm volatile("msr pmuserenr_el0, %0" : : "r" ((u64)0));
  }
  
  static int armv8_pmuv3_map_event(struct perf_event *event)
 diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
-index 6b7e895..924864c 100644
+index c43f1dd..2786cdb 100644
 --- a/arch/arm64/mm/mmu.c
 +++ b/arch/arm64/mm/mmu.c
-@@ -98,7 +98,7 @@ static int __init early_cachepolicy(char *p)
+@@ -93,7 +93,7 @@ static int __init early_cachepolicy(char *p)
  	 */
  	asm volatile(
  	"	mrs	%0, mair_el1\n"
@@ -281,5 +281,5 @@ index 6b7e895..924864c 100644
  	"	isb\n"
  	: "=&r" (tmp)
 -- 
-1.8.3.2
+1.9.1
 

@@ -1,4 +1,4 @@
-From f8c5bda8f0163db06162825fc59bd322236501ea Mon Sep 17 00:00:00 2001
+From c4eb7a43dc16a5ed69d28a9e702ed45437e2891f Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 3 Sep 2013 22:27:27 -0400
 Subject: [PATCH] arm64: LLVMLinux: Calculate current_thread_info from
@@ -15,7 +15,7 @@ Reviewed-by: Jan-Simon M??ller <dl9pf@gmx.de>
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/arch/arm64/include/asm/thread_info.h b/arch/arm64/include/asm/thread_info.h
-index e6b6094..c457fb7 100644
+index e6b6094..c2432d2 100644
 --- a/arch/arm64/include/asm/thread_info.h
 +++ b/arch/arm64/include/asm/thread_info.h
 @@ -80,8 +80,8 @@ static inline struct thread_info *current_thread_info(void) __attribute_const__;
@@ -24,8 +24,8 @@ index e6b6094..c457fb7 100644
  {
 -	register unsigned long sp asm ("sp");
 -	return (struct thread_info *)(sp & ~(THREAD_SIZE - 1));
-+	return (struct thread_info *)(current_stack_pointer & \
-+		~(THREAD_SIZE - 1));
++	return (struct thread_info *) \
++		(current_stack_pointer & ~(THREAD_SIZE - 1));
  }
  
  #define thread_saved_pc(tsk)	\
