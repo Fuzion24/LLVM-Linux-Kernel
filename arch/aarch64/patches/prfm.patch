@@ -13,7 +13,9 @@ Per comments by Tim Northover on the LLVM Bug database:
 Not all instructions can make use of any offset, so wouldn't we have to be 
 conservative and always map it to "[xN]"?
 
-Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+This test works with GCC under unit test but not in the kernel build.
+
+Not-Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 ---
 
 diff --git a/arch/arm64/include/asm/processor.h b/arch/arm64/include/asm/processor.h
