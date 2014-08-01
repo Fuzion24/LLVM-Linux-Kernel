@@ -24,9 +24,21 @@
 
 # Assumes has been included from ../common.mk
 
-LLVMTOP	= ${TOOLCHAIN}/clang
-ETCTOP	= ${TOOLCHAIN}/elftoolchain
+LLVMTOP		= ${TOOLCHAIN}/clang
+MCLINKERTOP	= ${TOOLCHAIN}/mclinker
 
 include ${LLVMTOP}/clang.mk
-#include ${ETCTOP}/elftoolchain.mk
+
+# To use MCLinker, add the include line in the target Makefile after
+# the include line for the build arch. For example:
+#
+#include ${TOPDIR}/common.mk
+#include ${ARCHDIR}/aarch64/aarch64.mk
+#include ${TOPDIR}/toolchain/mclinker/mclinker.mk
+#
+# For each specific target, run:
+#
+#     make mclinker-symlink 
+#
+# to create the required symlink
 
