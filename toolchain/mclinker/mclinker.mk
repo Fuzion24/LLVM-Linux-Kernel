@@ -55,6 +55,7 @@ ${MCLINKERSTATE}/mclinker-llvm-build: ${MCLINKERSTATE}/mclinker-llvm-configure
 
 mclinker-fetch: ${MCLINKERSTATE}/mclinker-fetch
 ${MCLINKERSTATE}/mclinker-fetch: 
+	mkdir -p ${MCLINKERTOP}/src
 	(cd ${MCLINKERTOP}/src; git clone https://code.google.com/p/mclinker)
 	$(call state,$@,mclinker-patch)
 
@@ -63,8 +64,8 @@ ${MCLINKERSTATE}/mclinker-patch: ${MCLINKERSTATE}/mclinker-fetch
 	(cd ${MCLINKERTOP}/src/mclinker; patch -p1 < ${MCLINKERTOP}/patches/compare-bug.patch)
 	$(call state,$@,mclinker-configure)
 
-mclinker-configure: ${MCLINKERSTATE}/mclinker-configure
-${MCLINKERSTATE}/mclinker-configure: ${MCLINKERSTATE}/mclinker-patch
+mclinker-configure: ${MCLINKERSTATE}/mclinker-llvm-build ${MCLINKERSTATE}/mclinker-configure
+${MCLINKERSTATE}/mclinker-configure: ${MCLINKERSTATE}/mclinker-llvm-build ${MCLINKERSTATE}/mclinker-patch
 	mkdir -p ${MCLINKER_SRC}
 	(cd ${MCLINKER_SRC}; ./autogen.sh)
 	mkdir -p ${MCLINKER_BUILD}
