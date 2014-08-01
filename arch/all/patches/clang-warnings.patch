@@ -12,16 +12,16 @@ This patch fixes a logic bug where warnings in clang were disabled when W was se
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+Cc: mmarek@suse.cz
+Cc: bp@alien8.de
 ---
  Makefile                   |  1 +
  scripts/Makefile.extrawarn | 22 ++++++++++++----------
  2 files changed, 13 insertions(+), 10 deletions(-)
 
-diff --git a/Makefile b/Makefile
-index 4eb0d3b..46f77d2 100644
---- a/Makefile
-+++ b/Makefile
-@@ -678,6 +678,7 @@ KBUILD_CFLAGS += $(call cc-disable-warning, tautological-compare)
+--- linux.orig/Makefile
++++ linux/Makefile
+@@ -678,6 +678,7 @@
  # source of a reference will be _MergedGlobals and not on of the whitelisted names.
  # See modpost pattern 2
  KBUILD_CFLAGS += $(call cc-option, -mno-global-merge,)
@@ -29,11 +29,9 @@ index 4eb0d3b..46f77d2 100644
  else
  
  # This warning generated too much noise in a regular build.
-diff --git a/scripts/Makefile.extrawarn b/scripts/Makefile.extrawarn
-index 6564350..b5b0751 100644
---- a/scripts/Makefile.extrawarn
-+++ b/scripts/Makefile.extrawarn
-@@ -26,16 +26,6 @@ warning-1 += $(call cc-option, -Wmissing-include-dirs)
+--- linux.orig/scripts/Makefile.extrawarn
++++ linux/scripts/Makefile.extrawarn
+@@ -26,16 +26,6 @@
  warning-1 += $(call cc-option, -Wunused-but-set-variable)
  warning-1 += $(call cc-disable-warning, missing-field-initializers)
  
@@ -50,12 +48,13 @@ index 6564350..b5b0751 100644
  warning-2 := -Waggregate-return
  warning-2 += -Wcast-align
  warning-2 += -Wdisabled-optimization
-@@ -55,6 +45,18 @@ warning-3 += -Wswitch-default
- warning-3 += $(call cc-option, -Wpacked-bitfield-compat)
- warning-3 += $(call cc-option, -Wvla)
+@@ -64,4 +54,16 @@
+ endif
  
+ KBUILD_CFLAGS += $(warning)
++else
++
 +ifeq ($(COMPILER),clang)
-+ifndef $(W)
 +KBUILD_CFLAGS += $(call cc-disable-warning, initializer-overrides)
 +KBUILD_CFLAGS += $(call cc-disable-warning, unused-value)
 +KBUILD_CFLAGS += $(call cc-disable-warning, format)
@@ -63,12 +62,6 @@ index 6564350..b5b0751 100644
 +KBUILD_CFLAGS += $(call cc-disable-warning, sign-compare)
 +KBUILD_CFLAGS += $(call cc-disable-warning, format-zero-length)
 +KBUILD_CFLAGS += $(call cc-disable-warning, uninitialized)
-+endif
+ endif
 +endif
 +
- warning := $(warning-$(findstring 1, $(KBUILD_ENABLE_EXTRA_GCC_CHECKS)))
- warning += $(warning-$(findstring 2, $(KBUILD_ENABLE_EXTRA_GCC_CHECKS)))
- warning += $(warning-$(findstring 3, $(KBUILD_ENABLE_EXTRA_GCC_CHECKS)))
--- 
-1.9.1
-
