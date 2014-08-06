@@ -27,12 +27,13 @@ TOPDIR		= $(realpath ${TARGETDIR}/../..)
 CROSS_ARM_TOOLCHAIN = codesourcery
 LLVM_COMMIT	= master
 CLANG_COMMIT	= master
-#CLANG_TOOLCHAIN	= prebuilt
+CLANG_TOOLCHAIN	= source
 
-KERNEL_CFG	= ${KERNELDIR}/arch/arm/configs/sunxi_defconfig
+#KERNEL_CFG	= ${KERNELDIR}/arch/arm/configs/sunxi_defconfig
+KERNEL_CFG	= ${TARGETDIR}/config_initrd
 KERNEL_DTB	= arch/arm/boot/dts/sun4i-a10-cubieboard.dtb
 ZIMAGE		= arch/arm/boot/zImage
-KERNEL_MAKE_TARGETS	= uImage dtbs
+KERNEL_MAKE_TARGETS	= zImage dtbs
 
 
 BUILDROOT_ARCH	= qemu_arm_allwinner
@@ -92,6 +93,13 @@ cubieboard-help:
 	@echo "* make clean		- Remove most built files"
 	@echo "* make mrproper		- Remove all downloaded and built files"
 
+${KERNEL_CFG}: initramfs
+	cp ${KERNELDIR}/arch/arm/configs/sunxi_defconfig $@
+	sed -i -e 's#CONFIG_BLK_DEV_INITRD=y#CONFIG_BLK_DEV_INITRD=y\nCONFIG_INITRAMFS_SOURCE="${TARGETDIR}/initramfs.cpio.gz"#' $@
+	sed -i -e 's/CONFIG_DEVTMPFS/#CONFIG_DEVTMPFS/' $@
+	sed -i -e 's/CONFIG_DEVTMPFS_MOUNT/#CONFIG_DEVTMPFS_MOUNT/' $@
+
+
 prep: state/prep
 state/prep:
 	$(MAKE) ${TMPDIR}
@@ -113,10 +121,7 @@ test2: state/prep ${QEMUSTATE}/qemu-build state/kernel-build initramfs-unpacked
 	mkdir -p ${INITBUILDFSDIR}/usr/lib
 	@rm -f ${INITRAMFS}
 	@make ${INITRAMFS}
-	../../test/qemu/install/bin/qemu-system-arm -M ${BOARD} -kernel ${KERNEL_BUILD}/${ZIMAGE} -serial stdio -append "console=ttyS0 rw root=/dev/ram0 rdinit=/init" -initrd ${INITRAMFS} -dtb ${KERNEL_BUILD}/${KERNEL_DTB}
-
-# Using -nographic messes up the terminal when exiting qemu
-#	$(call qemu_arm,${BOARD},${KERNEL_BUILD}/${ZIMAGE} -serial stdio,256,/dev/ram0,rdinit=/init,-initrd ${INITRAMFS} -dtb ${KERNEL_BUILD}/${KERNEL_DTB})
+	../../test/qemu/install/bin/qemu-system-arm -M ${BOARD} -kernel ${KERNEL_BUILD}/${ZIMAGE} -serial stdio -append "console=ttyS0 rw root=/dev/ram0 rdinit=/init" -dtb ${KERNEL_BUILD}/${KERNEL_DTB} -display none
 
 # Allwinner config does not have module support enabled
 test2-gcc: state/prep ${QEMUSTATE}/qemu-build ${KERNELGCCDTB_IMG} initramfs-unpacked
@@ -124,18 +129,15 @@ test2-gcc: state/prep ${QEMUSTATE}/qemu-build ${KERNELGCCDTB_IMG} initramfs-unpa
 	mkdir -p ${INITBUILDFSDIR}/usr/lib
 	@rm -f ${INITRAMFS}
 	@make ${INITRAMFS}
-	../../test/qemu/install/bin/qemu-system-arm -M ${BOARD} -kernel ${KERNELGCC_BUILD}/${ZIMAGE} -serial stdio -append "console=ttyS0 root=/dev/ram0 rw rdinit=/init" -initrd ${INITRAMFS} -dtb ${KERNELGCC_BUILD}/${KERNEL_DTB}
+	../../test/qemu/install/bin/qemu-system-arm -M ${BOARD} -kernel ${KERNELGCC_BUILD}/${ZIMAGE} -serial stdio -append "console=ttyS0 root=/dev/ram0 rw rdinit=/init" -dtb ${KERNELGCC_BUILD}/${KERNEL_DTB} -display none
 	
-# Using -nographic messes up the terminal when exiting qemu
-#	$(call qemu_arm,${BOARD},${KERNELGCC_BUILD}/${ZIMAGE} -serial stdio,256,/dev/ram0,rdinit=/init,-initrd ${INITRAMFS} -dtb ${KERNELGCC_BUILD}/${KERNEL_DTB})
-
-
 cubieboard-raze raze: kernel-raze
 	@$(call banner,Razed Vexpress)
 
 clean: 
 	@$(call banner,Clean)
+	rm -f ${KERNEL_CFG}
 	make kernel-clean kernel-gcc-clean 
 
-mrproper: clean tmp-mrproper
+rproper: clean tmp-mrproper
 	@$(call banner,Very Clean)

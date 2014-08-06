@@ -30,7 +30,7 @@ RAZE_TARGETS	+= initramfs-raze
 
 .PHONY: initramfs-prep initramfs initramfs-clean ltp
 
-INITRAMFS	= initramfs.img.gz
+INITRAMFS	= initramfs.cpio.gz
 INITBUILDDIR	= ${TARGETDIR}/initramfs
 INITTMPDIR	= $(call shared,${INITBUILDDIR}/tmp)
 INITBUILDFSDIR	= ${INITBUILDDIR}/initramfs_root
@@ -90,7 +90,7 @@ ${INITBUILDFSDIR}/etc: ${INITBUILDDIR}/busybox ${STRACEBIN} ${KERNEL_MODULES}
 
 initramfs initramfs-build: ${INITRAMFS}
 ${INITRAMFS}: ${INITBUILDFSDIR}/etc
-	@(cd ${INITBUILDFSDIR} && find . | cpio -H newc -o > ${INITCPIO})
+	(fakeroot ${INITRAMFSDIR}/mkcpio.sh ${INITBUILDFSDIR} ${INITCPIO})
 	@(if test -e /usr/bin/pigz; then cat ${INITCPIO} | pigz -9c > $@ ; else cat ${INITCPIO} | gzip -9c > $@ ; fi )
 	@echo "Created $@: Done."
 
@@ -120,12 +120,12 @@ ${INITBUILDDIR}/strace: ${INITTMPDIR}/strace
 ${INITTMPDIR}/strace: ${INITTMPDIR} ${INITBUILDDIR}
 	(if test ! -e ${INITTMPDIR}/strace ; then $(call wget,${STRACEURL},$(dir $@)) ; fi )
 
-${INITBUILDDIR}/busybox: ${INITTMPDIR}/busybox
-	cp ${INITTMPDIR}/busybox ${INITBUILDDIR}/busybox
+${INITBUILDDIR}/busybox: ${INITTMPDIR}/busybox-${ARCHSTR}
+	cp ${INITTMPDIR}/busybox-${ARCHSTR} ${INITBUILDDIR}/busybox
 	@chmod +x ${INITBUILDDIR}/busybox
 
-${INITTMPDIR}/busybox: ${INITTMPDIR} ${INITBUILDDIR}
-	(if test ! -e ${INITTMPDIR}/busybox ; then $(call wget,${BUSYBOXURL},$(dir $@)) ; fi )
+${INITTMPDIR}/busybox-${ARCHSTR}: ${INITTMPDIR} ${INITBUILDDIR}
+	(if test ! -e ${INITTMPDIR}/busybox-${ARCHSTR} ; then $(call wget,${BUSYBOXURL},$(dir $@)) ; fi )
 
 initramfs-busybox-clean:
 	rm -f ${INITTMPDIR}/busybox ${INITBUILDDIR}/busybox

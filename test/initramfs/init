@@ -1,5 +1,0 @@
-#!/bin/sh
-mount -t proc none /proc
-
-# All done, go to shell
-exec sh

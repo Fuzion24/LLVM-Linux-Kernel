@@ -1,7 +1,4 @@
 #!/bin/sh
 /bin/busybox --install
 
-[ -e /dev/console ] || mknod -m 622 /dev/console c 5 1
-[ -e /dev/tty0 ] || mknod -m 622 /dev/tty0 c 4 0
-
 exec /sbin/init
