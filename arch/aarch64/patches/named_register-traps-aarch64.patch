@@ -7,6 +7,9 @@ Use the global current_stack_pointer to get the value of the stack pointer.
 This change supports being able to compile the kernel with both gcc and clang.
 
 Signed-off-by: Behan Webster <behanw@converseincode.com>
+Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+Reviewed-by: Olof Johansson <olof@lixom.net>
+Acked-by: Will Deacon <will.deacon@arm.com>
 ---
  arch/arm64/kernel/traps.c | 3 +--
  1 file changed, 1 insertion(+), 2 deletions(-)

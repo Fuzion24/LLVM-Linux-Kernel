@@ -1,27 +1,27 @@
-From 908645b1a1a30a3a0967b857548b8ab176de4089 Mon Sep 17 00:00:00 2001
+From c8103961ba59d68e802b451a5adfeecdb2a68f02 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Fri, 30 May 2014 11:35:52 -0700
 Subject: [PATCH] clk, ti, LLVMLinux: Move __init outside of type definition
 
 This is a workaround patch. Possible clang bug.
 
-/llvmlinux/targets/beaglebone/src/linux/drivers/clk/ti/divider.c:298:28: error: expected ';' after struct
+drivers/clk/ti/divider.c:298:28: error: expected ';' after struct
 static struct clk_div_table
                            ^
                            ;
-/llvmlinux/targets/beaglebone/src/linux/drivers/clk/ti/divider.c:298:1: warning: 'static' ignored on this
+drivers/clk/ti/divider.c:298:1: warning: 'static' ignored on this
       declaration [-Wmissing-declarations]
 static struct clk_div_table
 ^
-/llvmlinux/targets/beaglebone/src/linux/drivers/clk/ti/divider.c:299:9: error: type specifier missing,
+drivers/clk/ti/divider.c:299:9: error: type specifier missing,
       defaults to 'int' [-Werror,-Wimplicit-int]
 __init *ti_clk_get_div_table(struct device_node *node)
 ~~~~~~  ^
-/llvmlinux/targets/beaglebone/src/linux/drivers/clk/ti/divider.c:345:9: warning: incompatible pointer types
+drivers/clk/ti/divider.c:345:9: warning: incompatible pointer types
       returning 'struct clk_div_table *' from a function with result type 'int *' [-Wincompatible-pointer-types]
         return table;
                ^~~~~
-/llvmlinux/targets/beaglebone/src/linux/drivers/clk/ti/divider.c:419:9: warning: incompatible pointer types
+drivers/clk/ti/divider.c:419:9: warning: incompatible pointer types
       assigning to 'const struct clk_div_table *' from 'int *' [-Wincompatible-pointer-types]
         *table = ti_clk_get_div_table(node);
                ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -32,8 +32,7 @@ The following links shows the section attribute should be at the end of the func
 
 https://gcc.gnu.org/onlinedocs/gcc-4.1.2/gcc/Function-Attributes.html#Function-Attributes
 
-
-Not-Signed-off-by: Behan Webster <behanw@converseincode.com>
+Not-signed-off-by: Behan Webster <behanw@converseincode.com>
 Reviewed-by: Mark Charlebois <charlebm@gmail.com>
 ---
  drivers/clk/ti/divider.c | 4 ++--

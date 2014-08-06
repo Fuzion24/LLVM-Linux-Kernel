@@ -9,7 +9,9 @@ This change supports being able to compile the kernel with both gcc and clang.
 
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
-Reviewed-by: Jan-Simon M??ller <dl9pf@gmx.de>
+Reviewed-by: Jan-Simon Möller <dl9pf@gmx.de>
+Reviewed-by: Olof Johansson <olof@lixom.net>
+Acked-by: Will Deacon <will.deacon@arm.com>
 ---
  arch/arm64/include/asm/thread_info.h | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
@@ -24,7 +26,7 @@ index e6b6094..c2432d2 100644
  {
 -	register unsigned long sp asm ("sp");
 -	return (struct thread_info *)(sp & ~(THREAD_SIZE - 1));
-+	return (struct thread_info *) \
++	return (struct thread_info *)
 +		(current_stack_pointer & ~(THREAD_SIZE - 1));
  }
  
