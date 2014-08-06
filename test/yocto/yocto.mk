@@ -19,28 +19,29 @@
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 # IN THE SOFTWARE.
 ##############################################################################
-YOCTOOECORE=${YOCTODIR}/openembedded/jenkins-setup/openembedded-core
+YOCTOOECORE=${YOCTODIR}/jenkins-setup/openembedded-core
 YOCTOAARCH64=${YOCTODIR}/build/aarch64
 
 yocto-fetch: ${YOCTODIR}/state/yocto-fetch
 ${YOCTODIR}/state/yocto-fetch:
-	mkdir -p ${YOCTODIR}/openembedded
-	(cd ${YOCTODIR}/openembedded && git clone git://git.linaro.org/openembedded/jenkins-setup.git)
-	(cd ${YOCTODIR}/openembedded/jenkins-setup && bash init-and-build.sh)
+	(cd ${YOCTODIR} && git clone git://git.linaro.org/openembedded/jenkins-setup.git)
+	-(cd ${YOCTODIR}/jenkins-setup && bash init-and-build.sh)
 	mkdir -p $(dir $@)
 	touch $@
 
 ${YOCTOAARCH64}:
 	mkdir -p $@
 
-yocto-aarch64-build: ${YOCTODIR}/state/yocto-fetch ${YOCTOAARCH64}
-	mkdir -p ${YOCTOAARCH64}
-	-(cd ${YOCTOOECORE} && source oe-init-build-env ${YOCTOAARCH64)
-	(cd ${YOCTOOECORE} && source oe-init-build-env  ${YOCTOAARCH64} && 
-	echo IMAGE_FSTYPES = "tar.gz cpio.gz" >> ${YOCTOAARCH64}/conf/local.conf && 
-	echo TCMODE = "external-linaro" >> ${YOCTOAARCH64}/conf/local.conf
-	echo ELT_TARGET_SYS = "aarch64-linux-gnu" >> ${YOCTOAARCH64}/conf/local.conf && 
-	echo EXTERNAL_TOOLCHAIN = "${TOPDIR}/arch/aarch64/toolchain/linaro/gcc-linaro-aarch64-linux-gnu-4.8-2013.06_linux" >> ${YOCTOAARCH64}/conf/local.conf &&
-	bitbake linaro-image-minimal)
+yocto-aarch64-patch: ${YOCTODIR}/state/yocto-patch
+${YOCTODIR}/state/yocto-patch: ${YOCTODIR}/state/yocto-fetch ${YOCTOAARCH64}
+	mkdir -p ${YOCTOAARCH64}/state
+	(cd ${YOCTOOECORE} && source oe-init-build-env ${YOCTOAARCH64})
+	(cp ${YOCTODIR}/conf/aarch64/bblayers.conf ${YOCTOAARCH64}/conf/bblayers.conf)
+	(cp ${YOCTODIR}/conf/aarch64/local.conf ${YOCTOAARCH64}/conf/local.conf)
+	(cp ${YOCTODIR}/overlay/llvmlinux/core-image-minimal-initrd.bb ${YOCTOOECORE}/meta/recipes-core/images/core-image-minimal-initrd.bb)
+	touch $@
+
+yocto-aarch64-build: ${YOCTODIR}/state/yocto-patch 
+	(cd ${YOCTOOECORE} && source oe-init-build-env  ${YOCTOAARCH64} && bitbake core-image-minimal-initrd)
 	
 
