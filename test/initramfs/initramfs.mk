@@ -142,3 +142,28 @@ ${INITBUILDLTP}/Version: ${LTPFILE}
 	cd ${INITBUILDLTP} && patch -p1 < ${INITRAMFSDIR}/patches/ltp.patch
 	(cd ${INITBUILDLTP} && CFLAGS="-D_GNU_SOURCE=1 -std=gnu89" CC=${GCC} CPP="${CPP}" ./configure --prefix=${INITBUILDFSDIR} --without-expect --without-perl --without-python --host=${HOST})
 	make -C ${INITBUILDLTP}
+
+ifeq (${ARCH},arm64)
+
+AARCH64_ROOTFS=linaro-image-minimal-genericarmv8-20140223-649.rootfs.tar.gz
+
+aarch64-initramfs-fetch: ${INITRAMFSDIR}/images/aarch64/${AARCH64_ROOTFS}
+${INITRAMFSDIR}/images/aarch64/${AARCH64_ROOTFS}:
+	mkdir -p ${INITRAMFSDIR}/images/aarch64
+	(cd ${INITRAMFSDIR}/images/aarch64 && wget http://releases.linaro.org/14.02/openembedded/aarch64/${AARCH64_ROOTFS})
+
+aarch64-initramfs-build: ${INITRAMFSDIR}/images/aarch64/initramfs.cpio.gz
+${INITRAMFSDIR}/images/aarch64/initramfs.cpio.gz: ${INITRAMFSDIR}/images/aarch64/${AARCH64_ROOTFS}
+	mkdir -p ${INITRAMFSDIR}/images/aarch64/unpack
+	fakeroot ${INITRAMFSDIR}/targz_to_cpiogz.sh ${INITRAMFSDIR}/images/aarch64/unpack \
+		${INITRAMFSDIR}/images/aarch64/${AARCH64_ROOTFS} \
+		${INITRAMFSDIR}/images/aarch64/initramfs
+	rm -rf ${INITRAMFSDIR}/images/aarch64/unpack
+
+aarch64-initramfs-clean:
+	rm -f ${INITRAMFSDIR}/images/aarch64/${AARCH64_ROOTFS}
+	rm -f ${INITRAMFSDIR}/images/aarch64/initramfs.cpio
+	rm -f ${INITRAMFSDIR}/images/aarch64/initramfs.cpio.gz
+	rm -rf ${INITRAMFSDIR}/images/aarch64/unpack
+
+endif

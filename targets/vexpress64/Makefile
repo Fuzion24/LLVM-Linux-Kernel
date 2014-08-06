@@ -42,6 +42,7 @@ KERNEL_REPO_PATCHES=${KERNEL_BRANCH}
 #KERNEL_CFG	= ${KERNELDIR}/arch/arm64/configs/defconfig
 KERNEL_CFG	= ${TARGETDIR}/aarch64-kernel.config
 IMAGE		= ${KERNEL_BUILD}/arch/arm64/boot/Image
+AARCH64INITRD	= ${INITRAMFSDIR}/images/aarch64/initramfs.cpio.gz
 
 BUILDROOT_ARCH	= aarch64
 BUILDROOT_CONFIG= config_vexpress64_buildroot
@@ -63,7 +64,6 @@ RAZE_TARGETS		+= aarch64-raze
 
 include ${TOPDIR}/common.mk
 include ${ARCHDIR}/aarch64/aarch64.mk
-#include ${TOPDIR}/toolchain/mclinker/mclinker.mk
 
 KERNEL_PATCH_DIR	+= ${TARGETDIR}/patches
 
@@ -78,6 +78,7 @@ state/prep:
 	$(call state,$@)
 
 aarch64-clean: kernel-clean kernel-gcc-clean
+	rm -f aarch64-kernel.config
 	@$(call banner,Cleaning Vexpress)
 
 aarch64-mrproper: aarch64-clean kernel-mrproper kernel-gcc-mrproper
@@ -96,6 +97,12 @@ mrproper: clean aarch64-mrproper tmp-mrproper
 testlibgcc:
 	echo $(shell $(CLANGCC) $(KBUILD_CFLAGS) -print-libgcc-file-name)
 
-test: state/prep ${QEMUSTATE}/qemu-build kernel-build 
+aarch64-kernel.config:  ${KERNEL_CFG}
+${KERNEL_CFG}: aarch64-kernel.config-proto ${AARCH64INITRD}
+	cat aarch64-kernel.config-proto | sed -e "s#PATH_TO_INITRD#${AARCH64INITRD}#" > $@
+
+test: state/prep ${QEMUSTATE}/qemu-build kernel-build
 	${TOPDIR}/test/qemu/install/bin/qemu-system-aarch64 -machine virt -cpu cortex-a57 -machine type=virt -nographic -smp 1 -m 2048 -kernel ${IMAGE} --append "rdinit=/sbin/init console=ttyAMA0"
 
+test-gcc: state/prep ${QEMUSTATE}/qemu-build kernel-gcc-build
+	${TOPDIR}/test/qemu/install/bin/qemu-system-aarch64 -machine virt -cpu cortex-a57 -machine type=virt -nographic -smp 1 -m 2048 -kernel ${IMAGE} --append "rdinit=/sbin/init console=ttyAMA0"
