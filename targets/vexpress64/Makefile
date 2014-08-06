@@ -25,7 +25,7 @@
 TARGETDIR	= ${CURDIR}
 TOPDIR		= $(realpath ${TARGETDIR}/../..)
 
-#CLANG_TOOLCHAIN	= from-source
+CLANG_TOOLCHAIN	= from-source
 #CLANG_TOOLCHAIN	= prebuilt
 CROSS_AARCH64_TOOLCHAIN = linaro
 
@@ -39,11 +39,11 @@ CLANG_BRANCH = master
 KERNEL_REPO_PATCHES=${KERNEL_BRANCH}
 
 # Need to add EXT4 support to vexpress_defconfig
-KERNEL_CFG	= ${KERNELDIR}/arch/arm64/configs/defconfig
-KERNEL_DTB	= arch/arm64/boot/dts/foundation-v8.dts
-ZIMAGE		= arch/arm64/boot/zImage
+#KERNEL_CFG	= ${KERNELDIR}/arch/arm64/configs/defconfig
+KERNEL_CFG	= ${TARGETDIR}/aarch64-kernel.config
+IMAGE		= ${KERNEL_BUILD}/arch/arm64/boot/Image
 
-BUILDROOT_ARCH	= qemu_arm_vexpress
+BUILDROOT_ARCH	= aarch64
 BUILDROOT_CONFIG= config_vexpress64_buildroot
 TOOLCHAINDIR	= $(ARM_CROSS_GCC_TOOLCHAIN)
 
@@ -63,10 +63,13 @@ RAZE_TARGETS		+= aarch64-raze
 
 include ${TOPDIR}/common.mk
 include ${ARCHDIR}/aarch64/aarch64.mk
+#include ${TOPDIR}/toolchain/mclinker/mclinker.mk
 
 KERNEL_PATCH_DIR	+= ${TARGETDIR}/patches
 
 include ${CONFIG}
+
+#export CFLAGS_KERNEL += -mllvm -print-call-graph
 
 prep: state/prep
 state/prep:
@@ -92,3 +95,7 @@ mrproper: clean aarch64-mrproper tmp-mrproper
 
 testlibgcc:
 	echo $(shell $(CLANGCC) $(KBUILD_CFLAGS) -print-libgcc-file-name)
+
+test: state/prep ${QEMUSTATE}/qemu-build kernel-build 
+	${TOPDIR}/test/qemu/install/bin/qemu-system-aarch64 -machine virt -cpu cortex-a57 -machine type=virt -nographic -smp 1 -m 2048 -kernel ${IMAGE} --append "rdinit=/sbin/init console=ttyAMA0"
+
