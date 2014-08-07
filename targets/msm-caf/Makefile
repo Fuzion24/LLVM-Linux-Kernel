@@ -25,7 +25,7 @@
 TARGETDIR	= ${CURDIR}
 TOPDIR		= $(realpath ${TARGETDIR}/../..)
 CROSS_ARM_TOOLCHAIN = codesourcery
-CLANG_TOOLCHAIN=prebuilt
+CLANG_TOOLCHAIN=from-source
 
 KERNEL_BRANCH	= msm-3.10
 KERNEL_GIT	= git://codeaurora.org/kernel/msm-3.10.git
