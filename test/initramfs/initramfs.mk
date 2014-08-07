@@ -57,6 +57,9 @@ ARCHSTR=armv6l
 STRACEURL	= "http://android-group-korea.googlecode.com/files/strace"
 STRACEBIN	= ${INITBUILDDIR}/strace
 endif
+ifeq (${ARCH},mips)
+ARCHSTR=${ARCH}${MIPS_BUSYBOX_ENDIAN}
+endif
 BUSYBOXURL	= "http://busybox.net/downloads/binaries/1.20.0/busybox-${ARCHSTR}"
 
 endif
