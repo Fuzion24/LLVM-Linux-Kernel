@@ -25,9 +25,12 @@
 # This is a template file with the kinds of settings and make targets filled in.
 TARGETDIR	= ${CURDIR}
 TOPDIR		= $(realpath ${TARGETDIR}/../..)
+CLANG_TOOLCHAIN ?= from-source
+CROSS_MIPS_TOOLCHAIN ?= codesourcery
 
 ARCH	= mips
 BOARD	= malta
+MIPS_ENDIAN ?= big
 
 # Kernel settings
 #KERNEL_GIT		= git://git.le.imgtec.org/mips-linux.git
@@ -82,3 +85,6 @@ clean: kernel-clean kernel-gcc-clean ${BOARD}-clean
 mrproper: clean kernel-mrproper kernel-gcc-mrproper ${BOARD}-mrproper tmp-mrproper
 	@rm -rf ${LOGDIR}/*
 	@$(call banner,Very Clean)
+
+myenv:
+	env

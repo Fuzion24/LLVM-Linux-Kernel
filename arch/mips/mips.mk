@@ -32,6 +32,8 @@ HOST_TRIPLE	= mips-unknown-linux-gnu
 FETCH_TARGETS	+= mips-cc
 RAZE_TARGETS	+= mips-cc-clean
 
+STATE_TOOLCHAIN = state/mips-cc
+
 ARCH_MIPS_DIR     = ${ARCHDIR}/mips
 ARCH_MIPS_BINDIR  = ${ARCH_MIPS_DIR}/bin
 ARCH_MIPS_PATCHES = ${ARCH_MIPS_DIR}/patches
