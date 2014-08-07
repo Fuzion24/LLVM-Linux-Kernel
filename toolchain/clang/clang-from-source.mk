@@ -69,7 +69,7 @@ LLVM_TARGETS_APPLIED	= llvm-patch-applied clang-patch-applied
 LLVM_VERSION_TARGETS	= llvm-version clang-version
 #compilerrt-version
 
-LLVM_TARGETS_TO_BUILD	?= 'AArch64;ARM;X86'
+LLVM_TARGETS_TO_BUILD	?= 'AArch64;ARM;X86;Mips'
 
 TARGETS_TOOLCHAIN	+= ${LLVM_TARGETS} ${CLANG_TARGETS}
 #${COMPILERRT_TARGETS}
