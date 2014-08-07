@@ -134,7 +134,7 @@ ${QEMUSTATE}/qemu-configure: ${QEMUSTATE}/qemu-patch ${TMPFS_MOUNT}
 	@mkdir -p ${QEMUBUILDDIR} ${CCACHE_QEMU_DIR}
 	(cd ${QEMUBUILDDIR} && ${QEMU_MAKE_FLAGS} ${QEMUSRCDIR}/configure \
 		--prefix=${QEMUINSTALLDIR} \
-		--target-list=aarch64-softmmu,arm-softmmu,i386-softmmu,x86_64-softmmu \
+		--target-list=aarch64-softmmu,arm-softmmu,i386-softmmu,x86_64-softmmu,mips-softmmu,mipsel-softmmu,mips64-softmmu,mips64el-softmmu \
 		--disable-docs --disable-kvm --disable-vnc --enable-fdt \
 		--audio-drv-list="")
 	$(call state,$@,qemu-build)
