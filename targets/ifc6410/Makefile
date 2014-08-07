@@ -24,13 +24,13 @@
 
 TARGETDIR	= ${CURDIR}
 TOPDIR		= $(realpath ${TARGETDIR}/../..)
-CROSS_ARM_TOOLCHAIN = android
-CLANG_TOOLCHAIN=prebuilt
+CROSS_ARM_TOOLCHAIN = linaro
+CLANG_TOOLCHAIN	= source
 
-KERNEL_BRANCH	= ifc6410-drm
-KERNEL_GIT	= git://github.com/freedreno/kernel-msm
+KERNEL_BRANCH	= ubuntu-ifc6410-14.07
+KERNEL_GIT	= https://git.linaro.org/landing-teams/working/qualcomm/kernel.git
 KERNELDIR	= ${SRCDIR}/kernel-msm
-KERNEL_CFG	= ${KERNELDIR}/arch/arm/configs/ifc6410_rob_defconfig
+KERNEL_CFG	= ${KERNELDIR}/arch/arm/configs/ifc6410_defconfig
 
 #Use the branch name for the dir containing MSM specific patch overrides
 KERNEL_REPO_PATCHES=${KERNEL_BRANCH}
