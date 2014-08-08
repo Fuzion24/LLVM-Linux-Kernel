@@ -25,7 +25,7 @@
 TARGETDIR	= ${CURDIR}
 TOPDIR		= $(realpath ${TARGETDIR}/../..)
 CROSS_ARM_TOOLCHAIN = codesourcery
-CLANG_TOOLCHAIN=prebuilt
+CLANG_TOOLCHAIN	= from-source
 
 KERNELDIR	= ${SRCDIR}/msm
 KERNEL_CFG	= ${KERNELDIR}/arch/arm/configs/msm_defconfig
@@ -36,6 +36,7 @@ KERNEL_REPO_PATCHES=${KERNEL_BRANCH}
 
 EXTRAFLAGS	= 
 #EXTRAFLAGS	= -Iarch/arm/mach-msm
+#EXTRAFLAGS = CFLAGS_KERNEL=" -mllvm -print-call-graph"
 
 all: prep kernel-build
 
