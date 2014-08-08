@@ -9,6 +9,6 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
  		   -Wno-format-security \
 		   $(call cc-option,-no-integrated-as,) \
 +	           -Wno-unused-function \
- 		   $(call cc-option,-fno-delete-null-pointer-checks,)
+		   ${NULL_PTR_CHECKS}
  KBUILD_AFLAGS_KERNEL :=
  KBUILD_CFLAGS_KERNEL :=
