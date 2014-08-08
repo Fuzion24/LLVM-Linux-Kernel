@@ -30,7 +30,8 @@ CLANG_TOOLCHAIN=from-source
 KERNEL_BRANCH	= msm-3.10
 KERNEL_GIT	= git://codeaurora.org/kernel/msm-3.10.git
 KERNELDIR	= ${SRCDIR}/msm
-KERNEL_CFG	= ${KERNELDIR}/arch/arm/configs/msm8974_defconfig
+#KERNEL_CFG	= ${KERNELDIR}/arch/arm/configs/apq8084_defconfig
+KERNEL_CFG	= ${TARGETDIR}/apq8084_fixedconfig
 
 #Use the branch name for the dir containing MSM specific patch overrides
 KERNEL_REPO_PATCHES=${KERNEL_BRANCH}
@@ -52,6 +53,10 @@ include ${CONFIG}
 TARGETS+= kernel-autopatch clean mrproper
 .PHONY: kernel-copy clean mrproper
 
+# Remove support for CONFIG_USB_GADGET until its Makefile is fixed
+${TARGETDIR}/apq8084_fixedconfig: kernel-fetch
+	cat ${KERNELDIR}/arch/arm/configs/apq8084_defconfig | sed -e "s/CONFIG_USB_GADGET/#CONFIG_USB_GADGET/" > $@
+	
 prep: state/prep
 state/prep:
 	$(MAKE) ${TMPDIR}
