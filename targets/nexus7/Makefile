@@ -24,7 +24,7 @@
 
 TARGETDIR	= ${CURDIR}
 TOPDIR		= $(realpath ${TARGETDIR}/../..)
-CROSS_ARM_TOOLCHAIN = android
+CROSS_ARM_TOOLCHAIN = linaro
 LLVM_COMMIT = master
 CLANG_COMMIT = master
 
@@ -44,8 +44,9 @@ include ${TOPDIR}/common.mk
 include ${ARCHDIR}/arm/arm.mk
 include ${CONFIG}
 
-KERNEL_PATCH_DIR+= ${TARGETDIR}/patches-overlay
-KERNEL_PATCH_DIR+= ${TARGETDIR}/patches 
+KERNEL_PATCH_DIR	+= ${TOPDIR}/arch/all/patches/v3.14
+KERNEL_PATCH_DIR	+= ${TARGETDIR}/patches-overlay
+KERNEL_PATCH_DIR	+= ${TARGETDIR}/patches 
 
 TARGETS+= check-dups kernel-autopatch clean mrproper
 .PHONY: kernel-copy clean mrproper
