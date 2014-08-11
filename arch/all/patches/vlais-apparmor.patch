@@ -20,6 +20,17 @@ array.
 
 The new code can be compiled with both gcc and clang.
 
+struct shash_desc contains a flexible array member member ctx declared with 
+CRYPTO_MINALIGN_ATTR, so sizeof(struct shash_desc) aligns the beginning 
+of the array declared after struct shash_desc with long long.
+
+No trailing padding is required because it is not a struct type that can 
+be used in an array.
+
+The CRYPTO_MINALIGN_ATTR is required so that desc is aligned with long long
+as would be the case for a struct containing a member with 
+CRYPTO_MINALIGN_ATTR.
+
 Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Signed-off-by: Vinícius Tinti <viniciustinti@gmail.com>
@@ -32,7 +43,7 @@ diff --git a/security/apparmor/crypto.c b/security/apparmor/crypto.c
 index 532471d..7ab929f 100644
 --- a/security/apparmor/crypto.c
 +++ b/security/apparmor/crypto.c
-@@ -32,10 +32,10 @@ unsigned int aa_hash_size(void)
+@@ -32,10 +32,9 @@ unsigned int aa_hash_size(void)
  int aa_calc_profile_hash(struct aa_profile *profile, u32 version, void *start,
  			 size_t len)
  {
@@ -41,8 +52,7 @@ index 532471d..7ab929f 100644
 -		char ctx[crypto_shash_descsize(apparmor_tfm)];
 -	} desc;
 +	char desc[sizeof(struct shash_desc)
-+		+ crypto_shash_descsize(apparmor_tfm)
-+		+ CRYPTO_MINALIGN] CRYPTO_MINALIGN_ATTR;
++		+ crypto_shash_descsize(apparmor_tfm)] CRYPTO_MINALIGN_ATTR;
 +	struct shash_desc *shash = (struct shash_desc *)desc;
  	int error = -ENOMEM;
  	u32 le32_version = cpu_to_le32(version);

@@ -19,6 +19,17 @@ array.
 
 The new code can be compiled with both gcc and clang.
 
+struct shash_desc contains a flexible array member member ctx declared with 
+CRYPTO_MINALIGN_ATTR, so sizeof(struct shash_desc) aligns the beginning 
+of the array declared after struct shash_desc with long long.
+
+No trailing padding is required because it is not a struct type that can 
+be used in an array.
+
+The CRYPTO_MINALIGN_ATTR is required so that desc is aligned with long long
+as would be the case for a struct containing a member with 
+CRYPTO_MINALIGN_ATTR.
+
 Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Signed-off-by: Vinícius Tinti <viniciustinti@gmail.com>
@@ -31,7 +42,7 @@ diff --git a/fs/btrfs/hash.c b/fs/btrfs/hash.c
 index 85889aa..110de4c 100644
 --- a/fs/btrfs/hash.c
 +++ b/fs/btrfs/hash.c
-@@ -33,18 +33,19 @@ void btrfs_hash_exit(void)
+@@ -33,18 +33,18 @@ void btrfs_hash_exit(void)
  
  u32 btrfs_crc32c(u32 crc, const void *address, unsigned int length)
  {
@@ -40,8 +51,7 @@ index 85889aa..110de4c 100644
 -		char ctx[crypto_shash_descsize(tfm)];
 -	} desc;
 +	char desc[sizeof(struct shash_desc)
-+		+ crypto_shash_descsize(tfm)
-+		+ CRYPTO_MINALIGN] CRYPTO_MINALIGN_ATTR;
++		+ crypto_shash_descsize(tfm)] CRYPTO_MINALIGN_ATTR;
 +	struct shash_desc *shash = (struct shash_desc *)desc;
 +	u32 *ctx = (u32 *)shash_desc_ctx(shash);
  	int err;
