@@ -25,6 +25,7 @@
 TARGETDIR	= ${CURDIR}
 TOPDIR		= $(realpath ${TARGETDIR}/../..)
 CROSS_ARM_TOOLCHAIN = android
+CLANG_TOOLCHAIN=from-source
 
 KERNEL_BRANCH	= cm-10.1
 KERNEL_GIT	= git://github.com/CyanogenMod/android_kernel_samsung_d2.git

@@ -1,4 +1,4 @@
-From 8fbade664d8208589f3f64c59ed2c76ab7036ea4 Mon Sep 17 00:00:00 2001
+From 29174acfa4e629e7ed87dcbc0f4b8923e8eb52dd Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 3 Sep 2013 22:27:23 -0400
 Subject: [PATCH] kbuild: LLVMLinux: Add Kbuild support for building kernel
@@ -19,10 +19,14 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
 Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Cc: PaX Team <pageexec@freemail.hu>
+---
+ Makefile | 30 +++++++++++++++++++++++++++++-
+ 1 file changed, 29 insertions(+), 1 deletion(-)
+
 diff --git a/Makefile b/Makefile
-index fe8204b..4971db7 100644
---- linux.orig/Makefile
-+++ linux/Makefile
+index ef779ec..8709afb 100644
+--- a/Makefile
++++ b/Makefile
 @@ -247,6 +247,11 @@ HOSTCXX      = g++
  HOSTCFLAGS   = -Wall -Wmissing-prototypes -Wstrict-prototypes -O2 -fomit-frame-pointer
  HOSTCXXFLAGS = -O2
@@ -35,7 +39,7 @@ index fe8204b..4971db7 100644
  # Decide whether to build built-in, modular, or both.
  # Normally, just do built-in.
  
-@@ -317,6 +317,14 @@
+@@ -323,6 +328,14 @@ endif
  
  export quiet Q KBUILD_VERBOSE
  
@@ -50,19 +54,27 @@ index fe8204b..4971db7 100644
  
  # Look for make include files relative to root of kernel src
  MAKEFLAGS += --include-dir=$(srctree)
-@@ -376,7 +382,7 @@
+@@ -373,12 +395,15 @@ LINUXINCLUDE    := \
+ 
+ KBUILD_CPPFLAGS := -D__KERNEL__
+ 
++ifneq ($(COMPILER),clang)
++NULL_PTR_CHECKS := -fno-delete-null-pointer-checks
++endif
+ KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
+ 		   -fno-strict-aliasing -fno-common \
  		   -Werror-implicit-function-declaration \
  		   -Wno-format-security \
  		   $(call cc-option,-no-integrated-as,) \
 -		   -fno-delete-null-pointer-checks
-+		   $(call cc-option,-fno-delete-null-pointer-checks,)
++		   ${NULL_PTR_CHECKS}
  KBUILD_AFLAGS_KERNEL :=
  KBUILD_CFLAGS_KERNEL :=
  KBUILD_AFLAGS   := -D__ASSEMBLY__ $(call cc-option,-no-integrated-as,)
-@@ -602,7 +611,21 @@
+@@ -622,9 +635,24 @@ endif
+ endif
+ KBUILD_CFLAGS += $(stackp-flag)
  
- # This warning generated too much noise in a regular build.
- # Use make W=1 to enable this warning (see scripts/Makefile.build)
 +ifeq ($(COMPILER),clang)
 +KBUILD_CPPFLAGS += $(call cc-option,-Qunused-arguments,)
 +KBUILD_CPPFLAGS += $(call cc-option,-Wno-unknown-warning-option,)
@@ -76,21 +88,25 @@ index fe8204b..4971db7 100644
 +# See modpost pattern 2
 +KBUILD_CFLAGS += $(call cc-option, -mno-global-merge,)
 +else
++
+ # This warning generated too much noise in a regular build.
+ # Use make W=1 to enable this warning (see scripts/Makefile.build)
  KBUILD_CFLAGS += $(call cc-disable-warning, unused-but-set-variable)
 +endif
  
  ifdef CONFIG_FRAME_POINTER
  KBUILD_CFLAGS	+= -fno-omit-frame-pointer -fno-optimize-sibling-calls
-diff --git a/scripts/Kbuild.include b/scripts/Kbuild.include
-index 547e15d..4846a1b 100644
---- a/scripts/Kbuild.include
-+++ b/scripts/Kbuild.include
-@@ -125,7 +125,7 @@ cc-option-align = $(subst -functions=0,,\
- # cc-disable-warning
- # Usage: cflags-y += $(call cc-disable-warning,unused-but-set-variable)
- cc-disable-warning = $(call try-run,\
--	$(CC) $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) -W$(strip $(1)) -c -x c /dev/null -o "$$TMP",-Wno-$(strip $(1)))
-+	$(CC) $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) -w -W$(strip $(1)) -c -x c /dev/null -o "$$TMP",-Wno-$(strip $(1)))
+@@ -660,8 +701,10 @@ endif
  
- # cc-version
- # Usage gcc-ver := $(call cc-version)
+ # We trigger additional mismatches with less inlining
+ ifdef CONFIG_DEBUG_SECTION_MISMATCH
++ifneq ($(COMPILER),clang)
+ KBUILD_CFLAGS += $(call cc-option, -fno-inline-functions-called-once)
+ endif
++endif
+ 
+ # arch Makefile may override CC so keep this after arch Makefile is included
+ NOSTDINC_FLAGS += -nostdinc -isystem $(shell $(CC) -print-file-name=include)
+-- 
+1.8.3.2
+
