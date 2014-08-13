@@ -26,14 +26,14 @@ Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Cc: pageexec@freemail.hu
 ---
- drivers/md/dm-crypt.c | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+ drivers/md/dm-crypt.c | 38 ++++++++++++++++++--------------------
+ 1 file changed, 18 insertions(+), 20 deletions(-)
 
 diff --git a/drivers/md/dm-crypt.c b/drivers/md/dm-crypt.c
-index 784695d..8b45281 100644
+index 4cba2d8..b2541b6 100644
 --- a/drivers/md/dm-crypt.c
 +++ b/drivers/md/dm-crypt.c
-@@ -543,29 +543,29 @@ static int crypt_iv_lmk_one(struct crypt_config *cc, u8 *iv,
+@@ -524,29 +524,28 @@ static int crypt_iv_lmk_one(struct crypt_config *cc, u8 *iv,
  			    u8 *data)
  {
  	struct iv_lmk_private *lmk = &cc->iv_gen_private.lmk;
@@ -71,7 +71,7 @@ index 784695d..8b45281 100644
  	if (r)
  		return r;
  
-@@ -574,12 +574,12 @@ static int crypt_iv_lmk_one(struct crypt_config *cc, u8 *iv,
+@@ -555,12 +554,12 @@ static int crypt_iv_lmk_one(struct crypt_config *cc, u8 *iv,
  	buf[1] = cpu_to_le32((((u64)dmreq->iv_sector >> 32) & 0x00FFFFFF) | 0x80000000);
  	buf[2] = cpu_to_le32(4024);
  	buf[3] = 0;
@@ -86,6 +86,42 @@ index 784695d..8b45281 100644
  	if (r)
  		return r;
  
+@@ -677,10 +676,9 @@ static int crypt_iv_tcw_whitening(struct crypt_config *cc,
+ 	struct iv_tcw_private *tcw = &cc->iv_gen_private.tcw;
+ 	u64 sector = cpu_to_le64((u64)dmreq->iv_sector);
+ 	u8 buf[TCW_WHITENING_SIZE];
+-	struct {
+-		struct shash_desc desc;
+-		char ctx[crypto_shash_descsize(tcw->crc32_tfm)];
+-	} sdesc;
++	char sdesc[sizeof(struct shash_desc)
++		+ crypto_shash_descsize(tcw->crc32_tfm)] CRYPTO_MINALIGN_ATTR;
++	struct shash_desc *desc = (struct shash_desc *)sdesc;
+ 	int i, r;
+ 
+ 	/* xor whitening with sector number */
+@@ -689,16 +687,16 @@ static int crypt_iv_tcw_whitening(struct crypt_config *cc,
+ 	crypto_xor(&buf[8], (u8 *)&sector, 8);
+ 
+ 	/* calculate crc32 for every 32bit part and xor it */
+-	sdesc.desc.tfm = tcw->crc32_tfm;
+-	sdesc.desc.flags = CRYPTO_TFM_REQ_MAY_SLEEP;
++	desc->tfm = tcw->crc32_tfm;
++	desc->flags = CRYPTO_TFM_REQ_MAY_SLEEP;
+ 	for (i = 0; i < 4; i++) {
+-		r = crypto_shash_init(&sdesc.desc);
++		r = crypto_shash_init(desc);
+ 		if (r)
+ 			goto out;
+-		r = crypto_shash_update(&sdesc.desc, &buf[i * 4], 4);
++		r = crypto_shash_update(desc, &buf[i * 4], 4);
+ 		if (r)
+ 			goto out;
+-		r = crypto_shash_final(&sdesc.desc, &buf[i * 4]);
++		r = crypto_shash_final(desc, &buf[i * 4]);
+ 		if (r)
+ 			goto out;
+ 	}
 -- 
-1.8.3.2
+1.9.1
 
