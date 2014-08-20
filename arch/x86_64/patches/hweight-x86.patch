@@ -1,4 +1,4 @@
-From df9dd71ea564285de77fd255a103e7a5e4c5d321 Mon Sep 17 00:00:00 2001
+From b5b358c02b6d95ac4b6104b907731f9e449af98d Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 3 Sep 2013 22:27:25 -0400
 Subject: [PATCH] LLVMLinux: Clang doesn't support the gcc flags set by
@@ -15,10 +15,10 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
  1 file changed, 2 insertions(+)
 
 diff --git a/lib/Makefile b/lib/Makefile
-index 48140e3..6697534 100644
+index d6b4bc4..78099ea9 100644
 --- a/lib/Makefile
 +++ b/lib/Makefile
-@@ -46,7 +46,9 @@ obj-$(CONFIG_CHECK_SIGNATURE) += check_signature.o
+@@ -48,7 +48,9 @@ obj-$(CONFIG_CHECK_SIGNATURE) += check_signature.o
  obj-$(CONFIG_DEBUG_LOCKING_API_SELFTESTS) += locking-selftest.o
  
  GCOV_PROFILE_hweight.o := n
@@ -29,5 +29,5 @@ index 48140e3..6697534 100644
  
  obj-$(CONFIG_BTREE) += btree.o
 -- 
-1.8.1.4
+1.9.1
 
