@@ -1,4 +1,4 @@
-From a206398727d20624c0a66c041eda225a2b6ea937 Mon Sep 17 00:00:00 2001
+From 62d226360cca6bace8709d8a04ccdbcfede4cbe0 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 3 Sep 2013 22:27:27 -0400
 Subject: [PATCH] arm: LLVMLinux: Use current_stack_pointer in unwind_backtrace
@@ -15,7 +15,7 @@ Acked-by: Will Deacon <will.deacon@arm.com>
  1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/arch/arm/kernel/unwind.c b/arch/arm/kernel/unwind.c
-index e67682f..e20e8dc 100644
+index a61a1df..caea23b 100644
 --- a/arch/arm/kernel/unwind.c
 +++ b/arch/arm/kernel/unwind.c
 @@ -471,7 +471,6 @@ int unwind_frame(struct stackframe *frame)
@@ -26,8 +26,8 @@ index e67682f..e20e8dc 100644
  
  	pr_debug("%s(regs = %p tsk = %p)\n", __func__, regs, tsk);
  
-@@ -487,7 +486,7 @@ void unwind_backtrace(struct pt_regs *regs, struct task_struct *tsk)
- 			 ? regs->ARM_pc : regs->ARM_lr;
+@@ -485,7 +484,7 @@ void unwind_backtrace(struct pt_regs *regs, struct task_struct *tsk)
+ 			frame.pc = regs->ARM_lr;
  	} else if (tsk == current) {
  		frame.fp = (unsigned long)__builtin_frame_address(0);
 -		frame.sp = current_sp;
