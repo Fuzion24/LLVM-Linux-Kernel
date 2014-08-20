@@ -213,7 +213,7 @@ table.align = "l"
 # Print out the rows and build the pretty table
 numpatches = 0
 stats = {}
-stats['any'] = 0
+stats['any'] = { 'count':0, 'submittedupstream':0, 'ackedupstream':0, 'acceptedupstream':0 }
 #nopatch = re.compile(r"\.patch$")
 for row in rows:
     patchname = row.custom['patchname'].text
@@ -224,14 +224,16 @@ for row in rows:
 
         #print row.custom['acceptedupstream'].text+" != 'Y'"
         if row.custom['acceptedupstream'].text != 'Y':
-            stats['any'] += 1
             key = row.custom['arch'].text
+            stats['any']['count'] += 1
             if key in stats:
-                #print "stats: inc "+patchname
-                stats[key] += 1
-            else:
-                #print "stats: new "+patchname
-                stats[key] = 1
+                stats[key]['count'] += 1
+	    else:
+                stats[key] = { 'count':1, 'submittedupstream':0, 'ackedupstream':0, 'acceptedupstream':0 }
+            for k in ['submittedupstream', 'ackedupstream', 'acceptedupstream']:
+                if row.custom[k].text == 'Y':
+                    stats['any'][k] += 1
+                    stats[key][k] += 1
 
         numpatches += 1
 	echo(patchname,)
@@ -255,8 +257,11 @@ print table.get_string(sortby='patchname')
 print "Number of patches: %d" % (numpatches)
 
 #-------------------------------------------------------------------------------
-for stat in stats:
-    print stat+": "+str(stats[stat])
+for key in stats:
+    print key+": "+str(stats[key]['count']),
+    print "  submited: "+str(stats[key]['submittedupstream']),
+    print "  acked: "+str(stats[key]['ackedupstream']),
+    print "  accepted: "+str(stats[key]['acceptedupstream'])
 
 #-------------------------------------------------------------------------------
 if args:
