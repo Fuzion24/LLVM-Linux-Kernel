@@ -1,4 +1,4 @@
-From 6aba14b47814f57deb93438b7ba35ff005a432da Mon Sep 17 00:00:00 2001
+From fbed6de2c501139c1007ea4b186b11d38cab953a Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Wed, 21 May 2014 12:02:30 -0700
 Subject: [PATCH] kbuild, LLVMLinux: Add better clang cross build support
@@ -6,13 +6,23 @@ Subject: [PATCH] kbuild, LLVMLinux: Add better clang cross build support
 Add cross target to CC if using clang. Also add custom gcc toolchain path for
 fallback gcc tools.
 
+COMPILER is previously set to "clang" if CC=clang was set from the make command
+line.  So -target and -gcc-toolchain can be added to CC, since we already know
+that it is set.
+
+Clang will fallback to using things like ld, as, and libgcc if (respectively)
+one of the llvm linkers isn't available, the integrated assembler is turned
+off, or an appropriately cross-compiled version of compiler-rt isn't available.
+To this end, you can specify the path to this fallback gcc toolchain with
+GCC_TOOLCHAIN.
+
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 ---
  Makefile | 9 +++++++++
  1 file changed, 9 insertions(+)
 
 diff --git a/Makefile b/Makefile
-index d805666..f9a12d4 100644
+index bf63089..82b88f8 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -360,7 +360,16 @@ include $(srctree)/scripts/Kbuild.include

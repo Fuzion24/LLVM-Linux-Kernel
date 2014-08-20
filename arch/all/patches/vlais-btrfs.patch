@@ -1,4 +1,4 @@
-From f5df4edcab888d08633a6cbdcdcb24cd87c7e634 Mon Sep 17 00:00:00 2001
+From b765a4e2ae159b2b3f62ef601be53eb773e62bd1 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Vin=C3=ADcius=20Tinti?= <viniciustinti@gmail.com>
 Date: Fri, 4 Apr 2014 18:21:24 -0300
 Subject: [PATCH] btrfs: LLVMLinux: Remove VLAIS
@@ -19,15 +19,15 @@ array.
 
 The new code can be compiled with both gcc and clang.
 
-struct shash_desc contains a flexible array member member ctx declared with 
-CRYPTO_MINALIGN_ATTR, so sizeof(struct shash_desc) aligns the beginning 
+struct shash_desc contains a flexible array member member ctx declared with
+CRYPTO_MINALIGN_ATTR, so sizeof(struct shash_desc) aligns the beginning
 of the array declared after struct shash_desc with long long.
 
-No trailing padding is required because it is not a struct type that can 
+No trailing padding is required because it is not a struct type that can
 be used in an array.
 
 The CRYPTO_MINALIGN_ATTR is required so that desc is aligned with long long
-as would be the case for a struct containing a member with 
+as would be the case for a struct containing a member with
 CRYPTO_MINALIGN_ATTR.
 
 Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
@@ -35,11 +35,11 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
 Signed-off-by: Vinícius Tinti <viniciustinti@gmail.com>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 ---
- fs/btrfs/hash.c | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
+ fs/btrfs/hash.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
 diff --git a/fs/btrfs/hash.c b/fs/btrfs/hash.c
-index 85889aa..110de4c 100644
+index 85889aa..2fdacda 100644
 --- a/fs/btrfs/hash.c
 +++ b/fs/btrfs/hash.c
 @@ -33,18 +33,18 @@ void btrfs_hash_exit(void)
@@ -71,5 +71,5 @@ index 85889aa..110de4c 100644
 +	return *ctx;
  }
 -- 
-1.8.3.2
+1.9.1
 

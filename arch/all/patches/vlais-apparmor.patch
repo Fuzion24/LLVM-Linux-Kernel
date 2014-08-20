@@ -1,4 +1,4 @@
-From e01df4b41dea38657749918886104a9618209182 Mon Sep 17 00:00:00 2001
+From 9ba116f3947654456f24f265b9482d7ba9a5eda2 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Vin=C3=ADcius=20Tinti?= <viniciustinti@gmail.com>
 Date: Fri, 4 Apr 2014 18:18:00 -0300
 Subject: [PATCH] apparmor: LLVMLinux: Remove VLAIS
@@ -15,20 +15,19 @@ struct {
 } desc;
 
 This patch instead allocates the appropriate amount of memory using an
-char
-array.
+char array.
 
 The new code can be compiled with both gcc and clang.
 
-struct shash_desc contains a flexible array member member ctx declared with 
-CRYPTO_MINALIGN_ATTR, so sizeof(struct shash_desc) aligns the beginning 
+struct shash_desc contains a flexible array member member ctx declared with
+CRYPTO_MINALIGN_ATTR, so sizeof(struct shash_desc) aligns the beginning
 of the array declared after struct shash_desc with long long.
 
-No trailing padding is required because it is not a struct type that can 
+No trailing padding is required because it is not a struct type that can
 be used in an array.
 
 The CRYPTO_MINALIGN_ATTR is required so that desc is aligned with long long
-as would be the case for a struct containing a member with 
+as would be the case for a struct containing a member with
 CRYPTO_MINALIGN_ATTR.
 
 Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
@@ -36,11 +35,11 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
 Signed-off-by: Vinícius Tinti <viniciustinti@gmail.com>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 ---
- security/apparmor/crypto.c | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+ security/apparmor/crypto.c | 19 +++++++++----------
+ 1 file changed, 9 insertions(+), 10 deletions(-)
 
 diff --git a/security/apparmor/crypto.c b/security/apparmor/crypto.c
-index 532471d..7ab929f 100644
+index 532471d..62b32e7 100644
 --- a/security/apparmor/crypto.c
 +++ b/security/apparmor/crypto.c
 @@ -32,10 +32,9 @@ unsigned int aa_hash_size(void)
@@ -57,7 +56,7 @@ index 532471d..7ab929f 100644
  	int error = -ENOMEM;
  	u32 le32_version = cpu_to_le32(version);
  
-@@ -46,19 +46,19 @@ int aa_calc_profile_hash(struct aa_profile *profile, u32 version, void *start,
+@@ -46,19 +45,19 @@ int aa_calc_profile_hash(struct aa_profile *profile, u32 version, void *start,
  	if (!profile->hash)
  		goto fail;
  
@@ -84,5 +83,5 @@ index 532471d..7ab929f 100644
  		goto fail;
  
 -- 
-1.8.3.2
+1.9.1
 

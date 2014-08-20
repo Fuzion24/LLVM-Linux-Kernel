@@ -1,13 +1,21 @@
+From e5a806f844d0c837e7c5c64452c322ced6c89752 Mon Sep 17 00:00:00 2001
+From: Mark Charlebois <charlebm@gmail.com>
+Date: Thu, 14 Aug 2014 08:12:08 -0500
+Subject: [PATCH] clang-flags
+
 Clang doesn't support -fno-delete-null-pointer-checks or
  -fno-inline-functions-called-once and they cannot be
-diabled by cc-option because cc-option doesnt work for 
+diabled by cc-option because cc-option doesnt work for
 flags, ony for warnings.
 
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+Signed-off-by: Behan Webster <behanw@converseincode.com>
 ---
+ Makefile | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
 diff --git a/Makefile b/Makefile
-index a897c50..37f700b 100644
+index 3d842a7..0fab28b 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -308,7 +308,7 @@ HOSTCXXFLAGS = -O2
@@ -15,11 +23,11 @@ index a897c50..37f700b 100644
  ifeq ($(shell $(HOSTCC) -v 2>&1 | grep -c "clang version"), 1)
  HOSTCFLAGS  += -Wno-unused-value -Wno-unused-parameter \
 -		-Wno-missing-field-initializers -fno-delete-null-pointer-checks
-+		-Wno-missing-field-initializers 
++		-Wno-missing-field-initializers
  endif
  
  # Decide whether to build built-in, modular, or both.
-@@ -613,7 +623,9 @@ all: vmlinux
+@@ -624,7 +624,9 @@ all: vmlinux
  
  include $(srctree)/arch/$(SRCARCH)/Makefile
  
@@ -30,7 +38,7 @@ index a897c50..37f700b 100644
  
  ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
  KBUILD_CFLAGS	+= -Os $(call cc-disable-warning,maybe-uninitialized,)
-@@ -735,7 +748,9 @@ endif
+@@ -754,7 +756,9 @@ endif
  
  # We trigger additional mismatches with less inlining
  ifdef CONFIG_DEBUG_SECTION_MISMATCH
@@ -41,3 +49,6 @@ index a897c50..37f700b 100644
  endif
  
  # arch Makefile may override CC so keep this after arch Makefile is included
+-- 
+1.9.1
+

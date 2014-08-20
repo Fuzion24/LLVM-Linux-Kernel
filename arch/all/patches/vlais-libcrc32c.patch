@@ -1,4 +1,4 @@
-From 3b5dfe411ff88c0b0ea2754cb7199a8f7f0a90ed Mon Sep 17 00:00:00 2001
+From b7aa72d02ae2ddc187cb5a6d1bbb9413dcc1befc Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
 Date: Mon, 2 Jul 2012 12:54:28 +0200
 Subject: [PATCH] crypto: LLVMLinux: Remove VLAIS usage from libcrc32c.c
@@ -11,15 +11,15 @@ precludes the use of compilers which don't implement VLAIS (for instance the
 Clang compiler). This patch instead allocates the appropriate amount of memory
 using an char array.
 
-struct shash_desc contains a flexible array member member ctx declared with 
-CRYPTO_MINALIGN_ATTR, so sizeof(struct shash_desc) aligns the beginning 
+struct shash_desc contains a flexible array member member ctx declared with
+CRYPTO_MINALIGN_ATTR, so sizeof(struct shash_desc) aligns the beginning
 of the array declared after struct shash_desc with long long.
 
-No trailing padding is required because it is not a struct type that can 
+No trailing padding is required because it is not a struct type that can
 be used in an array.
 
 The CRYPTO_MINALIGN_ATTR is required so that desc is aligned with long long
-as would be the case for a struct containing a member with 
+as would be the case for a struct containing a member with
 CRYPTO_MINALIGN_ATTR.
 
 Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
@@ -30,7 +30,7 @@ Cc: pageexec@freemail.hu
  1 file changed, 9 insertions(+), 9 deletions(-)
 
 diff --git a/lib/libcrc32c.c b/lib/libcrc32c.c
-index 244f548..c155b3f 100644
+index b3131f5..03f2cf3 100644
 --- a/lib/libcrc32c.c
 +++ b/lib/libcrc32c.c
 @@ -41,20 +41,20 @@ static struct crypto_shash *tfm;
@@ -41,7 +41,7 @@ index 244f548..c155b3f 100644
 -		struct shash_desc shash;
 -		char ctx[crypto_shash_descsize(tfm)];
 -	} desc;
-+	char desc[sizeof(struct shash_desc) 
++	char desc[sizeof(struct shash_desc)
 +		+ crypto_shash_descsize(tfm)] CRYPTO_MINALIGN_ATTR;
 +	struct shash_desc *shash = (struct shash_desc *)desc;
 +	u32 *ctx = (u32 *)shash_desc_ctx(shash);
@@ -64,5 +64,5 @@ index 244f548..c155b3f 100644
  
  EXPORT_SYMBOL(crc32c);
 -- 
-1.8.3.2
+1.9.1
 

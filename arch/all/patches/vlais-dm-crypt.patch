@@ -1,4 +1,4 @@
-From cdb4be8984cbd9f68803f8d30d0570fe7d6bdc48 Mon Sep 17 00:00:00 2001
+From a7e757aa8d60a95df9bc0e9847a4c64b46987548 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
 Date: Mon, 2 Jul 2012 13:50:54 +0200
 Subject: [PATCH] crypto, dm: LLVMLinux: Remove VLAIS usage from dm-crypt
@@ -11,15 +11,15 @@ precludes the use of compilers which don't implement VLAIS (for instance the
 Clang compiler). This patch instead allocates the appropriate amount of memory
 using an char array.
 
-struct shash_desc contains a flexible array member member ctx declared with 
-CRYPTO_MINALIGN_ATTR, so sizeof(struct shash_desc) aligns the beginning 
+struct shash_desc contains a flexible array member member ctx declared with
+CRYPTO_MINALIGN_ATTR, so sizeof(struct shash_desc) aligns the beginning
 of the array declared after struct shash_desc with long long.
 
-No trailing padding is required because it is not a struct type that can 
+No trailing padding is required because it is not a struct type that can
 be used in an array.
 
 The CRYPTO_MINALIGN_ATTR is required so that desc is aligned with long long
-as would be the case for a struct containing a member with 
+as would be the case for a struct containing a member with
 CRYPTO_MINALIGN_ATTR.
 
 Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
@@ -30,10 +30,10 @@ Cc: pageexec@freemail.hu
  1 file changed, 18 insertions(+), 20 deletions(-)
 
 diff --git a/drivers/md/dm-crypt.c b/drivers/md/dm-crypt.c
-index 4cba2d8..b2541b6 100644
+index 2785007..a1e50ca 100644
 --- a/drivers/md/dm-crypt.c
 +++ b/drivers/md/dm-crypt.c
-@@ -524,29 +524,28 @@ static int crypt_iv_lmk_one(struct crypt_config *cc, u8 *iv,
+@@ -526,29 +526,28 @@ static int crypt_iv_lmk_one(struct crypt_config *cc, u8 *iv,
  			    u8 *data)
  {
  	struct iv_lmk_private *lmk = &cc->iv_gen_private.lmk;
@@ -71,7 +71,7 @@ index 4cba2d8..b2541b6 100644
  	if (r)
  		return r;
  
-@@ -555,12 +554,12 @@ static int crypt_iv_lmk_one(struct crypt_config *cc, u8 *iv,
+@@ -557,12 +556,12 @@ static int crypt_iv_lmk_one(struct crypt_config *cc, u8 *iv,
  	buf[1] = cpu_to_le32((((u64)dmreq->iv_sector >> 32) & 0x00FFFFFF) | 0x80000000);
  	buf[2] = cpu_to_le32(4024);
  	buf[3] = 0;
@@ -86,7 +86,7 @@ index 4cba2d8..b2541b6 100644
  	if (r)
  		return r;
  
-@@ -677,10 +676,9 @@ static int crypt_iv_tcw_whitening(struct crypt_config *cc,
+@@ -679,10 +678,9 @@ static int crypt_iv_tcw_whitening(struct crypt_config *cc,
  	struct iv_tcw_private *tcw = &cc->iv_gen_private.tcw;
  	u64 sector = cpu_to_le64((u64)dmreq->iv_sector);
  	u8 buf[TCW_WHITENING_SIZE];
@@ -100,7 +100,7 @@ index 4cba2d8..b2541b6 100644
  	int i, r;
  
  	/* xor whitening with sector number */
-@@ -689,16 +687,16 @@ static int crypt_iv_tcw_whitening(struct crypt_config *cc,
+@@ -691,16 +689,16 @@ static int crypt_iv_tcw_whitening(struct crypt_config *cc,
  	crypto_xor(&buf[8], (u8 *)&sector, 8);
  
  	/* calculate crc32 for every 32bit part and xor it */
