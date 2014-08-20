@@ -59,7 +59,7 @@ email_addresses = (cd ${KERNELDIR} ; \
 			*) echo "--cc $$ENTRY";; \
 		esac; \
 	done \
-	| sed -e 's/ .*</ /g; s/>.*//g; s/ (.*)//g' | sort)
+	| sed -e 's/ .*</ /g; s/>.*//g; s/ (.*)//g' | sort -f)
 
 #############################################################################
 kernel-git-submit-patch-get_maintainers: kernel-fetch

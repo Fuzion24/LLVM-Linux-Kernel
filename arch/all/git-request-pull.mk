@@ -40,14 +40,35 @@ REQUEST_TAG	= llvmlinux-for-${REQUEST_VER}
 REQUEST_REPO_URI= git://git.linuxfoundation.org/llvmlinux/kernel.git
 REQUEST_FILE	= msg.txt
 
+REQUEST_PATCHES	= ALL_PATCH_SERIES=${TARGET_PATCH_SERIES}.${REQUEST_BRANCH}
+
+#############################################################################
+#email_addresses2 = (cd ${KERNELDIR} ; \
+#	./scripts/get_maintainer.pl ${1}; \
+#	./scripts/get_maintainer.pl ${1} | while read ENTRY; do \
+#		case "$$ENTRY" in \
+#			*maintainer*) echo "--to-maintainer $$ENTRY";; \
+#			*authored*) echo "--to-author $$ENTRY";; \
+#			*list*) echo "--cc-list $$ENTRY";; \
+#			*) echo --bcc $$ENTRY;; \
+#		esac; \
+#	done \
+#	| sed -e 's/ .*</ /g; s/>.*//g; s/ (.*)//g' | sort)
+
+#############################################################################
+#kernel-git-request-pull-get_maintainers: kernel-fetch
+#	@[ -n "$$PATCH_LIST" ] || PATCH_LIST=`$(call catuniq,${ALL_PATCH_SERIES}) | grep "${PATCH_FILTER_REGEX}"`; \
+#	PATCH_LIST=`for PATCH in $$PATCH_LIST; do echo patches/$$PATCH; done`; \
+#	$(call email_addresses2,$$PATCH_LIST)
+
 #############################################################################
 kernel-git-request-pull:
 	@$(call assert,-n "${REQUEST_VER}",Need to set REQUEST_VER=v3.x\\n Example: make REQUEST_VER=v3.16 $@)
 	@$(call banner,Generating Kernel Git Pull Request)
 # Build request branch
-	@${MAKE} -s kernel-git-${REQUEST_BRANCH}
+	-@$(call makequiet,kernel-git-${REQUEST_BRANCH})
 # Check patches to be sure
-	@${MAKE} -s ALL_PATCH_SERIES=${TARGET_PATCH_SERIES}.${REQUEST_BRANCH} kernel-git-submit-patch-check
+	@$(call makequiet,${REQUEST_PATCHES} kernel-git-submit-patch-check)
 # Checkout reuqest branch
 	@$(call unpatch,${KERNELDIR})
 	@$(call leavestate,${STATEDIR},kernel-patch)
@@ -55,13 +76,18 @@ kernel-git-request-pull:
 # Create signed tag for REUQEST_BRANCH
 	@$(call git,${KERNELDIR},tag --sign --force --message="${REQUEST_TEXT}" ${REQUEST_TAG} ${REUQEST_BRANCH})
 # Push tag to remote repo
-	@[ -z "${DRYRUN}" ] \
-		&&      $(call git,${KERNELDIR},push ${REQUEST_REPO_URI} +${REQUEST_TAG}) \
-		|| echo "$(call git,${KERNELDIR},push ${REQUEST_REPO_URI} +${REQUEST_TAG})"
+	@if [ -z "${DRYRUN}" ] ; then \
+		$(call git,${KERNELDIR},push ${REQUEST_REPO_URI} +${REQUEST_TAG}); \
+	else \
+		echo "$(call git,${KERNELDIR},push ${REQUEST_REPO_URI} +${REQUEST_TAG})"; \
+	fi
 # Build To/Cc list
-	@${MAKE} -s ALL_PATCH_SERIES=${TARGET_PATCH_SERIES}.${REQUEST_BRANCH} kernel-git-submit-patch-get_maintainers | sort
+	@$(call makequiet,${REQUEST_PATCHES} kernel-git-submit-patch-get_maintainers) > ${TMPDIR}/to.txt
 # Build request-pull message
-	-$(call git,${KERNELDIR},request-pull master ${REQUEST_REPO_URI} ${REQUEST_TAG}) > ${TARGETDIR}/${REQUEST_FILE}
+	-@(echo Cc: $$(awk '/--/ {print $$2","}' ${TMPDIR}/to.txt) | sed -e 's/,$$//'; \
+	echo; \
+	$(call git,${KERNELDIR},request-pull master ${REQUEST_REPO_URI} ${REQUEST_TAG}); \
+	) > ${TARGETDIR}/${REQUEST_FILE}
 	@$(call banner,Created ${REQUEST_FILE})
 # Checkout build branch
 	@$(call gitcheckout,${KERNELDIR},${KERNEL_BRANCH})
