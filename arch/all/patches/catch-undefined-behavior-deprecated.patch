@@ -1,3 +1,11 @@
+DO NOT UPSTREAM
+
+This patch breaks the build of multiple (all?) targets
+
+The link error is cpuidle_devices is undefined.
+
+Not-Signed-Off-By: Mark Charlebois <charlebm@gmail.com>
+
 --- linux.orig/Makefile
 +++ linux/Makefile
 @@ -700,7 +700,10 @@
