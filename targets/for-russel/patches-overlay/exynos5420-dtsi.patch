@@ -1,0 +1,13 @@
+diff --git a/arch/arm/boot/dts/exynos5420.dtsi b/arch/arm/boot/dts/exynos5420.dtsi
+index 95ec37d..c97a50b 100644
+--- a/arch/arm/boot/dts/exynos5420.dtsi
++++ b/arch/arm/boot/dts/exynos5420.dtsi
+@@ -525,7 +525,7 @@
+ 		compatible = "samsung,exynos5410-mipi-dsi";
+ 		reg = <0x14500000 0x10000>;
+ 		interrupts = <0 82 0>;
+-		samsung,power-domain = <&disp_pd>;
++		//samsung,power-domain = <&disp_pd>;
+ 		phys = <&mipi_phy 1>;
+ 		phy-names = "dsim";
+ 		clocks = <&clock CLK_DSIM1>, <&clock CLK_SCLK_MIPI1>;
