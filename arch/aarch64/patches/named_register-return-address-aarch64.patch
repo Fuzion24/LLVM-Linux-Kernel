@@ -9,6 +9,7 @@ is marked as initialized by clang.
 
 Author: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+Signed-off-by: Behan Webster <behanw@converseincode.com>
 ---
  arch/arm64/kernel/return_address.c | 3 +--
  1 file changed, 1 insertion(+), 2 deletions(-)
