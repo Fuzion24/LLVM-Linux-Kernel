@@ -1,7 +1,23 @@
-Patch to change nested function into static function
+From 57b8fa42922faa23be750ab00f861de92c3b0c84 Mon Sep 17 00:00:00 2001
+From: Mark Charlebois <charlebm@gmail.com>
+Date: Fri, 29 Aug 2014 10:54:43 -0700
+Subject: [PATCH] hdmi-msm
+
+There is currently a nested function in Russel King's tree
+for the msm HDMI driver.
+
+The last nested function was remeved from the Linux kernel
+when the Thinkpad driver was fixed.
+
+I believe nested functions are not desired upstream, and it
+also breaks compilation with clang so here is a patch to
+change the nested function into static function. The patch
+works with both clang and gcc.
 
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 ---
+ drivers/gpu/drm/msm/hdmi/hdmi.c | 46 +++++++++++++++++++++--------------------
+ 1 file changed, 24 insertions(+), 22 deletions(-)
 
 diff --git a/drivers/gpu/drm/msm/hdmi/hdmi.c b/drivers/gpu/drm/msm/hdmi/hdmi.c
 index a125a7e..c6c9b02e 100644
@@ -73,3 +89,6 @@ index a125a7e..c6c9b02e 100644
  
  #else
  	static const char *hpd_clk_names[] = {
+-- 
+1.9.1
+

@@ -1,3 +1,20 @@
+From 78c065f0046778a3458eb7d1756b238baf5922e5 Mon Sep 17 00:00:00 2001
+From: Mark Charlebois <charlebm@gmail.com>
+Date: Fri, 29 Aug 2014 10:54:37 -0700
+Subject: [PATCH] vt8500
+
+The ASM below does not compile with clang and is not the way that
+the mcr command is used in other parts of the kernel.
+
+There are other forms that are supported on different ARM 
+instruction sets but generally the kernel just uses mcr as 
+it is supported in all ARM instruction sets.
+
+Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+---
+ arch/arm/mach-vt8500/vt8500.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
 diff --git a/arch/arm/mach-vt8500/vt8500.c b/arch/arm/mach-vt8500/vt8500.c
 index 2da7be3..3bc0dc9 100644
 --- a/arch/arm/mach-vt8500/vt8500.c
@@ -11,3 +28,6 @@ index 2da7be3..3bc0dc9 100644
  }
  
  static void __init vt8500_init(void)
+-- 
+1.9.1
+

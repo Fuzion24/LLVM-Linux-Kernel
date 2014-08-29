@@ -1,3 +1,17 @@
+From 24235060ac809d6e5bacfcc15e219aafd3af763f Mon Sep 17 00:00:00 2001
+From: Mark Charlebois <charlebm@gmail.com>
+Date: Fri, 29 Aug 2014 10:54:26 -0700
+Subject: [PATCH] bcm_kona_smc
+
+DO NOT UPSTREAM
+
+This is a workaround for an illegal use of local register variables
+
+Not-Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+---
+ arch/arm/mach-bcm/bcm_kona_smc.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
 diff --git a/arch/arm/mach-bcm/bcm_kona_smc.c b/arch/arm/mach-bcm/bcm_kona_smc.c
 index a55a7ec..ae89732c 100644
 --- a/arch/arm/mach-bcm/bcm_kona_smc.c
@@ -25,3 +39,6 @@ index a55a7ec..ae89732c 100644
  #ifdef REQUIRES_SEC
  		".arch_extension sec\n"
  #endif
+-- 
+1.9.1
+
