@@ -1,1 +1,3 @@
-exynos5420-dtsi.patch
+bcm_kona_smc.patch
+vt8500.patch
+hdmi-msm.patch
