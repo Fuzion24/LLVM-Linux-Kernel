@@ -1,3 +1,8 @@
+Patch to change nested function into static function
+
+Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+---
+
 diff --git a/drivers/gpu/drm/msm/hdmi/hdmi.c b/drivers/gpu/drm/msm/hdmi/hdmi.c
 index a125a7e..c6c9b02e 100644
 --- a/drivers/gpu/drm/msm/hdmi/hdmi.c
