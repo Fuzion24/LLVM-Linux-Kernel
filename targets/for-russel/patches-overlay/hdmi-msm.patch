@@ -6,7 +6,7 @@ Subject: [PATCH] hdmi-msm
 There is currently a nested function in Russel King's tree
 for the msm HDMI driver.
 
-The last nested function was remeved from the Linux kernel
+The last nested function was removed from the Linux kernel
 when the Thinkpad driver was fixed.
 
 I believe nested functions are not desired upstream, and it
