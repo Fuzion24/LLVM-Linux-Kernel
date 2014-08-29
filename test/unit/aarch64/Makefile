@@ -3,10 +3,17 @@ BASE=../../..
 # Prebuilt Clang
 #CLANGDIR=${BASE}/toolchain/clang/clang+llvm-3.4-x86_64-linux-gnu-ubuntu-13.10/bin
 #VERSION=3.4
+#CLANG=clang
 
 # Src Clang
-CLANGDIR=${BASE}/toolchain/clang/install/bin
+CLANGDIR=${BASE}/toolchain/clang/head/install/bin
 VERSION=3.5.0
+CLANG=clang
+
+#Native Clang
+#CLANGDIR=/usr/bin
+#VERSION=3.5.0
+#CLANG=clang-3.5
 
 VEXPRESSDIR=${BASE}/targets/vexpress
 
@@ -15,12 +22,10 @@ ARMLIBC=${BASE}/arch/aarch64/toolchain/linaro/gcc-linaro-aarch64-linux-gnu-4.8-2
 
 OPTIONS=-O2
 
-OPTIONS1=-cc1 -triple aarch64--linux-gnu -S -disable-free -disable-llvm-verifier -mrelocation-model static -mdisable-fp-elim -relaxed-aliasing -mdisable-tail-calls -fmath-errno -masm-verbose -mconstructor-aliases -fuse-init-array -g -nostdsysteminc -nobuiltininc -resource-dir /local2/mnt/workspace/llvmlinux/toolchain/clang/install/bin/../lib/clang/${VERSION} -sys-header-deps -isystem /local2/mnt/workspace/llvmlinux/toolchain/clang/install/bin/../lib/clang/${VERSION}/include -fcolor-diagnostics -vectorize-loops -vectorize-slp -fobjc-runtime=gcc -fno-dwarf-directory-asm -fdebug-compilation-dir /local2/mnt/workspace/llvmlinux/targets/vexpress64/src/linaro-aarch64 -ferror-limit 19 -fmessage-length 127 -mstackrealign -Wno-gnu -Wno-tautological-compare -Wno-format-invalid-specifier -Wno-asm-operand-widths 
+OPTIONS1=-cc1 -triple aarch64--linux-gnu -S -disable-free -disable-llvm-verifier -mrelocation-model static -mdisable-fp-elim -relaxed-aliasing -mdisable-tail-calls -fmath-errno -masm-verbose -mconstructor-aliases -fuse-init-array -g -nostdsysteminc -nobuiltininc -resource-dir ${CLANGDIR}/../lib/clang/${VERSION} -sys-header-deps -isystem ${CLANGDIR}/../lib/clang/${VERSION}/include -fcolor-diagnostics -vectorize-loops -vectorize-slp -fobjc-runtime=gcc -fno-dwarf-directory-asm -fdebug-compilation-dir /local2/mnt/workspace/llvmlinux/targets/vexpress64/src/linaro-aarch64 -ferror-limit 19 -fmessage-length 127 -mstackrealign -Wno-gnu -Wno-tautological-compare -Wno-format-invalid-specifier -Wno-asm-operand-widths 
 
 
 OPTIONS2=-D __KERNEL__ -D CC_HAVE_ASM_GOTO -I /local2/mnt/workspace/llvmlinux/targets/vexpress64/src/linaro-aarch64/arch/arm64/include -I /local2/mnt/workspace/llvmlinux/targets/vexpress64/src/linaro-aarch64/arch/arm64/include/uapi -I /local2/mnt/workspace/llvmlinux/targets/vexpress64/src/linaro-aarch64/include/uapi -O2 -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -Werror-implicit-function-declaration -Wno-format-security -Wno-unused-variable -Wdeclaration-after-statement -Wno-pointer-sign -fwrapv -fno-builtin -fno-signed-char -fno-common -fdiagnostics-show-option 
-
-OPTIONS10 = -cc1 -triple aarch64--linux-gnu "-S" "-disable-free" "-disable-llvm-verifier" "-mrelocation-model" "static" "-mllvm" "-warn-stack-size=2048" "-mdisable-fp-elim" "-relaxed-aliasing" "-mdisable-tail-calls" "-fmath-errno" "-masm-verbose" "-no-integrated-as" "-mconstructor-aliases" "-fuse-init-array" "-target-cpu" "generic" "-target-feature" "-fp-armv8" "-target-feature" "-crypto" "-target-feature" "-neon" "-target-abi" "aapcs" "-target-cpu" "generic" "-mno-global-merge" "-g" "-nostdsysteminc" "-nobuiltininc" "-resource-dir" ${BASE}/toolchain/clang/install/bin/../lib/clang/3.5.0 "-sys-header-deps" "-isystem" ${BASE}/toolchain/clang/install/bin/../lib/clang/3.5.0/include "-O2" "-Wno-unknown-warning-option" "-Wall" "-Wundef" "-Wstrict-prototypes" "-Wno-trigraphs" "-Werror-implicit-function-declaration" "-Wno-format-security" "-Wno-asm-operand-widths" "-Wno-initializer-overrides" "-Wno-unused-variable" "-Wno-format-invalid-specifier" "-Wno-gnu" "-Wno-tautological-compare" "-Wdeclaration-after-statement" "-Wno-pointer-sign" "-Werror=implicit-int" "-Werror=strict-prototypes" "-Werror=date-time" "-fno-dwarf-directory-asm" "-ferror-limit" "19" "-fmessage-length" "127" "-fwrapv" "-mstackrealign" "-fno-builtin" "-fno-signed-char" "-fobjc-runtime=gcc" "-fno-common" "-fdiagnostics-show-option" "-fcolor-diagnostics" "-vectorize-loops" "-vectorize-slp" 
 
 all: 
 	make clean
@@ -45,12 +50,17 @@ all:
 
 t%: t%.c
 	@echo
-	(CROSS_COMPILE=aarch64-linux-gnu- ${CLANGDIR}/clang -gcc-toolchain ${BASE}/arch/aarch64/toolchain/linaro/gcc-linaro-aarch64-linux-gnu-4.8-2013.06_linux -isystem ${CLANGDIR}/../lib/clang/${VERSION}/include -I. -target aarch64-none-linux-gnueabi -no-integrated-as --sysroot=${ARMLIBC} ${OPTIONS} -o $@ $? )
+	(CROSS_COMPILE=aarch64-linux-gnu- PATH=${BASE}/arch/aarch64/toolchain/linaro/gcc-linaro-aarch64-linux-gnu-4.8-2013.06_linux/bin:${PATH} ${CLANGDIR}/${CLANG} -isystem ${CLANGDIR}/../lib/clang/${VERSION}/include -no-integrated-as -I. -target aarch64-none-linux-gnueabi --sysroot=${ARMLIBC} ${OPTIONS} -o $@ $? )
+	@echo "+++ $@ built successfully +++"
+
+v%: t%.c
+	@echo
+	(CROSS_COMPILE=aarch64-linux-gnu- ${CLANGDIR}/${CLANG} -gcc-toolchain ${BASE}/arch/aarch64/toolchain/linaro/gcc-linaro-aarch64-linux-gnu-4.8-2013.06_linux -isystem ${CLANGDIR}/../lib/clang/${VERSION}/include -no-integrated-as -I. -target aarch64-none-linux-gnueabi --sysroot=${ARMLIBC} ${OPTIONS} -o $@ $? )
 	@echo "+++ $@ built successfully +++"
 
 t5: t5.c
 	@echo
-	(CROSS_COMPILE=aarch64-linux-gnu- ${CLANGDIR}/clang ${OPTIONS1} ${OPTIONS2} -o $@ $?)
+	(CROSS_COMPILE=aarch64-linux-gnu- ${CLANGDIR}/${CLANG} ${OPTIONS1} ${OPTIONS2} -o $@ $?)
 	@echo "+++ $@ built successfully +++"
 
 
@@ -71,7 +81,7 @@ x1-gcc:  x1.c
 
 x1:  x1.c
 	@echo
-	(CROSS_COMPILE=aarch64-linux-gnu- ${CLANGDIR}/clang ${OPTIONS1} ${OPTIONS2} -o $@ $?)
+	(CROSS_COMPILE=aarch64-linux-gnu- ${CLANGDIR}/${CLANG} ${OPTIONS1} ${OPTIONS2} -o $@ $?)
 	@echo "+++ $@ built successfully +++"
 
 x2-gcc:  x2.c
@@ -81,21 +91,20 @@ x2-gcc:  x2.c
 
 x2:  x2.c
 	@echo
-	(CROSS_COMPILE=aarch64-linux-gnu- ${CLANGDIR}/clang ${OPTIONS1} ${OPTIONS2} -o $@ $?)
+	(CROSS_COMPILE=aarch64-linux-gnu- ${CLANGDIR}/${CLANG} ${OPTIONS1} ${OPTIONS2} -o $@ $?)
 	@echo "+++ $@ built successfully +++"
 
-#x3-gcc:  x3.c
-#	@echo
-#	${ARMCC} ${OPTIONS2} -o $@ $< 
-#	@echo "+++ $@ built successfully +++"
-#
-#
-#x3:  x3.c
-#	@echo
-#	@ rm -f x3.s
-#	(${CLANGDIR}/clang ${OPTIONS10} -o x3.s $?)
-#	(${BASE}/arch/aarch64/toolchain/linaro/gcc-linaro-aarch64-linux-gnu-4.8-2013.06_linux/bin/aarch64-linux-gnu-as -o $@ x3.s)
-#	@echo "+++ $@ built successfully +++"
+OPTIONS6 = -march=armv8-a+crypto -mlittle-endian -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -O2 -fno-builtin -mgeneral-regs-only -Wframe-larger-than=2048 -fno-stack-protector -Wno-unused-variable -fno-omit-frame-pointer -fno-optimize-sibling-calls -g -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -Werror=implicit-int -Werror=strict-prototypes 
+
+y1-clang.o: y1.c
+	@echo
+	(CROSS_COMPILE=aarch64-linux-gnu- ${CLANGDIR}/${CLANG} ${OPTIONS5} -c -o $@ $?)
+	@echo "+++ $@ built successfully +++"
+	
+y1-gcc.o: y1.c
+	@echo
+	${ARMCC} ${OPTIONS6} -c -o $@ $< 
+	@echo "+++ $@ built successfully +++"
 
 clean:
 	rm -f t? t?-gcc x? x?-gcc x3.s
