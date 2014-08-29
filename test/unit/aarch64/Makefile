@@ -48,14 +48,16 @@ all:
 	-make t5
 	-make x1
 
+export PATH:=${BASE}/arch/aarch64/toolchain/linaro/gcc-linaro-aarch64-linux-gnu-4.8-2013.06_linux/bin:${PATH}
+
 t%: t%.c
 	@echo
-	(CROSS_COMPILE=aarch64-linux-gnu- PATH=${BASE}/arch/aarch64/toolchain/linaro/gcc-linaro-aarch64-linux-gnu-4.8-2013.06_linux/bin:${PATH} ${CLANGDIR}/${CLANG} -isystem ${CLANGDIR}/../lib/clang/${VERSION}/include -no-integrated-as -I. -target aarch64-none-linux-gnueabi --sysroot=${ARMLIBC} ${OPTIONS} -o $@ $? )
+	(export PATH=${BASE}/arch/aarch64/toolchain/linaro/gcc-linaro-aarch64-linux-gnu-4.8-2013.06_linux/bin:${PATH}; ${CLANGDIR}/${CLANG} -no-integrated-as -I. -target aarch64-none-linux-gnueabi --sysroot=${ARMLIBC} ${OPTIONS} -o $@ $? )
 	@echo "+++ $@ built successfully +++"
 
 v%: t%.c
 	@echo
-	(CROSS_COMPILE=aarch64-linux-gnu- ${CLANGDIR}/${CLANG} -gcc-toolchain ${BASE}/arch/aarch64/toolchain/linaro/gcc-linaro-aarch64-linux-gnu-4.8-2013.06_linux -isystem ${CLANGDIR}/../lib/clang/${VERSION}/include -no-integrated-as -I. -target aarch64-none-linux-gnueabi --sysroot=${ARMLIBC} ${OPTIONS} -o $@ $? )
+	(${CLANGDIR}/${CLANG} -gcc-toolchain ${BASE}/arch/aarch64/toolchain/linaro/gcc-linaro-aarch64-linux-gnu-4.8-2013.06_linux -no-integrated-as -I. -target aarch64-none-linux-gnueabi --sysroot=${ARMLIBC} ${OPTIONS} -o $@ $? )
 	@echo "+++ $@ built successfully +++"
 
 t5: t5.c
