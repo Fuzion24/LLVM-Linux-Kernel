@@ -520,6 +520,7 @@ kernel-gcc-clean kernel-gcc-mrproper: kernel-unpatch
 #############################################################################
 kernel-shell-for-build: kernel-configure
 	@echo "PATH='${COMPILER_PATH}/bin:${PATH}'" \
+		"GCC_TOOLCHAIN=${COMPILER_PATH}" \
 		"ARCH=${ARCH}" \
 		"CROSS_COMPILE='${CROSS_COMPILE}'" \
 		"KBUILD_OUTPUT=${KERNEL_BUILD}" \
