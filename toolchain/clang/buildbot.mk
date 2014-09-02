@@ -23,7 +23,12 @@
 # Should be included from clang-from-source.mk
 
 .PHONY: ${BB_CLANG_CFG}
-BB_CLANG_CFG	= ${BUILDBOTDIR}/clang-${ARCH}.cfg
+BB_CLANG_CFG		= ${BUILDBOTDIR}/clang-${ARCH}.cfg
+
+BB_CI_CLANGOPT		= CLANG_TOOLCHAIN=from-source
+BB_CI_CLANG_MAKE	= $(MAKE) ${BB_CI_CLANGOPT}
+BB_CI_KERNEL_CLANGOPT	= CLANG_TOOLCHAIN=from-known-good-source
+BB_CI_KERNEL_MAKE	= $(MAKE) ${BB_CI_KERNEL_CLANGOPT}
 
 #############################################################################
 list-buildbot-artifacts::
@@ -38,13 +43,13 @@ bb_clang::
 ############################################################################
 # Kernel is tested after this
 buildbot-llvm-ci-build::
-	$(MAKE) GIT_HARD_RESET=1 llvm-mrproper
-	$(MAKE) clang
+	${BB_CI_CLANG_MAKE} GIT_HARD_RESET=1 llvm-mrproper
+	${BB_CI_CLANG_MAKE} clang
 buildbot-clang-ci-build::
-	$(MAKE) GIT_HARD_RESET=1 clang-mrproper
-	$(MAKE) clang
+	${BB_CI_CLANG_MAKE} GIT_HARD_RESET=1 clang-mrproper
+	${BB_CI_CLANG_MAKE} ${BB_CI_CLANGOPT} clang
 
 ############################################################################
 # Kernel is tested after this
 buildbot-llvmlinux-ci-build buildbot-kernel-ci-build::
-	$(MAKE) clang-rebuild-known-good
+	${BB_CI_KERNEL_MAKE} clang-rebuild-known-good
