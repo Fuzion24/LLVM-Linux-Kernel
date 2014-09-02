@@ -1,11 +1,11 @@
-From e3a087d992e7c9ee50e1fbb1fab928b410e78da4 Mon Sep 17 00:00:00 2001
+From e8f3d1c4c5b841ce1d6e409e0ca12fa8ab54a5d3 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Thu, 14 Aug 2014 08:12:12 -0500
 Subject: [PATCH] arm64: LLVMLinux: Use global stack pointer in
  return_address()
 
-The global register current_stack_pointer holds the current stack pointer. This
-is marked as initialized by clang.
+The global register current_stack_pointer holds the current stack pointer.
+This change supports being able to compile the kernel with both gcc and clang.
 
 Author: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
