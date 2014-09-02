@@ -129,6 +129,7 @@ gitsvnrev = $$(cd ${1}; git svn find-rev $$(git rev-parse HEAD))
 ini_section	= (echo -e "\n${2}"; $(MAKE) --silent ${3} | egrep -v '^$$' | \
 			sed -e '/[ \t]*+=/d; s/[ \t]*=[ \t]*/=/;') >> $1
 ini_file_entry	= [ ! -f "${2}" ] || echo -e "${1}=${2}"
+ini_link_entry	= [ ! -f "${2}" ] || echo -e "${1}_LINK=${2}\n${1}\t=$(dir ${2})`stat --format %N ${2} | cut -d\' -f4`"
 
 ##############################################################################
 # general download macros

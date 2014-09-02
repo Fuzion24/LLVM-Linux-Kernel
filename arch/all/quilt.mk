@@ -46,6 +46,8 @@ checkfilefor	= grep -q ${2} ${1} || echo "${2}${3}" >> ${1}
 reverselist	= mkdir -p ${TMPDIR}; for DIR in ${1} ; do echo $$DIR; done | tac
 ln_if_new	= ls -l "${2}" 2>&1 | grep -q "${1}" || ln -fsv "${1}" "${2}"
 mv_n_ln		= mv "${1}" "${2}" ; ln -sv "${2}" "${1}"
+tar_patches	= mkdir -p $(dir $@); tar chfj ${1} patches/series `grep -v '^\#' patches/series | sed -e 's|^|patches/|'`
+link_files	= $(call banner,Symlink ${1} "->" ${2}); rm -f ${1}; ln -sf ${2} ${1}
 
 #############################################################################
 QUILT_TARGETS		= kernel-quilt kernel-quilt-clean kernel-quilt-generate-series kernel-quilt-update-series-dot-target \
@@ -255,7 +257,7 @@ kernel-quilt-link-patches refresh: ${QUILT_GITIGNORE}
 KERNEL_PATCHES_TAR = patches.tar.bz2
 kernel-patches-tar: ${KERNEL_PATCHES_TAR}
 ${KERNEL_PATCHES_TAR}: kernel-quilt-link-patches
-	@tar chfj $@ patches/series `grep -v ^# patches/series | sed -e 's|^|patches/|'`
+	@$(call tar_patches,$@)
 	@$(call banner,Created $@)
 
 ##############################################################################
