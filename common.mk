@@ -112,7 +112,7 @@ gitsync = if [ -n "${2}" ] ; then \
 	fi
 
 GIT_ALTERNATES	= .git/objects/info/alternates
-gitref = grep -q "$(2)" "$(1)/${GIT_ALTERNATES}" || sed -i -e 's|^.*$(notdir $(2))|$(2)|' $(1)/${GIT_ALTERNATES}
+gitref = [ -f "$(1)/${GIT_ALTERNATES}" ] && ( grep -q "$(2)" "$(1)/${GIT_ALTERNATES}" || sed -i -e 's|^.*$(notdir $(2))|$(2)|' $(1)/${GIT_ALTERNATES} )
 
 ##############################################################################
 modified:
