@@ -142,6 +142,8 @@ unxz = $(call echo,Unpacking $(notdir ${1}) into ${2}) \
 		&& mkdir -p ${2} && tar --extract --xz --file ${1} --directory ${2}
 
 getlink = rm -f $(notdir ${1}) ${2}; $(call wget,${1},$(dir ${2})); ln -sf $(notdir ${1}) ${2}
+getlink = FILE=$(dir ${2})$(notdir ${1}); rm -f $$FILE ${2}; $(call wget,${1},$(dir ${2})); ln -sf $(notdir ${1}) ${2}; chmod -wx $$FILE
+
 
 ##############################################################################
 # Settings macros used by all subsystems
