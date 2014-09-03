@@ -60,7 +60,9 @@ endif
 ifneq (${HPA},)
 GIT_SEND_EMAIL_OPTS += -cc hpa@zytor.com
 endif
+ifneq (${DWMW},)
 GIT_SEND_EMAIL_OPTS += -cc dwmw2@infradead.org
+endif
 ifneq (${PIPACS},)
 GIT_SEND_EMAIL_OPTS += -cc pageexec@freemail.hu
 endif
