@@ -11,4 +11,6 @@ named_register-thread_info.patch
 named_register-unwind.patch
 #unwind_support.patch
 percpu.patch
+bcm_kona_smc.patch
+mach-vt8500.patch
 nested-function-msm-hdmi.patch
