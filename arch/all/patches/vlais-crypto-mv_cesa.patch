@@ -4,8 +4,8 @@ Date: Fri, 4 Apr 2014 18:18:00 -0300
 Subject: [PATCH] crypto: LLVMLinux: Remove VLAIS from crypto/mv_cesa.c
 
 Replaced the use of a Variable Length Array In Struct (VLAIS) with a C99
-compliant equivalent. This is the original VLAIS struct. This patch instead
-allocates the appropriate amount of memory using an char array.
+compliant equivalent. This patch allocates the appropriate amount of memory
+using an char array.
 
 The new code can be compiled with both gcc and clang.
 
