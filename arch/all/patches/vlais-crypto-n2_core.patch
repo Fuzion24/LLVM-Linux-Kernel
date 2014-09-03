@@ -1,0 +1,67 @@
+From 82cb103db89a365f7dcea37d95d568ed608d9b37 Mon Sep 17 00:00:00 2001
+From: Behan Webster <behanw@converseincode.com>
+Date: Fri, 4 Apr 2014 18:18:00 -0300
+Subject: [PATCH] crypto: LLVMLinux: Remove VLAIS from crypto/n2_core.c
+
+Replaced the use of a Variable Length Array In Struct (VLAIS) with a C99
+compliant equivalent. This is the original VLAIS struct.  This patch instead
+allocates the appropriate amount of memory using an char array.
+
+The new code can be compiled with both gcc and clang.
+
+struct shash_desc contains a flexible array member member ctx declared with
+CRYPTO_MINALIGN_ATTR, so sizeof(struct shash_desc) aligns the beginning
+of the array declared after struct shash_desc with long long.
+
+No trailing padding is required because it is not a struct type that can
+be used in an array.
+
+The CRYPTO_MINALIGN_ATTR is required so that desc is aligned with long long
+as would be the case for a struct containing a member with
+CRYPTO_MINALIGN_ATTR.
+
+Signed-off-by: Behan Webster <behanw@converseincode.com>
+---
+ drivers/crypto/n2_core.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/crypto/n2_core.c b/drivers/crypto/n2_core.c
+index 7263c10..f96e744 100644
+--- a/drivers/crypto/n2_core.c
++++ b/drivers/crypto/n2_core.c
+@@ -445,10 +445,9 @@ static int n2_hmac_async_setkey(struct crypto_ahash *tfm, const u8 *key,
+ 	struct n2_hmac_ctx *ctx = crypto_ahash_ctx(tfm);
+ 	struct crypto_shash *child_shash = ctx->child_shash;
+ 	struct crypto_ahash *fallback_tfm;
+-	struct {
+-		struct shash_desc shash;
+-		char ctx[crypto_shash_descsize(child_shash)];
+-	} desc;
++	char desc[sizeof(struct shash_desc)
++		+ crypto_shash_descsize(child_shash)] CRYPTO_MINALIGN_ATTR;
++	struct shash_desc *shash = (struct shash_desc *)desc;
+ 	int err, bs, ds;
+ 
+ 	fallback_tfm = ctx->base.fallback_tfm;
+@@ -456,15 +455,15 @@ static int n2_hmac_async_setkey(struct crypto_ahash *tfm, const u8 *key,
+ 	if (err)
+ 		return err;
+ 
+-	desc.shash.tfm = child_shash;
+-	desc.shash.flags = crypto_ahash_get_flags(tfm) &
++	shash->tfm = child_shash;
++	shash->flags = crypto_ahash_get_flags(tfm) &
+ 		CRYPTO_TFM_REQ_MAY_SLEEP;
+ 
+ 	bs = crypto_shash_blocksize(child_shash);
+ 	ds = crypto_shash_digestsize(child_shash);
+ 	BUG_ON(ds > N2_HASH_KEY_MAX);
+ 	if (keylen > bs) {
+-		err = crypto_shash_digest(&desc.shash, key, keylen,
++		err = crypto_shash_digest(shash, key, keylen,
+ 					  ctx->hash_key);
+ 		if (err)
+ 			return err;
+-- 
+1.9.1
+
