@@ -1,4 +1,4 @@
-From 32670da40f9dbb75b9e359f9d489551c9afed0b1 Mon Sep 17 00:00:00 2001
+From 1074d797ae30ebb151a55492f8f5e0fe93b53716 Mon Sep 17 00:00:00 2001
 From: Mark Charlebois <charlebm@gmail.com>
 Date: Tue, 20 Nov 2012 21:21:12 +0100
 Subject: [PATCH] Kbuild: LLVMLinux: Disable the use of the Integrated
@@ -10,15 +10,16 @@ code.
 
 Author: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+Signed-off-by: Behan Webster <behanw@converseincode.com>
 ---
  Makefile | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/Makefile b/Makefile
-index f6a7794..d805666 100644
+index 2893d7f..89def73 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -406,11 +406,12 @@ KBUILD_CPPFLAGS := -D__KERNEL__
+@@ -407,11 +407,12 @@ KBUILD_CPPFLAGS := -D__KERNEL__
  KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
  		   -fno-strict-aliasing -fno-common \
  		   -Werror-implicit-function-declaration \

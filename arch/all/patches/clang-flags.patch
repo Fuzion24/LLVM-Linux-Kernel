@@ -1,7 +1,8 @@
-From e5a806f844d0c837e7c5c64452c322ced6c89752 Mon Sep 17 00:00:00 2001
+From afdb12fe0e0b147a43781c30cc6d5953d9322c78 Mon Sep 17 00:00:00 2001
 From: Mark Charlebois <charlebm@gmail.com>
 Date: Thu, 14 Aug 2014 08:12:08 -0500
-Subject: [PATCH] kbuild: LLVMLinux: Optionally include flags not supported by clang
+Subject: [PATCH] kbuild: LLVMLinux: Optionally include flags not supported by
+ clang
 
 Clang doesn't support -fno-delete-null-pointer-checks or
  -fno-inline-functions-called-once and they cannot be
@@ -15,7 +16,7 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
  1 file changed, 7 insertions(+), 3 deletions(-)
 
 diff --git a/Makefile b/Makefile
-index 3d842a7..0fab28b 100644
+index e30365e..02825ec 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -308,7 +308,7 @@ HOSTCXXFLAGS = -O2

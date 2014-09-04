@@ -1,9 +1,9 @@
-From 6988925914c71bf409d121ff433dfcb5e0c4e418 Mon Sep 17 00:00:00 2001
+From 768e54612fdeb60cddadf8cd89a53cb683c18a53 Mon Sep 17 00:00:00 2001
 From: Mark Charlebois <charlebm@gmail.com>
 Date: Tue, 29 Jul 2014 18:55:36 -0700
-Subject: [PATCH] march-as
+Subject: [PATCH] crypto: LLVMLinux: Explicitly pass through assembler options
 
-Clang does not pass the -march flag to the assembler, but gcc does.
+Clang does not implicitly pass the -march flag to the assembler, but gcc does.
 
 Clang must be explicitly told to pass the flag to the assembler.
 Without the flag set the GNU assember reports the following error:
@@ -20,14 +20,13 @@ make[2]: *** [arch/arm64/crypto] Error 2
 The change was also tested with GCC. GCC requires the flag to be
 passed without -Xassembler. Both GCC and Clang work when -Wa is used.
 
-
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 ---
  arch/arm64/crypto/Makefile | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/arm64/crypto/Makefile b/arch/arm64/crypto/Makefile
-index 2070a56..c53260f 100644
+index a3f935f..28ccd47 100644
 --- a/arch/arm64/crypto/Makefile
 +++ b/arch/arm64/crypto/Makefile
 @@ -18,7 +18,7 @@ obj-$(CONFIG_CRYPTO_GHASH_ARM64_CE) += ghash-ce.o

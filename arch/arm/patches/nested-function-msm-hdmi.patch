@@ -1,7 +1,9 @@
-From 57b8fa42922faa23be750ab00f861de92c3b0c84 Mon Sep 17 00:00:00 2001
+From 743b7af850efc38c6406bbc22abb0ed5983dec53 Mon Sep 17 00:00:00 2001
 From: Mark Charlebois <charlebm@gmail.com>
 Date: Fri, 29 Aug 2014 10:54:43 -0700
-Subject: [PATCH] hdmi-msm
+Subject: [PATCH] msm, hdmi: LLVMLinux: Remove nested function from HDMI driver
+
+for msm
 
 There is currently a nested function in Russel King's tree
 for the msm HDMI driver.

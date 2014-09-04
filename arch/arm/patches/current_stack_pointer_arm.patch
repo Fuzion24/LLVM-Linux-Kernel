@@ -1,4 +1,4 @@
-From bfcf26549b2577cafb761b436dd8aec6943746f7 Mon Sep 17 00:00:00 2001
+From 869891e3e96cdb3c77e862ecdfd974175ac54a2e Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 3 Sep 2013 22:27:26 -0400
 Subject: [PATCH] arm: LLVMLinux: Add global named register
@@ -13,16 +13,15 @@ variable guarantees that both gcc and clang can access this register in C code.
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Reviewed-by: Jan-Simon Möller <dl9pf@gmx.de>
 Reviewed-by: Mark Charlebois <charlebm@gmail.com>
-Acked-by: Will Deacon <will.deacon@arm.com>
 ---
  arch/arm/include/asm/thread_info.h | 5 +++++
  1 file changed, 5 insertions(+)
 
 diff --git a/arch/arm/include/asm/thread_info.h b/arch/arm/include/asm/thread_info.h
-index e4e4208..9cb9c66 100644
+index fc44d37..bb43515 100644
 --- a/arch/arm/include/asm/thread_info.h
 +++ b/arch/arm/include/asm/thread_info.h
-@@ -100,6 +100,11 @@ struct thread_info {
+@@ -101,6 +101,11 @@ struct thread_info {
  #define init_stack		(init_thread_union.stack)
  
  /*

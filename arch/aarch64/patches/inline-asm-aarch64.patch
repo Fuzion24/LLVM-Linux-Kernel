@@ -1,4 +1,4 @@
-From f69211ae982c718287a35ecf5ef861d37ef9da49 Mon Sep 17 00:00:00 2001
+From e1df8d052926809b94d77022362aeab1125d26f9 Mon Sep 17 00:00:00 2001
 From: Mark Charlebois <charlebm@gmail.com>
 Date: Wed, 12 Feb 2014 12:16:58 -0800
 Subject: [PATCH] arm64: LLVMLinux: Fix inline arm64 assembly for use with
@@ -6,7 +6,10 @@ Subject: [PATCH] arm64: LLVMLinux: Fix inline arm64 assembly for use with
 
 Fix variable types for 64-bit inline assembly.
 
+This patch means that this code works with both gcc and clang.
+
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+Signed-off-by: Behan Webster <behanw@converseincode.com>
 ---
  arch/arm64/include/asm/arch_timer.h | 22 +++++++++++-----------
  arch/arm64/include/asm/uaccess.h    |  2 +-
@@ -99,10 +102,10 @@ index 3bf8f4e..104719b 100644
  		: "cc");						\
  	flag;								\
 diff --git a/arch/arm64/kernel/debug-monitors.c b/arch/arm64/kernel/debug-monitors.c
-index a7fb874..d564b16 100644
+index b056369..695a18f 100644
 --- a/arch/arm64/kernel/debug-monitors.c
 +++ b/arch/arm64/kernel/debug-monitors.c
-@@ -52,15 +52,15 @@ static void mdscr_write(u32 mdscr)
+@@ -43,15 +43,15 @@ static void mdscr_write(u32 mdscr)
  {
  	unsigned long flags;
  	local_dbg_save(flags);
@@ -121,7 +124,7 @@ index a7fb874..d564b16 100644
  }
  
  /*
-@@ -136,7 +136,7 @@ void disable_debug_monitors(enum debug_el el)
+@@ -127,7 +127,7 @@ void disable_debug_monitors(enum debug_el el)
   */
  static void clear_os_lock(void *unused)
  {
@@ -268,10 +271,10 @@ index baf5afb..f2e399c 100644
  
  static int armv8_pmuv3_map_event(struct perf_event *event)
 diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
-index c43f1dd..2786cdb 100644
+index c555672..6894ef3 100644
 --- a/arch/arm64/mm/mmu.c
 +++ b/arch/arm64/mm/mmu.c
-@@ -93,7 +93,7 @@ static int __init early_cachepolicy(char *p)
+@@ -94,7 +94,7 @@ static int __init early_cachepolicy(char *p)
  	 */
  	asm volatile(
  	"	mrs	%0, mair_el1\n"

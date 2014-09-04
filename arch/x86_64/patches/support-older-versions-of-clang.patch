@@ -1,7 +1,7 @@
-From 23f710101555a4f1af821e1a04c15951f9479edc Mon Sep 17 00:00:00 2001
+From cade59a88a1de377d56408938b300b290a7a1f46 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
 Date: Wed, 29 Jan 2014 18:53:06 +0100
-Subject: [PATCH] NOUPSTREAM - support older versions of clang (<=3.4)
+Subject: [PATCH] DO-NOT-UPSTREAM - support older versions of clang (<=3.4)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -14,7 +14,7 @@ Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/arch/x86/Makefile b/arch/x86/Makefile
-index c1aa368..8ea139f 100644
+index 60087ca..4b42bf5 100644
 --- a/arch/x86/Makefile
 +++ b/arch/x86/Makefile
 @@ -17,7 +17,8 @@ endif
