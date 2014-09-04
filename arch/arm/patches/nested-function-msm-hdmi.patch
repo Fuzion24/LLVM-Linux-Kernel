@@ -1,4 +1,4 @@
-From 743b7af850efc38c6406bbc22abb0ed5983dec53 Mon Sep 17 00:00:00 2001
+From 6c81ac349ed3fcb4cf6df47971264e1e2d5455ae Mon Sep 17 00:00:00 2001
 From: Mark Charlebois <charlebm@gmail.com>
 Date: Fri, 29 Aug 2014 10:54:43 -0700
 Subject: [PATCH] msm, hdmi: LLVMLinux: Remove nested function from HDMI driver
@@ -18,45 +18,36 @@ works with both clang and gcc.
 
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 ---
- drivers/gpu/drm/msm/hdmi/hdmi.c | 46 +++++++++++++++++++++--------------------
- 1 file changed, 24 insertions(+), 22 deletions(-)
+ drivers/gpu/drm/msm/hdmi/hdmi.c | 49 +++++++++++++++++++++++------------------
+ 1 file changed, 27 insertions(+), 22 deletions(-)
 
 diff --git a/drivers/gpu/drm/msm/hdmi/hdmi.c b/drivers/gpu/drm/msm/hdmi/hdmi.c
-index a125a7e..c6c9b02e 100644
+index a125a7e..cdfe8ca 100644
 --- a/drivers/gpu/drm/msm/hdmi/hdmi.c
 +++ b/drivers/gpu/drm/msm/hdmi/hdmi.c
-@@ -258,28 +258,30 @@ static void set_hdmi_pdev(struct drm_device *dev,
+@@ -258,27 +258,32 @@ static void set_hdmi_pdev(struct drm_device *dev,
  	priv->hdmi_pdev = pdev;
  }
  
-+#ifdef CONFIG_OF
-+static int get_gpio(struct device *dev, struct device_node *of_node, const char *name)
+-static int hdmi_bind(struct device *dev, struct device *master, void *data)
+-{
+-	static struct hdmi_platform_config config = {};
+ #ifdef CONFIG_OF
+-	struct device_node *of_node = dev->of_node;
++static int get_gpio(struct device *dev, struct device_node *of_node,
++	const char *name)
 +{
 +	int gpio = of_get_named_gpio(of_node, name, 0);
++
 +	if (gpio < 0) {
 +		char name2[32];
-+		snprintf(name2, sizeof(name2), "%s-gpio", name);
-+		gpio = of_get_named_gpio(of_node, name2, 0);
-+		if (gpio < 0) {
-+			dev_err(dev, "failed to get gpio: %s (%d)\n",
-+					name, gpio);
-+			gpio = -1;
-+		}
-+	}
-+	return gpio;
-+}
-+#endif
-+
- static int hdmi_bind(struct device *dev, struct device *master, void *data)
- {
- 	static struct hdmi_platform_config config = {};
- #ifdef CONFIG_OF
- 	struct device_node *of_node = dev->of_node;
  
 -	int get_gpio(const char *name)
 -	{
 -		int gpio = of_get_named_gpio(of_node, name, 0);
--		if (gpio < 0) {
++		snprintf(name2, sizeof(name2), "%s-gpio", name);
++		gpio = of_get_named_gpio(of_node, name2, 0);
+ 		if (gpio < 0) {
 -			char name2[32];
 -			snprintf(name2, sizeof(name2), "%s-gpio", name);
 -			gpio = of_get_named_gpio(of_node, name2, 0);
@@ -65,14 +56,25 @@ index a125a7e..c6c9b02e 100644
 -						name, gpio);
 -				gpio = -1;
 -			}
--		}
++			dev_err(dev, "failed to get gpio: %s (%d)\n",
++					name, gpio);
++			gpio = -1;
+ 		}
 -		return gpio;
--	}
--
+ 	}
++	return gpio;
++}
++#endif
++
++static int hdmi_bind(struct device *dev, struct device *master, void *data)
++{
++	static struct hdmi_platform_config config = {};
++#ifdef CONFIG_OF
++	struct device_node *of_node = dev->of_node;
+ 
  	if (of_device_is_compatible(of_node, "qcom,hdmi-tx-8074")) {
  		static const char *hpd_reg_names[] = {"hpd-gdsc", "hpd-5v"};
- 		static const char *pwr_reg_names[] = {"core-vdda", "core-vcc"};
-@@ -312,12 +314,12 @@ static int hdmi_bind(struct device *dev, struct device *master, void *data)
+@@ -312,12 +317,12 @@ static int hdmi_bind(struct device *dev, struct device *master, void *data)
  	}
  
  	config.mmio_name     = "core_physical";
