@@ -27,3 +27,4 @@ kbuild-llvm-bitcode.patch
 #clang-warnings.patch
 clang-flags.patch
 #catch-undefined-behavior-deprecated.patch
+vlais-crypto-ccp-ccp_crypto_sha.patch
