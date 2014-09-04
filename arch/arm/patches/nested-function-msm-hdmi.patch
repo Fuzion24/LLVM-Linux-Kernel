@@ -25,16 +25,19 @@ diff --git a/drivers/gpu/drm/msm/hdmi/hdmi.c b/drivers/gpu/drm/msm/hdmi/hdmi.c
 index a125a7e..c6c9b02e 100644
 --- a/drivers/gpu/drm/msm/hdmi/hdmi.c
 +++ b/drivers/gpu/drm/msm/hdmi/hdmi.c
-@@ -258,28 +258,30 @@ static void set_hdmi_pdev(struct drm_device *dev,
+@@ -258,28 +258,33 @@ static void set_hdmi_pdev(struct drm_device *dev,
  	priv->hdmi_pdev = pdev;
  }
  
 +#ifdef CONFIG_OF
-+static int get_gpio(struct device *dev, struct device_node *of_node, const char *name)
++static int get_gpio(struct device *dev, struct device_node *of_node,
++	const char *name)
 +{
 +	int gpio = of_get_named_gpio(of_node, name, 0);
++
 +	if (gpio < 0) {
 +		char name2[32];
++
 +		snprintf(name2, sizeof(name2), "%s-gpio", name);
 +		gpio = of_get_named_gpio(of_node, name2, 0);
 +		if (gpio < 0) {
