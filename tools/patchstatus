@@ -222,18 +222,16 @@ for row in rows:
         if ignored(row):
             continue
 
-        #print row.custom['acceptedupstream'].text+" != 'Y'"
-        if row.custom['acceptedupstream'].text != 'Y':
-            key = row.custom['arch'].text
-            stats['any']['count'] += 1
-            if key in stats:
-                stats[key]['count'] += 1
-	    else:
-                stats[key] = { 'count':1, 'submittedupstream':0, 'ackedupstream':0, 'acceptedupstream':0 }
-            for k in ['submittedupstream', 'ackedupstream', 'acceptedupstream']:
-                if row.custom[k].text == 'Y':
-                    stats['any'][k] += 1
-                    stats[key][k] += 1
+        key = row.custom['arch'].text
+        stats['any']['count'] += 1
+        if key in stats:
+            stats[key]['count'] += 1
+	else:
+            stats[key] = { 'count':1, 'submittedupstream':0, 'ackedupstream':0, 'acceptedupstream':0 }
+        for k in ['submittedupstream', 'ackedupstream', 'acceptedupstream']:
+            if row.custom[k].text == 'Y':
+                stats['any'][k] += 1
+                stats[key][k] += 1
 
         numpatches += 1
 	echo(patchname,)
