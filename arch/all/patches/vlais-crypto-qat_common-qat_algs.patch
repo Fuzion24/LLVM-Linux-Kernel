@@ -22,6 +22,8 @@ CRYPTO_MINALIGN_ATTR.
 
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
+
 ---
  drivers/crypto/qat/qat_common/qat_algs.c | 33 ++++++++++++++++----------------
  1 file changed, 16 insertions(+), 17 deletions(-)
