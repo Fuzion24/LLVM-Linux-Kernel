@@ -1,7 +1,10 @@
-From deb5e9d462ce81eb957937ae97ded577331d9ead Mon Sep 17 00:00:00 2001
+From 500fae05935c79845c243164b36f6f0c344694e6 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Fri, 4 Apr 2014 18:18:00 -0300
 Subject: [PATCH] crypto: LLVMLinux: Remove VLAIS from crypto/omap_sham.c
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
 Replaced the use of a Variable Length Array In Struct (VLAIS) with a C99
 compliant equivalent. This patch allocates the appropriate amount of memory
@@ -23,13 +26,12 @@ CRYPTO_MINALIGN_ATTR.
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
-
 ---
  drivers/crypto/omap-sham.c | 32 +++++++++++++++-----------------
  1 file changed, 15 insertions(+), 17 deletions(-)
 
 diff --git a/drivers/crypto/omap-sham.c b/drivers/crypto/omap-sham.c
-index 710d863..e2a37bb 100644
+index 710d863..dcbfd35 100644
 --- a/drivers/crypto/omap-sham.c
 +++ b/drivers/crypto/omap-sham.c
 @@ -949,17 +949,16 @@ static int omap_sham_finish_hmac(struct ahash_request *req)
@@ -40,8 +42,8 @@ index 710d863..e2a37bb 100644
 -		struct shash_desc shash;
 -		char ctx[crypto_shash_descsize(bctx->shash)];
 -	} desc;
-+	char desc[sizeof(struct shash_desc)
-+		+ crypto_shash_descsize(bctx->shash)] CRYPTO_MINALIGN_ATTR;
++	char desc[sizeof(struct shash_desc) +
++		crypto_shash_descsize(bctx->shash)] CRYPTO_MINALIGN_ATTR;
 +	struct shash_desc *shash = (struct shash_desc *)desc;
  
 -	desc.shash.tfm = bctx->shash;
@@ -70,8 +72,8 @@ index 710d863..e2a37bb 100644
 -		struct shash_desc shash;
 -		char ctx[crypto_shash_descsize(shash)];
 -	} desc;
-+	char desc[sizeof(struct shash_desc)
-+		+ crypto_shash_descsize(shash)] CRYPTO_MINALIGN_ATTR;
++	char desc[sizeof(struct shash_desc) +
++		crypto_shash_descsize(shash)] CRYPTO_MINALIGN_ATTR;
 +	struct shash_desc *shash = (struct shash_desc *)desc;
  
 -	desc.shash.tfm = shash;

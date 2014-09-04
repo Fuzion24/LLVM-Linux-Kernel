@@ -1,7 +1,10 @@
-From 82cb103db89a365f7dcea37d95d568ed608d9b37 Mon Sep 17 00:00:00 2001
+From 99a762eb842f86dce9568a9f38d8d87524c05cbb Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Fri, 4 Apr 2014 18:18:00 -0300
 Subject: [PATCH] crypto: LLVMLinux: Remove VLAIS from crypto/n2_core.c
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
 Replaced the use of a Variable Length Array In Struct (VLAIS) with a C99
 compliant equivalent. This patch allocates the appropriate amount of memory
@@ -23,13 +26,12 @@ CRYPTO_MINALIGN_ATTR.
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
-
 ---
  drivers/crypto/n2_core.c | 13 ++++++-------
  1 file changed, 6 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/crypto/n2_core.c b/drivers/crypto/n2_core.c
-index 7263c10..f96e744 100644
+index 7263c10..ed142d1 100644
 --- a/drivers/crypto/n2_core.c
 +++ b/drivers/crypto/n2_core.c
 @@ -445,10 +445,9 @@ static int n2_hmac_async_setkey(struct crypto_ahash *tfm, const u8 *key,
@@ -40,8 +42,8 @@ index 7263c10..f96e744 100644
 -		struct shash_desc shash;
 -		char ctx[crypto_shash_descsize(child_shash)];
 -	} desc;
-+	char desc[sizeof(struct shash_desc)
-+		+ crypto_shash_descsize(child_shash)] CRYPTO_MINALIGN_ATTR;
++	char desc[sizeof(struct shash_desc) +
++		crypto_shash_descsize(child_shash)] CRYPTO_MINALIGN_ATTR;
 +	struct shash_desc *shash = (struct shash_desc *)desc;
  	int err, bs, ds;
  

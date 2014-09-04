@@ -1,4 +1,4 @@
-From b7aa72d02ae2ddc187cb5a6d1bbb9413dcc1befc Mon Sep 17 00:00:00 2001
+From 39e46f44436f86b0689ae34c6d2edb30f8bd4242 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
 Date: Mon, 2 Jul 2012 12:54:28 +0200
 Subject: [PATCH] crypto: LLVMLinux: Remove VLAIS usage from libcrc32c.c
@@ -30,7 +30,7 @@ Cc: pageexec@freemail.hu
  1 file changed, 9 insertions(+), 9 deletions(-)
 
 diff --git a/lib/libcrc32c.c b/lib/libcrc32c.c
-index b3131f5..03f2cf3 100644
+index b3131f5..72e4ecb 100644
 --- a/lib/libcrc32c.c
 +++ b/lib/libcrc32c.c
 @@ -41,20 +41,20 @@ static struct crypto_shash *tfm;
@@ -41,8 +41,8 @@ index b3131f5..03f2cf3 100644
 -		struct shash_desc shash;
 -		char ctx[crypto_shash_descsize(tfm)];
 -	} desc;
-+	char desc[sizeof(struct shash_desc)
-+		+ crypto_shash_descsize(tfm)] CRYPTO_MINALIGN_ATTR;
++	char desc[sizeof(struct shash_desc) +
++		crypto_shash_descsize(tfm)] CRYPTO_MINALIGN_ATTR;
 +	struct shash_desc *shash = (struct shash_desc *)desc;
 +	u32 *ctx = (u32 *)shash_desc_ctx(shash);
  	int err;

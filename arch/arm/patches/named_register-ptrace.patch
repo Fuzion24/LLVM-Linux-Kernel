@@ -1,4 +1,4 @@
-From d607f8d426e3f99bfbc41529125da0159922b126 Mon Sep 17 00:00:00 2001
+From 17359ab8717f573f30bb46dd087e8634fec5aba4 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 3 Sep 2013 22:27:27 -0400
 Subject: [PATCH] arm: LLVMLinux: Use current_stack_pointer to calculate
@@ -19,7 +19,7 @@ Acked-by: Will Deacon <will.deacon@arm.com>
  1 file changed, 2 insertions(+), 3 deletions(-)
 
 diff --git a/arch/arm/include/asm/ptrace.h b/arch/arm/include/asm/ptrace.h
-index 601264d..7492bdc 100644
+index 601264d..51622ba 100644
 --- a/arch/arm/include/asm/ptrace.h
 +++ b/arch/arm/include/asm/ptrace.h
 @@ -154,9 +154,8 @@ static inline unsigned long user_stack_pointer(struct pt_regs *regs)
@@ -29,8 +29,8 @@ index 601264d..7492bdc 100644
 -#define current_pt_regs(void) ({				\
 -	register unsigned long sp asm ("sp");			\
 -	(struct pt_regs *)((sp | (THREAD_SIZE - 1)) - 7) - 1;	\
-+#define current_pt_regs(void) ({					\
-+	(struct pt_regs *)((current_stack_pointer | (THREAD_SIZE - 1)) - 7) - 1; \
++#define current_pt_regs(void) ({ (struct pt_regs *)			\
++		((current_stack_pointer | (THREAD_SIZE - 1)) - 7) - 1;	\
  })
  
  #endif /* __ASSEMBLY__ */

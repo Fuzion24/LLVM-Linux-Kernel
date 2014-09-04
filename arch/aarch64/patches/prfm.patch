@@ -1,4 +1,4 @@
-From d822fb36f0e4a9a73fb90f80cc582de53359feea Mon Sep 17 00:00:00 2001
+From 92715a8158d155675657ccd9100cbbd6ad7056fa Mon Sep 17 00:00:00 2001
 From: Mark Charlebois <charlebm@gmail.com>
 Date: Wed, 30 Jul 2014 15:55:33 -0700
 Subject: [PATCH] DO-NOT-UPSTREAM arm64, LLVMLinux: prfm
@@ -20,7 +20,7 @@ conservative and always map it to "[xN]"?
 
 This test works with GCC under unit test but not in the kernel build.
 
-Not-Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+Not-signed-off-by: Mark Charlebois <charlebm@gmail.com>
 ---
  arch/arm64/include/asm/processor.h | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)

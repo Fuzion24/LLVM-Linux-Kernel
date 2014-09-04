@@ -1,9 +1,16 @@
+From 4562bd3216e3ff30edfd9e7ae65479252a774717 Mon Sep 17 00:00:00 2001
+From: Mark Charlebois <charlebm@gmail.com>
+Date: Thu, 4 Sep 2014 14:16:17 -0700
+Subject: [PATCH] named_register-percpu-arm
+
 Using global current_stack_pointer works on both clang and gcc.
-current_stack_pointer is an unsigned long and needs to be cast 
+current_stack_pointer is an unsigned long and needs to be cast
 as a pointer to dereference.
 
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 ---
+ arch/arm/include/asm/percpu.h | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/arch/arm/include/asm/percpu.h b/arch/arm/include/asm/percpu.h
 index 209e650..2edaefb 100644
@@ -26,3 +33,6 @@ index 209e650..2edaefb 100644
  
  	return off;
  }
+-- 
+1.9.1
+
