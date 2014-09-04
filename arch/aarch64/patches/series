@@ -9,6 +9,5 @@ named_register-return-address-aarch64.patch
 inline-asm-aarch64.patch
 futex-init-aarch64.patch
 abort-missing-aarch64.patch
-unhandled_else.patch
 march-as.patch
 prfm.patch
