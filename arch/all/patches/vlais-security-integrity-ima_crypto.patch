@@ -21,6 +21,7 @@ as would be the case for a struct containing a member with
 CRYPTO_MINALIGN_ATTR.
 
 Signed-off-by: Behan Webster <behanw@converseincode.com>
+Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 ---
  security/integrity/ima/ima_crypto.c | 53 +++++++++++++++++--------------------
  1 file changed, 25 insertions(+), 28 deletions(-)

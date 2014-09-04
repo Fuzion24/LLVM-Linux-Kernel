@@ -21,6 +21,7 @@ as would be the case for a struct containing a member with
 CRYPTO_MINALIGN_ATTR.
 
 Signed-off-by: Behan Webster <behanw@converseincode.com>
+Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 ---
  drivers/crypto/qat/qat_common/qat_algs.c | 33 ++++++++++++++++----------------
  1 file changed, 16 insertions(+), 17 deletions(-)
@@ -38,7 +39,7 @@ index 59df488..fadaf2a 100644
 -		char ctx[crypto_shash_descsize(ctx->hash_tfm)];
 -	} desc;
 +	char desc[sizeof(struct shash_desc)
-+		+ crypto_shash_descsize(bctx->hash_tfm)] CRYPTO_MINALIGN_ATTR;
++		+ crypto_shash_descsize(ctx->hash_tfm)] CRYPTO_MINALIGN_ATTR;
 +	struct shash_desc *shash = (struct shash_desc *)desc;
  	struct sha1_state sha1;
  	struct sha256_state sha256;

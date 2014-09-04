@@ -21,6 +21,7 @@ as would be the case for a struct containing a member with
 CRYPTO_MINALIGN_ATTR.
 
 Signed-off-by: Behan Webster <behanw@converseincode.com>
+Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 ---
  drivers/crypto/mv_cesa.c | 45 ++++++++++++++++++++++-----------------------
  1 file changed, 22 insertions(+), 23 deletions(-)
