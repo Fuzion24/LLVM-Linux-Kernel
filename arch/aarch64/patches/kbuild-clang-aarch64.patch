@@ -1,7 +1,7 @@
 From 6e7b5eb4e23c0ad64bbf8465f190ea425f4a896f Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 3 Sep 2013 22:27:26 -0400
-Subject: [PATCH] Kbuild, arm64, LLVMLinux: Add Kbuild support for building
+Subject: [PATCH] DO-NOT-UPSTREAM Kbuild, arm64, LLVMLinux: Add Kbuild support for building
  arch arm64 with Clang
 
 Protect more options for arm64 with cc-option so that we don't get errors when
@@ -9,7 +9,7 @@ using clang instead of gcc.  Add more or different options when using clang as
 well.
 
 Author: Behan Webster <behanw@converseincode.com>
-Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+Not-Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 ---
  arch/arm64/Makefile | 16 ++++++++++++----
