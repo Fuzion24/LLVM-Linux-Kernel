@@ -6,10 +6,10 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 ---
 
 diff --git a/arch/arm/include/asm/percpu.h b/arch/arm/include/asm/percpu.h
-index 209e650..83afbd0 100644
+index 209e650..2edaefb 100644
 --- a/arch/arm/include/asm/percpu.h
 +++ b/arch/arm/include/asm/percpu.h
-@@ -30,14 +30,13 @@ static inline void set_my_cpu_offset(unsigned long off)
+@@ -30,14 +30,14 @@ static inline void set_my_cpu_offset(unsigned long off)
  static inline unsigned long __my_cpu_offset(void)
  {
  	unsigned long off;
@@ -21,7 +21,8 @@ index 209e650..83afbd0 100644
  	 * instead use a fake stack read to hazard against barrier().
  	 */
 -	asm("mrc p15, 0, %0, c13, c0, 4" : "=r" (off) : "Q" (*sp));
-+	asm("mrc p15, 0, %0, c13, c0, 4" : "=r" (off) : "Q" (*(const unsigned long *)current_stack_pointer));
++	asm("mrc p15, 0, %0, c13, c0, 4" : "=r" (off)
++		: "Q" (*(const unsigned long *)current_stack_pointer));
  
  	return off;
  }
