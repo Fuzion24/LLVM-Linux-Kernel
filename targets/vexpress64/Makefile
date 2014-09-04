@@ -44,7 +44,7 @@ KERNEL_CFG	= ${TARGETDIR}/aarch64-kernel.config
 IMAGE		= ${KERNEL_BUILD}/arch/arm64/boot/Image
 AARCH64INITRD	= ${INITRAMFSDIR}/images/aarch64/initramfs.cpio.gz
 
-BUILDROOT_ARCH	= aarch64
+BUILDROOT_ARCH	= qemu_arm_vexpress64
 BUILDROOT_CONFIG= config_vexpress64_buildroot
 TOOLCHAINDIR	= $(ARM_CROSS_GCC_TOOLCHAIN)
 
@@ -101,8 +101,14 @@ aarch64-kernel.config:  ${KERNEL_CFG}
 ${KERNEL_CFG}: aarch64-kernel.config-proto ${AARCH64INITRD}
 	cat aarch64-kernel.config-proto | sed -e "s#PATH_TO_INITRD#${AARCH64INITRD}#" > $@
 
-test: state/prep ${QEMUSTATE}/qemu-build kernel-build
-	${TOPDIR}/test/qemu/install/bin/qemu-system-aarch64 -machine virt -cpu cortex-a57 -machine type=virt -nographic -smp 1 -m 2048 -kernel ${IMAGE} --append "rdinit=/sbin/init console=ttyAMA0"
+kernel-test test:: state/prep ${QEMUSTATE}/qemu-build kernel-build
+	( ${TOPDIR}/test/qemu/install/bin/qemu-system-aarch64 -machine virt -cpu cortex-a57 -machine type=virt -nographic -smp 1 -m 2048 -kernel ${IMAGE} --append "rdinit=/sbin/init console=ttyAMA0" \
+		| tee ${TMPDIR}/qemu_log ) &
+	( sleep 10 && killall -s 9 qemu-system-aarch64 ) || exit 0
+	@grep -a "SUCCESS" ${TMPDIR}/qemu_log
 
-test-gcc: state/prep ${QEMUSTATE}/qemu-build kernel-gcc-build
-	${TOPDIR}/test/qemu/install/bin/qemu-system-aarch64 -machine virt -cpu cortex-a57 -machine type=virt -nographic -smp 1 -m 2048 -kernel ${IMAGE} --append "rdinit=/sbin/init console=ttyAMA0"
+kernel-gcc-test test-gcc:: state/prep ${QEMUSTATE}/qemu-build kernel-gcc-build
+	( ${TOPDIR}/test/qemu/install/bin/qemu-system-aarch64 -machine virt -cpu cortex-a57 -machine type=virt -nographic -smp 1 -m 2048 -kernel ${IMAGE} --append "rdinit=/sbin/init console=ttyAMA0" \
+		| tee ${TMPDIR}/qemu_gcc_log ) &
+	( sleep 10 && killall -s 9 qemu-system-aarch64 ) || exit 0
+	@grep -a "SUCCESS" ${TMPDIR}/qemu_gcc_log
