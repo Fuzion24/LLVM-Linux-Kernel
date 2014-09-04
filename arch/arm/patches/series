@@ -9,8 +9,8 @@ named_register-return_address.patch
 named_register-stacktrace.patch
 named_register-thread_info.patch
 named_register-unwind.patch
+named_register-percpu-arm.patch
 #unwind_support.patch
-percpu.patch
 bcm_kona_smc.patch
 mach-vt8500.patch
 nested-function-msm-hdmi.patch

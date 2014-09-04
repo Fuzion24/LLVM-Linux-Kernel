@@ -1,0 +1,27 @@
+Using global current_stack_pointer works on both clang and gcc.
+current_stack_pointer is an unsigned long and needs to be cast 
+as a pointer to dereference.
+
+Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+---
+
+diff --git a/arch/arm/include/asm/percpu.h b/arch/arm/include/asm/percpu.h
+index 209e650..83afbd0 100644
+--- a/arch/arm/include/asm/percpu.h
++++ b/arch/arm/include/asm/percpu.h
+@@ -30,14 +30,13 @@ static inline void set_my_cpu_offset(unsigned long off)
+ static inline unsigned long __my_cpu_offset(void)
+ {
+ 	unsigned long off;
+-	register unsigned long *sp asm ("sp");
+ 
+ 	/*
+ 	 * Read TPIDRPRW.
+ 	 * We want to allow caching the value, so avoid using volatile and
+ 	 * instead use a fake stack read to hazard against barrier().
+ 	 */
+-	asm("mrc p15, 0, %0, c13, c0, 4" : "=r" (off) : "Q" (*sp));
++	asm("mrc p15, 0, %0, c13, c0, 4" : "=r" (off) : "Q" (*(const unsigned long *)current_stack_pointer));
+ 
+ 	return off;
+ }
