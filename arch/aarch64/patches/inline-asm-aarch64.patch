@@ -27,7 +27,7 @@ index 9400596..34cb7e6 100644
  		switch (reg) {
  		case ARCH_TIMER_REG_CTRL:
 -			asm volatile("msr cntp_ctl_el0,  %0" : : "r" (val));
-+			asm volatile("msr cntp_ctl_el0, %0" : : "r" ((u64)val));
++			asm volatile("msr cntp_ctl_el0,  %0" : : "r" ((u64)val));
  			break;
  		case ARCH_TIMER_REG_TVAL:
 -			asm volatile("msr cntp_tval_el0, %0" : : "r" (val));
@@ -38,7 +38,7 @@ index 9400596..34cb7e6 100644
  		switch (reg) {
  		case ARCH_TIMER_REG_CTRL:
 -			asm volatile("msr cntv_ctl_el0,  %0" : : "r" (val));
-+			asm volatile("msr cntv_ctl_el0, %0" : : "r" ((u64)val));
++			asm volatile("msr cntv_ctl_el0,  %0" : : "r" ((u64)val));
  			break;
  		case ARCH_TIMER_REG_TVAL:
 -			asm volatile("msr cntv_tval_el0, %0" : : "r" (val));
@@ -110,7 +110,7 @@ index b056369..695a18f 100644
  	unsigned long flags;
  	local_dbg_save(flags);
 -	asm volatile("msr mdscr_el1, %0" :: "r" (mdscr));
-+	asm volatile("msr mdscr_el1, %0" : : "r" ((u64)mdscr));
++	asm volatile("msr mdscr_el1, %0" :: "r" ((u64)mdscr));
  	local_dbg_restore(flags);
  }
  
@@ -153,7 +153,7 @@ index baf5afb..f2e399c 100644
  	val &= ARMV8_PMCR_MASK;
  	isb();
 -	asm volatile("msr pmcr_el0, %0" :: "r" (val));
-+	asm volatile("msr pmcr_el0, %0" : : "r" ((u64)val));
++	asm volatile("msr pmcr_el0, %0" :: "r" ((u64)val));
  }
  
  static inline int armv8pmu_has_overflowed(u32 pmovsr)
@@ -162,7 +162,7 @@ index baf5afb..f2e399c 100644
  
  	counter = ARMV8_IDX_TO_COUNTER(idx);
 -	asm volatile("msr pmselr_el0, %0" :: "r" (counter));
-+	asm volatile("msr pmselr_el0, %0" : : "r" ((u64)counter));
++	asm volatile("msr pmselr_el0, %0" :: "r" ((u64)counter));
  	isb();
  
  	return idx;
@@ -189,10 +189,10 @@ index baf5afb..f2e399c 100644
  			smp_processor_id(), idx);
  	else if (idx == ARMV8_IDX_CYCLE_COUNTER)
 -		asm volatile("msr pmccntr_el0, %0" :: "r" (value));
-+		asm volatile("msr pmccntr_el0, %0" : : "r" ((u64)value));
++		asm volatile("msr pmccntr_el0, %0" :: "r" ((u64)value));
  	else if (armv8pmu_select_counter(idx) == idx)
 -		asm volatile("msr pmxevcntr_el0, %0" :: "r" (value));
-+		asm volatile("msr pmxevcntr_el0, %0" : : "r" ((u64)value));
++		asm volatile("msr pmxevcntr_el0, %0" :: "r" ((u64)value));
  }
  
  static inline void armv8pmu_write_evtype(int idx, u32 val)
@@ -200,7 +200,7 @@ index baf5afb..f2e399c 100644
  	if (armv8pmu_select_counter(idx) == idx) {
  		val &= ARMV8_EVTYPE_MASK;
 -		asm volatile("msr pmxevtyper_el0, %0" :: "r" (val));
-+		asm volatile("msr pmxevtyper_el0, %0" : : "r" ((u64)val));
++		asm volatile("msr pmxevtyper_el0, %0" :: "r" ((u64)val));
  	}
  }
  
@@ -209,7 +209,7 @@ index baf5afb..f2e399c 100644
  
  	counter = ARMV8_IDX_TO_COUNTER(idx);
 -	asm volatile("msr pmcntenset_el0, %0" :: "r" (BIT(counter)));
-+	asm volatile("msr pmcntenset_el0, %0" : : "r" ((u64)BIT(counter)));
++	asm volatile("msr pmcntenset_el0, %0" :: "r" ((u64)BIT(counter)));
  	return idx;
  }
  
@@ -218,7 +218,7 @@ index baf5afb..f2e399c 100644
  
  	counter = ARMV8_IDX_TO_COUNTER(idx);
 -	asm volatile("msr pmcntenclr_el0, %0" :: "r" (BIT(counter)));
-+	asm volatile("msr pmcntenclr_el0, %0" : : "r" ((u64)BIT(counter)));
++	asm volatile("msr pmcntenclr_el0, %0" :: "r" ((u64)BIT(counter)));
  	return idx;
  }
  
@@ -227,7 +227,7 @@ index baf5afb..f2e399c 100644
  
  	counter = ARMV8_IDX_TO_COUNTER(idx);
 -	asm volatile("msr pmintenset_el1, %0" :: "r" (BIT(counter)));
-+	asm volatile("msr pmintenset_el1, %0" : : "r" ((u64)BIT(counter)));
++	asm volatile("msr pmintenset_el1, %0" :: "r" ((u64)BIT(counter)));
  	return idx;
  }
  
@@ -236,11 +236,11 @@ index baf5afb..f2e399c 100644
  
  	counter = ARMV8_IDX_TO_COUNTER(idx);
 -	asm volatile("msr pmintenclr_el1, %0" :: "r" (BIT(counter)));
-+	asm volatile("msr pmintenclr_el1, %0" : : "r" ((u64)BIT(counter)));
++	asm volatile("msr pmintenclr_el1, %0" :: "r" ((u64)BIT(counter)));
  	isb();
  	/* Clear the overflow flag in case an interrupt is pending. */
 -	asm volatile("msr pmovsclr_el0, %0" :: "r" (BIT(counter)));
-+	asm volatile("msr pmovsclr_el0, %0" : : "r" ((u64)BIT(counter)));
++	asm volatile("msr pmovsclr_el0, %0" :: "r" ((u64)BIT(counter)));
  	isb();
  	return idx;
  }
@@ -266,7 +266,7 @@ index baf5afb..f2e399c 100644
  
  	/* Disable access from userspace. */
 -	asm volatile("msr pmuserenr_el0, %0" :: "r" (0));
-+	asm volatile("msr pmuserenr_el0, %0" : : "r" ((u64)0));
++	asm volatile("msr pmuserenr_el0, %0" :: "r" ((u64)0));
  }
  
  static int armv8_pmuv3_map_event(struct perf_event *event)
