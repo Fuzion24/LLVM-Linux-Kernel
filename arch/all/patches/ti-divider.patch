@@ -1,4 +1,4 @@
-From c8103961ba59d68e802b451a5adfeecdb2a68f02 Mon Sep 17 00:00:00 2001
+From 565ac232a74f7edc67ec95931b3a2aec238608d5 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Fri, 30 May 2014 11:35:52 -0700
 Subject: [PATCH] clk, ti, LLVMLinux: Move __init outside of type definition
@@ -32,7 +32,7 @@ The following links shows the section attribute should be at the end of the func
 
 https://gcc.gnu.org/onlinedocs/gcc-4.1.2/gcc/Function-Attributes.html#Function-Attributes
 
-Not-signed-off-by: Behan Webster <behanw@converseincode.com>
+Signed-off-by: Behan Webster <behanw@converseincode.com>
 Reviewed-by: Mark Charlebois <charlebm@gmail.com>
 ---
  drivers/clk/ti/divider.c | 4 ++--

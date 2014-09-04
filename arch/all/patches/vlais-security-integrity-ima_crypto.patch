@@ -1,7 +1,10 @@
-From 0098b619aee7c3849239396477eacdf902ba61e6 Mon Sep 17 00:00:00 2001
+From e8c2412d245503bb1f66ed651e0722e3b53da9be Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Fri, 4 Apr 2014 18:18:00 -0300
 Subject: [PATCH] security, crypto: LLVMLinux: Remove VLAIS from ima_crypto.c
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
 Replaced the use of a Variable Length Array In Struct (VLAIS) with a C99
 compliant equivalent. This patch allocates the appropriate amount of memory
@@ -23,13 +26,12 @@ CRYPTO_MINALIGN_ATTR.
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
-
 ---
  security/integrity/ima/ima_crypto.c | 53 +++++++++++++++++--------------------
  1 file changed, 25 insertions(+), 28 deletions(-)
 
 diff --git a/security/integrity/ima/ima_crypto.c b/security/integrity/ima/ima_crypto.c
-index 0bd7328..9faf095 100644
+index 0bd7328..a6aa2b0 100644
 --- a/security/integrity/ima/ima_crypto.c
 +++ b/security/integrity/ima/ima_crypto.c
 @@ -380,17 +380,16 @@ static int ima_calc_file_hash_tfm(struct file *file,
@@ -40,8 +42,8 @@ index 0bd7328..9faf095 100644
 -		struct shash_desc shash;
 -		char ctx[crypto_shash_descsize(tfm)];
 -	} desc;
-+	char desc[sizeof(struct shash_desc)
-+		+ crypto_shash_descsize(tfm)] CRYPTO_MINALIGN_ATTR;
++	char desc[sizeof(struct shash_desc) +
++		crypto_shash_descsize(tfm)] CRYPTO_MINALIGN_ATTR;
 +	struct shash_desc *shash = (struct shash_desc *)desc;
  
 -	desc.shash.tfm = tfm;
@@ -82,8 +84,8 @@ index 0bd7328..9faf095 100644
 -		struct shash_desc shash;
 -		char ctx[crypto_shash_descsize(tfm)];
 -	} desc;
-+	char desc[sizeof(struct shash_desc)
-+		+ crypto_shash_descsize(tfm)] CRYPTO_MINALIGN_ATTR;
++	char desc[sizeof(struct shash_desc) +
++		crypto_shash_descsize(tfm)] CRYPTO_MINALIGN_ATTR;
 +	struct shash_desc *shash = (struct shash_desc *)desc;
  	int rc, i;
  
@@ -132,8 +134,8 @@ index 0bd7328..9faf095 100644
 -		struct shash_desc shash;
 -		char ctx[crypto_shash_descsize(tfm)];
 -	} desc;
-+	char desc[sizeof(struct shash_desc)
-+		+ crypto_shash_descsize(tfm)] CRYPTO_MINALIGN_ATTR;
++	char desc[sizeof(struct shash_desc) +
++		crypto_shash_descsize(tfm)] CRYPTO_MINALIGN_ATTR;
 +	struct shash_desc *shash = (struct shash_desc *)desc;
  
 -	desc.shash.tfm = tfm;

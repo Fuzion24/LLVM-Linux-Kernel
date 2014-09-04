@@ -1,4 +1,4 @@
-From 2edb2e5a5655ebdaaafb28ed8aea2ef8d8518394 Mon Sep 17 00:00:00 2001
+From 8433852565437fc65e43ea87c40c46534b537ebc Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
 Date: Mon, 2 Jul 2012 13:47:40 +0200
 Subject: [PATCH] crypto: LLVMLinux: Remove VLAIS usage from crypto/hmac.c
@@ -30,7 +30,7 @@ Cc: pageexec@freemail.hu
  1 file changed, 13 insertions(+), 14 deletions(-)
 
 diff --git a/crypto/hmac.c b/crypto/hmac.c
-index 8d9544c..00ce204 100644
+index 8d9544c..f2da806 100644
 --- a/crypto/hmac.c
 +++ b/crypto/hmac.c
 @@ -52,20 +52,19 @@ static int hmac_setkey(struct crypto_shash *parent,
@@ -41,8 +41,8 @@ index 8d9544c..00ce204 100644
 -		struct shash_desc shash;
 -		char ctx[crypto_shash_descsize(hash)];
 -	} desc;
-+	char desc[sizeof(struct shash_desc)
-+		+ crypto_shash_descsize(hash)] CRYPTO_MINALIGN_ATTR;
++	char desc[sizeof(struct shash_desc) +
++		crypto_shash_descsize(hash)] CRYPTO_MINALIGN_ATTR;
 +	struct shash_desc *shash = (struct shash_desc *)desc;
  	unsigned int i;
  
