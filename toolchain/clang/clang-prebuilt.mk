@@ -28,20 +28,25 @@ TMPDIRS		+= ${CLANG_TMPDIR}
 FETCH_TARGETS	+= clang-fetch
 RAZE_TARGETS	+= clang-raze
 
-ifeq ($(shell uname -i), i686)
-CLANG_DIR	= clang+llvm-3.4-i586-opensuse13.1
-CLANG_TAR	= ${CLANG_DIR}.tar.gz
-CLANG_UNPACK	= untgz
+# Overall clang release (used in URL and tar filename)
+CLANG_RELEASE	= 3.5.0
+# Tar file pkg name (used in URL and tar filename)
+# The tar files *should* work on most distros regardless of what is listed here
+CLANG_32_PKG	= opensuse13.1
+CLANG_64_PKG	= linux-gnu-ubuntu-14.04
+
+ifeq ($(shell uname -i), x86_64)
+CLANG_DIR	= clang+llvm-${CLANG_RELEASE}-x86_64-${CLANG_64_PKG}
 else
-CLANG_DIR	= clang+llvm-3.4-x86_64-linux-gnu-ubuntu-13.10
+CLANG_DIR	= clang+llvm-${CLANG_RELEASE}-i586-${CLANG_32_PKG}
+endif
 CLANG_TAR	= ${CLANG_DIR}.tar.xz
 CLANG_UNPACK 	= unxz
-endif
 CLANG_TAR_FILE	= $(call shared,${CLANG_TMPDIR}/${CLANG_TAR})
 
 CLANG_PATH	= ${LLVMTOP}/${CLANG_DIR}
 CLANG_BINDIR	= ${CLANG_PATH}/bin
-CLANG_URL	= http://llvm.org/releases/3.4/${CLANG_TAR}
+CLANG_URL	= http://llvm.org/releases/${CLANG_RELEASE}/${CLANG_TAR}
 
 CLANG			= ${CLANG_BINDIR}/clang
 STATE_CLANG_TOOLCHAIN	= ${CLANG}
