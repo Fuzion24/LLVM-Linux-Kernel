@@ -1,8 +1,8 @@
-From afdb12fe0e0b147a43781c30cc6d5953d9322c78 Mon Sep 17 00:00:00 2001
+From f37a03ad600cd4f1edaaefa2364077cfa8fdebe0 Mon Sep 17 00:00:00 2001
 From: Mark Charlebois <charlebm@gmail.com>
 Date: Thu, 14 Aug 2014 08:12:08 -0500
-Subject: [PATCH] kbuild: LLVMLinux: Optionally include flags not supported by
- clang
+Subject: [PATCH] DO-NOT-UPSTREAM kbuild: LLVMLinux: Optionally include flags
+ not supported by clang
 
 Clang doesn't support -fno-delete-null-pointer-checks or
  -fno-inline-functions-called-once and they cannot be
