@@ -18,9 +18,12 @@ Per comments by Tim Northover on the LLVM Bug database:
 Not all instructions can make use of any offset, so wouldn't we have to be
 conservative and always map it to "[xN]"?
 
-This test works with GCC under unit test but not in the kernel build.
+When %a0 is changed to [%x0] it uncovered a GCC bug:
+https://bugs.linaro.org/show_bug.cgi?id=635
 
-Not-signed-off-by: Mark Charlebois <charlebm@gmail.com>
+Changing the "p" to "r" resolves the issue for both clang and GCC.
+
+Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 ---
  arch/arm64/include/asm/processor.h | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
@@ -34,14 +37,14 @@ index 286b1be..e81d0b9 100644
  static inline void prefetch(const void *ptr)
  {
 -	asm volatile("prfm pldl1keep, %a0\n" : : "p" (ptr));
-+	asm volatile("prfm pldl1keep, [%x0]\n" : : "p" (ptr));
++	asm volatile("prfm pldl1keep, [%x0]\n" : : "r" (ptr));
  }
  
  #define ARCH_HAS_PREFETCHW
  static inline void prefetchw(const void *ptr)
  {
 -	asm volatile("prfm pstl1keep, %a0\n" : : "p" (ptr));
-+	asm volatile("prfm pstl1keep, [%x0]\n" : : "p" (ptr));
++	asm volatile("prfm pstl1keep, [%x0]\n" : : "r" (ptr));
  }
  
  #define ARCH_HAS_SPINLOCK_PREFETCH
