@@ -23,7 +23,7 @@ KBUILDS		= $(KBUILD_ORIG) $(KBUILD_PATCHED)
 TESTS := $(shell grep '^[a-z-]*:' $(TESTFILE) | grep -v SKIP | cut -d: -f1)
 
 unittests:
-	@for TEST in $(TESTS); do echo $$TEST ; done
+	@for TEST in $(TESTS); do echo -e $$TEST ; done
 
 run-tests: $(KBUILDS)
 	@for TEST in $(TESTS); do \
@@ -36,8 +36,8 @@ run-tests: $(KBUILDS)
 				RESULT="$$RESULT $$OUT" ; \
 			done ; \
 		done ; \
-		egrep -q "^$$TEST: #$$RESULT" $(TESTFILE) && echo "PASS: $$TEST" \
-			|| (echo -n "FAIL: `egrep "^$$TEST:" $(TESTFILE)`"; echo $$RAWTEST) ; \
+		egrep -q "^$$TEST: #$$RESULT" $(TESTFILE) && echo -e "${PASS}: $$TEST" \
+			|| (echo -en "${FAIL}: `egrep "^$$TEST:" $(TESTFILE)`"; echo $$RAWTEST) ; \
 	done ;
 
 #================================================================================

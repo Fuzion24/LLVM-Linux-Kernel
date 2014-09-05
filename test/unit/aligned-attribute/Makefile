@@ -1,3 +1,7 @@
+TARGETDIR	= ${CURDIR}
+TOPDIR		= $(realpath ${TARGETDIR}/../..)
+include ${TOPDIR}/common.mk
+
 all: aligned-attribute-gcc aligned-attribute-clang diff-all t2 t3
 
 aligned-attribute-gcc: aligned-attribute.c
@@ -9,7 +13,7 @@ aligned-attribute-clang: aligned-attribute.c
 diff-all: aligned-attribute-gcc aligned-attribute-clang
 	@./aligned-attribute-gcc > gcc-log
 	@./aligned-attribute-clang > clang-log
-	@printf "%s: aligned-attribute\n" `diff -q gcc-log clang-log && echo PASS || echo FAIL`
+	@printf "%s: aligned-attribute\n" `diff -q gcc-log clang-log && echo ${PASS} || echo ${FAIL}`
 
 t2: t2.c
 	gcc $< -o $@
