@@ -2,7 +2,9 @@ static inline void prefetchw(const void *ptr)
 {
         asm volatile("prfm pstl1keep, [%x0]\n" : : "p" (ptr));
 	// Not supported by clang
-        //asm volatile("prfm pstl1keep, %a0\n" : : "p" (ptr));
+#ifndef __clang__
+        asm volatile("prfm pstl1keep, %a0\n" : : "p" (ptr));
+#endif
 	asm volatile("prfm pldl1keep, [%x0]\n" : : "p" (ptr));
 
 }
