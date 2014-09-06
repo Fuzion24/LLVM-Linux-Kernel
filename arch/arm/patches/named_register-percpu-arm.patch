@@ -8,6 +8,7 @@ current_stack_pointer is an unsigned long and needs to be cast
 as a pointer to dereference.
 
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+Signed-off-by: Behan Webster <behanw@converseincode.com>
 ---
  arch/arm/include/asm/percpu.h | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
