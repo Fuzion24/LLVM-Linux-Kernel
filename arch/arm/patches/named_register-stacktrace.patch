@@ -1,8 +1,11 @@
-From 0618ea3e6c9ef56c89e39eae9f618c4230f36911 Mon Sep 17 00:00:00 2001
+From 73f146bd49a2c2550e45f59dda70ccda1b56158d Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 3 Sep 2013 22:27:27 -0400
 Subject: [PATCH] arm: LLVMLinux: Use current_stack_pointer in
  save_stack_trace_tsk
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
 Use the global current_stack_pointer to get the value of the stack pointer.
 This change supports being able to compile the kernel with both gcc and clang.
