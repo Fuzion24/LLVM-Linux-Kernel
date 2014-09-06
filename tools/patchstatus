@@ -255,7 +255,7 @@ print table.get_string(sortby='patchname')
 print "Number of patches: %d" % (numpatches)
 
 #-------------------------------------------------------------------------------
-for key in stats:
+for key in sorted(stats):
     print key+": "+str(stats[key]['count']),
     print "  submited: "+str(stats[key]['submittedupstream']),
     print "  acked: "+str(stats[key]['ackedupstream']),
