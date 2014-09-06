@@ -12,6 +12,7 @@ This change supports being able to compile the kernel with both gcc and Clang.
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Reviewed-by: Jan-Simon Möller <dl9pf@gmx.de>
+Acked-by: Will Deacon <will.deacon@arm.com>
 Acked-by: Nicolas Pitre <nico@linaro.org>
 ---
  arch/arm/kernel/return_address.c | 3 +--
