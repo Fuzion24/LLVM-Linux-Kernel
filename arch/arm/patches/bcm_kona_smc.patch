@@ -10,7 +10,7 @@ based build environment likes "r12" instead.
 Try to make them both happy.
 
 Signed-off-by: Alex Elder <elder@linaro.org>
-Signed-off-by: Behan Webster <behanw@converseincode.com>
+Reviewed-by: Behan Webster <behanw@converseincode.com>
 ---
  arch/arm/mach-bcm/bcm_kona_smc.c | 9 +++++++--
  1 file changed, 7 insertions(+), 2 deletions(-)

@@ -31,9 +31,9 @@ long long as would be the case for a struct containing a member with
 CRYPTO_MINALIGN_ATTR.
 
 Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
+Reviewed-by: Vinícius Tinti <viniciustinti@gmail.com>
+Reviewed-by: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
-Signed-off-by: Vinícius Tinti <viniciustinti@gmail.com>
-Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 ---
  net/mac80211/aes_ccm.c | 37 ++++++++++++++++++-------------------
  1 file changed, 18 insertions(+), 19 deletions(-)

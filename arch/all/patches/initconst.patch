@@ -10,7 +10,7 @@ it uncovers an error where the variable is used by non-init data structures.
 Instead merely make them const and put the const in the right spot.
 
 Not-signed-off-by: Behan Webster <behanw@converseincode.com>
-Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+Reviewed-by: Mark Charlebois <charlebm@gmail.com>
 ---
  drivers/gpio/gpio-bcm-kona.c      | 2 +-
  drivers/mmc/host/sdhci-bcm-kona.c | 2 +-

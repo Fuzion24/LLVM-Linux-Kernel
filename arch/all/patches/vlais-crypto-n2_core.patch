@@ -24,8 +24,8 @@ as would be the case for a struct containing a member with
 CRYPTO_MINALIGN_ATTR.
 
 Signed-off-by: Behan Webster <behanw@converseincode.com>
-Signed-off-by: Mark Charlebois <charlebm@gmail.com>
-Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
+Reviewed-by: Mark Charlebois <charlebm@gmail.com>
+Reviewed-by: Jan-Simon Möller <dl9pf@gmx.de>
 ---
  drivers/crypto/n2_core.c | 13 ++++++-------
  1 file changed, 6 insertions(+), 7 deletions(-)

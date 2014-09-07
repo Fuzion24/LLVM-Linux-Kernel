@@ -30,10 +30,10 @@ The CRYPTO_MINALIGN_ATTR is required so that desc is aligned with long long
 as would be the case for a struct containing a member with
 CRYPTO_MINALIGN_ATTR.
 
-Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
-Signed-off-by: Behan Webster <behanw@converseincode.com>
 Signed-off-by: Vinícius Tinti <viniciustinti@gmail.com>
-Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+Reviewed-by: Jan-Simon Möller <dl9pf@gmx.de>
+Reviewed-by: Mark Charlebois <charlebm@gmail.com>
+Signed-off-by: Behan Webster <behanw@converseincode.com>
 ---
  fs/btrfs/hash.c | 18 +++++++++---------
  1 file changed, 9 insertions(+), 9 deletions(-)
