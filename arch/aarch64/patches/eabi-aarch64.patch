@@ -1,4 +1,4 @@
-From e9e0281fd9c3e99874272801c6f8993eeaf25dd4 Mon Sep 17 00:00:00 2001
+From 281f43e144997682234c89ddba69f550371f907c Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 3 Sep 2013 22:27:26 -0400
 Subject: [PATCH] arm64: LLVMLinux: Provide __aeabi_* symbols which are needed
@@ -12,8 +12,8 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 ---
  arch/arm64/lib/Makefile |  4 ++++
- arch/arm64/lib/eabi.c   | 32 ++++++++++++++++++++++++++++++++
- 2 files changed, 36 insertions(+)
+ arch/arm64/lib/eabi.c   | 28 ++++++++++++++++++++++++++++
+ 2 files changed, 32 insertions(+)
  create mode 100644 arch/arm64/lib/eabi.c
 
 diff --git a/arch/arm64/lib/Makefile b/arch/arm64/lib/Makefile
@@ -30,18 +30,14 @@ index d98d3e3..0d3407c 100644
 +endif
 diff --git a/arch/arm64/lib/eabi.c b/arch/arm64/lib/eabi.c
 new file mode 100644
-index 0000000..41b27b2
+index 0000000..636a403
 --- /dev/null
 +++ b/arch/arm64/lib/eabi.c
-@@ -0,0 +1,32 @@
-+/*
-+ *  linux/lib/eabi.c
-+ *
-+ *  Copyright (C) 2012  Mark Charlebois
-+ */
-+
+@@ -0,0 +1,28 @@
 +/*
 + * EABI routines
++ *
++ *  Copyright (C) 2012  Mark Charlebois
 + */
 +
 +#include <linux/types.h>
