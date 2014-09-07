@@ -25,16 +25,19 @@
 
 #https://launchpad.net/linaro-toolchain-binaries/trunk/2013.04/+download/gcc-linaro-aarch64-linux-gnu-4.7-2013.04-20130415_linux.tar.bz2
 #https://launchpad.net/linaro-toolchain-binaries/trunk/2013.09/+download/gcc-linaro-aarch64-linux-gnu-4.8-2013.09_linux.tar.bz2
-LINARO_VER_MONTH	= 2013.06
+#https://launchpad.net/linaro-toolchain-binaries/trunk/2013.10/+download/gcc-linaro-aarch64-linux-gnu-4.8-2013.10_linux.tar.xz
+#http://releases.linaro.org/latest/components/toolchain/binaries/gcc-linaro-aarch64-linux-gnu-4.9-2014.08_linux.tar.xz
+LINARO_VER_MONTH	= 2014.08
 LINARO_VERSION		= ${LINARO_VER_MONTH}
-LINARO_CC_NAME		= gcc-linaro-aarch64-linux-gnu-4.8-${LINARO_VERSION}_linux
+LINARO_CC_NAME		= gcc-linaro-aarch64-linux-gnu-4.9-${LINARO_VERSION}_linux
 HOST			= aarch64-linux-gnu
 
 # So we can just include the arm rules
 LINARO_DIR		= ${ARCH_AARCH64_TOOLCHAIN}/linaro
 ARCH_ARM_TOOLCHAIN_STATE = ${ARCH_AARCH64_TOOLCHAIN_STATE}
 
-LINARO_CC_URL		?= https://launchpad.net/linaro-toolchain-binaries/trunk/${LINARO_VER_MONTH}/+download/${LINARO_CC_NAME}.tar.bz2
+#LINARO_CC_URL		?= https://launchpad.net/linaro-toolchain-binaries/trunk/${LINARO_VER_MONTH}/+download/${LINARO_CC_NAME}.tar.xz
+LINARO_CC_URL		?= http://releases.linaro.org/latest/components/toolchain/binaries/${LINARO_CC_NAME}.tar.xz
 LINARO_TMPDIR		= $(call shared,${LINARO_DIR}/tmp)
 TMPDIRS			+= ${LINARO_TMPDIR}
 
@@ -54,12 +57,13 @@ PATH			:= ${LINARO_CC_BINDIR}:${PATH}
 
 # Get Linaro cross compiler
 ${LINARO_TMPDIR}/${LINARO_CC_TAR}:
-	@$(call wget,${LINARO_CC_URL},${LINARO_TMPDIR}/${LINARO_CC_TAR})
+	@[ -f ${LINARO_TMPDIR}/${LINARO_CC_TAR} ] || rm -f ${LINARO_TMPDIR}/${LINARO_CC_TAR}
+	@$(call wget,${LINARO_CC_URL},${LINARO_TMPDIR})
 
 linaro-gcc aarch64-cc: ${ARCH_ARM_TOOLCHAIN_STATE}/linaro-gcc
 ${ARCH_AARCH64_TOOLCHAIN_STATE}/linaro-gcc: ${LINARO_TMPDIR}/${LINARO_CC_TAR}
 	rm -rf ${LINARO_CC_DIR}
-	tar -x -j -C ${LINARO_DIR} -f $<
+	$(call unxz,$<,${LINARO_DIR})
 	$(call state,$@)
 
 state/aarch64-cc: ${ARCH_AARCH64_TOOLCHAIN_STATE}/linaro-gcc

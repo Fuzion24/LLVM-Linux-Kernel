@@ -1,11 +1,14 @@
-From b0aa873e6723279bb344900898479785ff435121 Mon Sep 17 00:00:00 2001
+From 8837ea7c05cfc08302e8344539e09270c8c09760 Mon Sep 17 00:00:00 2001
 From: Mark Charlebois <charlebm@gmail.com>
 Date: Wed, 12 Feb 2014 12:17:01 -0800
 Subject: [PATCH] arm64: LLVMLinux: Add missing abort() for AARCH64
 
 Add missing abort for arch aarch64.
 
+This patch makes the aarch64 kernel able to compile with gcc or clang.
+
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+Signed-off-by: Behan Webster <behanw@converseincode.com>
 ---
  arch/arm64/kernel/traps.c | 9 +++++++++
  1 file changed, 9 insertions(+)

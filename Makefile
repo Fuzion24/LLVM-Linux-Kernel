@@ -35,7 +35,7 @@ toplevel-help:
 	@echo
 	@for DIR in ${ALL_BOARD_TARGETS}; do echo "* cd $$DIR;	make help" ; done
 
-clean mrproper:
+clean mrproper kernel-fetch:
 	@for DIR in ${ALL_BOARD_TARGETS}; do make -C $$DIR $@ || true; done
 
 list-board-targets:
@@ -44,3 +44,43 @@ list-board-targets:
 HELP_TARGETS	+= toplevel-help
 include common.mk
 
+##############################################################################
+rm-old: rm-old-ccache-dirs rm-old-tmp-files rm-old-git-dirs
+
+rm-old-ccache-dirs:
+	@if [ -z "${CCACHE_ROOT}" -o "${CCACHE_ROOT}" = "${TOPDIR}" ] ; then \
+		$(call banner,CCACHE_ROOT is not set); \
+	else \
+		DIRS=`cd ${CCACHE_ROOT}; find . -name ccache`; \
+		for DIR in $$DIRS; do \
+			if [ -d ${TOPDIR}/$$DIR ] ; then \
+				echo rm -rf ${TOPDIR}/$$DIR; \
+			fi ; \
+		done ; \
+	fi
+
+rm-old-tmp-files:
+	@if [ -z "${SHARED_ROOT}" -o "${SHARED_ROOT}" = "${TOPDIR}" ] ; then \
+		$(call banner,SHARED_ROOT is not set); \
+	else \
+		DIRS=`cd ${SHARED_ROOT}; find . -name tmp`; \
+		for FILE in `cd ${SHARED_ROOT}; find $$DIRS -type f`; do \
+			if [ -f ${TOPDIR}/$$FILE ] ; then \
+				echo rm -f ${TOPDIR}/$$FILE; \
+				rm -f ${TOPDIR}/$$FILE; \
+			fi ; \
+		done ; \
+	fi
+
+rm-old-git-dirs:
+	@if [ -z "${SHARED_ROOT}" -o "${SHARED_ROOT}" = "${TOPDIR}" ] ; then \
+		$(call banner,SHARED_ROOT is not set); \
+	else \
+		DIRS=`cd ${SHARED_ROOT}; find . -name \*.git`; \
+		for DIR in $$DIRS; do \
+			if [ -d ${TOPDIR}/$$DIR ] ; then \
+				echo rm -rf ${TOPDIR}/$$DIR; \
+				rm -rf ${TOPDIR}/$$DIR; \
+			fi ; \
+		done ; \
+	fi

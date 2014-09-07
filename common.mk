@@ -43,6 +43,16 @@ HELP_TARGETS	+= common-help
 .PHONY:		${COMMON_TARGETS}
 
 ##############################################################################
+COLOR_RED	= \e[0;31m
+COLOR_GREEN	= \e[0;32m
+COLOR_YELLOW	= \e[0;33m
+COLOR_BLUE	= \e[0;34m
+COLOR_RESET	= \e[0m
+
+PASS		= ${COLOR_GREEN}PASS${COLOR_RESET}
+FAIL		= ${COLOR_RED}FAIL${COLOR_RESET}
+
+##############################################################################
 seperator = ---------------------------------------------------------------------
 banner	= (echo -e "${seperator}\nI:" ${1} | sed 's|${TOPDIR}/||g')
 echo	= (echo -e "${seperator}\nI:" ${1} | sed 's|${TOPDIR}/||g')
@@ -112,7 +122,7 @@ gitsync = if [ -n "${2}" ] ; then \
 	fi
 
 GIT_ALTERNATES	= .git/objects/info/alternates
-gitref = grep -q "$(2)" "$(1)/${GIT_ALTERNATES}" || sed -i -e 's|^.*$(notdir $(2))|$(2)|' $(1)/${GIT_ALTERNATES}
+gitref = [ -f "$(1)/${GIT_ALTERNATES}" ] && ( grep -q "$(2)" "$(1)/${GIT_ALTERNATES}" || sed -i -e 's|^.*$(notdir $(2))|$(2)|' $(1)/${GIT_ALTERNATES} )
 
 ##############################################################################
 modified:
@@ -129,19 +139,21 @@ gitsvnrev = $$(cd ${1}; git svn find-rev $$(git rev-parse HEAD))
 ini_section	= (echo -e "\n${2}"; $(MAKE) --silent ${3} | egrep -v '^$$' | \
 			sed -e '/[ \t]*+=/d; s/[ \t]*=[ \t]*/=/;') >> $1
 ini_file_entry	= [ ! -f "${2}" ] || echo -e "${1}=${2}"
+ini_link_entry	= [ ! -f "${2}" ] || echo -e "${1}_LINK=${2}\n${1}\t=$(dir ${2})`stat --format %N ${2} | cut -d\' -f4`"
 
 ##############################################################################
 # general download macros
-raw_wget = mkdir -p "${2}" && wget -P "${2}" -c "${1}"
-wget = if [ -e "${2}" ] ; then $(call raw_wget,${1},${2}); elif [ -d "${2}" ] ; then $(call raw_wget,${1},${2}) ; else $(call raw_wget,${1},$(dir ${2})); fi
+wget = mkdir -p "${2}" && wget -P "${2}" -c "${1}"
 untgz = $(call echo,Unpacking $(notdir ${1}) into ${2}) \
 		&& mkdir -p ${2} && tar --extract --gunzip --file ${1} --directory ${2}
 unbz2 = $(call echo,Unpacking $(notdir ${1}) into ${2}) \
 		&& mkdir -p ${2} && tar --extract --bzip2 --file ${1} --directory ${2}
 unxz = $(call echo,Unpacking $(notdir ${1}) into ${2}) \
-		&& mkdir -p ${2} && tar --extract --xz --file ${1} --directory ${2}
+		&& mkdir -p ${2} && tar --extract --xz --directory ${2} --file ${1}
 
 getlink = rm -f $(notdir ${1}) ${2}; $(call wget,${1},$(dir ${2})); ln -sf $(notdir ${1}) ${2}
+getlink = FILE=$(dir ${2})$(notdir ${1}); rm -f $$FILE ${2}; $(call wget,${1},$(dir ${2})); ln -sf $(notdir ${1}) ${2}; chmod -wx $$FILE
+
 
 ##############################################################################
 # Settings macros used by all subsystems

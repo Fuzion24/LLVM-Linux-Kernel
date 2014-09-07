@@ -1,4 +1,4 @@
-From 9ba116f3947654456f24f265b9482d7ba9a5eda2 Mon Sep 17 00:00:00 2001
+From 6b27b3c3a6f9613bbffa88154bf186ef366ed0c6 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Vin=C3=ADcius=20Tinti?= <viniciustinti@gmail.com>
 Date: Fri, 4 Apr 2014 18:18:00 -0300
 Subject: [PATCH] apparmor: LLVMLinux: Remove VLAIS
@@ -34,12 +34,13 @@ Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Signed-off-by: Vinícius Tinti <viniciustinti@gmail.com>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+Acked-by: John Johansen <john.johansen@canonical.com>
 ---
  security/apparmor/crypto.c | 19 +++++++++----------
  1 file changed, 9 insertions(+), 10 deletions(-)
 
 diff --git a/security/apparmor/crypto.c b/security/apparmor/crypto.c
-index 532471d..62b32e7 100644
+index 532471d..c541e20 100644
 --- a/security/apparmor/crypto.c
 +++ b/security/apparmor/crypto.c
 @@ -32,10 +32,9 @@ unsigned int aa_hash_size(void)
@@ -50,8 +51,8 @@ index 532471d..62b32e7 100644
 -		struct shash_desc shash;
 -		char ctx[crypto_shash_descsize(apparmor_tfm)];
 -	} desc;
-+	char desc[sizeof(struct shash_desc)
-+		+ crypto_shash_descsize(apparmor_tfm)] CRYPTO_MINALIGN_ATTR;
++	char desc[sizeof(struct shash_desc) +
++		crypto_shash_descsize(apparmor_tfm)] CRYPTO_MINALIGN_ATTR;
 +	struct shash_desc *shash = (struct shash_desc *)desc;
  	int error = -ENOMEM;
  	u32 le32_version = cpu_to_le32(version);

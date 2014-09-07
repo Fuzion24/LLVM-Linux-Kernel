@@ -46,6 +46,8 @@ checkfilefor	= grep -q ${2} ${1} || echo "${2}${3}" >> ${1}
 reverselist	= mkdir -p ${TMPDIR}; for DIR in ${1} ; do echo $$DIR; done | tac
 ln_if_new	= ls -l "${2}" 2>&1 | grep -q "${1}" || ln -fsv "${1}" "${2}"
 mv_n_ln		= mv "${1}" "${2}" ; ln -sv "${2}" "${1}"
+tar_patches	= mkdir -p $(dir $@); tar chfj ${1} patches/series `grep -v '^\#' patches/series | sed -e 's|^|patches/|'`
+link_files	= $(call banner,Symlink ${1} "->" ${2}); rm -f ${1}; ln -sf ${2} ${1}
 
 #############################################################################
 QUILT_TARGETS		= kernel-quilt kernel-quilt-clean kernel-quilt-generate-series kernel-quilt-update-series-dot-target \
@@ -145,7 +147,6 @@ ignore_if_empty = perl -ne '{chomp; print "$$_\n" unless -z "${1}/$$_"}'
 ${KERNEL_LOG_CACHE}: state/kernel-fetch ${KERNELDIR}/.git
 	@mkdir -p $(dir $@)
 	@cd ${KERNELDIR} ; \
-	ls -l $@; \
 	if [ -f $@ ] ; then \
 		TOPLOG=`git log --pretty=oneline -n1 HEAD`; \
 		zgrep -q "$$TOPLOG" $@ && FOUND=1; \
@@ -255,7 +256,7 @@ kernel-quilt-link-patches refresh: ${QUILT_GITIGNORE}
 KERNEL_PATCHES_TAR = patches.tar.bz2
 kernel-patches-tar: ${KERNEL_PATCHES_TAR}
 ${KERNEL_PATCHES_TAR}: kernel-quilt-link-patches
-	@tar chfj $@ patches/series `grep -v ^# patches/series | sed -e 's|^|patches/|'`
+	@$(call tar_patches,$@)
 	@$(call banner,Created $@)
 
 ##############################################################################
@@ -308,9 +309,9 @@ list-kernel-checkpatch list-kernel-get_maintainer: list-kernel-%: kernel-fetch
 			if [ -f "$$DIR/$$PATCH" -a ! -L "$$DIR/$$PATCH" ] ; then \
 				OUTPUT=`./scripts/$*.pl "$$DIR/$$PATCH"` ; \
 				if echo "$$OUTPUT" | grep -q "total: 0 errors, 0 warnings," ; then \
-					[ -z "$$NOPASS" ] && echo -e "PASS\t$$DIR/$$PATCH" ; \
+					[ -z "$$NOPASS" ] && echo -e "${PASS}\t$$DIR/$$PATCH" ; \
 				else \
-					[ $@ = list-kernel-checkpatch ] && echo -e -n "FAIL\t" ; \
+					[ $@ = list-kernel-checkpatch ] && echo -e -n "${FAIL}\t" ; \
 					echo "$$DIR/$$PATCH" ; \
 					[ -n "$$NOFAIL" ] || echo -e "${seperator}\n$$OUTPUT\n${seperator}" ; \
 				fi ; \

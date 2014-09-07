@@ -1,22 +1,29 @@
-DO NOT UPSTREAM
+From 70d56a1322b9d27c63a2b3fbbdb8faa5a506cf85 Mon Sep 17 00:00:00 2001
+From: Behan Webster <behanw@converseincode.com>
+Date: Thu, 4 Sep 2014 17:32:17 -0700
+Subject: [PATCH] LLVMLinux: Remove -fcatch-undefined-behavior-deprecated for
+ clang
 
-This patch breaks the build of multiple (all?) targets
+Remove clang flag -fcatch-undefined-behaviour has been deprecated in clang.
 
-The link error is cpuidle_devices is undefined.
+Signed-off-by: Behan Webster <behanw@converseincode.com>
+---
+ Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Not-Signed-Off-By: Mark Charlebois <charlebm@gmail.com>
-
---- linux.orig/Makefile
-+++ linux/Makefile
-@@ -700,7 +700,10 @@
+diff --git a/Makefile b/Makefile
+index 02825ec..dd30900 100644
+--- a/Makefile
++++ b/Makefile
+@@ -700,7 +700,7 @@ KBUILD_CFLAGS += $(call cc-disable-warning, tautological-compare)
  # source of a reference will be _MergedGlobals and not on of the whitelisted names.
  # See modpost pattern 2
  KBUILD_CFLAGS += $(call cc-option, -mno-global-merge,)
 -KBUILD_CFLAGS += $(call cc-option, -fcatch-undefined-behavior)
-+#KBUILD_CFLAGS += $(call cc-option, -fcatch-undefined-behavior)
-+KBUILD_CFLAGS += $(call cc-option, -fsanitize=undefined-trap)
-+KBUILD_CFLAGS += $(call cc-option, -fsanitize-undefined-trap-on-error)
 +
  else
  
  # This warning generated too much noise in a regular build.
+-- 
+1.9.1
+

@@ -1,12 +1,13 @@
-From c25024830ace31d3bae2815fa69cd0b982750432 Mon Sep 17 00:00:00 2001
+From 7706cc5f3b6fdfa384294d48ec717531b9728fad Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Vin=C3=ADcius=20Tinti?= <viniciustinti@gmail.com>
 Date: Wed, 23 Jul 2014 08:39:52 -0300
-Subject: [PATCH] kbuild: add support to generate LLVM bitcode files
+Subject: [PATCH] kbuild: LLVMLinux: Add support to generate LLVM bitcode files
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Allows kbuild to generate LLVM bitcode files with the .ll extension.
+Add rules to kbuild in order to generate LLVM bitcode files with the .ll
+extension when using clang.
 
   # from c code
   CC=clang make kernel/pid.ll
@@ -35,7 +36,7 @@ index e213b27..823b9d6 100644
  Module.symvers
  *.dwo
 diff --git a/Makefile b/Makefile
-index 82b88f8..3d842a7 100644
+index 67d14fd..e30365e 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -1260,6 +1260,8 @@ help:

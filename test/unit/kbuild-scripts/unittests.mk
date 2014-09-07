@@ -48,6 +48,7 @@ cc-option-delete-null-pointer-checks: # -fdelete-null-pointer-checks -fdelete-nu
 	@echo $(call cc-option,-fdelete-null-pointer-checks,)
 cc-option-no-inline-functions-called-once: # -fno-inline-functions-called-once -fno-inline-functions-called-once -fno-inline-functions-called-once ''
 	@echo $(call cc-option,-fno-inline-functions-called-once,)
+mgeneral-regs-only: # -mgeneral-regs-only -mgeneral-regs-only -mgeneral-regs-only -mgeneral-regs-only
 
 #================================================================================
 # Testing for unsupported clang gcc, these should be blank for gcc, not for clang:

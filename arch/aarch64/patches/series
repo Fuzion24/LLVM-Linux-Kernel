@@ -7,9 +7,7 @@ named_register-traps-aarch64.patch
 named_register-percpu-aarch64.patch
 named_register-return-address-aarch64.patch
 inline-asm-aarch64.patch
-cmpxchg-warning-aarch64.patch
 futex-init-aarch64.patch
 unhandled_else.patch
 march-as.patch
 prfm.patch
-#percpu-aarch64.patch

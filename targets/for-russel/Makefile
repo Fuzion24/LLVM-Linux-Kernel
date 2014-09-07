@@ -41,7 +41,7 @@ include ${ARCHDIR}/all/git-push.mk
 
 include ${CONFIG}
 
-KERNEL_PATCH_DIR+= ${TARGETDIR}/patches-overlay
+#KERNEL_PATCH_DIR+= ${TARGETDIR}/patches-overlay
 KERNEL_PATCH_DIR+= ${TARGETDIR}/patches
 
 TARGETS+= clean mrproper

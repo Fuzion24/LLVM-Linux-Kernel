@@ -23,12 +23,15 @@
 # Assumes has been included from clang.mk
 
 STATE_CLANG_TOOLCHAIN	= clang-check-version
-CLANG			= clang-3.5
-LLC			= llc-3.5
+CLANG			= clang
+LLC			= llc
+
+CLANG_MAJOR		= 3
+CLANG_MINOR		= 5
 
 clang-check-version:
 	@${LLC} -version | grep -q ${ARCH} || $(call error1,Your native clang does not have ${ARCH} support)
 	@$(call assert, \
-		`echo __clang_major__ | ${CLANG} -E -x c - | tail -1` -ge 3 -a \
-		`echo __clang_minor__ | ${CLANG} -E -x c - | tail -1` -ge 5, \
-		Your native clang must be at least version 3.5 to work with the Linux kernel)
+		`echo __clang_major__ | ${CLANG} -E -x c - | tail -1` -ge ${CLANG_MAJOR} -a \
+		`echo __clang_minor__ | ${CLANG} -E -x c - | tail -1` -ge ${CLANG_MINOR}, \
+		Your native clang must be at least version ${CLANG_MAJOR}.${CLANG_MINOR} to work with the Linux kernel)

@@ -1,14 +1,15 @@
-From 2b17c8f8910ebd514f9b3812ed29305dc57f0eda Mon Sep 17 00:00:00 2001
+From 22ceff401b2817e8bbd42642c7411d195916de6d Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Fri, 30 May 2014 11:35:54 -0700
-Subject: [PATCH] gpio, bcm-kona, LLVMLinux: Remove use of __initconst
+Subject: [PATCH] DO-NOT-UPSTREAM gpio, bcm-kona, LLVMLinux: Remove use of
+ __initconst
 
 The __initconst is in the wrong place, and when moved to the correct place
 it uncovers an error where the variable is used by non-init data structures.
 
 Instead merely make them const and put the const in the right spot.
 
-Signed-off-by: Behan Webster <behanw@converseincode.com>
+Not-signed-off-by: Behan Webster <behanw@converseincode.com>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 ---
  drivers/gpio/gpio-bcm-kona.c      | 2 +-
@@ -29,10 +30,10 @@ index 3f6b33c..de0801e 100644
  	{}
  };
 diff --git a/drivers/mmc/host/sdhci-bcm-kona.c b/drivers/mmc/host/sdhci-bcm-kona.c
-index 6f166e6..4bec390 100644
+index dd780c3..4bb06c8 100644
 --- a/drivers/mmc/host/sdhci-bcm-kona.c
 +++ b/drivers/mmc/host/sdhci-bcm-kona.c
-@@ -221,7 +221,7 @@ static struct sdhci_pltfm_data sdhci_pltfm_data_kona = {
+@@ -225,7 +225,7 @@ static struct sdhci_pltfm_data sdhci_pltfm_data_kona = {
  		SDHCI_QUIRK_CAP_CLOCK_BASE_BROKEN,
  };
  

@@ -29,11 +29,11 @@ kernel-git-submit-help:
 	@echo "These are the kernel git patch submit make targets:"
 	@echo "* make kernel-git-submit-patch"
 	@echo "   options:"
-	@echo "    CHECKPATCH=ignore       Ignore checkpatch.pl failures (for known problems)"
-	@echo "    PATCH_LIST='patch list' List of patches to submit"
-	@echo "    PATCH_FILTER_REGX=regex Choose patches from current patchset by regex"
-	@echo "    REPLYTO=message-id      Send the patch as a reply to a message id"
-	@echo "    DRYRUN=1                Don't send email at the end (for test purposes)"
+	@echo "    CHECKPATCH=ignore        Ignore checkpatch.pl failures (for known problems)"
+	@echo "    PATCH_LIST='patch list'  List of patches to submit"
+	@echo "    PATCH_FILTER_REGEX=regex Choose patches from current patchset by regex"
+	@echo "    REPLYTO=message-id       Send the patch as a reply to a message id"
+	@echo "    DRYRUN=1                 Don't send email at the end (for test purposes)"
 
 #############################################################################
 kernel-git-submit-patch-check: kernel-fetch

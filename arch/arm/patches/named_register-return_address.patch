@@ -1,21 +1,25 @@
-From 11ac45cf87a439450ef849cc87574bbbef16bd5d Mon Sep 17 00:00:00 2001
+From b1f05d122f4e45d19d4a5c551b62e69350e538cc Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 3 Sep 2013 22:27:27 -0400
 Subject: [PATCH] arm: LLVMLinux: Use current_stack_pointer for return_address
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
 Use the global current_stack_pointer to get the value of the stack pointer.
 This change supports being able to compile the kernel with both gcc and Clang.
 
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
-Reviewed-by: Jan-Simon M??ller <dl9pf@gmx.de>
+Reviewed-by: Jan-Simon Möller <dl9pf@gmx.de>
 Acked-by: Will Deacon <will.deacon@arm.com>
+Acked-by: Nicolas Pitre <nico@linaro.org>
 ---
  arch/arm/kernel/return_address.c | 3 +--
  1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/arch/arm/kernel/return_address.c b/arch/arm/kernel/return_address.c
-index fafedd8..5bceaef 100644
+index f6aa84d..b7de88a 100644
 --- a/arch/arm/kernel/return_address.c
 +++ b/arch/arm/kernel/return_address.c
 @@ -39,13 +39,12 @@ void *return_address(unsigned int level)

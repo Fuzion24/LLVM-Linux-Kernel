@@ -1,7 +1,7 @@
-From 92289101e16a881d3a78d456c23c0005803b9d51 Mon Sep 17 00:00:00 2001
+From 138e4ee28f78e6d29c9370b34d114f79b49fb58f Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
 Date: Wed, 23 Apr 2014 17:14:02 +0200
-Subject: [PATCH] WORKAROUND NOT-UPSTREAMED x86, boot: Work around clang
+Subject: [PATCH] WORKAROUND DO-NOT-UPSTREAM x86, boot: Work around clang
  PR18415.
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8

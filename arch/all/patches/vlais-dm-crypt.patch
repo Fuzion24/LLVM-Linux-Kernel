@@ -1,4 +1,4 @@
-From a7e757aa8d60a95df9bc0e9847a4c64b46987548 Mon Sep 17 00:00:00 2001
+From bbfd1807e072b80c4017b84acbfdcf57533836bd Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
 Date: Mon, 2 Jul 2012 13:50:54 +0200
 Subject: [PATCH] crypto, dm: LLVMLinux: Remove VLAIS usage from dm-crypt
@@ -30,7 +30,7 @@ Cc: pageexec@freemail.hu
  1 file changed, 18 insertions(+), 20 deletions(-)
 
 diff --git a/drivers/md/dm-crypt.c b/drivers/md/dm-crypt.c
-index 2785007..a1e50ca 100644
+index cd15e08..ad696b8 100644
 --- a/drivers/md/dm-crypt.c
 +++ b/drivers/md/dm-crypt.c
 @@ -526,29 +526,28 @@ static int crypt_iv_lmk_one(struct crypt_config *cc, u8 *iv,
@@ -41,8 +41,8 @@ index 2785007..a1e50ca 100644
 -		struct shash_desc desc;
 -		char ctx[crypto_shash_descsize(lmk->hash_tfm)];
 -	} sdesc;
-+	char sdesc[sizeof(struct shash_desc)
-+		+ crypto_shash_descsize(lmk->hash_tfm)] CRYPTO_MINALIGN_ATTR;
++	char sdesc[sizeof(struct shash_desc) +
++		crypto_shash_descsize(lmk->hash_tfm)] CRYPTO_MINALIGN_ATTR;
 +	struct shash_desc *desc = (struct shash_desc *)sdesc;
  	struct md5_state md5state;
  	__le32 buf[4];
