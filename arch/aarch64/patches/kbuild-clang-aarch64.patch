@@ -25,7 +25,7 @@ index 2df5e5d..48f8fbe 100644
  
 -KBUILD_CFLAGS	+= -mgeneral-regs-only
 +ifeq ($(COMPILER),clang)
-+KBUILD_CFLAGS   += -fno-builtin,)
++KBUILD_CFLAGS   += -fno-builtin
 +KBUILD_CFLAGS   += -Wno-asm-operand-widths
 +KBUILD_CFLAGS   += -Wno-initializer-overrides
 +endif
