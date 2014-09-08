@@ -1,4 +1,4 @@
-From 768975b5e3c21897ea33fb7a29b90f885138f38f Mon Sep 17 00:00:00 2001
+From 49cd686665cff23e9c0f4f3a082a8bc4c988b991 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Fri, 4 Apr 2014 18:18:00 -0300
 Subject: [PATCH] crypto: LLVMLinux: Remove VLAIS from crypto/mv_cesa.c
@@ -27,14 +27,14 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
 Reviewed-by: Mark Charlebois <charlebm@gmail.com>
 Reviewed-by: Jan-Simon Möller <dl9pf@gmx.de>
 ---
- drivers/crypto/mv_cesa.c | 46 +++++++++++++++++++++++-----------------------
- 1 file changed, 23 insertions(+), 23 deletions(-)
+ drivers/crypto/mv_cesa.c | 41 ++++++++++++++++++-----------------------
+ 1 file changed, 18 insertions(+), 23 deletions(-)
 
 diff --git a/drivers/crypto/mv_cesa.c b/drivers/crypto/mv_cesa.c
-index 29d0ee5..0d92c85 100644
+index 29d0ee5..032c72c 100644
 --- a/drivers/crypto/mv_cesa.c
 +++ b/drivers/crypto/mv_cesa.c
-@@ -402,26 +402,25 @@ static int mv_hash_final_fallback(struct ahash_request *req)
+@@ -402,26 +402,23 @@ static int mv_hash_final_fallback(struct ahash_request *req)
  {
  	const struct mv_tfm_hash_ctx *tfm_ctx = crypto_tfm_ctx(req->base.tfm);
  	struct mv_req_hash_ctx *req_ctx = ahash_request_ctx(req);
@@ -42,9 +42,7 @@ index 29d0ee5..0d92c85 100644
 -		struct shash_desc shash;
 -		char ctx[crypto_shash_descsize(tfm_ctx->fallback)];
 -	} desc;
-+	char desc[sizeof(struct shash_desc) +
-+		crypto_shash_descsize(tfm_ctx->fallback)] CRYPTO_MINALIGN_ATTR;
-+	struct shash_desc *shash = (struct shash_desc *)desc;
++	SHASH_DESC_ON_STACK(shash, tfm_ctx->fallback);
  	int rc;
  
 -	desc.shash.tfm = tfm_ctx->fallback;
@@ -70,7 +68,7 @@ index 29d0ee5..0d92c85 100644
  out:
  	return rc;
  }
-@@ -794,23 +793,24 @@ static int mv_hash_setkey(struct crypto_ahash *tfm, const u8 * key,
+@@ -794,23 +791,21 @@ static int mv_hash_setkey(struct crypto_ahash *tfm, const u8 * key,
  	ss = crypto_shash_statesize(ctx->base_hash);
  
  	{
@@ -78,10 +76,7 @@ index 29d0ee5..0d92c85 100644
 -			struct shash_desc shash;
 -			char ctx[crypto_shash_descsize(ctx->base_hash)];
 -		} desc;
-+		char desc[sizeof(struct shash_desc) +
-+			crypto_shash_descsize(ctx->base_hash)]
-+			CRYPTO_MINALIGN_ATTR;
-+		struct shash_desc *shash = (struct shash_desc *)desc;
++		SHASH_DESC_ON_STACK(shash, ctx->base_hash);
 +
  		unsigned int i;
  		char ipad[ss];
@@ -102,7 +97,7 @@ index 29d0ee5..0d92c85 100644
  			if (err)
  				return err;
  
-@@ -826,12 +826,12 @@ static int mv_hash_setkey(struct crypto_ahash *tfm, const u8 * key,
+@@ -826,12 +821,12 @@ static int mv_hash_setkey(struct crypto_ahash *tfm, const u8 * key,
  			opad[i] ^= 0x5c;
  		}
  

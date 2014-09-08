@@ -1,4 +1,4 @@
-From 500fae05935c79845c243164b36f6f0c344694e6 Mon Sep 17 00:00:00 2001
+From 8ba1f190e1c3682e83c741ca0cac41922b641bde Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Fri, 4 Apr 2014 18:18:00 -0300
 Subject: [PATCH] crypto: LLVMLinux: Remove VLAIS from crypto/omap_sham.c
@@ -27,14 +27,14 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
 Reviewed-by: Mark Charlebois <charlebm@gmail.com>
 Reviewed-by: Jan-Simon Möller <dl9pf@gmx.de>
 ---
- drivers/crypto/omap-sham.c | 32 +++++++++++++++-----------------
- 1 file changed, 15 insertions(+), 17 deletions(-)
+ drivers/crypto/omap-sham.c | 28 +++++++++++-----------------
+ 1 file changed, 11 insertions(+), 17 deletions(-)
 
 diff --git a/drivers/crypto/omap-sham.c b/drivers/crypto/omap-sham.c
-index 710d863..dcbfd35 100644
+index 710d863..24ef489 100644
 --- a/drivers/crypto/omap-sham.c
 +++ b/drivers/crypto/omap-sham.c
-@@ -949,17 +949,16 @@ static int omap_sham_finish_hmac(struct ahash_request *req)
+@@ -949,17 +949,14 @@ static int omap_sham_finish_hmac(struct ahash_request *req)
  	struct omap_sham_hmac_ctx *bctx = tctx->base;
  	int bs = crypto_shash_blocksize(bctx->shash);
  	int ds = crypto_shash_digestsize(bctx->shash);
@@ -42,9 +42,7 @@ index 710d863..dcbfd35 100644
 -		struct shash_desc shash;
 -		char ctx[crypto_shash_descsize(bctx->shash)];
 -	} desc;
-+	char desc[sizeof(struct shash_desc) +
-+		crypto_shash_descsize(bctx->shash)] CRYPTO_MINALIGN_ATTR;
-+	struct shash_desc *shash = (struct shash_desc *)desc;
++	SHASH_DESC_ON_STACK(shash, bctx->shash);
  
 -	desc.shash.tfm = bctx->shash;
 -	desc.shash.flags = 0; /* not CRYPTO_TFM_REQ_MAY_SLEEP */
@@ -60,7 +58,7 @@ index 710d863..dcbfd35 100644
  }
  
  static int omap_sham_finish(struct ahash_request *req)
-@@ -1118,18 +1117,17 @@ static int omap_sham_update(struct ahash_request *req)
+@@ -1118,18 +1115,15 @@ static int omap_sham_update(struct ahash_request *req)
  	return omap_sham_enqueue(req, OP_UPDATE);
  }
  
@@ -72,9 +70,7 @@ index 710d863..dcbfd35 100644
 -		struct shash_desc shash;
 -		char ctx[crypto_shash_descsize(shash)];
 -	} desc;
-+	char desc[sizeof(struct shash_desc) +
-+		crypto_shash_descsize(shash)] CRYPTO_MINALIGN_ATTR;
-+	struct shash_desc *shash = (struct shash_desc *)desc;
++	SHASH_DESC_ON_STACK(shash, tfm);
  
 -	desc.shash.tfm = shash;
 -	desc.shash.flags = flags & CRYPTO_TFM_REQ_MAY_SLEEP;
