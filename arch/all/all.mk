@@ -373,6 +373,10 @@ state/kernel-configure: state/kernel-patch ${TMPFS_MOUNT} ${KERNEL_CFG} ${STATE_
 	$(call state,$@,kernel-build)
 
 #############################################################################
+kernel-allyesconfig: state/kernel-configure
+	(cd ${KERNELDIR} && echo "" | ${KERNEL_ENV} make ${MAKE_FLAGS} allyesconfig)
+
+#############################################################################
 kernel-menuconfig: state/kernel-configure
 	${KERNEL_ENV} make -C ${KERNELDIR} ${MAKE_FLAGS} menuconfig
 	@$(call leavestate,${STATEDIR},kernel-build)
@@ -400,6 +404,10 @@ state/kernel-gcc-configure: state/kernel-patch ${TMPFS_MOUNT} ${STATE_TOOLCHAIN}
 	cp ${KERNEL_CFG} ${KERNELGCC_BUILD}/.config
 	(cd ${KERNELDIR} && echo "" | ${KERNELGCC_ENV} make ${MAKE_FLAGS} oldconfig)
 	$(call state,$@,kernel-gcc-build)
+
+#############################################################################
+kernel-gcc-allyesconfig: state/kernel-gcc-configure
+	(cd ${KERNELDIR} && echo "" | ${KERNELGCC_ENV} make ${MAKE_FLAGS} allyesconfig)
 
 #############################################################################
 kernel-build: state/kernel-build

@@ -15,7 +15,7 @@ include ${ARCHDIR}/arm/arm.mk
 
 isystem	= DIR=`$(1) -print-file-name=include` ; \
 	printf "%s: %s -> %s\n" \
-		`[ -f $$DIR/stdarg.h ] && echo PASS || echo FAIL` \
+		`[ -f $$DIR/stdarg.h ] && echo ${PASS} || echo ${FAIL}` \
 		"`echo $(1) | sed 's|[^ ]*/|.../|g'`" \
 		"`echo $$DIR | sed 's|$(TOPDIR)|...|'`"
 crossisystem = $(call isystem,$(1) -gcc-toolchain $(2)); $(call isystem,$(2))

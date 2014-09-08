@@ -1,6 +1,8 @@
 disable-clang-integrated-as.patch
+crypto_shash_desc_novlais.patch
 vlais-apparmor.patch
 vlais-btrfs.patch
+vlais-crypto-ccp-ccp_crypto_sha.patch
 vlais-crypto-mv_cesa.patch
 vlais-crypto-n2_core.patch
 vlais-crypto-omap-sham.patch
@@ -19,4 +21,3 @@ initconst.patch
 kbuild-llvm-bitcode.patch
 clang-flags.patch
 catch-undefined-behavior-deprecated.patch
-vlais-crypto-ccp-ccp_crypto_sha.patch

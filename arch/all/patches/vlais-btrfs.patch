@@ -1,4 +1,4 @@
-From c34d7bcf4cf62b8a4a99ca1ae8aa1d239f26d984 Mon Sep 17 00:00:00 2001
+From 1fcc6dbbc464aa69d1a3ef3fbc6bcb0f16e00eef Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Vin=C3=ADcius=20Tinti?= <viniciustinti@gmail.com>
 Date: Fri, 4 Apr 2014 18:21:24 -0300
 Subject: [PATCH] btrfs: LLVMLinux: Remove VLAIS
@@ -30,19 +30,19 @@ The CRYPTO_MINALIGN_ATTR is required so that desc is aligned with long long
 as would be the case for a struct containing a member with
 CRYPTO_MINALIGN_ATTR.
 
-Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
-Signed-off-by: Behan Webster <behanw@converseincode.com>
 Signed-off-by: Vinícius Tinti <viniciustinti@gmail.com>
-Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+Reviewed-by: Jan-Simon Möller <dl9pf@gmx.de>
+Reviewed-by: Mark Charlebois <charlebm@gmail.com>
+Signed-off-by: Behan Webster <behanw@converseincode.com>
 ---
- fs/btrfs/hash.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ fs/btrfs/hash.c | 16 +++++++---------
+ 1 file changed, 7 insertions(+), 9 deletions(-)
 
 diff --git a/fs/btrfs/hash.c b/fs/btrfs/hash.c
-index 85889aa..a62743f 100644
+index 85889aa..4bf4d3a 100644
 --- a/fs/btrfs/hash.c
 +++ b/fs/btrfs/hash.c
-@@ -33,18 +33,18 @@ void btrfs_hash_exit(void)
+@@ -33,18 +33,16 @@ void btrfs_hash_exit(void)
  
  u32 btrfs_crc32c(u32 crc, const void *address, unsigned int length)
  {
@@ -50,9 +50,7 @@ index 85889aa..a62743f 100644
 -		struct shash_desc shash;
 -		char ctx[crypto_shash_descsize(tfm)];
 -	} desc;
-+	char desc[sizeof(struct shash_desc) +
-+		crypto_shash_descsize(tfm)] CRYPTO_MINALIGN_ATTR;
-+	struct shash_desc *shash = (struct shash_desc *)desc;
++	SHASH_DESC_ON_STACK(shash, tfm);
 +	u32 *ctx = (u32 *)shash_desc_ctx(shash);
  	int err;
  

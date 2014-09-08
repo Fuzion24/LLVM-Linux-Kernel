@@ -1,4 +1,4 @@
-From 215054bc4682156b99868f7ffb2a8b93d839f2fe Mon Sep 17 00:00:00 2001
+From e2b51381ed4e6ed42e10fc558ff7158287d057e4 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
 Date: Thu, 4 Sep 2014 20:39:24 +0200
 Subject: [PATCH] crypto: LLVMLinux: Remove VLAIS from
@@ -27,14 +27,14 @@ CRYPTO_MINALIGN_ATTR.
 Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 ---
- drivers/crypto/ccp/ccp-crypto-sha.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+ drivers/crypto/ccp/ccp-crypto-sha.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/crypto/ccp/ccp-crypto-sha.c b/drivers/crypto/ccp/ccp-crypto-sha.c
-index 873f234..29f9fda 100644
+index 873f234..9653157 100644
 --- a/drivers/crypto/ccp/ccp-crypto-sha.c
 +++ b/drivers/crypto/ccp/ccp-crypto-sha.c
-@@ -198,10 +198,11 @@ static int ccp_sha_setkey(struct crypto_ahash *tfm, const u8 *key,
+@@ -198,10 +198,9 @@ static int ccp_sha_setkey(struct crypto_ahash *tfm, const u8 *key,
  {
  	struct ccp_ctx *ctx = crypto_tfm_ctx(crypto_ahash_tfm(tfm));
  	struct crypto_shash *shash = ctx->u.sha.hmac_tfm;
@@ -43,14 +43,12 @@ index 873f234..29f9fda 100644
 -		char ctx[crypto_shash_descsize(shash)];
 -	} desc;
 +
-+	char desc[sizeof(struct shash_desc) +
-+		crypto_shash_descsize(shash)] CRYPTO_MINALIGN_ATTR;
-+	struct shash_desc *sdesc = (struct shash_desc *)desc;
++	SHASH_DESC_ON_STACK(sdesc, shash);
 +
  	unsigned int block_size = crypto_shash_blocksize(shash);
  	unsigned int digest_size = crypto_shash_digestsize(shash);
  	int i, ret;
-@@ -216,11 +217,11 @@ static int ccp_sha_setkey(struct crypto_ahash *tfm, const u8 *key,
+@@ -216,11 +215,11 @@ static int ccp_sha_setkey(struct crypto_ahash *tfm, const u8 *key,
  
  	if (key_len > block_size) {
  		/* Must hash the input key */

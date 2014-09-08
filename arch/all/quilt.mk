@@ -147,7 +147,6 @@ ignore_if_empty = perl -ne '{chomp; print "$$_\n" unless -z "${1}/$$_"}'
 ${KERNEL_LOG_CACHE}: state/kernel-fetch ${KERNELDIR}/.git
 	@mkdir -p $(dir $@)
 	@cd ${KERNELDIR} ; \
-	ls -l $@; \
 	if [ -f $@ ] ; then \
 		TOPLOG=`git log --pretty=oneline -n1 HEAD`; \
 		zgrep -q "$$TOPLOG" $@ && FOUND=1; \
@@ -310,9 +309,9 @@ list-kernel-checkpatch list-kernel-get_maintainer: list-kernel-%: kernel-fetch
 			if [ -f "$$DIR/$$PATCH" -a ! -L "$$DIR/$$PATCH" ] ; then \
 				OUTPUT=`./scripts/$*.pl "$$DIR/$$PATCH"` ; \
 				if echo "$$OUTPUT" | grep -q "total: 0 errors, 0 warnings," ; then \
-					[ -z "$$NOPASS" ] && echo -e "PASS\t$$DIR/$$PATCH" ; \
+					[ -z "$$NOPASS" ] && echo -e "${PASS}\t$$DIR/$$PATCH" ; \
 				else \
-					[ $@ = list-kernel-checkpatch ] && echo -e -n "FAIL\t" ; \
+					[ $@ = list-kernel-checkpatch ] && echo -e -n "${FAIL}\t" ; \
 					echo "$$DIR/$$PATCH" ; \
 					[ -n "$$NOFAIL" ] || echo -e "${seperator}\n$$OUTPUT\n${seperator}" ; \
 				fi ; \

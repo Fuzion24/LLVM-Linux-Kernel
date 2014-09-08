@@ -43,6 +43,16 @@ HELP_TARGETS	+= common-help
 .PHONY:		${COMMON_TARGETS}
 
 ##############################################################################
+COLOR_RED	= \e[0;31m
+COLOR_GREEN	= \e[0;32m
+COLOR_YELLOW	= \e[0;33m
+COLOR_BLUE	= \e[0;34m
+COLOR_RESET	= \e[0m
+
+PASS		= ${COLOR_GREEN}PASS${COLOR_RESET}
+FAIL		= ${COLOR_RED}FAIL${COLOR_RESET}
+
+##############################################################################
 seperator = ---------------------------------------------------------------------
 banner	= (echo -e "${seperator}\nI:" ${1} | sed 's|${TOPDIR}/||g')
 echo	= (echo -e "${seperator}\nI:" ${1} | sed 's|${TOPDIR}/||g')
@@ -139,7 +149,7 @@ untgz = $(call echo,Unpacking $(notdir ${1}) into ${2}) \
 unbz2 = $(call echo,Unpacking $(notdir ${1}) into ${2}) \
 		&& mkdir -p ${2} && tar --extract --bzip2 --file ${1} --directory ${2}
 unxz = $(call echo,Unpacking $(notdir ${1}) into ${2}) \
-		&& mkdir -p ${2} && tar --extract --xz --file ${1} --directory ${2}
+		&& mkdir -p ${2} && tar --extract --xz --directory ${2} --file ${1}
 
 getlink = rm -f $(notdir ${1}) ${2}; $(call wget,${1},$(dir ${2})); ln -sf $(notdir ${1}) ${2}
 getlink = FILE=$(dir ${2})$(notdir ${1}); rm -f $$FILE ${2}; $(call wget,${1},$(dir ${2})); ln -sf $(notdir ${1}) ${2}; chmod -wx $$FILE

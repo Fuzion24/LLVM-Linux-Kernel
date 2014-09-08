@@ -1,4 +1,4 @@
-From 6fc66dbd46cfe9eecc69a88d750e4578abf9ccab Mon Sep 17 00:00:00 2001
+From ce9ad8c80cec3f2cc10d9b05c63448daa7f27ed3 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 3 Sep 2013 22:27:26 -0400
 Subject: [PATCH] arm: LLVMLinux: Provide __aeabi_* symbols which are needed
@@ -12,8 +12,8 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 ---
  arch/arm/lib/Makefile |  4 ++++
- arch/arm/lib/eabi.c   | 32 ++++++++++++++++++++++++++++++++
- 2 files changed, 36 insertions(+)
+ arch/arm/lib/eabi.c   | 28 ++++++++++++++++++++++++++++
+ 2 files changed, 32 insertions(+)
  create mode 100644 arch/arm/lib/eabi.c
 
 diff --git a/arch/arm/lib/Makefile b/arch/arm/lib/Makefile
@@ -33,18 +33,14 @@ index 0573faa..b585fcf 100644
  # the code in uaccess.S is not preemption safe and
 diff --git a/arch/arm/lib/eabi.c b/arch/arm/lib/eabi.c
 new file mode 100644
-index 0000000..41b27b2
+index 0000000..636a403
 --- /dev/null
 +++ b/arch/arm/lib/eabi.c
-@@ -0,0 +1,32 @@
-+/*
-+ *  linux/lib/eabi.c
-+ *
-+ *  Copyright (C) 2012  Mark Charlebois
-+ */
-+
+@@ -0,0 +1,28 @@
 +/*
 + * EABI routines
++ *
++ *  Copyright (C) 2012  Mark Charlebois
 + */
 +
 +#include <linux/types.h>
@@ -70,5 +66,5 @@ index 0000000..41b27b2
 +}
 +EXPORT_SYMBOL(__aeabi_memset);
 -- 
-1.8.3.2
+1.9.1
 

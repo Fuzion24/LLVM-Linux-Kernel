@@ -1,13 +1,14 @@
-From 112e7a57b5d35b745db1c371b9a2590b63c1cdcd Mon Sep 17 00:00:00 2001
+From 2ed918438068e8c119166ac8c0ba1ea2230e5f3f Mon Sep 17 00:00:00 2001
 From: Mark Charlebois <charlebm@gmail.com>
 Date: Thu, 4 Sep 2014 14:16:17 -0700
-Subject: [PATCH] named_register-percpu-arm
+Subject: [PATCH] arm: LLVMLinux: Use global stack register variable for percpu
 
 Using global current_stack_pointer works on both clang and gcc.
 current_stack_pointer is an unsigned long and needs to be cast
 as a pointer to dereference.
 
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+Signed-off-by: Behan Webster <behanw@converseincode.com>
 ---
  arch/arm/include/asm/percpu.h | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)

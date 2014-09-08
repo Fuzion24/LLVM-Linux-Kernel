@@ -1,4 +1,4 @@
-From e8c2412d245503bb1f66ed651e0722e3b53da9be Mon Sep 17 00:00:00 2001
+From 3d0d49c6d2c41f5dea08a5f41aa9435669d19aad Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Fri, 4 Apr 2014 18:18:00 -0300
 Subject: [PATCH] security, crypto: LLVMLinux: Remove VLAIS from ima_crypto.c
@@ -24,17 +24,17 @@ as would be the case for a struct containing a member with
 CRYPTO_MINALIGN_ATTR.
 
 Signed-off-by: Behan Webster <behanw@converseincode.com>
-Signed-off-by: Mark Charlebois <charlebm@gmail.com>
-Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
+Reviewed-by: Mark Charlebois <charlebm@gmail.com>
+Reviewed-by: Jan-Simon Möller <dl9pf@gmx.de>
 ---
- security/integrity/ima/ima_crypto.c | 53 +++++++++++++++++--------------------
- 1 file changed, 25 insertions(+), 28 deletions(-)
+ security/integrity/ima/ima_crypto.c | 51 +++++++++++++++++--------------------
+ 1 file changed, 23 insertions(+), 28 deletions(-)
 
 diff --git a/security/integrity/ima/ima_crypto.c b/security/integrity/ima/ima_crypto.c
-index 0bd7328..a6aa2b0 100644
+index 0bd7328..bb55737 100644
 --- a/security/integrity/ima/ima_crypto.c
 +++ b/security/integrity/ima/ima_crypto.c
-@@ -380,17 +380,16 @@ static int ima_calc_file_hash_tfm(struct file *file,
+@@ -380,17 +380,14 @@ static int ima_calc_file_hash_tfm(struct file *file,
  	loff_t i_size, offset = 0;
  	char *rbuf;
  	int rc, read = 0;
@@ -42,9 +42,7 @@ index 0bd7328..a6aa2b0 100644
 -		struct shash_desc shash;
 -		char ctx[crypto_shash_descsize(tfm)];
 -	} desc;
-+	char desc[sizeof(struct shash_desc) +
-+		crypto_shash_descsize(tfm)] CRYPTO_MINALIGN_ATTR;
-+	struct shash_desc *shash = (struct shash_desc *)desc;
++	SHASH_DESC_ON_STACK(shash, tfm);
  
 -	desc.shash.tfm = tfm;
 -	desc.shash.flags = 0;
@@ -58,7 +56,7 @@ index 0bd7328..a6aa2b0 100644
  	if (rc != 0)
  		return rc;
  
-@@ -420,7 +419,7 @@ static int ima_calc_file_hash_tfm(struct file *file,
+@@ -420,7 +417,7 @@ static int ima_calc_file_hash_tfm(struct file *file,
  			break;
  		offset += rbuf_len;
  
@@ -67,7 +65,7 @@ index 0bd7328..a6aa2b0 100644
  		if (rc)
  			break;
  	}
-@@ -429,7 +428,7 @@ static int ima_calc_file_hash_tfm(struct file *file,
+@@ -429,7 +426,7 @@ static int ima_calc_file_hash_tfm(struct file *file,
  	kfree(rbuf);
  out:
  	if (!rc)
@@ -76,7 +74,7 @@ index 0bd7328..a6aa2b0 100644
  	return rc;
  }
  
-@@ -487,18 +486,17 @@ static int ima_calc_field_array_hash_tfm(struct ima_field_data *field_data,
+@@ -487,18 +484,17 @@ static int ima_calc_field_array_hash_tfm(struct ima_field_data *field_data,
  					 struct ima_digest_data *hash,
  					 struct crypto_shash *tfm)
  {
@@ -101,7 +99,7 @@ index 0bd7328..a6aa2b0 100644
  	if (rc != 0)
  		return rc;
  
-@@ -508,7 +506,7 @@ static int ima_calc_field_array_hash_tfm(struct ima_field_data *field_data,
+@@ -508,7 +504,7 @@ static int ima_calc_field_array_hash_tfm(struct ima_field_data *field_data,
  		u32 datalen = field_data[i].len;
  
  		if (strcmp(td->name, IMA_TEMPLATE_IMA_NAME) != 0) {
@@ -110,7 +108,7 @@ index 0bd7328..a6aa2b0 100644
  						(const u8 *) &field_data[i].len,
  						sizeof(field_data[i].len));
  			if (rc)
-@@ -518,13 +516,13 @@ static int ima_calc_field_array_hash_tfm(struct ima_field_data *field_data,
+@@ -518,13 +514,13 @@ static int ima_calc_field_array_hash_tfm(struct ima_field_data *field_data,
  			data_to_hash = buffer;
  			datalen = IMA_EVENT_NAME_LEN_MAX + 1;
  		}
@@ -126,7 +124,7 @@ index 0bd7328..a6aa2b0 100644
  
  	return rc;
  }
-@@ -565,15 +563,14 @@ static int __init ima_calc_boot_aggregate_tfm(char *digest,
+@@ -565,15 +561,14 @@ static int __init ima_calc_boot_aggregate_tfm(char *digest,
  {
  	u8 pcr_i[TPM_DIGEST_SIZE];
  	int rc, i;
@@ -148,7 +146,7 @@ index 0bd7328..a6aa2b0 100644
  	if (rc != 0)
  		return rc;
  
-@@ -581,10 +578,10 @@ static int __init ima_calc_boot_aggregate_tfm(char *digest,
+@@ -581,10 +576,10 @@ static int __init ima_calc_boot_aggregate_tfm(char *digest,
  	for (i = TPM_PCR0; i < TPM_PCR8; i++) {
  		ima_pcrread(i, pcr_i);
  		/* now accumulate with current aggregate */
