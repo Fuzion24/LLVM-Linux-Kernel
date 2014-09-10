@@ -1,0 +1,36 @@
+From 592fbb2271f34b53108b4562cd781569ac449aa0 Mon Sep 17 00:00:00 2001
+From: Mark Charlebois <charlebm@gmail.com>
+Date: Wed, 12 Feb 2014 12:16:58 -0800
+Subject: [PATCH] arm64: LLVMLinux: Fix inline arm64 assembly for use with
+ clang
+
+Fix variable types for 64-bit inline assembly.
+
+This patch now works with both gcc and clang.
+
+Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+Signed-off-by: Behan Webster <behanw@converseincode.com>
+---
+ arch/arm64/include/asm/arch_timer.h | 26 +++++++++++++++-----------
+ arch/arm64/include/asm/uaccess.h    |  2 +-
+ arch/arm64/kernel/debug-monitors.c  |  8 ++++----
+ arch/arm64/kernel/perf_event.c      | 34 +++++++++++++++++-----------------
+ arch/arm64/mm/mmu.c                 |  2 +-
+ 5 files changed, 38 insertions(+), 34 deletions(-)
+
+diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+index c555672..6894ef3 100644
+--- a/arch/arm64/mm/mmu.c
++++ b/arch/arm64/mm/mmu.c
+@@ -94,7 +94,7 @@ static int __init early_cachepolicy(char *p)
+ 	 */
+ 	asm volatile(
+ 	"	mrs	%0, mair_el1\n"
+-	"	bfi	%0, %1, #%2, #8\n"
++	"	bfi	%0, %1, %2, #8\n"
+ 	"	msr	mair_el1, %0\n"
+ 	"	isb\n"
+ 	: "=&r" (tmp)
+-- 
+1.9.1
+
