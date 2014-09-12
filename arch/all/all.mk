@@ -125,6 +125,7 @@ list-var: list-buildroot
 	$(call echovar,BITCODE); \
 	$(call echovar,CC); \
 	$(call echovar,CFLAGS); \
+	$(call echovar,CLANG); \
 	$(call echovar,CLANGCC); \
 	$(call echovar,COMPILER_PATH); \
 	$(call echovar,CROSS_COMPILE); \
