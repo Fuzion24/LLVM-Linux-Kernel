@@ -13,4 +13,4 @@ named_register-percpu-arm.patch
 #unwind_support.patch
 bcm_kona_smc.patch
 mach-vt8500.patch
-nested-function-msm-hdmi.patch
+#nested-function-msm-hdmi.patch

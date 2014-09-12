@@ -1,4 +1,4 @@
-From 83cc95bf05e1b4c6f14f58bd54ed683067bd9a9c Mon Sep 17 00:00:00 2001
+From 016766a17a620dd23837bdcb40af9cf245d8d244 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 3 Sep 2013 22:27:26 -0400
 Subject: [PATCH] Kbuild arm: LLVMLinux: Add Kbuild support for building arch
@@ -12,12 +12,12 @@ Author: Behan Webster <behanw@converseincode.com>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Reviewed-by: Mark Charlebois <charlebm@gmail.com>
 ---
- arch/arm/Makefile                 | 10 ++++++++--
+ arch/arm/Makefile                 | 12 +++++++++---
  arch/arm/boot/compressed/Makefile |  2 +-
- 2 files changed, 9 insertions(+), 3 deletions(-)
+ 2 files changed, 10 insertions(+), 4 deletions(-)
 
 diff --git a/arch/arm/Makefile b/arch/arm/Makefile
-index 0ce9d0f..49b115e 100644
+index 0ce9d0f..2c00d8a 100644
 --- a/arch/arm/Makefile
 +++ b/arch/arm/Makefile
 @@ -23,6 +23,12 @@ OBJCOPYFLAGS	:=-O binary -R .comment -S
@@ -33,6 +33,15 @@ index 0ce9d0f..49b115e 100644
  # Never generate .eh_frame
  KBUILD_CFLAGS	+= $(call cc-option,-fno-dwarf2-cfi-asm)
  
+@@ -37,7 +43,7 @@ KBUILD_CFLAGS	+= $(call cc-option,-mno-unaligned-access)
+ endif
+ 
+ ifeq ($(CONFIG_FRAME_POINTER),y)
+-KBUILD_CFLAGS	+=-fno-omit-frame-pointer -mapcs -mno-sched-prolog
++KBUILD_CFLAGS	+=-fno-omit-frame-pointer $(call cc-option,-mapcs,) $(call cc-option,-mno-sched-prolog,)
+ endif
+ 
+ ifeq ($(CONFIG_CPU_BIG_ENDIAN),y)
 @@ -96,7 +102,7 @@ tune-$(CONFIG_CPU_V6K)		=$(call cc-option,-mtune=arm1136j-s,-mtune=strongarm)
  tune-y := $(tune-y)
  
