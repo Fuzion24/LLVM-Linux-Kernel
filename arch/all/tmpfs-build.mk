@@ -84,3 +84,12 @@ tmpfs-build-teardown:
 
 ##############################################################################
 tmpfs-build-remount tmpfs-build-clean tmpfs-clean : tmpfs-build-teardown tmpfs-build-setup
+
+##############################################################################
+tmpfs-size:
+	@du -sk ${BUILDROOT}/*/*
+
+##############################################################################
+shared-size:
+	@du -sk ${SHARED_ROOT}/*/*
+	@du -sk ${SHARED_ROOT}
