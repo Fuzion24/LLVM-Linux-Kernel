@@ -77,7 +77,8 @@ kernel-quilt-help:
 	@echo "* make kernel-quilt-update-series-dot-target"
 	@echo "			- Save updates from kernel quilt series file to series.target file"
 	@echo "* make kernel-quilt-link-patches"
-	@echo "			- Link kernel patches to target patches directory"
+	@echo "	 		- Link kernel patches to target patches directory"
+	@echo "* make refresh	- Rebuild series file and quilt patch symlinks"
 	@echo "* make kernel-patches-tar"
 	@echo "			- build a patches.tar.bz2 file containing all the patches for this target"
 	@echo "* make kernel-quilt-clean-broken-symlinks"
@@ -211,6 +212,7 @@ series:
 		rm -f ${TARGET_PATCH_SERIES}; \
 		$(MAKE) ${TARGET_PATCH_SERIES}; \
 	)
+refresh: kernel-quilt-link-patches series
 
 ##############################################################################
 # Have git ignore extra patch files
@@ -231,7 +233,7 @@ kernel-quilt-clean-broken-symlinks:
 
 ##############################################################################
 # Move updated patches back to their proper place, and link patch files into target patches dir
-kernel-quilt-link-patches refresh: ${QUILT_GITIGNORE}
+kernel-quilt-link-patches: ${QUILT_GITIGNORE}
 	@[ -z "${GENERIC_PATCH_SERIES}" ] \
 	|| ($(MAKE) kernel-quilt-update-series-dot-target kernel-quilt-clean-broken-symlinks \
 	&& $(call banner,Linking quilt patches for kernel...) \
