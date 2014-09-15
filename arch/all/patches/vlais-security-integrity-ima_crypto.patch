@@ -26,6 +26,7 @@ CRYPTO_MINALIGN_ATTR.
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Reviewed-by: Mark Charlebois <charlebm@gmail.com>
 Reviewed-by: Jan-Simon Möller <dl9pf@gmx.de>
+Cc: tglx@linutronix.de
 ---
  security/integrity/ima/ima_crypto.c | 51 +++++++++++++++++--------------------
  1 file changed, 23 insertions(+), 28 deletions(-)
