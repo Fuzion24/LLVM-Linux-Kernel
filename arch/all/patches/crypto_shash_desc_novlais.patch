@@ -1,4 +1,4 @@
-From 748da254060c6dcdba9d8484aab4a44688f7831a Mon Sep 17 00:00:00 2001
+From 459451593d8874dae564b17c63dc1d35271e4705 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Mon, 8 Sep 2014 00:05:09 -0500
 Subject: [PATCH] crypto: LLVMLinux: Add macro to remove use of VLAIS in crypto
@@ -22,12 +22,13 @@ as would be the case for a struct containing a member with
 CRYPTO_MINALIGN_ATTR.
 
 Signed-off-by: Behan Webster <behanw@converseincode.com>
+Cc: Michał Mirosław <mirqus@gmail.com>
 ---
  include/crypto/hash.h | 5 +++++
  1 file changed, 5 insertions(+)
 
 diff --git a/include/crypto/hash.h b/include/crypto/hash.h
-index a391955..541125b 100644
+index a391955..ab8e6a0 100644
 --- a/include/crypto/hash.h
 +++ b/include/crypto/hash.h
 @@ -58,6 +58,11 @@ struct shash_desc {
@@ -35,7 +36,7 @@ index a391955..541125b 100644
  };
  
 +#define SHASH_DESC_ON_STACK(shash, tfm)				  \
-+	char __desc[sizeof(struct shash_desc) +                   \
++	char __##shash##__desc[sizeof(struct shash_desc) +	  \
 +		crypto_shash_descsize(tfm)] CRYPTO_MINALIGN_ATTR; \
 +	struct shash_desc *shash = (struct shash_desc *)__desc
 +
