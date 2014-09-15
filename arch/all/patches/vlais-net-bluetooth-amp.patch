@@ -15,6 +15,8 @@ The new code can be compiled with both gcc and clang.
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Reviewed-by: Mark Charlebois <charlebm@gmail.com>
 Reviewed-by: Jan-Simon Möller <dl9pf@gmx.de>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
 ---
  net/bluetooth/amp.c | 11 ++++-------
  1 file changed, 4 insertions(+), 7 deletions(-)

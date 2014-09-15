@@ -23,6 +23,8 @@ Signed-off-by: Vinícius Tinti <viniciustinti@gmail.com>
 Reviewed-by: Jan-Simon Möller <dl9pf@gmx.de>
 Reviewed-by: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
 ---
  fs/btrfs/hash.c | 16 +++++++---------
  1 file changed, 7 insertions(+), 9 deletions(-)
