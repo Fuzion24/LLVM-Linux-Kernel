@@ -370,7 +370,8 @@ state/kernel-configure: state/kernel-patch ${TMPFS_MOUNT} ${KERNEL_CFG} ${STATE_
 		REV=$(call gitsvnrev,${LLVMDIR}); \
 		sed -i -e "s/-llvmlinux/-llvmlinux-Lr$$REV/g" ${KERNEL_BUILD}/.config; \
 	) fi
-	(cd ${KERNELDIR} && echo "" | ${KERNEL_ENV} make ${MAKE_FLAGS} oldconfig)
+	(cd ${KERNELDIR} && echo "" | ${KERNEL_ENV} make ${MAKE_FLAGS} oldconfig) \
+		2> >(grep -v '^Error in reading or end of file.$$')
 	$(call state,$@,kernel-build)
 
 #############################################################################
