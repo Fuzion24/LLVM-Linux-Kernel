@@ -4,17 +4,13 @@ Date: Wed, 12 Feb 2014 12:16:58 -0800
 Subject: [PATCH] arm64: LLVMLinux: Fix inline arm64 assembly for use with
  clang
 
-Fix variable types for 64-bit inline assembly.
+Remove '#' from immediate parameter in AARCH64 inline assembly in mmu.
 
-This patch now works with both gcc and clang.
+This code now works with both gcc and clang.
 
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 ---
- arch/arm64/include/asm/arch_timer.h | 26 +++++++++++++++-----------
- arch/arm64/include/asm/uaccess.h    |  2 +-
- arch/arm64/kernel/debug-monitors.c  |  8 ++++----
- arch/arm64/kernel/perf_event.c      | 34 +++++++++++++++++-----------------
  arch/arm64/mm/mmu.c                 |  2 +-
  5 files changed, 38 insertions(+), 34 deletions(-)
 
