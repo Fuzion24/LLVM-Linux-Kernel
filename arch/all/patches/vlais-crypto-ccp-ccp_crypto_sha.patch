@@ -1,4 +1,4 @@
-From e2b51381ed4e6ed42e10fc558ff7158287d057e4 Mon Sep 17 00:00:00 2001
+From b2285adab817d98aab4419a95c14976283ff2e1d Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
 Date: Thu, 4 Sep 2014 20:39:24 +0200
 Subject: [PATCH] crypto: LLVMLinux: Remove VLAIS from
@@ -9,20 +9,9 @@ Content-Transfer-Encoding: 8bit
 
 Replaced the use of a Variable Length Array In Struct (VLAIS) with a C99
 compliant equivalent. This patch allocates the appropriate amount of memory
-using an char array.
+using a char array using the SHASH_DESC_ON_STACK macro.
 
 The new code can be compiled with both gcc and clang.
-
-struct shash_desc contains a flexible array member member ctx declared with
-CRYPTO_MINALIGN_ATTR, so sizeof(struct shash_desc) aligns the beginning
-of the array declared after struct shash_desc with long long.
-
-No trailing padding is required because it is not a struct type that can
-be used in an array.
-
-The CRYPTO_MINALIGN_ATTR is required so that desc is aligned with long long
-as would be the case for a struct containing a member with
-CRYPTO_MINALIGN_ATTR.
 
 Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
 Signed-off-by: Behan Webster <behanw@converseincode.com>

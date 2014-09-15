@@ -7,28 +7,10 @@ Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
 Replaced the use of a Variable Length Array In Struct (VLAIS) with a C99
-compliant equivalent. This is the original VLAIS struct.
-
-struct {
-	struct aead_request     req;
-	u8                      priv[crypto_aead_reqsize(tfm)];
-} aead_req;
-
-This patch instead allocates the appropriate amount of memory using an char
-array.
+compliant equivalent. This patch allocates the appropriate amount of memory
+using a char array using the SHASH_DESC_ON_STACK macro.
 
 The new code can be compiled with both gcc and clang.
-
-struct aead_request contains a flexible array member member __ctx declared 
-with CRYPTO_MINALIGN_ATTR, so sizeof(struct aead_request) aligns the beginning 
-of the array declared after struct aead_request with long long.
-
-No trailing padding is required because it is not a struct type that can 
-be used in an array.
-
-The CRYPTO_MINALIGN_ATTR is required so that aead_req_data is aligned with 
-long long as would be the case for a struct containing a member with 
-CRYPTO_MINALIGN_ATTR.
 
 Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
 Reviewed-by: Vinícius Tinti <viniciustinti@gmail.com>
