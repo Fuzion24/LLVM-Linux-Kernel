@@ -99,12 +99,11 @@ gitclone = [ -d ${2}/.git ] || (rm -rf ${2} && git clone ${1} ${2} ${3})
 gitcheckout = (cd ${1} && git checkout ${2} && ([ -z "${3}" ] || git pull && git checkout ${3}))
 gitcommit = [ ! -d ${1}/.git ] || (cd ${1} && $(call prsetting,${2},`git rev-parse HEAD`))
 git = (cd ${1} && git ${2})
-gitabort = $(call git,${1},config --get ${1})
 gitabort = $(call git,${1},rebase --abort 2>/dev/null)
 gitconfig = $(call git,${TOPDIR},config --get ${1})
 gitdate	= $(call prsetting,${2},`$(call git,${1},show -s --format=%ci HEAD)`)
 gitmove = $(call git,${1},branch --move ${2} $3 >/dev/null 2>&1)
-gitpull = $(call git,${1},fetch origin && git checkout ${2})
+gitpull = $(call git,${1},fetch origin && git checkout ${2} && git pull)
 gitreset = ([ -d ${1} ] && cd ${1} && $(call echo,Reseting git tree ${1}) && git remote update && git reset --hard origin/master && git clean -d -f) || true
 ifneq "${GIT_HARD_RESET}" ""
 optional_gitreset = $(call gitreset,${1})
