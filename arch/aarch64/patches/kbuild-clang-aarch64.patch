@@ -4,9 +4,8 @@ Date: Tue, 3 Sep 2013 22:27:26 -0400
 Subject: [PATCH] Kbuild, arm64, LLVMLinux: Add Kbuild support for building
  arch arm64 with Clang
 
-Protect more options for arm64 with cc-option so that we don't get errors when
-using clang instead of gcc.  Add more or different options when using clang as
-well.
+When compiling with clang, turn off builtins, and warnings which are too noisy
+when compiling the arm64 kernel.
 
 Author: Behan Webster <behanw@converseincode.com>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
