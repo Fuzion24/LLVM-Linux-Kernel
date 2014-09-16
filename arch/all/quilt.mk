@@ -50,9 +50,13 @@ tar_patches	= mkdir -p $(dir $@); tar chfj ${1} patches/series `grep -v '^\#' pa
 link_files	= $(call banner,Symlink ${1} "->" ${2}); rm -f ${1}; ln -sf ${2} ${1}
 
 #############################################################################
-QUILT_TARGETS		= kernel-quilt kernel-quilt-clean kernel-quilt-generate-series kernel-quilt-update-series-dot-target \
-				kernel-quilt-link-patches kernel-patches-tar kernel-quilt-clean-broken-symlinks \
-				list-kernel-patches list-kernel-patches-path list-kernel-patches-series list-kernel-maintainer list-kernel-checkpatch
+QUILT_TARGETS		= kernel-quilt kernel-quilt-clean kernel-quilt-generate-series \
+			kernel-quilt-update-series-dot-target kernel-quilt-link-patches \
+			kernel-patches-tar kernel-quilt-clean-broken-symlinks \
+			list-kernel-patches list-kernel-patches-path \
+			list-kernel-patches-series list-kernel-maintainer \
+			list-kernel-checkpatch
+
 TARGETS_BUILD		+= ${QUILT_TARGETS}
 CLEAN_TARGETS		+= kernel-quilt-clean
 HELP_TARGETS		+= kernel-quilt-help
@@ -224,6 +228,9 @@ ${QUILT_GITIGNORE}: ${GENERIC_PATCH_SERIES}
 	@echo .gitignore > $@
 	@echo series >> $@
 	@$(call catuniq,${GENERIC_PATCH_SERIES}) >> $@
+kernel-quilt-ignore-links-refresh:
+	@rm -rf ${QUILT_GITIGNORE}
+	@$(MAKE) ${QUILT_GITIGNORE}
 
 ##############################################################################
 # Remove broken symbolic links to old patches
@@ -252,6 +259,7 @@ kernel-quilt-link-patches: ${QUILT_GITIGNORE}
 			fi ; \
 		done ; \
 	done | sed -e 's|${TARGETDIR}|.|g; s|${TOPDIR}|...|g')
+	@$(MAKE) kernel-quilt-ignore-links-refresh
 	@$(MAKE) ${TARGET_PATCH_SERIES}
 
 ##############################################################################
