@@ -1,7 +1,7 @@
 From 768e54612fdeb60cddadf8cd89a53cb683c18a53 Mon Sep 17 00:00:00 2001
 From: Mark Charlebois <charlebm@gmail.com>
 Date: Tue, 29 Jul 2014 18:55:36 -0700
-Subject: [PATCH] crypto: LLVMLinux: Explicitly pass through assembler options
+Subject: [PATCH] DO-NOT-UPSTREAM crypto: LLVMLinux: Explicitly pass through assembler options
 
 Clang does not implicitly pass the -march flag to the assembler, but gcc does.
 
@@ -20,7 +20,7 @@ make[2]: *** [arch/arm64/crypto] Error 2
 The change was also tested with GCC. GCC requires the flag to be
 passed without -Xassembler. Both GCC and Clang work when -Wa is used.
 
-Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+Not-signed-off-by: Mark Charlebois <charlebm@gmail.com>
 ---
  arch/arm64/crypto/Makefile | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)

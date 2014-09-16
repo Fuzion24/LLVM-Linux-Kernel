@@ -1,7 +1,7 @@
 From fce53abf76dca656c4ae95d13bdb40b9b6e5e0c3 Mon Sep 17 00:00:00 2001
 From: Mark Charlebois <charlebm@gmail.com>
 Date: Wed, 12 Feb 2014 12:16:58 -0800
-Subject: [PATCH] arm64: LLVMLinux: Check for NULL in
+Subject: [PATCH] DO-NOT-UPSTREAM arm64: LLVMLinux: Check for NULL in
  futext_atomic_cmpxchg_inatomic()
 
 futex_init passes in uaddr = 0. The LLVM optimizer will see
@@ -9,7 +9,7 @@ that *uaddr is 0, set the register to xzr and compilation
 will fail.
 
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
-Signed-off-by: Behan Webster <behanw@converseincode.com>
+Not-signed-off-by: Behan Webster <behanw@converseincode.com>
 ---
  arch/arm64/include/asm/futex.h | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
