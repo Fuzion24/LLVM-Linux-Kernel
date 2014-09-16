@@ -24,13 +24,11 @@
 
 TARGETDIR	= ${CURDIR}
 TOPDIR		= $(realpath ${TARGETDIR}/../..)
-CROSS_ARM_TOOLCHAIN = linaro
+CROSS_ARM_TOOLCHAIN = codesourcery
 CLANG_TOOLCHAIN	= source
 
-KERNEL_BRANCH	= ubuntu-ifc6410-14.07
-KERNEL_GIT	= https://git.linaro.org/landing-teams/working/qualcomm/kernel.git
-KERNELDIR	= ${SRCDIR}/kernel-msm
-KERNEL_CFG	= ${KERNELDIR}/arch/arm/configs/ifc6410_defconfig
+KERNEL_CFG	= ${KERNELDIR}/arch/arm/configs/multi_v7_defconfig 
+KERNEL_DTS	= ${KERNELDIR}/arch/arm/boot/dts/qcom-apq8064-ifc6410.dts 
 
 #Use the branch name for the dir containing MSM specific patch overrides
 KERNEL_REPO_PATCHES=${KERNEL_BRANCH}
@@ -43,9 +41,6 @@ all: prep kernel-build
 include ${TOPDIR}/common.mk
 include ${ARCHDIR}/arm/arm.mk
 
-KERNEL_PATCH_DIR	+= ${TOPDIR}/arch/all/patches/v3.14
-KERNEL_PATCH_DIR	+= ${TOPDIR}/arch/all/patches/v3.4
-KERNEL_PATCH_DIR	+= ${TOPDIR}/arch/arm/patches/v3.4
 KERNEL_PATCH_DIR	+= ${TARGETDIR}/patches-overlay
 KERNEL_PATCH_DIR	+= ${TARGETDIR}/patches
 

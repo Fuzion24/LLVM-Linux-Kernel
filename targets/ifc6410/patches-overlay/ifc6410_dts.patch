@@ -1,0 +1,32 @@
+From 616127b363ed035c97b51798b63b388b94ba32f4 Mon Sep 17 00:00:00 2001
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Date: Mon, 16 Jun 2014 09:23:37 +0100
+Subject: [PATCH] ARM: DT: apq8064: Add board memory range.
+
+This patch adds memory details of IFC6410 as this is necessary to
+overwrite the in-correct memory start comming from ATAGs.
+
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ arch/arm/boot/dts/qcom-apq8064-ifc6410.dts | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/arch/arm/boot/dts/qcom-apq8064-ifc6410.dts b/arch/arm/boot/dts/qcom-apq8064-ifc6410.dts
+index 9991391..3c3b43e 100644
+--- a/arch/arm/boot/dts/qcom-apq8064-ifc6410.dts
++++ b/arch/arm/boot/dts/qcom-apq8064-ifc6410.dts
+@@ -4,6 +4,11 @@
+ 	model = "Qualcomm APQ8064/IFC6410";
+ 	compatible = "qcom,apq8064-ifc6410", "qcom,apq8064";
+ 
++	memory{
++		device_type = "memory";
++		reg = <0x80000000 0x80000000>;
++	};
++
+ 	soc {
+ 		gsbi@16600000 {
+ 			status = "ok";
+-- 
+2.0.2
+
