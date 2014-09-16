@@ -1,8 +1,11 @@
-From 459451593d8874dae564b17c63dc1d35271e4705 Mon Sep 17 00:00:00 2001
+From 2744b150252facd62eabab927bc7468e94bc7592 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Mon, 8 Sep 2014 00:05:09 -0500
 Subject: [PATCH] crypto: LLVMLinux: Add macro to remove use of VLAIS in crypto
  code
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
 Add a macro which replaces the use of a Variable Length Array In Struct (VLAIS)
 with a C99 compliant equivalent. This macro instead allocates the appropriate
@@ -38,7 +41,7 @@ index a391955..ab8e6a0 100644
 +#define SHASH_DESC_ON_STACK(shash, tfm)				  \
 +	char __##shash##__desc[sizeof(struct shash_desc) +	  \
 +		crypto_shash_descsize(tfm)] CRYPTO_MINALIGN_ATTR; \
-+	struct shash_desc *shash = (struct shash_desc *)__desc
++	struct shash_desc *shash = (struct shash_desc *)__##shash##__desc
 +
  struct shash_alg {
  	int (*init)(struct shash_desc *desc);
