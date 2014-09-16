@@ -333,3 +333,11 @@ kernel-quilt-clean kernel-quilt-mrproper kernel-quilt-raze: ${SERIES_DOT_TARGET}
 	@rm -f ${QUILT_STATE}
 	@$(call banner,Quilting cleaned)
 
+##############################################################################
+kernel-quilt-pop:
+	-@(cd ${KERNELDIR} && quilt pop -a)
+kernel-quilt-push:
+	-@(cd ${KERNELDIR} && quilt push -a)
+kernel-quilt-refresh:
+	-@(cd ${KERNELDIR} && quilt refresh)
+kernel-quilt-pop-push: kernel-quilt-pop kernel-quilt-push
