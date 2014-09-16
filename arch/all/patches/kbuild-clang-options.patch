@@ -1,14 +1,14 @@
-From 965064656d70d41134451e8fb561c19af6f3f70a Mon Sep 17 00:00:00 2001
+From 23a3706fb7c5c310ba01735148772e2fd1b2c1c5 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Mon, 15 Sep 2014 17:10:34 -0700
 Subject: [PATCH] kbuild-clang-options
 
 ---
- Makefile | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ Makefile | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/Makefile b/Makefile
-index 7c0e935..606be34 100644
+index 336c36c..02c996e 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -624,10 +624,6 @@ all: vmlinux
@@ -22,11 +22,14 @@ index 7c0e935..606be34 100644
  ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
  KBUILD_CFLAGS	+= -Os $(call cc-disable-warning,maybe-uninitialized,)
  else
-@@ -694,6 +690,11 @@ KBUILD_CPPFLAGS += $(call cc-option,-Wno-unknown-warning-option,)
+@@ -690,10 +686,13 @@ KBUILD_CFLAGS += $(stackp-flag)
+ 
+ ifeq ($(COMPILER),clang)
+ KBUILD_CPPFLAGS += $(call cc-option,-Qunused-arguments,)
+-KBUILD_CPPFLAGS += $(call cc-option,-Wno-unknown-warning-option,)
  KBUILD_CFLAGS += $(call cc-disable-warning, unused-variable)
  KBUILD_CFLAGS += $(call cc-disable-warning, format-invalid-specifier)
  KBUILD_CFLAGS += $(call cc-disable-warning, gnu)
-+KBUILD_CFLAGS += -Wa,-mno-warn-deprecated
 +KBUILD_CFLAGS += -Wno-asm-operand-widths
 +KBUILD_CFLAGS += -Wno-initializer-overrides
 +KBUILD_CFLAGS += -fno-builtin
@@ -34,7 +37,7 @@ index 7c0e935..606be34 100644
  # Quiet clang warning: comparison of unsigned expression < 0 is always false
  KBUILD_CFLAGS += $(call cc-disable-warning, tautological-compare)
  # CLANG uses a _MergedGlobals as optimization, but this breaks modpost, as the
-@@ -704,6 +705,7 @@ KBUILD_CFLAGS += $(call cc-option, -ffreestanding,)
+@@ -703,6 +702,7 @@ KBUILD_CFLAGS += $(call cc-option, -mno-global-merge,)
  
  else
  
