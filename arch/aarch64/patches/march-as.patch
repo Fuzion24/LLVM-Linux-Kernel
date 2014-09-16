@@ -1,7 +1,8 @@
-From 768e54612fdeb60cddadf8cd89a53cb683c18a53 Mon Sep 17 00:00:00 2001
+From caeefefecaa83e02c2f9aa12d264f02bea0a9b07 Mon Sep 17 00:00:00 2001
 From: Mark Charlebois <charlebm@gmail.com>
 Date: Tue, 29 Jul 2014 18:55:36 -0700
-Subject: [PATCH] DO-NOT-UPSTREAM crypto: LLVMLinux: Explicitly pass through assembler options
+Subject: [PATCH] DO-NOT-UPSTREAM crypto: LLVMLinux: Explicitly pass through
+ assembler options
 
 Clang does not implicitly pass the -march flag to the assembler, but gcc does.
 

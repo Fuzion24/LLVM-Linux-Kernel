@@ -1,4 +1,4 @@
-From 181778823dff74ce346ce77ced9f845022f8d5d9 Mon Sep 17 00:00:00 2001
+From 62d69b8215512033124174b431f3217fb3649b23 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Fri, 30 May 2014 11:35:50 -0700
 Subject: [PATCH] DO-NOT-UPSTREAM arm, vt8500, LLVMLlinux: Comment out mcr if
@@ -8,7 +8,7 @@ The ASM below does not compile with clang and is not the way that the mcr
 command is used in other parts of the kernel.
 
 There is no documentation about the "mcr%?" syntax for GNU inline assembly.
-This may be to choose between MCR and MCRR but its impossible to know.
+This may be to choose between MCR and MCRR.
 
 arch/arm/mach-vt8500/vt8500.c:72:11: error: invalid % escape in inline assembly string
         asm("mcr%? p15, 0, %0, c7, c0, 4" : : "r" (0));
