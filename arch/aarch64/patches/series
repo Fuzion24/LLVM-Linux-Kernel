@@ -1,4 +1,3 @@
-kbuild-clang-aarch64.patch
 current_stack_pointer_aarch64.patch
 named_register-stacktrace-aarch64.patch
 named_register-thread_info-aarch64.patch

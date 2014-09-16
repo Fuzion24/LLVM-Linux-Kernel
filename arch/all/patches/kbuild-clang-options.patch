@@ -1,0 +1,47 @@
+From 965064656d70d41134451e8fb561c19af6f3f70a Mon Sep 17 00:00:00 2001
+From: Behan Webster <behanw@converseincode.com>
+Date: Mon, 15 Sep 2014 17:10:34 -0700
+Subject: [PATCH] kbuild-clang-options
+
+---
+ Makefile | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 7c0e935..606be34 100644
+--- a/Makefile
++++ b/Makefile
+@@ -624,10 +624,6 @@ all: vmlinux
+ 
+ include $(srctree)/arch/$(SRCARCH)/Makefile
+ 
+-ifneq ($(COMPILER),clang)
+-KBUILD_CFLAGS	+= -fno-delete-null-pointer-checks
+-endif
+-
+ ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
+ KBUILD_CFLAGS	+= -Os $(call cc-disable-warning,maybe-uninitialized,)
+ else
+@@ -694,6 +690,11 @@ KBUILD_CPPFLAGS += $(call cc-option,-Wno-unknown-warning-option,)
+ KBUILD_CFLAGS += $(call cc-disable-warning, unused-variable)
+ KBUILD_CFLAGS += $(call cc-disable-warning, format-invalid-specifier)
+ KBUILD_CFLAGS += $(call cc-disable-warning, gnu)
++KBUILD_CFLAGS += -Wa,-mno-warn-deprecated
++KBUILD_CFLAGS += -Wno-asm-operand-widths
++KBUILD_CFLAGS += -Wno-initializer-overrides
++KBUILD_CFLAGS += -fno-builtin
++
+ # Quiet clang warning: comparison of unsigned expression < 0 is always false
+ KBUILD_CFLAGS += $(call cc-disable-warning, tautological-compare)
+ # CLANG uses a _MergedGlobals as optimization, but this breaks modpost, as the
+@@ -704,6 +705,7 @@ KBUILD_CFLAGS += $(call cc-option, -ffreestanding,)
+ 
+ else
+ 
++KBUILD_CFLAGS	+= -fno-delete-null-pointer-checks
+ # This warning generated too much noise in a regular build.
+ # Use make W=1 to enable this warning (see scripts/Makefile.build)
+ KBUILD_CFLAGS += $(call cc-disable-warning, unused-but-set-variable)
+-- 
+1.9.1
+
