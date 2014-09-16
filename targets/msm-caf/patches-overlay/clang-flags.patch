@@ -29,7 +29,7 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
  # Decide whether to build built-in, modular, or both.
  # Normally, just do built-in.
  
-@@ -385,9 +390,12 @@
+@@ -385,9 +390,13 @@
  KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
  		   -fno-strict-aliasing -fno-common \
  		   -Werror-implicit-function-declaration \
@@ -37,8 +37,9 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
 -		   $(call cc-option,-no-integrated-as,) \
 -		   -fno-delete-null-pointer-checks
 +		   -Wno-format-security
-+ifneq ($(COMPILER),clang)
-+KBUILD_CFLAGS	+= no-integrated-as
++ifeq ($(COMPILER),clang)
++KBUILD_CFLAGS	+= -no-integrated-as
++else
 +KBUILD_CFLAGS	+= -fno-delete-null-pointer-checks
 +endif
 +
