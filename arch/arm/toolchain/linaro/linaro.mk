@@ -22,6 +22,7 @@
 ##############################################################################
 
 # Note: use CROSS_ARM_TOOLCHAIN=linaro to include this file
+# Note: On x86_64, need to install libz1g:i386 and libstdc++6:i386
 
 TARGETS		+= linaro-gcc
 
@@ -50,6 +51,7 @@ PATH			:= ${LINARO_CC_BINDIR}:${PATH}
 
 # Get Linaro cross compiler
 ${LINARO_TMPDIR}/${LINARO_CC_TAR}:
+	mkdir -p ${LINARO_TMPDIR}
 	@$(call wget,${LINARO_CC_URL},${LINARO_TMPDIR})
 
 linaro-gcc arm-cc: ${ARCH_ARM_TOOLCHAIN_STATE}/linaro-gcc
@@ -69,3 +71,5 @@ linaro-gcc-clean arm-cc-clean:
 arm-cc-version: ${ARCH_ARM_TOOLCHAIN_STATE}/linaro-gcc
 	@echo -e "LINARO_GCC\t= `${LINARO_GCC} --version | head -1`"
 
+env:
+	echo ${LINARO_TMPDIR}

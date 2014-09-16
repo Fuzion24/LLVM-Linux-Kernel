@@ -24,8 +24,8 @@
 
 TARGETDIR	= ${CURDIR}
 TOPDIR		= $(realpath ${TARGETDIR}/../..)
-CROSS_ARM_TOOLCHAIN = codesourcery
-CLANG_TOOLCHAIN	= source
+CROSS_ARM_TOOLCHAIN = linaro
+CLANG_TOOLCHAIN	= prebuilt
 
 KERNEL_CFG	= ${KERNELDIR}/arch/arm/configs/multi_v7_defconfig 
 KERNEL_DTS	= ${KERNELDIR}/arch/arm/boot/dts/qcom-apq8064-ifc6410.dts 
