@@ -36,11 +36,12 @@ CLANG_32_PKG	= opensuse13.1
 CLANG_64_PKG	= linux-gnu-ubuntu-14.04
 
 ifeq ($(shell uname -i), x86_64)
-CLANG_DIR	= clang+llvm-${CLANG_RELEASE}-x86_64-${CLANG_64_PKG}
+CLANG_DIR	= clang+llvm-${CLANG_RELEASE}-x86_64-linux-gnu
+CLANG_TAR	= clang+llvm-${CLANG_RELEASE}-x86_64-${CLANG_64_PKG}.tar.xz
 else
-CLANG_DIR	= clang+llvm-${CLANG_RELEASE}-i586-${CLANG_32_PKG}
+CLANG_DIR	= clang+llvm-${CLANG_RELEASE}-i586-linux-gnu
+CLANG_TAR	= clang+llvm-${CLANG_RELEASE}-i586-${CLANG_32_PKG}.tar.xz
 endif
-CLANG_TAR	= ${CLANG_DIR}.tar.xz
 CLANG_UNPACK 	= unxz
 CLANG_TAR_FILE	= $(call shared,${CLANG_TMPDIR}/${CLANG_TAR})
 
