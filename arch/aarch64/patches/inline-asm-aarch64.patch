@@ -1,15 +1,15 @@
 From 2706fa2cb845db2971834002093fdcd9ad95707e Mon Sep 17 00:00:00 2001
 From: Mark Charlebois <charlebm@gmail.com>
 Date: Wed, 12 Feb 2014 12:16:58 -0800
-Subject: [PATCH] arm64: LLVMLinux: Fix inline arm64 assembly for use with
+Subject: [PATCH] DO-NOT-UPSTREAM arm64: LLVMLinux: Fix inline arm64 assembly for use with
  clang
 
 Fix variable types for 64-bit inline assembly.
 
 This patch now works with both gcc and clang.
 
-Signed-off-by: Mark Charlebois <charlebm@gmail.com>
-Signed-off-by: Behan Webster <behanw@converseincode.com>
+Not-signed-off-by: Mark Charlebois <charlebm@gmail.com>
+Not-signed-off-by: Behan Webster <behanw@converseincode.com>
 ---
  arch/arm64/include/asm/arch_timer.h | 26 +++++++++++++++-----------
  arch/arm64/include/asm/uaccess.h    |  2 +-
