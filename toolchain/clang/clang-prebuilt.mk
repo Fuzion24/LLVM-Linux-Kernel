@@ -39,7 +39,7 @@ ifeq ($(shell uname -i), x86_64)
 CLANG_DIR	= clang+llvm-${CLANG_RELEASE}-x86_64-linux-gnu
 CLANG_TAR	= clang+llvm-${CLANG_RELEASE}-x86_64-${CLANG_64_PKG}.tar.xz
 else
-CLANG_DIR	= clang+llvm-${CLANG_RELEASE}-i586-linux-gnu
+CLANG_DIR	= clang+llvm-${CLANG_RELEASE}-i586-${CLANG_32_PKG}
 CLANG_TAR	= clang+llvm-${CLANG_RELEASE}-i586-${CLANG_32_PKG}.tar.xz
 endif
 CLANG_UNPACK 	= unxz
