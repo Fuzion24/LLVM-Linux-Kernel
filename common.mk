@@ -103,7 +103,7 @@ gitabort = $(call git,${1},rebase --abort 2>/dev/null)
 gitconfig = $(call git,${TOPDIR},config --get ${1})
 gitdate	= $(call prsetting,${2},`$(call git,${1},show -s --format=%ci HEAD)`)
 gitmove = $(call git,${1},branch --move ${2} $3 >/dev/null 2>&1)
-gitpull = $(call git,${1},fetch origin && ([ -n "${2}" ] && git checkout ${2} || git pull))
+gitpull = $(call git,${1},fetch origin && git pull; [ -n "${2}" ] && git checkout ${2})
 gitreset = ([ -d ${1} ] && cd ${1} && $(call echo,Reseting git tree ${1}) && git remote update && git reset --hard origin/master && git clean -d -f) || true
 ifneq "${GIT_HARD_RESET}" ""
 optional_gitreset = $(call gitreset,${1})
