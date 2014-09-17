@@ -22,6 +22,15 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
+# To run the kernel:
+#
+# cat build/kernel-clang/arch/arm/boot/zImage \
+# build/kernel-clang/arch/arm/boot/dts/qcom-apq8064-ifc6410.dtb > zImage-dtb
+#
+# sudo fastboot boot -c "console=ttyMSM0,115200 root=/dev/mmcblk0p12 rootwait \
+# text rw" -b 0x80200000 zImage-dtb
+
+
 TARGETDIR	= ${CURDIR}
 TOPDIR		= $(realpath ${TARGETDIR}/../..)
 CROSS_ARM_TOOLCHAIN = linaro
