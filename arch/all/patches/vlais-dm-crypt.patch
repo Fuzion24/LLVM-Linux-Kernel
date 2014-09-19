@@ -1,4 +1,4 @@
-From 14ed54c53a022b618045740ee816fcdaf07b728c Mon Sep 17 00:00:00 2001
+From 20d5eec1a9dae21dd0b3d008b958b24e6465af2b Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
 Date: Mon, 2 Jul 2012 13:50:54 +0200
 Subject: [PATCH] crypto, dm: LLVMLinux: Remove VLAIS usage from dm-crypt
@@ -14,10 +14,11 @@ The new code can be compiled with both gcc and clang.
 
 Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
+Reviewed-by: Mark Charlebois <charlebm@gmail.com>
+Acked-by: Herbert Xu <herbert@gondor.apana.org.au>
 Cc: pageexec@freemail.hu
 Cc: gmazyland@gmail.com
 Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
 ---
  drivers/md/dm-crypt.c | 34 ++++++++++++++--------------------
  1 file changed, 14 insertions(+), 20 deletions(-)

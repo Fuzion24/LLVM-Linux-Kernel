@@ -1,4 +1,4 @@
-From 1d2794cd2b7c111800dceb6a1769acddb30e9386 Mon Sep 17 00:00:00 2001
+From c7403eb5a490a1984174cb4e56f8018f147dbb99 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
 Date: Mon, 2 Jul 2012 12:54:28 +0200
 Subject: [PATCH] crypto: LLVMLinux: Remove VLAIS usage from libcrc32c.c
@@ -14,9 +14,10 @@ The new code can be compiled with both gcc and clang.
 
 Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
+Reviewed-by: Mark Charlebois <charlebm@gmail.com>
+Acked-by: Herbert Xu <herbert@gondor.apana.org.au>
 Cc: pageexec@freemail.hu
 Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
 ---
  lib/libcrc32c.c | 16 +++++++---------
  1 file changed, 7 insertions(+), 9 deletions(-)

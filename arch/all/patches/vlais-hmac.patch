@@ -1,4 +1,4 @@
-From 79a2a40f22b2d860e4afd443067ba88c65512818 Mon Sep 17 00:00:00 2001
+From 31bf3f68d78a76eb2bdb37af1016560793ae61ae Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
 Date: Mon, 2 Jul 2012 13:47:40 +0200
 Subject: [PATCH] crypto: LLVMLinux: Remove VLAIS usage from crypto/hmac.c
@@ -14,6 +14,8 @@ The new code can be compiled with both gcc and clang.
 
 Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
+Reviewed-by: Mark Charlebois <charlebm@gmail.com>
+Acked-by: Herbert Xu <herbert@gondor.apana.org.au>
 Cc: pageexec@freemail.hu
 ---
  crypto/hmac.c | 25 +++++++++++--------------

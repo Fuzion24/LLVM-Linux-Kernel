@@ -1,4 +1,4 @@
-From d086d2f660b2c24a9de06a9760cd8c6c9a6c96a2 Mon Sep 17 00:00:00 2001
+From 041c927c80cc486ca05881d0627525bd0b3792cf Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Fri, 4 Apr 2014 18:18:00 -0300
 Subject: [PATCH] security, crypto: LLVMLinux: Remove VLAIS from ima_crypto.c
@@ -15,6 +15,7 @@ The new code can be compiled with both gcc and clang.
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Reviewed-by: Mark Charlebois <charlebm@gmail.com>
 Reviewed-by: Jan-Simon Möller <dl9pf@gmx.de>
+Acked-by: Herbert Xu <herbert@gondor.apana.org.au>
 Cc: tglx@linutronix.de
 ---
  security/integrity/ima/ima_crypto.c | 47 +++++++++++++++----------------------

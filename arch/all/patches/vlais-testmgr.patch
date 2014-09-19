@@ -1,4 +1,4 @@
-From 6d3a26839ff88c417135a06d86b77f9a7c4499b9 Mon Sep 17 00:00:00 2001
+From dda2b86f708f062b0f21abda5557657f1427a9ec Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Jan-Simon=20M=C3=B6ller?= <dl9pf@gmx.de>
 Date: Mon, 2 Jul 2012 13:48:30 +0200
 Subject: [PATCH] crypto: LLVMLinux: Remove VLAIS usage from crypto/testmgr.c
@@ -14,6 +14,8 @@ The new code can be compiled with both gcc and clang.
 
 Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
+Reviewed-by: Mark Charlebois <charlebm@gmail.com>
+Acked-by: Herbert Xu <herbert@gondor.apana.org.au>
 Cc: pageexec@freemail.hu
 ---
  crypto/testmgr.c | 14 ++++++--------

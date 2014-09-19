@@ -1,4 +1,4 @@
-From 5c47d43f937ee349253ebfe7dc1b57c4167c0659 Mon Sep 17 00:00:00 2001
+From 3194e2708a32176992050fc169da5a9d86c16393 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Fri, 4 Apr 2014 18:18:00 -0300
 Subject: [PATCH] crypto: LLVMLinux: Remove VLAIS from crypto/n2_core.c
@@ -15,6 +15,7 @@ The new code can be compiled with both gcc and clang.
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Reviewed-by: Mark Charlebois <charlebm@gmail.com>
 Reviewed-by: Jan-Simon Möller <dl9pf@gmx.de>
+Acked-by: Herbert Xu <herbert@gondor.apana.org.au>
 ---
  drivers/crypto/n2_core.c | 11 ++++-------
  1 file changed, 4 insertions(+), 7 deletions(-)
