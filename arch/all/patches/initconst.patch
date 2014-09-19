@@ -1,4 +1,4 @@
-From 22ceff401b2817e8bbd42642c7411d195916de6d Mon Sep 17 00:00:00 2001
+From 17f6fad3d822344a7770930e90ee8b122d1dec76 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Fri, 30 May 2014 11:35:54 -0700
 Subject: [PATCH] DO-NOT-UPSTREAM gpio, bcm-kona, LLVMLinux: Remove use of
@@ -11,6 +11,7 @@ Instead merely make them const and put the const in the right spot.
 
 Not-signed-off-by: Behan Webster <behanw@converseincode.com>
 Reviewed-by: Mark Charlebois <charlebm@gmail.com>
+Acked-by: Arnd Bergmann <arnd@arndb.de>
 ---
  drivers/gpio/gpio-bcm-kona.c      | 2 +-
  drivers/mmc/host/sdhci-bcm-kona.c | 2 +-

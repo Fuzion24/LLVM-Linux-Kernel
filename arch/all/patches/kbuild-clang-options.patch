@@ -1,19 +1,20 @@
-From 23a3706fb7c5c310ba01735148772e2fd1b2c1c5 Mon Sep 17 00:00:00 2001
+From cd5cce0f30b4707650ec3199c530fee7a41316c0 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Mon, 15 Sep 2014 17:10:34 -0700
 Subject: [PATCH] kbuild-clang-options
 
+Signed-off-by: Behan Webster <behanw@converseincode.com>
 ---
  Makefile | 10 +++++-----
  1 file changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/Makefile b/Makefile
-index 336c36c..02c996e 100644
+index df282ae..2504245 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -624,10 +624,6 @@ all: vmlinux
- 
- include $(srctree)/arch/$(SRCARCH)/Makefile
+@@ -625,10 +625,6 @@ KBUILD_CFLAGS	+= -gcc-toolchain $(GCC_TOOLCHAIN)
+ endif
+ endif
  
 -ifneq ($(COMPILER),clang)
 -KBUILD_CFLAGS	+= -fno-delete-null-pointer-checks
@@ -22,7 +23,7 @@ index 336c36c..02c996e 100644
  ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
  KBUILD_CFLAGS	+= -Os $(call cc-disable-warning,maybe-uninitialized,)
  else
-@@ -690,10 +686,13 @@ KBUILD_CFLAGS += $(stackp-flag)
+@@ -691,10 +687,13 @@ KBUILD_CFLAGS += $(stackp-flag)
  
  ifeq ($(COMPILER),clang)
  KBUILD_CPPFLAGS += $(call cc-option,-Qunused-arguments,)
@@ -37,7 +38,7 @@ index 336c36c..02c996e 100644
  # Quiet clang warning: comparison of unsigned expression < 0 is always false
  KBUILD_CFLAGS += $(call cc-disable-warning, tautological-compare)
  # CLANG uses a _MergedGlobals as optimization, but this breaks modpost, as the
-@@ -703,6 +702,7 @@ KBUILD_CFLAGS += $(call cc-option, -mno-global-merge,)
+@@ -704,6 +703,7 @@ KBUILD_CFLAGS += $(call cc-option, -mno-global-merge,)
  
  else
  
