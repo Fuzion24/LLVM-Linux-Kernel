@@ -42,6 +42,24 @@ index a9c306f..6fe0545 100644
  KBUILD_CFLAGS	+= $(call cc-option,-fno-delete-null-pointer-checks,)
  
  ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
+@@ -360,7 +360,16 @@ include $(srctree)/scripts/Kbuild.include
+ # Make variables (CC, etc...)
+ AS		= $(CROSS_COMPILE)as
+ LD		= $(CROSS_COMPILE)ld
+-CC		= $(CROSS_COMPILE)gcc
++ifeq ($(COMPILER),clang)
++ifneq ($(CROSS_COMPILE),)
++CC            += -target $(CROSS_COMPILE:%-=%)
++endif
++ifneq ($(GCC_TOOLCHAIN),)
++CC            += -gcc-toolchain $(GCC_TOOLCHAIN)
++endif
++else
++CC            = $(CROSS_COMPILE)gcc
++endif
+ CPP		= $(CC) -E
+ AR		= $(CROSS_COMPILE)ar
+ NM		= $(CROSS_COMPILE)nm
 -- 
 1.9.1
 
