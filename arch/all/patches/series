@@ -22,3 +22,4 @@ kbuild-llvm-bitcode.patch
 clang-flags.patch
 catch-undefined-behavior-deprecated.patch
 kbuild-clang-options.patch
+kbuild-cc-option.patch
