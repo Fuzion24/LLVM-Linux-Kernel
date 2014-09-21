@@ -25,23 +25,6 @@ diff --git a/Makefile b/Makefile
 index a9c306f..6fe0545 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -615,6 +615,16 @@ all: vmlinux
- 
- include $(srctree)/arch/$(SRCARCH)/Makefile
- 
-+ifeq ($(COMPILER),clang)
-+ifneq ($(CROSS_COMPILE),)
-+KBUILD_CFLAGS	+= -target $(notdir $(CROSS_COMPILE:%-=%))
-+GCC_TOOLCHAIN	= $(dir $(CROSS_COMPILE))
-+endif
-+ifneq ($(GCC_TOOLCHAIN),)
-+KBUILD_CFLAGS	+= -gcc-toolchain $(GCC_TOOLCHAIN)
-+endif
-+endif
-+
- KBUILD_CFLAGS	+= $(call cc-option,-fno-delete-null-pointer-checks,)
- 
- ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
 @@ -360,7 +360,16 @@ include $(srctree)/scripts/Kbuild.include
  # Make variables (CC, etc...)
  AS		= $(CROSS_COMPILE)as
@@ -60,6 +43,23 @@ index a9c306f..6fe0545 100644
  CPP		= $(CC) -E
  AR		= $(CROSS_COMPILE)ar
  NM		= $(CROSS_COMPILE)nm
+@@ -615,6 +615,16 @@ all: vmlinux
+ 
+ include $(srctree)/arch/$(SRCARCH)/Makefile
+ 
++ifeq ($(COMPILER),clang)
++ifneq ($(CROSS_COMPILE),)
++KBUILD_CFLAGS	+= -target $(notdir $(CROSS_COMPILE:%-=%))
++GCC_TOOLCHAIN	= $(dir $(CROSS_COMPILE))
++endif
++ifneq ($(GCC_TOOLCHAIN),)
++KBUILD_CFLAGS	+= -gcc-toolchain $(GCC_TOOLCHAIN)
++endif
++endif
++
+ KBUILD_CFLAGS	+= $(call cc-option,-fno-delete-null-pointer-checks,)
+ 
+ ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
 -- 
 1.9.1
 
