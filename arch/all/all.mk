@@ -370,17 +370,17 @@ state/kernel-configure: state/kernel-patch ${TMPFS_MOUNT} ${KERNEL_CFG} ${STATE_
 		REV=$(call gitsvnrev,${LLVMDIR}); \
 		sed -i -e "s/-llvmlinux/-llvmlinux-Lr$$REV/g" ${KERNEL_BUILD}/.config; \
 	) fi
-	(cd ${KERNELDIR} && echo "" | ${KERNEL_ENV} make ${MAKE_FLAGS} oldconfig) \
+	(cd ${KERNELDIR} && echo "" | make ${KERNEL_ENV} ${MAKE_FLAGS} oldconfig) \
 		2> >(grep -v '^Error in reading or end of file.$$')
 	$(call state,$@,kernel-build)
 
 #############################################################################
 kernel-allyesconfig: state/kernel-configure
-	(cd ${KERNELDIR} && echo "" | ${KERNEL_ENV} make ${MAKE_FLAGS} allyesconfig)
+	(cd ${KERNELDIR} && echo "" | make ${KERNEL_ENV} ${MAKE_FLAGS} allyesconfig)
 
 #############################################################################
 kernel-menuconfig: state/kernel-configure
-	${KERNEL_ENV} make -C ${KERNELDIR} ${MAKE_FLAGS} menuconfig
+	@make -C ${KERNELDIR} ${KERNEL_ENV} ${MAKE_FLAGS} menuconfig
 	@$(call leavestate,${STATEDIR},kernel-build)
 
 kernel-cmpconfig: state/kernel-configure
@@ -391,11 +391,11 @@ kernel-cpconfig: state/kernel-configure
 
 #############################################################################
 kernel-cscope: state/kernel-configure
-	@${KERNEL_ENV} make -C ${KERNELDIR} ${MAKE_FLAGS} cscope
+	@make -C ${KERNELDIR} ${KERNEL_ENV} ${MAKE_FLAGS} cscope
 cscope:
 	@(cd ${KERNELDIR}; cscope)
 kernel-tags: state/kernel-configure
-	${KERNEL_ENV} make -C ${KERNELDIR} ${MAKE_FLAGS} tags
+	make -C ${KERNELDIR} ${KERNEL_ENV} ${MAKE_FLAGS} tags
 
 #############################################################################
 kernel-gcc-configure: state/kernel-gcc-configure
