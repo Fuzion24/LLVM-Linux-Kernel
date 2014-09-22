@@ -1,13 +1,14 @@
-From 2a6a57f0ab8b537bf5ca45da0ef1290911815424 Mon Sep 17 00:00:00 2001
+From d70fbfefaecc7d1a15aee278a0874b6a52ef38e5 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Fri, 30 May 2014 11:35:50 -0700
-Subject: [PATCH] DO-NOT-UPSTREAM arm, firmware, LLVMLlinux: Hack around Trusted Foundations clang segfault
+Subject: [PATCH] DO-NOT-UPSTREAM arm, firmware, LLVMLlinux: Hack around
+ Trusted Foundations clang segfault
 
 Seems that this __naked ASM is crashing clang.
 
 Not-signed-off-by: Behan Webster <behanw@converseincode.com>
 ---
- trusted_foundations.c |    4 +++-
+ arch/arm/firmware/trusted_foundations.c | 4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/arch/arm/firmware/trusted_foundations.c b/arch/arm/firmware/trusted_foundations.c
@@ -33,3 +34,6 @@ index 3fb1b5a..a0c641c 100644
  }
  
  static int tf_set_cpu_boot_addr(int cpu, unsigned long boot_addr)
+-- 
+1.9.1
+

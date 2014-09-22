@@ -1,16 +1,18 @@
-From 1f0dbbd548f1d3c22a061c13051876b5faac5e23 Mon Sep 17 00:00:00 2001
+From f9cbccae31b6091f12cdac213b1d46a0e92c7b2d Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Mon, 15 Sep 2014 17:10:34 -0700
 Subject: [PATCH] kbuild-clang-options
 
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 ---
- Makefile | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ Makefile | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
---- linux-manual.orig/Makefile
-+++ linux-manual/Makefile
-@@ -625,10 +625,6 @@
+diff --git a/Makefile b/Makefile
+index b968f41..4d44260 100644
+--- a/Makefile
++++ b/Makefile
+@@ -627,10 +627,6 @@ all: vmlinux
  
  include $(srctree)/arch/$(SRCARCH)/Makefile
  
@@ -21,7 +23,7 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
  ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
  KBUILD_CFLAGS	+= -Os $(call cc-disable-warning,maybe-uninitialized,)
  else
-@@ -691,10 +687,13 @@
+@@ -693,10 +689,13 @@ KBUILD_CFLAGS += $(stackp-flag)
  
  ifeq ($(COMPILER),clang)
  KBUILD_CPPFLAGS += $(call cc-option,-Qunused-arguments,)
@@ -36,7 +38,7 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
  # Quiet clang warning: comparison of unsigned expression < 0 is always false
  KBUILD_CFLAGS += $(call cc-disable-warning, tautological-compare)
  # CLANG uses a _MergedGlobals as optimization, but this breaks modpost, as the
-@@ -704,6 +703,7 @@
+@@ -706,6 +705,7 @@ KBUILD_CFLAGS += $(call cc-option, -mno-global-merge,)
  
  else
  
@@ -44,10 +46,13 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
  # This warning generated too much noise in a regular build.
  # Use make W=1 to enable this warning (see scripts/Makefile.build)
  KBUILD_CFLAGS += $(call cc-disable-warning, unused-but-set-variable)
-@@ -1605,3 +1605,6 @@
+@@ -1607,3 +1607,6 @@ FORCE:
  # Declare the contents of the .PHONY variable as phony.  We keep that
  # information in a variable so we can use it in if_changed and friends.
  .PHONY: $(PHONY)
 +
 +list-var:
 +	@echo "CC => $(CC) $(KBUILD_CFLAGS)"
+-- 
+1.9.1
+
