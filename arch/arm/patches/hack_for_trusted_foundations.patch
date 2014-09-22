@@ -1,0 +1,35 @@
+From 2a6a57f0ab8b537bf5ca45da0ef1290911815424 Mon Sep 17 00:00:00 2001
+From: Behan Webster <behanw@converseincode.com>
+Date: Fri, 30 May 2014 11:35:50 -0700
+Subject: [PATCH] DO-NOT-UPSTREAM arm, firmware, LLVMLlinux: Hack around Trusted Foundations clang segfault
+
+Seems that this __naked ASM is crashing clang.
+
+Not-signed-off-by: Behan Webster <behanw@converseincode.com>
+---
+ trusted_foundations.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm/firmware/trusted_foundations.c b/arch/arm/firmware/trusted_foundations.c
+index 3fb1b5a..a0c641c 100644
+--- a/arch/arm/firmware/trusted_foundations.c
++++ b/arch/arm/firmware/trusted_foundations.c
+@@ -31,8 +31,9 @@
+ 
+ static unsigned long cpu_boot_addr;
+ 
+-static void __naked tf_generic_smc(u32 type, u32 arg1, u32 arg2)
++static void /* __naked */ tf_generic_smc(u32 type, u32 arg1, u32 arg2)
+ {
++/*
+ 	asm volatile(
+ 		".arch_extension	sec\n\t"
+ 		"stmfd	sp!, {r4 - r11, lr}\n\t"
+@@ -46,6 +47,7 @@ static void __naked tf_generic_smc(u32 type, u32 arg1, u32 arg2)
+ 		:
+ 		: "r" (type), "r" (arg1), "r" (arg2)
+ 		: "memory");
++*/
+ }
+ 
+ static int tf_set_cpu_boot_addr(int cpu, unsigned long boot_addr)

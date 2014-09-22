@@ -1,4 +1,4 @@
-From 3e4d51943fc46cafb60da73832b2aafcc56ea9c0 Mon Sep 17 00:00:00 2001
+From b81341a124f136460cba446cb1dda3dd6e7651d5 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 3 Sep 2013 22:27:26 -0400
 Subject: [PATCH] Kbuild arm: LLVMLinux: Add Kbuild support for building arch
@@ -12,26 +12,24 @@ Author: Behan Webster <behanw@converseincode.com>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Reviewed-by: Mark Charlebois <charlebm@gmail.com>
 ---
- arch/arm/Makefile                 | 10 +++++++---
+ arch/arm/Makefile                 | 10 +++++-----
  arch/arm/boot/compressed/Makefile |  2 +-
- 2 files changed, 8 insertions(+), 4 deletions(-)
+ 2 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/arch/arm/Makefile b/arch/arm/Makefile
-index 0ce9d0f..b110a62 100644
---- a/arch/arm/Makefile
-+++ b/arch/arm/Makefile
-@@ -30,6 +30,10 @@ KBUILD_CFLAGS	+= $(call cc-option,-fno-dwarf2-cfi-asm)
- # Select a platform tht is kept up-to-date
- KBUILD_DEFCONFIG := versatile_defconfig
+--- linux-manual.orig/arch/arm/Makefile
++++ linux-manual/arch/arm/Makefile
+@@ -26,6 +26,10 @@
+ # Never generate .eh_frame
+ KBUILD_CFLAGS	+= $(call cc-option,-fno-dwarf2-cfi-asm)
  
 +ifeq ($(COMPILER),clang)
 +KBUILD_CFLAGS += -Wa,-mno-warn-deprecated
 +endif
 +
- # defines filename extension depending memory management type.
- ifeq ($(CONFIG_MMU),)
- MMUEXT		:= -nommu
-@@ -37,7 +41,7 @@ KBUILD_CFLAGS	+= $(call cc-option,-mno-unaligned-access)
+ # Do not use arch/arm/defconfig - it's always outdated.
+ # Select a platform tht is kept up-to-date
+ KBUILD_DEFCONFIG := versatile_defconfig
+@@ -37,15 +41,15 @@
  endif
  
  ifeq ($(CONFIG_FRAME_POINTER),y)
@@ -40,7 +38,17 @@ index 0ce9d0f..b110a62 100644
  endif
  
  ifeq ($(CONFIG_CPU_BIG_ENDIAN),y)
-@@ -96,7 +100,7 @@ tune-$(CONFIG_CPU_V6K)		=$(call cc-option,-mtune=arm1136j-s,-mtune=strongarm)
+-KBUILD_CPPFLAGS	+= -mbig-endian
++KBUILD_CPPFLAGS	+= $(call cc-option,-mbig-endian)
+ AS		+= -EB
+ LD		+= -EB
+ else
+-KBUILD_CPPFLAGS	+= -mlittle-endian
++KBUILD_CPPFLAGS	+= $(call cc-option,-mlittle-endian)
+ AS		+= -EL
+ LD		+= -EL
+ endif
+@@ -96,7 +100,7 @@
  tune-y := $(tune-y)
  
  ifeq ($(CONFIG_AEABI),y)
@@ -49,7 +57,7 @@ index 0ce9d0f..b110a62 100644
  else
  CFLAGS_ABI	:=$(call cc-option,-mapcs-32,-mabi=apcs-gnu) $(call cc-option,-mno-thumb-interwork,)
  endif
-@@ -120,7 +124,7 @@ AFLAGS_ISA	:=$(CFLAGS_ISA)
+@@ -120,7 +124,7 @@
  endif
  
  # Need -Uarm for gcc < 3.x
@@ -58,11 +66,9 @@ index 0ce9d0f..b110a62 100644
  KBUILD_AFLAGS	+=$(CFLAGS_ABI) $(AFLAGS_ISA) $(arch-y) $(tune-y) -include asm/unified.h -msoft-float
  
  CHECKFLAGS	+= -D__arm__
-diff --git a/arch/arm/boot/compressed/Makefile b/arch/arm/boot/compressed/Makefile
-index 76a50ec..0f1e6c7 100644
---- a/arch/arm/boot/compressed/Makefile
-+++ b/arch/arm/boot/compressed/Makefile
-@@ -121,7 +121,7 @@ ORIG_CFLAGS := $(KBUILD_CFLAGS)
+--- linux-manual.orig/arch/arm/boot/compressed/Makefile
++++ linux-manual/arch/arm/boot/compressed/Makefile
+@@ -121,7 +121,7 @@
  KBUILD_CFLAGS = $(subst -pg, , $(ORIG_CFLAGS))
  endif
  
@@ -71,6 +77,3 @@ index 76a50ec..0f1e6c7 100644
  asflags-y := -DZIMAGE
  
  # Supply kernel BSS size to the decompressor via a linker symbol.
--- 
-1.9.1
-

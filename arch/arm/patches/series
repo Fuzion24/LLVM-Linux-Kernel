@@ -1,16 +1,13 @@
 eabi-arm.patch
-#arm-glue-cache-extern-inline.patch
 ftrace.patch
 kbuild-clang-arm.patch
 current_stack_pointer_arm.patch
-#named_register-percpu.patch
 named_register-ptrace.patch
 named_register-return_address.patch
 named_register-stacktrace.patch
 named_register-thread_info.patch
 named_register-unwind.patch
 named_register-percpu-arm.patch
-#unwind_support.patch
 bcm_kona_smc.patch
 mach-vt8500.patch
-#nested-function-msm-hdmi.patch
+hack_for_trusted_foundations.patch
