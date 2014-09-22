@@ -1,4 +1,4 @@
-From 50d627fbd7d513f513422fade0f515aadfcb43ca Mon Sep 17 00:00:00 2001
+From bdb820d0c55e623b2a029c6578f5a91835f54d3c Mon Sep 17 00:00:00 2001
 From: Mark Charlebois <charlebm@gmail.com>
 Date: Thu, 14 Aug 2014 08:12:08 -0500
 Subject: [PATCH] DO-NOT-UPSTREAM kbuild: LLVMLinux: Optionally include flags
@@ -16,7 +16,7 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
  1 file changed, 7 insertions(+), 3 deletions(-)
 
 diff --git a/Makefile b/Makefile
-index 7a88ec9..715beee 100644
+index 7b60c0a..5aeb72a 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -308,7 +308,7 @@ HOSTCXXFLAGS = -O2
@@ -28,9 +28,9 @@ index 7a88ec9..715beee 100644
  endif
  
  # Decide whether to build built-in, modular, or both.
-@@ -625,7 +625,9 @@ KBUILD_CFLAGS	+= -gcc-toolchain $(GCC_TOOLCHAIN)
- endif
- endif
+@@ -625,7 +625,9 @@ all: vmlinux
+ 
+ include $(srctree)/arch/$(SRCARCH)/Makefile
  
 -KBUILD_CFLAGS	+= $(call cc-option,-fno-delete-null-pointer-checks,)
 +ifneq ($(COMPILER),clang)
