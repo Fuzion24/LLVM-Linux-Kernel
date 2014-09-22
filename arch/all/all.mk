@@ -149,8 +149,8 @@ list-var: list-buildroot
 	echo ${seperator}; \
 	echo "${CLANG} -print-file-name=include"; \
 	${CLANG} -print-file-name=include; \
-	echo 'kernel-build -> $(call make-kernel,${KERNELDIR},${KERNEL_ENV},${CHECKER},${CHECK_VARS})'; \
-	echo 'kernel-gcc-build -> $(call make-kernel,${KERNELDIR},${KERNELGCC_ENV} ${SPARSE},,CC?="${CCACHE} ${CROSS_COMPILE}${GCC}")'; \
+	echo 'kernel-build -> $(call make-kernel,${KERNELDIR},,${CHECKER},${KERNEL_ENV} ${CHECK_VARS})'; \
+	echo 'kernel-gcc-build -> $(call make-kernel,${KERNELDIR},${SPARSE},,${KERNELGCC_ENV} CC?="${CCACHE} ${CROSS_COMPILE}${GCC}")'; \
 	) | sed 's|${TOPDIR}/||g'
 
 #############################################################################
@@ -364,7 +364,7 @@ state/kernel-configure: state/kernel-patch ${TMPFS_MOUNT} ${KERNEL_CFG} ${STATE_
 	# git log -1 | awk '/git-svn-id:/ {gsub(".*@",""); print $1}'
 	@if [ -n "${CLANGDIR}" ] ; then ( \
 		REV=$(call gitsvnrev,${CLANGDIR}); \
-		sed -i -e "s/-llvmlinux/-llvmlinux-Cr$$REV/g" ${KERNEL_BUILD}/.config; \
+		sed -i -e 's/-llvmlinux.*/-llvmlinux-Cr'$$REV'"/g' ${KERNEL_BUILD}/.config; \
 	) fi
 	@if [ -n "${LLVMDIR}" ] ; then ( \
 		REV=$(call gitsvnrev,${LLVMDIR}); \
@@ -419,9 +419,9 @@ state/kernel-build: state/kernel-configure
 	@$(call banner,Building kernel with clang...)
 	@[ -z "${CCACHE_DIR}" ] || mkdir -p ${CCACHE_DIR}
 	@if [ -z "${NOLOG}" ] ; then \
-		$(call save-log,$(call make-kernel,${KERNELDIR},${KERNEL_ENV},${CHECKER},${CHECK_VARS}),${KERNEL_CLANG_LOG},${ERROR_ZIP}) || (${MAKE} bb_manifest; false) ; \
+		$(call save-log,$(call make-kernel,${KERNELDIR},,${CHECKER},${KERNEL_ENV} ${CHECK_VARS}),${KERNEL_CLANG_LOG},${ERROR_ZIP}) || (${MAKE} bb_manifest; false) ; \
 	else \
-		$(call make-kernel,${KERNELDIR},${KERNEL_ENV},${CHECKER},${CHECK_VARS}); \
+		$(call make-kernel,${KERNELDIR},,${CHECKER},${KERNEL_ENV} ${CHECK_VARS}); \
 	fi
 	@$(call banner,Successfully Built kernel with clang!)
 	@$(call get-kernel-size,clang,${CLANG},${KERNEL_BUILD})
@@ -434,7 +434,7 @@ state/kernel-gcc-build: state/kernel-gcc-configure
 	@$(MAKE) kernel-quilt-link-patches
 	@$(call banner,Building kernel with gcc...)
 	@[ -z "${CCACHE_DIR}" ] || mkdir -p ${CCACHE_DIR}
-	$(call make-kernel,${KERNELDIR},${KERNELGCC_ENV} ${SPARSE},,CC?="${CCACHE} ${CROSS_COMPILE}${GCC}")
+	$(call make-kernel,${KERNELDIR},${SPARSE},,${KERNELGCC_ENV} CC?="${CCACHE} ${CROSS_COMPILE}${GCC}")
 	@$(call get-kernel-size,gcc,${CROSS_COMPILE}${GCC},${KERNELGCC_BUILD})
 	$(call state,$@,done)
 
