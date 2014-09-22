@@ -1,3 +1,2 @@
 hweight-x86.patch
 export-memcpy-clang-x86_64.patch
-Move-the-section-attribute-in-front-of-the-variable-.patch

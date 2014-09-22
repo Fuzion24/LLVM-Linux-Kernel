@@ -81,6 +81,9 @@ ${INITRAMFS}.clang: initramfs-unpacked
 test: state/prep ${QEMUSTATE}/qemu-build ${INITRAMFS}.clang
 	$(call qemu,${BOARD},${KERNEL_BUILD}/arch/x86/boot/bzImage,512,/dev/ram0,rw console=ttyS0 earlyprintk ,-initrd ${INITRAMFS}.clang -net none )
 
+test-gdb: state/prep ${QEMUSTATE}/qemu-build ${INITRAMFS}.clang
+	$(call qemu,${BOARD},${KERNEL_BUILD}/arch/x86/boot/bzImage,512,/dev/ram0,rw console=ttyS0 earlyprintk ,-initrd ${INITRAMFS}.clang -net none -s)
+
 test-qemu: ${INITRAMFS}.clang ${QEMUSTATE}/qemu-build
 	$(call qemu,${BOARD},${KERNEL_BUILD}/arch/x86/boot/bzImage,512,/dev/ram0,rw console=ttyS0 earlyprintk ,-initrd ${INITRAMFS}.clang -net none )
 
