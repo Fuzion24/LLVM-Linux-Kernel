@@ -35,7 +35,4 @@ ifeq (${CROSS_MIPS_TOOLCHAIN},codesourcery)
   include ${ARCH_MIPS_TOOLCHAIN}/codesourcery/codesourcery.mk
 endif
 
-ifneq ("${COMPILER_PATH}", "")
-CCOPTS	= -gcc-toolchain ${COMPILER_PATH} -target ${HOST_TRIPLE}
-endif
-
+GCC_TOOLCHAIN	= ${COMPILER_PATH}

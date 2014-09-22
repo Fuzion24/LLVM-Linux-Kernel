@@ -104,6 +104,9 @@ endif
 ifneq ("${CROSS_COMPILE}", "")
 MAKE_FLAGS	+= CROSS_COMPILE=${CROSS_COMPILE}
 endif
+ifneq ("${GCC_TOOLCHAIN}", "")
+MAKE_FLAGS	+= GCC_TOOLCHAIN=${GCC_TOOLCHAIN}
+endif
 ifneq ("${JOBS}", "")
 KERNEL_VAR	+= -j${JOBS}
 endif

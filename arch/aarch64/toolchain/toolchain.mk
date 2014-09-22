@@ -38,6 +38,4 @@ aarch64-toolchain-help:
 # aarch64-cc which will be a build dep for AARCH64
 include ${ARCH_AARCH64_TOOLCHAIN}/linaro/linaro.mk
 
-ifneq ("${COMPILER_PATH}", "")
-CCOPTS	= -gcc-toolchain ${COMPILER_PATH} -target ${HOST_TRIPLE}
-endif
+GCC_TOOLCHAIN	= ${COMPILER_PATH}
