@@ -9,6 +9,7 @@ Content-Transfer-Encoding: 8bit
 Along with gcc >= 4.3, clang also needs memcpy exported.
 
 Signed-off-by: Jan-Simon Möller <dl9pf@gmx.de>
+Reviewed-by: Behan Webster <behanw@converseincode.com>
 Cc: PaX Team <pageexec@freemail.hu>
 ---
  arch/x86/um/ksyms.c | 2 +-
