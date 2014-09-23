@@ -378,8 +378,8 @@ state/kernel-configure: state/kernel-patch ${TMPFS_MOUNT} ${KERNEL_CFG} ${STATE_
 	$(call state,$@,kernel-build)
 
 #############################################################################
-kernel-allyesconfig: state/kernel-configure
-	(cd ${KERNELDIR} && echo "" | make ${KERNEL_ENV} ${MAKE_FLAGS} allyesconfig)
+kernel-allyesconfig kernel-allmodconfig: kernel-%: state/kernel-configure
+	(cd ${KERNELDIR} && echo "" | make ${KERNEL_ENV} ${MAKE_FLAGS} $*)
 
 #############################################################################
 kernel-menuconfig: state/kernel-configure
