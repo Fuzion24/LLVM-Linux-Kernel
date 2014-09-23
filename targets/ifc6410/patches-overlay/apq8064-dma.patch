@@ -1,0 +1,64 @@
+From f0df546e0a83f8ee1aab9eacd211d6fd05394a97 Mon Sep 17 00:00:00 2001
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Date: Fri, 16 May 2014 20:18:53 +0100
+Subject: [PATCH] ARM: DT: QCOM: apq8064: Add dma support for sdcc node
+
+This patch adds dma support in both sdcc1 and sdcc3 device node.
+
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ arch/arm/boot/dts/qcom-apq8064.dtsi | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
+
+diff --git a/arch/arm/boot/dts/qcom-apq8064.dtsi b/arch/arm/boot/dts/qcom-apq8064.dtsi
+index b9fbad4..611aeec 100644
+--- a/arch/arm/boot/dts/qcom-apq8064.dtsi
++++ b/arch/arm/boot/dts/qcom-apq8064.dtsi
+@@ -177,6 +177,26 @@
+ 			regulator-always-on;
+ 		};
+ 
++		sdcc1bam:dma@12402000{
++			compatible = "qcom,bam-v1.3.0";
++			reg = <0x12402000 0x8000>;
++			interrupts = <0 98 0>;
++			clocks = <&gcc SDC1_H_CLK>;
++			clock-names = "bam_clk";
++			#dma-cells = <1>;
++			qcom,ee = <0>;
++		};
++
++		sdcc3bam:dma@12182000{
++			compatible = "qcom,bam-v1.3.0";
++			reg = <0x12182000 0x8000>;
++			interrupts = <0 96 0>;
++			clocks = <&gcc SDC3_H_CLK>;
++			clock-names = "bam_clk";
++			#dma-cells = <1>;
++			qcom,ee = <0>;
++		};
++
+ 		amba {
+ 			compatible = "arm,amba-bus";
+ 			#address-cells = <1>;
+@@ -197,6 +217,8 @@
+ 				cap-sd-highspeed;
+ 				cap-mmc-highspeed;
+ 				vmmc-supply = <&vsdcc_fixed>;
++				dmas = <&sdcc1bam 2>, <&sdcc1bam 1>;
++				dma-names = "tx", "rx";
+ 			};
+ 
+ 			sdcc3: sdcc@12180000 {
+@@ -214,6 +236,8 @@
+ 				max-frequency	= <192000000>;
+ 				no-1-8-v;
+ 				vmmc-supply = <&vsdcc_fixed>;
++				dmas = <&sdcc3bam 2>, <&sdcc3bam 1>;
++				dma-names = "tx", "rx";
+ 			};
+ 		};
+ 	};
+-- 
+2.0.2
+
