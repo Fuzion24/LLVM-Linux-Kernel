@@ -216,7 +216,7 @@ series:
 		rm -f ${TARGET_PATCH_SERIES}; \
 		$(MAKE) ${TARGET_PATCH_SERIES}; \
 	)
-refresh: kernel-quilt-link-patches series
+refresh: kernel-quilt-link-patches series kernel-quilt-clean-broken-symlinks
 
 ##############################################################################
 # Have git ignore extra patch files
