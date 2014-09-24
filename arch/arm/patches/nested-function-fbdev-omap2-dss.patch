@@ -1,8 +1,17 @@
+From 78280ca3886e8cecd099ee5557e5b61d0f4deb52 Mon Sep 17 00:00:00 2001
+From: Behan Webster <behanw@converseincode.com>
+Date: Tue, 23 Sep 2014 22:43:27 -0700
+Subject: [PATCH] arm, fbdev, omap2, LLVMLinux: Remove nested function from omap2 dss
+
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Cc: Arnd Bergmann <arnd@arndb.de>
 ---
+ drivers/video/fbdev/omap2/dss/dispc-compat.c  |  9 +++++----
+ drivers/video/fbdev/omap2/dss/manager-sysfs.c | 14 +++++++-------
+ 2 files changed, 12 insertions(+), 11 deletions(-)
+
 diff --git a/drivers/video/fbdev/omap2/dss/dispc-compat.c b/drivers/video/fbdev/omap2/dss/dispc-compat.c
-index 83779c2b292a..633c461fbc6e 100644
+index 83779c2..633c461 100644
 --- a/drivers/video/fbdev/omap2/dss/dispc-compat.c
 +++ b/drivers/video/fbdev/omap2/dss/dispc-compat.c
 @@ -634,13 +634,14 @@ void dispc_mgr_disable_sync(enum omap_channel channel)
@@ -25,7 +34,7 @@ index 83779c2b292a..633c461fbc6e 100644
  	int r;
  	DECLARE_COMPLETION_ONSTACK(completion);
 diff --git a/drivers/video/fbdev/omap2/dss/manager-sysfs.c b/drivers/video/fbdev/omap2/dss/manager-sysfs.c
-index 37b59fe28dc8..65d0173c4502 100644
+index 37b59fe..65d0173 100644
 --- a/drivers/video/fbdev/omap2/dss/manager-sysfs.c
 +++ b/drivers/video/fbdev/omap2/dss/manager-sysfs.c
 @@ -44,6 +44,12 @@ static ssize_t manager_display_show(struct omap_overlay_manager *mgr, char *buf)
@@ -60,3 +69,6 @@ index 37b59fe28dc8..65d0173c4502 100644
  
  	if (len > 0 && dssdev == NULL)
  		return -EINVAL;
+-- 
+1.9.1
+

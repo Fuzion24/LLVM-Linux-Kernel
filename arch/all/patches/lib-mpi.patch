@@ -1,8 +1,17 @@
+From 4b7303f45e8fe0dbcb828d6b095ffe7b5dd60fa3 Mon Sep 17 00:00:00 2001
+From: Behan Webster <behanw@converseincode.com>
+Date: Tue, 23 Sep 2014 22:43:09 -0700
+Subject: [PATCH] mpi, LLVMLinux: Fix ASM for clang in mpi
+
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Cc: Arnd Bergmann <arnd@arndb.de>
 ---
+ lib/mpi/Makefile   | 2 ++
+ lib/mpi/longlong.h | 9 +++------
+ 2 files changed, 5 insertions(+), 6 deletions(-)
+
 diff --git a/lib/mpi/Makefile b/lib/mpi/Makefile
-index 019a68c90144..8f0a9df2da3d 100644
+index 019a68c..8f0a9df 100644
 --- a/lib/mpi/Makefile
 +++ b/lib/mpi/Makefile
 @@ -4,6 +4,8 @@
@@ -15,7 +24,7 @@ index 019a68c90144..8f0a9df2da3d 100644
  	generic_mpih-lshift.o		\
  	generic_mpih-mul1.o		\
 diff --git a/lib/mpi/longlong.h b/lib/mpi/longlong.h
-index aac511417ad1..76fc0da7fa07 100644
+index aac5114..76fc0da 100644
 --- a/lib/mpi/longlong.h
 +++ b/lib/mpi/longlong.h
 @@ -193,8 +193,7 @@ extern UDItype __udiv_qrnnd(UDItype *, UDItype, UDItype, UDItype);
@@ -41,4 +50,6 @@ index aac511417ad1..76fc0da7fa07 100644
  	: "r" ((USItype)(a)), \
  			"r" ((USItype)(b)) \
  	: "r0", "r1")
+-- 
+1.9.1
 

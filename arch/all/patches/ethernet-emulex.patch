@@ -1,8 +1,16 @@
+From a5fc90357909ccfa6c6ff64db4f96179b8a0b664 Mon Sep 17 00:00:00 2001
+From: Behan Webster <behanw@converseincode.com>
+Date: Tue, 23 Sep 2014 22:43:08 -0700
+Subject: [PATCH] net, ethernet, LLVMLinux: Add missing MODULE_DEVICE_TABLE()
+
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Cc: Arnd Bergmann <arnd@arndb.de>
 ---
+ drivers/net/ethernet/emulex/benet/be_main.c | 1 -
+ 1 file changed, 1 deletion(-)
+
 diff --git a/drivers/net/ethernet/emulex/benet/be_main.c b/drivers/net/ethernet/emulex/benet/be_main.c
-index 93ff8ef39352..913098fa27f0 100644
+index 93ff8ef..913098f 100644
 --- a/drivers/net/ethernet/emulex/benet/be_main.c
 +++ b/drivers/net/ethernet/emulex/benet/be_main.c
 @@ -26,7 +26,6 @@
@@ -13,3 +21,6 @@ index 93ff8ef39352..913098fa27f0 100644
  MODULE_DESCRIPTION(DRV_DESC " " DRV_VER);
  MODULE_AUTHOR("Emulex Corporation");
  MODULE_LICENSE("GPL");
+-- 
+1.9.1
+

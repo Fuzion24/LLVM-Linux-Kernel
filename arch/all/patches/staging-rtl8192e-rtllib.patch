@@ -1,8 +1,17 @@
+From 7e5a4c9109c4c2f606ef1b0ae3214728833bce5c Mon Sep 17 00:00:00 2001
+From: Behan Webster <behanw@converseincode.com>
+Date: Tue, 23 Sep 2014 22:43:15 -0700
+Subject: [PATCH] rtl8192e, LLVMLinux: Fix extern inline
+
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Cc: Arnd Bergmann <arnd@arndb.de>
 ---
+ drivers/staging/rtl8192e/rtllib.h         | 6 ++----
+ drivers/staging/rtl8192e/rtllib_softmac.c | 2 +-
+ 2 files changed, 3 insertions(+), 5 deletions(-)
+
 diff --git a/drivers/staging/rtl8192e/rtllib.h b/drivers/staging/rtl8192e/rtllib.h
-index 83f5f57373a6..1f76975d6f49 100644
+index 83f5f57..1f76975 100644
 --- a/drivers/staging/rtl8192e/rtllib.h
 +++ b/drivers/staging/rtl8192e/rtllib.h
 @@ -2761,8 +2761,6 @@ extern void rtllib_stop_scan(struct rtllib_device *ieee);
@@ -30,7 +39,7 @@ index 83f5f57373a6..1f76975d6f49 100644
  	return ieee->scans;
  }
 diff --git a/drivers/staging/rtl8192e/rtllib_softmac.c b/drivers/staging/rtl8192e/rtllib_softmac.c
-index 684ceed17232..79524c542f0f 100644
+index 684ceed..79524c5 100644
 --- a/drivers/staging/rtl8192e/rtllib_softmac.c
 +++ b/drivers/staging/rtl8192e/rtllib_softmac.c
 @@ -341,7 +341,7 @@ inline void softmac_ps_mgmt_xmit(struct sk_buff *skb,
@@ -42,3 +51,6 @@ index 684ceed17232..79524c542f0f 100644
  {
  	unsigned int len, rate_len;
  	u8 *tag;
+-- 
+1.9.1
+

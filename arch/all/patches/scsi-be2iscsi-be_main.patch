@@ -1,8 +1,16 @@
+From 3bf5f27d6ac0005e246b390f8e172b6a622337e3 Mon Sep 17 00:00:00 2001
+From: Behan Webster <behanw@converseincode.com>
+Date: Tue, 23 Sep 2014 22:43:11 -0700
+Subject: [PATCH] scsi, be2iscsi, LLVMLinux: Add missing MODULE_DEVICE_TABLE()
+
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Cc: Arnd Bergmann <arnd@arndb.de>
 ---
+ drivers/scsi/be2iscsi/be_main.c | 1 -
+ 1 file changed, 1 deletion(-)
+
 diff --git a/drivers/scsi/be2iscsi/be_main.c b/drivers/scsi/be2iscsi/be_main.c
-index 915c26b23ab6..f0c0adfa7fd6 100644
+index 915c26b..f0c0adf 100644
 --- a/drivers/scsi/be2iscsi/be_main.c
 +++ b/drivers/scsi/be2iscsi/be_main.c
 @@ -48,7 +48,6 @@ static unsigned int be_iopoll_budget = 10;
@@ -13,3 +21,6 @@ index 915c26b23ab6..f0c0adfa7fd6 100644
  MODULE_DESCRIPTION(DRV_DESC " " BUILD_STR);
  MODULE_VERSION(BUILD_STR);
  MODULE_AUTHOR("Emulex Corporation");
+-- 
+1.9.1
+

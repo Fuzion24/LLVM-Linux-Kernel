@@ -1,8 +1,16 @@
+From e503ccbc8d0b7d79ecd80d3e9c7fbbabd47d1273 Mon Sep 17 00:00:00 2001
+From: Behan Webster <behanw@converseincode.com>
+Date: Tue, 23 Sep 2014 22:43:11 -0700
+Subject: [PATCH] md, sysfs, LLVMLinux: Remove nested function from bcache sysfs
+
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Cc: Arnd Bergmann <arnd@arndb.de>
 ---
+ drivers/md/bcache/sysfs.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
 diff --git a/drivers/md/bcache/sysfs.c b/drivers/md/bcache/sysfs.c
-index b3ff57d61dde..53d8baa741fb 100644
+index b3ff57d..53d8baa 100644
 --- a/drivers/md/bcache/sysfs.c
 +++ b/drivers/md/bcache/sysfs.c
 @@ -731,6 +731,11 @@ static struct attribute *bch_cache_set_internal_files[] = {
@@ -36,3 +44,6 @@ index b3ff57d61dde..53d8baa741fb 100644
  
  		while (n &&
  		       !cached[n - 1])
+-- 
+1.9.1
+

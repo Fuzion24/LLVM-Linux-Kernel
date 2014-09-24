@@ -26,7 +26,7 @@ kbuild-asm-defines.patch
 kbuild-cc-option.patch
 ethernet-emulex.patch
 lib-mpi.patch
-md_bcache_sysfs.patch
+nested-function-md_bcache_sysfs.patch
 scsi-be2iscsi-be_main.patch
 scsi-megaraid-sas-base.patch
 scsi-osd_types.patch

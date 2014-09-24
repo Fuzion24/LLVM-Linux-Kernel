@@ -1,8 +1,18 @@
+From 40bfcc9aa87840698b6d344c44fab1d9eb7ae115 Mon Sep 17 00:00:00 2001
+From: Behan Webster <behanw@converseincode.com>
+Date: Tue, 23 Sep 2014 22:43:16 -0700
+Subject: [PATCH] exofs, LLVMLinux: Remove VLAIS from exofs
+
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Cc: Arnd Bergmann <arnd@arndb.de>
 ---
+ fs/exofs/Kconfig  |  2 +-
+ fs/exofs/common.h |  2 +-
+ fs/exofs/super.c  | 21 +++++++++------------
+ 3 files changed, 11 insertions(+), 14 deletions(-)
+
 diff --git a/fs/exofs/Kconfig b/fs/exofs/Kconfig
-index 86194b2f799d..492746f9e61b 100644
+index 86194b2..492746f 100644
 --- a/fs/exofs/Kconfig
 +++ b/fs/exofs/Kconfig
 @@ -1,6 +1,6 @@
@@ -14,7 +24,7 @@ index 86194b2f799d..492746f9e61b 100644
  	  EXOFS is a file system that uses an OSD storage device,
  	  as its backing storage.
 diff --git a/fs/exofs/common.h b/fs/exofs/common.h
-index 3bbd46956d77..ddf474dfdf67 100644
+index 3bbd469..ddf474d 100644
 --- a/fs/exofs/common.h
 +++ b/fs/exofs/common.h
 @@ -183,7 +183,7 @@ struct exofs_fcb {
@@ -27,7 +37,7 @@ index 3bbd46956d77..ddf474dfdf67 100644
  	EXOFS_ATTR_INODE_DATA,
  	EXOFS_INO_ATTR_SIZE);
 diff --git a/fs/exofs/super.c b/fs/exofs/super.c
-index ed73ed8ebbee..b4cb4d7d4b83 100644
+index ed73ed8..b4cb4d7 100644
 --- a/fs/exofs/super.c
 +++ b/fs/exofs/super.c
 @@ -546,27 +546,24 @@ static int exofs_devs_2_odi(struct exofs_dt_device_info *dt_dev,
@@ -67,3 +77,6 @@ index ed73ed8ebbee..b4cb4d7d4b83 100644
  	return 0;
  }
  
+-- 
+1.9.1
+

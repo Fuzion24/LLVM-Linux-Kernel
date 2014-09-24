@@ -1,8 +1,17 @@
+From 780f4f310c200929c71aa50ca8afd9468f999a4b Mon Sep 17 00:00:00 2001
+From: Behan Webster <behanw@converseincode.com>
+Date: Tue, 23 Sep 2014 22:43:26 -0700
+Subject: [PATCH] media, platform, LLVMLinux: Remove nested function from ti-vpe
+
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Cc: Arnd Bergmann <arnd@arndb.de>
 ---
+ drivers/media/platform/ti-vpe/csc.c | 7 +------
+ drivers/media/platform/ti-vpe/sc.c  | 7 +------
+ 2 files changed, 2 insertions(+), 12 deletions(-)
+
 diff --git a/drivers/media/platform/ti-vpe/csc.c b/drivers/media/platform/ti-vpe/csc.c
-index 940df4000c42..921d7ff985cf 100644
+index 940df40..921d7ff 100644
 --- a/drivers/media/platform/ti-vpe/csc.c
 +++ b/drivers/media/platform/ti-vpe/csc.c
 @@ -93,12 +93,7 @@ void csc_dump_regs(struct csc_data *csc)
@@ -20,7 +29,7 @@ index 940df4000c42..921d7ff985cf 100644
  	DUMPREG(CSC00);
  	DUMPREG(CSC01);
 diff --git a/drivers/media/platform/ti-vpe/sc.c b/drivers/media/platform/ti-vpe/sc.c
-index 6314171ffe9b..2e10bbcb09c5 100644
+index 6314171..2e10bbc 100644
 --- a/drivers/media/platform/ti-vpe/sc.c
 +++ b/drivers/media/platform/ti-vpe/sc.c
 @@ -24,12 +24,7 @@ void sc_dump_regs(struct sc_data *sc)
@@ -37,3 +46,6 @@ index 6314171ffe9b..2e10bbcb09c5 100644
  
  	DUMPREG(SC0);
  	DUMPREG(SC1);
+-- 
+1.9.1
+

@@ -1,8 +1,16 @@
+From 58808fe5ca94f5211a84d7a30492fa7b6e7366cf Mon Sep 17 00:00:00 2001
+From: Behan Webster <behanw@converseincode.com>
+Date: Tue, 23 Sep 2014 22:43:17 -0700
+Subject: [PATCH] md, raid10, LLVMLinux: Remove VLAIS from raid10 driver
+
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Cc: Arnd Bergmann <arnd@arndb.de>
 ---
+ drivers/md/raid10.c | 24 ++++++++++++++----------
+ 1 file changed, 14 insertions(+), 10 deletions(-)
+
 diff --git a/drivers/md/raid10.c b/drivers/md/raid10.c
-index 6703751d87d7..9c65a9d6c903 100644
+index 6703751..9c65a9d 100644
 --- a/drivers/md/raid10.c
 +++ b/drivers/md/raid10.c
 @@ -713,11 +713,7 @@ static int raid10_mergeable_bvec(struct request_queue *q,
@@ -73,3 +81,6 @@ index 6703751d87d7..9c65a9d6c903 100644
  	return 0;
  }
  
+-- 
+1.9.1
+

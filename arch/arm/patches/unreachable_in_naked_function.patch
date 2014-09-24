@@ -1,8 +1,16 @@
+From 164cd75f7623ecd3bbe2dadc338f424a35d9ec2e Mon Sep 17 00:00:00 2001
+From: Behan Webster <behanw@converseincode.com>
+Date: Tue, 23 Sep 2014 22:43:30 -0700
+Subject: [PATCH] arm, LLVMLinux: Remove unreachable from naked function
+
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Cc: Arnd Bergmann <arnd@arndb.de>
 ---
+ drivers/bus/arm-cci.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
 diff --git a/drivers/bus/arm-cci.c b/drivers/bus/arm-cci.c
-index 7af78df241f2..5ece97f2b287 100644
+index 7af78df..5ece97f 100644
 --- a/drivers/bus/arm-cci.c
 +++ b/drivers/bus/arm-cci.c
 @@ -888,7 +888,7 @@ asmlinkage void __naked cci_enable_port_for_self(void)
@@ -14,3 +22,6 @@ index 7af78df241f2..5ece97f2b287 100644
  }
  
  /**
+-- 
+1.9.1
+

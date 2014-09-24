@@ -1,8 +1,16 @@
+From 1e4e37da7eacd655fb9cc515384beb930f8b7432 Mon Sep 17 00:00:00 2001
+From: Behan Webster <behanw@converseincode.com>
+Date: Tue, 23 Sep 2014 22:43:29 -0700
+Subject: [PATCH] arm, fbdev, omap2, LLVMLinux: Remove nested function from omapfb
+
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Cc: Arnd Bergmann <arnd@arndb.de>
 ---
+ drivers/video/fbdev/omap2/omapfb/omapfb-main.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
+
 diff --git a/drivers/video/fbdev/omap2/omapfb/omapfb-main.c b/drivers/video/fbdev/omap2/omapfb/omapfb-main.c
-index ec2d132c782d..15872433e0c6 100644
+index ec2d132..1587243 100644
 --- a/drivers/video/fbdev/omap2/omapfb/omapfb-main.c
 +++ b/drivers/video/fbdev/omap2/omapfb/omapfb-main.c
 @@ -273,16 +273,16 @@ static struct omapfb_colormode omapfb_colormodes[] = {
@@ -29,3 +37,6 @@ index ec2d132c782d..15872433e0c6 100644
  	if (var->bits_per_pixel == 0 ||
  			var->red.length == 0 ||
  			var->blue.length == 0 ||
+-- 
+1.9.1
+
