@@ -1,4 +1,4 @@
-From ad52f96bd33f0226eb2e96b4c375056e0c639587 Mon Sep 17 00:00:00 2001
+From 8e905e4f148c482a605d307be0ed96eed7d88bee Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Mon, 15 Sep 2014 17:10:34 -0700
 Subject: [PATCH] kbuild, LLVMLinux: Add more compiler options for clang
@@ -7,25 +7,23 @@ Change default compiler options when using clang
 
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 ---
- Makefile | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ Makefile | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
 diff --git a/Makefile b/Makefile
-index 8be7a82..dbced658 100644
+index 2c5970b..e724f9a 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -627,10 +627,6 @@ all: vmlinux
+@@ -627,8 +627,6 @@ all: vmlinux
  
  include $(srctree)/arch/$(SRCARCH)/Makefile
  
--ifneq ($(COMPILER),clang)
--KBUILD_CFLAGS	+= -fno-delete-null-pointer-checks
--endif
+-KBUILD_CFLAGS	+= $(call cc-option,-fno-delete-null-pointer-checks,)
 -
  ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
  KBUILD_CFLAGS	+= -Os $(call cc-disable-warning,maybe-uninitialized,)
  else
-@@ -693,10 +689,13 @@ KBUILD_CFLAGS += $(stackp-flag)
+@@ -691,10 +689,13 @@ KBUILD_CFLAGS += $(stackp-flag)
  
  ifeq ($(COMPILER),clang)
  KBUILD_CPPFLAGS += $(call cc-option,-Qunused-arguments,)
@@ -40,11 +38,11 @@ index 8be7a82..dbced658 100644
  # Quiet clang warning: comparison of unsigned expression < 0 is always false
  KBUILD_CFLAGS += $(call cc-disable-warning, tautological-compare)
  # CLANG uses a _MergedGlobals as optimization, but this breaks modpost, as the
-@@ -706,6 +705,7 @@ KBUILD_CFLAGS += $(call cc-option, -mno-global-merge,)
+@@ -704,6 +705,7 @@ KBUILD_CFLAGS += $(call cc-option, -mno-global-merge,)
  
  else
  
-+KBUILD_CFLAGS	+= -fno-delete-null-pointer-checks
++KBUILD_CFLAGS += $(call cc-option,-fno-delete-null-pointer-checks,)
  # This warning generated too much noise in a regular build.
  # Use make W=1 to enable this warning (see scripts/Makefile.build)
  KBUILD_CFLAGS += $(call cc-disable-warning, unused-but-set-variable)
