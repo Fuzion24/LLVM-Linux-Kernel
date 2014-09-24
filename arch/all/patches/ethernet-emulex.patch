@@ -1,0 +1,15 @@
+Signed-off-by: Behan Webster <behanw@converseincode.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+---
+diff --git a/drivers/net/ethernet/emulex/benet/be_main.c b/drivers/net/ethernet/emulex/benet/be_main.c
+index 93ff8ef39352..913098fa27f0 100644
+--- a/drivers/net/ethernet/emulex/benet/be_main.c
++++ b/drivers/net/ethernet/emulex/benet/be_main.c
+@@ -26,7 +26,6 @@
+ #include <net/vxlan.h>
+ 
+ MODULE_VERSION(DRV_VER);
+-MODULE_DEVICE_TABLE(pci, be_dev_ids);
+ MODULE_DESCRIPTION(DRV_DESC " " DRV_VER);
+ MODULE_AUTHOR("Emulex Corporation");
+ MODULE_LICENSE("GPL");

@@ -1,0 +1,34 @@
+Signed-off-by: Behan Webster <behanw@converseincode.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+---
+diff --git a/fs/nfs/Kconfig b/fs/nfs/Kconfig
+index 3dece03f2fc8..b29dc81a8b17 100644
+--- a/fs/nfs/Kconfig
++++ b/fs/nfs/Kconfig
+@@ -125,7 +125,7 @@ config PNFS_BLOCK
+ 
+ config PNFS_OBJLAYOUT
+ 	tristate
+-	depends on NFS_V4_1 && SCSI_OSD_ULD
++	depends on NFS_V4_1 && SCSI_OSD_ULD && BROKEN
+ 	default NFS_V4
+ 
+ config NFS_V4_1_IMPLEMENTATION_ID_DOMAIN
+diff --git a/fs/nfs/objlayout/objio_osd.c b/fs/nfs/objlayout/objio_osd.c
+index ae05278b3761..0c1e30b50c99 100644
+--- a/fs/nfs/objlayout/objio_osd.c
++++ b/fs/nfs/objlayout/objio_osd.c
+@@ -333,10 +333,11 @@ objio_alloc_io_state(struct pnfs_layout_hdr *pnfs_layout_type, bool is_reading,
+ 	int ret;
+ 	struct __alloc_objio_state {
+ 		struct objio_state objios;
+-		struct pnfs_osd_ioerr ioerrs[objio_seg->oc.numdevs];
++		struct pnfs_osd_ioerr ioerrs[];
+ 	} *aos;
+ 
+-	aos = kzalloc(sizeof(*aos), gfp_flags);
++	aos = kzalloc(sizeof(*aos) + objio_seg->oc.numdevs *
++		      sizeof(struct pnfs_osd_ioerr), gfp_flags);
+ 	if (unlikely(!aos))
+ 		return -ENOMEM;
+ 

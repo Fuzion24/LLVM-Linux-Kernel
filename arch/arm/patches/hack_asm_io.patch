@@ -1,0 +1,23 @@
+Signed-off-by: Behan Webster <behanw@converseincode.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+---
+diff --git a/arch/arm/include/asm/io.h b/arch/arm/include/asm/io.h
+index 18489eeb37b4..919ed892607e 100644
+--- a/arch/arm/include/asm/io.h
++++ b/arch/arm/include/asm/io.h
+@@ -258,13 +258,13 @@ static inline int pci_ioremap_io(unsigned int offset, phys_addr_t phys_addr)
+  * The {in,out}[bwl] macros are for emulating x86-style PCI/ISA IO space.
+  */
+ #ifdef __io
+-#define outb(v,p)	({ __iowmb(); __raw_writeb(v,__io(p)); })
++#define outb(v,p)	({ __iowmb()/*; __raw_writeb(v,__io(p))*/; })
+ #define outw(v,p)	({ __iowmb(); __raw_writew((__force __u16) \
+ 					cpu_to_le16(v),__io(p)); })
+ #define outl(v,p)	({ __iowmb(); __raw_writel((__force __u32) \
+ 					cpu_to_le32(v),__io(p)); })
+ 
+-#define inb(p)	({ __u8 __v = __raw_readb(__io(p)); __iormb(); __v; })
++#define inb(p)	({ __u8 __v = 0 /*__raw_readb(__io(p))*/; __iormb(); __v; })
+ #define inw(p)	({ __u16 __v = le16_to_cpu((__force __le16) \
+ 			__raw_readw(__io(p))); __iormb(); __v; })
+ #define inl(p)	({ __u32 __v = le32_to_cpu((__force __le32) \

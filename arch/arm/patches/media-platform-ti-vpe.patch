@@ -1,0 +1,39 @@
+Signed-off-by: Behan Webster <behanw@converseincode.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+---
+diff --git a/drivers/media/platform/ti-vpe/csc.c b/drivers/media/platform/ti-vpe/csc.c
+index 940df4000c42..921d7ff985cf 100644
+--- a/drivers/media/platform/ti-vpe/csc.c
++++ b/drivers/media/platform/ti-vpe/csc.c
+@@ -93,12 +93,7 @@ void csc_dump_regs(struct csc_data *csc)
+ {
+ 	struct device *dev = &csc->pdev->dev;
+ 
+-	u32 read_reg(struct csc_data *csc, int offset)
+-	{
+-		return ioread32(csc->base + offset);
+-	}
+-
+-#define DUMPREG(r) dev_dbg(dev, "%-35s %08x\n", #r, read_reg(csc, CSC_##r))
++#define DUMPREG(r) dev_dbg(dev, "%-35s %08x\n", #r, ioread32(csc->base + CSC_##r))
+ 
+ 	DUMPREG(CSC00);
+ 	DUMPREG(CSC01);
+diff --git a/drivers/media/platform/ti-vpe/sc.c b/drivers/media/platform/ti-vpe/sc.c
+index 6314171ffe9b..2e10bbcb09c5 100644
+--- a/drivers/media/platform/ti-vpe/sc.c
++++ b/drivers/media/platform/ti-vpe/sc.c
+@@ -24,12 +24,7 @@ void sc_dump_regs(struct sc_data *sc)
+ {
+ 	struct device *dev = &sc->pdev->dev;
+ 
+-	u32 read_reg(struct sc_data *sc, int offset)
+-	{
+-		return ioread32(sc->base + offset);
+-	}
+-
+-#define DUMPREG(r) dev_dbg(dev, "%-35s %08x\n", #r, read_reg(sc, CFG_##r))
++#define DUMPREG(r) dev_dbg(dev, "%-35s %08x\n", #r, ioread32(sc->base + CFG_##r))
+ 
+ 	DUMPREG(SC0);
+ 	DUMPREG(SC1);

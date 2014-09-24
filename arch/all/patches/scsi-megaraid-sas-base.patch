@@ -1,0 +1,25 @@
+Signed-off-by: Behan Webster <behanw@converseincode.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+---
+diff --git a/drivers/scsi/megaraid/megaraid_sas_base.c b/drivers/scsi/megaraid/megaraid_sas_base.c
+index 22a04e37b70a..a76098e88253 100644
+--- a/drivers/scsi/megaraid/megaraid_sas_base.c
++++ b/drivers/scsi/megaraid/megaraid_sas_base.c
+@@ -225,7 +225,7 @@ struct megasas_cmd *megasas_get_cmd(struct megasas_instance
+  * @instance:		Adapter soft state
+  * @cmd:		Command packet to be returned to free command pool
+  */
+-inline void
++void
+ megasas_return_cmd(struct megasas_instance *instance, struct megasas_cmd *cmd)
+ {
+ 	unsigned long flags;
+@@ -1396,7 +1396,7 @@ megasas_build_ldio(struct megasas_instance *instance, struct scsi_cmnd *scp,
+  * Called by megasas_queue_command to find out if the command to be queued
+  * is a logical drive command
+  */
+-inline int megasas_is_ldio(struct scsi_cmnd *cmd)
++int megasas_is_ldio(struct scsi_cmnd *cmd)
+ {
+ 	if (!MEGASAS_IS_LOGICAL(cmd))
+ 		return 0;

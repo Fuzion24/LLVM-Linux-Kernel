@@ -1,0 +1,29 @@
+Signed-off-by: Behan Webster <behanw@converseincode.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+---
+diff --git a/drivers/scsi/qla2xxx/qla_gbl.h b/drivers/scsi/qla2xxx/qla_gbl.h
+index d646540db3ac..43550d3a6cdf 100644
+--- a/drivers/scsi/qla2xxx/qla_gbl.h
++++ b/drivers/scsi/qla2xxx/qla_gbl.h
+@@ -750,8 +750,6 @@ extern void qla8044_set_idc_dontreset(struct scsi_qla_host *ha);
+ extern int qla8044_rd_direct(struct scsi_qla_host *vha, const uint32_t crb_reg);
+ extern void qla8044_wr_direct(struct scsi_qla_host *vha,
+ 			      const uint32_t crb_reg, const uint32_t value);
+-extern inline void qla8044_set_qsnt_ready(struct scsi_qla_host *vha);
+-extern inline void qla8044_need_reset_handler(struct scsi_qla_host *vha);
+ extern int qla8044_device_state_handler(struct scsi_qla_host *vha);
+ extern void qla8044_clear_qsnt_ready(struct scsi_qla_host *vha);
+ extern void qla8044_clear_drv_active(struct qla_hw_data *);
+diff --git a/drivers/scsi/qla2xxx/qla_nx2.c b/drivers/scsi/qla2xxx/qla_nx2.c
+index da9e3902f219..fdfd863305db 100644
+--- a/drivers/scsi/qla2xxx/qla_nx2.c
++++ b/drivers/scsi/qla2xxx/qla_nx2.c
+@@ -238,7 +238,7 @@ qla8044_rmw_crb_reg(struct scsi_qla_host *vha,
+ 	return;
+ }
+ 
+-inline void
++static inline void
+ qla8044_set_qsnt_ready(struct scsi_qla_host *vha)
+ {
+ 	uint32_t qsnt_state;
