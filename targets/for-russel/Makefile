@@ -37,7 +37,7 @@ all: prep kernel-build
 
 include ${TOPDIR}/common.mk
 include ${ARCHDIR}/arm/arm.mk
-include ${ARCHDIR}/all/git-push.mk
+include ${ARCHDIR}/all/git-submit-russel.mk
 
 include ${CONFIG}
 
@@ -46,14 +46,6 @@ KERNEL_PATCH_DIR+= ${TARGETDIR}/patches
 
 TARGETS+= clean mrproper
 .PHONY: prep clean mrproper
-
-#############################################################################
-ifneq (${LINUS},)
-GIT_SEND_EMAIL_OPTS += -cc torvalds@linux-foundation.org
-endif
-ifneq (${PIPACS},)
-GIT_SEND_EMAIL_OPTS += -cc pageexec@freemail.hu
-endif
 
 #############################################################################
 prep: state/prep
