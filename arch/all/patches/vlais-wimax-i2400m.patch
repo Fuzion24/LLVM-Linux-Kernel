@@ -1,7 +1,8 @@
-From aead6041604614bf43309d1760798fbf97cb72a2 Mon Sep 17 00:00:00 2001
+From fedf05b1958b76a66e1ecfaa995ed7517144c789 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 23 Sep 2014 22:43:18 -0700
-Subject: [PATCH] net, wimax, i2400, LLVMLinux: Remove VLAIS from wimax i2400m driver
+Subject: [PATCH] net, wimax, i2400, LLVMLinux: Remove VLAIS from wimax i2400m
+ driver
 
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Cc: Arnd Bergmann <arnd@arndb.de>

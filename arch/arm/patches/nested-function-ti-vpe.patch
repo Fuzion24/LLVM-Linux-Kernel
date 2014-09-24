@@ -1,7 +1,8 @@
-From 780f4f310c200929c71aa50ca8afd9468f999a4b Mon Sep 17 00:00:00 2001
+From 25a646d2c17ebae146bdca075ef7227e8bf355b0 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 23 Sep 2014 22:43:26 -0700
-Subject: [PATCH] media, platform, LLVMLinux: Remove nested function from ti-vpe
+Subject: [PATCH] media, platform, LLVMLinux: Remove nested function from
+ ti-vpe
 
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Cc: Arnd Bergmann <arnd@arndb.de>

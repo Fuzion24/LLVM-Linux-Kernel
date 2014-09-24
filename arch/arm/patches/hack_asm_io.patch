@@ -1,6 +1,5 @@
-From 57f221e07730f75845f9e25a1a7bd72cebdc3e9e Mon Sep 17 00:00:00 2001
-From: "Behan Webster behanw@converseincode.comBehan Webster"
- <behanw@converseincode.com>
+From afb8b9858611875a94a7c759cae616ffab158698 Mon Sep 17 00:00:00 2001
+From: "behanw@converseincode.comBehan" <behanw@converseincode.comBehan>
 Date: Tue, 23 Sep 2014 22:43:22 -0700
 Subject: [PATCH] DO-NOT-UPSTREAM arm, LLVMLinus: ASM workaround
 

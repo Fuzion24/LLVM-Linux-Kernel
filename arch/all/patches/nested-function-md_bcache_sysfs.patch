@@ -1,7 +1,8 @@
-From e503ccbc8d0b7d79ecd80d3e9c7fbbabd47d1273 Mon Sep 17 00:00:00 2001
+From 95b19942dfa29abadcbbe939fe8ae73635ac7486 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 23 Sep 2014 22:43:11 -0700
-Subject: [PATCH] md, sysfs, LLVMLinux: Remove nested function from bcache sysfs
+Subject: [PATCH] md, sysfs, LLVMLinux: Remove nested function from bcache
+ sysfs
 
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Cc: Arnd Bergmann <arnd@arndb.de>
