@@ -1,4 +1,4 @@
-From 462d608f1f7ff1b8c3c2e77c646c5f3a41354f8d Mon Sep 17 00:00:00 2001
+From 17e2d221530f7ccc972255aa6fac4101e48201d5 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 3 Sep 2013 22:27:26 -0400
 Subject: [PATCH] arm: LLVMLinux: use static inline in ARM ftrace.h
@@ -9,6 +9,7 @@ linkable version of the inline function). In this case using static inline
 and removing the NULL version of return_address in return_address.c does
 the right thing.
 
+Kernelversion: 3.17.0-rc5
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Reviewed-by: Mark Charlebois <charlebm@gmail.com>
 Acked-by: Steven Rostedt <rostedt@goodmis.org>
@@ -18,7 +19,7 @@ Acked-by: Steven Rostedt <rostedt@goodmis.org>
  2 files changed, 1 insertion(+), 6 deletions(-)
 
 diff --git a/arch/arm/include/asm/ftrace.h b/arch/arm/include/asm/ftrace.h
-index f89515a..2bb8cac 100644
+index 39eb16b..bfe2a2f 100644
 --- a/arch/arm/include/asm/ftrace.h
 +++ b/arch/arm/include/asm/ftrace.h
 @@ -45,7 +45,7 @@ void *return_address(unsigned int);
@@ -47,5 +48,5 @@ index fafedd8..f6aa84d 100644
  
  EXPORT_SYMBOL_GPL(return_address);
 -- 
-1.8.3.2
+1.9.1
 
