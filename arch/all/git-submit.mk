@@ -30,10 +30,11 @@ kernel-git-submit-help:
 	@echo "* make kernel-git-submit-patch"
 	@echo "   options:"
 	@echo "    CHECKPATCH=ignore        Ignore checkpatch.pl failures (for known problems)"
+	@echo "    DRYRUN=1                 Don't send email at the end (for test purposes)"
+	@echo "    NOCOVER=1                Don't send a cover email for the patch series"
 	@echo "    PATCH_LIST='patch list'  List of patches to submit"
 	@echo "    PATCH_FILTER_REGEX=regex Choose patches from current patchset by regex"
 	@echo "    REPLYTO=message-id       Send the patch as a reply to a message id"
-	@echo "    DRYRUN=1                 Don't send email at the end (for test purposes)"
 
 #############################################################################
 kernel-git-submit-patch-check: kernel-fetch
@@ -82,6 +83,7 @@ kernel-git-submit-patch: kernel-git-submit-patch-check
 	for PATCH in `$(call catuniq,${ALL_PATCH_SERIES})`; do \
 		grep $$PATCH ${TARGET_PATCH_SERIES}.${SUBMIT_BRANCH} || true; \
 	done > ${TARGET_PATCH_SERIES}
+	@$(call patch_prepare_hook)
 	@$(call git,${KERNELDIR}, quiltimport ${SUBMIT_BRANCH})
 	@$(call banner,Formatting patches for sending via email)
 	@mkdir -p ${SUBMIT_TMP}; rm -f ${SUBMIT_TMP}/*
@@ -90,7 +92,7 @@ kernel-git-submit-patch: kernel-git-submit-patch-check
 	@$(call gitcheckout,${KERNELDIR},${KERNEL_BRANCH})
 	@$(MAKE) kernel-quilt-link-patches >/dev/null 2>&1
 	@$(call banner,Submit patches)
-	@if [ `find ${SUBMIT_TMP} -name '*.patch' | wc -l` -eq 2 ] ; then \
+	@if [ -n "${NOCOVER}" ] || [ `find ${SUBMIT_TMP} -name '*.patch' | wc -l` -eq 2 ] ; then \
 		rm ${SUBMIT_COVER}; \
 	else \
 		perl -i -n -e ' \
@@ -102,7 +104,7 @@ kernel-git-submit-patch: kernel-git-submit-patch-check
 	[ -z $$REPLYTO ] || REPLYTO="--in-reply-to $$REPLYTO"; \
 	[ -z $$DRYRUN ] || DRYRUN="--dry-run"; \
 	PATCHES=`find ${SUBMIT_TMP} -name '*.patch' | grep -v 0000-`; \
-	git send-email --from "$$FROM" $$REPLYTO $$DRYRUN \
+	git send-email --cc "$$FROM" $$REPLYTO $$DRYRUN \
 		--annotate --confirm=always --signed-off-by-cc --thread \
 		`$(call email_addresses,$$PATCHES)` ${GIT_SEND_EMAIL_OPTS} \
 		${SUBMIT_TMP}/*
