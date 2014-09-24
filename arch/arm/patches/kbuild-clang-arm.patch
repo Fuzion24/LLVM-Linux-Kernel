@@ -8,6 +8,7 @@ Protect more options for arm with cc-option so that we don't get errors when
 using clang instead of gcc.  Add more or different options when using clang as
 well.
 
+KernelVersion:
 Author: Behan Webster <behanw@converseincode.com>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Reviewed-by: Mark Charlebois <charlebm@gmail.com>

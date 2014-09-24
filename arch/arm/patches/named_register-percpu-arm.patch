@@ -7,6 +7,7 @@ Using global current_stack_pointer works on both clang and gcc.
 current_stack_pointer is an unsigned long and needs to be cast
 as a pointer to dereference.
 
+KernelVersion:
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 ---

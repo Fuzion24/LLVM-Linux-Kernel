@@ -1,7 +1,7 @@
 From 2a6a57f0ab8b537bf5ca45da0ef1290911815424 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Fri, 30 May 2014 11:35:50 -0700
-Subject: [PATCH] arm, vt8500, LLVMLlinux: Use mcr instead of mcr%?
+Subject: [PATCH] arm, vt8500, LLVMLlinux: Use mcr instead of mcr% for mach-vt8500
 
 The ASM below does not compile with clang and is not the way that the mcr
 command is used in other parts of the kernel.
