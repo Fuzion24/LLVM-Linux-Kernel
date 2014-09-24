@@ -1,7 +1,10 @@
-From d394dff9fa5e895352c7052c4dfcd19020befad3 Mon Sep 17 00:00:00 2001
+From 68495a840865fddd3f09b472d45f90675a90c3a9 Mon Sep 17 00:00:00 2001
 From: Mark Charlebois <charlebm@gmail.com>
 Date: Mon, 22 Sep 2014 14:33:05 -0700
-Subject: [PATCH] kbuild-cc-option
+Subject: [PATCH] kbuild, LLVMLinux: Add -Werror to cc-option to support clang
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
 Clang will warn about unknown warnings but will not return false
 unless -Werror is set. GCC will return false if an unknown
@@ -10,6 +13,8 @@ warning is passed.
 Adding -Werror make both compiler behave the same.
 
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+Signed-off-by: Behan Webster <behanw@converseincode.com>
+Reviewed-by: Jan-Simon Möller <dl9pf@gmx.de>
 ---
  scripts/Kbuild.include | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)

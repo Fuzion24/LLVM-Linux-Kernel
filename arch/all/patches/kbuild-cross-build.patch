@@ -1,7 +1,10 @@
-From 00f60de8518ac39088fa9f7220f5d98820cf8559 Mon Sep 17 00:00:00 2001
+From 75f0ce7d201d2b2ef0117dd2710220e241945d6e Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Wed, 21 May 2014 12:02:30 -0700
 Subject: [PATCH] kbuild, LLVMLinux: Add better clang cross build support
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
 Add cross target to CC if using clang. Also add custom gcc toolchain path for
 fallback gcc tools.
@@ -17,12 +20,14 @@ To this end, you can specify the path to this fallback gcc toolchain with
 GCC_TOOLCHAIN.
 
 Signed-off-by: Behan Webster <behanw@converseincode.com>
+Reviewed-by: Jan-Simon Möller <dl9pf@gmx.de>
+Reviewed-by: Mark Charlebois <charlebm@gmail.com>
 ---
  Makefile | 16 ++++++++++++++--
  1 file changed, 14 insertions(+), 2 deletions(-)
 
 diff --git a/Makefile b/Makefile
-index 13a72f6..c80fe6c 100644
+index 13a72f6..dd3b54c 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -384,6 +384,17 @@ CFLAGS_KERNEL	=
@@ -37,7 +42,7 @@ index 13a72f6..c80fe6c 100644
 +ifneq ($(GCC_TOOLCHAIN),)
 +CLANG_GCC_TC	:= -gcc-toolchain $(GCC_TOOLCHAIN)
 +endif
-+CLANG_CFLAGS	:= $(CLANG_TARGET) $(CLANG_GCC_TC)
++CLANG_FLAGS	:= $(CLANG_TARGET) $(CLANG_GCC_TC)
 +endif
 +
  
@@ -48,13 +53,13 @@ index 13a72f6..c80fe6c 100644
  		   -Werror-implicit-function-declaration \
  		   $(call cc-option,-no-integrated-as,) \
 -		   -Wno-format-security
-+		   -Wno-format-security $(CLANG_CFLAGS)
++		   -Wno-format-security $(CLANG_FLAGS)
  
  KBUILD_AFLAGS_KERNEL :=
  KBUILD_CFLAGS_KERNEL :=
 -KBUILD_AFLAGS   := -D__ASSEMBLY__ $(call cc-option,-no-integrated-as,)
 +KBUILD_AFLAGS   := -D__ASSEMBLY__ $(call cc-option,-no-integrated-as,) \
-+		   $(CLANG_CFLAGS)
++		   $(CLANG_FLAGS)
  KBUILD_AFLAGS_MODULE  := -DMODULE
  KBUILD_CFLAGS_MODULE  := -DMODULE
  KBUILD_LDFLAGS_MODULE := -T $(srctree)/scripts/module-common.lds

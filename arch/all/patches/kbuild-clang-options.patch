@@ -1,15 +1,17 @@
-From f9cbccae31b6091f12cdac213b1d46a0e92c7b2d Mon Sep 17 00:00:00 2001
+From ad52f96bd33f0226eb2e96b4c375056e0c639587 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Mon, 15 Sep 2014 17:10:34 -0700
-Subject: [PATCH] kbuild-clang-options
+Subject: [PATCH] kbuild, LLVMLinux: Add more compiler options for clang
+
+Change default compiler options when using clang
 
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 ---
- Makefile | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ Makefile | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/Makefile b/Makefile
-index b968f41..4d44260 100644
+index 8be7a82..dbced658 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -627,10 +627,6 @@ all: vmlinux
@@ -46,13 +48,6 @@ index b968f41..4d44260 100644
  # This warning generated too much noise in a regular build.
  # Use make W=1 to enable this warning (see scripts/Makefile.build)
  KBUILD_CFLAGS += $(call cc-disable-warning, unused-but-set-variable)
-@@ -1607,3 +1607,6 @@ FORCE:
- # Declare the contents of the .PHONY variable as phony.  We keep that
- # information in a variable so we can use it in if_changed and friends.
- .PHONY: $(PHONY)
-+
-+list-var:
-+	@echo "CC => $(CC) $(KBUILD_CFLAGS)"
 -- 
 1.9.1
 
