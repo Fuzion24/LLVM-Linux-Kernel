@@ -38,6 +38,9 @@ CLANG_TOOLCHAIN	= prebuilt
 
 KERNEL_CFG	= ${KERNELDIR}/arch/arm/configs/multi_v7_defconfig 
 KERNEL_DTS	= ${KERNELDIR}/arch/arm/boot/dts/qcom-apq8064-ifc6410.dts 
+ZIMAGE		= arch/arm/boot/zImage
+KERNEL_DTB	= arch/arm/boot/dts/qcom-apq8064-ifc6410.dtb
+KERNELDTB_IMG	= ${TMPDIR}/kernel_dtb.img
 
 #Use the branch name for the dir containing MSM specific patch overrides
 KERNEL_REPO_PATCHES=${KERNEL_BRANCH}
@@ -72,3 +75,12 @@ mrproper: clean kernel-mrproper kernel-gcc-mrproper tmp-mrproper
 	@$(call banner,Very Clean)
 
 get-msm-tags:
+
+
+${KERNELDTB_IMG}:state/kernel-build
+	cat ${KERNEL_BUILD}/${ZIMAGE} ${KERNEL_BUILD}/${KERNEL_DTB} > $@
+
+# See http://mydragonboard.org/2013/forcing-ifc6410-into-fastboot/
+# for how to jumper the board to get it into fastboot mode
+test: ${KERNELDTB_IMG}
+	sudo fastboot boot -c "console=ttyMSM0,115200 root=/dev/mmcblk0p13 rootwait text rw" -b 0x80200000 ${KERNELDTB_IMG}
