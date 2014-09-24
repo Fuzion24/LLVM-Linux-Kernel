@@ -17,9 +17,11 @@ disable-clang-integrated-as.patch
 kbuild-cross-build.patch
 overflow-warn.patch
 ti-divider.patch
-initconst.patch
+initconst-gpio-bcm-kona.patch
+initconst-sdhci-bcm-kona.patch
 kbuild-llvm-bitcode.patch
 clang-flags.patch
 catch-undefined-behavior-deprecated.patch
 kbuild-clang-options.patch
+kbuild-asm-defines.patch
 kbuild-cc-option.patch
