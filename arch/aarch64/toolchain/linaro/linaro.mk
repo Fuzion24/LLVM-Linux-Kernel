@@ -32,6 +32,8 @@ LINARO_VERSION		= ${LINARO_VER_MONTH}
 LINARO_CC_NAME		= gcc-linaro-aarch64-linux-gnu-4.9-${LINARO_VERSION}_linux
 HOST			= aarch64-linux-gnu
 
+DEBDEP			+= libstdc++6:i386
+
 # So we can just include the arm rules
 LINARO_DIR		= ${ARCH_AARCH64_TOOLCHAIN}/linaro
 ARCH_ARM_TOOLCHAIN_STATE = ${ARCH_AARCH64_TOOLCHAIN_STATE}
