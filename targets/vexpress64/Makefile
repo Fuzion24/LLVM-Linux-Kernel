@@ -41,7 +41,7 @@ KERNEL_REPO_PATCHES=${KERNEL_BRANCH}
 # Need to add EXT4 support to vexpress_defconfig
 #KERNEL_CFG	= ${KERNELDIR}/arch/arm64/configs/defconfig
 KERNEL_CFG	= ${TARGETDIR}/aarch64-kernel.config
-IMAGE		= ${KERNEL_BUILD}/arch/arm64/boot/Image
+IMAGE		= ${KERNEL_BUILD}/arch/arm64/boot/Image.gz
 AARCH64INITRD	= ${INITRAMFSDIR}/images/aarch64/initramfs.cpio.gz
 
 BUILDROOT_ARCH	= qemu_arm_vexpress64
