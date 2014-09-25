@@ -402,7 +402,7 @@ kernel-tags: state/kernel-configure
 
 #############################################################################
 kernel-gcc-configure: state/kernel-gcc-configure
-state/kernel-gcc-configure: state/kernel-patch ${TMPFS_MOUNT} ${STATE_TOOLCHAIN}
+state/kernel-gcc-configure: state/kernel-patch ${TMPFS_MOUNT} ${KERNEL_CFG} ${STATE_TOOLCHAIN}
 	@make -s build-dep-check
 	@$(call banner,Configuring gcc kernel...)
 	@mkdir -p ${KERNELGCC_BUILD}
