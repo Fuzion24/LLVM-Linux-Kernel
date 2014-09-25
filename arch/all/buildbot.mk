@@ -88,6 +88,7 @@ bb_kernel_patches:
 # Defined in toolchain/clang/buildbot.mk
 #BB_CI_CLANG_MAKE	= $(MAKE) ${BB_CI_CLANGOPT}
 #BB_CI_KERNEL_MAKE	= $(MAKE) ${BB_CI_KERNEL_CLANGOPT}
+bb_check	= $(call assert,-n "${1}",Must run buildbot target with CLANG_TOOLCHAIN=from-known-good-source)
 
 #############################################################################
 # Updated in toolchain/clang/buildbot.mk
@@ -96,6 +97,7 @@ bb_clang::
 ############################################################################
 # Clang is already built before this
 buildbot-llvm-ci-build buildbot-clang-ci-build::
+	@$(call bb_check,${BB_CI_CLANG_MAKE})
 	${BB_CI_CLANG_MAKE} kernel-rebuild-known-good \
 		|| $(MAKE) ${BB_CI_CLANGOPT} kernel-sync-latest kernel-rebuild
 	${BB_CI_CLANG_MAKE} kernel-test
@@ -104,6 +106,7 @@ buildbot-llvm-ci-build buildbot-clang-ci-build::
 ############################################################################
 # Clang is already built before this
 buildbot-llvmlinux-ci-build buildbot-kernel-ci-build::
+	@$(call bb_check,${BB_CI_KERNEL_MAKE})
 	${BB_CI_KERNEL_MAKE} GIT_HARD_RESET=1 kernel-quilt-clean refresh kernel-quilt-link-patches
 # Do it with gcc first (because we can't break gcc)
 	@$(call banner,Build/test kernel with gcc)
