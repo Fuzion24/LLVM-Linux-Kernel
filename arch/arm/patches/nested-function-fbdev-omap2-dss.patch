@@ -5,6 +5,7 @@ Subject: [PATCH] arm, fbdev, omap2, LLVMLinux: Remove nested function from
  omap2 dss
 
 Signed-off-by: Behan Webster <behanw@converseincode.com>
+Suggested-by: Arnd Bergmann <arnd@arndb.de>
 Cc: Arnd Bergmann <arnd@arndb.de>
 ---
  drivers/video/fbdev/omap2/dss/dispc-compat.c  |  9 +++++----

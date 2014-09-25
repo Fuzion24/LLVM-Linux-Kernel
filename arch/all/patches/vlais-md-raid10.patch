@@ -4,6 +4,7 @@ Date: Tue, 23 Sep 2014 22:43:17 -0700
 Subject: [PATCH] md, raid10, LLVMLinux: Remove VLAIS from raid10 driver
 
 Signed-off-by: Behan Webster <behanw@converseincode.com>
+Suggested-by: Arnd Bergmann <arnd@arndb.de>
 Cc: Arnd Bergmann <arnd@arndb.de>
 ---
  drivers/md/raid10.c | 24 ++++++++++++++----------

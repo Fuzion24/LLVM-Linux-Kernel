@@ -5,6 +5,7 @@ Subject: [PATCH] md, sysfs, LLVMLinux: Remove nested function from bcache
  sysfs
 
 Signed-off-by: Behan Webster <behanw@converseincode.com>
+Suggested-by: Arnd Bergmann <arnd@arndb.de>
 Cc: Arnd Bergmann <arnd@arndb.de>
 ---
  drivers/md/bcache/sysfs.c | 10 ++++++----

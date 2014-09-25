@@ -4,6 +4,7 @@ Date: Tue, 23 Sep 2014 22:43:13 -0700
 Subject: [PATCH] DO-NOT-UPSTREAM scsi, osd, LLVMLinux: Remove __weak attribute
 
 Not-signed-off-by: Behan Webster <behanw@converseincode.com>
+Suggested-by: Arnd Bergmann <arnd@arndb.de>
 Cc: Arnd Bergmann <arnd@arndb.de>
 ---
  include/scsi/osd_types.h | 2 +-

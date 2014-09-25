@@ -4,6 +4,7 @@ Date: Tue, 23 Sep 2014 22:43:15 -0700
 Subject: [PATCH] rts5208, LLVMLinux: Fix extern inline
 
 Signed-off-by: Behan Webster <behanw@converseincode.com>
+Suggested-by: Arnd Bergmann <arnd@arndb.de>
 Cc: Arnd Bergmann <arnd@arndb.de>
 ---
  drivers/staging/rts5208/rtsx_transport.h | 2 +-

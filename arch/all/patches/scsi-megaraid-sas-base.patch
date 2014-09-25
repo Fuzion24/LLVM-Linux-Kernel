@@ -4,6 +4,7 @@ Date: Tue, 23 Sep 2014 22:43:12 -0700
 Subject: [PATCH] scsi, megaraid, sas, LLVMLinux: Remove inline
 
 Signed-off-by: Behan Webster <behanw@converseincode.com>
+Suggested-by: Arnd Bergmann <arnd@arndb.de>
 Cc: Arnd Bergmann <arnd@arndb.de>
 ---
  drivers/scsi/megaraid/megaraid_sas_base.c | 4 ++--
