@@ -1,4 +1,4 @@
-From 8e905e4f148c482a605d307be0ed96eed7d88bee Mon Sep 17 00:00:00 2001
+From 32c41098404254e42a925edfbb10d9d4c086fea5 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Mon, 15 Sep 2014 17:10:34 -0700
 Subject: [PATCH] kbuild, LLVMLinux: Add more compiler options for clang
@@ -7,11 +7,11 @@ Change default compiler options when using clang
 
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 ---
- Makefile | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ Makefile | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
 diff --git a/Makefile b/Makefile
-index 2c5970b..e724f9a 100644
+index 9078b24..e149f48 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -627,8 +627,6 @@ all: vmlinux
@@ -23,7 +23,7 @@ index 2c5970b..e724f9a 100644
  ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
  KBUILD_CFLAGS	+= -Os $(call cc-disable-warning,maybe-uninitialized,)
  else
-@@ -691,10 +689,13 @@ KBUILD_CFLAGS += $(stackp-flag)
+@@ -691,19 +689,24 @@ KBUILD_CFLAGS += $(stackp-flag)
  
  ifeq ($(COMPILER),clang)
  KBUILD_CPPFLAGS += $(call cc-option,-Qunused-arguments,)
@@ -37,9 +37,13 @@ index 2c5970b..e724f9a 100644
 +
  # Quiet clang warning: comparison of unsigned expression < 0 is always false
  KBUILD_CFLAGS += $(call cc-disable-warning, tautological-compare)
++
  # CLANG uses a _MergedGlobals as optimization, but this breaks modpost, as the
-@@ -704,6 +705,7 @@ KBUILD_CFLAGS += $(call cc-option, -mno-global-merge,)
- 
+ # source of a reference will be _MergedGlobals and not on of the whitelisted names.
+ # See modpost pattern 2
+ KBUILD_CFLAGS += $(call cc-option, -mno-global-merge,)
+-KBUILD_CFLAGS += $(call cc-option, -fcatch-undefined-behavior)
++
  else
  
 +KBUILD_CFLAGS += $(call cc-option,-fno-delete-null-pointer-checks,)

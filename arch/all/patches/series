@@ -20,7 +20,7 @@ ti-divider.patch
 initconst-gpio-bcm-kona.patch
 initconst-sdhci-bcm-kona.patch
 kbuild-llvm-bitcode.patch
-catch-undefined-behavior-deprecated.patch
+#catch-undefined-behavior-deprecated.patch
 kbuild-clang-options.patch
 kbuild-asm-defines.patch
 kbuild-cc-option.patch
@@ -37,3 +37,4 @@ vlais-exofs.patch
 vlais-md-raid10.patch
 vlais-nfs.patch
 vlais-wimax-i2400m.patch
+compiler-gcc.patch
