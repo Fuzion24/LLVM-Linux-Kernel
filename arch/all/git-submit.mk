@@ -83,6 +83,7 @@ kernel-git-submit-patch: kernel-git-submit-patch-check
 	for PATCH in `$(call catuniq,${ALL_PATCH_SERIES})`; do \
 		grep $$PATCH ${TARGET_PATCH_SERIES}.${SUBMIT_BRANCH} || true; \
 	done > ${TARGET_PATCH_SERIES}
+	@$(call banner,Optional prepare-patch-hook)
 	@$(call patch_prepare_hook)
 	@$(call git,${KERNELDIR}, quiltimport ${SUBMIT_BRANCH})
 	@$(call banner,Formatting patches for sending via email)

@@ -27,11 +27,13 @@ NOCOVER=1
 email_addresses = echo "--to patches@arm.linux.org.uk"
 
 #############################################################################
-patch_prepare_hook = KERNVER=`make -s -C ${KERNEL_DIR} kernelversion`; \
+patch_prepare_hook = $(call banner,Updating KernelVersion); \
+	KERNELVER=`make -s -C ${KERNELDIR} kernelversion`; \
+	$(call assert,-n "$$KERNELVER",No kernel version detected for ${KERNELDIR}); \
 	for PATCH in `cat ${TARGET_PATCH_SERIES}`; do \
-		echo $$PATCH; \
-		if grep -q "^KernelVersion:" ${PATCHDIR}/$$PATCH ; then \
-			sed -ie 's/KernelVersion:.*/Kernelversion: '$$KERNEVER'/' ${PATCHDIR}/$$PATCH ; \
+		if grep -qi "^KernelVersion:" ${PATCHDIR}/$$PATCH ; then \
+			sed -ie 's/^KernelVersion:.*/KernelVersion: '$$KERNELVER'/i' ${PATCHDIR}/$$PATCH ; \
+			echo $$PATCH: `egrep '^KernelVersion:' ${PATCHDIR}/$$PATCH` ; \
 		else \
 			$(call error1, Need to add KernelVersion: header to $$PATCH) ; \
 		fi ; \
