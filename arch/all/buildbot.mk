@@ -107,7 +107,7 @@ buildbot-llvm-ci-build buildbot-clang-ci-build::
 # Clang is already built before this
 buildbot-llvmlinux-ci-build buildbot-kernel-ci-build::
 	@$(call bb_check,${BB_CI_KERNEL_MAKE})
-	${BB_CI_KERNEL_MAKE} GIT_HARD_RESET=1 kernel-quilt-clean refresh kernel-quilt-link-patches
+	${BB_CI_KERNEL_MAKE} GIT_HARD_RESET=1 refresh
 # Do it with gcc first (because we can't break gcc)
 	@$(call banner,Build/test kernel with gcc)
 	${BB_CI_KERNEL_MAKE} GIT_HARD_RESET=1 kernel-gcc-clean
