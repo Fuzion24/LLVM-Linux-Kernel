@@ -1,4 +1,4 @@
-From 20fc52f68debe2c87ea029e0ca8d16a82e19ec4a Mon Sep 17 00:00:00 2001
+From d24b01eb03c72ce59485e6b93289a135d077ec32 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 3 Sep 2013 22:27:27 -0400
 Subject: [PATCH] arm: LLVMLinux: Use current_stack_pointer in unwind_backtrace
@@ -9,7 +9,7 @@ Content-Transfer-Encoding: 8bit
 Use the global current_stack_pointer to get the value of the stack pointer.
 This change supports being able to compile the kernel with both gcc and clang.
 
-KernelVersion:
+KernelVersion: 3.17.0-rc6
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Reviewed-by: Mark Charlebois <charlebm@gmail.com>
 Reviewed-by: Jan-Simon Möller <dl9pf@gmx.de>

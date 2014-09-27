@@ -1,4 +1,4 @@
-From 2ed918438068e8c119166ac8c0ba1ea2230e5f3f Mon Sep 17 00:00:00 2001
+From 2c0c6a3aca55604e9990dc441da13903ee6c97b3 Mon Sep 17 00:00:00 2001
 From: Mark Charlebois <charlebm@gmail.com>
 Date: Thu, 4 Sep 2014 14:16:17 -0700
 Subject: [PATCH] arm: LLVMLinux: Use global stack register variable for percpu
@@ -7,7 +7,7 @@ Using global current_stack_pointer works on both clang and gcc.
 current_stack_pointer is an unsigned long and needs to be cast
 as a pointer to dereference.
 
-KernelVersion:
+KernelVersion: 3.17.0-rc6
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 ---

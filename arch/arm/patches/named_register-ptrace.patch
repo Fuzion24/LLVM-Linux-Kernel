@@ -1,4 +1,4 @@
-From 17359ab8717f573f30bb46dd087e8634fec5aba4 Mon Sep 17 00:00:00 2001
+From 8ac81173a66fdbbef19ab3865f8c897508fad353 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 3 Sep 2013 22:27:27 -0400
 Subject: [PATCH] arm: LLVMLinux: Use current_stack_pointer to calculate
@@ -10,7 +10,7 @@ Content-Transfer-Encoding: 8bit
 Use the global current_stack_pointer to calculate the end of the stack for
 current_pt_regs()
 
-KernelVersion:
+KernelVersion: 3.17.0-rc6
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Reviewed-by: Mark Charlebois <charlebm@gmail.com>
 Reviewed-by: Jan-Simon Möller <dl9pf@gmx.de>
