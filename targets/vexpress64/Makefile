@@ -106,10 +106,10 @@ kernel-test test:: state/prep ${QEMUSTATE}/qemu-build kernel-build
 	( ${TOPDIR}/test/qemu/install/bin/qemu-system-aarch64 -machine virt -cpu cortex-a57 -machine type=virt -nographic -smp 1 -m 2048 -kernel ${IMAGE} --append "rdinit=/sbin/init console=ttyAMA0" \
 		| tee ${TMPDIR}/qemu_log ) &
 	( sleep 60 && killall -s 9 qemu-system-aarch64 ) || exit 0
-	@grep -a "SUCCESS" ${TMPDIR}/qemu_log
+	@grep -a "root@genericarmv8:" ${TMPDIR}/qemu_log
 
 kernel-gcc-test test-gcc:: state/prep ${QEMUSTATE}/qemu-build kernel-gcc-build
 	( ${TOPDIR}/test/qemu/install/bin/qemu-system-aarch64 -machine virt -cpu cortex-a57 -machine type=virt -nographic -smp 1 -m 2048 -kernel ${GCCIMAGE} --append "rdinit=/sbin/init console=ttyAMA0" \
 		| tee ${TMPDIR}/qemu_gcc_log ) &
-	( sleep 20 && killall -s 9 qemu-system-aarch64 ) || exit 0
-	@grep -a "SUCCESS" ${TMPDIR}/qemu_gcc_log
+	( sleep 60 && killall -s 9 qemu-system-aarch64 ) || exit 0
+	@grep -a "root@genericarmv8:" ${TMPDIR}/qemu_gcc_log
