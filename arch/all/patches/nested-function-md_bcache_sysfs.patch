@@ -1,8 +1,16 @@
-From 95b19942dfa29abadcbbe939fe8ae73635ac7486 Mon Sep 17 00:00:00 2001
+From 8b523972a510730d519fea6921045140f8cf7b87 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 23 Sep 2014 22:43:11 -0700
 Subject: [PATCH] md, sysfs, LLVMLinux: Remove nested function from bcache
  sysfs
+
+Replace the use of nested functions where a normal function will suffice.
+
+Nested functions are not liked by upstream kernel developers in general. Their
+use breaks the use of clang as a compiler, and doesn't make the code any
+better.
+
+This code now works for both gcc and clang.
 
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Suggested-by: Arnd Bergmann <arnd@arndb.de>

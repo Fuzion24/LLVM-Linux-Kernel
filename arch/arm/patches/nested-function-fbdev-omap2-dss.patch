@@ -1,16 +1,25 @@
-From 1d2592ea7b1bfa2641c682c7055232273b9f57aa Mon Sep 17 00:00:00 2001
+From b5de777a2c5925c9a4e5ee14b629243f22ef2b22 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 23 Sep 2014 22:43:27 -0700
 Subject: [PATCH] arm, fbdev, omap2, LLVMLinux: Remove nested function from
  omap2 dss
 
+Replace the use of nested functions where a normal function will suffice.
+
+Nested functions are not liked by upstream kernel developers in general. Their
+use breaks the use of clang as a compiler, and doesn't make the code any
+better.
+
+This code now works for both gcc and clang.
+
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Suggested-by: Arnd Bergmann <arnd@arndb.de>
 Cc: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Felipe Balbi <balbi@ti.com>
 ---
  drivers/video/fbdev/omap2/dss/dispc-compat.c  |  9 +++++----
- drivers/video/fbdev/omap2/dss/manager-sysfs.c | 14 +++++++-------
- 2 files changed, 12 insertions(+), 11 deletions(-)
+ drivers/video/fbdev/omap2/dss/manager-sysfs.c | 16 +++++++++-------
+ 2 files changed, 14 insertions(+), 11 deletions(-)
 
 diff --git a/drivers/video/fbdev/omap2/dss/dispc-compat.c b/drivers/video/fbdev/omap2/dss/dispc-compat.c
 index 83779c2..633c461 100644
@@ -36,23 +45,24 @@ index 83779c2..633c461 100644
  	int r;
  	DECLARE_COMPLETION_ONSTACK(completion);
 diff --git a/drivers/video/fbdev/omap2/dss/manager-sysfs.c b/drivers/video/fbdev/omap2/dss/manager-sysfs.c
-index 37b59fe..65d0173 100644
+index 37b59fe..a7414fb 100644
 --- a/drivers/video/fbdev/omap2/dss/manager-sysfs.c
 +++ b/drivers/video/fbdev/omap2/dss/manager-sysfs.c
-@@ -44,6 +44,12 @@ static ssize_t manager_display_show(struct omap_overlay_manager *mgr, char *buf)
+@@ -44,6 +44,13 @@ static ssize_t manager_display_show(struct omap_overlay_manager *mgr, char *buf)
  			dssdev->name : "<none>");
  }
  
 +static int manager_display_match(struct omap_dss_device *dssdev, void *data)
 +{
 +	const char *str = data;
++
 +	return sysfs_streq(dssdev->name, str);
 +}
 +
  static ssize_t manager_display_store(struct omap_overlay_manager *mgr,
  		const char *buf, size_t size)
  {
-@@ -52,17 +58,11 @@ static ssize_t manager_display_store(struct omap_overlay_manager *mgr,
+@@ -52,17 +59,12 @@ static ssize_t manager_display_store(struct omap_overlay_manager *mgr,
  	struct omap_dss_device *dssdev = NULL;
  	struct omap_dss_device *old_dssdev;
  
@@ -67,7 +77,8 @@ index 37b59fe..65d0173 100644
  
  	if (len > 0)
 -		dssdev = omap_dss_find_device((void *)buf, match);
-+		dssdev = omap_dss_find_device((void *)buf, manager_display_match);
++		dssdev = omap_dss_find_device((void *)buf,
++			manager_display_match);
  
  	if (len > 0 && dssdev == NULL)
  		return -EINVAL;
