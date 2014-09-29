@@ -1,10 +1,19 @@
-From 898118302da35f4ca0e875da55218a328348eb17 Mon Sep 17 00:00:00 2001
+From 2d3fecdbd791004411372f0d23b02dafe391263e Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Fri, 30 May 2014 11:35:52 -0700
-Subject: [PATCH] DO-NOT-UPSTREAM clk, ti, LLVMLinux: Move __init outside of
- type definition
+Subject: [PATCH] clk, ti, LLVMLinux: Move __init outside of type definition
 
-This is a workaround patch. Possible clang bug.
+As written, the __init for ti_clk_get_div_table is in the middle of the return
+type.
+
+The gcc documentation indicates that section attributes should be added to the
+end of the function declaration:
+
+  extern void foobar (void) __attribute__ ((section ("bar")));
+
+However gcc seems to be very permissive with where attributes can be placed.
+clang on the other hand isn't so permissive, and fails if you put the section
+definition in the middle of the return type:
 
 drivers/clk/ti/divider.c:298:28: error: expected ';' after struct
 static struct clk_div_table
@@ -28,29 +37,31 @@ drivers/clk/ti/divider.c:419:9: warning: incompatible pointer types
                ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~
 3 warnings and 2 errors generated.
 
-The __init declaration is is the wrong spot and is in the middle of the type.
-The following links shows the section attribute should be at the end of the function declaration:
+By convention, most of the kernel code puts section attributes between the
+return type and function name. In the case where the return type is a pointer,
+it's important to place the '*' on left of the __init.
 
-https://gcc.gnu.org/onlinedocs/gcc-4.9.0/gcc/Function-Attributes.html#Function-Attributes
+This updated code works for both gcc and clang.
 
-Not-signed-off-by: Behan Webster <behanw@converseincode.com>
+Signed-off-by: Behan Webster <behanw@converseincode.com>
 Reviewed-by: Mark Charlebois <charlebm@gmail.com>
+Reviewed-by: Felipe Balbi <balbi@ti.com>
 ---
  drivers/clk/ti/divider.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/clk/ti/divider.c b/drivers/clk/ti/divider.c
-index e6aa10d..104941d 100644
+index a837f70..bff2b5b 100644
 --- a/drivers/clk/ti/divider.c
 +++ b/drivers/clk/ti/divider.c
-@@ -295,8 +295,8 @@ static struct clk *_register_divider(struct device *dev, const char *name,
+@@ -300,8 +300,8 @@ static struct clk *_register_divider(struct device *dev, const char *name,
  	return clk;
  }
  
 -static struct clk_div_table
 -__init *ti_clk_get_div_table(struct device_node *node)
-+static struct clk_div_table * __init
-+ti_clk_get_div_table(struct device_node *node)
++static struct clk_div_table *
++__init ti_clk_get_div_table(struct device_node *node)
  {
  	struct clk_div_table *table;
  	const __be32 *divspec;

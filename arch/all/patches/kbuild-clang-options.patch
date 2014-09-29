@@ -1,4 +1,4 @@
-From 32c41098404254e42a925edfbb10d9d4c086fea5 Mon Sep 17 00:00:00 2001
+From c729c9b2a668cd7f7ccfbdb93adc23cc4e8cb328 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Mon, 15 Sep 2014 17:10:34 -0700
 Subject: [PATCH] kbuild, LLVMLinux: Add more compiler options for clang
@@ -7,13 +7,22 @@ Change default compiler options when using clang
 
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 ---
- Makefile | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ Makefile | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
 diff --git a/Makefile b/Makefile
-index 9078b24..e149f48 100644
+index 9078b24..800dfd0 100644
 --- a/Makefile
 +++ b/Makefile
+@@ -308,7 +308,7 @@ HOSTCXXFLAGS = -O2
+ 
+ ifeq ($(shell $(HOSTCC) -v 2>&1 | grep -c "clang version"), 1)
+ HOSTCFLAGS  += -Wno-unused-value -Wno-unused-parameter \
+-		-Wno-missing-field-initializers -fno-delete-null-pointer-checks
++		-Wno-missing-field-initializers
+ endif
+ 
+ # Decide whether to build built-in, modular, or both.
 @@ -627,8 +627,6 @@ all: vmlinux
  
  include $(srctree)/arch/$(SRCARCH)/Makefile
