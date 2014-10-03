@@ -1,0 +1,631 @@
+<!doctype html>
+<!--
+##############################################################################
+# Copyright (c) 2014 Mark Charlebois
+#
+# All rights reserved. 
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted (subject to the limitations in the disclaimer
+# below) provided that the following conditions are met:
+# 
+# * Redistributions of source code must retain the above copyright notice,
+#   this list of conditions and the following disclaimer.
+#  
+# * Redistributions in binary form must reproduce the above copyright notice,
+#   this list of conditions and the following disclaimer in the documentation
+#   and/or other materials provided with the distribution.
+# 
+# * Neither the name KernelViz nor the names of its contributors may be used
+#   to endorse or promote products derived from this software without 
+#   specific prior written permission.
+# 
+# NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY
+# THIS LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+# CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT
+# NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+# PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+# CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+# EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+# PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+# OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+# WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+# OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+# ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+##############################################################################
+<!-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+</head>
+<script src="http://d3js.org/d3.v3.js"></script>
+<script src="http://cpettitt.github.io/project/dagre-d3/latest/dagre-d3.js"></script>
+<script src='http://lorenzoongithub.github.io/completely/complete.ly.1.0.1.min.js'></script>
+<script>
+var graph = null;
+var showingGraph = false;
+var showLabels = true;
+var moduleData;
+var nodeColor = { "External": "#f77", "Global": "#177", "Local": "#fff", "Local Unused": "#771", "Exported": "#717" };
+var msgid = 0;
+
+var files = [];
+var graphTypeIsDirected = false;
+var moduleFG = true;
+var width = window.innerWidth - 290.0;
+var height = 1000;
+
+function clickFGNode(d, obj, nodes) {
+  if (selectedNode == d.index) {
+    selectedNode = null;
+    d3.selectAll("div.nodeInfo").html("");
+  } else {
+    selectedNode = d.index;
+    if (moduleFG)
+      displayNodeInfo(obj);
+  }
+  nodes.classed("node-selected", function (d) { return (d.index == selectedNode); });
+  updateNodeLinks();
+}
+
+var topdirForce = d3.layout.force()
+    .charge(-150)
+    .linkStrength(0)
+    .size([width, height])
+    .on("tick", tick);
+
+var moduleForce = d3.layout.force()
+    .charge(-500)
+    .friction(0.5)
+    .gravity(0.3)
+    .linkStrength(2)
+    .linkDistance(60)
+    .size([width, height])
+    .on("tick", tick);
+
+var force = moduleForce;
+
+var selectedNode = null;
+var svg;
+var link;
+var node;
+var label;
+
+window.addEventListener('resize', resize);
+
+function resize() {
+  width = window.innerWidth - 290.0;
+  if (graphTypeIsDirected)
+    height = 1000; 
+  else
+    height = width;
+  svg = d3.select("svg")
+          .attr("style", "width:"+ width + "px;height:"+ height + "px;");
+  force.size([width, height]);
+};
+
+function makeKey() {
+  var table = d3.select("div.key").append("table");
+
+  var tablehead = table.append("tr");
+  var tablebody = table.append("tbody");
+
+  tablehead
+    .append("th")
+    .text("Function Type");
+
+  tablehead
+    .append("th")
+    .text("Color");
+
+  row = tablebody
+    .selectAll("tr")
+    .data(Object.keys(nodeColor)) 
+    .enter()
+    .append("tr");
+
+  row
+    .append("td")
+    .attr("width", "100px")
+    .text(function (d) { return d; });
+
+  row
+    .append("td")
+    .attr("width", "50px")
+    .attr("style", function (d) { return "background-color:"+nodeColor[d]+";"; } );
+
+}
+
+function init() {
+  getFiles();
+  resize();
+  makeKey();
+  document.getElementById("togglelabels").disabled = graphTypeIsDirected;
+}
+
+function selectNewModule() {
+  var text = document.getElementById("modulename").value;
+  if (files.indexOf(text) >= 0)
+    setTimeout(function() { getModule(text, null);},0);
+  else {
+    if (showingGraph) {
+      clearGraph();
+      showingGraph=false;
+    }
+  }
+}
+
+function addModuleSelector() {
+  var selector = d3.selectAll("div.selector");
+
+  selector.append("span").text("Select a Module: ");
+
+  selector.append("input")
+  .attr("type","text")
+  .attr("id","modulename")
+  .attr("list", "module-datalist");
+
+  // Can't seem to set this via d3
+  document.getElementById("modulename").oninput = selectNewModule;
+
+  selector.append("datalist")
+  .attr("id", "module-datalist")
+  .selectAll("option")
+  .data(files.sort())
+  .enter()
+  .append("option")
+  .attr("value", function (d) { return d;})
+  .text(function (d) { return d;});
+}
+
+function debug(str) {
+  var status = document.getElementById("status");
+  status.innerHTML = str + " (msgid: "+ ++msgid + ")";
+}
+
+function displayNodeInfo(node) {
+  var ftype = node.getAttribute("functype");
+
+  var nodeinfo = d3.selectAll("div.nodeInfo")
+    .html("<h3>Node Information</h3>");
+    
+    nodeinfo
+    .append("h4")
+    .text("Selected function:");
+
+    nodeinfo
+    .append("p")
+    .text(node.id);
+
+    nodeinfo
+    .append("h4")
+    .text("Function type:");
+
+    nodeinfo
+    .append("p")
+    .text(ftype);
+
+  if (moduleData.Nodes[node.id].lineno) {
+    nodeinfo
+      .append("h4")
+      .text("Defined in:");
+    nodeinfo
+      .append("p")
+      .text(moduleData.Nodes[node.id].lineno);
+  }
+  if (moduleData.Nodes[node.id].dotfile) {
+    var link = "";
+    moduleData.Nodes[node.id].dotfile.forEach(function (dotfile) {
+      link += "<a href='#' onclick='goToModule(\""+dotfile+"\", \""+node.id+"\");return false;'>"+dotfile+"</a><section/>";
+    });
+    nodeinfo
+      .append("h4")
+      .text("Link:");
+    nodeinfo
+      .append("p")
+      .html(link);
+  }
+  if (moduleData.Nodes[node.id].ksyms) {
+    nodeinfo
+      .append("h4")
+      .text("KSymtab defined at:");
+    nodeinfo
+      .append("p")
+      .text(moduleData.Nodes[node.id].ksyms);
+  }
+}
+
+function goToModule(fname, nodeLabel) {
+  setTimeout(function() { getModule(fname, nodeLabel); },0);
+}
+
+function getModule(module, nodeLabel) {
+  xmlhttp = new XMLHttpRequest();
+  xmlhttp.open("GET","getmodule?module="+module, true);
+  xmlhttp.onreadystatechange=function() {
+    if (xmlhttp.readyState==4 && xmlhttp.status==200){
+      moduleData = null;
+      eval("moduleData ="+xmlhttp.responseText);
+      createGraph();
+    }
+  }
+  xmlhttp.send();
+}
+
+function getFiles() {
+  xmlhttp = new XMLHttpRequest();
+  xmlhttp.open("GET","getfiles", true);
+  xmlhttp.onreadystatechange=function(){
+    if (xmlhttp.readyState==4 && xmlhttp.status==200){
+      var mytext = document.getElementById("mytext");
+      files = eval(xmlhttp.responseText);
+      addModuleSelector();
+    }
+  }
+  xmlhttp.send();
+}
+
+function getFunctionType(label) {
+  var funcType;
+  if (moduleData.Nodes[label].isGlobal) {
+    if (moduleData.Nodes[label].isExternal) {
+      funcType = "External";
+    } else {
+      funcType = "Global";
+    }
+  } else if (moduleData.Nodes[label].isUnused) {
+    funcType = "Local Unused";
+  } else if (moduleData.Nodes[label].isExported) {
+    funcType = "Exported";
+  } else {
+    funcType = "Local";
+  }
+  return funcType;
+}
+
+function setDGNodeAttributes() {
+  var nodes = d3.selectAll("g.node");
+
+  nodes
+  .attr("id",function(label) { return label; })
+  .attr("functype", function (label) { 
+    var funcType = getFunctionType(label);
+    var rect = this.getElementsByTagName('rect');
+    rect[0].style.fill = nodeColor[funcType];
+    return funcType;
+  })
+  .on("click", function(label) {
+    if (label == selectedNode) {
+      selectedNode = null;
+      d3.selectAll("div.nodeInfo").html("");
+    } else {
+      // Select this node
+      selectedNode = label;
+      displayNodeInfo(this);
+    }
+    nodes.classed("selected", function (label) { return (label == selectedNode); });
+  });
+}
+
+function setFGNodeAttributes() {
+  var nodes = d3.selectAll("circle.node");
+
+  if (moduleFG) {
+    nodes
+    .attr("id",function(d) { return d.name; })
+    .attr("functype", function (d) { return getFunctionType(d.name); })
+    .attr("style", function (d) { return "fill:"+nodeColor[getFunctionType(d.name)]; })
+    .on("click", function(d){ clickFGNode(d, this, nodes); });
+  } else {
+    nodes
+    .on("click", function(d){ clickFGNode(d, this, nodes); });
+  }
+}
+
+function clearGraph() {
+  // Remove existing svg 
+  // Can be used to get rid of zoom
+  var div = d3.select("div.container");
+  div.selectAll("svg").remove();
+  div.append("svg");
+  resize();
+  graph = null;
+}
+
+function drawGraph() {
+  var layout = new dagreD3.layout()
+    .nodeSep(20)
+    .edgeSep(20)
+    .rankDir("LR");
+  var renderer = new dagreD3.Renderer();
+
+  renderer.layout(layout).run(graph, d3.select("svg").select("g"));
+  setDGNodeAttributes();
+}
+
+function update() {
+  
+  force
+      .nodes(graph.nodes)
+      .links(graph.links)
+      .start();
+
+  updateNodeLinks();
+
+  link = link.data(force.links());
+  link.enter().insert("line", "g")
+      .attr("class", "link");
+  link.exit().remove();
+
+  var nodes = d3.selectAll("circle.node");
+  node = node.data(force.nodes());
+  node.enter().append("circle")
+      .classed("node node-fg", "true")
+      .attr("r", 10)
+      .attr("id", function(d) { return d.name; })
+      .on("click", function(d) { clickFGNode(d, this, nodes);})
+      .call(force.drag)
+      .append("title")
+      .text(function(d) { return d.name; });
+  node.exit().remove();
+
+  if (showLabels) 
+    label = label.data(force.nodes());
+  else
+    label = label.data([]);
+  
+  label.enter().append("text")
+      .attr("class", "label")
+      .attr("x", 0)
+      .attr("y", 0)
+      .text(function(d) { return d.name; });
+  label.exit().remove();
+
+  node.classed("node-selected", function(d) { 
+        if (selectedNode == d.index) 
+          return true; 
+        else
+          return false; 
+  });
+  setFGNodeAttributes();
+}
+
+function tick() {
+  link.attr("x1", function(d) { return d.source.x; })
+      .attr("y1", function(d) { return d.source.y; })
+      .attr("x2", function(d) { return d.target.x; })
+      .attr("y2", function(d) { return d.target.y; });
+
+  node.attr("cx", function(d) { return d.x; })
+      .attr("cy", function(d) { return d.y; });
+
+  label.attr("transform", function(d) {
+    return "translate(" + d.x + "," + d.y + ")";
+  });
+}
+
+function ToggleLabels() {
+  showLabels = !showLabels;
+  update();
+}
+
+function ToggleGraphType() {
+  selectedNode = null;
+  clearGraph();
+  graphTypeIsDirected = !graphTypeIsDirected;
+  document.getElementById("togglelabels").disabled = graphTypeIsDirected;
+  if (showingGraph)
+    createGraph();
+}
+
+function ToggleFGGraphType() {
+  moduleFG = !moduleFG;
+  if (!moduleFG) {
+    force = topdirForce;
+    showingGraph = true;
+  } else
+    force = moduleForce;
+
+  selectedNode = null;
+  clearGraph();
+  graphTypeIsDirected = false;
+  document.getElementById("togglelabels").disabled = false;
+  if (showingGraph)
+    createGraph();
+}
+
+function createGraph() {
+  svg = d3.selectAll("svg").html("");
+  if (graphTypeIsDirected) {
+    graph = new dagreD3.Digraph();
+    d3.selectAll("div.nodeInfo").html("");
+    Object.keys(moduleData.Nodes).forEach(function(n) { 
+      graph.addNode(n, { label: n });
+    });
+    Object.keys(moduleData.Edges).forEach(function(edge) { 
+      graph.addEdge(null, moduleData.Edges[edge].n1, moduleData.Edges[edge].n2); 
+    });
+
+    svg.append("g");
+    link = svg.selectAll("g.link");
+    node = svg.selectAll("g.node");
+
+    drawGraph();
+  } else {
+    graph = new Object;
+    if (moduleFG) {
+      graph.nodes = [];
+      graph.links = [];
+      var nodes = Object.keys(moduleData.Nodes);
+
+      nodes.forEach(function(n) { 
+        graph.nodes.push({"name": n, "group": 1 });
+      });
+      Object.keys(moduleData.Edges).forEach(function(edge) { 
+        graph.links.push({ "source": nodes.indexOf(moduleData.Edges[edge].n1), 
+                           "target": nodes.indexOf(moduleData.Edges[edge].n2)}); 
+      });
+      refreshFG();
+    } else {
+      xmlhttp = new XMLHttpRequest();
+      xmlhttp.open("GET","data/TopViewFG.json", true);
+      xmlhttp.onreadystatechange=function() {
+        if (xmlhttp.readyState==4 && xmlhttp.status==200){
+          eval("graph ="+xmlhttp.responseText);
+          refreshFG();
+        }
+      }
+      xmlhttp.send();
+    }
+  }
+}
+
+function refreshFG() {
+  link = svg.append("g").selectAll(".link");
+  node = svg.append("g").selectAll(".node");
+  label = svg.append("g").selectAll(".label");
+  update();
+  showingGraph=true;
+}
+
+function updateNodeLinks() {
+  link
+      .classed("link-target", function(k) { 
+        if (selectedNode == k.target.index) 
+          return true; 
+        else
+          return false; 
+      })
+      .classed("link-source", function(k) { 
+        if (selectedNode == k.source.index) 
+          return true; 
+        else
+          return false; 
+      })
+      .filter(function(k) { 
+        return selectedNode == k.source.index || selectedNode == k.target.index; 
+      })
+      // Move to the top of displayed links
+      .each(function() { 
+        this.parentNode.appendChild(this); 
+      });
+}
+
+</script>
+<style>
+body {
+  font-family: sans-serif;
+  font-size: 14px;
+}
+
+.node rect {
+  stroke: #333;
+}
+
+.selected rect {
+  stroke-width: 4px;
+  stroke: #00d;
+}
+
+.edgePath path {
+  stroke: #333;
+  fill: none;
+}
+
+.nodeInfo,
+.key {
+  width: 230px;
+  margin: 5px;
+  padding: 5px;
+  border: 1px solid #999;
+  float: right;
+}
+
+.buttons {
+  width: 70px;
+  margin: 5px;
+  padding: 5px;
+  border: 1px solid #999;
+  float: left;
+}
+
+td {
+  border:1px solid #999;
+}
+
+svg {
+  border: 1px solid #999;
+  overflow: hidden;
+  background: -webkit-linear-gradient(white, rgba(100,100,255,10)); /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient(white, rgba(100,100,255,10)); /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient(white, rgba(100,100,255,10)); /* For Firefox 3.6 to 15 */
+  background: linear-gradient(white, rgba(100,100,255,10)); /* Standard syntax (must be last) */
+}
+
+.node-fg {
+  stroke: #fff;
+  fill: #fd9040;
+  stroke-width: 1.5px;
+}
+
+.node-selected {
+  stroke: #00d;
+  stroke-width: 4px;
+}
+
+.link {
+  stroke: #000;
+  stroke-opacity: 1;
+  stroke-width: 2px;
+}
+
+.label {
+  pointer-events: none;
+}
+
+.selector{
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: #fff;
+    border: 1px solid #000;
+    z-index: 1;
+}
+
+.link-source,
+.link-target {
+  stroke-opacity: 1;
+  stroke-width: 2px;
+}
+
+.link-source {
+  stroke: #d62728;
+}
+
+.link-target {
+  stroke: #2ca02c;
+}
+
+</style>
+<body onload="init()">
+<div class="selector"></div>
+<div class="container" style="float:left;">
+  <svg>
+    <g/>
+  </svg>
+</div>
+<div class="controls">
+<div class="buttons">
+  <button type="button" onclick="ToggleFGGraphType()">Toggle Mode</button><br/>
+  <button type="button" onclick="ToggleGraphType()">Toggle Module View</button><br/>
+  <button type="button" id="togglelabels" onclick="ToggleLabels()">Toggle Labels</button>
+</div>
+<div style="width:150px;float:right;">
+  <img src="http://llvm.linuxfoundation.org/skins/common/images/tux-with-dragon-wings-135.png"/>
+</div>
+<div class="key"></div>
+<div style="height:400px;" class="nodeInfo"/></div>
+<div style="width:250px;float:right;"><section>Status: <span id="status"/></section></div>
+
+</body>
+</html>
