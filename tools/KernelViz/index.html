@@ -489,6 +489,14 @@ function refreshFG() {
 }
 
 function updateNodeLinks() {
+  if (!moduleFG) {
+    link
+      .classed("link-shadow", true)
+      .filter(function(k) { 
+        return selectedNode != k.source.index && selectedNode != k.target.index; 
+      });
+  }
+  
   link
       .classed("link-target", function(k) { 
         if (selectedNode == k.target.index) 
@@ -590,6 +598,11 @@ svg {
     background: #fff;
     border: 1px solid #000;
     z-index: 1;
+}
+
+.link-shadow {
+  stroke: #222;
+  stroke-opacity: .2;
 }
 
 .link-source,
