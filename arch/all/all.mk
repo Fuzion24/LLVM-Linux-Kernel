@@ -402,7 +402,7 @@ kernel-tags: state/kernel-configure
 
 #############################################################################
 kernel-gcc-configure: state/kernel-gcc-configure
-state/kernel-gcc-configure: state/kernel-patch ${TMPFS_MOUNT} ${STATE_TOOLCHAIN}
+state/kernel-gcc-configure: state/kernel-patch ${TMPFS_MOUNT} ${KERNEL_CFG} ${STATE_TOOLCHAIN}
 	@make -s build-dep-check
 	@$(call banner,Configuring gcc kernel...)
 	@mkdir -p ${KERNELGCC_BUILD}
@@ -542,7 +542,7 @@ kernel-shell-for-build: kernel-configure
 		"KERNEL_SRC_DIR='${KERNELDIR}'" \
 		"KERNEL_BUILD_DIR='${KERNEL_BUILD}'" \
 		"KERNEL_BUILD_PARAMETERS='${MAKE_FLAGS} ${KERNEL_VAR} ${KERNEL_MAKE_TARGETS}'" \
-		"BUILD_COMMAND='make -C ${KERNEL_BUILD} ${MAKE_FLAGS} ${KERNEL_VAR} ${KERNEL_MAKE_TARGETS}'"
+		"BUILD_COMMAND='make -C ${KERNEL_BUILD} ${MAKE_FLAGS} ${KERNEL_VAR} ${KERNEL_MAKE_TARGETS} HOSTCC=${CLANG} CC=${CLANGCC}'"
 
 kernel-gcc-shell-for-build: kernel-gcc-configure
 	@echo "PATH='${COMPILER_PATH}/bin:${PATH}'" \

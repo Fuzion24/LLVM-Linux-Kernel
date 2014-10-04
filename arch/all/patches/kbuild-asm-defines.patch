@@ -1,7 +1,11 @@
-From 5ec43b2b6224f5f91ef8c3bec8d26446e742d7c1 Mon Sep 17 00:00:00 2001
+From e0e0781fe30587650d5f5eece72ad931fbd5f9df Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Sat, 20 Sep 2014 00:14:43 -0700
-Subject: [PATCH] kbuild, LLVMLinux: Fix asm-offset generation to work with clang
+Subject: [PATCH] kbuild, LLVMLinux: Fix asm-offset generation to work with
+ clang
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
 When using clang with -no-integerated-as clang will use the gnu assembler instead
 of the integrated assembler. However clang will still perform asm error checking
@@ -18,6 +22,15 @@ updating the sed scripts accordingly to work as expected.
 This solution works for both gcc and clang.
 
 Signed-off-by: Behan Webster <behanw@converseincode.com>
+Reviewed-by: Mark Charlebois <charlebm@gmail.com>
+Reviewed-by: Jan-Simon Möller <dl9pf@gmx.de>
+Cc: Jan Moskyto Matejka <mq@suse.cz>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Cc: "H. Peter Anvin" <hpa@linux.intel.com>
+Cc: Tom Gundersen <teg@jklm.no>
+Cc: Masahiro Yamada <yamada.m@jp.panasonic.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
 ---
  Kbuild                 | 8 ++++----
  include/linux/kbuild.h | 6 +++---
@@ -44,7 +57,7 @@ index b8b708a..2f509c9 100644
  
  quiet_cmd_offsets = GEN     $@
 diff --git a/include/linux/kbuild.h b/include/linux/kbuild.h
-index 22a7219..154c3ef 100644
+index 22a7219..75fa2c3 100644
 --- a/include/linux/kbuild.h
 +++ b/include/linux/kbuild.h
 @@ -2,14 +2,14 @@
@@ -52,7 +65,7 @@ index 22a7219..154c3ef 100644
  
  #define DEFINE(sym, val) \
 -        asm volatile("\n->" #sym " %0 " #val : : "i" (val))
-+        asm volatile("\n@->" #sym " %0 " #val : : "i" (val))
++	asm volatile("\n@->" #sym " %0 " #val : : "i" (val))
  
 -#define BLANK() asm volatile("\n->" : : )
 +#define BLANK() asm volatile("\n@->" : : )

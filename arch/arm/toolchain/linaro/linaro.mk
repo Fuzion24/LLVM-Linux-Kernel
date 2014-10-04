@@ -44,6 +44,8 @@ COMPILER_PATH		= ${LINARO_CC_DIR}
 LINARO_GCC		= ${LINARO_CC_BINDIR}/${CROSS_COMPILE}gcc
 CROSS_GCC		= ${LINARO_GCC}
 
+DEBDEP			+= libstdc++6:i386 libz1:i386 libncurses5:i386
+
 ARM_CROSS_GCC_TOOLCHAIN = ${LINARO_CC_DIR}
 
 # Add path so that ${CROSS_COMPILE}${CC} is resolved

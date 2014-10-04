@@ -141,6 +141,7 @@ buildroot-cpconfig: ${BUILDROOT_BUILDDIR}/buildroot-configure
 	@cp -v ${BUILDROOT_BUILDDIR}/.config ${BUILDROOT_CONFIG}
 
 ##############################################################################
+export TOOLCHAINDIR
 buildroot buildroot-build: ${BUILDROOT_BUILDDIR}/buildroot-build
 ${BUILDROOT_BUILDDIR}/buildroot-build: ${BUILDROOT_BUILDDIR}/buildroot-configure
 	@[ -d ${BUILDROOT_BUILDDIR} ] || ($(call leavestate,${BUILDROOT_BUILDDIR},kernel-configure) && ${MAKE} kernel-configure)

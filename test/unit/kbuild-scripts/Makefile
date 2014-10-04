@@ -37,7 +37,7 @@ run-tests: $(KBUILDS)
 			done ; \
 		done ; \
 		egrep -q "^$$TEST: #$$RESULT" $(TESTFILE) && echo -e "${PASS}: $$TEST" \
-			|| (echo -en "${FAIL}: `egrep "^$$TEST:" $(TESTFILE)`"; echo $$RAWTEST) ; \
+			|| (echo -en "${FAIL}: `egrep "^$$TEST:" $(TESTFILE)`"; echo -e $$RAWTEST) ; \
 	done ;
 
 #================================================================================

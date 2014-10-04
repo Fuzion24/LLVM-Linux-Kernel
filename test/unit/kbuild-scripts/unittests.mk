@@ -17,7 +17,7 @@ include $(KBUILD)
 
 #================================================================================
 # These numbers may change as gcc and clang gets updated
-cc-version: # 0407 0402 0407 0402
+cc-version: # 0408 0402 0408 0402
 	@echo $(call cc-version,)
 
 #================================================================================
@@ -49,6 +49,7 @@ cc-option-delete-null-pointer-checks: # -fdelete-null-pointer-checks -fdelete-nu
 cc-option-no-inline-functions-called-once: # -fno-inline-functions-called-once -fno-inline-functions-called-once -fno-inline-functions-called-once ''
 	@echo $(call cc-option,-fno-inline-functions-called-once,)
 mgeneral-regs-only: # -mgeneral-regs-only -mgeneral-regs-only -mgeneral-regs-only -mgeneral-regs-only
+	@echo $(call cc-option,-fmgeneral-regs-only,)
 
 #================================================================================
 # Testing for unsupported clang gcc, these should be blank for gcc, not for clang:

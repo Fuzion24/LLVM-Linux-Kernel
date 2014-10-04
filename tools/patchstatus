@@ -125,11 +125,11 @@ q['title-exact'] = 'true'
 feed = gd_client.GetSpreadsheetsFeed(query=q)
 spreadsheet_id = feed.entry[0].id.text.rsplit('/',1)[1]
 feed = gd_client.GetWorksheetsFeed(spreadsheet_id)
-worksheet_id = feed.entry[2].id.text.rsplit('/',1)[1]
+active_patches = feed.entry[2].id.text.rsplit('/',1)[1]
 
 #-------------------------------------------------------------------------------
 # Get row iterator for spreadsheet
-rows = gd_client.GetListFeed(spreadsheet_id, worksheet_id).entry
+rows = gd_client.GetListFeed(spreadsheet_id, active_patches).entry
 
 #-------------------------------------------------------------------------------
 if options.listcat:
@@ -255,11 +255,24 @@ print table.get_string(sortby='patchname')
 print "Number of patches: %d" % (numpatches)
 
 #-------------------------------------------------------------------------------
-for key in sorted(stats):
-    print key+": "+str(stats[key]['count']),
-    print "  submited: "+str(stats[key]['submittedupstream']),
-    print "  acked: "+str(stats[key]['ackedupstream']),
-    print "  accepted: "+str(stats[key]['acceptedupstream'])
+# Print active patch status
+for key in ("all", "aarch64", "arm", "mips", "x86", "any"):
+    try:
+        print "%8s:%3d" % (key, stats[key]['count']),
+        print "%10s:%3d" % ("submitted", stats[key]['submittedupstream']),
+        print "%6s:%3d" % ("acked", stats[key]['ackedupstream']),
+        print "%9s:%3d" % ("accepted", stats[key]['acceptedupstream'])
+    except:
+	continue
+
+#-------------------------------------------------------------------------------
+# Print done patch status
+done_patches = feed.entry[3].id.text.rsplit('/',1)[1]
+done = gd_client.GetListFeed(spreadsheet_id, done_patches).entry
+ndone = 0;
+for key in done:
+    ndone += 1
+print " completed or obsoleted: "+str(ndone)
 
 #-------------------------------------------------------------------------------
 if args:
@@ -269,5 +282,5 @@ if args:
     for patch in args:
 	sys.stderr.write("  "+patch+"\n")
 	data = {'patchname':patch, 'arch':'?', 'required':'?', 'upstream-able':'?', 'for-next':'?','for-linus':'?', 'for-arm':'?', 'for-aarch64':'?', 'boots':'?', 'category':'?', 'submittedupstream':'N', 'acceptedupstream':'N'}
-        gd_client.InsertRow(data, spreadsheet_id, worksheet_id)
+        gd_client.InsertRow(data, spreadsheet_id, active_patches)
 

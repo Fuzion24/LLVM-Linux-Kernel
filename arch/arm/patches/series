@@ -9,5 +9,11 @@ named_register-thread_info.patch
 named_register-unwind.patch
 named_register-percpu-arm.patch
 bcm_kona_smc.patch
-mach-vt8500.patch
+hack_asm_io.patch
+hack_disable-big-endian.patch
 hack_for_trusted_foundations.patch
+mach-vt8500.patch
+nested-function-fbdev-omap2-dss.patch
+nested-function-fbdev-omap2-omapfb.patch
+nested-function-ti-vpe.patch
+unreachable_in_naked_function.patch

@@ -1,15 +1,16 @@
-From ce9ad8c80cec3f2cc10d9b05c63448daa7f27ed3 Mon Sep 17 00:00:00 2001
+From 0008329de1406211decd45c69239060290dc586d Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 3 Sep 2013 22:27:26 -0400
-Subject: [PATCH] arm: LLVMLinux: Provide __aeabi_* symbols which are needed
- for clang
+Subject: [PATCH] DO-NOT-UPSTREAM arm: LLVMLinux: Provide __aeabi_* symbols
+ which are needed for clang
 
 These symbols are required when compiling the Linux kernel for arch ARM with
 clang.
 
+KernelVersion:
 Author: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
-Signed-off-by: Behan Webster <behanw@converseincode.com>
+Not-signed-off-by: Behan Webster <behanw@converseincode.com>
 ---
  arch/arm/lib/Makefile |  4 ++++
  arch/arm/lib/eabi.c   | 28 ++++++++++++++++++++++++++++

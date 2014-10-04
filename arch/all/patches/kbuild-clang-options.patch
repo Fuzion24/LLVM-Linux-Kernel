@@ -1,7 +1,9 @@
-From f9cbccae31b6091f12cdac213b1d46a0e92c7b2d Mon Sep 17 00:00:00 2001
+From c729c9b2a668cd7f7ccfbdb93adc23cc4e8cb328 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Mon, 15 Sep 2014 17:10:34 -0700
-Subject: [PATCH] kbuild-clang-options
+Subject: [PATCH] kbuild, LLVMLinux: Add more compiler options for clang
+
+Change default compiler options when using clang
 
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 ---
@@ -9,21 +11,28 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
  1 file changed, 8 insertions(+), 5 deletions(-)
 
 diff --git a/Makefile b/Makefile
-index b968f41..4d44260 100644
+index 9078b24..800dfd0 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -627,10 +627,6 @@ all: vmlinux
+@@ -308,7 +308,7 @@ HOSTCXXFLAGS = -O2
+ 
+ ifeq ($(shell $(HOSTCC) -v 2>&1 | grep -c "clang version"), 1)
+ HOSTCFLAGS  += -Wno-unused-value -Wno-unused-parameter \
+-		-Wno-missing-field-initializers -fno-delete-null-pointer-checks
++		-Wno-missing-field-initializers
+ endif
+ 
+ # Decide whether to build built-in, modular, or both.
+@@ -627,8 +627,6 @@ all: vmlinux
  
  include $(srctree)/arch/$(SRCARCH)/Makefile
  
--ifneq ($(COMPILER),clang)
--KBUILD_CFLAGS	+= -fno-delete-null-pointer-checks
--endif
+-KBUILD_CFLAGS	+= $(call cc-option,-fno-delete-null-pointer-checks,)
 -
  ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
  KBUILD_CFLAGS	+= -Os $(call cc-disable-warning,maybe-uninitialized,)
  else
-@@ -693,10 +689,13 @@ KBUILD_CFLAGS += $(stackp-flag)
+@@ -691,19 +689,24 @@ KBUILD_CFLAGS += $(stackp-flag)
  
  ifeq ($(COMPILER),clang)
  KBUILD_CPPFLAGS += $(call cc-option,-Qunused-arguments,)
@@ -37,22 +46,19 @@ index b968f41..4d44260 100644
 +
  # Quiet clang warning: comparison of unsigned expression < 0 is always false
  KBUILD_CFLAGS += $(call cc-disable-warning, tautological-compare)
++
  # CLANG uses a _MergedGlobals as optimization, but this breaks modpost, as the
-@@ -706,6 +705,7 @@ KBUILD_CFLAGS += $(call cc-option, -mno-global-merge,)
- 
+ # source of a reference will be _MergedGlobals and not on of the whitelisted names.
+ # See modpost pattern 2
+ KBUILD_CFLAGS += $(call cc-option, -mno-global-merge,)
+-KBUILD_CFLAGS += $(call cc-option, -fcatch-undefined-behavior)
++
  else
  
-+KBUILD_CFLAGS	+= -fno-delete-null-pointer-checks
++KBUILD_CFLAGS += $(call cc-option,-fno-delete-null-pointer-checks,)
  # This warning generated too much noise in a regular build.
  # Use make W=1 to enable this warning (see scripts/Makefile.build)
  KBUILD_CFLAGS += $(call cc-disable-warning, unused-but-set-variable)
-@@ -1607,3 +1607,6 @@ FORCE:
- # Declare the contents of the .PHONY variable as phony.  We keep that
- # information in a variable so we can use it in if_changed and friends.
- .PHONY: $(PHONY)
-+
-+list-var:
-+	@echo "CC => $(CC) $(KBUILD_CFLAGS)"
 -- 
 1.9.1
 

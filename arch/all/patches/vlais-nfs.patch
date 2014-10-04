@@ -1,0 +1,47 @@
+From 87a5538e62d55db14890bb35872b482e63884c6d Mon Sep 17 00:00:00 2001
+From: Behan Webster <behanw@converseincode.com>
+Date: Tue, 23 Sep 2014 22:43:18 -0700
+Subject: [PATCH] fs, nfs, LLVMLinux: Remove VLAIS from nfs
+
+Signed-off-by: Behan Webster <behanw@converseincode.com>
+Suggested-by: Arnd Bergmann <arnd@arndb.de>
+Cc: Arnd Bergmann <arnd@arndb.de>
+---
+ fs/nfs/Kconfig               | 2 +-
+ fs/nfs/objlayout/objio_osd.c | 5 +++--
+ 2 files changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/fs/nfs/Kconfig b/fs/nfs/Kconfig
+index 3dece03..b29dc81 100644
+--- a/fs/nfs/Kconfig
++++ b/fs/nfs/Kconfig
+@@ -125,7 +125,7 @@ config PNFS_BLOCK
+ 
+ config PNFS_OBJLAYOUT
+ 	tristate
+-	depends on NFS_V4_1 && SCSI_OSD_ULD
++	depends on NFS_V4_1 && SCSI_OSD_ULD && BROKEN
+ 	default NFS_V4
+ 
+ config NFS_V4_1_IMPLEMENTATION_ID_DOMAIN
+diff --git a/fs/nfs/objlayout/objio_osd.c b/fs/nfs/objlayout/objio_osd.c
+index ae05278..0c1e30b 100644
+--- a/fs/nfs/objlayout/objio_osd.c
++++ b/fs/nfs/objlayout/objio_osd.c
+@@ -333,10 +333,11 @@ objio_alloc_io_state(struct pnfs_layout_hdr *pnfs_layout_type, bool is_reading,
+ 	int ret;
+ 	struct __alloc_objio_state {
+ 		struct objio_state objios;
+-		struct pnfs_osd_ioerr ioerrs[objio_seg->oc.numdevs];
++		struct pnfs_osd_ioerr ioerrs[];
+ 	} *aos;
+ 
+-	aos = kzalloc(sizeof(*aos), gfp_flags);
++	aos = kzalloc(sizeof(*aos) + objio_seg->oc.numdevs *
++		      sizeof(struct pnfs_osd_ioerr), gfp_flags);
+ 	if (unlikely(!aos))
+ 		return -ENOMEM;
+ 
+-- 
+1.9.1
+

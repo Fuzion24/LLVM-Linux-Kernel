@@ -41,7 +41,8 @@ KERNEL_REPO_PATCHES=${KERNEL_BRANCH}
 # Need to add EXT4 support to vexpress_defconfig
 #KERNEL_CFG	= ${KERNELDIR}/arch/arm64/configs/defconfig
 KERNEL_CFG	= ${TARGETDIR}/aarch64-kernel.config
-IMAGE		= ${KERNEL_BUILD}/arch/arm64/boot/Image
+IMAGE		= ${KERNEL_BUILD}/arch/arm64/boot/Image.gz
+GCCIMAGE	= ${KERNELGCC_BUILD}/arch/arm64/boot/Image.gz
 AARCH64INITRD	= ${INITRAMFSDIR}/images/aarch64/initramfs.cpio.gz
 
 BUILDROOT_ARCH	= qemu_arm_vexpress64
@@ -104,11 +105,11 @@ ${KERNEL_CFG}: aarch64-kernel.config-proto ${AARCH64INITRD}
 kernel-test test:: state/prep ${QEMUSTATE}/qemu-build kernel-build
 	( ${TOPDIR}/test/qemu/install/bin/qemu-system-aarch64 -machine virt -cpu cortex-a57 -machine type=virt -nographic -smp 1 -m 2048 -kernel ${IMAGE} --append "rdinit=/sbin/init console=ttyAMA0" \
 		| tee ${TMPDIR}/qemu_log ) &
-	( sleep 10 && killall -s 9 qemu-system-aarch64 ) || exit 0
-	@grep -a "SUCCESS" ${TMPDIR}/qemu_log
+	( sleep 60 && killall -s 9 qemu-system-aarch64 ) || exit 0
+	@grep -a "root@genericarmv8:" ${TMPDIR}/qemu_log && echo SUCCESS
 
 kernel-gcc-test test-gcc:: state/prep ${QEMUSTATE}/qemu-build kernel-gcc-build
-	( ${TOPDIR}/test/qemu/install/bin/qemu-system-aarch64 -machine virt -cpu cortex-a57 -machine type=virt -nographic -smp 1 -m 2048 -kernel ${IMAGE} --append "rdinit=/sbin/init console=ttyAMA0" \
+	( ${TOPDIR}/test/qemu/install/bin/qemu-system-aarch64 -machine virt -cpu cortex-a57 -machine type=virt -nographic -smp 1 -m 2048 -kernel ${GCCIMAGE} --append "rdinit=/sbin/init console=ttyAMA0" \
 		| tee ${TMPDIR}/qemu_gcc_log ) &
-	( sleep 10 && killall -s 9 qemu-system-aarch64 ) || exit 0
-	@grep -a "SUCCESS" ${TMPDIR}/qemu_gcc_log
+	( sleep 60 && killall -s 9 qemu-system-aarch64 ) || exit 0
+	@grep -a "root@genericarmv8:" ${TMPDIR}/qemu_gcc_log && echo SUCCESS
