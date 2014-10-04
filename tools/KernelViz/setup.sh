@@ -36,7 +36,7 @@
 [ -d node_modules/string ] || npm install string
 [ -d node_modules/node-dir ] || npm install node-dir
 [ -d node_modules/graphlib ] || npm install graphlib
-[ -d node_modules/graphlib-dot ] || npm install graphlib-dot
+[ -d node_modules/graphlib-dot ] || npm install graphlib-dot@0.4.10
 [ -d node_modules/object-keys ] || npm install object-keys
 [ -d node_modules/path ] || npm install path
 
