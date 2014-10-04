@@ -246,6 +246,8 @@ function getModule(module, nodeLabel) {
     if (xmlhttp.readyState==4 && xmlhttp.status==200){
       moduleData = null;
       eval("moduleData ="+xmlhttp.responseText);
+      graphTypeIsDirected = true;
+      moduleFG = true;
       createGraph();
     }
   }
@@ -350,12 +352,12 @@ function update() {
       .links(graph.links)
       .start();
 
-  updateNodeLinks();
-
   link = link.data(force.links());
   link.enter().insert("line", "g")
       .attr("class", "link");
   link.exit().remove();
+
+  updateNodeLinks();
 
   var nodes = d3.selectAll("circle.node");
   node = node.data(force.nodes());
@@ -409,26 +411,39 @@ function ToggleLabels() {
   update();
 }
 
-function ToggleGraphType() {
+function ToggleModuleGraphType() {
   selectedNode = null;
   clearGraph();
   graphTypeIsDirected = !graphTypeIsDirected;
+  moduleFG = true;
   document.getElementById("togglelabels").disabled = graphTypeIsDirected;
   if (showingGraph)
     createGraph();
 }
 
-function ToggleFGGraphType() {
-  moduleFG = !moduleFG;
-  if (!moduleFG) {
+function ToggleGraphType() {
+  if (graphTypeIsDirected) {
+    graphTypeIsDirected = false;
+    moduleFG = false;
+  }
+  else {
+    if (moduleFG == true) {
+      moduleFG = false;
+    } else {
+      graphTypeIsDirected = true;
+      moduleFG = false;
+    }
+  }
+
+  if (moduleFG) 
+    force = moduleForce;
+  else {
     force = topdirForce;
     showingGraph = true;
-  } else
-    force = moduleForce;
+  } 
 
   selectedNode = null;
   clearGraph();
-  graphTypeIsDirected = false;
   document.getElementById("togglelabels").disabled = false;
   if (showingGraph)
     createGraph();
@@ -629,8 +644,8 @@ svg {
 </div>
 <div class="controls">
 <div class="buttons">
-  <button type="button" onclick="ToggleFGGraphType()">Toggle Mode</button><br/>
-  <button type="button" onclick="ToggleGraphType()">Toggle Module View</button><br/>
+  <button type="button" onclick="ToggleGraphType()">Toggle Mode</button><br/>
+  <button type="button" onclick="ToggleModuleGraphType()">Toggle Module View</button><br/>
   <button type="button" id="togglelabels" onclick="ToggleLabels()">Toggle Labels</button>
 </div>
 <div style="width:150px;float:right;">
