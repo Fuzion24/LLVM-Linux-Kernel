@@ -1,9 +1,3 @@
-0003-x86-boot-Work-around-clang-PR18415.patch
-0004-LLVMLinux-Clang-doesn-t-support-the-gcc-flags-set-by.patch
-0005-x86-LLVMLinux-Add-option-for-clang-in-export-of-memc.patch
-0007-x86-acpi-LLVMLinux-Remove-nested-functions-from-Thin.patch
-0008-KBuild-x86-LLVMLinux-Ad-no-integrated-as-to-arch-x86.patch
-0009-Kbuild-LLVMLinux-Add-no-integrated-as-to-arch-x86-bo.patch
-0010-clang.patch
-9001-LLVMLinux-NOUPSTREAM-support-older-versions-of-clang.patch
-9999_LLVMLinux-NOUPSTREAM-workaround_buildbot.patch
+hweight-x86.patch
+export-memcpy-clang-x86_64.patch
+no-ia-realmode.patch
