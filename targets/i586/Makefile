@@ -25,9 +25,16 @@
 TARGETDIR	= ${CURDIR}
 TOPDIR		= $(realpath ${TARGETDIR}/../..)
 
+# pin to stable version
+#CONFIG ?= checkpoints/v3.14/config.mk
 KERNEL_CFG	= ${TARGETDIR}/config_i586
-# override KERNEL_BRANCH to v3.3
+KERNEL_BRANCH	= master
+# override KERNEL_TAG to v3.3
 #KERNEL_TAG = v3.3
+# around 3.10-rc7
+#KERNEL_COMMIT = "4300a0f8bdcce5a03b88bfa16fc9827e15c52dc4"
+#LLVM_COMMIT = release_34
+#CLANG_COMMIT = release_34
 
 #GDB_OPTS	= -gdb tcp::1234 -s -S
 GDB_OPTS	=
@@ -36,7 +43,14 @@ all: prep kernel-build
 
 include ${TOPDIR}/common.mk
 include ${ARCHDIR}/i586/i586.mk
-include ${CONFIG}
+
+# we overlay the patches with even newer versions of it 
+PATCHDIR = ${TARGETDIR}/patches
+BKERNEL_REPO_PATCHES = master
+KERNEL_PATCH_DIR += ${PATCHDIR}/${KERNEL_REPO_PATCHES}
+
+# no, use CONFIG !
+#include ${CONFIG}
 
 TARGETS+= clean mrproper test test2
 .PHONY: test test2 fetch-initrd prep clean mrproper
