@@ -42,39 +42,33 @@
 <script src="http://cpettitt.github.io/project/dagre-d3/latest/dagre-d3.js"></script>
 <script src='http://lorenzoongithub.github.io/completely/complete.ly.1.0.1.min.js'></script>
 <script>
-var graph = null;
-var showingGraph = false;
-var showLabels = true;
-var moduleData;
-var nodeColor = { "External": "#f77", "Global": "#177", "Local": "#fff", "Local Unused": "#771", "Exported": "#717" };
 var msgid = 0;
 
 var files = [];
-var graphTypeIsDirected = false;
-var moduleFG = true;
 var width = window.innerWidth - 290.0;
 var height = 1000;
 
-function clickFGNode(d, obj, nodes) {
-  if (selectedNode == d.index) {
-    selectedNode = null;
-    d3.selectAll("div.nodeInfo").html("");
-  } else {
-    selectedNode = d.index;
-    if (moduleFG)
-      displayNodeInfo(obj);
-  }
-  nodes.classed("node-selected", function (d) { return (d.index == selectedNode); });
-  updateNodeLinks();
-}
+var svg;
+//var link;
+//var node;
+//var label;
+var View = null;
 
-var topdirForce = d3.layout.force()
+// -------------------------------------------------------------
+// ForceGraph
+// -------------------------------------------------------------
+function ForceGraph(inShadowlinks, isTopView) {
+
+  var _force;
+
+  if (isTopView) {
+    _force = d3.layout.force()
     .charge(-150)
     .linkStrength(0)
     .size([width, height])
     .on("tick", tick);
-
-var moduleForce = d3.layout.force()
+  } else {
+    _force = d3.layout.force()
     .charge(-500)
     .friction(0.5)
     .gravity(0.3)
@@ -82,393 +76,435 @@ var moduleForce = d3.layout.force()
     .linkDistance(60)
     .size([width, height])
     .on("tick", tick);
-
-var force = moduleForce;
-
-var selectedNode = null;
-var svg;
-var link;
-var node;
-var label;
-
-window.addEventListener('resize', resize);
-
-function resize() {
-  width = window.innerWidth - 290.0;
-  if (graphTypeIsDirected)
-    height = 1000; 
-  else
-    height = width;
-  svg = d3.select("svg")
-          .attr("style", "width:"+ width + "px;height:"+ height + "px;");
-  force.size([width, height]);
-};
-
-function makeKey() {
-  var table = d3.select("div.key").append("table");
-
-  var tablehead = table.append("tr");
-  var tablebody = table.append("tbody");
-
-  tablehead
-    .append("th")
-    .text("Function Type");
-
-  tablehead
-    .append("th")
-    .text("Color");
-
-  row = tablebody
-    .selectAll("tr")
-    .data(Object.keys(nodeColor)) 
-    .enter()
-    .append("tr");
-
-  row
-    .append("td")
-    .attr("width", "100px")
-    .text(function (d) { return d; });
-
-  row
-    .append("td")
-    .attr("width", "50px")
-    .attr("style", function (d) { return "background-color:"+nodeColor[d]+";"; } );
-
-}
-
-function init() {
-  getFiles();
-  resize();
-  makeKey();
-  document.getElementById("togglelabels").disabled = graphTypeIsDirected;
-}
-
-function selectNewModule() {
-  var text = document.getElementById("modulename").value;
-  if (files.indexOf(text) >= 0)
-    setTimeout(function() { getModule(text, null);},0);
-  else {
-    if (showingGraph) {
-      clearGraph();
-      showingGraph=false;
-    }
   }
-}
+   
+  var graph = null;
+  var shadowLinks = inShadowlinks;
+  var shadowLinks = inShadowlinks;
+  var selectedNode = null;
+  var link;
+  var node;
+  var label;
 
-function addModuleSelector() {
-  var selector = d3.selectAll("div.selector");
+  this.showLabels = true;
 
-  selector.append("span").text("Select a Module: ");
+  function tick() {
+    link.attr("x1", function(d) { return d.source.x; })
+        .attr("y1", function(d) { return d.source.y; })
+        .attr("x2", function(d) { return d.target.x; })
+        .attr("y2", function(d) { return d.target.y; });
 
-  selector.append("input")
-  .attr("type","text")
-  .attr("id","modulename")
-  .attr("list", "module-datalist");
+    node.attr("cx", function(d) { return d.x; })
+        .attr("cy", function(d) { return d.y; });
 
-  // Can't seem to set this via d3
-  document.getElementById("modulename").oninput = selectNewModule;
-
-  selector.append("datalist")
-  .attr("id", "module-datalist")
-  .selectAll("option")
-  .data(files.sort())
-  .enter()
-  .append("option")
-  .attr("value", function (d) { return d;})
-  .text(function (d) { return d;});
-}
-
-function debug(str) {
-  var status = document.getElementById("status");
-  status.innerHTML = str + " (msgid: "+ ++msgid + ")";
-}
-
-function displayNodeInfo(node) {
-  var ftype = node.getAttribute("functype");
-
-  var nodeinfo = d3.selectAll("div.nodeInfo")
-    .html("<h3>Node Information</h3>");
-    
-    nodeinfo
-    .append("h4")
-    .text("Selected function:");
-
-    nodeinfo
-    .append("p")
-    .text(node.id);
-
-    nodeinfo
-    .append("h4")
-    .text("Function type:");
-
-    nodeinfo
-    .append("p")
-    .text(ftype);
-
-  if (moduleData.Nodes[node.id].lineno) {
-    nodeinfo
-      .append("h4")
-      .text("Defined in:");
-    nodeinfo
-      .append("p")
-      .text(moduleData.Nodes[node.id].lineno);
-  }
-  if (moduleData.Nodes[node.id].dotfile) {
-    var link = "";
-    moduleData.Nodes[node.id].dotfile.forEach(function (dotfile) {
-      link += "<a href='#' onclick='goToModule(\""+dotfile+"\", \""+node.id+"\");return false;'>"+dotfile+"</a><section/>";
+    label.attr("transform", function(d) {
+      return "translate(" + d.x + "," + d.y + ")";
     });
-    nodeinfo
-      .append("h4")
-      .text("Link:");
-    nodeinfo
-      .append("p")
-      .html(link);
   }
-  if (moduleData.Nodes[node.id].ksyms) {
-    nodeinfo
-      .append("h4")
-      .text("KSymtab defined at:");
-    nodeinfo
-      .append("p")
-      .text(moduleData.Nodes[node.id].ksyms);
+
+  this.update = function() {
+    _force
+        .nodes(graph.nodes)
+        .links(graph.links)
+        .start();
+
+    link = link.data(_force.links());
+    link.enter().insert("line", "g")
+        .attr("class", "link");
+    link.exit().remove();
+
+    this.updateNodeLinks(selectedNode);
+
+    var nodes = d3.selectAll("circle.node");
+    node = node.data(_force.nodes());
+    node.enter().append("circle")
+        .classed("node node-fg", "true")
+        .attr("r", 10)
+        .attr("id", function(d) { return d.name; })
+        .on("click", function(d) { clickNode(d, this, nodes);})
+        .call(_force.drag)
+        .append("title")
+        .text(function(d) { return d.name; });
+    node.exit().remove();
+
+    if (this.showLabels) 
+      label = label.data(_force.nodes());
+    else
+      label = label.data([]);
+    
+    label.enter().append("text")
+        .attr("class", "label")
+        .attr("x", 0)
+        .attr("y", 0)
+        .text(function(d) { return d.name; });
+    label.exit().remove();
+
+    node.classed("node-selected", function(d) { 
+          if (selectedNode == d.index) 
+            return true; 
+          else
+            return false; 
+    });
+    this.setNodeAttributes();
   }
-}
 
-function goToModule(fname, nodeLabel) {
-  setTimeout(function() { getModule(fname, nodeLabel); },0);
-}
+  // Override this with View specific behavior
+  this.clickNode = function(d, obj, nodes) {
+  }
 
-function getModule(module, nodeLabel) {
-  xmlhttp = new XMLHttpRequest();
-  xmlhttp.open("GET","getmodule?module="+module, true);
-  xmlhttp.onreadystatechange=function() {
-    if (xmlhttp.readyState==4 && xmlhttp.status==200){
-      moduleData = null;
-      eval("moduleData ="+xmlhttp.responseText);
-      graphTypeIsDirected = true;
-      moduleFG = true;
-      createGraph();
+  this.setNodeAttributes = function() {
+    var fg = this;
+    var nodes = d3.selectAll("circle.node");
+
+    nodes
+      .on("click", function(d){ 
+        fg.clickNode(d, this, nodes); 
+    });
+  }
+
+
+  this.updateNodeLinks = function(selectedNode) {
+    selectedNode = selectedNode;
+    if (shadowLinks) {
+      link
+        .classed("link-shadow", true)
+        .filter(function(k) { 
+          return selectedNode != k.source.index && selectedNode != k.target.index; 
+        });
     }
+    
+    link
+        .classed("link-target", function(k) { 
+          if (selectedNode == k.target.index) 
+            return true; 
+          else
+            return false; 
+        })
+        .classed("link-source", function(k) { 
+          if (selectedNode == k.source.index) 
+            return true; 
+          else
+            return false; 
+        })
+        .filter(function(k) { 
+          return selectedNode == k.source.index || selectedNode == k.target.index; 
+        })
+        // Move to the top of displayed links
+        .each(function() { 
+          this.parentNode.appendChild(this); 
+        });
   }
-  xmlhttp.send();
+
+  this.toggleLabels = function() {
+    this.showLabels = !this.showLabels;
+    this.update();
+  }
+
+  this.refresh = function (inGraph, inSelectedNode) {
+    graph = inGraph;
+    selectedNode = inSelectedNode;
+    svg = d3.select("svg");
+    link = svg.append("g").selectAll(".link");
+    node = svg.append("g").selectAll(".node");
+    label = svg.append("g").selectAll(".label");
+    this.update();
+    showingGraph=true;
+  }
 }
 
-function getFiles() {
-  xmlhttp = new XMLHttpRequest();
-  xmlhttp.open("GET","getfiles", true);
-  xmlhttp.onreadystatechange=function(){
-    if (xmlhttp.readyState==4 && xmlhttp.status==200){
-      var mytext = document.getElementById("mytext");
-      files = eval(xmlhttp.responseText);
-      addModuleSelector();
-    }
+// -------------------------------------------------------------
+// DirectedGraph
+// -------------------------------------------------------------
+function DirectedGraph(clickHandler, nodeattr, nodeattrfunc) {
+  var svg;
+  var selectedNode = null;
+  var showingGraph = false;
+  var graph = null;
+  var link;
+  var node;
+
+  function setNodeAttributes() {
+    var nodes = d3.selectAll("g.node");
+
+    nodes
+    .attr("id",function(label) { return label; })
+    .attr(nodeattr, function (label) { 
+      nodeattrfunc(label, this); })
+    .on("click", function(label) {
+      clickHandler(label, this); 
+      nodes.classed("selected", function (label) { return (label == selectedNode); });
+    });
   }
-  xmlhttp.send();
+
+  function drawDirectedGraph() {
+    var layout = new dagreD3.layout()
+      .nodeSep(20)
+      .edgeSep(20)
+      .rankDir("LR");
+    var renderer = new dagreD3.Renderer();
+
+    renderer.layout(layout).run(graph, svg.select("g"));
+    setNodeAttributes();
+    showingGraph=true;
+  }
+
+  this.createGraph = function(data) {
+    graph = new dagreD3.Digraph();
+    d3.selectAll("div.nodeInfo").html("");
+    Object.keys(data.Nodes).forEach(function(n) { 
+      graph.addNode(n, { label: n });
+    });
+    Object.keys(data.Edges).forEach(function(edge) { 
+      graph.addEdge(null, data.Edges[edge].n1, data.Edges[edge].n2); 
+    });
+
+    svg = d3.selectAll("svg").html("");
+    svg.append("g");
+    link = svg.selectAll("g.link");
+    node = svg.selectAll("g.node");
+
+    drawDirectedGraph();
+    return graph;
+  }
 }
 
-function getFunctionType(label) {
-  var funcType;
-  if (moduleData.Nodes[label].isGlobal) {
-    if (moduleData.Nodes[label].isExternal) {
-      funcType = "External";
-    } else {
-      funcType = "Global";
-    }
-  } else if (moduleData.Nodes[label].isUnused) {
-    funcType = "Local Unused";
-  } else if (moduleData.Nodes[label].isExported) {
-    funcType = "Exported";
-  } else {
-    funcType = "Local";
-  }
-  return funcType;
-}
+// -------------------------------------------------------------
+// ModuleView
+// -------------------------------------------------------------
+function ModuleView(svgclass, viewinfoclass, selectorclass) {
+  var moduleData = null;
+  var selectedNode = null;
+  var graphTypeIsDirected = true;
+  var showingGraph = false;
+  var nodeColor = { "External": "#f77", "Global": "#177", "Local": "#fff", "Local Unused": "#771", "Exported": "#717" };
+  var moduleName;
 
-function setDGNodeAttributes() {
-  var nodes = d3.selectAll("g.node");
-
-  nodes
-  .attr("id",function(label) { return label; })
-  .attr("functype", function (label) { 
-    var funcType = getFunctionType(label);
-    var rect = this.getElementsByTagName('rect');
-    rect[0].style.fill = nodeColor[funcType];
-    return funcType;
-  })
-  .on("click", function(label) {
+  function clickDGNode(label, obj) {
     if (label == selectedNode) {
       selectedNode = null;
       d3.selectAll("div.nodeInfo").html("");
     } else {
       // Select this node
       selectedNode = label;
-      displayNodeInfo(this);
+      displayNodeInfo(obj);
     }
-    nodes.classed("selected", function (label) { return (label == selectedNode); });
-  });
-}
-
-function setFGNodeAttributes() {
-  var nodes = d3.selectAll("circle.node");
-
-  if (moduleFG) {
-    nodes
-    .attr("id",function(d) { return d.name; })
-    .attr("functype", function (d) { return getFunctionType(d.name); })
-    .attr("style", function (d) { return "fill:"+nodeColor[getFunctionType(d.name)]; })
-    .on("click", function(d){ clickFGNode(d, this, nodes); });
-  } else {
-    nodes
-    .on("click", function(d){ clickFGNode(d, this, nodes); });
+    _dg.selectedNode = selectedNode;
   }
-}
 
-function clearGraph() {
-  // Remove existing svg 
-  // Can be used to get rid of zoom
-  var div = d3.select("div.container");
-  div.selectAll("svg").remove();
-  div.append("svg");
-  resize();
-  graph = null;
-}
-
-function drawGraph() {
-  var layout = new dagreD3.layout()
-    .nodeSep(20)
-    .edgeSep(20)
-    .rankDir("LR");
-  var renderer = new dagreD3.Renderer();
-
-  renderer.layout(layout).run(graph, d3.select("svg").select("g"));
-  setDGNodeAttributes();
-}
-
-function update() {
-  
-  force
-      .nodes(graph.nodes)
-      .links(graph.links)
-      .start();
-
-  link = link.data(force.links());
-  link.enter().insert("line", "g")
-      .attr("class", "link");
-  link.exit().remove();
-
-  updateNodeLinks();
-
-  var nodes = d3.selectAll("circle.node");
-  node = node.data(force.nodes());
-  node.enter().append("circle")
-      .classed("node node-fg", "true")
-      .attr("r", 10)
-      .attr("id", function(d) { return d.name; })
-      .on("click", function(d) { clickFGNode(d, this, nodes);})
-      .call(force.drag)
-      .append("title")
-      .text(function(d) { return d.name; });
-  node.exit().remove();
-
-  if (showLabels) 
-    label = label.data(force.nodes());
-  else
-    label = label.data([]);
-  
-  label.enter().append("text")
-      .attr("class", "label")
-      .attr("x", 0)
-      .attr("y", 0)
-      .text(function(d) { return d.name; });
-  label.exit().remove();
-
-  node.classed("node-selected", function(d) { 
-        if (selectedNode == d.index) 
-          return true; 
-        else
-          return false; 
-  });
-  setFGNodeAttributes();
-}
-
-function tick() {
-  link.attr("x1", function(d) { return d.source.x; })
-      .attr("y1", function(d) { return d.source.y; })
-      .attr("x2", function(d) { return d.target.x; })
-      .attr("y2", function(d) { return d.target.y; });
-
-  node.attr("cx", function(d) { return d.x; })
-      .attr("cy", function(d) { return d.y; });
-
-  label.attr("transform", function(d) {
-    return "translate(" + d.x + "," + d.y + ")";
-  });
-}
-
-function ToggleLabels() {
-  showLabels = !showLabels;
-  update();
-}
-
-function ToggleModuleGraphType() {
-  selectedNode = null;
-  clearGraph();
-  graphTypeIsDirected = !graphTypeIsDirected;
-  moduleFG = true;
-  document.getElementById("togglelabels").disabled = graphTypeIsDirected;
-  if (showingGraph)
-    createGraph();
-}
-
-function ToggleGraphType() {
-  if (graphTypeIsDirected) {
-    graphTypeIsDirected = false;
-    moduleFG = false;
+  function DGNodeAttrFn(label, obj) { 
+    var funcType = getFunctionType(label);
+    var rect = obj.getElementsByTagName('rect');
+    rect[0].style.fill = nodeColor[funcType];
+    return funcType;
   }
-  else {
-    if (moduleFG == true) {
-      moduleFG = false;
+
+  var _dg = new DirectedGraph(clickDGNode, "functype", DGNodeAttrFn);
+
+  var _fg = new ForceGraph(false, false);
+
+  // Override ForceGraph Node Click Handler
+  _fg.clickNode = function (d, obj, nodes) {
+    if (selectedNode == d.index) {
+      selectedNode = null;
+      d3.selectAll("div.nodeInfo").html("");
     } else {
-      graphTypeIsDirected = true;
-      moduleFG = false;
+      selectedNode = d.index;
+      displayNodeInfo(obj);
+    }
+    nodes.classed("node-selected", function (d) { return (d.index == selectedNode); });
+    _fg.updateNodeLinks(selectedNode);
+  }
+
+  // Override ForceGraph Node Attribute Handler
+  _fg.setNodeAttributes = function() {
+    var nodes = d3.selectAll("circle.node");
+
+    nodes
+      .attr("id",function(d) { return d.name; })
+      .attr("functype", function (d) { return getFunctionType(d.name); })
+      .attr("style", function (d) { return "fill:"+nodeColor[getFunctionType(d.name)]; })
+      .on("click", function(d){ _fg.clickNode(d, this, nodes); });
+  }
+
+  function makeViewInfo() {
+    var viewinfo = d3.select(viewinfoclass).html("");
+    var table = viewinfo
+      .append("div")
+      .attr("class", "key")
+      .append("table");
+
+    viewinfo
+      .append("div")
+      .classed("nodeInfo", true);
+
+    var tablehead = table.append("tr");
+    var tablebody = table.append("tbody");
+
+    tablehead
+      .append("th")
+      .text("Function Type");
+
+    tablehead
+      .append("th")
+      .text("Color");
+
+    row = tablebody
+      .selectAll("tr")
+      .data(Object.keys(nodeColor)) 
+      .enter()
+      .append("tr");
+
+    row
+      .append("td")
+      .attr("width", "100px")
+      .text(function (d) { return d; });
+
+    row
+      .append("td")
+      .attr("width", "50px")
+      .attr("style", function (d) { return "background-color:"+nodeColor[d]+";"; } );
+  }
+
+  function loadModule(fname, nodeLabel) {
+    setTimeout(function() { getModule(fname, nodeLabel); },0);
+  }
+
+  function selectNewModule(module) {
+    if (files.indexOf(module) >= 0) 
+      loadModule(module, null);
+    else {
+      if (showingGraph) {
+        clearGraph();
+        showingGraph=false;
+      }
     }
   }
 
-  if (moduleFG) 
-    force = moduleForce;
-  else {
-    force = topdirForce;
-    showingGraph = true;
-  } 
-
-  selectedNode = null;
-  clearGraph();
-  document.getElementById("togglelabels").disabled = false;
-  if (showingGraph)
-    createGraph();
-}
-
-function createGraph() {
-  svg = d3.selectAll("svg").html("");
-  if (graphTypeIsDirected) {
-    graph = new dagreD3.Digraph();
-    d3.selectAll("div.nodeInfo").html("");
-    Object.keys(moduleData.Nodes).forEach(function(n) { 
-      graph.addNode(n, { label: n });
-    });
-    Object.keys(moduleData.Edges).forEach(function(edge) { 
-      graph.addEdge(null, moduleData.Edges[edge].n1, moduleData.Edges[edge].n2); 
+  this.addModuleSelector = function() {
+    var selector = document.getElementById("selector");
+    var p = completely(selector, {
+        fontFamily:"sans-serif", fontSize:"14px", promptInnerHTML : "Select a Module:&nbsp;"
     });
 
-    svg.append("g");
-    link = svg.selectAll("g.link");
-    node = svg.selectAll("g.node");
+    p.options = files.sort();
 
-    drawGraph();
-  } else {
-    graph = new Object;
-    if (moduleFG) {
+    p.onChange = function (text) {
+      p.startFrom = text.indexOf(',')+1;
+        if (files.indexOf(text) >= 0) {
+          selectNewModule(text);
+        }
+        p.repaint();
+    };
+    //p.clientWidth = 400px;
+    p.repaint();
+  }
+
+  function displayNodeInfo(node) {
+    var ftype = node.getAttribute("functype");
+
+    var nodeinfo = d3.selectAll("div.nodeInfo")
+      .html("<h3>Node Information</h3>");
+      
+      nodeinfo
+      .append("h4")
+      .text("Selected function:");
+
+      nodeinfo
+      .append("p")
+      .text(node.id);
+
+      nodeinfo
+      .append("h4")
+      .text("Function type:");
+
+      nodeinfo
+      .append("p")
+      .text(ftype);
+
+    if (moduleData.Nodes[node.id].lineno) {
+      nodeinfo
+        .append("h4")
+        .text("Defined in:");
+      nodeinfo
+        .append("p")
+        .text(moduleData.Nodes[node.id].lineno);
+    }
+    if (moduleData.Nodes[node.id].dotfile) {
+      var link = "";
+      moduleData.Nodes[node.id].dotfile.forEach(function (dotfile) {
+        link += "<a href='#' onclick='loadModule(\""+dotfile+"\", \""
+             +node.id+"\");return false;'>"+dotfile+"</a><section/>";
+      });
+      nodeinfo
+        .append("h4")
+        .text("Link:");
+      nodeinfo
+        .append("p")
+        .html(link);
+    }
+    if (moduleData.Nodes[node.id].ksyms) {
+      nodeinfo
+        .append("h4")
+        .text("KSymtab defined at:");
+      nodeinfo
+        .append("p")
+        .text(moduleData.Nodes[node.id].ksyms);
+    }
+  }
+
+  function getFunctionType(label) {
+    var funcType;
+    if (moduleData.Nodes[label].isGlobal) {
+      if (moduleData.Nodes[label].isExternal) {
+        funcType = "External";
+      } else {
+        funcType = "Global";
+      }
+    } else if (moduleData.Nodes[label].isUnused) {
+      funcType = "Local Unused";
+    } else if (moduleData.Nodes[label].isExported) {
+      funcType = "Exported";
+    } else {
+      funcType = "Local";
+    }
+    return funcType;
+  }
+
+  function getModule(module, nodeLabel) {
+    xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("GET","getmodule?module="+module, true);
+    xmlhttp.onreadystatechange=function() {
+      if (xmlhttp.readyState==4 && xmlhttp.status==200){
+        _moduleData = null;
+        eval("moduleData ="+xmlhttp.responseText);
+        //graphTypeIsDirected = true;
+        createGraph();
+      }
+    }
+    xmlhttp.send();
+  }
+
+  this.ToggleModuleGraphType = function() {
+    selectedNode = null;
+    clearGraph();
+    graphTypeIsDirected = !graphTypeIsDirected;
+    document.getElementById("togglelabels").disabled = graphTypeIsDirected;
+    if (showingGraph)
+      createGraph();
+  }
+
+  this.toggleLabels = function() {
+    _fg.toggleLabels();
+  }
+
+  function createGraph() {
+    document.getElementById("togglelabels").disabled = graphTypeIsDirected;
+    svg = d3.selectAll("svg").html("");
+    if (graphTypeIsDirected) {
+      graph = _dg.createGraph(moduleData);
+      showingGraph = true;
+    } else {
+      graph = new Object;
       graph.nodes = [];
       graph.links = [];
       var nodes = Object.keys(moduleData.Nodes);
@@ -480,58 +516,156 @@ function createGraph() {
         graph.links.push({ "source": nodes.indexOf(moduleData.Edges[edge].n1), 
                            "target": nodes.indexOf(moduleData.Edges[edge].n2)}); 
       });
-      refreshFG();
-    } else {
-      xmlhttp = new XMLHttpRequest();
-      xmlhttp.open("GET","data/TopViewFG.json", true);
-      xmlhttp.onreadystatechange=function() {
-        if (xmlhttp.readyState==4 && xmlhttp.status==200){
-          eval("graph ="+xmlhttp.responseText);
-          refreshFG();
-        }
-      }
-      xmlhttp.send();
+      _fg.refresh(graph, selectedNode);
+      showingGraph = true;
     }
   }
-}
 
-function refreshFG() {
-  link = svg.append("g").selectAll(".link");
-  node = svg.append("g").selectAll(".node");
-  label = svg.append("g").selectAll(".label");
-  update();
-  showingGraph=true;
-}
-
-function updateNodeLinks() {
-  if (!moduleFG) {
-    link
-      .classed("link-shadow", true)
-      .filter(function(k) { 
-        return selectedNode != k.source.index && selectedNode != k.target.index; 
-      });
+  function clearGraph() {
+    // Remove existing svg 
+    // Can be used to get rid of zoom
+    var div = d3.select("div.container");
+    div.selectAll("svg").remove();
+    div.append("svg");
+    resize();
+    graph = null;
   }
-  
-  link
-      .classed("link-target", function(k) { 
-        if (selectedNode == k.target.index) 
-          return true; 
-        else
-          return false; 
-      })
-      .classed("link-source", function(k) { 
-        if (selectedNode == k.source.index) 
-          return true; 
-        else
-          return false; 
-      })
-      .filter(function(k) { 
-        return selectedNode == k.source.index || selectedNode == k.target.index; 
-      })
-      // Move to the top of displayed links
-      .each(function() { 
-        this.parentNode.appendChild(this); 
-      });
+
+  this.setActive = function() {
+    svg = d3.select("svg");
+
+    clearGraph();
+    if (showingGraph)
+      createGraph();
+
+    makeViewInfo();
+  }
+
+  this.resize = function(width, height) {
+    if (!graphTypeIsDirected)
+      height = width;
+    //_fg._force.size(width, height);
+  }
+};
+
+// -------------------------------------------------------------
+// TopDirView
+// -------------------------------------------------------------
+function TopDirView(svgclass, viewinfoclass) {
+  var svg;
+  var selectedNode = null;
+
+  var _fg = new ForceGraph(true, true);
+
+  // Override ForceGraph Node Click Handler
+  _fg.clickNode = function (d, obj, nodes) {
+    if (selectedNode == d.index) {
+      selectedNode = null;
+      d3.selectAll("div.nodeInfo").html("");
+    } else {
+      selectedNode = d.index;
+    }
+    nodes.classed("node-selected", function (d) { return (d.index == selectedNode); });
+    _fg.updateNodeLinks(selectedNode);
+  }
+
+  this.resize = function(width, height) {
+      height = width;
+    //topdirForce.size(width, height);
+  }
+
+  function createGraph() {
+    svg = d3.selectAll("svg").html("");
+    xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("GET","data/TopViewFG.json", true);
+    xmlhttp.onreadystatechange=function() {
+      if (xmlhttp.readyState==4 && xmlhttp.status==200){
+        eval("graph ="+xmlhttp.responseText);
+        _fg.refresh(graph, selectedNode);
+      }
+    }
+    xmlhttp.send();
+  }
+
+  function clearGraph() {
+    // Remove existing svg 
+    // Can be used to get rid of zoom
+    var div = d3.select("div.container");
+    div.selectAll("svg").remove();
+    div.append("svg");
+    resize();
+    graph = null;
+  }
+
+  this.setActive = function() {
+    svg = d3.select("svg");
+
+    clearGraph();
+    createGraph();
+
+    var viewinfo = d3.select(viewinfoclass).html("");
+  }
+
+  this.toggleLabels = function() {
+    _fg.toggleLabels();
+  }
+
+}
+
+var moduleView = new ModuleView("div.svg", "div.viewInfo", "div.selector");
+var topDirView = new TopDirView("div.svg", "div.viewInfo");
+View = moduleView;
+
+window.addEventListener('resize', resize);
+
+function resize() {
+  width = window.innerWidth - 290.0;
+  height = 1000;
+  svg = d3.select("svg")
+          .attr("style", "width:"+ width + "px;height:"+ height + "px;");
+  View.resize(width, height);
+};
+
+function init() {
+  getFiles();
+  View = moduleView;
+  View.setActive();
+  document.getElementById("togglelabels").disabled = true;
+  resize();
+}
+
+function debug(str) {
+  var status = document.getElementById("status");
+  status.innerHTML = str + " (msgid: "+ ++msgid + ")";
+}
+
+function ToggleTopView() {
+  if (View === moduleView) {
+    document.getElementById("togglelabels").disabled = false;
+    document.getElementById("togglemoduleview").disabled = true;
+    View = topDirView;
+  } else {
+    View = moduleView;
+    document.getElementById("togglemoduleview").disabled = false;
+  }
+
+  View.setActive();
+  View.resize();
+}
+
+// -- AJAX Functions
+
+function getFiles() {
+  xmlhttp = new XMLHttpRequest();
+  xmlhttp.open("GET","getfiles", true);
+  xmlhttp.onreadystatechange=function(){
+    if (xmlhttp.readyState==4 && xmlhttp.status==200){
+      var mytext = document.getElementById("mytext");
+      files = eval(xmlhttp.responseText);
+      moduleView.addModuleSelector();
+    }
+  }
+  xmlhttp.send();
 }
 
 </script>
@@ -634,9 +768,12 @@ svg {
   stroke: #2ca02c;
 }
 
+.nodeInfo {
+  height: 400px;
+}
 </style>
 <body onload="init()">
-<div class="selector"></div>
+<div class="selector" id="selector" style="width:600px"></div>
 <div class="container" style="float:left;">
   <svg>
     <g/>
@@ -644,15 +781,15 @@ svg {
 </div>
 <div class="controls">
 <div class="buttons">
-  <button type="button" onclick="ToggleGraphType()">Toggle Mode</button><br/>
-  <button type="button" onclick="ToggleModuleGraphType()">Toggle Module View</button><br/>
-  <button type="button" id="togglelabels" onclick="ToggleLabels()">Toggle Labels</button>
+  <button type="button" onclick="ToggleTopView()">Toggle Top View</button><br/>
+  <button type="button" id="togglemoduleview" onclick="moduleView.ToggleModuleGraphType()">Toggle Module View</button><br/>
+  <button type="button" id="togglelabels" onclick="View.toggleLabels()">Toggle Labels</button>
 </div>
 <div style="width:150px;float:right;">
   <img src="http://llvm.linuxfoundation.org/skins/common/images/tux-with-dragon-wings-135.png"/>
 </div>
-<div class="key"></div>
-<div style="height:400px;" class="nodeInfo"/></div>
+<div class="viewInfo">
+</div>
 <div style="width:250px;float:right;"><section>Status: <span id="status"/></section></div>
 
 </body>
