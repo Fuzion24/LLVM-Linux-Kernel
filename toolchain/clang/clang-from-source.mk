@@ -253,6 +253,13 @@ ${LLVM_TARGETS_APPLIED}: %-patch-applied:
 	@$(call applied,${LLVMSRCDIR}/$*)
 
 ##############################################################################
+ifneq (${CLANG_DEBUGBUILD},)
+CLANG_CMAKE_BUILD_TYPE=Debug
+else
+CLANG_CMAKE_BUILD_TYPE=Release
+endif
+
+##############################################################################
 ifneq (${CLANG_SELFHOST},)
 CLANG_CMAKE_FLAGS	= CC=clang CXX=clang++
 else
@@ -274,7 +281,7 @@ endif
 llvmconfig = $(call banner,Configure ${1}...) ; \
 	$(call move_dir,${CCACHE_LLVM_OLD_DIR},${CCACHE_LLVM_DIR}) \
 	mkdir -p ${2} ${3} ${CCACHE_LLVM_DIR} && \
-	(cd ${2}; ${CLANG_CMAKE_FLAGS} cmake -DCMAKE_BUILD_TYPE=Release -DLLVM_BINUTILS_INCDIR=/usr/include/ \
+	(cd ${2}; ${CLANG_CMAKE_FLAGS} cmake -DCMAKE_BUILD_TYPE=${CLANG_CMAKE_BUILD_TYPE} -DLLVM_BINUTILS_INCDIR=/usr/include/ \
 	-DLLVM_TARGETS_TO_BUILD="${LLVM_TARGETS_TO_BUILD}" -DCMAKE_INSTALL_PREFIX=${3} ${4} ${5})
 ###### LLVM_FORCE_USE_OLD_TOOLCHAIN used to allow buildbot to work until we could update it.
 
