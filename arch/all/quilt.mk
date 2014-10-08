@@ -217,6 +217,7 @@ series:
 		$(MAKE) ${TARGET_PATCH_SERIES}; \
 	)
 refresh: kernel-quilt-clean kernel-quilt-link-patches series kernel-quilt-clean-broken-symlinks
+refresh-sync: kernel-sync refresh
 
 ##############################################################################
 # Have git ignore extra patch files
