@@ -70,6 +70,7 @@ function resolve() {
       var symbolFiles = Symbols[funcname];
       var ksymFiles = Symbols["__ksymtab_"+funcname];
 
+      // If there is a global symbol and lineno for the function
       if (symbolFiles && symbolFiles.lineno) {
         // Add global ksyms
         if (symbolFiles.symtype == "T" && Globals[nodeLabel] === undefined) {
@@ -80,11 +81,23 @@ function resolve() {
             if (lineno) {
               var filename = lineno.split(":")[0];
               var dotfile = filename.substring(0, filename.length-2)+".dot";
+              if (nodeLabel == "{start_kernel}") {
+                console.log(nodeLabel);
+                console.log(filename);
+                console.log(dotfile);
+              }
+                
               // verify the dot file exists
               if (Modules[dotfile] !== undefined) {
                 Globals[nodeLabel].dotfile.push(dotfile);
+                if (!Modules[file].Nodes[nodeLabel].dotfile)
+                  Modules[file].Nodes[nodeLabel].dotfile = [];
+                Modules[file].Nodes[nodeLabel].dotfile.push(dotfile);
               }
               Globals[nodeLabel].lineno.push(symbolFiles.lineno);
+              if (!Modules[file].Nodes[nodeLabel].lineno)
+                Modules[file].Nodes[nodeLabel].lineno = [];
+              Modules[file].Nodes[nodeLabel].lineno.push(symbolFiles.lineno);
             }
           });
         // Add lineno info to local functions
@@ -102,8 +115,8 @@ function resolve() {
             }
           });
         }
-      // If the node/function is global but not in obj files, it must be exported
       } 
+      // If the node/function is global but not in obj files, it must be exported
       if (node.isGlobal) {
 
 	if (node.isExternal === true) {
@@ -134,6 +147,7 @@ function resolve() {
         }
       }
 
+      // If there are kysms for the function
       if (ksymFiles) {
         if (Modules[file].Nodes[nodeLabel].ksyms === undefined)
           Modules[file].Nodes[nodeLabel].ksyms = [];

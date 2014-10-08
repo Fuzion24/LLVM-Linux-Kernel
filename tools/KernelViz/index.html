@@ -43,15 +43,9 @@
 <script src='http://lorenzoongithub.github.io/completely/complete.ly.1.0.1.min.js'></script>
 <script>
 var msgid = 0;
-
 var files = [];
 var width = window.innerWidth - 290.0;
 var height = 1000;
-
-var svg;
-//var link;
-//var node;
-//var label;
 var View = null;
 
 // -------------------------------------------------------------
@@ -86,7 +80,7 @@ function ForceGraph(inShadowlinks, isTopView) {
   var node;
   var label;
 
-  this.showLabels = true;
+  this._showLabels = true;
 
   function tick() {
     link.attr("x1", function(d) { return d.source.x; })
@@ -127,7 +121,7 @@ function ForceGraph(inShadowlinks, isTopView) {
         .text(function(d) { return d.name; });
     node.exit().remove();
 
-    if (this.showLabels) 
+    if (this._showLabels) 
       label = label.data(_force.nodes());
     else
       label = label.data([]);
@@ -195,21 +189,57 @@ function ForceGraph(inShadowlinks, isTopView) {
         });
   }
 
-  this.toggleLabels = function() {
-    this.showLabels = !this.showLabels;
-    this.update();
+  this.showLabels = function(show) {
+    this._showLabels = show;
+    if (graph)
+      this.update();
   }
 
   this.refresh = function (inGraph, inSelectedNode) {
+    var svg = d3.select("svg");
+
     graph = inGraph;
     selectedNode = inSelectedNode;
-    svg = d3.select("svg");
+
     link = svg.append("g").selectAll(".link");
     node = svg.append("g").selectAll(".node");
     label = svg.append("g").selectAll(".label");
     this.update();
     showingGraph=true;
   }
+
+}
+
+function linkKey(element, linkColor) {
+  var table = element
+    .append("table");
+
+  var tablehead = table.append("tr");
+  var tablebody = table.append("tbody");
+
+  tablehead
+    .append("th")
+    .text("Link Type");
+
+  tablehead
+    .append("th")
+    .text("Color");
+
+  row = tablebody
+    .selectAll("tr")
+    .data(Object.keys(linkColor)) 
+    .enter()
+    .append("tr");
+
+  row
+    .append("td")
+    .attr("width", "100px")
+    .text(function (d) { return d; });
+
+  row
+    .append("td")
+    .attr("width", "50px")
+    .attr("style", function (d) { return "background-color:"+linkColor[d]+";"; } );
 }
 
 // -------------------------------------------------------------
@@ -229,7 +259,7 @@ function DirectedGraph(clickHandler, nodeattr, nodeattrfunc) {
     nodes
     .attr("id",function(label) { return label; })
     .attr(nodeattr, function (label) { 
-      nodeattrfunc(label, this); })
+      return nodeattrfunc(label, this); })
     .on("click", function(label) {
       clickHandler(label, this); 
       nodes.classed("selected", function (label) { return (label == selectedNode); });
@@ -277,7 +307,8 @@ function ModuleView(svgclass, viewinfoclass, selectorclass) {
   var graphTypeIsDirected = true;
   var showingGraph = false;
   var nodeColor = { "External": "#f77", "Global": "#177", "Local": "#fff", "Local Unused": "#771", "Exported": "#717" };
-  var moduleName;
+  var linkColor = { "Call Out": "#d62728", "Call In": "#2ca02c" };
+  var moduleSelector;
 
   function clickDGNode(label, obj) {
     if (label == selectedNode) {
@@ -333,10 +364,6 @@ function ModuleView(svgclass, viewinfoclass, selectorclass) {
       .attr("class", "key")
       .append("table");
 
-    viewinfo
-      .append("div")
-      .classed("nodeInfo", true);
-
     var tablehead = table.append("tr");
     var tablebody = table.append("tbody");
 
@@ -363,6 +390,18 @@ function ModuleView(svgclass, viewinfoclass, selectorclass) {
       .append("td")
       .attr("width", "50px")
       .attr("style", function (d) { return "background-color:"+nodeColor[d]+";"; } );
+
+    if (!graphTypeIsDirected) {
+      var key = viewinfo
+        .append("div")
+        .classed("linkKey", true);
+      linkKey(key, linkColor);
+    }
+
+    viewinfo
+      .append("div")
+      .classed("nodeInfo", true);
+
   }
 
   function loadModule(fname, nodeLabel) {
@@ -382,21 +421,20 @@ function ModuleView(svgclass, viewinfoclass, selectorclass) {
 
   this.addModuleSelector = function() {
     var selector = document.getElementById("selector");
-    var p = completely(selector, {
+    moduleSelector = completely(selector, {
         fontFamily:"sans-serif", fontSize:"14px", promptInnerHTML : "Select a Module:&nbsp;"
     });
 
-    p.options = files.sort();
+    moduleSelector.options = files.sort();
 
-    p.onChange = function (text) {
-      p.startFrom = text.indexOf(',')+1;
+    moduleSelector.onChange = function (text) {
+      moduleSelector.startFrom = text.indexOf(',')+1;
         if (files.indexOf(text) >= 0) {
           selectNewModule(text);
         }
-        p.repaint();
+        moduleSelector.repaint();
     };
-    //p.clientWidth = 400px;
-    p.repaint();
+    moduleSelector.repaint();
   }
 
   function displayNodeInfo(node) {
@@ -484,22 +522,23 @@ function ModuleView(svgclass, viewinfoclass, selectorclass) {
     xmlhttp.send();
   }
 
-  this.ToggleModuleGraphType = function() {
+  this.setGraphType = function(type) {
     selectedNode = null;
     clearGraph();
-    graphTypeIsDirected = !graphTypeIsDirected;
-    document.getElementById("togglelabels").disabled = graphTypeIsDirected;
+    graphTypeIsDirected = (type == "directed");
+    makeViewInfo();
+    d3.select("input.showlabels").style("visibility", graphTypeIsDirected ? "hidden" : "visible");
     if (showingGraph)
       createGraph();
   }
 
-  this.toggleLabels = function() {
-    _fg.toggleLabels();
+  this.showLabels = function(show) {
+    _fg.showLabels(show);
   }
 
   function createGraph() {
-    document.getElementById("togglelabels").disabled = graphTypeIsDirected;
-    svg = d3.selectAll("svg").html("");
+    d3.select("input.showlabels").style("visibility", graphTypeIsDirected ? "hidden" : "visible");
+    d3.selectAll("svg").html("");
     if (graphTypeIsDirected) {
       graph = _dg.createGraph(moduleData);
       showingGraph = true;
@@ -532,8 +571,7 @@ function ModuleView(svgclass, viewinfoclass, selectorclass) {
   }
 
   this.setActive = function() {
-    svg = d3.select("svg");
-
+    d3.select("input.showlabels").style("visibility", graphTypeIsDirected ? "hidden" : "visible");
     clearGraph();
     if (showingGraph)
       createGraph();
@@ -552,7 +590,6 @@ function ModuleView(svgclass, viewinfoclass, selectorclass) {
 // TopDirView
 // -------------------------------------------------------------
 function TopDirView(svgclass, viewinfoclass) {
-  var svg;
   var selectedNode = null;
 
   var _fg = new ForceGraph(true, true);
@@ -575,7 +612,7 @@ function TopDirView(svgclass, viewinfoclass) {
   }
 
   function createGraph() {
-    svg = d3.selectAll("svg").html("");
+    d3.selectAll("svg").html("");
     xmlhttp = new XMLHttpRequest();
     xmlhttp.open("GET","data/TopViewFG.json", true);
     xmlhttp.onreadystatechange=function() {
@@ -598,16 +635,14 @@ function TopDirView(svgclass, viewinfoclass) {
   }
 
   this.setActive = function() {
-    svg = d3.select("svg");
-
     clearGraph();
     createGraph();
 
     var viewinfo = d3.select(viewinfoclass).html("");
   }
 
-  this.toggleLabels = function() {
-    _fg.toggleLabels();
+  this.showLabels = function(show) {
+    _fg.showLabels(show);
   }
 
 }
@@ -624,13 +659,16 @@ function resize() {
   svg = d3.select("svg")
           .attr("style", "width:"+ width + "px;height:"+ height + "px;");
   View.resize(width, height);
+  var selector = document.getElementById("selector");
+  selector.style.width = width+"px";
+
 };
 
 function init() {
   getFiles();
   View = moduleView;
   View.setActive();
-  document.getElementById("togglelabels").disabled = true;
+  d3.select("input.showlabels").style("visibility", "hidden");
   resize();
 }
 
@@ -639,14 +677,16 @@ function debug(str) {
   status.innerHTML = str + " (msgid: "+ ++msgid + ")";
 }
 
-function ToggleTopView() {
-  if (View === moduleView) {
-    document.getElementById("togglelabels").disabled = false;
-    document.getElementById("togglemoduleview").disabled = true;
+function setView(view) {
+  if (view == "toplevel") {
+    d3.select("input.showlabels").style("visibility", "visible");
+    d3.selectAll("input.graphtype").style("visibility", "hidden");
+    d3.select("div.selector").style("display", "none");
     View = topDirView;
   } else {
     View = moduleView;
-    document.getElementById("togglemoduleview").disabled = false;
+    d3.selectAll("input.graphtype").style("visibility", "visible");
+    d3.select("div.selector").style("display", null);
   }
 
   View.setActive();
@@ -690,6 +730,7 @@ body {
 }
 
 .nodeInfo,
+.linkKey,
 .key {
   width: 230px;
   margin: 5px;
@@ -699,7 +740,7 @@ body {
 }
 
 .buttons {
-  width: 70px;
+  width: 120px;
   margin: 5px;
   padding: 5px;
   border: 1px solid #999;
@@ -741,12 +782,12 @@ svg {
 }
 
 .selector{
-    position: fixed;
-    top: 0;
-    left: 0;
+    float: left;
     background: #fff;
     border: 1px solid #000;
     z-index: 1;
+    width: 100%;
+    margin-bottom: 5px;
 }
 
 .link-shadow {
@@ -773,24 +814,29 @@ svg {
 }
 </style>
 <body onload="init()">
-<div class="selector" id="selector" style="width:600px"></div>
+<div class="selector" id="selector"></div>
+<div class="controls" style="float:right;width:250px">
+  <div style="width:90px;float:right;">
+    <img src="tux-with-dragon-wings-90.png"/>
+  </div>
+  <div class="buttons">
+    <input type="radio" name="view" value="toplevel" onclick="setView(this.value)">Dir View</input><br/>
+    <input type="radio" name="view" value="module" onclick="setView(this.value)" checked="true">ModuleView</input><br/>
+  </div>
+  <div class="buttons">
+    <input class="graphtype" type="radio" name="graphtype" value="directed" onclick="moduleView.setGraphType(this.value)" checked="true">Directed Graph</input><br/>
+    <input class="graphtype" type="radio" name="graphtype" value="force" onclick="moduleView.setGraphType(this.value)">Force Graph</input><br/>
+    <input type="checkbox" class="showlabels" onclick="View.showLabels(this.checked)" checked="true">Show Labels</button>
+  </div>
+  <div class="viewInfo">
+  </div>
+  <div style="width:250px;float:right;"><section>Status: <span id="status"/></section></div>
+</div>
 <div class="container" style="float:left;">
   <svg>
     <g/>
   </svg>
 </div>
-<div class="controls">
-<div class="buttons">
-  <button type="button" onclick="ToggleTopView()">Toggle Top View</button><br/>
-  <button type="button" id="togglemoduleview" onclick="moduleView.ToggleModuleGraphType()">Toggle Module View</button><br/>
-  <button type="button" id="togglelabels" onclick="View.toggleLabels()">Toggle Labels</button>
-</div>
-<div style="width:150px;float:right;">
-  <img src="http://llvm.linuxfoundation.org/skins/common/images/tux-with-dragon-wings-135.png"/>
-</div>
-<div class="viewInfo">
-</div>
-<div style="width:250px;float:right;"><section>Status: <span id="status"/></section></div>
 
 </body>
 </html>

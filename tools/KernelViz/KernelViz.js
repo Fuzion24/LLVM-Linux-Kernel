@@ -47,7 +47,9 @@ function runServer() {
   var http = require("http");
   var fs = require("fs");
   var url = require("url");
-  var whitelist = [ "/index.html", "/toplevel.json", "/TopView.html", "/data/TopViewFG.json"];
+  var whitelist = [ "/index.html", "/toplevel.json", 
+                    "/TopView.html", "/data/TopViewFG.json",
+                    "/tux-with-dragon-wings-90.png"];
 
   http.createServer(function(request, response){
     var path = url.parse(request.url).pathname;
