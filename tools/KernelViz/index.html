@@ -74,8 +74,10 @@ function ForceGraph(inShadowlinks, isTopView) {
    
   var graph = null;
   var shadowLinks = inShadowlinks;
-  var shadowLinks = inShadowlinks;
   var selectedNode = null;
+  var hideLinks = false;
+  var hideUnselected = true;
+  var linkedNodes = {};
   var link;
   var node;
   var label;
@@ -157,16 +159,19 @@ function ForceGraph(inShadowlinks, isTopView) {
   }
 
 
-  this.updateNodeLinks = function(selectedNode) {
-    selectedNode = selectedNode;
+  this.updateNodeLinks = function(inSelectedNode) {
+    selectedNode = inSelectedNode;
     if (shadowLinks) {
       link
+        .classed("link-hidden", false)
         .classed("link-shadow", true)
         .filter(function(k) { 
           return selectedNode != k.source.index && selectedNode != k.target.index; 
         });
     }
     
+    linkedNodes = {};
+
     link
         .classed("link-target", function(k) { 
           if (selectedNode == k.target.index) 
@@ -180,12 +185,38 @@ function ForceGraph(inShadowlinks, isTopView) {
           else
             return false; 
         })
+        .classed("link-hidden", function(k) { 
+          if (selectedNode == k.source.index || selectedNode == k.target.index) 
+            return false; 
+          else
+            return hideLinks;
+        })
         .filter(function(k) { 
-          return selectedNode == k.source.index || selectedNode == k.target.index; 
+          var istgt = (selectedNode == k.source.index || selectedNode == k.target.index); 
+          if (istgt) {
+            linkedNodes[k.source.index] = true;
+            linkedNodes[k.target.index] = true;
+          }
+          return istgt;
         })
         // Move to the top of displayed links
         .each(function() { 
-          this.parentNode.appendChild(this); 
+          if (this != null)
+            this.parentNode.appendChild(this); 
+        });
+
+    node.classed("node-hidden", function (d) {
+          if (hideLinks && selectedNode && hideUnselected) {
+            return (!linkedNodes[d.index])
+          } else
+            return false;
+        });
+
+    label.classed("node-hidden", function (d) {
+          if (hideLinks && selectedNode && hideUnselected) {
+            return (!linkedNodes[d.index])
+          } else
+            return false;
         });
   }
 
@@ -208,6 +239,11 @@ function ForceGraph(inShadowlinks, isTopView) {
     showingGraph=true;
   }
 
+  this.showLinks = function (show) {
+    hideLinks = !show;
+    if (graph)
+      this.update();
+  }
 }
 
 function linkKey(element, linkColor) {
@@ -654,6 +690,10 @@ function TopDirView(svgclass, viewinfoclass) {
   this.showLabels = function(show) {
     _fg.showLabels(show);
   }
+
+  this.showLinks = function(show) {
+    _fg.showLinks(show);
+  }
 }
 
 var moduleView = new ModuleView("div.svg", "div.viewInfo", "div.selector");
@@ -798,6 +838,14 @@ svg {
     z-index: 1;
     width: 100%;
     margin-bottom: 5px;
+}
+
+.link-hidden {
+   display: none;
+}
+
+.node-hidden {
+   display: none;
 }
 
 .link-shadow {
