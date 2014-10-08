@@ -1,7 +1,12 @@
-From 5b2a5519b82c071e96a650d052695f0a13ce0065 Mon Sep 17 00:00:00 2001
+From 4872457ff3f274aa7fb82af1a2d75824c0d6ef2b Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 23 Sep 2014 22:43:15 -0700
 Subject: [PATCH] rts5208, LLVMLinux: Fix extern inline
+
+With compilers which follow the C99 standard (like modern versions of gcc and
+clang), "extern inline" does the opposite thing from older versions of gcc
+(emits code for an externally linkable version of the inline function). "static
+inline" does the intended behavior in all cases instead.
 
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Suggested-by: Arnd Bergmann <arnd@arndb.de>

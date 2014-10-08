@@ -1,4 +1,4 @@
-From 4b7303f45e8fe0dbcb828d6b095ffe7b5dd60fa3 Mon Sep 17 00:00:00 2001
+From 69a178a41a4d0c1c57be4769e4a3cd17a8280780 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 23 Sep 2014 22:43:09 -0700
 Subject: [PATCH] mpi, LLVMLinux: Fix ASM for clang in mpi
@@ -12,14 +12,14 @@ Cc: Arnd Bergmann <arnd@arndb.de>
  2 files changed, 5 insertions(+), 6 deletions(-)
 
 diff --git a/lib/mpi/Makefile b/lib/mpi/Makefile
-index 019a68c..8f0a9df 100644
+index 019a68c..d5553f6 100644
 --- a/lib/mpi/Makefile
 +++ b/lib/mpi/Makefile
 @@ -4,6 +4,8 @@
  
  obj-$(CONFIG_MPILIB) = mpi.o
  
-+CFLAGS_KERNEL += -fheinous-gnu-extensions
++CFLAGS_KERNEL += $(call cc-option,-fheinous-gnu-extensions)
 +
  mpi-y = \
  	generic_mpih-lshift.o		\
