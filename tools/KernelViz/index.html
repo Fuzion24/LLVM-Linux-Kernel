@@ -719,21 +719,18 @@ function init() {
   resize();
 }
 
-function debug(str) {
-  var status = document.getElementById("status");
-  status.innerHTML = str + " (msgid: "+ ++msgid + ")";
-}
-
 function setView(view) {
   if (view == "toplevel") {
     d3.select("div.labelbutton").style("display", null);
     d3.select("div.viewbuttons").style("display", "none");
+    d3.select("div.topviewcontrols").style("display", null);
     d3.select("div.selector").style("display", "none");
     View = topDirView;
   } else {
     View = moduleView;
     d3.select("div.labelbutton").style("display", null);
     d3.select("div.viewbuttons").style("display", null);
+    d3.select("div.topviewcontrols").style("display", "none");
     d3.select("div.selector").style("display", null);
   }
 
@@ -895,7 +892,6 @@ svg {
   </div>
   <div class="viewInfo">
   </div>
-  <div style="width:250px;float:right;"><section>Status: <span id="status"/></section></div>
 </div>
 <div class="container" style="float:left;">
   <svg>
