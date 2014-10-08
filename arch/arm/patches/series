@@ -1,5 +1,5 @@
 eabi-arm.patch
-ftrace.patch
+#ftrace.patch
 kbuild-clang-arm.patch
 current_stack_pointer_arm.patch
 named_register-ptrace.patch
