@@ -258,7 +258,11 @@ print "Number of patches: %d" % (numpatches)
 # Print active patch status
 for key in ("all", "aarch64", "arm", "mips", "x86", "any"):
     try:
-        print "%8s:%3d" % (key, stats[key]['count']),
+        if key == "any":
+            name = "totals"
+        else:
+            name = key
+        print "%8s:%3d" % (name, stats[key]['count']),
         print "%10s:%3d" % ("submitted", stats[key]['submittedupstream']),
         print "%6s:%3d" % ("acked", stats[key]['ackedupstream']),
         print "%9s:%3d" % ("accepted", stats[key]['acceptedupstream'])
