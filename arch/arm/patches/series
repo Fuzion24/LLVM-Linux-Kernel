@@ -11,7 +11,7 @@ named_register-percpu-arm.patch
 bcm_kona_smc.patch
 hack_asm_io.patch
 hack_disable-big-endian.patch
-hack_for_trusted_foundations.patch
+non-void-naked-function-trusted-foundations.patch
 mach-vt8500.patch
 nested-function-fbdev-omap2-dss.patch
 nested-function-fbdev-omap2-omapfb.patch
