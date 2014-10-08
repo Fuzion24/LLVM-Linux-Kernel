@@ -107,6 +107,9 @@ endif
 ifneq ("${GCC_TOOLCHAIN}", "")
 MAKE_FLAGS	+= GCC_TOOLCHAIN=${GCC_TOOLCHAIN}
 endif
+ifneq ("${MAXLOAD}", "")
+KERNEL_VAR	+= -l${MAXLOAD}
+endif
 ifneq ("${JOBS}", "")
 KERNEL_VAR	+= -j${JOBS}
 endif
@@ -144,6 +147,7 @@ list-var: list-buildroot
 	$(call echovar,KERNEL_VAR); \
 	$(call echovar,MAKE_FLAGS); \
 	$(call echovar,MARCH); \
+	$(call echovar,MAXLOAD); \
 	$(call echovar,MFLOAT); \
 	$(call echovar,PATH); \
 	$(call echovar,TMPDIR); \

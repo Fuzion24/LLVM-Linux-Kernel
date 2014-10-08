@@ -162,6 +162,12 @@ configfilter = sed -e 's|${CHECKPOINT_DIR}|$${CHECKPOINT_DIR}|g; s|${TARGETDIR}|
 
 ##############################################################################
 # Default jobs is number of processors + 1 for disk I/O
+ifeq "${MAXLOAD}" ""
+  MAXLOAD:=${shell getconf _NPROCESSORS_ONLN}
+endif
+
+##############################################################################
+# Default jobs is number of processors + 1 for disk I/O
 ifeq "${JOBS}" ""
   JOBS:=${shell expr `getconf _NPROCESSORS_ONLN` + 1}
   ifeq "${JOBS}" ""
