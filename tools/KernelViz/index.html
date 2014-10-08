@@ -65,22 +65,35 @@ function ForceGraph(inShadowlinks, isTopView) {
     _force = d3.layout.force()
     .charge(-500)
     .friction(0.5)
-    .gravity(0.3)
-    .linkStrength(2)
+    .gravity(0.2)
+    .linkStrength(1)
     .linkDistance(60)
     .size([width, height])
     .on("tick", tick);
   }
    
+  var minZoom = 0.3;
+  var maxZoom = 2;
+  var zoom = d3.behavior.zoom().scaleExtent([minZoom,maxZoom]);
+
   var graph = null;
   var shadowLinks = inShadowlinks;
-  var shadowLinks = inShadowlinks;
   var selectedNode = null;
+  var hideLinks = false;
+  var hideUnselected = true;
+  var linkedNodes = {};
   var link;
   var node;
   var label;
+  var svg;
 
   this._showLabels = true;
+
+  function zoomHandler() {
+   svg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+  } 
+
+  zoom.on("zoom", function() { zoomHandler() });
 
   function tick() {
     link.attr("x1", function(d) { return d.source.x; })
@@ -157,16 +170,19 @@ function ForceGraph(inShadowlinks, isTopView) {
   }
 
 
-  this.updateNodeLinks = function(selectedNode) {
-    selectedNode = selectedNode;
+  this.updateNodeLinks = function(inSelectedNode) {
+    selectedNode = inSelectedNode;
     if (shadowLinks) {
       link
+        .classed("link-hidden", false)
         .classed("link-shadow", true)
         .filter(function(k) { 
           return selectedNode != k.source.index && selectedNode != k.target.index; 
         });
     }
     
+    linkedNodes = {};
+
     link
         .classed("link-target", function(k) { 
           if (selectedNode == k.target.index) 
@@ -180,12 +196,38 @@ function ForceGraph(inShadowlinks, isTopView) {
           else
             return false; 
         })
+        .classed("link-hidden", function(k) { 
+          if (selectedNode == k.source.index || selectedNode == k.target.index) 
+            return false; 
+          else
+            return hideLinks;
+        })
         .filter(function(k) { 
-          return selectedNode == k.source.index || selectedNode == k.target.index; 
+          var istgt = (selectedNode == k.source.index || selectedNode == k.target.index); 
+          if (istgt) {
+            linkedNodes[k.source.index] = true;
+            linkedNodes[k.target.index] = true;
+          }
+          return istgt;
         })
         // Move to the top of displayed links
         .each(function() { 
-          this.parentNode.appendChild(this); 
+          if (this != null)
+            this.parentNode.appendChild(this); 
+        });
+
+    node.classed("node-hidden", function (d) {
+          if (hideLinks && selectedNode && hideUnselected) {
+            return (!linkedNodes[d.index])
+          } else
+            return false;
+        });
+
+    label.classed("node-hidden", function (d) {
+          if (hideLinks && selectedNode && hideUnselected) {
+            return (!linkedNodes[d.index])
+          } else
+            return false;
         });
   }
 
@@ -195,8 +237,15 @@ function ForceGraph(inShadowlinks, isTopView) {
       this.update();
   }
 
-  this.refresh = function (inGraph, inSelectedNode) {
-    var svg = d3.select("svg");
+  this.enableZoom = function(doZoom) {
+    zoom.on("zoom", doZoom ? function () { zoomHandler(); } : null);
+  }
+
+  this.refresh = function (inSvg, inGraph, inSelectedNode) {
+    inSvg.selectAll("g").remove();
+    svg = inSvg.append("g");
+
+    inSvg.call(zoom);
 
     graph = inGraph;
     selectedNode = inSelectedNode;
@@ -208,6 +257,11 @@ function ForceGraph(inShadowlinks, isTopView) {
     showingGraph=true;
   }
 
+  this.showLinks = function (show) {
+    hideLinks = !show;
+    if (graph)
+      this.update();
+  }
 }
 
 function linkKey(element, linkColor) {
@@ -539,9 +593,14 @@ function ModuleView(svgclass, viewinfoclass, selectorclass) {
     _fg.showLabels(show);
   }
 
+  this.enableZoom = function(doZoom) {
+    _fg.enableZoom(doZoom);
+  }
+
   function createGraph() {
     d3.select("div.labelbutton").style("display", graphTypeIsDirected ? "none" : null);
-    d3.selectAll("svg").html("");
+    svg = d3.selectAll("svg");
+    svg.selectAll("g").remove();
     if (graphTypeIsDirected) {
       graph = _dg.createGraph(moduleData);
       showingGraph = true;
@@ -558,7 +617,7 @@ function ModuleView(svgclass, viewinfoclass, selectorclass) {
         graph.links.push({ "source": nodes.indexOf(moduleData.Edges[edge].n1), 
                            "target": nodes.indexOf(moduleData.Edges[edge].n2)}); 
       });
-      _fg.refresh(graph, selectedNode);
+      _fg.refresh(svg, graph, selectedNode);
       showingGraph = true;
     }
   }
@@ -623,13 +682,14 @@ function TopDirView(svgclass, viewinfoclass) {
   }
 
   function createGraph() {
-    d3.selectAll("svg").html("");
+    svg = d3.selectAll("svg");
+    svg.selectAll("g").remove();
     xmlhttp = new XMLHttpRequest();
     xmlhttp.open("GET","data/TopViewFG.json", true);
     xmlhttp.onreadystatechange=function() {
       if (xmlhttp.readyState==4 && xmlhttp.status==200){
         eval("graph ="+xmlhttp.responseText);
-        _fg.refresh(graph, selectedNode);
+        _fg.refresh(svg, graph, selectedNode);
       }
     }
     xmlhttp.send();
@@ -653,6 +713,14 @@ function TopDirView(svgclass, viewinfoclass) {
 
   this.showLabels = function(show) {
     _fg.showLabels(show);
+  }
+
+  this.showLinks = function(show) {
+    _fg.showLinks(show);
+  }
+
+  this.enableZoom = function(doZoom) {
+    _fg.enableZoom(doZoom);
   }
 }
 
@@ -679,21 +747,18 @@ function init() {
   resize();
 }
 
-function debug(str) {
-  var status = document.getElementById("status");
-  status.innerHTML = str + " (msgid: "+ ++msgid + ")";
-}
-
 function setView(view) {
   if (view == "toplevel") {
     d3.select("div.labelbutton").style("display", null);
     d3.select("div.viewbuttons").style("display", "none");
+    d3.select("div.topviewcontrols").style("display", null);
     d3.select("div.selector").style("display", "none");
     View = topDirView;
   } else {
     View = moduleView;
     d3.select("div.labelbutton").style("display", null);
     d3.select("div.viewbuttons").style("display", null);
+    d3.select("div.topviewcontrols").style("display", "none");
     d3.select("div.selector").style("display", null);
   }
 
@@ -800,6 +865,14 @@ svg {
     margin-bottom: 5px;
 }
 
+.link-hidden {
+   display: none;
+}
+
+.node-hidden {
+   display: none;
+}
+
 .link-shadow {
   stroke: #222;
   stroke-opacity: .2;
@@ -836,18 +909,19 @@ svg {
   <div class="viewbuttons">
     <input type='radio' name='graphtype' value='directed' onclick='moduleView.setGraphType(this.value)' checked='true'/>Directed Graph
     <br/>
-    <input type='radio' name='graphtype' value='forced' onclick='moduleView.setGraphType(this.value)'/>Forced Graph
+    <input type='radio' name='graphtype' value='forced' onclick='moduleView.setGraphType(this.value)'/>Force Graph
     <br/>
   </div>
   <div class="labelbutton">
     <input type='checkbox' checked='true' onclick='View.showLabels(this.checked)'/>Show Labels
+    <br/>
+    <input type='checkbox' checked='true' onclick='View.enableZoom(this.checked)'/>Zoom
     <div class="topviewcontrols">
       <input type='checkbox' checked='true' onclick='topDirView.showLinks(this.checked)'/>Show Links
     </div>
   </div>
   <div class="viewInfo">
   </div>
-  <div style="width:250px;float:right;"><section>Status: <span id="status"/></section></div>
 </div>
 <div class="container" style="float:left;">
   <svg>

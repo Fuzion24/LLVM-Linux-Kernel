@@ -1,39 +1,38 @@
 From d70fbfefaecc7d1a15aee278a0874b6a52ef38e5 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Fri, 30 May 2014 11:35:50 -0700
-Subject: [PATCH] DO-NOT-UPSTREAM arm, firmware, LLVMLlinux: Hack around
- Trusted Foundations clang segfault
+Subject: [PATCH] DO-NOT-UPSTREAM arm, firmware, LLVMLinux: fix naked
+ function with non void parameter
 
-Seems that this __naked ASM is crashing clang.
+Convert the non void parameter naked function to an inline function
+without register placement checks.
 
 Not-signed-off-by: Behan Webster <behanw@converseincode.com>
+Not-signed-off-by: Vinícius Tinti <viniciustinti@gmail.com>
 ---
- arch/arm/firmware/trusted_foundations.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/arm/firmware/trusted_foundations.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
 diff --git a/arch/arm/firmware/trusted_foundations.c b/arch/arm/firmware/trusted_foundations.c
-index 3fb1b5a..a0c641c 100644
+index 3fb1b5a..f319c3f 100644
 --- a/arch/arm/firmware/trusted_foundations.c
 +++ b/arch/arm/firmware/trusted_foundations.c
-@@ -31,8 +31,9 @@
+@@ -31,14 +31,11 @@
  
  static unsigned long cpu_boot_addr;
  
 -static void __naked tf_generic_smc(u32 type, u32 arg1, u32 arg2)
-+static void /* __naked */ tf_generic_smc(u32 type, u32 arg1, u32 arg2)
++static inline void tf_generic_smc(u32 type, u32 arg1, u32 arg2)
  {
-+/*
  	asm volatile(
  		".arch_extension	sec\n\t"
  		"stmfd	sp!, {r4 - r11, lr}\n\t"
-@@ -46,6 +47,7 @@ static void __naked tf_generic_smc(u32 type, u32 arg1, u32 arg2)
- 		:
- 		: "r" (type), "r" (arg1), "r" (arg2)
- 		: "memory");
-+*/
- }
- 
- static int tf_set_cpu_boot_addr(int cpu, unsigned long boot_addr)
+-		__asmeq("%0", "r0")
+-		__asmeq("%1", "r1")
+-		__asmeq("%2", "r2")
+ 		"mov	r3, #0\n\t"
+ 		"mov	r4, #0\n\t"
+ 		"smc	#0\n\t"
 -- 
 1.9.1
 
