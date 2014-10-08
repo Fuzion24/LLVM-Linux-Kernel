@@ -242,6 +242,8 @@ function linkKey(element, linkColor) {
     .attr("style", function (d) { return "background-color:"+linkColor[d]+";"; } );
 }
 
+var linkColor = { "Call Out": "#d62728", "Call In": "#2ca02c" };
+
 // -------------------------------------------------------------
 // DirectedGraph
 // -------------------------------------------------------------
@@ -307,7 +309,6 @@ function ModuleView(svgclass, viewinfoclass, selectorclass) {
   var graphTypeIsDirected = true;
   var showingGraph = false;
   var nodeColor = { "External": "#f77", "Global": "#177", "Local": "#fff", "Local Unused": "#771", "Exported": "#717" };
-  var linkColor = { "Call Out": "#d62728", "Call In": "#2ca02c" };
   var moduleSelector;
 
   function clickDGNode(label, obj) {
@@ -358,6 +359,8 @@ function ModuleView(svgclass, viewinfoclass, selectorclass) {
   }
 
   function makeViewInfo() {
+    d3.select("div.labelbutton").style("display", graphTypeIsDirected ? "none" : null);
+
     var viewinfo = d3.select(viewinfoclass).html("");
     var table = viewinfo
       .append("div")
@@ -527,7 +530,7 @@ function ModuleView(svgclass, viewinfoclass, selectorclass) {
     clearGraph();
     graphTypeIsDirected = (type == "directed");
     makeViewInfo();
-    d3.select("input.showlabels").style("visibility", graphTypeIsDirected ? "hidden" : "visible");
+    d3.select("div.labelbutton").style("display", graphTypeIsDirected ? "none" : null);
     if (showingGraph)
       createGraph();
   }
@@ -537,7 +540,7 @@ function ModuleView(svgclass, viewinfoclass, selectorclass) {
   }
 
   function createGraph() {
-    d3.select("input.showlabels").style("visibility", graphTypeIsDirected ? "hidden" : "visible");
+    d3.select("div.labelbutton").style("display", graphTypeIsDirected ? "none" : null);
     d3.selectAll("svg").html("");
     if (graphTypeIsDirected) {
       graph = _dg.createGraph(moduleData);
@@ -571,7 +574,6 @@ function ModuleView(svgclass, viewinfoclass, selectorclass) {
   }
 
   this.setActive = function() {
-    d3.select("input.showlabels").style("visibility", graphTypeIsDirected ? "hidden" : "visible");
     clearGraph();
     if (showingGraph)
       createGraph();
@@ -606,6 +608,15 @@ function TopDirView(svgclass, viewinfoclass) {
     _fg.updateNodeLinks(selectedNode);
   }
 
+  function makeViewInfo() {
+    var viewinfo = d3.select(viewinfoclass).html("");
+    var key = viewinfo
+      .append("div")
+      .attr("class", "key");
+
+    linkKey(key, linkColor);
+  }
+
   this.resize = function(width, height) {
       height = width;
     //topdirForce.size(width, height);
@@ -637,14 +648,12 @@ function TopDirView(svgclass, viewinfoclass) {
   this.setActive = function() {
     clearGraph();
     createGraph();
-
-    var viewinfo = d3.select(viewinfoclass).html("");
+    makeViewInfo();
   }
 
   this.showLabels = function(show) {
     _fg.showLabels(show);
   }
-
 }
 
 var moduleView = new ModuleView("div.svg", "div.viewInfo", "div.selector");
@@ -666,9 +675,7 @@ function resize() {
 
 function init() {
   getFiles();
-  View = moduleView;
-  View.setActive();
-  d3.select("input.showlabels").style("visibility", "hidden");
+  setView("moduleview");
   resize();
 }
 
@@ -679,13 +686,14 @@ function debug(str) {
 
 function setView(view) {
   if (view == "toplevel") {
-    d3.select("input.showlabels").style("visibility", "visible");
-    d3.selectAll("input.graphtype").style("visibility", "hidden");
+    d3.select("div.labelbutton").style("display", null);
+    d3.select("div.viewbuttons").style("display", "none");
     d3.select("div.selector").style("display", "none");
     View = topDirView;
   } else {
     View = moduleView;
-    d3.selectAll("input.graphtype").style("visibility", "visible");
+    d3.select("div.labelbutton").style("display", null);
+    d3.select("div.viewbuttons").style("display", null);
     d3.select("div.selector").style("display", null);
   }
 
@@ -739,7 +747,9 @@ body {
   float: right;
 }
 
-.buttons {
+.topbuttons,
+.viewbuttons,
+.labelbutton {
   width: 120px;
   margin: 5px;
   padding: 5px;
@@ -819,14 +829,21 @@ svg {
   <div style="width:90px;float:right;">
     <img src="tux-with-dragon-wings-90.png"/>
   </div>
-  <div class="buttons">
+  <div class="topbuttons">
     <input type="radio" name="view" value="toplevel" onclick="setView(this.value)">Dir View</input><br/>
     <input type="radio" name="view" value="module" onclick="setView(this.value)" checked="true">ModuleView</input><br/>
   </div>
-  <div class="buttons">
-    <input class="graphtype" type="radio" name="graphtype" value="directed" onclick="moduleView.setGraphType(this.value)" checked="true">Directed Graph</input><br/>
-    <input class="graphtype" type="radio" name="graphtype" value="force" onclick="moduleView.setGraphType(this.value)">Force Graph</input><br/>
-    <input type="checkbox" class="showlabels" onclick="View.showLabels(this.checked)" checked="true">Show Labels</button>
+  <div class="viewbuttons">
+    <input type='radio' name='graphtype' value='directed' onclick='moduleView.setGraphType(this.value)' checked='true'/>Directed Graph
+    <br/>
+    <input type='radio' name='graphtype' value='forced' onclick='moduleView.setGraphType(this.value)'/>Forced Graph
+    <br/>
+  </div>
+  <div class="labelbutton">
+    <input type='checkbox' checked='true' onclick='View.showLabels(this.checked)'/>Show Labels
+    <div class="topviewcontrols">
+      <input type='checkbox' checked='true' onclick='topDirView.showLinks(this.checked)'/>Show Links
+    </div>
   </div>
   <div class="viewInfo">
   </div>
