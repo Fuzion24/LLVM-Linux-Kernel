@@ -27,9 +27,9 @@ BB_TARGET_CFG		= ${BUILDBOTDIR}/target-${TARGET}.cfg
 BB_KERNEL_CFG		= ${BUILDBOTDIR}/kernel-${TARGET}.cfg
 # Date in ISO 8601 UTC format for easy sorting
 BB_UTC_DATE		:= $(shell date --utc '+%Y-%m-%dT%H%M%SZ')
-BB_KERNEL_PATCHES_DATE	:= ${TMPDIR}/kernel-patches-${BB_UTC_DATE}.tar.bz2
-BB_KERNEL_PATCHES_PAT	= ${TMPDIR}/kernel-patches-*.tar.bz2
-BB_KERNEL_PATCHES	= ${TMPDIR}/kernel-patches.tar.bz2
+BB_KERNEL_PATCHES_DATE	:= ${BUILDBOTDIR}/kernel-patches-${BB_UTC_DATE}.tar.bz2
+BB_KERNEL_PATCHES_PAT	= ${BUILDBOTDIR}/kernel-patches-*.tar.bz2
+BB_KERNEL_PATCHES	= ${BUILDBOTDIR}/kernel-patches.tar.bz2
 
 #############################################################################
 .PHONY: ${BB_ARTIFACT_MANIFEST} ${BB_TARGET_CFG} ${BB_KERNEL_CFG}
