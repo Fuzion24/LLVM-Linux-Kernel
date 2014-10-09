@@ -308,6 +308,7 @@ function DirectedGraph(clickHandler, nodeattr, nodeattrfunc) {
   var graph = null;
   var link;
   var node;
+  var zoomg;
 
   function setNodeAttributes() {
     var nodes = d3.selectAll("g.node");
@@ -329,12 +330,12 @@ function DirectedGraph(clickHandler, nodeattr, nodeattrfunc) {
       .rankDir("LR");
     var renderer = new dagreD3.Renderer();
 
-    renderer.layout(layout).run(graph, svg.select("g"));
+    renderer.layout(layout).run(graph, zoomg);
     setNodeAttributes();
     showingGraph=true;
   }
 
-  this.createGraph = function(data) {
+  this.createGraph = function(inSvg, data) {
     graph = new dagreD3.Digraph();
     d3.selectAll("div.nodeInfo").html("");
     Object.keys(data.Nodes).forEach(function(n) { 
@@ -344,10 +345,13 @@ function DirectedGraph(clickHandler, nodeattr, nodeattrfunc) {
       graph.addEdge(null, data.Edges[edge].n1, data.Edges[edge].n2); 
     });
 
-    svg = d3.selectAll("svg").html("");
-    svg.append("g");
-    link = svg.selectAll("g.link");
-    node = svg.selectAll("g.node");
+    inSvg.selectAll("g").remove();
+    svg = inSvg;
+    zoomg = svg.append("g");
+    var zoom = dagreD3.zoom.panAndZoom(zoomg);
+    dagreD3.zoom(svg, zoom);
+    link = d3.selectAll("g.link");
+    node = d3.selectAll("g.node");
 
     drawDirectedGraph();
     return graph;
@@ -602,7 +606,7 @@ function ModuleView(svgclass, viewinfoclass, selectorclass) {
     svg = d3.selectAll("svg");
     svg.selectAll("g").remove();
     if (graphTypeIsDirected) {
-      graph = _dg.createGraph(moduleData);
+      graph = _dg.createGraph(svg, moduleData);
       showingGraph = true;
     } else {
       graph = new Object;
