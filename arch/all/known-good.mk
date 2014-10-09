@@ -44,6 +44,7 @@ kernel-config-clean:
 kernel-build-known-good kernel-gcc-build-known-good: %: ${STATEDIR}/%
 ${STATEDIR}/kernel-build-known-good ${STATEDIR}/kernel-gcc-build-known-good: ${STATEDIR}/%-build-known-good:
 	@$(MAKE) GIT_HARD_RESET=1 kernel-resync
+	@$(MAKE) GIT_HARD_RESET=1 refresh
 	@$(call banner,Build known good kernel)
 	@$(call leavestate,${STATEDIR},$*-configure $*-build)
 	@$(MAKE) state/$*-build

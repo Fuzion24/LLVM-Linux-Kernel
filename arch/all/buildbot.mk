@@ -98,8 +98,8 @@ bb_clang::
 # Clang is already built before this
 buildbot-llvm-ci-build buildbot-clang-ci-build::
 	@$(call bb_check,${BB_CI_CLANG_MAKE})
-	${BB_CI_CLANG_MAKE} kernel-rebuild-known-good \
-		|| $(MAKE) ${BB_CI_CLANGOPT} kernel-sync-latest kernel-rebuild
+	${BB_CI_CLANG_MAKE} GIT_HARD_RESET=1 kernel-rebuild-known-good \
+		|| $(MAKE) ${BB_CI_CLANGOPT} GIT_HARD_RESET=1 kernel-sync-latest refresh kernel-rebuild
 	${BB_CI_CLANG_MAKE} kernel-test
 	${BB_CI_CLANG_MAKE} bb_clang bb_manifest
 
