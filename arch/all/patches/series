@@ -10,7 +10,6 @@ vlais-crypto-qat_common-qat_algs.patch
 vlais-dm-crypt.patch
 vlais-hmac.patch
 vlais-libcrc32c.patch
-vlais-net-bluetooth-amp.patch
 vlais-security-integrity-ima_crypto.patch
 vlais-testmgr.patch
 disable-clang-integrated-as.patch
