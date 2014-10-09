@@ -36,7 +36,8 @@ TOPDIR		= $(realpath ${TARGETDIR}/../..)
 CROSS_ARM_TOOLCHAIN = linaro
 CLANG_TOOLCHAIN	= from-source
 
-KERNEL_CFG	= ${KERNELDIR}/arch/arm/configs/multi_v7_defconfig 
+#KERNEL_CFG	= ${KERNELDIR}/arch/arm/configs/multi_v7_defconfig 
+KERNEL_CFG	= ${TARGETDIR}/config_ifc6410 
 KERNEL_DTS	= ${KERNELDIR}/arch/arm/boot/dts/qcom-apq8064-ifc6410.dts 
 ZIMAGE		= arch/arm/boot/zImage
 KERNEL_DTB	= arch/arm/boot/dts/qcom-apq8064-ifc6410.dtb
