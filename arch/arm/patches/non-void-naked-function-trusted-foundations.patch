@@ -1,11 +1,17 @@
 From d70fbfefaecc7d1a15aee278a0874b6a52ef38e5 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Fri, 30 May 2014 11:35:50 -0700
-Subject: [PATCH] DO-NOT-UPSTREAM arm, firmware, LLVMLinux: fix naked
- function with non void parameter
+Subject: [PATCH] DO-NOT-UPSTREAM arm, firmware, LLVMLinux: replace naked
+ function with hard coded parameters
 
-Convert the non void parameter naked function to an inline function
-without register placement checks.
+As documented in GCC naked functions should only use Basic asm syntax. The
+Extended asm or mixture of Basic asm and "C" code is not guarantee. Currently
+this works because it was hard coded to follow and check GCC behavior for
+arguments and register placement.
+
+By replacing the naked function with an inline one it is possible to have the
+same result in a more portable and reliable way. Register placement checks
+are not needed since there is no hard code.
 
 Not-signed-off-by: Behan Webster <behanw@converseincode.com>
 Not-signed-off-by: Vinícius Tinti <viniciustinti@gmail.com>
