@@ -65,8 +65,8 @@ function ForceGraph(inShadowlinks, isTopView) {
     _force = d3.layout.force()
     .charge(-500)
     .friction(0.5)
-    .gravity(0.2)
-    .linkStrength(1)
+    .gravity(0.1)
+    .linkStrength(0.4)
     .linkDistance(60)
     .size([width, height])
     .on("tick", tick);
@@ -465,13 +465,18 @@ function ModuleView(svgclass, viewinfoclass, selectorclass) {
 
   }
 
-  function loadModule(fname, nodeLabel) {
+  this.loadModule = function(fname, nodeLabel) {
+    _loadModule(fname, nodeLabel);
+  }
+
+  function _loadModule(fname, nodeLabel) {
     setTimeout(function() { getModule(fname, nodeLabel); },0);
   }
 
+
   function selectNewModule(module) {
     if (files.indexOf(module) >= 0) 
-      loadModule(module, null);
+      _loadModule(module, null);
     else {
       if (showingGraph) {
         clearGraph();
@@ -483,7 +488,7 @@ function ModuleView(svgclass, viewinfoclass, selectorclass) {
   this.addModuleSelector = function() {
     var selector = document.getElementById("selector");
     moduleSelector = completely(selector, {
-        fontFamily:"sans-serif", fontSize:"14px", promptInnerHTML : "Select a Module:&nbsp;"
+        fontFamily:"sans-serif", fontSize:"14px", promptInnerHTML : "Type in a Module or Select From List:&nbsp;"
     });
 
     moduleSelector.options = files.sort();
@@ -531,7 +536,7 @@ function ModuleView(svgclass, viewinfoclass, selectorclass) {
     if (moduleData.Nodes[node.id].dotfile) {
       var link = "";
       moduleData.Nodes[node.id].dotfile.forEach(function (dotfile) {
-        link += "<a href='#' onclick='loadModule(\""+dotfile+"\", \""
+        link += "<a href='' onclick='moduleView.loadModule(\""+dotfile+"\", \""
              +node.id+"\");return false;'>"+dotfile+"</a><section/>";
       });
       nodeinfo
