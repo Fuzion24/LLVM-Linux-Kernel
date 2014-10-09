@@ -94,10 +94,10 @@ function resolve() {
                   Modules[file].Nodes[nodeLabel].dotfile = [];
                 Modules[file].Nodes[nodeLabel].dotfile.push(dotfile);
               }
-              Globals[nodeLabel].lineno.push(symbolFiles.lineno);
+              Globals[nodeLabel].lineno.concat(symbolFiles.lineno);
               if (!Modules[file].Nodes[nodeLabel].lineno)
                 Modules[file].Nodes[nodeLabel].lineno = [];
-              Modules[file].Nodes[nodeLabel].lineno.push(symbolFiles.lineno);
+              Modules[file].Nodes[nodeLabel].lineno.concat(symbolFiles.lineno);
             }
           });
         // Add lineno info to local functions
@@ -109,7 +109,7 @@ function resolve() {
               var filename = lineno.split(":")[0];
               var dotfile = filename.substring(0, filename.length-2)+".dot";
               if (file == dotfile) {
-                Modules[file].Nodes[nodeLabel].lineno.push(lineno);
+                Modules[file].Nodes[nodeLabel].lineno.concat(lineno);
                 return true;
               }
             }
