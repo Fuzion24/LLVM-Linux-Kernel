@@ -41,11 +41,13 @@
 [ -d node_modules/path ] || npm install path
 
 # Set these to the locations on your system
-export DOT_FILE_BASE=../../targets/vexpress/src/linux
-export OBJ_FILE_BASE=../../targets/vexpress/build/kernel-clang
-export SRC_FILE_BASE=../../targets/vexpress/src/linux
+TARGET=ifc6410
+export DOT_FILE_BASE=../../targets/${TARGET}/src/linux
+export OBJ_FILE_BASE=../../targets/${TARGET}/build/kernel-clang
+export SRC_FILE_BASE=../../targets/${TARGET}/src/linux
 
 # Get the data from the dot files
+rm -f tmp/defined_symbols
 nodejs ReadDotFiles.js ${DOT_FILE_BASE}
 nodejs ReadSymbols.js ${OBJ_FILE_BASE} ${SRC_FILE_BASE}
 nodejs Resolve.js
