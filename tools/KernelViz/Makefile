@@ -57,5 +57,5 @@ data/TopViewFG.json: TopView.js node_modules data/ModulesResolved.json
 database: data/ModulesResolved.json data/TopViewFG.json
 
 kernelviz: database
-	echo "Open your browser to http://localhost:8001"
-	nodejs KernelViz.js
+	@echo "Open your browser to http://localhost:8001"
+	nodejs KernelViz.js &
