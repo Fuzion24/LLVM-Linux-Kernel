@@ -1,4 +1,2 @@
 atags_to_fdt.patch
 ifc6410_dts.patch
-ifc6410-emmc.patch
-apq8064-dma.patch

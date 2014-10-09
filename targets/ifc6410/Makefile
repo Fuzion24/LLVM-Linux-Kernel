@@ -34,7 +34,7 @@
 TARGETDIR	= ${CURDIR}
 TOPDIR		= $(realpath ${TARGETDIR}/../..)
 CROSS_ARM_TOOLCHAIN = linaro
-CLANG_TOOLCHAIN	= prebuilt
+CLANG_TOOLCHAIN	= from-source
 
 KERNEL_CFG	= ${KERNELDIR}/arch/arm/configs/multi_v7_defconfig 
 KERNEL_DTS	= ${KERNELDIR}/arch/arm/boot/dts/qcom-apq8064-ifc6410.dts 
@@ -45,8 +45,8 @@ KERNELDTB_IMG	= ${TMPDIR}/kernel_dtb.img
 #Use the branch name for the dir containing MSM specific patch overrides
 KERNEL_REPO_PATCHES=${KERNEL_BRANCH}
 
-EXTRAFLAGS	= 
-#EXTRAFLAGS	= -Iarch/arm/mach-msm
+# Enable call graph file generation
+# EXTRAFLAGS = CFLAGS_KERNEL=" -mllvm -print-call-graph"
 
 all: prep kernel-build
 
