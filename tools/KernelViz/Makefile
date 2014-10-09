@@ -21,13 +21,18 @@
 ##############################################################################
 
 TOPDIR = $(realpath ../..)
+
+all: kernelviz
+
 include ../../common.mk 
 
 # Set these to the locations on your system
 TARGET=vexpress
-DOT_FILE_BASE=../../targets/${TARGET}/src/linux
-OBJ_FILE_BASE=../../targets/${TARGET}/build/kernel-clang
-SRC_FILE_BASE=../../targets/${TARGET}/src/linux
+DOT_FILE_BASE=${TOPDIR}/targets/${TARGET}/src/linux
+OBJ_FILE_BASE=${BUILDROOT}/targets/${TARGET}/build/kernel-clang
+SRC_FILE_BASE=${TOPDIR}/targets/${TARGET}/src/linux
+
+export DOT_FILE_BASE OBJ_FILE_BASE SRC_FILE_BASE
 
 node_modules: 
 	-[ -d node_modules/string ] || npm install string
@@ -37,17 +42,17 @@ node_modules:
 	-[ -d node_modules/object-keys ] || npm install object-keys
 	-[ -d node_modules/path ] || npm install path
 
-data/Modules.json: ReadDotFiles.js
-	nodejs ReadDotFiles.js ${DOT_FILE_BASE}
+data/Modules.json: ReadDotFiles.js node_modules
+	nodejs $< ${DOT_FILE_BASE}
 
-data/Symbols.json: ReadSymbols.js
-	nodejs ReadSymbols.js ${OBJ_FILE_BASE} ${SRC_FILE_BASE}
+data/Symbols.json: ReadSymbols.js node_modules
+	nodejs $< ${OBJ_FILE_BASE} ${SRC_FILE_BASE}
 
-data/ModulesResolved.json: Resolve.js data/Modules.json data/Symbols.json
-	nodejs Resolve.js
+data/ModulesResolved.json: Resolve.js node_modules data/Modules.json data/Symbols.json
+	nodejs $<
 
-data/TopViewFG.json: TopView.js data/ModulesResolved.json
-	nodejs TopView.js
+data/TopViewFG.json: TopView.js node_modules data/ModulesResolved.json
+	nodejs $<
 
 database: data/ModulesResolved.json data/TopViewFG.json
 
