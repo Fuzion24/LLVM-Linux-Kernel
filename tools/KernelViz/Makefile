@@ -1,5 +1,6 @@
 ##############################################################################
 # Copyright (c) 2014 Mark Charlebois
+#               2014 Behan Webster
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to 
@@ -46,6 +47,7 @@ data/Modules.json: ReadDotFiles.js node_modules
 	nodejs $< ${DOT_FILE_BASE}
 
 data/Symbols.json: ReadSymbols.js node_modules
+	rm -f tmp/defined_symbols
 	nodejs $< ${OBJ_FILE_BASE} ${SRC_FILE_BASE}
 
 data/ModulesResolved.json: Resolve.js node_modules data/Modules.json data/Symbols.json
