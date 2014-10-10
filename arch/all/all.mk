@@ -175,7 +175,7 @@ get-kernel-version	= [ ! -d ${1} ] || (cd ${1} && echo "src/$(notdir ${1}) versi
 get-kernel-size		= mkdir -p ${TOPLOGDIR} ; \
 			( ${2} --version | head -1 ; \
 			cd ${3} && wc -c ${KERNEL_SIZE_ARTIFACTS} ) \
-			| tee $(call sizelog,${TOPLOGDIR},{1})
+			| tee $(call sizelog,${TOPLOGDIR},${1})
 make-kernel		= (cd ${1} && ${2} time ${3} make ${MAKE_FLAGS} ${KERNEL_VAR} ${4} ${KERNEL_MAKE_TARGETS} ${5})
 zip-error		= ($(call banner,Error file: ${1}); cat "${1}"; \
 				$(call banner,Error file: ${1}); \
