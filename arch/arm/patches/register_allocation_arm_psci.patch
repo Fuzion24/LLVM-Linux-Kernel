@@ -9,7 +9,7 @@ Content-Transfer-Encoding: 8bit
 Force register assignment for variables used in Extended Asm. The two functions
 were expecting and checking for GCC specific behavior in register allocation.
 
-By defining local register variable:
+By defining a local register variable:
 
   void foo(int arg0) {
     register int arg0_in_r0 asm ("r0") = arg0;
@@ -19,8 +19,8 @@ By defining local register variable:
   }
 
 It is possible to guarantee that 'arg0' will be placed in 'r0' and avoid
-checking for correct register assignment with 'asmeq'. The code generated is
-the same with -O2 except for the checks that are not needed.
+checking for correct register assignment with 'asmeq'. The asm code generated
+is the same with -O2 except for the checks that are not needed.
 
 Not-signed-off-by: Vinícius Tinti <viniciustinti@gmail.com>
 ---
