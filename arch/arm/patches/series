@@ -9,7 +9,6 @@ named_register-thread_info.patch
 named_register-unwind.patch
 named_register-percpu-arm.patch
 bcm_kona_smc.patch
-hack_asm_io.patch
 hack_disable-big-endian.patch
 non-void-naked-function-trusted-foundations.patch
 #mach-vt8500.patch
