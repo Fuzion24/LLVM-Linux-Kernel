@@ -237,6 +237,7 @@ kernel-help:
 	@echo "               build      - build kernel code"
 	@echo "               sync       - clean, unpatch, then git pull kernel code"
 	@echo "               clean      - clean, unpatch kernel code"
+	@echo "* make kernel-gcc-build-pristine  - build gcc kernel without patches"
 	@echo "* make kernel-gcc-sparse  - build gcc kernel with sparse"
 	@echo "* make kernels		 - build kernel with both clang and gcc"
 	@echo
@@ -424,7 +425,7 @@ kernel-gcc-allyesconfig: state/kernel-gcc-configure
 	(cd ${KERNELDIR} && echo "" | ${KERNELGCC_ENV} make ${MAKE_FLAGS} allyesconfig)
 
 #############################################################################
-kernel-build: state/kernel-build
+kernel-build:: state/kernel-build
 state/kernel-build: state/kernel-configure
 	@[ -d ${KERNEL_BUILD} ] || ($(call leavestate,${STATEDIR},kernel-configure) && ${MAKE} kernel-configure)
 	@$(MAKE) kernel-quilt-link-patches
@@ -622,3 +623,4 @@ tmp-clean:
 include ${TESTDIR}/test.mk
 include ${TOOLSDIR}/tools.mk
 include ${ARCHDIR}/all/ccache.mk
+include ${ARCHDIR}/all/kernel-viz.mk
