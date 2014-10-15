@@ -25,6 +25,7 @@ import ConfigParser
 from optparse import OptionParser
 import re, os
 import sys
+import datetime
 
 import gdata.docs
 import gdata.docs.service
@@ -74,6 +75,9 @@ parser.add_option("", "--left-over",
                   help="List which patches in spreadsheet aren't being used")
 parser.add_option("-o", "--output", dest="output", default='-',
                   help="write output to FILE")
+parser.add_option("-S", "--stats",
+                  action="store_true", dest="showstats", default=False,
+                  help="List patch stats only")
 
 (options, args) = parser.parse_args()
 
@@ -188,6 +192,7 @@ if options.leftover:
         if ignored(row):
             continue
         patchname = row.custom['patchname'].text
+	verbose("Patchname: "+patchname+"\n")
         if patchname not in args:
             data += patchname+"\n"
     writeoutput(data)
@@ -223,6 +228,7 @@ for row in rows:
             continue
 
         key = row.custom['arch'].text
+        numpatches += 1
         stats['any']['count'] += 1
         if key in stats:
             stats[key]['count'] += 1
@@ -233,29 +239,31 @@ for row in rows:
                 stats['any'][k] += 1
                 stats[key][k] += 1
 
-        numpatches += 1
-	echo(patchname,)
+        if options.showstats == False:
+	    echo(patchname,)
 
-	vals = [re.sub('\.patch$','',patchname)]
-        for key in fixedhdr:
-            value = str(row.custom[key].text)
-            echo(" %s: %s" % (key, value))
-            vals.append(value)
-        echo("\n")
-        table.add_row(vals)
+	    vals = [re.sub('\.patch$','',patchname)]
+            for key in fixedhdr:
+                value = str(row.custom[key].text)
+                echo(" %s: %s" % (key, value))
+                vals.append(value)
+            echo("\n")
+            table.add_row(vals)
 
-        for key in headers:
-            val = row.custom[key].text
-            if val and val != None and val != "None" and val != "-":
-                echo("  %s: %s\n" % (key, val))
+            for key in headers:
+                val = row.custom[key].text
+                if val and val != None and val != "None" and val != "-":
+                    echo("  %s: %s\n" % (key, val))
 
 #-------------------------------------------------------------------------------
-print
-print table.get_string(sortby='patchname')
-print "Number of patches: %d" % (numpatches)
+if options.showstats == False:
+    print
+    print table.get_string(sortby='patchname')
 
 #-------------------------------------------------------------------------------
 # Print active patch status
+print " " + str(datetime.date.today())
+print " Number of patches: %d" % (numpatches)
 for key in ("all", "aarch64", "arm", "mips", "x86", "any"):
     try:
         if key == "any":

@@ -352,6 +352,11 @@ kernel-patch-applied:
 	@$(call applied,${KERNELDIR})
 
 #############################################################################
+kernel-patch-stats:
+	@$(call banner,Patch stats for the kernel)
+	@$(call patch_series_stats,${PATCHDIR})
+
+#############################################################################
 kernel-patch-status:
 	@$(call banner,Patch status for the kernel)
 	@$(call patch_series_status,${PATCHDIR})
