@@ -27,6 +27,7 @@
 PATH	:= ${PATH}:${TOOLSDIR}
 
 PATCHSTATUS = ${TOOLSDIR}/patchstatus
+patch_series_stats = ${PATCHSTATUS} --stats `egrep -v '^\#' $(1)/series`
 patch_series_status = ${PATCHSTATUS} `egrep -v '^\#' $(1)/series`
 patch_series_status_leftover = ${PATCHSTATUS} --left-over `egrep -v '^\#' $(1)/series`
 
