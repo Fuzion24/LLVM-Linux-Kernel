@@ -37,6 +37,7 @@ REQUEST_BRANCH	= for-linus
 REQUEST_VER	=
 REQUEST_TEXT	= LLVMLinux patches for ${REQUEST_VER}
 REQUEST_TAG	= llvmlinux-for-${REQUEST_VER}
+REQUEST_REMOTE  = lfgit
 REQUEST_REPO_URI= git://git.linuxfoundation.org/llvmlinux/kernel.git
 REQUEST_FILE	= msg.txt
 
@@ -69,19 +70,24 @@ kernel-git-request-pull:
 	-@$(call makequiet,kernel-git-${REQUEST_BRANCH})
 # Check patches to be sure
 	@$(call makequiet,${REQUEST_PATCHES} kernel-git-submit-patch-check)
-# Checkout reuqest branch
+# Checkout request branch
+	@$(call banner,Checkout git request branch)
 	@$(call unpatch,${KERNELDIR})
 	@$(call leavestate,${STATEDIR},kernel-patch)
 	@$(call gitcheckout,${KERNELDIR},${REQUEST_BRANCH})
 # Create signed tag for REUQEST_BRANCH
-	@$(call git,${KERNELDIR},tag --sign --force --message="${REQUEST_TEXT}" ${REQUEST_TAG} ${REUQEST_BRANCH})
+	@$(call banner,Signing request branch)
+	@$(call git,${KERNELDIR},tag --sign ${GPG_OPTS} --force --message="${REQUEST_TEXT}" ${REQUEST_TAG} ${REUQEST_BRANCH})
 # Push tag to remote repo
+	@$(call banner,Push request branch)
 	@if [ -z "${DRYRUN}" ] ; then \
-		$(call git,${KERNELDIR},push ${REQUEST_REPO_URI} +${REQUEST_TAG}); \
+		$(call makequiet,kernel-git-push-for-linus); \
+		$(call git,${KERNELDIR},push ${REQUEST_REMOTE} +${REQUEST_TAG}); \
 	else \
-		echo "$(call git,${KERNELDIR},push ${REQUEST_REPO_URI} +${REQUEST_TAG})"; \
+		echo "$(call git,${KERNELDIR},push ${REQUEST_REMOTE} +${REQUEST_TAG})"; \
 	fi
 # Build To/Cc list
+	@$(call banner,Build git pull request email)
 	@$(call makequiet,${REQUEST_PATCHES} kernel-git-submit-patch-get_maintainers) > ${TMPDIR}/to.txt
 # Build request-pull message
 	-@(echo Cc: $$(awk '/--/ {print $$2","}' ${TMPDIR}/to.txt) | sed -e 's/,$$//'; \
