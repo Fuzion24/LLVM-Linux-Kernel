@@ -75,11 +75,9 @@ mrproper: clean kernel-mrproper kernel-gcc-mrproper tmp-mrproper
 	@rm -rf ${LOGDIR}/*
 	@$(call banner,Very Clean)
 
-get-msm-tags:
-
 fixup: ${KERNEL_BUILD}/fixup.bin
 
-${KERNEL_BUILD}/fixup.bin: ${KERNELDIR}/fixup.S
+${KERNEL_BUILD}/fixup.bin: ${KERNELDIR}/fixup.S state/kernel-build
 	${CROSS_COMPILE}as $< -o ${KERNEL_BUILD}/fixup.o
 	${CROSS_COMPILE}objcopy ${KERNEL_BUILD}/fixup.o $@
 
