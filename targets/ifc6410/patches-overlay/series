@@ -1,2 +1,3 @@
 atags_to_fdt.patch
 ifc6410_dts.patch
+fixup.patch

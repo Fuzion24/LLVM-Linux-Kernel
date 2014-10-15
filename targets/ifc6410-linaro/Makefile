@@ -24,7 +24,7 @@
 
 # To run the kernel:
 #
-# cat fixup.bin build/kernel-clang/arch/arm/boot/zImage \
+# cat build/kernel-clang/arch/arm/boot/zImage \
 # build/kernel-clang/arch/arm/boot/dts/qcom-apq8064-ifc6410.dtb > zImage-dtb
 #
 # sudo fastboot boot -c "console=ttyMSM0,115200 root=/dev/mmcblk0p12 rootwait \
@@ -36,8 +36,10 @@ TOPDIR		= $(realpath ${TARGETDIR}/../..)
 CROSS_ARM_TOOLCHAIN = linaro
 CLANG_TOOLCHAIN	= from-source
 
-KERNEL_CFG	= ${KERNELDIR}/arch/arm/configs/multi_v7_defconfig
-#KERNEL_CFG	= ${TARGETDIR}/config_ifc6410
+KERNEL_BRANCH	= integration-linux-qcomlt
+KERNEL_GIT	= https://git.linaro.org/landing-teams/working/qualcomm/kernel.git
+KERNEL_CFG	= ${KERNELDIR}/arch/arm/configs/multi_v7_defconfig 
+#KERNEL_CFG	= ${TARGETDIR}/config_ifc6410 
 KERNEL_DTS	= ${KERNELDIR}/arch/arm/boot/dts/qcom-apq8064-ifc6410.dts 
 ZIMAGE		= arch/arm/boot/zImage
 KERNEL_DTB	= arch/arm/boot/dts/qcom-apq8064-ifc6410.dtb
@@ -77,14 +79,9 @@ mrproper: clean kernel-mrproper kernel-gcc-mrproper tmp-mrproper
 
 get-msm-tags:
 
-fixup: ${KERNEL_BUILD}/fixup.bin
 
-${KERNEL_BUILD}/fixup.bin: ${KERNELDIR}/fixup.S
-	${CROSS_COMPILE}as $< -o ${KERNEL_BUILD}/fixup.o
-	${CROSS_COMPILE}objcopy ${KERNEL_BUILD}/fixup.o $@
-
-${KERNELDTB_IMG}: state/kernel-build ${KERNEL_BUILD}/fixup.bin
-	cat ${KERNEL_BUILD}/fixup.bin ${KERNEL_BUILD}/${ZIMAGE} ${KERNEL_BUILD}/${KERNEL_DTB} > $@
+${KERNELDTB_IMG}:state/kernel-build
+	cat ${TARGETDIR}/src/linux/fixup.bin ${KERNEL_BUILD}/${ZIMAGE} ${KERNEL_BUILD}/${KERNEL_DTB} > $@
 
 # See http://mydragonboard.org/2013/forcing-ifc6410-into-fastboot/
 # for how to jumper the board to get it into fastboot mode
