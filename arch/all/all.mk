@@ -310,7 +310,7 @@ kernel-raze::
 	@$(call banner,Razing kernel)
 	@rm -rf ${KERNELDIR} ${BUILDDIR}
 	@$(call notshared,rm -rf ${SHARED_KERNEL})
-	@rm -f $(addsuffix /*,${LOGDIR} ${TMPDIR})
+	@rm -rf $(addsuffix /*,${LOGDIR} ${TMPDIR})
 	@$(call leavestate,${STATEDIR},*)
 
 #############################################################################
