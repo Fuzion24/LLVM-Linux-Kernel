@@ -1,0 +1,5 @@
+ftrace.patch
+initconst-gpio-bcm-kona.patch
+initconst-sdhci-bcm-kona.patch
+vlais-crypto-qat_common-qat_algs.patch
+mach-vt8500.patch
