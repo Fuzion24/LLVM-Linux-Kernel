@@ -16,9 +16,14 @@ scsi-megaraid-sas-base.patch
 scsi-osd_types.patch
 scsi-qla2xxx.patch
 staging-rtl8192e-rtllib.patch
+staging-rtl8192e-rtllib-extern.patch
+staging-rtl8192e-rtllib-mgntquery.patch
+staging-rtl8192e-rtllib-static-local.patch
 staging-rts5208-rtsx_transport.patch
 vlais-exofs.patch
 vlais-md-raid10.patch
 vlais-nfs.patch
 vlais-wimax-i2400m.patch
 compiler-gcc.patch
+smaller.patch
+file2alias-format-zero-length.patch
