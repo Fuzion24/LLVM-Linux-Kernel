@@ -45,9 +45,6 @@ ZIMAGE		= arch/arm/boot/zImage
 KERNEL_DTB	= arch/arm/boot/dts/qcom-apq8064-ifc6410.dtb
 KERNELDTB_IMG	= ${TMPDIR}/kernel_dtb.img
 
-#Use the branch name for the dir containing MSM specific patch overrides
-KERNEL_REPO_PATCHES=${KERNEL_BRANCH}
-
 # Enable call graph file generation
 # EXTRAFLAGS = CFLAGS_KERNEL=" -mllvm -print-call-graph"
 
@@ -77,11 +74,8 @@ mrproper: clean kernel-mrproper kernel-gcc-mrproper tmp-mrproper
 	@rm -rf ${LOGDIR}/*
 	@$(call banner,Very Clean)
 
-get-msm-tags:
-
-
-${KERNELDTB_IMG}:state/kernel-build
-	cat ${TARGETDIR}/src/linux/fixup.bin ${KERNEL_BUILD}/${ZIMAGE} ${KERNEL_BUILD}/${KERNEL_DTB} > $@
+${KERNELDTB_IMG}: state/kernel-build
+	cat ${KERNELDIR}/fixup.bin ${KERNEL_BUILD}/${ZIMAGE} ${KERNEL_BUILD}/${KERNEL_DTB} > $@
 
 # See http://mydragonboard.org/2013/forcing-ifc6410-into-fastboot/
 # for how to jumper the board to get it into fastboot mode

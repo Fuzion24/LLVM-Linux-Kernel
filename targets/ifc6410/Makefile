@@ -75,8 +75,6 @@ mrproper: clean kernel-mrproper kernel-gcc-mrproper tmp-mrproper
 	@rm -rf ${LOGDIR}/*
 	@$(call banner,Very Clean)
 
-fixup: ${KERNEL_BUILD}/fixup.bin
-
 ${KERNELDTB_IMG}: state/kernel-build 
 	cat ${TARGETDIR}/test/fixup.bin ${KERNEL_BUILD}/${ZIMAGE} ${KERNEL_BUILD}/${KERNEL_DTB} > $@
 
