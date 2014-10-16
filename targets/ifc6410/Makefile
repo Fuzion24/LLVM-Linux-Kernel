@@ -77,12 +77,8 @@ mrproper: clean kernel-mrproper kernel-gcc-mrproper tmp-mrproper
 
 fixup: ${KERNEL_BUILD}/fixup.bin
 
-${KERNEL_BUILD}/fixup.bin: ${KERNELDIR}/fixup.S state/kernel-build
-	${CROSS_COMPILE}as $< -o ${KERNEL_BUILD}/fixup.o
-	${CROSS_COMPILE}objcopy ${KERNEL_BUILD}/fixup.o $@
-
-${KERNELDTB_IMG}: state/kernel-build ${KERNEL_BUILD}/fixup.bin
-	cat ${KERNEL_BUILD}/fixup.bin ${KERNEL_BUILD}/${ZIMAGE} ${KERNEL_BUILD}/${KERNEL_DTB} > $@
+${KERNELDTB_IMG}: state/kernel-build 
+	cat ${TARGETDIR}/test/fixup.bin ${KERNEL_BUILD}/${ZIMAGE} ${KERNEL_BUILD}/${KERNEL_DTB} > $@
 
 # See http://mydragonboard.org/2013/forcing-ifc6410-into-fastboot/
 # for how to jumper the board to get it into fastboot mode
