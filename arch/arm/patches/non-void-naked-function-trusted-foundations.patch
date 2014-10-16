@@ -1,8 +1,11 @@
-From d70fbfefaecc7d1a15aee278a0874b6a52ef38e5 Mon Sep 17 00:00:00 2001
+From ebe376169ae3c70a9fb5b4eff46b2d7abd5c92dd Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Fri, 30 May 2014 11:35:50 -0700
 Subject: [PATCH] DO-NOT-UPSTREAM arm, firmware, LLVMLinux: replace naked
  function with hard coded parameters
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
 As documented in GCC naked functions should only use Basic asm syntax. The
 Extended asm or mixture of Basic asm and "C" code is not guarantee. Currently
