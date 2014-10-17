@@ -42,14 +42,12 @@
 
 # Set these to the locations on your system
 TARGET=vexpress64
-export OBJ_FILE_BASE=../../targets/${TARGET}/build/kernel-clang
-export DOT_FILE_BASE=${OBJ_FILE_BASE}
-export SRC_FILE_BASE=../../targets/${TARGET}/src/linux
+export FILE_BASE=../../targets/${TARGET}/build/kernel-clang
 
 # Get the data from the dot files
 rm -f tmp/defined_symbols
-nodejs ReadDotFiles.js ${DOT_FILE_BASE}
-nodejs ReadSymbols.js ${OBJ_FILE_BASE} ${SRC_FILE_BASE}
+nodejs ReadDotFiles.js ${FILE_BASE}
+nodejs ReadSymbols.js ${FILE_BASE} `cat ${FILE_BASE}/callgraph_srcdir`
 nodejs Resolve.js
 nodejs TopView.js
 
