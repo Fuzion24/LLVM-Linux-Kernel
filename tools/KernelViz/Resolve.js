@@ -81,12 +81,7 @@ function resolve() {
           symbolFiles.lineno.forEach(function (lineno) { 
             if (lineno) {
               var filename = path.normalize(lineno.split(":")[0]);
-              var dotfile = filename.substring(0, filename.length-2)+".dot";
-              if (nodeLabel == "{start_kernel}") {
-                console.log(nodeLabel);
-                console.log(filename);
-                console.log(dotfile);
-              }
+              var dotfile = filename.substring(0, filename.length)+"_.dot";
                 
               // verify the dot file exists
               if (Modules[dotfile] !== undefined) {
@@ -108,7 +103,7 @@ function resolve() {
           symbolFiles.lineno.some(function (lineno) { 
             if (lineno) {
               var filename = lineno.split(":")[0];
-              var dotfile = filename.substring(0, filename.length-2)+".dot";
+              var dotfile = filename.substring(0, filename.length)+"_.dot";
               if (file == dotfile) {
                 Modules[file].Nodes[nodeLabel].lineno.concat(lineno);
                 return true;
@@ -158,8 +153,8 @@ function resolve() {
         if (Modules[file].Nodes[nodeLabel].dotfile === undefined) {
           if (ksymFiles.lineno) {
             ksymFiles.lineno.forEach(function (lineno) {
-              var filename = lineno.split(":")[0];
-              var dotfile = filename.substring(0, filename.length-2)+".dot";
+              var filename = path.normalize(lineno.split(":")[0]);
+              var dotfile = filename.substring(0, filename.length)+"_.dot";
               // Add a dotfile unless it is for a node in current file
               if (Modules[dotfile] !== undefined && dotfile != file) {
                 if (Modules[file].Nodes[nodeLabel].dotfile == undefined) {

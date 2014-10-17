@@ -28,12 +28,10 @@ all: kernelviz
 include ../../common.mk 
 
 # Set these to the locations on your system
-TARGET=vexpress
-DOT_FILE_BASE=${TOPDIR}/targets/${TARGET}/src/linux
-OBJ_FILE_BASE=${BUILDROOT}/targets/${TARGET}/build/kernel-clang
-SRC_FILE_BASE=${TOPDIR}/targets/${TARGET}/src/linux
+TARGET=vexpress64
+FILE_BASE=${BUILDROOT}/targets/${TARGET}/build/kernel-clang
 
-export DOT_FILE_BASE OBJ_FILE_BASE SRC_FILE_BASE
+export FILE_BASE
 
 node_modules: 
 	-[ -d node_modules/string ] || npm install string
@@ -44,11 +42,11 @@ node_modules:
 	-[ -d node_modules/path ] || npm install path
 
 data/Modules.json: ReadDotFiles.js node_modules
-	nodejs $< ${DOT_FILE_BASE}
+	nodejs $< ${FILE_BASE}
 
 data/Symbols.json: ReadSymbols.js node_modules
 	rm -f tmp/defined_symbols
-	nodejs $< ${OBJ_FILE_BASE} ${SRC_FILE_BASE}
+	nodejs $< ${FILE_BASE} `cat ${FILE_BASE}/callgraph_srcdir`
 
 data/ModulesResolved.json: Resolve.js node_modules data/Modules.json data/Symbols.json
 	nodejs $<

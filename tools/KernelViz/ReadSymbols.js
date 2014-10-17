@@ -84,7 +84,7 @@ function parseKernelFiles(basedir, srcdir, fname, create) {
 
 function parseDefinedSymbols(basedir, srcdir, data) {
   var SymbolMap = new Object;
-  // If vmlinux was the only file, then the file name will be ommitted
+  // If vmlinux was the only file, then the file name will be omitted
   if (data[0] != '\n') {
     data = "\n"+basedir+"/vmlinux:\n"+data;
   }

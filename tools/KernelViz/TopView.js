@@ -58,7 +58,7 @@ function processNode(file, nodeLabel) {
       defnFile = node.dotfile[0];
     }
   } else if (node.lineno != undefined && node.lineno[0]) {
-    if (!S(node.lineno[0]).startsWith(file.split(".dot")[0])) {
+    if (!S(node.lineno[0]).startsWith(file.split("_.dot")[0])) {
       defnFile = path.normalize(node.lineno[0].split(":")[0]);
     }
   }

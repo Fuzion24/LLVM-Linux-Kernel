@@ -83,9 +83,8 @@ function parseDotFile(basedir, file) {
 }
 
 function filterDotFiles(basedir, path) {
-  if (S(path).endsWith(".dot")) {
-     if (!S(path).contains("Documentation")) 
-       parseDotFile(basedir, path)
+  if (S(path).endsWith("_.dot")) {
+     parseDotFile(basedir, path)
   }
 }
 

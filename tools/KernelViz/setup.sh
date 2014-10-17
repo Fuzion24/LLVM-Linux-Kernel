@@ -41,9 +41,9 @@
 [ -d node_modules/path ] || npm install path
 
 # Set these to the locations on your system
-TARGET=ifc6410
-export DOT_FILE_BASE=../../targets/${TARGET}/src/linux
+TARGET=vexpress64
 export OBJ_FILE_BASE=../../targets/${TARGET}/build/kernel-clang
+export DOT_FILE_BASE=${OBJ_FILE_BASE}
 export SRC_FILE_BASE=../../targets/${TARGET}/src/linux
 
 # Get the data from the dot files
