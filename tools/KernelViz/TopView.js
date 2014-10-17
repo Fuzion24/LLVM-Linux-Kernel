@@ -59,7 +59,7 @@ function processNode(file, nodeLabel) {
     }
   } else if (node.lineno != undefined && node.lineno[0]) {
     if (!S(node.lineno[0]).startsWith(file.split(".dot")[0])) {
-      defnFile = node.lineno[0].split(":")[0];
+      defnFile = path.normalize(node.lineno[0].split(":")[0]);
     }
   }
   if (defnFile == null) 
@@ -73,6 +73,7 @@ function processNode(file, nodeLabel) {
     Bucket[defnFile] = path.dirname(defnFile);
   }
   var n2 = Bucket[defnFile];
+
   addLink(n1, n2);
 }
 
@@ -106,8 +107,11 @@ function createTopLevelView() {
     ForceView.nodes.push({"name":n,"group":1}); 
   });
   BucketView.links.forEach(function (link) {
-    ForceView.links.push({"source":BucketView.nodes.indexOf(link[0]),
-                          "target":BucketView.nodes.indexOf(link[1]),"value":1}); 
+    // FIXME - why is the node not found??
+    if(BucketView.nodes.indexOf(link[1]) >= 0) { 
+      ForceView.links.push({"source":BucketView.nodes.indexOf(link[0]),
+                            "target":BucketView.nodes.indexOf(link[1]),"value":1}); 
+    }
   });
   fs.writeFile("data/TopViewFG.json", JSON.stringify(ForceView, null, " "));
 }

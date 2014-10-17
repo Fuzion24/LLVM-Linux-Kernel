@@ -34,6 +34,7 @@
 
 var fs = require('fs')
 var S = require('string');
+var path = require('path');
 var dir = require('node-dir');
 var dot = require('graphlib-dot');
 var keys = Object.keys || require('object-keys');
@@ -79,7 +80,7 @@ function resolve() {
           Globals[nodeLabel].dotfile = [];
           symbolFiles.lineno.forEach(function (lineno) { 
             if (lineno) {
-              var filename = lineno.split(":")[0];
+              var filename = path.normalize(lineno.split(":")[0]);
               var dotfile = filename.substring(0, filename.length-2)+".dot";
               if (nodeLabel == "{start_kernel}") {
                 console.log(nodeLabel);
@@ -94,10 +95,10 @@ function resolve() {
                   Modules[file].Nodes[nodeLabel].dotfile = [];
                 Modules[file].Nodes[nodeLabel].dotfile.push(dotfile);
               }
-              Globals[nodeLabel].lineno.concat(symbolFiles.lineno);
+              Globals[nodeLabel].lineno = Globals[nodeLabel].lineno.concat(symbolFiles.lineno);
               if (!Modules[file].Nodes[nodeLabel].lineno)
                 Modules[file].Nodes[nodeLabel].lineno = [];
-              Modules[file].Nodes[nodeLabel].lineno.concat(symbolFiles.lineno);
+              Modules[file].Nodes[nodeLabel].lineno = Modules[file].Nodes[nodeLabel].lineno.concat(symbolFiles.lineno);
             }
           });
         // Add lineno info to local functions
@@ -173,15 +174,6 @@ function resolve() {
     });
   }); 
 
-  // Create cross-reference
-  keys(Modules).forEach(function (file) {
-    keys(Modules[file].Nodes).forEach(function (node) {
-      if (Modules[file].Nodes[node].isExternal === true &&
-          Modules[file].Nodes[node].isGlobal === true) {
-          Modules[file].Globals[node] = Globals[node];
-      }
-    });
-  });
   fs.writeFile("data/Globals.json", JSON.stringify(Globals, null, " "));
   fs.writeFile("data/ModulesResolved.json", JSON.stringify(Modules, null, " "));
   fs.writeFile("data/Unresolved.json", JSON.stringify(Unresolved, null, " "));
