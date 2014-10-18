@@ -35,49 +35,136 @@
 var fs = require('fs')
 var S = require('string');
 var path = require('path');
-var dir = require('node-dir');
 var dot = require('graphlib-dot');
 var keys = Object.keys || require('object-keys');
 
 var Modules = new Object;
-var Globals = new Object;
 var Symbols = new Object;
 var Unresolved = [];
 
 var index = 0;
+
+function Node(node, nodeLabel, file, edges, isGlobal, ksymFiles) {
+
+  // this.node will be sent to the client so all client info 
+  // must be in this.node
+  this.node = node;
+  this.nodeLabel = nodeLabel;
+  this.edges = edges;
+  this.symIsGlobal = isGlobal;
+  this.ksymFiles = ksymFiles;
+  this.file = file;
+  this.node.unused = true;
+  this.unresolved = false;
+  this.node.isExported = false;
+
+  //console.log("Newnode: "+JSON.stringify(this.node));
+
+  this.CheckIfUnused = function() {
+    var self = this;
+    // See if the node is unused
+    if (this.node.isExternal === false && this.node.isGlobal === false) {
+      this.node.isUnused = true;
+      // See if the node has outward edges, if so
+      // it must be a locally defined function
+      keys(this.edges).some(function (edgeLabel) {
+        if (self.edges[edgeLabel].n1 === self.nodeLabel ||
+           self.edges[edgeLabel].n2 === self.nodeLabel) {
+          self.node.isUnused = false;
+          return !self.node.isExternal;
+        }
+      });
+    }
+  }
+
+  this.CheckIfKsyms = function(Modules) {
+    // If there are kysms for the function
+    var self = this;
+    if (this.ksymFiles) {
+      this.AddKsym(this.ksymFiles.lineno);
+      //Modules[file].Nodes[nodeLabel].isExported = true;
+      // If no lineno for symbol, use ksym to try to guess dot file
+      if (this.node.dotfile === undefined) {
+        if (this.ksymFiles.lineno) {
+          this.ksymFiles.lineno.forEach(function (lineno) {
+            var filename = path.normalize(lineno.split(":")[0]);
+            var dotfile = filename.substring(0, filename.length)+"_.dot";
+            // Add a dotfile unless it is for a node in current file
+            if (Modules[dotfile] !== undefined && dotfile != self.file) {
+              if (self.node.dotfile == undefined) {
+                self.node.dotfile = [];
+              }
+              self.node.dotfile.push(dotfile);
+            }
+          });
+        }
+      }
+    }
+  }
+
+  this.CheckIfExported = function() {
+    // If the node/function is global but not in obj files, it must be exported
+    var self = this;
+    if (this.node.isGlobal) {
+      if (this.node.isExternal === true) {
+        // See if the node has outward edges, if so
+        // it must be a locally defined function
+        keys(this.edges).forEach(function (edgeLabel) {
+          if (self.edges[edgeLabel].n1 === self.nodeLabel)
+            self.node.isExternal = false;
+        });
+        // if the function is defined in the file and is global and there 
+        // was no global symbol for it in the obj files then use this file 
+        if (this.symIsGlobal && this.node.isExternal === false) {
+          //console.log("Externally referenced: "+this.nodeLabel+" "+this.file);
+          this.node.isExported = true;
+          this.node.isGlobal = false;
+        } 
+        else if (this.ksymFiles === undefined) {
+          this.unresolved = true;
+        }
+      } 
+    }
+  }
+
+  this.AddLineno = function(lineno) {
+    if (!this.lineno)
+      this.lineno = [];
+    this.lineno = this.lineno.concat(lineno);
+  }
+
+  this.AddDotFile = function(dotfile) {
+    if (!this.dotfile)
+      this.dotfile = [];
+    this.dotfile = this.dotfile.concat(dotfile);
+  }
+
+  this.AddKsym = function(ksym) {
+    if (!this.node.ksyms)
+      this.node.ksyms = [];
+    this.node.ksyms = this.node.ksyms.push(ksym);
+  }
+}
 
 function resolve() {
   // For all nodes in all modules
   keys(Modules).forEach(function (file) {
     keys(Modules[file].Nodes).forEach(function (nodeLabel) {
       
-      Modules[file].Nodes[nodeLabel].isExported = false;
-      var node = Modules[file].Nodes[nodeLabel];
-
-      // See if the node is unused
-      if (node.isExternal === false && node.isGlobal === false) {
-        node.isUnused = true;
-        // See if the node has outward edges, if so
-        // it must be a locally defined function
-        keys(Modules[file].Edges).some(function (edgeLabel) {
-          if (Modules[file].Edges[edgeLabel].n1 === nodeLabel ||
-             Modules[file].Edges[edgeLabel].n2 === nodeLabel) {
-            node.isUnused = false;
-            return !node.isExternal;
-          }
-        });
-      }
       var funcname = nodeLabel.substring(1, nodeLabel.length-1);
       var symbolFiles = Symbols[funcname];
       var ksymFiles = Symbols["__ksymtab_"+funcname];
 
+      var isGlobal = (symbolFiles === undefined) ? false : (symbolFiles.symType == "T") ? true : false;
+      //console.log("Node: "+JSON.stringify(Modules[file].Nodes[nodeLabel]));
+      var node = new Node(Modules[file].Nodes[nodeLabel], nodeLabel, file, Modules[file].Edges, isGlobal, ksymFiles);
+
+      node.CheckIfUnused();
+
       // If there is a global symbol and lineno for the function
       if (symbolFiles && symbolFiles.lineno) {
         // Add global ksyms
-        if (symbolFiles.symtype == "T" && Globals[nodeLabel] === undefined) {
-          Globals[nodeLabel] = new Object;
-          Globals[nodeLabel].lineno = [];
-          Globals[nodeLabel].dotfile = [];
+        if (isGlobal && Globals[nodeLabel] === undefined) {
           symbolFiles.lineno.forEach(function (lineno) { 
             if (lineno) {
               var filename = path.normalize(lineno.split(":")[0]);
@@ -85,91 +172,34 @@ function resolve() {
                 
               // verify the dot file exists
               if (Modules[dotfile] !== undefined) {
-                Globals[nodeLabel].dotfile.push(dotfile);
-                if (!Modules[file].Nodes[nodeLabel].dotfile)
-                  Modules[file].Nodes[nodeLabel].dotfile = [];
-                Modules[file].Nodes[nodeLabel].dotfile.push(dotfile);
+                node.AddDotFile(dotfile);
               }
-              Globals[nodeLabel].lineno = Globals[nodeLabel].lineno.concat(symbolFiles.lineno);
-              if (!Modules[file].Nodes[nodeLabel].lineno)
-                Modules[file].Nodes[nodeLabel].lineno = [];
-              Modules[file].Nodes[nodeLabel].lineno = Modules[file].Nodes[nodeLabel].lineno.concat(symbolFiles.lineno);
+              node.AddLineno(symbolFiles.lineno);
             }
           });
         // Add lineno info to local functions
-        } else if (symbolFiles.symtype == "t") {
+        } else if (isGlobal) {
           // See if there is a matching lineno for the module
-          Modules[file].Nodes[nodeLabel].lineno = [];
           symbolFiles.lineno.some(function (lineno) { 
             if (lineno) {
               var filename = lineno.split(":")[0];
               var dotfile = filename.substring(0, filename.length)+"_.dot";
               if (file == dotfile) {
-                Modules[file].Nodes[nodeLabel].lineno.concat(lineno);
+                node.AddLineno(lineno);
                 return true;
               }
             }
           });
         }
       } 
-      // If the node/function is global but not in obj files, it must be exported
-      if (node.isGlobal) {
-
-	if (node.isExternal === true) {
-	  // See if the node has outward edges, if so
-	  // it must be a locally defined function
-	  keys(Modules[file].Edges).forEach(function (edgeLabel) {
-	    if (Modules[file].Edges[edgeLabel].n1 === nodeLabel)
-	      Modules[file].Nodes[nodeLabel].isExternal = false;
-          });
-          // if the function is defined in the file and is global and there 
-          // was no global symbol for it in the obj files then use this file 
-          if ((symbolFiles === undefined || symbolFiles.symtype != "T") && 
-              Modules[file].Nodes[nodeLabel].isExternal === false) {
-            console.log("Externally referenced: "+nodeLabel+" "+file);
-            Modules[file].Nodes[nodeLabel].isExported = true;
-            Modules[file].Nodes[nodeLabel].isGlobal = false;
-          } else if (ksymFiles === undefined) {
-            Unresolved.push([nodeLabel, file, "External"]);
-          }
-        // If no global definition for function
-        } else if (symbolFiles === undefined || symbolFiles.symtype != "T") {
-          if (Globals[nodeLabel] === undefined)
-            Globals[nodeLabel] = new Object;
-          if (Globals[nodeLabel].dotfile === undefined)
-            Globals[nodeLabel].dotfile = [];
-          Globals[nodeLabel].dotfile.push(file);
-          Globals[nodeLabel].fromDotfile = true;
-        }
-      }
-
-      // If there are kysms for the function
-      if (ksymFiles) {
-        if (Modules[file].Nodes[nodeLabel].ksyms === undefined)
-          Modules[file].Nodes[nodeLabel].ksyms = [];
-        Modules[file].Nodes[nodeLabel].ksyms.push(ksymFiles.lineno);
-        //Modules[file].Nodes[nodeLabel].isExported = true;
-        // If no lineno for symbol, use ksym to try to guess dot file
-        if (Modules[file].Nodes[nodeLabel].dotfile === undefined) {
-          if (ksymFiles.lineno) {
-            ksymFiles.lineno.forEach(function (lineno) {
-              var filename = path.normalize(lineno.split(":")[0]);
-              var dotfile = filename.substring(0, filename.length)+"_.dot";
-              // Add a dotfile unless it is for a node in current file
-              if (Modules[dotfile] !== undefined && dotfile != file) {
-                if (Modules[file].Nodes[nodeLabel].dotfile == undefined) {
-                  Modules[file].Nodes[nodeLabel].dotfile = [];
-                }
-                Modules[file].Nodes[nodeLabel].dotfile.push(dotfile);
-              }
-            });
-          }
-        }
-      }
+      node.CheckIfExported();
+      if (node.unresolved) 
+        Unresolved.push([nodeLabel, file, "External"]);
+      //console.log(node);
+      node.CheckIfKsyms(Modules);
     });
   }); 
 
-  fs.writeFile("data/Globals.json", JSON.stringify(Globals, null, " "));
   fs.writeFile("data/ModulesResolved.json", JSON.stringify(Modules, null, " "));
   fs.writeFile("data/Unresolved.json", JSON.stringify(Unresolved, null, " "));
 }

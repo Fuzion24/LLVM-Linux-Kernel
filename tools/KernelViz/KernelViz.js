@@ -34,7 +34,7 @@
 
 var fs = require('fs')
 var S = require('string');
-var dir = require('node-dir');
+var path = require('path');
 var dot = require('graphlib-dot');
 var keys = Object.keys || require('object-keys');
 
@@ -47,21 +47,26 @@ function runServer() {
   var http = require("http");
   var fs = require("fs");
   var url = require("url");
-  var whitelist = [ "/index.html", "/toplevel.json", 
-                    "/TopView.html", "/data/TopViewFG.json",
-                    "/tux-with-dragon-wings-90.png"];
+
+  // Create whitelists so only a subset of files can be
+  // served via nodejs
+  var whitelist = [ "/index.html", "/data/TopViewFG.json"];
+  var whitelistDir = [ "/external/d3", "/external/dagre", 
+                       "/external/completely", "/images" ];
 
   http.createServer(function(request, response){
-    var path = url.parse(request.url).pathname;
-    console.log("request received "+path);
-    if(path == "/getfiles"){
+    var reqpath = url.parse(request.url).pathname;
+    var reqdir = path.normalize(path.dirname(reqpath));
+
+    console.log("request received "+reqpath);
+    if(reqpath == "/getfiles"){
       console.log("files request received");
       var string = JSON.stringify(keys(Modules));
       response.writeHead(200, {"Content-Type": "text/plain"});
       response.end(string);
       console.log("string sent");
     }
-    else if(path == "/getmodule"){
+    else if(reqpath == "/getmodule"){
       console.log("module request received "+url.parse(request.url).query);
       var file = url.parse(request.url).query.substring("module=".length);
       console.log("file:"+file);
@@ -71,31 +76,36 @@ function runServer() {
       response.end(string);
       console.log("string sent");
     }
-    else if(path == "/getmoddeps"){
-      console.log("modedeps request received");
-      fs.readFile("./data/TopViewDG.json", function(err, file) {  
-        if(err) {  
-          showError(response, "getmoddeps request failed");
-        }  
-        response.writeHead(200, { 'Content-Type': 'text/html' });  
-        response.end(file, "utf-8");  
-      });
-      console.log("string sent");
-    }
-    else if(path == "/favicon.ico"){
+    else if(reqpath == "/favicon.ico"){
       response.writeHead(200, {'Content-Type': 'image/x-icon'} );
       response.end();
       console.log('favicon requested');
     }
+    else if (whitelistDir.indexOf(reqdir) >= 0) {
+      var mimetype = "text/plain";
+      var req = S(reqpath);
+      if (req.endsWith(".js")) {
+        mimetype = "text/script";
+      } else if (reqdir == "/images") {
+        mimetype = "image/x-png";
+      }
+      fs.readFile('.'+reqpath, function(err, file) {  
+        if(err) {  
+          showError(response, "Unable to read: "+reqpath);
+        } else {  
+          response.writeHead(200, { 'Content-Type': mimetype });  
+          response.end(file, "utf-8");  
+        }
+      });
+    }
     else {
-      if (path == "/")
-        path = "/index.html";
+      if (reqpath == "/")
+        reqpath = "/index.html";
    
-      console.log(whitelist.indexOf(path));
-      if (whitelist.indexOf(path) >= 0) {
-        fs.readFile('.'+path, function(err, file) {  
+      if (whitelist.indexOf(reqpath) >= 0) {
+        fs.readFile('.'+reqpath, function(err, file) {  
           if(err) {  
-            showError(response, "Unable to read: "+path);
+            showError(response, "Unable to read: "+reqpath);
           } else {  
             response.writeHead(200, { 'Content-Type': 'text/html' });  
             response.end(file, "utf-8");  
@@ -103,7 +113,7 @@ function runServer() {
         });
       }
       else {
-        showError(response, "No such file: "+path);
+        showError(response, "No such file: "+reqpath);
       }
     }
   }).listen(8001);

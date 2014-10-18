@@ -43,12 +43,6 @@ To view the module graphs, open either Chrome or Firefox to:
 
   http://localhost:8001/index.html
 
-or
-
-  http://localhost:8001/TopView.html
-
-For index.html:
-
 Select the file to display from the drop down list.
 Use the mouse wheel to zoom in or out.
 Double click anywhere to set the zoom center and zoom in.
@@ -61,8 +55,8 @@ a link to the dot file defining the function when the function node is selected 
 the graph. Clicking the link will take you to the new graph. There is no "back"
 functionality implemented yet.
 
-For TopView.html:
+Select Dir View:
 
 This is a top level graph of the kernel showing the interactions between the
-subsystems. Click on a node to hide its incoming links.
+subsystems. Click on a node to see its incoming and outgoing links.
 
