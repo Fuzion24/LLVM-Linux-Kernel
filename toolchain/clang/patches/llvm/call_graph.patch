@@ -62,16 +62,13 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
  #include "llvm/Support/FileSystem.h"
  
  namespace llvm {
-@@ -128,7 +130,11 @@
+@@ -128,7 +130,8 @@ public:
  
    bool runOnModule(Module &M) override {
      GraphT Graph = AnalysisGraphTraitsT::getGraph(&getAnalysis<AnalysisT>());
 -    std::string Filename = Name + ".dot";
 +    std::string ModuleFileName = M.getModuleIdentifier();
-+    std::istringstream s(ModuleFileName);
-+    std::string fileonly;
-+    std::getline(s, fileonly, '.');
-+    std::string Filename = fileonly + ".dot";
++    std::string Filename = ModuleFileName + "_.dot";
      std::error_code EC;
  
      errs() << "Writing '" << Filename << "'...";

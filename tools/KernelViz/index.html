@@ -470,6 +470,7 @@ function ModuleView(svgclass, viewinfoclass, selectorclass) {
   }
 
   function _loadModule(fname, nodeLabel) {
+    moduleSelector.setText(fname);
     setTimeout(function() { getModule(fname, nodeLabel); },0);
   }
 

@@ -35,7 +35,6 @@
 var fs = require('fs')
 var S = require('string');
 var path = require('path');
-var dot = require('graphlib-dot');
 var keys = Object.keys || require('object-keys');
 
 var Modules = new Object;
@@ -54,7 +53,6 @@ function Node(node, nodeLabel, file, edges, isGlobal, ksymFiles) {
   this.symIsGlobal = isGlobal;
   this.ksymFiles = ksymFiles;
   this.file = file;
-  this.node.unused = true;
   this.unresolved = false;
   this.node.isExported = false;
 
@@ -128,21 +126,21 @@ function Node(node, nodeLabel, file, edges, isGlobal, ksymFiles) {
   }
 
   this.AddLineno = function(lineno) {
-    if (!this.lineno)
-      this.lineno = [];
-    this.lineno = this.lineno.concat(lineno);
+    if (!this.node.lineno)
+      this.node.lineno = [];
+    this.node.lineno = this.node.lineno.concat(lineno);
   }
 
   this.AddDotFile = function(dotfile) {
-    if (!this.dotfile)
-      this.dotfile = [];
-    this.dotfile = this.dotfile.concat(dotfile);
+    if (!this.node.dotfile)
+      this.node.dotfile = [];
+    this.node.dotfile = this.node.dotfile.concat(dotfile);
   }
 
   this.AddKsym = function(ksym) {
     if (!this.node.ksyms)
       this.node.ksyms = [];
-    this.node.ksyms = this.node.ksyms.push(ksym);
+    this.node.ksyms.push(ksym);
   }
 }
 
@@ -155,47 +153,37 @@ function resolve() {
       var symbolFiles = Symbols[funcname];
       var ksymFiles = Symbols["__ksymtab_"+funcname];
 
-      var isGlobal = (symbolFiles === undefined) ? false : (symbolFiles.symType == "T") ? true : false;
+      var isGlobal = (symbolFiles === undefined) ? false : (symbolFiles.symtype == "T") ? true : false;
       //console.log("Node: "+JSON.stringify(Modules[file].Nodes[nodeLabel]));
       var node = new Node(Modules[file].Nodes[nodeLabel], nodeLabel, file, Modules[file].Edges, isGlobal, ksymFiles);
 
       node.CheckIfUnused();
 
+      console.log(nodeLabel + " X " + JSON.stringify(symbolFiles));
       // If there is a global symbol and lineno for the function
       if (symbolFiles && symbolFiles.lineno) {
-        // Add global ksyms
-        if (isGlobal && Globals[nodeLabel] === undefined) {
+        // Add global symbol info
+        if (isGlobal) {
           symbolFiles.lineno.forEach(function (lineno) { 
+            console.log(nodeLabel + " Y " + lineno);
             if (lineno) {
               var filename = path.normalize(lineno.split(":")[0]);
-              var dotfile = filename.substring(0, filename.length)+"_.dot";
+              var dotfile = filename+"_.dot";
                 
               // verify the dot file exists
+              console.log("M "+ Modules[dotfile] + " Z "+dotfile);
               if (Modules[dotfile] !== undefined) {
                 node.AddDotFile(dotfile);
               }
+              // Add lineno info to local functions
               node.AddLineno(symbolFiles.lineno);
             }
           });
-        // Add lineno info to local functions
-        } else if (isGlobal) {
-          // See if there is a matching lineno for the module
-          symbolFiles.lineno.some(function (lineno) { 
-            if (lineno) {
-              var filename = lineno.split(":")[0];
-              var dotfile = filename.substring(0, filename.length)+"_.dot";
-              if (file == dotfile) {
-                node.AddLineno(lineno);
-                return true;
-              }
-            }
-          });
-        }
+        } 
       } 
       node.CheckIfExported();
       if (node.unresolved) 
         Unresolved.push([nodeLabel, file, "External"]);
-      //console.log(node);
       node.CheckIfKsyms(Modules);
     });
   }); 
