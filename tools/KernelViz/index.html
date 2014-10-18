@@ -318,8 +318,11 @@ function DirectedGraph(clickHandler, nodeattr, nodeattrfunc) {
     .attr(nodeattr, function (label) { 
       return nodeattrfunc(label, this); })
     .on("click", function(label) {
+      selectedNode = (label == selectedNode) ? null : label;
+      nodes.classed("selected", function (d) { 
+        return (d == selectedNode); 
+      });
       clickHandler(label, this); 
-      nodes.classed("selected", function (label) { return (label == selectedNode); });
     });
   }
 
