@@ -611,6 +611,13 @@ kernel-bisect-good kernel-gcc-bisect-good: kernel-%bisect-good: kernel-%clean
 kernel-bisect-bad kernel-gcc-bisect-bad: kernel-%bisect-bad: kernel-%clean
 	@$(call git,${KERNELDIR},bisect bad)
 
+kernel-callgraph:
+	(cd ${TARGETDIR} && make kernel-clean && make EXTRAFLAGS=CFLAGS_KERNEL='" -mllvm -print-call-graph"' kernel-build)
+	(cd ${KERNELDIR} &&  find . -name "*_.dot" > dotfiles && tar czf ${TARGETDIR}/build/kernel-clang/dotfiles.tgz -T dotfiles && rm -f dotfiles)
+	(cd ${TARGETDIR}/build/kernel-clang && tar xzf dotfiles.tgz && rm -f dotfiles.tgz)
+	echo ${KERNELDIR} > ${TARGETDIR}/build/kernel-clang/callgraph_srcdir
+	(cd ${KERNELDIR} &&  find . -name "*_.dot" | xargs rm)
+
 #############################################################################
 tmp tmpdir: ${TMPDIR}
 ${TMPDIR}:
