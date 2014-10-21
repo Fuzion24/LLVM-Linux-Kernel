@@ -43,31 +43,101 @@ var Unresolved = [];
 
 var index = 0;
 
-function Node(node, nodeLabel, file, edges, isGlobal, ksymFiles) {
+var FunctionMap = new Object;
+var LinkMap = new Object;
+
+function AddNode(modName, nodeName) {
+  var funcName;
+  var mod = Modules[modName];
+
+  if (!mod.Nodes[nodeName].isGlobal)
+    funcName = nodeName+"#"+modName;
+  else
+    funcName = nodeName;
+  if (FunctionMap[funcName] === undefined) {
+    FunctionMap[funcName] = new Object;
+    //FunctionMap[funcName].modName = modName;
+    FunctionMap[funcName].isGlobal = mod.Nodes[nodeName].isGlobal;
+    if (mod.Nodes[nodeName].lineno)
+      FunctionMap[funcName].lineno = mod.Nodes[nodeName].lineno[0];
+    if (mod.Nodes[nodeName].ksyms)
+      FunctionMap[funcName].ksyms = mod.Nodes[nodeName].ksyms[0][0];
+  }
+  else {
+    if (mod.Nodes[nodeName].isGlobal && (mod.Nodes[nodeName].lineno) &&
+      (mod.Nodes[nodeName].lineno[0] != FunctionMap[funcName].lineno)) {
+      console.log(mod.Nodes[nodeName].lineno[0].length+" "+FunctionMap[funcName].lineno.length);
+      console.log("Global function with different lineno definitions: "+nodeName);
+      console.log("  Lineno "+FunctionMap[funcName].lineno);
+      console.log("  "+modName+" "+mod.Nodes[nodeName].lineno);
+    }
+    if (mod.Nodes[nodeName].isGlobal && !mod.Nodes[nodeName].isExternal) {
+      FunctionMap[funcName].dotfile = modName;
+    }
+  }
+}
+
+function AddLinks(modName, n1, n2) {
+  var mod = Modules[modName];
+  var f1, f2;
+  if (!mod.Nodes[n1].isGlobal)
+    f1 = n1+"#"+modName;
+  else
+    f1 = n1;
+  if (!mod.Nodes[n2].isGlobal)
+    f2 = n2+"#"+modName;
+  else
+    f2 = n2;
+
+  if (LinkMap[f1] === undefined)
+    LinkMap[f1] = new Object;
+  if (LinkMap[f2] === undefined)
+    LinkMap[f2] = new Object;
+
+  if (LinkMap[f1].LinksOut === undefined)
+    LinkMap[f1].LinksOut = [];
+  LinkMap[f1].LinksOut.push(f2);
+  if (LinkMap[f2].LinksIn === undefined)
+    LinkMap[f2].LinksIn = [];
+  LinkMap[f2].LinksIn.push(f1);
+}
+
+function createFunctionIndex() {
+  keys(Modules).forEach(function (mod) {
+    // For all nodes (functions)
+    keys(Modules[mod].Nodes).forEach(function (nodeName) {
+      AddNode(mod, nodeName);
+    });
+    keys(Modules[mod].Edges).forEach(function (edgeName) {
+      AddLinks(mod, Modules[mod].Edges[edgeName].n1, Modules[mod].Edges[edgeName].n2);
+    });
+  });
+  fs.writeFile("data/Nodes.json", JSON.stringify(FunctionMap, null, " "));
+  fs.writeFile("data/Links.json", JSON.stringify(LinkMap, null, " "));
+}
+
+function Node(node, nodeLabel, file, isGlobal, ksymFiles) {
 
   // this.node will be sent to the client so all client info 
   // must be in this.node
   this.node = node;
   this.nodeLabel = nodeLabel;
-  this.edges = edges;
   this.symIsGlobal = isGlobal;
   this.ksymFiles = ksymFiles;
   this.file = file;
   this.unresolved = false;
   this.node.isExported = false;
 
-  //console.log("Newnode: "+JSON.stringify(this.node));
-
-  this.CheckIfUnused = function() {
+  this.CheckIfUnused = function(edges) {
     var self = this;
     // See if the node is unused
     if (this.node.isExternal === false && this.node.isGlobal === false) {
       this.node.isUnused = true;
       // See if the node has outward edges, if so
       // it must be a locally defined function
-      keys(this.edges).some(function (edgeLabel) {
-        if (self.edges[edgeLabel].n1 === self.nodeLabel ||
-           self.edges[edgeLabel].n2 === self.nodeLabel) {
+      keys(edges).some(function (edgeLabel) {
+        if (edges[edgeLabel].n1 === self.nodeLabel ||
+           edges[edgeLabel].n2 === self.nodeLabel) {
           self.node.isUnused = false;
           return !self.node.isExternal;
         }
@@ -100,25 +170,25 @@ function Node(node, nodeLabel, file, edges, isGlobal, ksymFiles) {
     }
   }
 
-  this.CheckIfExported = function() {
+  this.CheckIfExported = function(edges) {
     // If the node/function is global but not in obj files, it must be exported
     var self = this;
     if (this.node.isGlobal) {
       if (this.node.isExternal === true) {
         // See if the node has outward edges, if so
         // it must be a locally defined function
-        keys(this.edges).forEach(function (edgeLabel) {
-          if (self.edges[edgeLabel].n1 === self.nodeLabel)
+        keys(edges).forEach(function (edgeLabel) {
+          if (edges[edgeLabel].n1 === self.nodeLabel)
             self.node.isExternal = false;
         });
-        // if the function is defined in the file and is global and there 
-        // was no global symbol for it in the obj files then use this file 
+        // if the function is actually local and is parsed as global and there
+        // was no global symbol for it in the obj files then it must be exported
         if (this.symIsGlobal && this.node.isExternal === false) {
           //console.log("Externally referenced: "+this.nodeLabel+" "+this.file);
           this.node.isExported = true;
-          this.node.isGlobal = false;
         } 
-        else if (this.ksymFiles === undefined) {
+        // Local file that is global in vmlinux or .ko file but not exported as ksym
+        else if (!this.symIsGlobal && this.node.isExternal === false && this.ksymFiles === undefined) {
           this.unresolved = true;
         }
       } 
@@ -154,24 +224,23 @@ function resolve() {
       var ksymFiles = Symbols["__ksymtab_"+funcname];
 
       var isGlobal = (symbolFiles === undefined) ? false : (symbolFiles.symtype == "T") ? true : false;
-      //console.log("Node: "+JSON.stringify(Modules[file].Nodes[nodeLabel]));
-      var node = new Node(Modules[file].Nodes[nodeLabel], nodeLabel, file, Modules[file].Edges, isGlobal, ksymFiles);
+      var node = new Node(Modules[file].Nodes[nodeLabel], nodeLabel, file, isGlobal, ksymFiles);
 
-      node.CheckIfUnused();
+      node.CheckIfUnused(Modules[file].Edges);
 
-      console.log(nodeLabel + " X " + JSON.stringify(symbolFiles));
+      //console.log(nodeLabel + " X " + JSON.stringify(symbolFiles));
       // If there is a global symbol and lineno for the function
       if (symbolFiles && symbolFiles.lineno) {
         // Add global symbol info
         if (isGlobal) {
           symbolFiles.lineno.forEach(function (lineno) { 
-            console.log(nodeLabel + " Y " + lineno);
+            //console.log(nodeLabel + " Y " + lineno);
             if (lineno) {
               var filename = path.normalize(lineno.split(":")[0]);
               var dotfile = filename+"_.dot";
                 
               // verify the dot file exists
-              console.log("M "+ Modules[dotfile] + " Z "+dotfile);
+              //console.log("M "+ Modules[dotfile] + " Z "+dotfile);
               if (Modules[dotfile] !== undefined) {
                 node.AddDotFile(dotfile);
               }
@@ -181,12 +250,14 @@ function resolve() {
           });
         } 
       } 
-      node.CheckIfExported();
+      node.CheckIfExported(Modules[file].Edges);
       if (node.unresolved) 
         Unresolved.push([nodeLabel, file, "External"]);
       node.CheckIfKsyms(Modules);
     });
   }); 
+
+  createFunctionIndex();
 
   fs.writeFile("data/ModulesResolved.json", JSON.stringify(Modules, null, " "));
   fs.writeFile("data/Unresolved.json", JSON.stringify(Unresolved, null, " "));

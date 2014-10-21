@@ -45,7 +45,7 @@ function parseDotFile(basedir, file) {
   console.error("processing file " + ++index);
   dotfile = file.substring(basedir.length+1);
   var graph = dot.parse(fs.readFileSync(file, 'UTF-8'));
-  Modules[dotfile] = { "Nodes": {}, "Edges": {}, "Globals": {}  };
+  Modules[dotfile] = { "Nodes": {}, "Edges": {} };
   graph.nodes().forEach(function (node) {
     // Filter out LLVM generated extra nodes and external nodes
     var label = graph.node(node)["label"];
@@ -88,6 +88,20 @@ function filterDotFiles(basedir, path) {
   }
 }
 
+// ****************************************************************
+// data/Modules.json
+// The Dot files are converted into the following data:
+//   Dotfile
+//     - Nodes
+//         - NodeName
+//         - isGlobal (clang parses function as global scope)
+//         - isExternal (function is defined external to module)
+//     - Edges
+//         - EdgeName
+//         - n1 (source node)
+//         - n2 (destination node)
+//         - count (cardinality)
+// ****************************************************************
 function parseDotFiles(basedir) {
   Modules = {};
   console.log("Parsing files");
