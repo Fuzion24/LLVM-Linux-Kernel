@@ -584,7 +584,7 @@ function ModuleView(svgclass, viewinfoclass, selectorclass) {
     xmlhttp.onreadystatechange=function() {
       if (xmlhttp.readyState==4 && xmlhttp.status==200){
         _moduleData = null;
-        eval("moduleData ="+xmlhttp.responseText);
+        moduleData = JSON.parse(xmlhttp.responseText);
         //graphTypeIsDirected = true;
         createGraph();
       }
@@ -701,7 +701,7 @@ function TopDirView(svgclass, viewinfoclass) {
     xmlhttp.open("GET","data/TopViewFG.json", true);
     xmlhttp.onreadystatechange=function() {
       if (xmlhttp.readyState==4 && xmlhttp.status==200){
-        eval("graph ="+xmlhttp.responseText);
+        graph = JSON.parse(xmlhttp.responseText);
         _fg.refresh(svg, graph, selectedNode);
       }
     }
@@ -787,7 +787,7 @@ function getFiles() {
   xmlhttp.onreadystatechange=function(){
     if (xmlhttp.readyState==4 && xmlhttp.status==200){
       var mytext = document.getElementById("mytext");
-      files = eval(xmlhttp.responseText);
+      files = JSON.parse(xmlhttp.responseText);
       moduleView.addModuleSelector();
     }
   }
