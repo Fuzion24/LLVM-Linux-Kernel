@@ -9,7 +9,7 @@
 //   link-hidden
 //   link-shadow
 // -------------------------------------------------------------
-function ForceGraph(inShadowlinks, isTopView) {
+function ForceGraph(inShadowlinks, isTopView, width, height) {
 
   var _force;
 
@@ -220,37 +220,9 @@ function ForceGraph(inShadowlinks, isTopView) {
     if (graph)
       this.update();
   }
-}
 
-function linkKey(element, linkColor) {
-  var table = element
-    .append("table");
-
-  var tablehead = table.append("tr");
-  var tablebody = table.append("tbody");
-
-  tablehead
-    .append("th")
-    .text("Link Type");
-
-  tablehead
-    .append("th")
-    .text("Color");
-
-  row = tablebody
-    .selectAll("tr")
-    .data(Object.keys(linkColor)) 
-    .enter()
-    .append("tr");
-
-  row
-    .append("td")
-    .attr("width", "100px")
-    .text(function (d) { return d; });
-
-  row
-    .append("td")
-    .attr("width", "50px")
-    .attr("style", function (d) { return "background-color:"+linkColor[d]+";"; } );
+  this.resize = function(width, height) {
+    _force.size([width, height]);
+  }
 }
 

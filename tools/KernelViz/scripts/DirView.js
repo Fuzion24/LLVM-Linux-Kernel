@@ -4,13 +4,13 @@
 function TopDirView(svgclass, viewinfoclass) {
   var selectedNode = null;
 
-  var _fg = new ForceGraph(true, true);
+  var _fg = new ForceGraph(true, true, 1, 1);
 
   // Override ForceGraph Node Click Handler
   _fg.clickNode = function (d, obj, nodes) {
     if (selectedNode == d.index) {
       selectedNode = null;
-      d3.selectAll("div.nodeInfo").html("");
+      layout.clearNodeInfo();
     } else {
       selectedNode = d.index;
     }
@@ -18,18 +18,9 @@ function TopDirView(svgclass, viewinfoclass) {
     _fg.updateNodeLinks(selectedNode);
   }
 
-  function makeViewInfo() {
-    var viewinfo = d3.select(viewinfoclass).html("");
-    var key = viewinfo
-      .append("div")
-      .attr("class", "key");
-
-    linkKey(key, linkColor);
-  }
-
   this.resize = function(width, height) {
       height = width;
-    //topdirForce.size(width, height);
+    _fg.resize(width, height);
   }
 
   function createGraph() {
@@ -52,14 +43,14 @@ function TopDirView(svgclass, viewinfoclass) {
     var div = d3.select("div.container");
     div.selectAll("svg").remove();
     div.append("svg");
-    resize();
+    layout.resize();
     graph = null;
   }
 
   this.setActive = function() {
     clearGraph();
     createGraph();
-    makeViewInfo();
+    layout.updateLayout();
   }
 
   this.showLabels = function(show) {

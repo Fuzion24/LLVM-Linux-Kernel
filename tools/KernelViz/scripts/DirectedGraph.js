@@ -27,13 +27,13 @@ function DirectedGraph(clickHandler, nodeattr, nodeattrfunc) {
   }
 
   function drawDirectedGraph() {
-    var layout = new dagreD3.layout()
+    var d3layout = new dagreD3.layout()
       .nodeSep(20)
       .edgeSep(20)
       .rankDir("LR");
     var renderer = new dagreD3.Renderer();
 
-    renderer.layout(layout).run(graph, zoomg);
+    renderer.layout(d3layout).run(graph, zoomg);
     setNodeAttributes();
     showingGraph=true;
   }
