@@ -88,6 +88,7 @@ function SubGraph() {
           }
         });
       }
+      subGraph.Nodes[nodeName] = 1;
     }
   }
 }
@@ -116,13 +117,6 @@ function runServer() {
       response.end(string);
       console.log("string sent");
     }
-    if(reqpath == "/getfunctions"){
-      console.log("functions request received");
-      var string = JSON.stringify(keys(Nodes));
-      response.writeHead(200, {"Content-Type": "text/plain"});
-      response.end(string);
-      console.log("string sent");
-    }
     else if(reqpath == "/getmodule"){
       console.log("module request received "+url.parse(request.url).query);
       var file = url.parse(request.url).query.substring("module=".length);
@@ -135,10 +129,12 @@ function runServer() {
     }
     else if(reqpath == "/getsubgraph"){
       console.log("module request received "+url.parse(request.url).query);
-      var func = url.parse(request.url).query.substring("function=".length);
-      console.log("function:"+func);
+      var args = url.parse(request.url).query.split(";");
+      var func = args[0].substring("function=".length);
+      var depth = parseInt(args[1].substring("depth=".length));
+      console.log("function:"+func+" depth:"+depth);
       //console.log(JSON.stringify(Modules[file]));
-      var string = JSON.stringify(SG.GetSubGraph(func, 1));
+      var string = JSON.stringify(SG.GetSubGraph(func, depth));
       response.writeHead(200, {"Content-Type": "text/plain"});
       response.end(string);
       console.log("string sent");

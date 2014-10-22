@@ -200,6 +200,7 @@ function ModuleView(layout) {
 // -------------------------------------------------------------
 function FunctionView(layout) {
   DualGraphView.prototype.constructor.call(this, layout);
+  layout.addFunctionSelector(selectNewSubGraph);
 
   var self = this;
 
@@ -208,7 +209,6 @@ function FunctionView(layout) {
   }
 
   function _loadSubgraph(func, depth) {
-    Layout.setFunctionSelectorText(func);
     setTimeout(function() { getSubGraph(func, depth); },0);
   }
 
@@ -223,10 +223,6 @@ function FunctionView(layout) {
       }
     }
     xmlhttp.send();
-  }
-
-  this.updateFunctionSelector = function () {
-    layout.addFunctionSelector(selectNewSubgraph);
   }
 
   function selectNewSubGraph(funcname, depth) {
