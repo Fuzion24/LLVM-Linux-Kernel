@@ -1,9 +1,13 @@
-function InfoView(viewinfoclass, nodeColor, linkColor) {
+// -------------------------------------------------------------
+//
+// Requires: d3
+// -------------------------------------------------------------
+function InfoView(nodeColor, linkColor) {
 
-  this.makeViewInfo = function(isDirected) {
+  this.displayColorKey = function(isDirected) {
     d3.select("div.labelbutton").style("display", isDirected ? "none" : null);
 
-    var viewinfo = d3.select(viewinfoclass).html("");
+    var viewinfo = d3.select("div.nodeInfo").html("");
     var table = viewinfo
       .append("div")
       .attr("class", "key")
@@ -48,9 +52,7 @@ function InfoView(viewinfoclass, nodeColor, linkColor) {
       .classed("nodeInfo", true);
   }
 
-  this.displayNodeInfo = function(node, graphData) {
-    var ftype = node.getAttribute("functype");
-
+  this.displayNodeInfo = function(nodename, lineno, dotfile, ksyms, functype) {
     var nodeinfo = d3.selectAll("div.nodeInfo")
       .html("<h3>Node Information</h3>");
       
@@ -60,7 +62,7 @@ function InfoView(viewinfoclass, nodeColor, linkColor) {
 
       nodeinfo
       .append("p")
-      .text(node.id);
+      .text(nodename);
 
       nodeinfo
       .append("h4")
@@ -70,19 +72,19 @@ function InfoView(viewinfoclass, nodeColor, linkColor) {
       .append("p")
       .text(ftype);
 
-    if (graphData.Nodes[node.id].lineno) {
+    if (lineno) {
       nodeinfo
         .append("h4")
         .text("Defined in:");
       nodeinfo
         .append("p")
-        .text(graphData.Nodes[node.id].lineno);
+        .text(lineno);
     }
-    if (graphData.Nodes[node.id].dotfile) {
+    if (dotfile) {
       var link = "";
-      graphData.Nodes[node.id].dotfile.forEach(function (dotfile) {
+      dotfile.forEach(function (dotfile) {
         link += "<a href='' onclick='moduleView.loadModule(\""+dotfile+"\", \""
-             +node.id+"\");return false;'>"+dotfile+"</a><section/>";
+             +nodename+"\");return false;'>"+dotfile+"</a><section/>";
       });
       nodeinfo
         .append("h4")
@@ -91,13 +93,17 @@ function InfoView(viewinfoclass, nodeColor, linkColor) {
         .append("p")
         .html(link);
     }
-    if (graphData.Nodes[node.id].ksyms) {
+    if (ksyms) {
       nodeinfo
         .append("h4")
         .text("KSymtab defined at:");
       nodeinfo
         .append("p")
-        .text(graphData.Nodes[node.id].ksyms);
+        .text(ksyms);
     }
+  }
+
+  this.clearNodeInfo = function () {
+    d3.selectAll("div.nodeInfo").html("");
   }
 }
