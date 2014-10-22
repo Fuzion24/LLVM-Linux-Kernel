@@ -44,6 +44,7 @@
 <script>
 var msgid = 0;
 var files = [];
+var funclist = [];
 var width = window.innerWidth - 290.0;
 var height = 1000;
 var View = null;
@@ -583,7 +584,6 @@ function ModuleView(svgclass, viewinfoclass, selectorclass) {
     xmlhttp.open("GET","getmodule?module="+module, true);
     xmlhttp.onreadystatechange=function() {
       if (xmlhttp.readyState==4 && xmlhttp.status==200){
-        _moduleData = null;
         moduleData = JSON.parse(xmlhttp.responseText);
         //graphTypeIsDirected = true;
         createGraph();
@@ -737,6 +737,155 @@ function TopDirView(svgclass, viewinfoclass) {
   }
 }
 
+// -------------------------------------------------------------
+// FunctionView
+// -------------------------------------------------------------
+function FunctionView(svgclass, viewinfoclass, selectorclass) {
+  var subGraphData = null;
+  var selectedNode = null;
+  var graphTypeIsDirected = true;
+  var showingGraph = false;
+  var nodeColor = { "External": "#f77", "Global": "#177", "Local": "#fff", "Local Unused": "#771", "Exported": "#717" };
+  var functionSelector;
+
+  function clickDGNode(label, obj) {
+    if (label == selectedNode) {
+      selectedNode = null;
+      d3.selectAll("div.nodeInfo").html("");
+    } else {
+      // Select this node
+      selectedNode = label;
+      displayNodeInfo(obj);
+    }
+    _dg.selectedNode = selectedNode;
+  }
+
+  function DGNodeAttrFn(label, obj) { 
+    var funcType = getFunctionType(label);
+    var rect = obj.getElementsByTagName('rect');
+    rect[0].style.fill = nodeColor[funcType];
+    return funcType;
+  }
+
+  var _dg = new DirectedGraph(clickDGNode, "functype", DGNodeAttrFn);
+
+  this.loadSubGraph = function(func, depth) {
+    _loadSubGraph(func, depth);
+  }
+
+  function _loadSubGraph(func, depth) {
+    functionSelector.setText(func);
+    setTimeout(function() { getSubGraph(func, depth); },0);
+  }
+
+  function selectNewFunction(func) {
+    if (funclist.indexOf(func) >= 0) 
+      // TODO: Get depth from widget
+      _loadSubGraph(func, 2);
+    else {
+      if (showingGraph) {
+        clearGraph();
+        showingGraph=false;
+      }
+    }
+  }
+
+  function clickFunction() {
+      loadSubGraph(document.getElementById("funcname").value, 2);
+  }
+
+  this.addFunctionSelector = function() {
+    var selector = document.getElementById("funcselector");
+    selector.innerHTML = "Type in a Function Name or Select From List:&nbsp;<input type='text' id='funcname' style='width:400'/><button onclick='clickFunction()'>"
+  }
+
+  function clearGraph() {
+    // Remove existing svg 
+    // Can be used to get rid of zoom
+    var div = d3.select("div.container");
+    div.selectAll("svg").remove();
+    div.append("svg");
+    resize();
+    graph = null;
+  }
+
+  this.setActive = function() {
+    clearGraph();
+    if (showingGraph)
+      createGraph();
+
+    makeViewInfo();
+  }
+
+  function createGraph() {
+    d3.select("div.labelbutton").style("display", graphTypeIsDirected ? "none" : null);
+    svg = d3.selectAll("svg");
+    svg.selectAll("g").remove();
+    graph = _dg.createGraph(svg, subGraphData);
+    showingGraph = true;
+  }
+
+  this.resize = function(width, height) {
+    height = width;
+  }
+
+  function makeViewInfo() {
+    d3.select("div.labelbutton").style("display", "none");
+
+    var viewinfo = d3.select(viewinfoclass).html("");
+    var table = viewinfo
+      .append("div")
+      .attr("class", "key")
+      .append("table");
+
+    var tablehead = table.append("tr");
+    var tablebody = table.append("tbody");
+
+    tablehead
+      .append("th")
+      .text("Function Type");
+
+    tablehead
+      .append("th")
+      .text("Color");
+
+    row = tablebody
+      .selectAll("tr")
+      .data(Object.keys(nodeColor)) 
+      .enter()
+      .append("tr");
+
+    row
+      .append("td")
+      .attr("width", "100px")
+      .text(function (d) { return d; });
+
+    row
+      .append("td")
+      .attr("width", "50px")
+      .attr("style", function (d) { return "background-color:"+nodeColor[d]+";"; } );
+
+    viewinfo
+      .append("div")
+      .classed("nodeInfo", true);
+  }
+
+  function getSubGraph(func, depth) {
+    xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("GET","getsubgraph?function="+func, true);
+    xmlhttp.onreadystatechange=function() {
+      if (xmlhttp.readyState==4 && xmlhttp.status==200){
+        subGraphData = JSON.parse(xmlhttp.responseText);
+        //graphTypeIsDirected = true;
+        createGraph();
+      }
+    }
+    xmlhttp.send();
+  }
+
+}
+
+var functionView = new FunctionView("div.svg", "div.viewInfo", "div.selector");
 var moduleView = new ModuleView("div.svg", "div.viewInfo", "div.selector");
 var topDirView = new TopDirView("div.svg", "div.viewInfo");
 View = moduleView;
@@ -756,6 +905,7 @@ function resize() {
 
 function init() {
   getFiles();
+  getFunctions();
   setView("moduleview");
   resize();
 }
@@ -766,18 +916,30 @@ function setView(view) {
     d3.select("div.viewbuttons").style("display", "none");
     d3.select("div.topviewcontrols").style("display", null);
     d3.select("div.selector").style("display", "none");
+    d3.select("div.funcselector").style("display", "none");
     View = topDirView;
-  } else {
+  } 
+  else if (view == "func") {
+    View = functionView;
+    d3.select("div.labelbutton").style("display", null);
+    d3.select("div.viewbuttons").style("display", null);
+    d3.select("div.topviewcontrols").style("display", "none");
+    d3.select("div.selector").style("display", "none");
+    d3.select("div.funcselector").style("display", null);
+  }
+  else {
     View = moduleView;
     d3.select("div.labelbutton").style("display", null);
     d3.select("div.viewbuttons").style("display", null);
     d3.select("div.topviewcontrols").style("display", "none");
     d3.select("div.selector").style("display", null);
+    d3.select("div.funcselector").style("display", "none");
   }
 
   View.setActive();
   View.resize();
 }
+
 
 // -- AJAX Functions
 
@@ -789,6 +951,19 @@ function getFiles() {
       var mytext = document.getElementById("mytext");
       files = JSON.parse(xmlhttp.responseText);
       moduleView.addModuleSelector();
+    }
+  }
+  xmlhttp.send();
+}
+
+function getFunctions() {
+  xmlhttp = new XMLHttpRequest();
+  xmlhttp.open("GET","getfunctions", true);
+  xmlhttp.onreadystatechange=function(){
+    if (xmlhttp.readyState==4 && xmlhttp.status==200){
+      var mytext = document.getElementById("mytext");
+      funclist = JSON.parse(xmlhttp.responseText);
+      functionView.addFunctionSelector();
     }
   }
   xmlhttp.send();
@@ -911,6 +1086,7 @@ svg {
 </style>
 <body onload="init()">
 <div class="selector" id="selector"></div>
+<div class="selector" id="funcselector"></div>
 <div class="controls" style="float:right;width:250px">
   <div style="width:90px;float:right;">
     <img src="images/tux-with-dragon-wings-90.png"/>
@@ -918,6 +1094,7 @@ svg {
   <div class="topbuttons">
     <input type="radio" name="view" value="toplevel" onclick="setView(this.value)">Dir View</input><br/>
     <input type="radio" name="view" value="module" onclick="setView(this.value)" checked="true">ModuleView</input><br/>
+    <input type="radio" name="view" value="func" onclick="setView(this.value)">FunctionView</input><br/>
   </div>
   <div class="viewbuttons">
     <input type='radio' name='graphtype' value='directed' onclick='moduleView.setGraphType(this.value)' checked='true'/>Directed Graph

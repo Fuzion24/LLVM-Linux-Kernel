@@ -43,6 +43,55 @@ var TopView = new Object;
 
 var index = 0;
 
+var Nodes = new Object;
+var Links = new Object;
+var SG;
+
+function SubGraph() {
+
+  this.GetSubGraph = function(nodeName, n, err) {
+    var subGraph = new Object;
+
+    if (Nodes[nodeName] === undefined) {
+      console.log(nodeName+" does not exist");
+      err = true;
+      return null;
+    }
+    _getSubGraph(nodeName, n, subGraph, err);
+    return subGraph;
+  }
+
+  function _getSubGraph(nodeName, n, subGraph) {
+    if (Links[nodeName] !== undefined && n > 0) {
+      if (subGraph.Nodes === undefined) {
+        subGraph.Nodes = new Object;
+      }
+      if (subGraph.Edges === undefined) {
+        subGraph.Edges = [];
+      }
+      if (Links[nodeName].LinksOut !== undefined) {
+        Links[nodeName].LinksOut.forEach(function (dest) { 
+          _getSubGraph(dest, n-1, subGraph); 
+          subGraph.Nodes[dest] = 1;
+          if (subGraph.Edges.indexOf(nodeName+","+dest) < 0) {
+            subGraph.Edges.push({ "n1": nodeName, "n2": dest });
+          }
+        });
+      }
+
+      if (Links[nodeName].LinksIn !== undefined) {
+        Links[nodeName].LinksIn.forEach(function (src) {
+          _getSubGraph(src, n-1, subGraph); 
+          subGraph.Nodes[src] = 1;
+          if (subGraph.Edges.indexOf(src+","+nodeName) < 0) {
+            subGraph.Edges.push({ "n1": src, "n2": nodeName });
+          }
+        });
+      }
+    }
+  }
+}
+
 function runServer() {
   var http = require("http");
   var fs = require("fs");
@@ -66,12 +115,29 @@ function runServer() {
       response.end(string);
       console.log("string sent");
     }
+    if(reqpath == "/getfunctions"){
+      console.log("functions request received");
+      var string = JSON.stringify(keys(Nodes));
+      response.writeHead(200, {"Content-Type": "text/plain"});
+      response.end(string);
+      console.log("string sent");
+    }
     else if(reqpath == "/getmodule"){
       console.log("module request received "+url.parse(request.url).query);
       var file = url.parse(request.url).query.substring("module=".length);
       console.log("file:"+file);
       //console.log(JSON.stringify(Modules[file]));
       var string = JSON.stringify(Modules[file]);
+      response.writeHead(200, {"Content-Type": "text/plain"});
+      response.end(string);
+      console.log("string sent");
+    }
+    else if(reqpath == "/getsubgraph"){
+      console.log("module request received "+url.parse(request.url).query);
+      var func = url.parse(request.url).query.substring("function=".length);
+      console.log("function:"+func);
+      //console.log(JSON.stringify(Modules[file]));
+      var string = JSON.stringify(SG.GetSubGraph(func, 1));
       response.writeHead(200, {"Content-Type": "text/plain"});
       response.end(string);
       console.log("string sent");
@@ -85,9 +151,9 @@ function runServer() {
       var mimetype = "text/plain";
       var req = S(reqpath);
       if (req.endsWith(".js")) {
-        mimetype = "text/script";
+        mimetype = "text/javascript";
       } else if (reqdir == "/images") {
-        mimetype = "image/x-png";
+        mimetype = "image/png";
       }
       fs.readFile('.'+reqpath, function(err, file) {  
         if(err) {  
@@ -133,14 +199,29 @@ if (process.argv.length != 2) {
   console.log("Usage: nodejs SWViz.js");
 }
 else {
-  console.log("Loading cached data");
-  fs.readFile("data/ModulesResolved.json", 'utf8', function (err, data) {
+  fs.readFile("data/Nodes.json", 'utf8', function (err, data) {
     if (err) {
       console.log(""+err);
       process.exit(1);
     }
-    Modules = JSON.parse(data);
-    runServer();
+    Nodes = JSON.parse(data);
+    fs.readFile("data/Links.json", 'utf8', function (err, data) {
+      if (err) {
+        console.log("" + err);
+        process.exit(1);
+      }
+      Links = JSON.parse(data);
+      SG = new SubGraph();
+      fs.readFile("data/ModulesResolved.json", 'utf8', function (err, data) {
+        if (err) {
+          console.log(""+err);
+          process.exit(1);
+        }
+        Modules = JSON.parse(data);
+        runServer();
+      });
+    });
   });
+  console.log("Loading cached data");
 }
 

@@ -51,7 +51,7 @@ function AddNode(modName, nodeName) {
   var mod = Modules[modName];
 
   if (!mod.Nodes[nodeName].isGlobal)
-    funcName = nodeName+"#"+modName;
+    funcName = nodeName+"^"+modName;
   else
     funcName = nodeName;
   if (FunctionMap[funcName] === undefined) {
@@ -81,11 +81,11 @@ function AddLinks(modName, n1, n2) {
   var mod = Modules[modName];
   var f1, f2;
   if (!mod.Nodes[n1].isGlobal)
-    f1 = n1+"#"+modName;
+    f1 = n1+"^"+modName;
   else
     f1 = n1;
   if (!mod.Nodes[n2].isGlobal)
-    f2 = n2+"#"+modName;
+    f2 = n2+"^"+modName;
   else
     f2 = n2;
 
