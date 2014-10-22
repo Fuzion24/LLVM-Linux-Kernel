@@ -101,7 +101,8 @@ function runServer() {
   // served via nodejs
   var whitelist = [ "/index.html", "/data/TopViewFG.json"];
   var whitelistDir = [ "/external/d3", "/external/dagre", 
-                       "/external/completely", "/images" ];
+                       "/external/completely", "/images",
+                       "/scripts" ];
 
   http.createServer(function(request, response){
     var reqpath = url.parse(request.url).pathname;
@@ -148,6 +149,7 @@ function runServer() {
       console.log('favicon requested');
     }
     else if (whitelistDir.indexOf(reqdir) >= 0) {
+      console.log("Whitelisted req: "+reqpath);
       var mimetype = "text/plain";
       var req = S(reqpath);
       if (req.endsWith(".js")) {
@@ -161,6 +163,7 @@ function runServer() {
         } else {  
           response.writeHead(200, { 'Content-Type': mimetype });  
           response.end(file, "utf-8");  
+          console.log("string sent");
         }
       });
     }
