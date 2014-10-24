@@ -29,7 +29,7 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
  #include "llvm/Analysis/Passes.h"
  #include "llvm/IR/DataLayout.h"
  #include "llvm/IR/Verifier.h"
-@@ -56,6 +57,10 @@
+@@ -60,6 +61,10 @@
  RunLoopRerolling("reroll-loops", cl::Hidden,
                   cl::desc("Run the loop rerolling pass"));
  
@@ -40,17 +40,16 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
  static cl::opt<bool> RunLoadCombine("combine-loads", cl::init(false),
                                      cl::Hidden,
                                      cl::desc("Run the load combining pass"));
-@@ -145,6 +150,10 @@
+@@ -159,6 +164,9 @@
  }
  
  void PassManagerBuilder::populateModulePassManager(PassManagerBase &MPM) {
++  if (PrintCallGraph)
++    MPM.add(createCallGraphPrinterPass());
 +
-+	if (PrintCallGraph)
-+		MPM.add(createCallGraphPrinterPass());
-+
-   // If all optimizations are disabled, just run the always-inline pass.
+   // If all optimizations are disabled, just run the always-inline pass and,
+   // if enabled, the function merging pass.
    if (OptLevel == 0) {
-     if (Inliner) {
 --- llvm.orig/include/llvm/Analysis/DOTGraphTraitsPass.h
 +++ llvm/include/llvm/Analysis/DOTGraphTraitsPass.h
 @@ -16,6 +16,8 @@
@@ -62,7 +61,7 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
  #include "llvm/Support/FileSystem.h"
  
  namespace llvm {
-@@ -128,7 +130,8 @@ public:
+@@ -128,7 +130,8 @@
  
    bool runOnModule(Module &M) override {
      GraphT Graph = AnalysisGraphTraitsT::getGraph(&getAnalysis<AnalysisT>());
