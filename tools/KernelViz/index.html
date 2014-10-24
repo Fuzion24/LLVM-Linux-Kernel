@@ -77,21 +77,29 @@ body {
 .nodeInfo,
 .linkKey,
 .key {
-  width: 230px;
-  margin: 5px;
+  width: 240px;
+  margin: 2px;
+  margin-left: 0px;
   padding: 5px;
   border: 1px solid #999;
-  float: right;
+  float: left;
+  background: #eee;
 }
 
 .topbuttons,
 .viewbuttons,
 .labelbutton {
-  width: 120px;
-  margin: 5px;
+  width: 240px;
+  margin: 2px;
+  margin-left: 0px;
   padding: 5px;
   border: 1px solid #999;
   float: left;
+  background: #eee;
+}
+
+.optionitem {
+  margin-top: 5px;
 }
 
 td {
@@ -101,14 +109,11 @@ td {
 svg {
   border: 1px solid #999;
   overflow: hidden;
-  background: -webkit-linear-gradient(white, rgba(100,100,255,10)); /* For Safari 5.1 to 6.0 */
-  background: -o-linear-gradient(white, rgba(100,100,255,10)); /* For Opera 11.1 to 12.0 */
-  background: -moz-linear-gradient(white, rgba(100,100,255,10)); /* For Firefox 3.6 to 15 */
-  background: linear-gradient(white, rgba(100,100,255,10)); /* Standard syntax (must be last) */
+  background: #eee;
 }
 
 .node-fg {
-  stroke: #fff;
+  stroke: #000;
   fill: #fd9040;
   stroke-width: 1.5px;
 }
@@ -128,21 +133,20 @@ svg {
   pointer-events: none;
 }
 
-.selector{
-    float: left;
-    background: #fff;
-    border: 1px solid #000;
-    z-index: 1;
-    width: 100%;
-    margin-bottom: 5px;
+.selector,
+.funcselector {
+  float: left;
+  z-index: 1;
+  width: 100%;
+  margin-bottom: 5px;
 }
 
 .link-hidden {
-   display: none;
+ display: none;
 }
 
 .node-hidden {
-   display: none;
+ display: none;
 }
 
 .link-shadow {
@@ -167,28 +171,61 @@ svg {
 .nodeInfo {
   height: 400px;
 }
+
+.optionlabel {
+  font-weight: bold;
+}
 </style>
 <body onload="init()">
-<div class="selector" id="selector"></div>
-<div class="funcselector" id="selector">
-  Enter a function name:&nbsp;<input type='text' id='funcname' style='width:200'>Enter a call depth:&nbsp;<input type='text' id='funcdepth' style='width:200'><button id='funcbutton'>Get Graph</button>
-</div>
-<div class="controls" style="float:right;width:250px">
-  <div style="width:90px;float:right;">
-    <img src="images/tux-with-dragon-wings-90.png"/>
-  </div>
+<div class="controls" style="float:left;width:250px" >
   <div class="topbuttons">
-    <input type="radio" name="view" value="toplevel" onclick="layout.setView(this.value)">Dir View</input><br/>
-    <input type="radio" name="view" value="module" onclick="layout.setView(this.value)" checked="true">ModuleView</input><br/>
-    <input type="radio" name="view" value="func" onclick="layout.setView(this.value)">FunctionView</input><br/>
+    <div class="optionlabel">View</div>
+    <select onchange="layout.setView(this.value)">
+      <option value="toplevel">DirView</option>
+      <option value="module" selected="true">ModuleView</option>
+      <option value="func">FunctionView</option>
+   </select>
+  </div>
+  <div class="selector viewbuttons">
+    <div class="optionlabel">Module</div>
+    <div class="selectortxt"></div>
+  </div>
+  <div class="funcoption viewbuttons">
+    <div class="optionlabel">Function</div>
+    <div class="optionitem">
+      Name: <span id="funcname"></span>
+    </div>
+    <div class="optionitem">
+      File: <span id="funcfile"></span>
+    </div>
+    <div class="funcoption optionitem">
+      Search Text:<br>
+      <input type="text" id="funcsearchtext" style="width:225px"/>
+      <div class="fselector" style="position:absolute"></div>
+    </div>
   </div>
   <div class="viewbuttons">
-    <input type='radio' name='graphtype' value='directed' onclick='layout.setGraphType(this.value)' checked='true'/>Directed Graph
-    <br/>
-    <input type='radio' name='graphtype' value='forced' onclick='layout.setGraphType(this.value)'/>Force Graph
-    <br/>
+    <div class="optionlabel">Options</div>
+    <div class="optionitem">
+      <select onchange='layout.setGraphType(this.value)'>
+        <option value='directed' selected='true'/>Directed Graph</option>
+        <option value='forced'>Force Graph</option>
+      </select>
+    </div>
+    <div class="funcoption">
+      <div class="optionitem">
+        Call depth:&nbsp;
+        <select id="funcdepth">
+          <option selected="true">1</option>
+          <option>2</option>
+          <option>3</option>
+          <option>4</option>
+        </select>
+      </div>
+    </div>
   </div>
   <div class="labelbutton">
+    <div class="optionlabel">Force Graph</div>
     <input type='checkbox' checked='true' onclick='layout.showLabels(this.checked)'/>Show Labels
     <br/>
     <input type='checkbox' checked='true' onclick='layout.enableZoom(this.checked)'/>Zoom
@@ -199,7 +236,7 @@ svg {
   <div class="viewInfo">
   </div>
 </div>
-<div class="container" style="float:left;">
+<div class="container" style="float:right;">
   <svg>
     <g/>
   </svg>

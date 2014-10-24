@@ -1,5 +1,4 @@
-function DualGraphView(layout) {
-
+function DualGraphView(layout) { 
   var self = this;
   var selectedNode = null;
   var graphTypeIsDirected = true;
@@ -56,7 +55,7 @@ function DualGraphView(layout) {
     nodes
       .attr("id",function(d) { return d.name; })
       .attr("functype", function (d) { return getFunctionType(d.name); })
-      .attr("style", function (d) { return "fill:"+layout.nodeColor[getFunctionType(d.name)]; })
+      .style("fill", function (d) { return layout.nodeColor[getFunctionType(d.name)]; })
       .on("click", function(d){ _fg.clickNode(d, this, nodes); });
   }
 
@@ -96,7 +95,7 @@ function DualGraphView(layout) {
   }
 
   this.createGraph = function() {
-    svg = layout.getGraphElement();
+    svg = layout.getD3SvgGraphElement();
     svg.selectAll("g").remove();
     if (graphTypeIsDirected) {
       graph = _dg.createGraph(svg, this.graphData);
@@ -200,7 +199,7 @@ function ModuleView(layout) {
 // -------------------------------------------------------------
 function FunctionView(layout) {
   DualGraphView.prototype.constructor.call(this, layout);
-  layout.addFunctionSelector(selectNewSubGraph);
+  layout.createFunctionSelector(selectNewSubGraph);
 
   var self = this;
 
@@ -209,7 +208,23 @@ function FunctionView(layout) {
   }
 
   function _loadSubgraph(func, depth) {
-    setTimeout(function() { getSubGraph(func, depth); },0);
+    // Validate func
+    xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("GET","funcquery?function="+func, true);
+    xmlhttp.onreadystatechange=function() {
+      if (xmlhttp.readyState==4 && xmlhttp.status==200){
+	var query = JSON.parse(xmlhttp.responseText);
+	if (query.found)
+	  setTimeout(function() { getSubGraph(func, depth); },0);
+	else if (query.err) {
+          layout.updateFunctionList(null);
+        }
+	else {
+          layout.updateFunctionList(query.matches);
+        }
+      }
+    }
+    xmlhttp.send();
   }
 
   function getSubGraph(func, depth) {

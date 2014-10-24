@@ -49,7 +49,35 @@ var SG;
 
 function SubGraph() {
 
-  this.GetSubGraph = function(nodeName, n, err) {
+  this.queryFunc = function(func) {
+    var response = new Object;
+    response.matches = [];
+    response.err = null;
+    response.found = false;
+    keys(Nodes).some(function (f) {
+      if (f == func) {
+          response.found = true;
+          console.log("Found: "+func);
+          return true;
+      }
+      else if (~f.split("@")[0].indexOf(func)) {
+        response.matches.push(f);
+        if (response.matches.length > 100) {
+          response.matches = [];
+          response.err = "Too many matching results";
+          console.log(response.err);
+          return true;
+        } 
+        else {
+          console.log("------------------------");
+          console.log(response.matches);
+        }
+      }
+    });
+    return response;
+  }
+
+  this.getSubGraph = function(nodeName, n, err) {
     var subGraph = new Object;
 
     if (Nodes[nodeName] === undefined) {
@@ -69,6 +97,7 @@ function SubGraph() {
       if (subGraph.Edges === undefined) {
         subGraph.Edges = [];
       }
+/*
       if (Links[nodeName].LinksOut !== undefined) {
         Links[nodeName].LinksOut.forEach(function (dest) { 
           _getSubGraph(dest, n-1, subGraph); 
@@ -78,8 +107,10 @@ function SubGraph() {
           }
         });
       }
+*/
 
       if (Links[nodeName].LinksIn !== undefined) {
+        console.log(JSON.stringify(Links[nodeName]));
         Links[nodeName].LinksIn.forEach(function (src) {
           _getSubGraph(src, n-1, subGraph); 
           subGraph.Nodes[src] = 1;
@@ -127,14 +158,23 @@ function runServer() {
       response.end(string);
       console.log("string sent");
     }
+    else if(reqpath == "/funcquery"){
+      console.log("function name query received "+url.parse(request.url).query);
+      var args = url.parse(request.url).query.split(";");
+      var func = args[0].substring("function=".length);
+      console.log("function:"+func);
+      var string = JSON.stringify(SG.queryFunc(func));
+      response.writeHead(200, {"Content-Type": "text/plain"});
+      response.end(string);
+      console.log("string sent");
+    }
     else if(reqpath == "/getsubgraph"){
-      console.log("module request received "+url.parse(request.url).query);
+      console.log("subgraph request received "+url.parse(request.url).query);
       var args = url.parse(request.url).query.split(";");
       var func = args[0].substring("function=".length);
       var depth = parseInt(args[1].substring("depth=".length));
       console.log("function:"+func+" depth:"+depth);
-      //console.log(JSON.stringify(Modules[file]));
-      var string = JSON.stringify(SG.GetSubGraph(func, depth));
+      var string = JSON.stringify(SG.getSubGraph(func, depth));
       response.writeHead(200, {"Content-Type": "text/plain"});
       response.end(string);
       console.log("string sent");

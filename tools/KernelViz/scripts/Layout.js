@@ -28,45 +28,13 @@ function Layout() {
     d3.select("div.labelbutton").style("display", isDirected ? "none" : null);
     var viewinfo = d3.select("div.viewInfo").html("");
 
-    if (View != topDirView) {
-      var table = viewinfo
-        .append("div")
-        .attr("class", "key")
-        .append("table");
-
-      var tablehead = table.append("tr");
-      var tablebody = table.append("tbody");
-
-      tablehead
-        .append("th")
-        .text("Function Type");
-
-      tablehead
-        .append("th")
-        .text("Color");
-
-      row = tablebody
-        .selectAll("tr")
-        .data(Object.keys(self.nodeColor)) 
-        .enter()
-        .append("tr");
-
-      row
-        .append("td")
-        .attr("width", "100px")
-        .text(function (d) { return d; });
-
-      row
-        .append("td")
-        .attr("width", "50px")
-        .attr("style", function (d) { return "background-color:"+self.nodeColor[d]+";"; } );
-    }
+    createNodeKey(this, viewinfo);
 
     if (!isDirected) {
       var key = viewinfo
         .append("div")
         .classed("linkKey", true);
-      linkKey(key, self.linkColor);
+      createLinkKey(key, self.linkColor);
     }
 
     viewinfo
@@ -129,7 +97,7 @@ function Layout() {
     d3.select("div.nodeInfo").html("");
   }
 
-  this.getGraphElement = function () {
+  this.getD3SvgGraphElement = function () {
     var div = d3.select("div.container");
     return div.select("svg");
   }
@@ -141,34 +109,70 @@ function Layout() {
   }
 
   this.addModuleSelector = function(files, callback) {
-    var selector = document.getElementById("selector");
-    selector.innerHTML="";
-    moduleSelector = completely(selector, {
-        fontFamily:"sans-serif", fontSize:"14px", promptInnerHTML : "Type in a Module or Select From List:&nbsp;"
-    });
+    d3.select("div.selectortxt")
+    .append("div")
+    .style("border", "1px solid #999")
+    .each(function () {
+      moduleSelector = completely(this, {
+          fontFamily:"sans-serif", fontSize:"14px"
+      });
 
-    moduleSelector.options = files.sort();
+      moduleSelector.options = files.sort();
 
-    moduleSelector.onChange = function (text) {
-      moduleSelector.startFrom = text.indexOf(',')+1;
+      moduleSelector.onChange = function (text) {
+        moduleSelector.startFrom = text.indexOf(',')+1;
         if (files.indexOf(text) >= 0) {
           callback(text);
         }
         moduleSelector.repaint();
-    };
-    moduleSelector.repaint();
+      };
+      moduleSelector.repaint();
+    });
   }
 
   this.setModuleSelectorText = function(text) {
     moduleSelector.setText(text);
   }
 
-  this.addFunctionSelector = function(callback) {
-    var button = document.getElementById("funcbutton");
-    var funcname = document.getElementById("funcname");
+  this.createFunctionSelector = function(callback) {
     var depth = document.getElementById("funcdepth");
-    button.onclick=function (d) { 
-      callback(funcname.value, depth.value);
+    var textbox = d3.select(".fsearch");
+    this.funcCallback = callback;
+    
+    var searchtext = document.getElementById("funcsearchtext");
+    searchtext.oninput = function () { 
+      callback(searchtext.value, depth.value); 
+    };
+  }
+
+  this.updateFunctionList = function(options) {
+    var self = this;
+    var functext = document.getElementById("funcname");
+    var funcfile = document.getElementById("funcfile");
+    var selector = d3.select(".fselector");
+    if (options == null || options.length == 0) {
+      selector.html("");
+    }
+    else {
+      selector.html("");
+      selector
+        .append("select")
+        .attr("size", options.length > 10 ? 10 : options.length)
+        .selectAll("option")
+        .data(options)
+        .enter()
+        .append("option")
+        .on("click", function (d) {
+          var depth = document.getElementById("funcdepth");
+          var name = d.split("@");
+          functext.innerHTML = name[0];
+          funcfile.innerHTML = (name.length == 2) ? name[1] : "";
+          self.funcCallback(d, depth.value);
+          selector.html("");
+        })
+        .text(function (d) { 
+          return d; 
+        });
     }
   }
 
@@ -183,7 +187,7 @@ function Layout() {
       d3.select("div.viewbuttons").style("display", "none");
       d3.select("div.topviewcontrols").style("display", null);
       d3.select("div.selector").style("display", "none");
-      d3.select("div.funcselector").style("display", "none");
+      d3.selectAll("div.funcoption").style("display", "none");
       View = topDirView;
     } 
     else if (view == "func") {
@@ -192,7 +196,7 @@ function Layout() {
       d3.select("div.viewbuttons").style("display", null);
       d3.select("div.topviewcontrols").style("display", "none");
       d3.select("div.selector").style("display", "none");
-      d3.select("div.funcselector").style("display", null);
+      d3.selectAll("div.funcoption").style("display", null);
     }
     else {
       View = moduleView;
@@ -200,7 +204,7 @@ function Layout() {
       d3.select("div.viewbuttons").style("display", null);
       d3.select("div.topviewcontrols").style("display", "none");
       d3.select("div.selector").style("display", null);
-      d3.select("div.funcselector").style("display", "none");
+      d3.selectAll("div.funcoption").style("display", "none");
     }
 
     View.setActive();
@@ -210,11 +214,9 @@ function Layout() {
   this.resize = function() {
     var width = window.innerWidth - 290.0;
     var height = 1000;
-    d3.select("svg")
+    d3.select("div.container svg")
       .attr("style", "width:"+ width + "px;height:"+ height + "px;");
     View.resize(width, height);
-    var selector = document.getElementById("selector");
-    selector.style.width = width+"px";
   };
 
   this.setGraphType = function(graphtype) {
@@ -229,7 +231,7 @@ function Layout() {
     topDirView.showLinks(show);
   }
 
-  function linkKey(element, linkColor) {
+  function createLinkKey(element, linkColor) {
     var table = element
       .append("table");
 
@@ -259,5 +261,46 @@ function Layout() {
       .append("td")
       .attr("width", "50px")
       .attr("style", function (d) { return "background-color:"+linkColor[d]+";"; } );
+  }
+
+  function createNodeKey(self, viewinfo) {
+    if (View != topDirView) {
+      var table = viewinfo
+        .append("div")
+        .attr("class", "key")
+        .append("table");
+
+      var tablehead = table.append("tr");
+      var tablebody = table.append("tbody");
+
+      tablehead
+        .append("th")
+        .text("Function Type");
+
+      tablehead
+        .append("th")
+        .text("Color");
+
+      row = tablebody
+        .selectAll("tr")
+        .data(Object.keys(self.nodeColor)) 
+        .enter()
+        .append("tr");
+
+      row
+        .append("td")
+        .attr("width", "100px")
+        .text(function (d) { return d; });
+
+      row
+        .append("td")
+        .attr("width", "50px")
+        .attr("style", function (d) { return "background-color:"+self.nodeColor[d]+";"; } );
+    }
+  }
+
+  this.enableZoom = function(doZoom) {
+    if (View.enableZoom !== undefined)
+      View.enableZoom(doZoom);
   }
 }
