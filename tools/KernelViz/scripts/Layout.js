@@ -26,75 +26,88 @@ function Layout() {
     var self = this;
     var isDirected = (View.isDirected === undefined) ? false : View.isDirected();
     d3.select("div.labelbutton").style("display", isDirected ? "none" : null);
-    var viewinfo = d3.select("div.viewInfo").html("");
+    var keyContainer = d3.select("div.keyContainer").html("");
 
-    createNodeKey(this, viewinfo);
+    createNodeKey(this, keyContainer);
 
     if (!isDirected) {
-      var key = viewinfo
+      var key = keyContainer
         .append("div")
         .classed("linkKey", true);
       createLinkKey(key, self.linkColor);
     }
-
-    viewinfo
-      .append("div")
-      .classed("nodeInfo", true);
   }
 
   this.displayNodeInfo = function(nodename, lineno, dotfile, ksyms, functype) {
-    var nodeinfo = d3.select("div.nodeInfo")
-      .html("<h3>Node Information</h3>");
+    var nodeinfo = d3.select("div.nodeInfoContainer")
+      .html("");
       
-      nodeinfo
-      .append("h4")
-      .text("Selected function:");
+    var div = nodeinfo.append("div")
+      .classed("optionitem", true);
 
-      nodeinfo
-      .append("p")
+    div.append("span")
+      .classed("optionlabel", true)
+      .text("Name:");
+
+    div.append("span")
       .text(nodename);
 
-      nodeinfo
-      .append("h4")
-      .text("Function type:");
+    var div2 = nodeinfo.append("div")
+      .classed("optionitem", true);
 
-      nodeinfo
-      .append("p")
+    div2.append("span")
+      .classed("optionlabel", true)
+      .text("Type:");
+
+    div2.append("span")
       .text(functype);
 
     if (lineno) {
-      nodeinfo
-        .append("h4")
+      var div3 = nodeinfo.append("div")
+      .classed("optionitem", true);
+
+      div3.append("div")
+        .classed("optionlabel", true)
         .text("Defined in:");
-      nodeinfo
-        .append("p")
+
+      div3.append("span")
+        .classed("wordwrap", true)
         .text(lineno);
     }
     if (dotfile) {
       var link = "";
       dotfile.forEach(function (dotfile) {
-        link += "<a href='' onclick='moduleView.loadModule(\""+dotfile+"\", \""
+        link += "<a href='' onclick='layout.loadModule(\""+dotfile+"\", \""
              +nodename+"\");return false;'>"+dotfile+"</a><section/>";
       });
-      nodeinfo
-        .append("h4")
+      var div5 = nodeinfo.append("div")
+      .classed("optionitem", true);
+
+      div5.append("div")
+        .classed("optionlabel", true)
         .text("Link:");
-      nodeinfo
-        .append("p")
+
+      div5.append("span")
+        .classed("wordwrap", true)
         .html(link);
     }
     if (ksyms) {
+      var div6 = nodeinfo.append("div")
+      .classed("optionitem", true);
+
+      div6.append("div")
+        .classed("optionlabel", true)
+        .text("KSymtab:");
+
       nodeinfo
-        .append("h4")
-        .text("KSymtab defined at:");
-      nodeinfo
-        .append("p")
+        .append("span")
+        .classed("wordwrap", true)
         .text(ksyms);
     }
   }
 
   this.clearNodeInfo = function () {
-    d3.select("div.nodeInfo").html("");
+    d3.select("div.nodeInfoContainer").html("");
   }
 
   this.getD3SvgGraphElement = function () {
@@ -143,6 +156,12 @@ function Layout() {
     searchtext.oninput = function () { 
       callback(searchtext.value, depth.value); 
     };
+    searchtext.onclick = function () { 
+      callback(searchtext.value, depth.value); 
+    };
+    searchtext.onpaste = function () { 
+      callback(searchtext.value, depth.value); 
+    };
   }
 
   this.updateFunctionList = function(options) {
@@ -158,17 +177,20 @@ function Layout() {
       selector
         .append("select")
         .attr("size", options.length > 10 ? 10 : options.length)
+        .on("click", function () {
+          var depth = document.getElementById("funcdepth");
+          var name = this.value.split("@");
+          functext.innerHTML = name[0];
+          funcfile.innerHTML = (name.length == 2) ? name[1] : "";
+          self.funcCallback(this.value, depth.value);
+          selector.html("");
+        })
         .selectAll("option")
         .data(options)
         .enter()
         .append("option")
-        .on("click", function (d) {
-          var depth = document.getElementById("funcdepth");
-          var name = d.split("@");
-          functext.innerHTML = name[0];
-          funcfile.innerHTML = (name.length == 2) ? name[1] : "";
-          self.funcCallback(d, depth.value);
-          selector.html("");
+        .attr("value", function (d) { 
+          return d; 
         })
         .text(function (d) { 
           return d; 
@@ -267,7 +289,7 @@ function Layout() {
     if (View != topDirView) {
       var table = viewinfo
         .append("div")
-        .attr("class", "key")
+        .classed("nodeKey", true)
         .append("table");
 
       var tablehead = table.append("tr");
@@ -302,5 +324,9 @@ function Layout() {
   this.enableZoom = function(doZoom) {
     if (View.enableZoom !== undefined)
       View.enableZoom(doZoom);
+  }
+
+  this.loadModule = function(module, func) {
+    moduleView.loadModule(module, func);
   }
 }

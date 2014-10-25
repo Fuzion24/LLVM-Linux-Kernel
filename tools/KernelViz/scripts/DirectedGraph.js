@@ -40,7 +40,6 @@ function DirectedGraph(clickHandler, nodeattr, nodeattrfunc) {
 
   this.createGraph = function(inSvg, data) {
     graph = new dagreD3.Digraph();
-    d3.selectAll("div.nodeInfo").html("");
     Object.keys(data.Nodes).forEach(function(n) { 
       graph.addNode(n, { label: n });
     });
