@@ -14,6 +14,7 @@ function Layout() {
   var topDirView;
 
   this.nodeColor = { "External": "#f77", "Global": "#177", "Local": "#fff", "Local Unused": "#771", "Exported": "#717" };
+  this.funcNodeColor = { "Global": "#177", "Local": "#fff" };
   this.linkColor = { "Call Out": "#d62728", "Call In": "#2ca02c" };
 
   this.init = function() {
@@ -28,7 +29,8 @@ function Layout() {
     d3.select("div.labelbutton").style("display", isDirected ? "none" : null);
     var keyContainer = d3.select("div.keyContainer").html("");
 
-    createNodeKey(this, keyContainer);
+    var colors = (View == functionView) ? this.funcNodeColor : this.nodeColor;
+    createNodeKey(this, keyContainer, colors);
 
     if (!isDirected) {
       var key = keyContainer
@@ -39,6 +41,7 @@ function Layout() {
   }
 
   this.displayNodeInfo = function(nodename, lineno, dotfile, ksyms, functype) {
+    var splitnodename = nodename.split("@");
     var nodeinfo = d3.select("div.nodeInfoContainer")
       .html("");
       
@@ -50,7 +53,7 @@ function Layout() {
       .text("Name:");
 
     div.append("span")
-      .text(nodename);
+      .text(splitnodename[0]);
 
     var div2 = nodeinfo.append("div")
       .classed("optionitem", true);
@@ -74,12 +77,14 @@ function Layout() {
         .classed("wordwrap", true)
         .text(lineno);
     }
+
+    if (splitnodename.length == 2) {
+      dotfile = splitnodename[1];
+    }
     if (dotfile) {
       var link = "";
-      dotfile.forEach(function (dotfile) {
-        link += "<a href='' onclick='layout.loadModule(\""+dotfile+"\", \""
+      link += "<a href='' onclick='layout.loadModule(\""+dotfile+"\", \""
              +nodename+"\");return false;'>"+dotfile+"</a><section/>";
-      });
       var div5 = nodeinfo.append("div")
       .classed("optionitem", true);
 
@@ -285,7 +290,7 @@ function Layout() {
       .attr("style", function (d) { return "background-color:"+linkColor[d]+";"; } );
   }
 
-  function createNodeKey(self, viewinfo) {
+  function createNodeKey(self, viewinfo, colors) {
     if (View != topDirView) {
       var table = viewinfo
         .append("div")
@@ -305,7 +310,7 @@ function Layout() {
 
       row = tablebody
         .selectAll("tr")
-        .data(Object.keys(self.nodeColor)) 
+        .data(Object.keys(colors)) 
         .enter()
         .append("tr");
 
@@ -317,7 +322,7 @@ function Layout() {
       row
         .append("td")
         .attr("width", "50px")
-        .attr("style", function (d) { return "background-color:"+self.nodeColor[d]+";"; } );
+        .attr("style", function (d) { return "background-color:"+colors[d]+";"; } );
     }
   }
 

@@ -233,8 +233,12 @@ function FunctionView(layout) {
     xmlhttp.onreadystatechange=function() {
       if (xmlhttp.readyState==4 && xmlhttp.status==200){
         self.graphData = JSON.parse(xmlhttp.responseText);
-        //graphTypeIsDirected = true;
-        self.createGraph();
+        if (Object.keys(self.graphData.Nodes).length > 1500) {
+          alert("Too many nodes to graph:\nNodes: "+
+                Object.keys(self.graphData.Nodes).length+
+                "\nLinks: "+self.graphData.Edges.length);
+        } else
+          self.createGraph();
       }
     }
     xmlhttp.send();

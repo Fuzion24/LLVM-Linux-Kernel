@@ -113,13 +113,13 @@ function SubGraph() {
         console.log(JSON.stringify(Links[nodeName]));
         Links[nodeName].LinksIn.forEach(function (src) {
           _getSubGraph(src, n-1, subGraph); 
-          subGraph.Nodes[src] = 1;
+          subGraph.Nodes[src] = Nodes[src];
           if (subGraph.Edges.indexOf(src+","+nodeName) < 0) {
             subGraph.Edges.push({ "n1": src, "n2": nodeName });
           }
         });
       }
-      subGraph.Nodes[nodeName] = 1;
+      subGraph.Nodes[nodeName] = Nodes[nodeName];
     }
   }
 }
