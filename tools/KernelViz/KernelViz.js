@@ -43,6 +43,87 @@ var TopView = new Object;
 
 var index = 0;
 
+var Nodes = new Object;
+var Links = new Object;
+var SG;
+
+function SubGraph() {
+
+  this.queryFunc = function(func) {
+    var response = new Object;
+    response.matches = [];
+    response.err = null;
+    response.found = false;
+    keys(Nodes).some(function (f) {
+      if (f == func) {
+          response.found = true;
+          console.log("Found: "+func);
+          return true;
+      }
+      else if (~f.split("@")[0].indexOf(func)) {
+        response.matches.push(f);
+        if (response.matches.length > 100) {
+          response.matches = [];
+          response.err = "Too many matching results";
+          console.log(response.err);
+          return true;
+        } 
+        else {
+          console.log("------------------------");
+          console.log(response.matches);
+        }
+      }
+    });
+    return response;
+  }
+
+  this.getSubGraph = function(nodeName, n, err) {
+    var subGraph = new Object;
+
+    if (Nodes[nodeName] === undefined) {
+      console.log(nodeName+" does not exist");
+      err = true;
+      return null;
+    }
+    _getSubGraph(nodeName, n, subGraph, err);
+    return subGraph;
+  }
+
+  function _getSubGraph(nodeName, n, subGraph) {
+    if (Links[nodeName] !== undefined && n > 0) {
+      if (subGraph.Nodes === undefined) {
+        subGraph.Nodes = new Object;
+      }
+      if (subGraph.Edges === undefined) {
+        subGraph.Edges = [];
+      }
+/*
+      if (Links[nodeName].LinksOut !== undefined) {
+        Links[nodeName].LinksOut.forEach(function (dest) { 
+          _getSubGraph(dest, n-1, subGraph); 
+          subGraph.Nodes[dest] = 1;
+          if (subGraph.Edges.indexOf(nodeName+","+dest) < 0) {
+            subGraph.Edges.push({ "n1": nodeName, "n2": dest });
+          }
+        });
+      }
+*/
+
+      if (Links[nodeName].LinksIn !== undefined) {
+        console.log(JSON.stringify(Links[nodeName]));
+        Links[nodeName].LinksIn.forEach(function (src) {
+          _getSubGraph(src, n-1, subGraph); 
+          subGraph.Nodes[src] = Nodes[src];
+          if (subGraph.Edges.indexOf(src+","+nodeName) < 0) {
+            subGraph.Edges.push({ "n1": src, "n2": nodeName });
+          }
+        });
+      }
+      subGraph.Nodes[nodeName] = Nodes[nodeName];
+    }
+  }
+}
+
 function runServer() {
   var http = require("http");
   var fs = require("fs");
@@ -52,7 +133,8 @@ function runServer() {
   // served via nodejs
   var whitelist = [ "/index.html", "/data/TopViewFG.json"];
   var whitelistDir = [ "/external/d3", "/external/dagre", 
-                       "/external/completely", "/images" ];
+                       "/external/completely", "/images",
+                       "/scripts" ];
 
   http.createServer(function(request, response){
     var reqpath = url.parse(request.url).pathname;
@@ -76,18 +158,40 @@ function runServer() {
       response.end(string);
       console.log("string sent");
     }
+    else if(reqpath == "/funcquery"){
+      console.log("function name query received "+url.parse(request.url).query);
+      var args = url.parse(request.url).query.split(";");
+      var func = args[0].substring("function=".length);
+      console.log("function:"+func);
+      var string = JSON.stringify(SG.queryFunc(func));
+      response.writeHead(200, {"Content-Type": "text/plain"});
+      response.end(string);
+      console.log("string sent");
+    }
+    else if(reqpath == "/getsubgraph"){
+      console.log("subgraph request received "+url.parse(request.url).query);
+      var args = url.parse(request.url).query.split(";");
+      var func = args[0].substring("function=".length);
+      var depth = parseInt(args[1].substring("depth=".length));
+      console.log("function:"+func+" depth:"+depth);
+      var string = JSON.stringify(SG.getSubGraph(func, depth));
+      response.writeHead(200, {"Content-Type": "text/plain"});
+      response.end(string);
+      console.log("string sent");
+    }
     else if(reqpath == "/favicon.ico"){
       response.writeHead(200, {'Content-Type': 'image/x-icon'} );
       response.end();
       console.log('favicon requested');
     }
     else if (whitelistDir.indexOf(reqdir) >= 0) {
+      console.log("Whitelisted req: "+reqpath);
       var mimetype = "text/plain";
       var req = S(reqpath);
       if (req.endsWith(".js")) {
-        mimetype = "text/script";
+        mimetype = "text/javascript";
       } else if (reqdir == "/images") {
-        mimetype = "image/x-png";
+        mimetype = "image/png";
       }
       fs.readFile('.'+reqpath, function(err, file) {  
         if(err) {  
@@ -95,6 +199,7 @@ function runServer() {
         } else {  
           response.writeHead(200, { 'Content-Type': mimetype });  
           response.end(file, "utf-8");  
+          console.log("string sent");
         }
       });
     }
@@ -133,14 +238,29 @@ if (process.argv.length != 2) {
   console.log("Usage: nodejs SWViz.js");
 }
 else {
-  console.log("Loading cached data");
-  fs.readFile("data/ModulesResolved.json", 'utf8', function (err, data) {
+  fs.readFile("data/Nodes.json", 'utf8', function (err, data) {
     if (err) {
       console.log(""+err);
       process.exit(1);
     }
-    Modules = JSON.parse(data);
-    runServer();
+    Nodes = JSON.parse(data);
+    fs.readFile("data/Links.json", 'utf8', function (err, data) {
+      if (err) {
+        console.log("" + err);
+        process.exit(1);
+      }
+      Links = JSON.parse(data);
+      SG = new SubGraph();
+      fs.readFile("data/ModulesResolved.json", 'utf8', function (err, data) {
+        if (err) {
+          console.log(""+err);
+          process.exit(1);
+        }
+        Modules = JSON.parse(data);
+        runServer();
+      });
+    });
   });
+  console.log("Loading cached data");
 }
 

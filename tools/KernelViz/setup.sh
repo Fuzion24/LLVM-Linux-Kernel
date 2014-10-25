@@ -41,7 +41,7 @@
 [ -d node_modules/path ] || npm install path
 
 # Set these to the locations on your system
-TARGET=vexpress64
+TARGET=vexpress
 export FILE_BASE=../../targets/${TARGET}/build/kernel-clang
 
 # Get the data from the dot files
