@@ -65,7 +65,7 @@ kernel-git-export-patches:
 
 #############################################################################
 kernel-quilt-rename-patches:
-	@$(call banner,Exporting quilt patch series from git branch: ${TMP_BRANCH}...)
+	@$(call banner,Renaming quilt patch series from git back to original patch names...)
 	@(cd $(KERNELDIR); \
 	for NEWPATCH in 0*.patch; do \
 		[ "$$NEWPATCH" = '0*.patch' ] && exit 0; \
