@@ -630,4 +630,5 @@ tmp-clean:
 include ${TESTDIR}/test.mk
 include ${TOOLSDIR}/tools.mk
 include ${ARCHDIR}/all/ccache.mk
+include ${ARCHDIR}/all/kernel-stats.mk
 include ${ARCHDIR}/all/kernel-viz.mk
