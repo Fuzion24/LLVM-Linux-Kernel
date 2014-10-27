@@ -26,4 +26,5 @@ vlais-nfs.patch
 vlais-wimax-i2400m.patch
 compiler-gcc.patch
 smaller.patch
+lib-mpi-extern-inline.patch
 #file2alias-format-zero-length.patch
