@@ -1,2 +1,7 @@
+crypto-hash.patch
+ftrace.patch
 vlais-net-bluetooth-amp.patch
-kbuild-clang-unknown-flags.patch
+vlais-btrfs.patch
+vlais-hmac.patch
+vlais-dm-crypt.patch
+vlais-libcrc32c.patch
