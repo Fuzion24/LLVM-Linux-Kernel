@@ -1,13 +1,13 @@
-From 713d675cbfe3b78ff7287651d48b03af810e6517 Mon Sep 17 00:00:00 2001
+From 315aefc0ee8815559318a7e0431b5972a6e9f3ec Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 23 Sep 2014 22:43:15 -0700
-Subject: [PATCH] staging, rtl8192e, LLVMLinux: Fix extern inline
+Subject: [PATCH] staging, rtl8192e, LLVMLinux: Remove unused prototype
 
 MgntQuery_MgntFrameTxRate is only used within rtllib_softmac.c, so it really
 should be static instead of extern.
 
 Since it is currently extern a warning is generated because a different
-function of the same name is defined staticly in ieee80211_softmac.c
+function of the same name is defined staticlly in ieee80211_softmac.c
 
 Removing the incorrect extern declaration and defining the rtllib_softmac
 version of this routine static fixes the warning.

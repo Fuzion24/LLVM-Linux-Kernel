@@ -1,7 +1,8 @@
-From 6028337a2478f25201f25f8bb4b33b234a6116d5 Mon Sep 17 00:00:00 2001
+From 8e434495bd5673b1bb009e6014f97b942656e36d Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 23 Sep 2014 22:43:15 -0700
-Subject: [PATCH] staging, rtl8192e, LLVMLinux: Fix extern inline
+Subject: [PATCH] staging, rtl8192e, LLVMLinux: Change extern inline to static
+ inline
 
 With compilers which follow the C99 standard (like modern versions of gcc and
 clang), "extern inline" does the opposite thing from older versions of gcc

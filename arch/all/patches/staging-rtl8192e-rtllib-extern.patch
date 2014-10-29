@@ -1,7 +1,7 @@
-From 0fe1b6bf196d5732bd4583bd195e2a78f32bac28 Mon Sep 17 00:00:00 2001
+From 8cfd19ea97e3515e3789df952eef145b4d7d8b31 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 23 Sep 2014 22:43:15 -0700
-Subject: [PATCH] staging, rtl8192e, LLVMLinux: Fix extern inline
+Subject: [PATCH] staging, rtl8192e, LLVMLinux: Remove unused inline prototype
 
 rtllib_probe_req is defined as "static inline" in rtllib_softmac.c however it
 is declared differently as "extern inline" in rtllib_softmac.h. Since it isn't

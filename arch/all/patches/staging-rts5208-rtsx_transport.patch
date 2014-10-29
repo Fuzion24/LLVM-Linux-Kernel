@@ -1,12 +1,13 @@
-From f8bf72980786c50bcd2b337baf4c8497913fbe73 Mon Sep 17 00:00:00 2001
+From eb443ee8f52725cde2946af19c1a7bb704f47ad3 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 23 Sep 2014 22:43:15 -0700
-Subject: [PATCH] staging, rts5208, LLVMLinux: Fix extern inline
+Subject: [PATCH] staging, rts5208, LLVMLinux: Change extern inline to static
+ inline
 
 With compilers which follow the C99 standard (like modern versions of gcc and
 clang), "extern inline" does the opposite thing from older versions of gcc
 (emits code for an externally linkable version of the inline function). "static
-inline" does the intended behavior in all cases instead.
+inline" does the intended behavior in both gcc and clang.
 
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Suggested-by: Arnd Bergmann <arnd@arndb.de>

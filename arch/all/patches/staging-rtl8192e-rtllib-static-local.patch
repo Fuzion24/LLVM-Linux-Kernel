@@ -1,4 +1,4 @@
-From 0bae16eea21228a5391dd4f37b14205468a78c42 Mon Sep 17 00:00:00 2001
+From f6d2c664b8e501da028cf06e5b903c154d906098 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Thu, 16 Oct 2014 14:49:21 +0200
 Subject: [PATCH] staging, rtl8192e, LLVMLinux: Make static local in inline
@@ -22,11 +22,11 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
 Suggested-by: Arnd Bergmann <arnd@arndb.de>
 Cc: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/staging/rtl8192e/rtllib_softmac.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/staging/rtl8192e/rtllib_softmac.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/staging/rtl8192e/rtllib_softmac.c b/drivers/staging/rtl8192e/rtllib_softmac.c
-index 089a058..f03bc74 100644
+index 089a058..e970db4 100644
 --- a/drivers/staging/rtl8192e/rtllib_softmac.c
 +++ b/drivers/staging/rtl8192e/rtllib_softmac.c
 @@ -1311,7 +1311,7 @@ inline struct sk_buff *rtllib_association_req(struct rtllib_network *beacon,
@@ -38,16 +38,17 @@ index 089a058..f03bc74 100644
  		u8	CcxAironetBuf[30];
  		struct octet_string osCcxAironetIE;
  
-@@ -1331,10 +1331,10 @@ inline struct sk_buff *rtllib_association_req(struct rtllib_network *beacon,
+@@ -1331,10 +1331,11 @@ inline struct sk_buff *rtllib_association_req(struct rtllib_network *beacon,
  	}
  
  	if (beacon->bCcxRmEnable) {
 -		static u8 CcxRmCapBuf[] = {0x00, 0x40, 0x96, 0x01, 0x01, 0x00};
-+		static const u8 CcxRmCapBuf[] = {0x00, 0x40, 0x96, 0x01, 0x01, 0x00};
++		static const u8 CcxRmCapBuf[] = {0x00, 0x40, 0x96, 0x01, 0x01,
++			0x00};
  		struct octet_string osCcxRmCap;
  
 -		osCcxRmCap.Octet = CcxRmCapBuf;
-+		osCcxRmCap.Octet = (u8*) CcxRmCapBuf;
++		osCcxRmCap.Octet = (u8 *) CcxRmCapBuf;
  		osCcxRmCap.Length = sizeof(CcxRmCapBuf);
  		tag = skb_put(skb, ccxrm_ie_len);
  		*tag++ = MFIE_TYPE_GENERIC;
