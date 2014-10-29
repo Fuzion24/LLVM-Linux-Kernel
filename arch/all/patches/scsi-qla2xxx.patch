@@ -8,6 +8,9 @@ clang), "extern inline" does the opposite thing from older versions of gcc
 (emits code for an externally linkable version of the inline function). "static
 inline" does the intended behavior in all cases instead.
 
+qla8044_need_reset_handler was also defined as a static void function so the 
+declaration in the header file was incorrect.
+
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Suggested-by: Arnd Bergmann <arnd@arndb.de>
 Cc: Arnd Bergmann <arnd@arndb.de>

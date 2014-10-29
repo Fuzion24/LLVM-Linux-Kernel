@@ -3,7 +3,13 @@ From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 23 Sep 2014 22:43:09 -0700
 Subject: [PATCH] mpi, LLVMLinux: Fix ASM for clang in mpi
 
+[MC] Do we need both -fheinous-gnu-extensions and the cast fix?
+
+The cast inside the inline ASM is not supported by clang. It is
+in fact ignored by GCC.
+
 Signed-off-by: Behan Webster <behanw@converseincode.com>
+Not-signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Suggested-by: Arnd Bergmann <arnd@arndb.de>
 Cc: Arnd Bergmann <arnd@arndb.de>
 ---
