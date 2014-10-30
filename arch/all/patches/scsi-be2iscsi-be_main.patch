@@ -4,6 +4,7 @@ Date: Tue, 23 Sep 2014 22:43:11 -0700
 Subject: [PATCH] scsi, be2iscsi, LLVMLinux: Add missing MODULE_DEVICE_TABLE()
 
 Signed-off-by: Behan Webster <behanw@converseincode.com>
+Reviewed-by: Mark Charlebois <charlebm@gmail.com>
 Suggested-by: Arnd Bergmann <arnd@arndb.de>
 Cc: Arnd Bergmann <arnd@arndb.de>
 ---

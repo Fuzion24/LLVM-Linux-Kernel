@@ -4,9 +4,9 @@ Date: Tue, 20 Nov 2012 21:21:12 +0100
 Subject: [PATCH] Kbuild: LLVMLinux: Disable the use of the Integrated
  Assembler when compiling with Clang
 
-Globally disable the use of the Clang Integrated Assembler (IA). Use gas
-instead. IA doesn't support the gas assembly extensions used in the kernel
-code.
+Globally disable the use of the Clang Integrated Assembler (IA) unless
+IA=1 is set. If IA=1 is not set, use gas instead. IA doesn't support
+the gas assembly extensions used in the kernel code.
 
 Author: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
@@ -19,20 +19,18 @@ diff --git a/Makefile b/Makefile
 index 2893d7f..89def73 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -407,11 +407,12 @@ KBUILD_CPPFLAGS := -D__KERNEL__
- KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
- 		   -fno-strict-aliasing -fno-common \
- 		   -Werror-implicit-function-declaration \
-+		   $(call cc-option,-no-integrated-as,) \
- 		   -Wno-format-security
+@@ -386,7 +386,10 @@
+ ifneq ($(GCC_TOOLCHAIN),)
+ CLANG_GCC_TC	:= -gcc-toolchain $(GCC_TOOLCHAIN)
+ endif
+-CLANG_FLAGS	:= $(CLANG_TARGET) $(CLANG_GCC_TC)
++ifneq ($(IA),1)
++CLANG_IA_FLAG	= -no-integrated-as
++endif
++CLANG_FLAGS	:= $(CLANG_TARGET) $(CLANG_GCC_TC) $(CLANG_IA_FLAG)
+ endif
  
- KBUILD_AFLAGS_KERNEL :=
- KBUILD_CFLAGS_KERNEL :=
--KBUILD_AFLAGS   := -D__ASSEMBLY__
-+KBUILD_AFLAGS   := -D__ASSEMBLY__ $(call cc-option,-no-integrated-as,)
- KBUILD_AFLAGS_MODULE  := -DMODULE
- KBUILD_CFLAGS_MODULE  := -DMODULE
- KBUILD_LDFLAGS_MODULE := -T $(srctree)/scripts/module-common.lds
+ 
 -- 
 1.9.1
 

@@ -1,7 +1,6 @@
-disable-clang-integrated-as.patch
 vlais-apparmor.patch
-disable-clang-integrated-as.patch
 kbuild-cross-build.patch
+disable-clang-integrated-as.patch
 overflow-warn.patch
 kbuild-llvm-bitcode.patch
 #catch-undefined-behavior-deprecated.patch
