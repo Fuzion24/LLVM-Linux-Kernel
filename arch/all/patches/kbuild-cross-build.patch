@@ -48,18 +48,17 @@ index 13a72f6..dd3b54c 100644
  
  # Use USERINCLUDE when you must reference the UAPI directories only.
  USERINCLUDE    := \
-@@ -408,11 +419,12 @@ KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
+@@ -408,11 +419,11 @@
+ KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
  		   -fno-strict-aliasing -fno-common \
  		   -Werror-implicit-function-declaration \
- 		   $(call cc-option,-no-integrated-as,) \
 -		   -Wno-format-security
 +		   -Wno-format-security $(CLANG_FLAGS)
  
  KBUILD_AFLAGS_KERNEL :=
  KBUILD_CFLAGS_KERNEL :=
--KBUILD_AFLAGS   := -D__ASSEMBLY__ $(call cc-option,-no-integrated-as,)
-+KBUILD_AFLAGS   := -D__ASSEMBLY__ $(call cc-option,-no-integrated-as,) \
-+		   $(CLANG_FLAGS)
+-KBUILD_AFLAGS   := -D__ASSEMBLY__
++KBUILD_AFLAGS   := -D__ASSEMBLY__ $(CLANG_FLAGS)
  KBUILD_AFLAGS_MODULE  := -DMODULE
  KBUILD_CFLAGS_MODULE  := -DMODULE
  KBUILD_LDFLAGS_MODULE := -T $(srctree)/scripts/module-common.lds
