@@ -24,7 +24,7 @@
 
 TARGETDIR	= ${CURDIR}
 TOPDIR		= $(realpath ${TARGETDIR}/../..)
-CROSS_ARM_TOOLCHAIN = codesourcery
+CROSS_ARM_TOOLCHAIN = linaro
 
 KERNEL_CFG	= ${TARGETDIR}/config_odroidxu
 KERNEL_BRANCH	= odroidxu-3.4.y

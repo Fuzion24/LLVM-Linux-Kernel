@@ -24,7 +24,7 @@
 
 TARGETDIR	= ${CURDIR}
 TOPDIR		= $(realpath ${TARGETDIR}/../..)
-CROSS_ARM_TOOLCHAIN = codesourcery
+CROSS_ARM_TOOLCHAIN = linaro
 CLANG_TOOLCHAIN	= from-source
 
 KERNEL_CFG	= ${TARGETDIR}/config_rpi

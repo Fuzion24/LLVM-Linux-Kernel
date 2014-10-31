@@ -24,7 +24,7 @@
 
 TARGETDIR	= ${CURDIR}
 TOPDIR		= $(realpath ${TARGETDIR}/../..)
-CROSS_ARM_TOOLCHAIN = codesourcery
+CROSS_ARM_TOOLCHAIN = linaro
 
 KERNEL_BRANCH	= cm-10.1
 KERNEL_GIT	= git://github.com/CyanogenMod/lge-kernel-mako.git

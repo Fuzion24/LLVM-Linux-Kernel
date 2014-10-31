@@ -24,7 +24,7 @@
 
 TARGETDIR	= ${CURDIR}
 TOPDIR		= $(realpath ${TARGETDIR}/../..)
-CROSS_ARM_TOOLCHAIN = codesourcery
+CROSS_ARM_TOOLCHAIN = linaro
 LLVM_COMMIT	= master
 CLANG_COMMIT	= master
 #CLANG_TOOLCHAIN	= prebuilt
