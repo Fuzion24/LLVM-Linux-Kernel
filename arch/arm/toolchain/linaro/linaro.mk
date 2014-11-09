@@ -26,7 +26,7 @@
 
 TARGETS		+= linaro-gcc
 
-http://releases.linaro.org/14.10/components/toolchain/binaries/arm-linux-gnueabihf/gcc-linaro-4.9-2014.10-x86_64_arm-linux-gnueabihf.tar.xz
+# http://releases.linaro.org/14.10/components/toolchain/binaries/arm-linux-gnueabihf/gcc-linaro-4.9-2014.10-x86_64_arm-linux-gnueabihf.tar.xz
 LINARO_VERSION		?= 14.10
 LINARO_GCC_VERSION	?= 4.9
 LINARO_CC_NAME		?= arm-linux-gnueabihf
