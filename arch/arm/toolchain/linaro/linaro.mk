@@ -26,13 +26,13 @@
 
 TARGETS		+= linaro-gcc
 
-# http://releases.linaro.org/14.10/components/toolchain/binaries/arm-linux-gnueabihf/gcc-linaro-4.9-2014.10-x86_64_arm-linux-gnueabihf.tar.xz
+#http://releases.linaro.org/14.10/components/toolchain/gcc-linaro/4.9/gcc-linaro-4.9-2014.10-1.tar.xz
 LINARO_VERSION		?= 14.10
 LINARO_GCC_VERSION	?= 4.9
 LINARO_CC_NAME		?= arm-linux-gnueabihf
-LINARO_CC_DIR_NAME	= gcc-linaro-${LINARO_GCC_VERSION}-20${LINARO_VERSION}-x86_64_${LINARO_CC_NAME}
+LINARO_CC_DIR_NAME	= gcc-linaro-${LINARO_GCC_VERSION}-20${LINARO_VERSION}-1
 LINARO_CC_DIR		= ${LINARO_DIR}/${LINARO_CC_DIR_NAME}
-LINARO_CC_URL		?= http://releases.linaro.org/${LINARO_VERSION}/components/toolchain/binaries/${LINARO_CC_NAME}/${LINARO_CC_DIR_NAME}.tar.xz
+LINARO_CC_URL		?= http://releases.linaro.org/${LINARO_VERSION}/components/toolchain/gcc-linaro/${LINARO_GCC_VERSION}/${LINARO_CC_DIR_NAME}.tar.xz
 LINARO_DIR		?= ${ARCH_ARM_TOOLCHAIN}/linaro
 LINARO_TMPDIR		= $(call shared,${LINARO_DIR}/tmp)
 TMPDIRS			+= ${LINARO_TMPDIR}
