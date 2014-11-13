@@ -24,35 +24,36 @@
 # Note: use CROSS_ARM_TOOLCHAIN=linaro to include this file
 # Note: On x86_64, need to install libz1g:i386 and libstdc++6:i386
 
-TARGETS		+= linaro-gcc
+TARGETS					+= linaro-gcc
 
-#http://releases.linaro.org/14.10/components/toolchain/gcc-linaro/4.9/gcc-linaro-4.9-2014.10-1.tar.xz
-LINARO_VERSION		?= 14.10
-LINARO_GCC_VERSION	?= 4.9
-LINARO_CC_NAME		?= arm-linux-gnueabihf
-LINARO_CC_DIR_NAME	= gcc-linaro-${LINARO_GCC_VERSION}-20${LINARO_VERSION}-1
-LINARO_CC_DIR		= ${LINARO_DIR}/${LINARO_CC_DIR_NAME}
-LINARO_CC_URL		?= http://releases.linaro.org/${LINARO_VERSION}/components/toolchain/gcc-linaro/${LINARO_GCC_VERSION}/${LINARO_CC_DIR_NAME}.tar.xz
-LINARO_DIR		?= ${ARCH_ARM_TOOLCHAIN}/linaro
-LINARO_TMPDIR		= $(call shared,${LINARO_DIR}/tmp)
-TMPDIRS			+= ${LINARO_TMPDIR}
+# http://releases.linaro.org/14.10/components/toolchain/gcc-linaro/4.9/gcc-linaro-4.9-2014.10-1.tar.xz
+LINARO_VERSION			?= 14.10
+LINARO_MINOR_VERSION	?= -1
+LINARO_GCC_VERSION		?= 4.9
+LINARO_CC_NAME			?= arm-linux-gnueabihf
+LINARO_CC_DIR_NAME		= gcc-linaro-${LINARO_GCC_VERSION}-20${LINARO_VERSION}${LINARO_MINOR_VERSION}
+LINARO_CC_DIR			= ${LINARO_DIR}/${LINARO_CC_DIR_NAME}
+LINARO_CC_URL			?= http://releases.linaro.org/${LINARO_VERSION}/components/toolchain/gcc-linaro/${LINARO_GCC_VERSION}/${LINARO_CC_DIR_NAME}.tar.xz
+LINARO_DIR				?= ${ARCH_ARM_TOOLCHAIN}/linaro
+LINARO_TMPDIR			= $(call shared,${LINARO_DIR}/tmp)
+TMPDIRS					+= ${LINARO_TMPDIR}
 
-LINARO_CC_TAR_XZ	= ${LINARO_CC_DIR_NAME}.tar.xz
-LINARO_CC_TAR		= ${LINARO_CC_DIR_NAME}.tar
-LINARO_CC_BINDIR	= ${LINARO_CC_DIR}/bin
+LINARO_CC_TAR_XZ		= ${LINARO_CC_DIR_NAME}.tar.xz
+LINARO_CC_TAR			= ${LINARO_CC_DIR_NAME}.tar
+LINARO_CC_BINDIR		= ${LINARO_CC_DIR}/bin
 
-HOST			?= ${LINARO_CC_NAME}
-HOST_TRIPLE		?= ${HOST}
-COMPILER_PATH		= ${LINARO_CC_DIR}
-LINARO_GCC		= ${LINARO_CC_BINDIR}/${CROSS_COMPILE}gcc
-CROSS_GCC		= ${LINARO_GCC}
+HOST					?= ${LINARO_CC_NAME}
+HOST_TRIPLE				?= ${HOST}
+COMPILER_PATH			= ${LINARO_CC_DIR}
+LINARO_GCC				= ${LINARO_CC_BINDIR}/${CROSS_COMPILE}gcc
+CROSS_GCC				= ${LINARO_GCC}
 
-DEBDEP			+= 
+DEBDEP					+=
 
-ARM_CROSS_GCC_TOOLCHAIN = ${LINARO_CC_DIR}
+ARM_CROSS_GCC_TOOLCHAIN	= ${LINARO_CC_DIR}
 
 # Add path so that ${CROSS_COMPILE}${CC} is resolved
-PATH			:= ${LINARO_CC_BINDIR}:${PATH}
+PATH					:= ${LINARO_CC_BINDIR}:${PATH}
 
 # Get Linaro cross compiler
 ${LINARO_TMPDIR}/${LINARO_CC_TAR}:
