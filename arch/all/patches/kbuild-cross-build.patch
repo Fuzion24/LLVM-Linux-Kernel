@@ -1,4 +1,4 @@
-From 75f0ce7d201d2b2ef0117dd2710220e241945d6e Mon Sep 17 00:00:00 2001
+From 337e60a5ff5e3d757ee9b73ebda8321bf43ad7a9 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Wed, 21 May 2014 12:02:30 -0700
 Subject: [PATCH] kbuild, LLVMLinux: Add better clang cross build support
@@ -23,14 +23,14 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
 Reviewed-by: Jan-Simon Möller <dl9pf@gmx.de>
 Reviewed-by: Mark Charlebois <charlebm@gmail.com>
 ---
- Makefile | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+ Makefile | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
 diff --git a/Makefile b/Makefile
-index 13a72f6..dd3b54c 100644
+index 00d618b..8b646f2 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -384,6 +384,17 @@ CFLAGS_KERNEL	=
+@@ -378,6 +378,17 @@ CFLAGS_KERNEL	=
  AFLAGS_KERNEL	=
  CFLAGS_GCOV	= -fprofile-arcs -ftest-coverage
  
@@ -48,12 +48,13 @@ index 13a72f6..dd3b54c 100644
  
  # Use USERINCLUDE when you must reference the UAPI directories only.
  USERINCLUDE    := \
-@@ -408,11 +419,11 @@
+@@ -401,12 +412,12 @@ KBUILD_CPPFLAGS := -D__KERNEL__
  KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
  		   -fno-strict-aliasing -fno-common \
  		   -Werror-implicit-function-declaration \
--		   -Wno-format-security
-+		   -Wno-format-security $(CLANG_FLAGS)
+-		   -Wno-format-security \
++		   -Wno-format-security $(CLANG_FLAGS) \
+ 		   -std=gnu89
  
  KBUILD_AFLAGS_KERNEL :=
  KBUILD_CFLAGS_KERNEL :=
