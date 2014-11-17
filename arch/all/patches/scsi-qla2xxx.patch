@@ -1,4 +1,4 @@
-From 48b6fe9053bb748bcc783b8a41b6202eeec4b467 Mon Sep 17 00:00:00 2001
+From 81b3a241245a859ead6e6b01b39711671657fd4f Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 23 Sep 2014 22:43:14 -0700
 Subject: [PATCH] scsi, qla2xxx, LLVMLinux: Fix extern inline
@@ -8,7 +8,7 @@ clang), "extern inline" does the opposite thing from older versions of gcc
 (emits code for an externally linkable version of the inline function). "static
 inline" does the intended behavior in all cases instead.
 
-qla8044_need_reset_handler was also defined as a static void function so the 
+qla8044_need_reset_handler was also defined as a static void function so the
 declaration in the header file was incorrect.
 
 Signed-off-by: Behan Webster <behanw@converseincode.com>

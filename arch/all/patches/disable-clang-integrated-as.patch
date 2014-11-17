@@ -1,4 +1,4 @@
-From 1074d797ae30ebb151a55492f8f5e0fe93b53716 Mon Sep 17 00:00:00 2001
+From aa0112870847d281f0c284755c21d8dea351bc18 Mon Sep 17 00:00:00 2001
 From: Mark Charlebois <charlebm@gmail.com>
 Date: Tue, 20 Nov 2012 21:21:12 +0100
 Subject: [PATCH] Kbuild: LLVMLinux: Disable the use of the Integrated
@@ -12,14 +12,14 @@ Author: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 ---
- Makefile | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ Makefile | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/Makefile b/Makefile
-index 2893d7f..89def73 100644
+index 8b646f2..6022166 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -386,7 +386,10 @@
+@@ -386,7 +386,10 @@ endif
  ifneq ($(GCC_TOOLCHAIN),)
  CLANG_GCC_TC	:= -gcc-toolchain $(GCC_TOOLCHAIN)
  endif
