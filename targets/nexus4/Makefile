@@ -26,8 +26,8 @@ TARGETDIR	= ${CURDIR}
 TOPDIR		= $(realpath ${TARGETDIR}/../..)
 CROSS_ARM_TOOLCHAIN = linaro
 
-KERNEL_BRANCH	= cm-10.1
-KERNEL_GIT	= git://github.com/CyanogenMod/lge-kernel-mako.git
+KERNEL_BRANCH	= android-msm-mako-3.4-lollipop-release
+KERNEL_GIT	= https://android.googlesource.com/kernel/msm.git
 KERNELDIR	= ${SRCDIR}/android_kernel_nexus4
 KERNEL_CFG	= ${KERNELDIR}/arch/arm/configs/mako_defconfig
 

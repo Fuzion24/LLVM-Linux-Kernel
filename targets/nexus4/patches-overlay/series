@@ -1,1 +1,5 @@
 gcc-wrapper.patch
+remove_inline_modifier.patch
+ftrace.patch
+crypto_shash_desc_novlais.patch
+vlais-hmac.patch
