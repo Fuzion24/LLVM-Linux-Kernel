@@ -7,7 +7,7 @@ index 20fb776..a1639fa 100644
  	typedef void (*rcu_callback)(struct rcu_head *);
  
 -	BUILD_BUG_ON(!__builtin_constant_p(offset));
-+	/* __builtin_constant_p is unsupportedin Clang */
++	/* __builtin_constant_p is unsupported in Clang */
 +	// BUILD_BUG_ON(!__builtin_constant_p(offset));
  
  	/* See the kfree_rcu() header comment. */
