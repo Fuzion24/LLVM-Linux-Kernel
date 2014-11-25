@@ -1,2 +1,3 @@
 hweight-x86.patch
 export-memcpy-clang-x86_64.patch
+boot-workaround-PR18415.patch
