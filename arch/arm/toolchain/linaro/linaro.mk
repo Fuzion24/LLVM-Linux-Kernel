@@ -30,16 +30,15 @@ TARGETS		+= linaro-gcc
 LINARO_VERSION		?= 14.09
 LINARO_GCC_VERSION	?= 4.9
 LINARO_CC_NAME		?= arm-linux-gnueabihf
-#LINARO_CC_DIR_NAME	= gcc-linaro-${LINARO_CC_NAME}-${LINARO_GCC_VERSION}-20${LINARO_VERSION}_linux
+LINARO_CC_FILENAME	= gcc-linaro-${LINARO_CC_NAME}-${LINARO_GCC_VERSION}-20${LINARO_VERSION}_linux
 LINARO_CC_DIR_NAME	= gcc-linaro-${LINARO_GCC_VERSION}-20${LINARO_VERSION}-x86_64_${LINARO_CC_NAME}
-LINARO_CC_DIR		= ${LINARO_DIR}/${LINARO_CC_DIR_NAME}
-LINARO_CC_URL		?= http://releases.linaro.org/${LINARO_VERSION}/components/toolchain/binaries/${LINARO_CC_DIR_NAME}.tar.bz2
-LINARO_DIR		?= ${ARCH_ARM_TOOLCHAIN}/linaro
-LINARO_TMPDIR		= $(call shared,${LINARO_DIR}/tmp)
+LINARO_CC_URL		?= http://releases.linaro.org/${LINARO_VERSION}/components/toolchain/binaries/${LINARO_CC_FILENAME}.tar.bz2
+LINARO_DIR		?= $(call shared,${ARCH_ARM_TOOLCHAIN}/linaro)
+LINARO_TMPDIR		= ${LINARO_DIR}/tmp
 TMPDIRS			+= ${LINARO_TMPDIR}
 
-LINARO_CC_TAR_BZ2	= ${LINARO_CC_DIR_NAME}.tar.bz2
-LINARO_CC_TAR		= ${LINARO_CC_DIR_NAME}.tar
+LINARO_CC_TAR_BZ2	= ${LINARO_TMPDIR}/${LINARO_CC_FILENAME}.tar.bz2
+LINARO_CC_DIR		= ${LINARO_DIR}/${LINARO_CC_DIR_NAME}
 LINARO_CC_BINDIR	= ${LINARO_CC_DIR}/bin
 
 HOST			?= ${LINARO_CC_NAME}
@@ -56,15 +55,14 @@ ARM_CROSS_GCC_TOOLCHAIN = ${LINARO_CC_DIR}
 PATH			:= ${LINARO_CC_BINDIR}:${PATH}
 
 # Get Linaro cross compiler
-${LINARO_TMPDIR}/${LINARO_CC_TAR}:
+${LINARO_CC_TAR_BZ2}:
 	mkdir -p ${LINARO_TMPDIR}
 	@$(call wget,${LINARO_CC_URL},${LINARO_TMPDIR})
-	(cd ${LINARO_TMPDIR} && bzip2 -d ${LINARO_CC_TAR_BZ2})
 
 linaro-gcc arm-cc: ${ARCH_ARM_TOOLCHAIN_STATE}/linaro-gcc
-${ARCH_ARM_TOOLCHAIN_STATE}/linaro-gcc: ${LINARO_TMPDIR}/${LINARO_CC_TAR}
-	rm -rf ${LINARO_CC_DIR}
-	tar -x -C ${LINARO_DIR} -f $<
+${ARCH_ARM_TOOLCHAIN_STATE}/linaro-gcc: ${LINARO_CC_TAR_BZ2}
+	@${MAKE} arm-cc-clean
+	@$(call unbz2,${LINARO_CC_TAR_BZ2},${LINARO_DIR})
 	$(call state,$@)
 
 state/arm-cc: ${ARCH_ARM_TOOLCHAIN_STATE}/linaro-gcc
@@ -72,11 +70,14 @@ state/arm-cc: ${ARCH_ARM_TOOLCHAIN_STATE}/linaro-gcc
 
 linaro-gcc-clean arm-cc-clean:
 	@$(call banner,Removing Linaro compiler...)
-	@rm -f state/arm-cc ${ARCH_ARM_TOOLCHAIN_STATE}/linaro-gcc
-	@rm -rf ${LINARO_CC_DIR}
+	rm -rf ${LINARO_CC_DIR} ${LINARO_CC_TAR_BZ2:.bz2=}
+	@$(call leavestate,arm-cc) ${ARCH_ARM_TOOLCHAIN_STATE}/linaro-gcc
 
 arm-cc-version: ${ARCH_ARM_TOOLCHAIN_STATE}/linaro-gcc
 	@echo -e "LINARO_GCC\t= `${LINARO_GCC} --version | head -1`"
 
-env:
-	echo ${LINARO_TMPDIR}
+arm-cc-env:
+	@$(call prsetting,LINARO_TMPDIR,${LINARO_TMPDIR})
+	@$(call prsetting,LINARO_CC_TAR_BZ2,${LINARO_CC_TAR_BZ2})
+	@$(call prsetting,LINARO_DIR,${LINARO_DIR})
+	@$(call prsetting,LINARO_CC_DIR,${LINARO_CC_DIR})
