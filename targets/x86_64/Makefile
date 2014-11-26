@@ -78,18 +78,27 @@ ${INITRAMFS}.clang: initramfs-unpacked
 
 # Create the generic initramfs, add in the kernel modules, then create the cpio
 test: state/prep ${QEMUSTATE}/qemu-build ${INITRAMFS}.clang
-	$(call qemu,${BOARD},${KERNEL_BUILD}/arch/x86/boot/bzImage,512,/dev/ram0,rw console=ttyS0 earlyprintk ,-initrd ${INITRAMFS}.clang -net none )
+	$(call qemu,${BOARD},${KERNEL_BUILD}/arch/x86/boot/bzImage,512,/dev/ram0,rw console=ttyS0 earlyprintk initcall.debug,-initrd ${INITRAMFS}.clang -net none )
 #	$(call qemu,${BOARD},${KERNEL_BUILD}/arch/x86/boot/bzImage,2048,/dev/ram0,ramdisk_size=512000 rdinit=/init console=ttyS0 earlyprintk,-initrd ${INITRAMFS}.clang -curses)
 
 test-gdb: state/prep ${QEMUSTATE}/qemu-build ${INITRAMFS}.clang
-	$(call qemu,${BOARD},${KERNEL_BUILD}/arch/x86/boot/bzImage,512,/dev/ram0,rw console=ttyS0 earlyprintk ,-initrd ${INITRAMFS}.clang -net none -s -S)
+	( $(call qemu,${BOARD},${KERNEL_BUILD}/arch/x86/boot/bzImage,512,/dev/ram0,rw console=ttyS0 debug user_debug=-1 earlyprintk initcall.debug,-initrd ${INITRAMFS}.clang -net none -s -S) &)
+	@(echo "set output-radix 16" > .gdbinit ; echo "target remote localhost:1234" >> .gdbinit )
+	(gdb ${KERNEL_BUILD}/vmlinux)
+	(killall -s 9 qemu-system-x86_64)
 
 test-qemu: ${INITRAMFS}.clang ${QEMUSTATE}/qemu-build
-	$(call qemu,${BOARD},${KERNEL_BUILD}/arch/x86/boot/bzImage,512,/dev/ram0,rw console=ttyS0 earlyprintk ,-initrd ${INITRAMFS}.clang -net none )
+	$(call qemu,${BOARD},${KERNEL_BUILD}/arch/x86/boot/bzImage,512,/dev/ram0,rw console=ttyS0 earlyprintk initcall.debug,-initrd ${INITRAMFS}.clang -net none )
 #	$(call qemu,${BOARD},${KERNEL_BUILD}/arch/x86/boot/bzImage,2048,/dev/ram0,ramdisk_size=512000 rdinit=/init console=ttyS0 earlyprintk,-M q35 -cpu SandyBridge -initrd ${INITRAMFS}.clang -curses)
 
 test-qemu-debug: ${INITRAMFS}.clang
-	$(call qemu,${BOARD},${KERNEL_BUILD}/arch/x86/boot/bzImage,512,/dev/ram0,rw console=ttyS0 earlyprintk ,-initrd ${INITRAMFS}.clang -net none -D qemulog.log -d in_asm,op,int,exec,cpu,cpu_reset,)
+	( $(call qemu,${BOARD},${KERNEL_BUILD}/arch/x86/boot/bzImage,512,/dev/ram0,rw console=ttyS0 earlyprintk initcall.debug ,-initrd ${INITRAMFS}.clang -net none -D qemulog.log -d in_asm,op,int,exec,cpu,cpu_reset,) & )
+	( sleep 20 && killall -s 9 qemu-system-x86_64 ) || exit 0
+	grep ^0x qemulog.log > debugaddr.log
+	tail -n 2000 debugaddr.log | cut -d":" -f1 > addresses.log
+	rm -f a2l.log
+	for i in `tac addresses.log` ; do addr2line -f -p -e ${KERNEL_BUILD}/vmlinux $$i >> a2l.log ; done
+
 #	$(call qemu,${BOARD},${KERNEL_BUILD}/arch/x86/boot/bzImage,2048,/dev/ram0,ramdisk_size=512000 rdinit=/init console=ttyS0 earlyprintk,-M q35 -cpu SandyBridge -initrd ${INITRAMFS}.clang -curses)
 
 test-qemu-smp:
