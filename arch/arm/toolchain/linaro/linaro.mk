@@ -31,7 +31,8 @@ LINARO_VERSION		?= 14.09
 LINARO_GCC_VERSION	?= 4.9
 LINARO_CC_NAME		?= arm-linux-gnueabihf
 LINARO_CC_FILENAME	= gcc-linaro-${LINARO_CC_NAME}-${LINARO_GCC_VERSION}-20${LINARO_VERSION}_linux
-LINARO_CC_DIR_NAME	= gcc-linaro-${LINARO_GCC_VERSION}-20${LINARO_VERSION}-x86_64_${LINARO_CC_NAME}
+LINARO_CC_DIR_NAME	= ${LINARO_CC_FILENAME}
+#LINARO_CC_DIR_NAME	= gcc-linaro-${LINARO_GCC_VERSION}-20${LINARO_VERSION}-x86_64_${LINARO_CC_NAME}
 LINARO_CC_URL		?= http://releases.linaro.org/${LINARO_VERSION}/components/toolchain/binaries/${LINARO_CC_FILENAME}.tar.bz2
 LINARO_DIR		?= $(call shared,${ARCH_ARM_TOOLCHAIN}/linaro)
 LINARO_TMPDIR		= ${LINARO_DIR}/tmp
@@ -78,7 +79,11 @@ arm-cc-version: ${LINARO_CC_STAMP}
 	@echo -e "LINARO_GCC\t= `${LINARO_GCC} --version | head -1`"
 
 arm-cc-env:
+	@$(call prsetting,LINARO_CC_FILENAME,${LINARO_CC_FILENAME})
+	@$(call prsetting,LINARO_CC_DIR_NAME,${LINARO_CC_DIR_NAME})
 	@$(call prsetting,LINARO_TMPDIR,${LINARO_TMPDIR})
 	@$(call prsetting,LINARO_CC_TAR_BZ2,${LINARO_CC_TAR_BZ2})
 	@$(call prsetting,LINARO_DIR,${LINARO_DIR})
 	@$(call prsetting,LINARO_CC_DIR,${LINARO_CC_DIR})
+	@$(call prsetting,LINARO_CC_BINDIR,${LINARO_CC_BINDIR})
+	@$(call prsetting,LINARO_GCC,${LINARO_GCC})
