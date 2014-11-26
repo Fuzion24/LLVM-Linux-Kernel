@@ -33,7 +33,7 @@ ARMCLANGBUILDDIR	= ${LLVMTOP}/arm/build/clang
 LLVMBINDIR	= ${TOOLCHAINTOP}/build/llvm/bin
 CLANGBINDIR	= ${TOOLCHAINTOP}/build/clang/bin
 
-ARMCLANGDEBDEP += wget cmake ninja-build gcc-4.8-arm-linux-gnueabihf \
+DEBDEP += ninja-build gcc-4.8-arm-linux-gnueabihf \
 	gcc-4.8-multilib-arm-linux-gnueabihf binutils-arm-linux-gnueabihf \
 	libgcc1-armhf-cross libsfgcc1-armhf-cross libstdc++6-armhf-cross \
 	libstdc++-4.8-dev-armhf-cross g++-4.8-arm-linux-gnueabihf
@@ -66,7 +66,7 @@ clang-arm-help:
 ##############################################################################
 clang-arm: ${LLVMSTATE}/clang-arm-build 
 ${LLVMSTATE}/clang-arm-build: ${LLVMSTATE}/clang-build ${LLVMSTATE}/llvm-arm-build \
-		arm-clang-build-dep-check-deb clang-arm-user-libs
+		build-dep-check clang-arm-user-libs
 	$(shell mkdir -p ${ARMCLANGBUILDDIR})
 	cd ${ARMCLANGBUILDDIR} && CC=arm-linux-gnueabihf-gcc CXX=arm-linux-gnueabihf-g++-4.8 cmake -G Ninja ${TOOLCHAINTOP}/src/clang -DCMAKE_CROSSCOMPILING=True \
 		-DCMAKE_INSTALL_PREFIX=${ARMINSTALLDIR} \
@@ -82,19 +82,6 @@ ${LLVMSTATE}/clang-arm-build: ${LLVMSTATE}/clang-build ${LLVMSTATE}/llvm-arm-bui
 	@cd ${ARMCLANGBUILDDIR} && ninja
 	@cd ${ARMCLANGBUILDDIR} && ninja install
 	$(call state,$@)
-
-# The build deps are curretly only provided for deb based versions of Linux
-DEPLIST		= $(shell \
-	$(call isdeb) echo ${ARMCLANGDEBDEP}; \
-	fi)
-
-debdep  = DEBS=`dpkg -l $(1) | awk '/^[pu]/ {print $$2}'` ; \
-        $(call assert,-z "$$DEBS","$(2)\n  sudo apt-get install" $$DEBS)
-arm-clang-build-dep-check-deb:
-	@$(call debdep,${ARMCLANGDEBDEP},${DEPMSG})
-
-arm-clang-dep-install-deb:
-	@[ -n "${DEPLIST}" ] && sudo apt-get install ${DEPLIST} || echo "Already installed"
 
 ARM_LIBXML_URL	= ftp://ftp.arm.slackware.com/slackwarearm/slackwarearm-14.1/slackware/l/libxml2-2.9.1-arm-1.tgz
 ARM_LIBXML	= $(call shared,${ARMTMPDIR}/libxml2-2.9.1-arm-1.tgz)

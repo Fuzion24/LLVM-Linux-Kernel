@@ -20,7 +20,7 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
-DEBDEP		+= build-essential git patch quilt sparse time bc zip
+DEBDEP		+= build-essential git patch quilt sparse time bc wget zip
 DEBDEP_32	+= libc6:i386 libncurses5:i386
 DEBDEP_EXTRAS	+= sparse
 
@@ -48,8 +48,8 @@ PACKAGER	:= $(shell \
 
 DEPLISTSTATE	= state/build-dep
 DEPLIST		= $(shell \
-	$(call isdeb) echo ${DEBDEP}; \
-	$(call isrpm) echo ${RPMDEP}; \
+	$(call isdeb) echo ${DEBDEP} ${DEBDEP_32}; \
+	$(call isrpm) echo ${RPMDEP} ${RPMDEP_32}; \
 	fi)
 
 TARGETS		+= build-dep build-dep-check build-dep-install
@@ -76,10 +76,12 @@ build-dep-list:
 build-dep-list-new:
 	@$(call oneperline,${NEWDEPS})
 build-dep-check build-dep: build-dep-check-${PKGSYS}
+	-@$(MAKE) build-dep-check-${PKGSYS}-extras
 	@$(call banner,Checking build dependencies)
 	@$(call deplistupdate,${DEPLISTSTATE})
 	@echo "All build dependencies were found"
 build-dep-install: build-dep-install-${PKGSYS}
+	-@$(MAKE) build-dep-install-${PKGSYS}-extras
 	@$(call deplistupdate,${DEPLISTSTATE})
 ${DEPLISTSTATE}:
 	@make -s build-dep-check
@@ -95,10 +97,13 @@ DEPMSG_32	= "You likely need to install..."
 DEPMSG_EXTRAS	= "Not necessary. But you may want..."
 
 ##############################################################################
-debdep	= DEBS=`dpkg -l $(1) | awk '/^[pu]/ {print $$2}'` ; \
+debdep	= DEBS=`dpkg -l $(1) 2>/dev/null | awk '/^[pu]/ {print $$2}'; \
+		dpkg -l $(1) 2>&1 >/dev/null | awk '{print $$6}'` ; \
 	[ -z "$$DEBS" ] || ( echo "$(2)"; echo "  sudo apt-get install" $$DEBS ; false )
 build-dep-check-deb:
 	@$(call debdep,${DEBDEP},${DEPMSG})
+build-dep-check-deb-extras:
+	@$(call debdep,${DEBDEP_32},${DEPMSG})
 build-dep-install-deb:
 	@[ -n "${DEPLIST}" ] && sudo apt-get install ${DEPLIST} || echo "Already installed"
 build-dep-install-deb-extras:
@@ -110,6 +115,8 @@ rpmdep	= RPMS=`rpm -q $(1) | awk '/is not installed/ {print $$2}'` ; \
 	[ -z "$$RPMS" ] || ( echo "$(2)"; echo "  sudo ${PACKAGER} install" $$RPMS; false )
 build-dep-check-rpm:
 	@$(call rpmdep,${RPMDEP},${DEPMSG})
+build-dep-check-rpm-extras:
+	@$(call rpmdep,${RPMDEP_32},${DEPMSG})
 build-dep-install-rpm:
 	[ -n "${DEPLIST}" ] && sudo ${PACKAGER} install ${DEPLIST} || echo "Already installed"
 build-dep-install-rpm-extras:

@@ -22,9 +22,10 @@
 ##############################################################################
 
 # Note: use CROSS_ARM_TOOLCHAIN=linaro to include this file
-# Note: On x86_64, need to install libz1g:i386 and libstdc++6:i386
 
-TARGETS		+= linaro-gcc
+TARGETS			+= linaro-gcc
+
+DEBDEP_32		+= libstdc++6:i386
 
 # http://releases.linaro.org/14.09/components/toolchain/binaries/gcc-linaro-arm-linux-gnueabihf-4.9-2014.09_linux.tar.bz2
 LINARO_VERSION		?= 14.09
@@ -79,6 +80,7 @@ arm-cc-version: ${LINARO_CC_STAMP}
 	@echo -e "LINARO_GCC\t= `${LINARO_GCC} --version | head -1`"
 
 arm-cc-env:
+	@$(call prsetting,LINARO_CC_URL,${LINARO_CC_URL})
 	@$(call prsetting,LINARO_CC_FILENAME,${LINARO_CC_FILENAME})
 	@$(call prsetting,LINARO_CC_DIR_NAME,${LINARO_CC_DIR_NAME})
 	@$(call prsetting,LINARO_TMPDIR,${LINARO_TMPDIR})
