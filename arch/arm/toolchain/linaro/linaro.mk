@@ -59,21 +59,22 @@ ${LINARO_CC_TAR_BZ2}:
 	mkdir -p ${LINARO_TMPDIR}
 	@$(call wget,${LINARO_CC_URL},${LINARO_TMPDIR})
 
-linaro-gcc arm-cc: ${ARCH_ARM_TOOLCHAIN_STATE}/linaro-gcc
-${ARCH_ARM_TOOLCHAIN_STATE}/linaro-gcc: ${LINARO_CC_TAR_BZ2}
+LINARO_CC_STAMP	= ${ARCH_ARM_TOOLCHAIN_STATE}/linaro-gcc-${LINARO_VERSION}
+linaro-gcc arm-cc: ${LINARO_CC_STAMP}
+${LINARO_CC_STAMP}: ${LINARO_CC_TAR_BZ2}
 	@${MAKE} arm-cc-clean
 	@$(call unbz2,${LINARO_CC_TAR_BZ2},${LINARO_DIR})
 	$(call state,$@)
 
-state/arm-cc: ${ARCH_ARM_TOOLCHAIN_STATE}/linaro-gcc
+state/arm-cc: ${LINARO_CC_STAMP}
 	$(call state,$@)
 
 linaro-gcc-clean arm-cc-clean:
 	@$(call banner,Removing Linaro compiler...)
-	rm -rf ${LINARO_CC_DIR} ${LINARO_CC_TAR_BZ2:.bz2=}
-	@$(call leavestate,arm-cc) ${ARCH_ARM_TOOLCHAIN_STATE}/linaro-gcc
+	@rm -rf ${LINARO_CC_DIR} ${LINARO_CC_TAR_BZ2:.bz2=}
+	@$(call leavestate,arm-cc) ${LINARO_CC_STAMP}
 
-arm-cc-version: ${ARCH_ARM_TOOLCHAIN_STATE}/linaro-gcc
+arm-cc-version: ${LINARO_CC_STAMP}
 	@echo -e "LINARO_GCC\t= `${LINARO_GCC} --version | head -1`"
 
 arm-cc-env:
