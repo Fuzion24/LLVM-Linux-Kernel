@@ -25,7 +25,7 @@
 
 TARGETS			+= linaro-gcc
 
-DEBDEP_32		+= libstdc++6:i386
+DEBDEP_32		+= libstdc++6:i386 zlib1g:i386
 
 # http://releases.linaro.org/14.09/components/toolchain/binaries/gcc-linaro-arm-linux-gnueabihf-4.9-2014.09_linux.tar.bz2
 LINARO_VERSION		?= 14.09
