@@ -48,7 +48,7 @@ all: prep kernel-build
 include ${TOPDIR}/common.mk
 include ${ARCHDIR}/arm/arm.mk
 
-KERNEL_PATCH_DIR+= ${TARGETDIR}/patches/rpi-overlay
+KERNEL_PATCH_DIR+= ${TARGETDIR}/patches-overlay
 KERNEL_PATCH_DIR+= ${TARGETDIR}/patches
 
 include ${CONFIG}
