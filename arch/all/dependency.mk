@@ -97,8 +97,12 @@ DEPMSG_32	= "You likely need to install..."
 DEPMSG_EXTRAS	= "Not necessary. But you may want..."
 
 ##############################################################################
-debdep	= DEBS=`dpkg -l $(1) 2>/dev/null | awk '/^[pu]/ {print $$2}'; \
-		dpkg -l $(1) 2>&1 >/dev/null | awk '{print $$6}'` ; \
+check_foreign_arch = dpkg --print-architecture | egrep -q '^amd64$$' \
+		&& dpkg --print-foreign-architectures | egrep -qv '^i386$$' \
+		&& (echo "You need to: 'sudo dpkg --add-architecture i386'"; false ) || true
+debdep	= $(call check_foreign_arch); \
+	DEBS=`dpkg -l $(1) 2>/dev/null | awk '/^[pu]/ {print $$2}'; \
+	dpkg -l $(1) 2>&1 >/dev/null | awk '{print $$6}'` ; \
 	[ -z "$$DEBS" ] || ( echo "$(2)"; echo "  sudo apt-get install" $$DEBS ; false )
 build-dep-check-deb:
 	@$(call debdep,${DEBDEP},${DEPMSG})
