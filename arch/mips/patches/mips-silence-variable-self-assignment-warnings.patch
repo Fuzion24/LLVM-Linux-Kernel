@@ -1,0 +1,141 @@
+From b29befba19b609ceb76b585ff3e8716675df509d Mon Sep 17 00:00:00 2001
+From: Toma Tabacu <toma.tabacu@imgtec.com>
+Date: Mon, 8 Dec 2014 15:02:30 +0000
+Subject: [PATCH] MIPS: LLVMLinux: Silence variable self-assignment warnings.
+
+Replace variable self-assignments with explanatory comments.
+
+This silences a bunch of -Wself-assign warnings reported by clang.
+The changed code can be compiled without warnings by both gcc and clang.
+
+Signed-off-by: Toma Tabacu <toma.tabacu@imgtec.com>
+---
+ arch/mips/math-emu/dp_add.c | 10 +++++-----
+ arch/mips/math-emu/dp_sub.c | 10 +++++-----
+ arch/mips/math-emu/sp_add.c | 10 +++++-----
+ arch/mips/math-emu/sp_sub.c | 10 +++++-----
+ 4 files changed, 20 insertions(+), 20 deletions(-)
+
+diff --git a/arch/mips/math-emu/dp_add.c b/arch/mips/math-emu/dp_add.c
+index 7f64577..31d31de 100644
+--- a/arch/mips/math-emu/dp_add.c
++++ b/arch/mips/math-emu/dp_add.c
+@@ -150,8 +150,8 @@ union ieee754dp ieee754dp_add(union ieee754dp x, union ieee754dp y)
+ 		 * leaving result in xm, xs and xe.
+ 		 */
+ 		xm = xm + ym;
+-		xe = xe;
+-		xs = xs;
++		/* xe does not change */
++		/* xs does not change */
+ 
+ 		if (xm >> (DP_FBITS + 1 + 3)) { /* carry out */
+ 			xm = XDPSRS1(xm);
+@@ -160,11 +160,11 @@ union ieee754dp ieee754dp_add(union ieee754dp x, union ieee754dp y)
+ 	} else {
+ 		if (xm >= ym) {
+ 			xm = xm - ym;
+-			xe = xe;
+-			xs = xs;
++			/* xe does not change */
++			/* xs does not change */
+ 		} else {
+ 			xm = ym - xm;
+-			xe = xe;
++			/* xe does not change */
+ 			xs = ys;
+ 		}
+ 		if (xm == 0)
+diff --git a/arch/mips/math-emu/dp_sub.c b/arch/mips/math-emu/dp_sub.c
+index 7a17402..5a10973 100644
+--- a/arch/mips/math-emu/dp_sub.c
++++ b/arch/mips/math-emu/dp_sub.c
+@@ -153,8 +153,8 @@ union ieee754dp ieee754dp_sub(union ieee754dp x, union ieee754dp y)
+ 		/* generate 28 bit result of adding two 27 bit numbers
+ 		 */
+ 		xm = xm + ym;
+-		xe = xe;
+-		xs = xs;
++		/* xe does not change */
++		/* xs does not change */
+ 
+ 		if (xm >> (DP_FBITS + 1 + 3)) { /* carry out */
+ 			xm = XDPSRS1(xm);	/* shift preserving sticky */
+@@ -163,11 +163,11 @@ union ieee754dp ieee754dp_sub(union ieee754dp x, union ieee754dp y)
+ 	} else {
+ 		if (xm >= ym) {
+ 			xm = xm - ym;
+-			xe = xe;
+-			xs = xs;
++			/* xe does not change */
++			/* xs does not change */
+ 		} else {
+ 			xm = ym - xm;
+-			xe = xe;
++			/* xe does not change */
+ 			xs = ys;
+ 		}
+ 		if (xm == 0) {
+diff --git a/arch/mips/math-emu/sp_add.c b/arch/mips/math-emu/sp_add.c
+index 2d84d46..18e71f5 100644
+--- a/arch/mips/math-emu/sp_add.c
++++ b/arch/mips/math-emu/sp_add.c
+@@ -148,8 +148,8 @@ union ieee754sp ieee754sp_add(union ieee754sp x, union ieee754sp y)
+ 		 * leaving result in xm, xs and xe.
+ 		 */
+ 		xm = xm + ym;
+-		xe = xe;
+-		xs = xs;
++		/* xe does not change */
++		/* xs does not change */
+ 
+ 		if (xm >> (SP_FBITS + 1 + 3)) { /* carry out */
+ 			SPXSRSX1();
+@@ -157,11 +157,11 @@ union ieee754sp ieee754sp_add(union ieee754sp x, union ieee754sp y)
+ 	} else {
+ 		if (xm >= ym) {
+ 			xm = xm - ym;
+-			xe = xe;
+-			xs = xs;
++			/* xe does not change */
++			/* xs does not change */
+ 		} else {
+ 			xm = ym - xm;
+-			xe = xe;
++			/* xe does not change */
+ 			xs = ys;
+ 		}
+ 		if (xm == 0)
+diff --git a/arch/mips/math-emu/sp_sub.c b/arch/mips/math-emu/sp_sub.c
+index 8592e49..b3443f5 100644
+--- a/arch/mips/math-emu/sp_sub.c
++++ b/arch/mips/math-emu/sp_sub.c
+@@ -148,8 +148,8 @@ union ieee754sp ieee754sp_sub(union ieee754sp x, union ieee754sp y)
+ 		/* generate 28 bit result of adding two 27 bit numbers
+ 		 */
+ 		xm = xm + ym;
+-		xe = xe;
+-		xs = xs;
++		/* xe does not change */
++		/* xs does not change */
+ 
+ 		if (xm >> (SP_FBITS + 1 + 3)) { /* carry out */
+ 			SPXSRSX1();	/* shift preserving sticky */
+@@ -157,11 +157,11 @@ union ieee754sp ieee754sp_sub(union ieee754sp x, union ieee754sp y)
+ 	} else {
+ 		if (xm >= ym) {
+ 			xm = xm - ym;
+-			xe = xe;
+-			xs = xs;
++			/* xe does not change */
++			/* xs does not change */
+ 		} else {
+ 			xm = ym - xm;
+-			xe = xe;
++			/* xe does not change */
+ 			xs = ys;
+ 		}
+ 		if (xm == 0) {
+-- 
+1.9.1
+

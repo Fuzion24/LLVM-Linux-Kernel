@@ -1,0 +1,36 @@
+From 950962c68c7cfcd7694b103630997403fee4f3b2 Mon Sep 17 00:00:00 2001
+From: Toma Tabacu <toma.tabacu@imgtec.com>
+Date: Mon, 8 Dec 2014 14:59:48 +0000
+Subject: [PATCH] MIPS: LLVMLinux: Fix an 'inline asm input/output type
+ mismatch' error.
+
+Change the type of csum_ipv6_magic's 'proto' argument from unsigned short to
+__u32.
+
+This fixes a type mismatch between the 'htonl(proto)' inline asm input, which
+is __u32, and the 'proto' output, which is unsigned short.
+
+This error gets reported by clang, but not by gcc.
+The changed code can be compiled successfully by both gcc and clang.
+
+Signed-off-by: Toma Tabacu <toma.tabacu@imgtec.com>
+---
+ arch/mips/include/asm/checksum.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/mips/include/asm/checksum.h b/arch/mips/include/asm/checksum.h
+index 3418c51..683b9e7 100644
+--- a/arch/mips/include/asm/checksum.h
++++ b/arch/mips/include/asm/checksum.h
+@@ -225,7 +225,7 @@ static inline __sum16 ip_compute_csum(const void *buff, int len)
+ #define _HAVE_ARCH_IPV6_CSUM
+ static __inline__ __sum16 csum_ipv6_magic(const struct in6_addr *saddr,
+ 					  const struct in6_addr *daddr,
+-					  __u32 len, unsigned short proto,
++					  __u32 len, __u32 proto,
+ 					  __wsum sum)
+ {
+ 	__asm__(
+-- 
+1.9.1
+

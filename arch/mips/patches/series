@@ -1,0 +1,4 @@
+mips-fix-cast-to-type-not-present-in-union.patch
+mips-fix-inline-asm-input-output-type-mismatch.patch
+mips-silence-variable-self-assignment-warnings.patch
+mips-silence-unicode-warnings.patch
