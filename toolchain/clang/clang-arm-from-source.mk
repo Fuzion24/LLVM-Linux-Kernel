@@ -38,6 +38,8 @@ DEBDEP += ninja-build gcc-4.8-arm-linux-gnueabihf \
 	libgcc1-armhf-cross libsfgcc1-armhf-cross libstdc++6-armhf-cross \
 	libstdc++-4.8-dev-armhf-cross g++-4.8-arm-linux-gnueabihf
 
+include ${LLVMTOP}/clang-from-source.mk
+
 llvm-arm: ${LLVMSTATE}/llvm-arm-build 
 ${LLVMSTATE}/llvm-arm-build: ${LLVMSTATE}/clang-build
 	$(shell mkdir -p ${ARMINSTALLDIR})
@@ -92,3 +94,4 @@ ${ARM_LIBXML}:
 clang-arm-user-libs: ${ARM_LIBXML}
 	@mkdir -p ${ARMULIBROOT}
 	(cd ${ARMULIBROOT} && tar xvzf ${ARM_LIBXML})
+

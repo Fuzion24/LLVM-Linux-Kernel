@@ -38,6 +38,8 @@ clang-toolchain-help:
 	@echo "  CLANG_TOOLCHAIN=prebuilt     Download and use llvm.org clang"
 	@echo "  CLANG_TOOLCHAIN=native       Use distro installed clang"
 	@echo "  CLANG_TOOLCHAIN=from-source  Download and build from source (Default)"
+	@echo "  CLANG_TOOLCHAIN=arm-from-source"
+	@echo "                               Download and build from source for arm hard-float"
 	@echo "  CLANG_TOOLCHAIN=from-known-good-source"
 	@echo "                               Download clang version info from buildbot"
 
@@ -69,8 +71,13 @@ else
     ifeq (${CLANG_TOOLCHAIN},from-known-good-source)
       include ${LLVMTOP}/clang-from-known-good-source.mk
     else
-      include ${LLVMTOP}/clang-from-source.mk
-      include ${LLVMTOP}/clang-arm-from-source.mk
+      ifeq (${CLANG_TOOLCHAIN},arm-from-source)
+        include ${LLVMTOP}/clang-arm-from-source.mk
+      else
+        ifeq (${CLANG_TOOLCHAIN},from-known-good-source)
+          include ${LLVMTOP}/clang-from-source.mk
+        endif
+      endif
     endif
   endif
 endif
