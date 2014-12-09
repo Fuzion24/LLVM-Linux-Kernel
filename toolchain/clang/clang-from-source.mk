@@ -289,7 +289,7 @@ llvmconfig = $(call banner,Configure ${1}...) ; \
 llvm-configure: ${LLVMSTATE}/llvm-configure
 ${LLVMSTATE}/llvm-configure: ${LLVMSTATE}/llvm-patch ${TMPFS_MOUNT}
 	@make -s build-dep-check
-	$(call llvmconfig,LLVM,${LLVMBUILDDIR},${LLVMINSTALLDIR},-DOCAML_FOUND=FALSE,${LLVMDIR})
+	@$(call llvmconfig,LLVM,${LLVMBUILDDIR},${LLVMINSTALLDIR},-DOCAML_FOUND=FALSE,${LLVMDIR})
 	$(call state,$@,llvm-build)
 
 ##############################################################################
