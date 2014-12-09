@@ -76,9 +76,7 @@ else
       ifeq (${CLANG_TOOLCHAIN},arm-from-source)
         include ${LLVMTOP}/clang-arm-from-source.mk
       else
-        ifeq (${CLANG_TOOLCHAIN},from-known-good-source)
-          include ${LLVMTOP}/clang-from-source.mk
-        endif
+        include ${LLVMTOP}/clang-from-source.mk
       endif
     endif
   endif
