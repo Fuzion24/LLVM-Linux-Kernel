@@ -107,8 +107,6 @@ PATH		:= ${LLVMINSTALLDIR}/bin:${PATH}
 # Default bisect good date
 LLVM_CLANG_BISECT_START_DATE := 2012-11-01
 
-include ${LLVMTOP}/buildbot.mk
-
 ##############################################################################
 llvm-help:
 	@echo

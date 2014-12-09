@@ -62,6 +62,8 @@ list-toolchain::
 	@which ${CLANG}
 
 ##############################################################################
+include ${LLVMTOP}/buildbot.mk
+
 ifeq (${CLANG_TOOLCHAIN},prebuilt)
   include ${LLVMTOP}/clang-prebuilt.mk
 else
