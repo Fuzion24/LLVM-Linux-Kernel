@@ -39,7 +39,7 @@ LLVMPATCHES	?= ${LLVMTOP}/patches
 #LLVM_COMMIT	?= "4010e438100fedeacd36ecd2385adabc02b6f236"
 #CLANG_COMMIT	?= "cac18add73d095eaab600aefe27ea7174aec4922"
 
-DEBDEP		+= cmake flex g++ git-svn subversion zlib1g-dev
+DEBDEP		+= binutils-dev cmake flex g++ git-svn subversion zlib1g-dev
 RPMDEP		+= cmake flex subversion zlib-devel
 
 STATE_CLANG_TOOLCHAIN = ${LLVMSTATE}/clang-build
