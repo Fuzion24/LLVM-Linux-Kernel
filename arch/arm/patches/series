@@ -2,12 +2,6 @@ eabi-arm.patch
 #ftrace.patch
 kbuild-clang-arm.patch
 current_stack_pointer_arm.patch
-named_register-ptrace.patch
-named_register-return_address.patch
-named_register-stacktrace.patch
-named_register-thread_info.patch
-named_register-unwind.patch
-named_register-percpu-arm.patch
 bcm_kona_smc.patch
 hack_disable-big-endian.patch
 non-void-naked-function-trusted-foundations.patch
