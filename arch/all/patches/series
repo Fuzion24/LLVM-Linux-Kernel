@@ -12,11 +12,11 @@ nested-function-md_bcache_sysfs.patch
 scsi-be2iscsi-be_main.patch
 scsi-megaraid-sas-base.patch
 scsi-osd_types.patch
-staging-rtl8192e-rtllib.patch
-staging-rtl8192e-rtllib-extern.patch
-staging-rtl8192e-rtllib-mgntquery.patch
-staging-rtl8192e-rtllib-static-local.patch
-staging-rts5208-rtsx_transport.patch
+#staging-rtl8192e-rtllib.patch
+#staging-rtl8192e-rtllib-extern.patch
+#staging-rtl8192e-rtllib-mgntquery.patch
+#staging-rtl8192e-rtllib-static-local.patch
+#staging-rts5208-rtsx_transport.patch
 vlais-apparmor.patch
 vlais-exofs.patch
 vlais-md-raid10.patch
