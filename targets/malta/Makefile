@@ -85,7 +85,7 @@ test: state/prep ${QEMUSTATE}/qemu-build ${INITRAMFS} buildroot-build
 test-gdb: state/prep ${QEMUSTATE}/qemu-build ${INITRAMFS} buildroot-build
 	( $(call qemu_mips,${BOARD},${KERNEL_BUILD}/vmlinux,256,/dev/ram0,rw console=ttyS0 debug user_debug=-1 earlyprintk initcall.debug,-initrd ${INITRAMFS} -net none -s -S) &)
 	@(echo "set output-radix 16" > .gdbinit ; echo "target remote localhost:1234" >> .gdbinit )
-	(gdb ${KERNEL_BUILD}/vmlinux)
+	(${CROSS_GDB} ${KERNEL_BUILD}/vmlinux)
 	(killall -s 9 qemu-system-mips)
 
 test-qemu-debug: state/prep ${QEMUSTATE}/qemu-build ${INITRAMFS} buildroot-build
