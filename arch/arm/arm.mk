@@ -62,6 +62,9 @@ KERNELOPTS	= console=ttyAMA0
 # ${1}=Machine_type ${2}=path_zImage ${3}=RAM ${4}=rootfs ${5}=Kernel_opts ${6}=QEMU_opts
 qemu_arm = $(call runqemu,${QEMUBINDIR}/qemu-system-arm,${1},${2},${3},${4},${KERNELOPTS} ${5},${6})
 
+# ${1}=Machine_type ${2}=path_zImage ${3}=path_dtb ${4}=RAM ${5}=rootfs ${6}=Kernel_opts ${7}=QEMU_opts
+qemu_arm_dtb = $(call runqemudtb,${QEMUBINDIR}/qemu-system-arm,${1},${2},${3},${4},${5},${KERNELOPTS} ${6},${7})
+
 arm-help:
 	@echo
 	@echo "These options are specific to building a Linux Kernel for ARM:"
