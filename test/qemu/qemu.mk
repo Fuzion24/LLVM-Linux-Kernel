@@ -189,3 +189,6 @@ QEMUOPTS	= -nographic ${GDB_OPTS}
 # ${1}=qemu-system-<arch> ${2}=Machine_type ${3}=kernel ${4}=RAM ${5}=rootfs ${6}=Kernel_opts ${7}=QEMU_opts
 runqemu = QEMU_AUDIO_DRV=none ${DRYRUN} ${1} -M ${2} -kernel ${3} -m ${4} -append "mem=${4}M root=${5} ${6}" ${7} ${QEMUOPTS}
 
+# ${1}=qemu-system-<arch> ${2}=Machine_type ${3}=kernel ${4}=dtb ${5}=RAM ${6}=rootfs ${7}=Kernel_opts ${8}=QEMU_opts
+runqemudtb = QEMU_AUDIO_DRV=none ${DRYRUN} ${1} -M ${2} -kernel ${3} -dtb ${4} -m ${5} -append "mem=${5}M root=${6} ${7}" ${8} ${QEMUOPTS}
+
