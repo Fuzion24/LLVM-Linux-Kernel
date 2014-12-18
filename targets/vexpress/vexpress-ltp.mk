@@ -77,21 +77,21 @@ fresh-vexpress-ltp-img: vexpress-ltp-img-clean ${VEXPRESS_LTP_IMG_TMP}
 fresh-vexpress-ltp-gcc-img: vexpress-ltp-gccimg-clean ${VEXPRESS_LTP_GCCIMG_TMP}
 
 # Command to run the LTP on a built kernel
-vexpress_run_ltp = $(MAKE) "${2}" && $(call qemu_arm,${BOARD},${1},256,/dev/mmcblk0p2,rootfstype=ext4 rw init=/opt/ltp/run-tests.sh ltptest=${3},-sd ${2}) ${NET}
+vexpress_run_ltp = $(MAKE) "${3}" && $(call qemu_arm_dtb,${BOARD},${1},${2},256,/dev/mmcblk0p2,rootfstype=ext4 rw init=/opt/ltp/run-tests.sh ltptest=${4},-sd ${3}) ${NET}
 
 # Run LTP tests on clang built kernel
-test3-ltp: state/prep ${QEMUSTATE}/qemu-build ${KERNELDTB_IMG} ${VEXPRESS_LTP_BZ_TMP}
+test3-ltp: state/prep ${QEMUSTATE}/qemu-build state/kernel-build ${VEXPRESS_LTP_BZ_TMP}
 	mkdir -p ${LTP_RESULTS_DIR}
 	for LTPTEST in ${LTPTESTS} ; do \
-		$(call vexpress_run_ltp,${KERNELDTB_IMG},${VEXPRESS_LTP_IMG_TMP},$$LTPTEST) \
+		$(call vexpress_run_ltp,${KERNEL_BUILD}/${ZIMAGE},${KERNEL_BUILD}/${KERNEL_DTB},${VEXPRESS_LTP_IMG_TMP},$$LTPTEST) \
 		| tee $(call ltplog,${LTP_RESULTS_DIR},clang,$$LTPTEST); \
 	done
 
 # Run LTP tests on gcc built kernel
-test3-gcc-ltp: state/prep ${QEMUSTATE}/qemu-build ${KERNELGCCDTB_IMG} ${VEXPRESS_LTP_BZ_TMP}
+test3-gcc-ltp: state/prep ${QEMUSTATE}/qemu-build state/kernel-gcc-build ${VEXPRESS_LTP_BZ_TMP}
 	mkdir -p ${LTP_RESULTS_DIR}
 	for LTPTEST in ${LTPTESTS} ; do \
-		$(call vexpress_run_ltp,${KERNELGCCDTB_IMG},${VEXPRESS_LTP_GCCIMG_TMP},$$LTPTEST) \
+		$(call vexpress_run_ltp,${KERNELGCC_BUILD}/${ZIMAGE},${KERNELGCC_BUILD}/${KERNEL_DTB},${VEXPRESS_LTP_GCCIMG_TMP},$$LTPTEST) \
 		| tee $(call ltplog,${LTP_RESULTS_DIR},gcc,$$LTPTEST); \
 	done
 
