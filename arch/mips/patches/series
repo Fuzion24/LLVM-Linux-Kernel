@@ -2,3 +2,5 @@ mips-fix-cast-to-type-not-present-in-union.patch
 mips-fix-inline-asm-input-output-type-mismatch.patch
 mips-silence-variable-self-assignment-warnings.patch
 mips-silence-unicode-warnings.patch
+mips-WIP-Fix-slab-allocator-bootstrap.patch
+mips-DO-NOT-UPSTREAM-mips-Remove-all-instances-of-explici.patch
