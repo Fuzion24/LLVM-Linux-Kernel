@@ -1,0 +1,102 @@
+From 875ec57dd7258115829918ed10980e1ad6a975c4 Mon Sep 17 00:00:00 2001
+From: Daniel Sanders <daniel.sanders@imgtec.com>
+Date: Fri, 19 Dec 2014 13:48:06 +0000
+Subject: [PATCH 1/2] [WIP] Fix slab allocator bootstrap.
+
+There are currently two functions that generate indices into kmalloc_caches and
+they disagree with each other.  This patch fixes the bug to the point that the
+LLVM-compiled kernel successfully boots for Mips but it will need further work
+before upstreaming.
+
+The failing sequence is:
+* kmalloc_caches contains NULL elements
+* kmem_cache_init initialises the element that 'struct kmem_cache_node' will be
+  allocated to. For 32-bit Mips, this is a 56-byte struct and kmalloc_index
+  selects element 7.
+* init_list is called which calls kmalloc_node to allocate a 'struct
+  kmem_cache_node'.
+* kmalloc_slab selects the kmem_caches element using
+  size_index[size_index_elem(size)]. For Mips, size is 56, and the expression
+  returns 6.
+* This element of kmalloc_caches is NULL and allocation fails.
+
+GCC does not normally encounter this bug. I believe this is because it manages
+to optimise the problematic allocation away. This theory is supported by GCC
+encountering this bug when I disable inlining by changing the definitions of
+inline, __inline, __inline__, and __always_inline in
+include/linux/compiler-gcc.h.
+
+Signed-off-by: Daniel Sanders <daniel.sanders@imgtec.com>
+---
+ .../all/patches/fix-slab-allocator-bootstrap.patch | 49 ++++++++++++++++++++++
+ arch/all/patches/series                            |  1 +
+ 2 files changed, 50 insertions(+)
+ create mode 100644 arch/all/patches/fix-slab-allocator-bootstrap.patch
+
+diff --git a/arch/all/patches/fix-slab-allocator-bootstrap.patch b/arch/all/patches/fix-slab-allocator-bootstrap.patch
+new file mode 100644
+index 0000000..00d2abe
+--- /dev/null
++++ b/arch/all/patches/fix-slab-allocator-bootstrap.patch
+@@ -0,0 +1,49 @@
++From e22638bbb262796ecb717e7cbc795aaad954a4ce Mon Sep 17 00:00:00 2001
++From: Daniel Sanders <daniel.sanders@imgtec.com>
++Date: Fri, 19 Dec 2014 13:16:19 +0000
++Subject: [PATCH 1/2] [WIP] Fix slab allocator bootstrap.
++
++There are currently two functions that generate indices into kmalloc_caches and
++they disagree with each other.  This patch fixes the bug to the point that the
++LLVM-compiled kernel successfully boots for Mips but it will need further work
++before upstreaming.
++
++The failing sequence is:
++* kmalloc_caches contains NULL elements
++* kmem_cache_init initialises the element that 'struct kmem_cache_node' will be
++  allocated to. For 32-bit Mips, this is a 56-byte struct and kmalloc_index
++  selects element 7.
++* init_list is called which calls kmalloc_node to allocate a 'struct
++  kmem_cache_node'.
++* kmalloc_slab selects the kmem_caches element using
++  size_index[size_index_elem(size)]. For Mips, size is 56, and the expression
++  returns 6.
++* This element of kmalloc_caches is NULL and allocation fails.
++
++GCC does not normally encounter this bug. I believe this is because it manages
++to optimise the problematic allocation away. This theory is supported by GCC
++encountering this bug when I disable inlining by changing the definitions of
++inline, __inline, __inline__, and __always_inline in
++include/linux/compiler-gcc.h.
++
++Signed-off-by: Daniel Sanders <daniel.sanders@imgtec.com>
++---
++ mm/slab_common.c | 2 +-
++ 1 file changed, 1 insertion(+), 1 deletion(-)
++
++diff --git a/mm/slab_common.c b/mm/slab_common.c
++index e03dd6f..459433f 100644
++--- a/mm/slab_common.c
+++++ b/mm/slab_common.c
++@@ -620,7 +620,7 @@ static s8 size_index[24] = {
++ 	5,	/* 32 */
++ 	6,	/* 40 */
++ 	6,	/* 48 */
++-	6,	/* 56 */
+++	7,	/* 56 */
++ 	6,	/* 64 */
++ 	1,	/* 72 */
++ 	1,	/* 80 */
++-- 
++2.1.3
++
+diff --git a/arch/all/patches/series b/arch/all/patches/series
+index b37fbe0..523c83d 100644
+--- a/arch/all/patches/series
++++ b/arch/all/patches/series
+@@ -25,3 +25,4 @@ vlais-wimax-i2400m.patch
+ compiler-gcc.patch
+ smaller.patch
+ lib-mpi-extern-inline.patch
++fix-slab-allocator-bootstrap.patch
+-- 
+2.1.3
+
