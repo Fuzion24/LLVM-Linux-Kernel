@@ -21,16 +21,14 @@
 ##############################################################################
 
 #############################################################################
-export OBJ_FILE_BASE SRC_FILE_BASE DOT_FILE_BASE
+export FILE_BASE
 
-OBJ_FILE_BASE	= ${KERNEL_BUILD}
-SRC_FILE_BASE	= ${KERNELDIR}
-DOT_FILE_BASE	= ${KERNELDIR}
+FILE_BASE	= ${KERNEL_BUILD}
+KERNELVIZ_FILE	= ${BUILDBOTDIR}/kernelviz.tar.xz
 
-KERNELVIZ_FILE	= kernelviz.tar.xz
-KERNELVIZ_DIRS	+= ${DOT_FILE_BASE} ${OBJ_FILE_BASE}
-
-tarxz		= tar -cvJf ${1} ${2} | \
+rsync-only	= rsync -rq --include '*/' --include '${1}' --exclude '*' --prune-empty-dirs ${2}/ ${3}/
+rm-only		= find ${2} -name '${1}' | xargs --no-run-if-empty rm
+tarxz		= tar -cvJ -f ${1} ${2} | \
 	( which pv && pv --bytes --eta --progress --rate --timer || cat ) >/dev/null
 
 #############################################################################
@@ -49,15 +47,29 @@ kernel-viz-help:
 
 #############################################################################
 kernel-build-viz:
+	@$(call banner,Build dot files)
 	@${MAKE} KERNELVIZ=1 kernel-build
+	@$(call banner,Move dot files)
+	@$(call rsync-only,*_.dot,${KERNELDIR},${KERNEL_BUILD})
+	@$(call rm-only,*_.dot,${KERNELDIR})
+
+#############################################################################
+kernel-callgraph-new: kernel-clean kernel-build-viz
 
 #############################################################################
 kernelviz: kernel-build-viz
-	@$(call makequiet,-C ${TOOLSDIR}/KernelViz OBJ_FILE_BASE=${OBJ_FILE_BASE} SRC_FILE_BASE=${SRC_FILE_BASE} DOT_FILE_BASE=${DOT_FILE_BASE})
+	@$(call makequiet,-C ${TOOLSDIR}/KernelViz FILE_BASE=${FILE_BASE})
 
 #############################################################################
 kernel-viz-tar:
-	@$(call tarxz,${KERNELVIZ_FILE},${KERNELVIZ_DIRS})
+	du -sk ${FILE_BASE}
+	@mkdir -p $(dir ${KERNELVIZ_FILE})
+	( cd $(dir ${FILE_BASE}); \
+		echo $(notdir ${FILE_BASE})/vmlinux; \
+		find $(notdir ${FILE_BASE}) -name \*_.dot -o -name \*.ko; \
+	) | $(call tarxz,${KERNELVIZ_FILE},-C $(dir ${FILE_BASE}) -T -)
+	du -sk ${FILE_BASE}
+	du -sk ${FILE_BASE}
 
 #############################################################################
 ifdef KERNELVIZ_TAR
