@@ -25,7 +25,7 @@ export USE_CCACHE CCACHE_COMPRESS CCACHE_CPP2 CCACHE_DIR
 
 PAGER		= less
 
-ifneq "${USE_CCACHE}" ""
+ifeq "${USE_CCACHE}" "1"
 CCACHE		?= ccache
 CCACHE_COMPRESS	?= true
 CCACHE_CPP2	?= true
