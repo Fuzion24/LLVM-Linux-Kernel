@@ -37,7 +37,7 @@ QEMU_TARGETS	= qemu qemu-[fetch,configure,build,clean,sync] qemu-patch-applied q
 DEBDEP		+= libfdt-dev libglib2.0-dev libpixman-1-dev
 RPMDEP		+= 
 
-ifneq (${USE_CCACHE},)
+ifeq "${USE_CCACHE}" "1"
 CCACHE_QEMU_DIR	= $(subst ${TOPDIR},${CCACHE_ROOT},${QEMUDIR}/build/ccache)
 CCACHE_DIRS	+= ${CCACHE_QEMU_DIR}
 QEMU_MAKE_FLAGS	= CCACHE_DIR=${CCACHE_QEMU_DIR} CC="ccache gcc" CXX="ccache g++"
@@ -135,7 +135,7 @@ ${QEMUSTATE}/qemu-configure: ${QEMUSTATE}/qemu-patch ${TMPFS_MOUNT}
 	(cd ${QEMUBUILDDIR} && ${QEMU_MAKE_FLAGS} ${QEMUSRCDIR}/configure \
 		--prefix=${QEMUINSTALLDIR} \
 		--target-list=aarch64-softmmu,arm-softmmu,i386-softmmu,x86_64-softmmu,mips-softmmu,mipsel-softmmu,mips64-softmmu,mips64el-softmmu \
-		--disable-docs --disable-kvm --disable-vnc --enable-fdt \
+		--disable-docs --disable-kvm --enable-fdt \
 		--audio-drv-list="")
 	$(call state,$@,qemu-build)
 
