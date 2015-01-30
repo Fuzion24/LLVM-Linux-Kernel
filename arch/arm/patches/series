@@ -1,10 +1,7 @@
 eabi-arm.patch
-#ftrace.patch
 kbuild-clang-arm.patch
-current_stack_pointer_arm.patch
 bcm_kona_smc.patch
 hack_disable-big-endian.patch
 non-void-naked-function-trusted-foundations.patch
-#mach-vt8500.patch
 unreachable_in_naked_function.patch
 register_allocation_arm_psci.patch
