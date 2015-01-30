@@ -1,4 +1,4 @@
-From 3e8b879d48a805fdad49914259511d7f47b36a73 Mon Sep 17 00:00:00 2001
+From 434cde62baa1a6e473ce26b78f62d7c7d4287109 Mon Sep 17 00:00:00 2001
 From: Daniel Sanders <daniel.sanders@imgtec.com>
 Date: Fri, 9 Jan 2015 10:54:22 +0000
 Subject: [PATCH] MIPS: Changed current_thread_info() to an equivalent
@@ -15,16 +15,6 @@ Signed-off-by: Daniel Sanders <daniel.sanders@imgtec.com>
 ---
  arch/mips/include/asm/thread_info.h | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)
-
-For reference, a similar patch for ARM's stack pointer has already been merged:
-  0abc08b ARM: 8170/1: Add global named register current_stack_pointer for ARM
-
-This is part of a patch series to get Linux for Mips working when compiled with
-clang. I've chosen to submit this patch individually since it's my first kernel
-patch and I'd like to be sure I'm following your processes correctly before I
-submit all of them.
-
-Please CC me on replies since I'm not subscribed to the mailing list.
 
 diff --git a/arch/mips/include/asm/thread_info.h b/arch/mips/include/asm/thread_info.h
 index 99eea59..2a2f3c4 100644
@@ -46,5 +36,5 @@ index 99eea59..2a2f3c4 100644
  
  #endif /* !__ASSEMBLY__ */
 -- 
-2.1.4
+1.9.1
 

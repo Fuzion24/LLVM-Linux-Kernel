@@ -1,10 +1,10 @@
-From 7275e71af42678d945dd76d2a44128a90f6b06f0 Mon Sep 17 00:00:00 2001
+From a8aef1a52391ee0e5365db0ec2b51ed812be0d6a Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 23 Sep 2014 22:43:18 -0700
 Subject: [PATCH] net, wimax, i2400, LLVMLinux: Remove VLAIS from wimax i2400m
  driver
 
-Convert Variable Length Array in Struct (VLAIS) to valid C by converting
+Convert Variable Length Array in Struct (VLAIS) to valid C99 by converting
 local struct definition to use a flexible array. The structure is only
 used to define a cast of a buffer so the size of the struct is not used
 to allocate storage.

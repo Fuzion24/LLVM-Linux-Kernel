@@ -1,7 +1,11 @@
-From 3bf5f27d6ac0005e246b390f8e172b6a622337e3 Mon Sep 17 00:00:00 2001
+From 3a0759b3d9a21885e730c5ae7bf2850c0474a312 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 23 Sep 2014 22:43:11 -0700
 Subject: [PATCH] scsi, be2iscsi, LLVMLinux: Add missing MODULE_DEVICE_TABLE()
+
+Currently the pci table is defined twice. gcc seems to ignore that, clang
+complains.  Since there only needs to be one, remove the extra
+MODULE_DEVICE_TABLE.
 
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Reviewed-by: Mark Charlebois <charlebm@gmail.com>
@@ -12,7 +16,7 @@ Cc: Arnd Bergmann <arnd@arndb.de>
  1 file changed, 1 deletion(-)
 
 diff --git a/drivers/scsi/be2iscsi/be_main.c b/drivers/scsi/be2iscsi/be_main.c
-index 915c26b..f0c0adf 100644
+index f319340..96241b2 100644
 --- a/drivers/scsi/be2iscsi/be_main.c
 +++ b/drivers/scsi/be2iscsi/be_main.c
 @@ -48,7 +48,6 @@ static unsigned int be_iopoll_budget = 10;

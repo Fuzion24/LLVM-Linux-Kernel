@@ -1,11 +1,15 @@
-From d410938f6b6a95f91d81874c2e884dd9ed739bea Mon Sep 17 00:00:00 2001
+From 8399475c1c191ec60256aab05578082a1e89341b Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 23 Sep 2014 23:09:53 -0700
-Subject: [PATCH] compiler-gcc
+Subject: [PATCH] Mark inline functions as __maybe_unused
+
+clang warns if inline functions aren't used. By making them __maybe_unused
+there is no warning for either gcc nor clang.
 
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Suggested-by: Arnd Bergmann <arnd@arndb.de>
 Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: "Christopher Li" <sparse@chrisli.org>
 ---
  include/linux/compiler-gcc.h | 12 ++++++------
  1 file changed, 6 insertions(+), 6 deletions(-)

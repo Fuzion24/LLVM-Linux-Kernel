@@ -1,7 +1,11 @@
-From ce35ac637b25126befa8e787b05689252b7e9607 Mon Sep 17 00:00:00 2001
+From c4c87f99dfc6fb6fceb4fab00c58d9fcd86fd3c9 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 23 Sep 2014 22:43:08 -0700
-Subject: [PATCH] net, ethernet, LLVMLinux: Add missing MODULE_DEVICE_TABLE()
+Subject: [PATCH] be2net: Add missing MODULE_DEVICE_TABLE()
+
+Currently the pci table is defined twice. gcc seems to ignore that, clang
+complains.  Since there only needs to be one, remove the extra
+MODULE_DEVICE_TABLE.
 
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Suggested-by: Arnd Bergmann <arnd@arndb.de>
@@ -11,7 +15,7 @@ Cc: Arnd Bergmann <arnd@arndb.de>
  1 file changed, 1 deletion(-)
 
 diff --git a/drivers/net/ethernet/emulex/benet/be_main.c b/drivers/net/ethernet/emulex/benet/be_main.c
-index 93ff8ef..913098f 100644
+index d48806b..709400a 100644
 --- a/drivers/net/ethernet/emulex/benet/be_main.c
 +++ b/drivers/net/ethernet/emulex/benet/be_main.c
 @@ -26,7 +26,6 @@
