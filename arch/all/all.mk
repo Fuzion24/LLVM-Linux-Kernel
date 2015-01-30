@@ -353,7 +353,7 @@ kernel-patch-applied:
 	@$(call applied,${KERNELDIR})
 
 #############################################################################
-kernel-patch-stats:
+kernel-patch-stats: refresh
 	@$(call banner,Patch stats for the kernel)
 	@$(call patch_series_stats,${PATCHDIR})
 
