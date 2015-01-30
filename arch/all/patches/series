@@ -8,6 +8,9 @@ kbuild-asm-defines.patch
 kbuild-cc-option.patch
 ethernet-emulex.patch
 lib-mpi.patch
+lib-mpi-extern-inline.patch
+lib-mpi-not-clang.patch
+lib-mpi-remove-unused.patch
 nested-function-md_bcache_sysfs.patch
 scsi-be2iscsi-be_main.patch
 scsi-megaraid-sas-base.patch
@@ -24,5 +27,4 @@ vlais-nfs.patch
 vlais-wimax-i2400m.patch
 compiler-gcc.patch
 smaller.patch
-lib-mpi-extern-inline.patch
 correct-size_index-table-before-replacing-the-bootst.patch
