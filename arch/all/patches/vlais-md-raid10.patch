@@ -1,4 +1,4 @@
-From b5024d9a58a83d9a1a2e05cce97818346b840c9f Mon Sep 17 00:00:00 2001
+From f2f0025af031a3c11d968518862abc1a00d083f3 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 23 Sep 2014 22:43:17 -0700
 Subject: [PATCH] md, raid10, LLVMLinux: Remove VLAIS from raid10 driver
@@ -17,7 +17,7 @@ Cc: Arnd Bergmann <arnd@arndb.de>
  1 file changed, 14 insertions(+), 10 deletions(-)
 
 diff --git a/drivers/md/raid10.c b/drivers/md/raid10.c
-index 32e282f..13188b7 100644
+index 32e282f..6b3e8e3 100644
 --- a/drivers/md/raid10.c
 +++ b/drivers/md/raid10.c
 @@ -712,11 +712,7 @@ static int raid10_mergeable_bvec(struct request_queue *q,
@@ -37,7 +37,7 @@ index 32e282f..13188b7 100644
  				return biovec->bv_len;
  			return 0;
  		}
-+		r10_bio = kmalloc(sizeof *r10_bio +
++		r10_bio = kmalloc(sizeof(*r10_bio) +
 +				  conf->copies * sizeof(struct r10dev), GFP_NOIO);
 +		if (!r10_bio)
 +			return 0;
@@ -67,7 +67,7 @@ index 32e282f..13188b7 100644
  	int idx = 0;
  	struct bio_vec *bvec = r10_bio->master_bio->bi_io_vec;
  
-+	r10b = kmalloc(sizeof *r10b + conf->copies * sizeof(struct r10dev),
++	r10b = kmalloc(sizeof(*r10b) + conf->copies * sizeof(struct r10dev),
 +		       GFP_NOIO);
 +	if (!r10b)
 +		return -ENOMEM;

@@ -1,4 +1,4 @@
-From b28152b83bd06ea573a0388a5ba1917dabfb8c17 Mon Sep 17 00:00:00 2001
+From 8907c22bfb6fe513c8fbe4c8639a9d5bb1e45baa Mon Sep 17 00:00:00 2001
 From: Daniel Sanders <daniel.sanders@imgtec.com>
 Date: Thu, 8 Jan 2015 14:38:02 +0000
 Subject: [PATCH] Correct size_index table before replacing the bootstrap
@@ -29,9 +29,9 @@ Signed-off-by: Daniel Sanders <daniel.sanders@imgtec.com>
 ---
  mm/slab.c        |  1 +
  mm/slab.h        |  1 +
- mm/slab_common.c | 37 +++++++++++++++++++++----------------
+ mm/slab_common.c | 36 +++++++++++++++++++++---------------
  mm/slub.c        |  1 +
- 4 files changed, 24 insertions(+), 16 deletions(-)
+ 4 files changed, 24 insertions(+), 15 deletions(-)
 
 diff --git a/mm/slab.c b/mm/slab.c
 index 65b5dcb..6c93f28 100644
@@ -58,10 +58,10 @@ index 1cf40054..036c08d 100644
  
  /* Find the kmalloc slab corresponding for a certain size */
 diff --git a/mm/slab_common.c b/mm/slab_common.c
-index e03dd6f..a4ac0d7 100644
+index e03dd6f..d2f7379 100644
 --- a/mm/slab_common.c
 +++ b/mm/slab_common.c
-@@ -675,25 +675,19 @@ struct kmem_cache *kmalloc_slab(size_t size, gfp_t flags)
+@@ -675,25 +675,20 @@ struct kmem_cache *kmalloc_slab(size_t size, gfp_t flags)
  }
  
  /*
@@ -79,8 +79,8 @@ index e03dd6f..a4ac0d7 100644
 + * around with ARCH_KMALLOC_MINALIGN
   */
 -void __init create_kmalloc_caches(unsigned long flags)
--{
-+void __init correct_kmalloc_cache_index_table(void) {
++void __init correct_kmalloc_cache_index_table(void)
+ {
  	int i;
  
 -	/*
@@ -97,7 +97,7 @@ index e03dd6f..a4ac0d7 100644
  	BUILD_BUG_ON(KMALLOC_MIN_SIZE > 256 ||
  		(KMALLOC_MIN_SIZE & (KMALLOC_MIN_SIZE - 1)));
  
-@@ -724,6 +718,17 @@ void __init create_kmalloc_caches(unsigned long flags)
+@@ -724,6 +719,17 @@ void __init create_kmalloc_caches(unsigned long flags)
  		for (i = 128 + 8; i <= 192; i += 8)
  			size_index[size_index_elem(i)] = 8;
  	}
