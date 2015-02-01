@@ -5,12 +5,13 @@ Subject: [PATCH] Kbuild: LLVMLinux: Disable the use of the Integrated
  Assembler when compiling with Clang
 
 Globally disable the use of the Clang Integrated Assembler (IA) unless
-IA=1 is set. If IA=1 is not set, use gas instead. IA doesn't support
-the gas assembly extensions used in the kernel code.
+IA=1 is set. If CLANG_ENABLE_IA=1 is not set, use gas instead. IA doesn't
+support the gas assembly extensions used in the kernel code.
 
 Author: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Mark Charlebois <charlebm@gmail.com>
 Signed-off-by: Behan Webster <behanw@converseincode.com>
+Reviewed-by: Vinícius Tinti <viniciustinti@gmail.com>
 ---
  Makefile | 5 ++++-
  1 file changed, 4 insertions(+), 1 deletion(-)
@@ -24,7 +25,7 @@ index 8b646f2..6022166 100644
  CLANG_GCC_TC	:= -gcc-toolchain $(GCC_TOOLCHAIN)
  endif
 -CLANG_FLAGS	:= $(CLANG_TARGET) $(CLANG_GCC_TC)
-+ifneq ($(IA),1)
++ifneq ($(CLANG_ENABLE_IA),1)
 +CLANG_IA_FLAG	= -no-integrated-as
 +endif
 +CLANG_FLAGS	:= $(CLANG_TARGET) $(CLANG_GCC_TC) $(CLANG_IA_FLAG)
