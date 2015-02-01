@@ -1,13 +1,13 @@
 From c4c87f99dfc6fb6fceb4fab00c58d9fcd86fd3c9 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 23 Sep 2014 22:43:08 -0700
-Subject: [PATCH] be2net: Add missing MODULE_DEVICE_TABLE()
+Subject: [PATCH] be2net: Remove duplicated MODULE_DEVICE_TABLE definition
 
-Currently the pci table is defined twice. gcc seems to ignore that, clang
-complains.  Since there only needs to be one, remove the extra
-MODULE_DEVICE_TABLE.
+MODULE_DEVICE_TABLE(pci, be_dev_ids) is defined twice at the same file. Remove
+one of them.
 
 Signed-off-by: Behan Webster <behanw@converseincode.com>
+Reviewed-by: Vinícius Tinti <viniciustinti@gmail.com>
 Suggested-by: Arnd Bergmann <arnd@arndb.de>
 Cc: Arnd Bergmann <arnd@arndb.de>
 ---
