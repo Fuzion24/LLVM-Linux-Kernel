@@ -11,7 +11,7 @@ items to kzalloc.
 The new code can be compiled with both gcc and clang.
 
 Signed-off-by: Behan Webster <behanw@converseincode.com>
-Reviewed-by: Vinícius Tinti <viniciustinti@gmail.com>
+Signed-off-by: Vinícius Tinti <viniciustinti@gmail.com>
 Suggested-by: Arnd Bergmann <arnd@arndb.de>
 Cc: Arnd Bergmann <arnd@arndb.de>
 ---
@@ -35,7 +35,7 @@ diff --git a/fs/exofs/super.c b/fs/exofs/super.c
 index 9596550..18772e9 100644
 --- a/fs/exofs/super.c
 +++ b/fs/exofs/super.c
-@@ -546,27 +546,24 @@ static int exofs_devs_2_odi(struct exofs_dt_device_info *dt_dev,
+@@ -546,27 +546,25 @@ static int exofs_devs_2_odi(struct exofs_dt_device_info *dt_dev,
  static int __alloc_dev_table(struct exofs_sb_info *sbi, unsigned numdevs,
  		      struct exofs_dev **peds)
  {
@@ -46,6 +46,7 @@ index 9596550..18772e9 100644
 -		struct ore_dev *oreds[numdevs * 2 - 1];
 -		struct exofs_dev eds[numdevs];
 -	} *aoded;
++	size_t numoreds = numdevs * 2 - 1;
  	struct exofs_dev *eds;
  	unsigned i;
  
@@ -55,8 +56,8 @@ index 9596550..18772e9 100644
 +	 * exofs_read_lookup_dev_table()
 +	 * XXX: why -1?
 +	 */
-+	sbi->oc.ods = kzalloc(sizeof(struct ore_dev) * (numdevs * 2 - 1) +
-+			      sizeof(struct exofs_dev) * numdevs, GFP_KERNEL);
++	sbi->oc.ods = kzalloc(numoreds * sizeof(struct ore_dev) +
++			      numdevs * sizeof(struct exofs_dev), GFP_KERNEL);
 +	if (unlikely(!sbi->oc.ods)) {
  		EXOFS_ERR("ERROR: failed allocating Device array[%d]\n",
  			  numdevs);
@@ -65,7 +66,7 @@ index 9596550..18772e9 100644
  
 -	sbi->oc.ods = aoded->oreds;
 -	*peds = eds = aoded->eds;
-+	*peds = eds = (void *)sbi->oc.ods[numdevs * 2 - 1];
++	*peds = eds = (void *)sbi->oc.ods[numoreds];
  	for (i = 0; i < numdevs; ++i)
 -		aoded->oreds[i] = &eds[i].ored;
 +		sbi->oc.ods[i] = &eds[i].ored;
