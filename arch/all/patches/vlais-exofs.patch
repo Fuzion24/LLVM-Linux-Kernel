@@ -6,11 +6,11 @@ Subject: [PATCH] exofs, LLVMLinux: Remove VLAIS from exofs
 FIXME
 
 Signed-off-by: Behan Webster <behanw@converseincode.com>
+Reviewed-by: Vinícius Tinti <viniciustinti@gmail.com>
 Suggested-by: Arnd Bergmann <arnd@arndb.de>
 Cc: Arnd Bergmann <arnd@arndb.de>
 ---
  fs/exofs/Kconfig  |  2 +-
- fs/exofs/common.h |  2 +-
  fs/exofs/super.c  | 21 +++++++++------------
  3 files changed, 11 insertions(+), 14 deletions(-)
 
@@ -26,21 +26,8 @@ index 86194b2..492746f 100644
  	help
  	  EXOFS is a file system that uses an OSD storage device,
  	  as its backing storage.
-diff --git a/fs/exofs/common.h b/fs/exofs/common.h
-index 3bbd469..ddf474d 100644
---- a/fs/exofs/common.h
-+++ b/fs/exofs/common.h
-@@ -183,7 +183,7 @@ struct exofs_fcb {
- #define EXOFS_INO_ATTR_SIZE	sizeof(struct exofs_fcb)
- 
- /* This is the Attribute the fcb is stored in */
--static const struct __weak osd_attr g_attr_inode_data = ATTR_DEF(
-+static const struct osd_attr g_attr_inode_data __maybe_unused = ATTR_DEF(
- 	EXOFS_APAGE_FS_DATA,
- 	EXOFS_ATTR_INODE_DATA,
- 	EXOFS_INO_ATTR_SIZE);
 diff --git a/fs/exofs/super.c b/fs/exofs/super.c
-index ed73ed8..b4cb4d7 100644
+index 9596550..18772e9 100644
 --- a/fs/exofs/super.c
 +++ b/fs/exofs/super.c
 @@ -546,27 +546,24 @@ static int exofs_devs_2_odi(struct exofs_dt_device_info *dt_dev,
