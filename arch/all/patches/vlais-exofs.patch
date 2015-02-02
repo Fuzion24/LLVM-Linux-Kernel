@@ -3,7 +3,12 @@ From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 23 Sep 2014 22:43:16 -0700
 Subject: [PATCH] exofs, LLVMLinux: Remove VLAIS from exofs
 
-FIXME
+Replaced the use of a Variable Length Array In Struct (VLAIS) with a C99
+compliant equivalent. This patch instead makes a zero size array at the
+end of helper struct and delegates the allocation of the variable length
+items to kzalloc.
+
+The new code can be compiled with both gcc and clang.
 
 Signed-off-by: Behan Webster <behanw@converseincode.com>
 Reviewed-by: Vinícius Tinti <viniciustinti@gmail.com>
