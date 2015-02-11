@@ -12,7 +12,7 @@ lib-mpi-extern-inline.patch
 lib-mpi-not-clang.patch
 lib-mpi-remove-unused.patch
 nested-function-md_bcache_sysfs.patch
-scsi-be2iscsi-be_main.patch
+#scsi-be2iscsi-be_main.patch
 scsi-megaraid-sas-base.patch
 scsi-osd_types.patch
 #staging-rtl8192e-rtllib.patch
