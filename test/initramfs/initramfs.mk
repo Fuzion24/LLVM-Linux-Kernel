@@ -81,7 +81,7 @@ initramfs-settings:
 #	@$(call prsetting,LTP,${LTP})
 #	@$(call prsetting,LTPURL,${LTPURL})
 
-initramfs-unpacked: ${INITBUILDFSDIR}/etc
+initramfs-unpacked:: ${INITBUILDFSDIR}/etc
 ${INITBUILDFSDIR}/etc: ${INITBUILDDIR}/busybox ${STRACEBIN} ${KERNEL_MODULES}
 	@rm -rf ${INITBUILDFSDIR}
 	@mkdir -p $(addprefix ${INITBUILDFSDIR}/,bin sys dev proc tmp usr/bin sbin usr/sbin)
@@ -92,7 +92,7 @@ ${INITBUILDFSDIR}/etc: ${INITBUILDDIR}/busybox ${STRACEBIN} ${KERNEL_MODULES}
 
 
 initramfs initramfs-build: ${INITRAMFS}
-${INITRAMFS}: ${INITBUILDFSDIR}/etc
+${INITRAMFS}: initramfs-unpacked
 	(fakeroot ${INITRAMFSDIR}/mkcpio.sh ${INITBUILDFSDIR} ${INITCPIO})
 	@(if test -e /usr/bin/pigz; then cat ${INITCPIO} | pigz -9c > $@ ; else cat ${INITCPIO} | gzip -9c > $@ ; fi )
 	@echo "Created $@: Done."
