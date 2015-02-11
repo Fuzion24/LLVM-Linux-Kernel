@@ -76,6 +76,10 @@ ${BOARD}-mrproper:
 ${BOARD}-raze:
 	@$(call banner,Getting rid of all downloaded files for ${BOARD})
 
+initramfs-unpacked::
+	tar -C initramfs-overlay -c -z -f initramfs-overlay.tar.gz .
+	tar -C ${INITBUILDFSDIR} -x -z -f initramfs-overlay.tar.gz
+
 test-gcc: state/prep ${QEMUSTATE}/qemu-build ${INITRAMFS} buildroot-build
 	$(call qemu_mips,${BOARD},${KERNELGCC_BUILD}/vmlinux,256,/dev/ram0,rw,-initrd ${INITRAMFS} -net none)
 
@@ -95,6 +99,14 @@ test-qemu-debug: state/prep ${QEMUSTATE}/qemu-build ${INITRAMFS} buildroot-build
 	tail -n 2000 debugaddr.log | cut -d":" -f1 > addresses.log
 	rm -f a2l.log
 	for i in `tac addresses.log` ; do addr2line -f -p -e ${KERNEL_BUILD}/vmlinux $$i >> a2l.log ; done
+
+kernel-gcc-test:: test-gcc-boot-poweroff
+test-gcc-boot-poweroff: state/prep ${QEMUSTATE}/qemu-build ${INITRAMFS} buildroot-build
+	$(call qemu_mips,${BOARD},${KERNELGCC_BUILD}/vmlinux,256,/dev/ram0,rw POWEROFF,-initrd ${INITRAMFS} -net none)
+
+kernel-test:: test-boot-poweroff
+test-boot-poweroff: state/prep ${QEMUSTATE}/qemu-build ${INITRAMFS} buildroot-build
+	$(call qemu_mips,${BOARD},${KERNEL_BUILD}/vmlinux,256,/dev/ram0,rw POWEROFF,-initrd ${INITRAMFS} -net none)
 
 clean: kernel-clean kernel-gcc-clean ${BOARD}-clean
 	@$(call banner,Clean)
