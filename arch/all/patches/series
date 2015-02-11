@@ -6,7 +6,7 @@ kbuild-llvm-bitcode.patch
 kbuild-clang-options.patch
 kbuild-asm-defines.patch
 kbuild-cc-option.patch
-ethernet-emulex.patch
+#ethernet-emulex.patch
 lib-mpi.patch
 lib-mpi-extern-inline.patch
 lib-mpi-not-clang.patch
