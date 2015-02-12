@@ -18,7 +18,7 @@ Not-signed-off-by: Behan Webster <behanw@converseincode.com>
  create mode 100644 arch/arm/lib/eabi.c
 
 diff --git a/arch/arm/lib/Makefile b/arch/arm/lib/Makefile
-index 0573faa..b585fcf 100644
+index d8a7807..6c7a5b7 100644
 --- a/arch/arm/lib/Makefile
 +++ b/arch/arm/lib/Makefile
 @@ -15,6 +15,10 @@ lib-y		:= backtrace.o changebit.o csumipv6.o csumpartial.o   \
@@ -29,9 +29,9 @@ index 0573faa..b585fcf 100644
 +lib-y += eabi.o
 +endif
 +
- mmu-y	:= clear_user.o copy_page.o getuser.o putuser.o
+ mmu-y		:= clear_user.o copy_page.o getuser.o putuser.o       \
+ 		   copy_from_user.o copy_to_user.o
  
- # the code in uaccess.S is not preemption safe and
 diff --git a/arch/arm/lib/eabi.c b/arch/arm/lib/eabi.c
 new file mode 100644
 index 0000000..636a403
