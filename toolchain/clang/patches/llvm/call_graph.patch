@@ -29,7 +29,7 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
  #include "llvm/Analysis/Passes.h"
  #include "llvm/IR/DataLayout.h"
  #include "llvm/IR/Verifier.h"
-@@ -60,6 +61,10 @@
+@@ -59,6 +60,10 @@
  RunLoopRerolling("reroll-loops", cl::Hidden,
                   cl::desc("Run the loop rerolling pass"));
  
@@ -40,10 +40,10 @@ Signed-off-by: Mark Charlebois <charlebm@gmail.com>
  static cl::opt<bool> RunLoadCombine("combine-loads", cl::init(false),
                                      cl::Hidden,
                                      cl::desc("Run the load combining pass"));
-@@ -159,6 +164,9 @@
- }
+@@ -161,6 +166,9 @@
  
- void PassManagerBuilder::populateModulePassManager(PassManagerBase &MPM) {
+ void PassManagerBuilder::populateModulePassManager(
+     legacy::PassManagerBase &MPM) {
 +  if (PrintCallGraph)
 +    MPM.add(createCallGraphPrinterPass());
 +
