@@ -1,0 +1,167 @@
+From cb269ba015d759bda4597592feaf807626e9dbb1 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Vin=C3=ADcius=20Tinti?= <viniciustinti@gmail.com>
+Date: Sun, 22 Feb 2015 18:33:33 -0300
+Subject: [PATCH] clang: Add subtarget variant armv6k
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Reviewed-by: Tim Northover <tnorthover@apple.com>
+Reviewed-by: Renato Golin <renato.golin@linaro.org>
+Signed-off-by: Vinícius Tinti <viniciustinti@gmail.com>
+---
+ lib/Basic/Targets.cpp         |  5 +++--
+ lib/Driver/ToolChains.cpp     |  8 ++++++--
+ lib/Driver/Tools.cpp          |  7 ++++---
+ test/Driver/arm-cortex-cpus.c | 29 ++++++++++++++++++++++++++---
+ test/Driver/arm-mfpu.c        |  2 +-
+ test/Driver/biarch.c          |  2 +-
+ 6 files changed, 41 insertions(+), 12 deletions(-)
+
+diff --git a/lib/Basic/Targets.cpp b/lib/Basic/Targets.cpp
+index 56b884d..0e5ea7f 100644
+--- a/lib/Basic/Targets.cpp
++++ b/lib/Basic/Targets.cpp
+@@ -4178,8 +4178,9 @@ class ARMTargetInfo : public TargetInfo {
+         .Cases("arm10e", "arm1020e", "arm1022e", "5TE")
+         .Cases("xscale", "iwmmxt", "5TE")
+         .Case("arm1136j-s", "6J")
+-        .Cases("arm1176jz-s", "arm1176jzf-s", "6ZK")
+-        .Cases("arm1136jf-s", "mpcorenovfp", "mpcore", "6K")
++        .Case("arm1136jf-s", "6")
++        .Cases("mpcorenovfp", "mpcore", "6K")
++        .Cases("arm1176jz-s", "arm1176jzf-s", "6K")
+         .Cases("arm1156t2-s", "arm1156t2f-s", "6T2")
+         .Cases("cortex-a5", "cortex-a7", "cortex-a8", "7A")
+         .Cases("cortex-a9", "cortex-a12", "cortex-a15", "cortex-a17", "krait",
+diff --git a/lib/Driver/ToolChains.cpp b/lib/Driver/ToolChains.cpp
+index 93e6db8..792ff1a 100644
+--- a/lib/Driver/ToolChains.cpp
++++ b/lib/Driver/ToolChains.cpp
+@@ -110,7 +110,8 @@ bool Darwin::hasBlocksRuntime() const {
+ 
+ static const char *GetArmArchForMArch(StringRef Value) {
+   return llvm::StringSwitch<const char*>(Value)
+-    .Case("armv6k", "armv6")
++    .Case("armv6", "armv6")
++    .Case("armv6k", "armv6k")
+     .Case("armv6m", "armv6m")
+     .Case("armv5tej", "armv5")
+     .Case("xscale", "xscale")
+@@ -131,7 +132,8 @@ static const char *GetArmArchForMCpu(StringRef Value) {
+     .Cases("arm10e", "arm10tdmi", "armv5")
+     .Cases("arm1020t", "arm1020e", "arm1022e", "arm1026ej-s", "armv5")
+     .Case("xscale", "xscale")
+-    .Cases("arm1136j-s", "arm1136jf-s", "arm1176jz-s", "arm1176jzf-s", "armv6")
++    .Cases("arm1136j-s", "arm1136jf-s", "armv6")
++    .Cases("arm1176jz-s", "arm1176jzf-s", "armv6k")
+     .Cases("sc000", "cortex-m0", "cortex-m0plus", "cortex-m1", "armv6m")
+     .Cases("cortex-a5", "cortex-a7", "cortex-a8", "armv7")
+     .Cases("cortex-a9", "cortex-a12", "cortex-a15", "cortex-a17", "krait", "armv7")
+@@ -849,6 +851,8 @@ DerivedArgList *MachO::TranslateArgs(const DerivedArgList &Args,
+     else if (Name == "xscale")
+       DAL->AddJoinedArg(nullptr, MArch, "xscale");
+     else if (Name == "armv6")
++      DAL->AddJoinedArg(nullptr, MArch, "armv6");
++    else if (Name == "armv6k")
+       DAL->AddJoinedArg(nullptr, MArch, "armv6k");
+     else if (Name == "armv6m")
+       DAL->AddJoinedArg(nullptr, MArch, "armv6m");
+diff --git a/lib/Driver/Tools.cpp b/lib/Driver/Tools.cpp
+index a80214e..752ed23 100644
+--- a/lib/Driver/Tools.cpp
++++ b/lib/Driver/Tools.cpp
+@@ -5548,8 +5548,9 @@ const char *arm::getLLVMArchSuffixForARM(StringRef CPU) {
+     .Cases("arm9e",  "arm926ej-s",  "arm946e-s", "v5e")
+     .Cases("arm966e-s",  "arm968e-s",  "arm10e", "v5e")
+     .Cases("arm1020e",  "arm1022e",  "xscale", "iwmmxt", "v5e")
+-    .Cases("arm1136j-s",  "arm1136jf-s",  "arm1176jz-s", "v6")
+-    .Cases("arm1176jzf-s",  "mpcorenovfp",  "mpcore", "v6")
++    .Cases("arm1136j-s",  "arm1136jf-s", "v6")
++    .Cases("arm1176jz-s", "arm1176jzf-s", "v6k")
++    .Cases("mpcorenovfp",  "mpcore", "v6k")
+     .Cases("arm1156t2-s",  "arm1156t2f-s", "v6t2")
+     .Cases("cortex-a5", "cortex-a7", "cortex-a8", "v7")
+     .Cases("cortex-a9", "cortex-a12", "cortex-a15", "cortex-a17", "krait", "v7")
+@@ -5570,7 +5571,7 @@ void arm::appendEBLinkFlags(const ArgList &Args, ArgStringList &CmdArgs, const l
+   StringRef Suffix = getLLVMArchSuffixForARM(getARMCPUForMArch(Args, Triple));
+   const char *LinkFlag = llvm::StringSwitch<const char *>(Suffix)
+     .Cases("v4", "v4t", "v5", "v5e", nullptr)
+-    .Cases("v6", "v6t2", nullptr)
++    .Cases("v6", "v6k", "v6t2", nullptr)
+     .Default("--be8");
+ 
+   if (LinkFlag)
+diff --git a/test/Driver/arm-cortex-cpus.c b/test/Driver/arm-cortex-cpus.c
+index 2be6630..2d6c7e6 100644
+--- a/test/Driver/arm-cortex-cpus.c
++++ b/test/Driver/arm-cortex-cpus.c
+@@ -56,8 +56,16 @@
+ // CHECK-V6Z: "-cc1"{{.*}} "-triple" "armv6-{{.*}} "-target-cpu" "arm1176jzf-s"
+ 
+ // FIXME %clang -target armv6z -mthumb -### -c %s 2>&1 | FileCheck -check-prefix=CHECK-V6Z-THUMB %s
+-// FIXME %clang -target arm arch=armv6z -mthumb -### -c %s 2>&1 | FileCheck -check-prefix=CHECK-V6Z-THUMB %s
+-// CHECK-V6Z-THUMB: "-cc1"{{.*}} "-triple" "thumbv6-{{.*}} "-target-cpu" "arm1176jzfs"
++// FIXME %clang -target arm -march=armv6z -mthumb -### -c %s 2>&1 | FileCheck -check-prefix=CHECK-V6Z-THUMB %s
++// CHECK-V6Z-THUMB: "-cc1"{{.*}} "-triple" "thumbv6-{{.*}} "-target-cpu" "arm1176jzf-s"
++
++// RUN: %clang -target armv6k -### -c %s 2>&1 | FileCheck -check-prefix=CHECK-V6K %s
++// RUN: %clang -target arm -march=armv6k -### -c %s 2>&1 | FileCheck -check-prefix=CHECK-V6K %s
++// CHECK-V6K: "-cc1"{{.*}} "-triple" "armv6k-{{.*}} "-target-cpu" "arm1176jzf-s"
++
++// RUN: %clang -target armv6k -mthumb -### -c %s 2>&1 | FileCheck -check-prefix=CHECK-V6K-THUMB %s
++// RUN: %clang -target arm -march=armv6k -mthumb -### -c %s 2>&1 | FileCheck -check-prefix=CHECK-V6K-THUMB %s
++// CHECK-V6K-THUMB: "-cc1"{{.*}} "-triple" "thumbv6k-{{.*}} "-target-cpu" "arm1176jzf-s"
+ 
+ // RUN: %clang -target armv6t2 -### -c %s 2>&1 | FileCheck -check-prefix=CHECK-V6T2 %s
+ // RUN: %clang -target arm -march=armv6t2 -### -c %s 2>&1 | FileCheck -check-prefix=CHECK-V6T2 %s
+@@ -162,7 +170,22 @@
+ // RUN: %clang -target arm -march=armbogusv6 -### -c %s 2>&1 | FileCheck -check-prefix=CHECK-BOGUS %s
+ // CHECK-BOGUS: "-cc1"{{.*}} "-triple" "armv4t-{{.*}} "-target-cpu" "arm7tdmi"
+ // RUN: %clang -target arm---eabihf -march=armbogusv7 -### -c %s 2>&1 | FileCheck -check-prefix=CHECK-BOGUS-HF %s
+-// CHECK-BOGUS-HF: "-cc1"{{.*}} "-triple" "armv6-{{.*}} "-target-cpu" "arm1176jzf-s"
++// CHECK-BOGUS-HF: "-cc1"{{.*}} "-triple" "armv6k-{{.*}} "-target-cpu" "arm1176jzf-s"
++
++// ================== Check default Architecture on each ARM11 CPU
++// RUN: %clang -target arm-linux-gnueabi -mcpu=arm1136j-s -### -c %s 2>&1 | FileCheck -check-prefix=CHECK-CPUV6 %s
++// RUN: %clang -target arm-linux-gnueabi -mcpu=arm1136jf-s -### -c %s 2>&1 | FileCheck -check-prefix=CHECK-CPUV6 %s
++// CHECK-CPUV6: "-cc1"{{.*}} "-triple" "armv6-{{.*}}
++
++// RUN: %clang -target arm-linux-gnueabi -mcpu=arm1176jz-s -### -c %s 2>&1 | FileCheck -check-prefix=CHECK-CPUV6K %s
++// RUN: %clang -target arm-linux-gnueabi -mcpu=arm1176jzf-s -### -c %s 2>&1 | FileCheck -check-prefix=CHECK-CPUV6K %s
++// RUN: %clang -target arm-linux-gnueabi -mcpu=mpcore -### -c %s 2>&1 | FileCheck -check-prefix=CHECK-CPUV6K %s
++// RUN: %clang -target arm-linux-gnueabi -mcpu=mpcorenovfp -### -c %s 2>&1 | FileCheck -check-prefix=CHECK-CPUV6K %s
++// CHECK-CPUV6K: "-cc1"{{.*}} "-triple" "armv6k-{{.*}}
++
++// RUN: %clang -target arm-linux-gnueabi -mcpu=arm1156t2-s -### -c %s 2>&1 | FileCheck -check-prefix=CHECK-CPUV6T2 %s
++// RUN: %clang -target arm-linux-gnueabi -mcpu=arm1156t2f-s -### -c %s 2>&1 | FileCheck -check-prefix=CHECK-CPUV6T2 %s
++// CHECK-CPUV6T2: "-cc1"{{.*}} "-triple" "armv6t2-{{.*}}
+ 
+ // ================== Check default Architecture on each Cortex CPU
+ // RUN: %clang -target arm-linux-gnueabi -mcpu=cortex-a5 -### -c %s 2>&1 | FileCheck -check-prefix=CHECK-CPUV7A %s
+diff --git a/test/Driver/arm-mfpu.c b/test/Driver/arm-mfpu.c
+index 64d7d0b..0f062a1 100644
+--- a/test/Driver/arm-mfpu.c
++++ b/test/Driver/arm-mfpu.c
+@@ -141,7 +141,7 @@
+ 
+ // RUN: %clang -target arm-linux-gnueabihf %s -### 2>&1 \
+ // RUN:   | FileCheck --check-prefix=CHECK-HF %s
+-// CHECK-HF: "-target-cpu" "arm1136jf-s"
++// CHECK-HF: "-target-cpu" "arm1176jzf-s"
+ 
+ // RUN: %clang -target armv7-apple-darwin -x assembler %s -### -c 2>&1 \
+ // RUN:   | FileCheck --check-prefix=ASM %s
+diff --git a/test/Driver/biarch.c b/test/Driver/biarch.c
+index 1f0982e..80c42fe 100644
+--- a/test/Driver/biarch.c
++++ b/test/Driver/biarch.c
+@@ -11,7 +11,7 @@
+ // RUN: grep '"-cc1" "-triple" "x86_64--netbsd"' %t
+ 
+ // RUN: %clang -target armv6--netbsd-eabihf -m32 %s -### 2> %t
+-// RUN: grep '"-cc1" "-triple" "armv6--netbsd-eabihf"' %t
++// RUN: grep '"-cc1" "-triple" "armv6k--netbsd-eabihf"' %t
+ 
+ // RUN: %clang -target sparcv9--netbsd -m32 %s -### 2> %t
+ // RUN: grep '"-cc1" "-triple" "sparc--netbsd"' %t
