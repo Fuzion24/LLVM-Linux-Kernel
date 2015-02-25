@@ -1,8 +1,8 @@
-From 0bf3ec4ad5464ace744983320e0393cc25db9597 Mon Sep 17 00:00:00 2001
+From 14f178ae75520ac26d87bc27542e9588548c0bd8 Mon Sep 17 00:00:00 2001
 From: Toma Tabacu <toma.tabacu@imgtec.com>
 Date: Mon, 8 Dec 2014 15:05:17 +0000
-Subject: [PATCH] MIPS: LLVMLinux: Silence unicode warnings when preprocessing
- assembly.
+Subject: [PATCH 5/6] MIPS: LLVMLinux: Silence unicode warnings when
+ preprocessing assembly.
 
 Differentiate the 'u' GAS .macro argument from the '\u' C preprocessor unicode
 escape sequence by renaming it to '_u'.
@@ -14,7 +14,21 @@ This silences a couple of -Wunicode warnings reported by clang.
 The changed code can be preprocessed without warnings by both gcc and clang.
 
 Signed-off-by: Toma Tabacu <toma.tabacu@imgtec.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: Paul Burton <paul.burton@imgtec.com>
+Cc: Paul Bolle <pebolle@tiscali.nl>
+Cc: "Steven J. Hill" <Steven.Hill@imgtec.com>
+Cc: Manuel Lauss <manuel.lauss@gmail.com>
+Cc: Jim Quinlan <jim2101024@gmail.com>
+Cc: linux-mips@linux-mips.org
+Cc: linux-kernel@vger.kernel.org
 ---
+This patch has been dropped from the upstream submission for the time being.
+There were reasonable objections to the direction of the patch on the basis that
+clang's current behaviour makes the use of macro arguments beginning with
+'u' noisy. The plan is to replace this patch with one that adds -Wno-unicode to
+clang builds.
+
  arch/mips/include/asm/asmmacro.h | 8 ++++----
  1 file changed, 4 insertions(+), 4 deletions(-)
 
@@ -40,5 +54,5 @@ index 6caf876..c657932 100644
  
  #ifdef TOOLCHAIN_SUPPORTS_MSA
 -- 
-1.9.1
+2.1.4
 
