@@ -117,4 +117,3 @@ mrproper: clean kernel-mrproper kernel-gcc-mrproper ${BOARD}-mrproper tmp-mrprop
 
 myenv:
 	env
-
