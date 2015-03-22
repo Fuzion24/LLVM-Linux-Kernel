@@ -48,3 +48,16 @@ Not-signed-off-by: Behan Webster <behanw@converseincode.com>
 +	(void)memset(s, c, n);
 +}
 +EXPORT_SYMBOL(__aeabi_memset);
+--- rpi.orig/arch/arm/lib/Makefile
++++ rpi/arch/arm/lib/Makefile
+@@ -14,6 +14,10 @@
+ 		   io-readsb.o io-writesb.o io-readsl.o io-writesl.o  \
+ 		   call_with_stack.o bswapsdi2.o
+ 
++ifeq ($(COMPILER),clang)
++  lib-y += eabi.o
++endif
++
+ # Choose optimised implementations for Raspberry Pi
+ ifeq ($(CONFIG_MACH_BCM2708),y)
+   CFLAGS_uaccess_with_memcpy.o += -DCOPY_FROM_USER_THRESHOLD=1600
