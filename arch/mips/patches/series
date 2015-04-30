@@ -1,2 +1,3 @@
 mips-silence-unicode-warnings.patch
 kbuild-mips-enable-ias.patch
+mips-build-failures-due-to-commit-8dd928915a73-mips-fix-up-obsolete-cpu-function-usage.patch
