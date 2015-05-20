@@ -1,2 +1,3 @@
-mips-silence-unicode-warnings.patch
+#mips-silence-unicode-warnings.patch
+kbuild-mips-disable-unicode-warnings-for-asm.patch
 kbuild-mips-enable-ias.patch
