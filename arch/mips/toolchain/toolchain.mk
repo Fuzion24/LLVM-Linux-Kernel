@@ -29,10 +29,16 @@ mips-gcc-toolchain-help:
 	@echo
 	@echo "You can choose your cross-gcc by setting the CROSS_MIPS_TOOLCHAIN variable."
 	@echo "  CROSS_MIPS_TOOLCHAIN=codesourcery       Download and use Code sourcery toolchain (Default)"
+	@echo "  CROSS_MIPS_TOOLCHAIN=codescape-sdk      Download and use the Codescape MIPS SDK GCC toolchain"
 
 ifeq (${CROSS_MIPS_TOOLCHAIN},codesourcery)
   CROSS_COMPILE	= ${HOST}-
   include ${ARCH_MIPS_TOOLCHAIN}/codesourcery/codesourcery.mk
+endif
+
+ifeq (${CROSS_MIPS_TOOLCHAIN},codescape-sdk)
+  CROSS_COMPILE	= ${HOST}-
+  include ${ARCH_MIPS_TOOLCHAIN}/codescape-sdk/codescape-sdk.mk
 endif
 
 GCC_TOOLCHAIN	= ${COMPILER_PATH}
