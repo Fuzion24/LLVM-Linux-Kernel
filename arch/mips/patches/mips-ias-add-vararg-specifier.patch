@@ -1,0 +1,35 @@
+From 219166eba9a1b07fc6b67f26def18ad14a3402bf Mon Sep 17 00:00:00 2001
+From: Toma Tabacu <toma.tabacu@imgtec.com>
+Date: Mon, 22 Jun 2015 13:10:42 +0100
+Subject: [PATCH] MIPS: LLVMLinux: Add :vararg to a .macro definition.
+
+The llvm integrated assembler gives the following error:
+
+arch/mips/kernel/r4k_fpu.S:57:19: error: too many positional arguments
+ EX sdc1 $f1, 272 +8($4)
+                  ^
+This can be fixed by adding :vararg to that .macro's definition.
+
+The changed code is successfully assembled by both gas and the llvm ias.
+
+Signed-off-by: Toma Tabacu <toma.tabacu@imgtec.com>
+---
+ arch/mips/kernel/r4k_fpu.S | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/mips/kernel/r4k_fpu.S b/arch/mips/kernel/r4k_fpu.S
+index 1d88af2..f0453ac 100644
+--- a/arch/mips/kernel/r4k_fpu.S
++++ b/arch/mips/kernel/r4k_fpu.S
+@@ -22,7 +22,7 @@
+ /* preprocessor replaces the fp in ".set fp=64" with $30 otherwise */
+ #undef fp
+ 
+-	.macro	EX insn, reg, src
++	.macro	EX insn, reg, src:vararg
+ 	.set	push
+ 	SET_HARDFLOAT
+ 	.set	nomacro
+-- 
+1.9.1
+

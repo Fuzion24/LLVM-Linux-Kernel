@@ -1,3 +1,8 @@
 #mips-silence-unicode-warnings.patch
 kbuild-mips-disable-unicode-warnings-for-asm.patch
 kbuild-mips-enable-ias.patch
+#mips-ias-fix-type-directives.patch
+#mips-ias-fix-macro-letter-case.patch
+#mips-ias-remove-unused-macro-args.patch
+#mips-ias-add-vararg-specifier.patch
+#mips-ias-fix-noat-warnings.patch

@@ -1,0 +1,41 @@
+From 21126320a4e2d751338f82bc1fe429011af6e065 Mon Sep 17 00:00:00 2001
+From: Toma Tabacu <toma.tabacu@imgtec.com>
+Date: Mon, 22 Jun 2015 12:47:22 +0100
+Subject: [PATCH] MIPS: LLVMLinux: Remove unused arguments in 2 .macro's.
+
+The llvm integrated assembler warns about unused arguments when assembling
+these 2 .macro's:
+
+arch/mips/include/asm/asmmacro.h:23:2: warning: macro defined with named parameters which are not used in macro body, possible positional parameter found in body which will have no effect
+ .macro local_irq_enable reg=$8
+ ^
+
+The changed code is assembled without warnings by both gas and the llvm ias.
+
+Signed-off-by: Toma Tabacu <toma.tabacu@imgtec.com>
+---
+ arch/mips/include/asm/asmmacro.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/mips/include/asm/asmmacro.h b/arch/mips/include/asm/asmmacro.h
+index 6156ac8..a84f9e4 100644
+--- a/arch/mips/include/asm/asmmacro.h
++++ b/arch/mips/include/asm/asmmacro.h
+@@ -20,12 +20,12 @@
+ #endif
+ 
+ #if defined(CONFIG_CPU_MIPSR2) || defined(CONFIG_CPU_MIPSR6)
+-	.macro	local_irq_enable reg=t0
++	.macro	local_irq_enable
+ 	ei
+ 	irq_enable_hazard
+ 	.endm
+ 
+-	.macro	local_irq_disable reg=t0
++	.macro	local_irq_disable
+ 	di
+ 	irq_disable_hazard
+ 	.endm
+-- 
+1.9.1
+

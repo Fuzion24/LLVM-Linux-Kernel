@@ -1,0 +1,67 @@
+From 6485e26b3ba631ca81c4baa3d0196f885951a903 Mon Sep 17 00:00:00 2001
+From: Toma Tabacu <toma.tabacu@imgtec.com>
+Date: Mon, 22 Jun 2015 12:43:36 +0100
+Subject: [PATCH] MIPS: LLVMLinux: Synchronize letter casing in some .macro
+ names.
+
+In their definitions, these .macro's are named with a lower-case "build",
+but are then used with an upper-case "BUILD".
+
+Case-insensitive .macro names are unsupported by the llvm integrated assembler
+and will result in errors.
+
+The changed code is successfully assembled by both gas and the llvm ias.
+
+Signed-off-by: Toma Tabacu <toma.tabacu@imgtec.com>
+---
+ arch/mips/kernel/genex.S | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/arch/mips/kernel/genex.S b/arch/mips/kernel/genex.S
+index af42e70..fafbc45 100644
+--- a/arch/mips/kernel/genex.S
++++ b/arch/mips/kernel/genex.S
+@@ -341,20 +341,20 @@ NESTED(nmi_handler, PT_SIZE, sp)
+ 	.set	pop
+ 	END(nmi_handler)
+ 
+-	.macro	__build_clear_none
++	.macro	__BUILD_clear_none
+ 	.endm
+ 
+-	.macro	__build_clear_sti
++	.macro	__BUILD_clear_sti
+ 	TRACE_IRQS_ON
+ 	STI
+ 	.endm
+ 
+-	.macro	__build_clear_cli
++	.macro	__BUILD_clear_cli
+ 	CLI
+ 	TRACE_IRQS_OFF
+ 	.endm
+ 
+-	.macro	__build_clear_fpe
++	.macro	__BUILD_clear_fpe
+ 	.set	push
+ 	/* gas fails to assemble cfc1 for some archs (octeon).*/ \
+ 	.set	mips1
+@@ -365,13 +365,13 @@ NESTED(nmi_handler, PT_SIZE, sp)
+ 	TRACE_IRQS_OFF
+ 	.endm
+ 
+-	.macro	__build_clear_msa_fpe
++	.macro	__BUILD_clear_msa_fpe
+ 	_cfcmsa	a1, MSA_CSR
+ 	CLI
+ 	TRACE_IRQS_OFF
+ 	.endm
+ 
+-	.macro	__build_clear_ade
++	.macro	__BUILD_clear_ade
+ 	MFC0	t0, CP0_BADVADDR
+ 	PTR_S	t0, PT_BVADDR(sp)
+ 	KMODE
+-- 
+1.9.1
+
