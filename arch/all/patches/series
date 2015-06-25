@@ -27,4 +27,3 @@ vlais-nfs.patch
 vlais-wimax-i2400m.patch
 compiler-gcc.patch
 smaller.patch
-correct-size_index-table-before-replacing-the-bootst.patch
