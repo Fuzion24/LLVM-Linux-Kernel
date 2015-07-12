@@ -26,13 +26,11 @@ Reviewed-by: Mark Charlebois <charlebm@gmail.com>
  Makefile | 15 +++++++++++++--
  1 file changed, 13 insertions(+), 2 deletions(-)
 
-diff --git a/Makefile b/Makefile
-index 00d618b..8b646f2 100644
---- a/Makefile
-+++ b/Makefile
-@@ -378,6 +378,17 @@ CFLAGS_KERNEL	=
- AFLAGS_KERNEL	=
- CFLAGS_GCOV	= -fprofile-arcs -ftest-coverage
+--- linux.orig/Makefile
++++ linux/Makefile
+@@ -373,6 +373,17 @@
+ endif
+ export COMPILER
  
 +ifeq ($(COMPILER),clang)
 +ifneq ($(CROSS_COMPILE),)
@@ -45,16 +43,15 @@ index 00d618b..8b646f2 100644
 +CLANG_FLAGS	:= $(CLANG_TARGET) $(CLANG_GCC_TC)
 +endif
 +
- 
  # Use USERINCLUDE when you must reference the UAPI directories only.
  USERINCLUDE    := \
-@@ -401,12 +412,12 @@ KBUILD_CPPFLAGS := -D__KERNEL__
- KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
+ 		-I$(srctree)/arch/$(hdr-arch)/include/uapi \
+@@ -397,11 +408,11 @@
  		   -fno-strict-aliasing -fno-common \
  		   -Werror-implicit-function-declaration \
--		   -Wno-format-security \
-+		   -Wno-format-security $(CLANG_FLAGS) \
- 		   -std=gnu89
+ 		   -Wno-format-security \
+-		   -std=gnu89
++		   -std=gnu89 $(CLANG_FLAGS)
  
  KBUILD_AFLAGS_KERNEL :=
  KBUILD_CFLAGS_KERNEL :=
@@ -63,6 +60,3 @@ index 00d618b..8b646f2 100644
  KBUILD_AFLAGS_MODULE  := -DMODULE
  KBUILD_CFLAGS_MODULE  := -DMODULE
  KBUILD_LDFLAGS_MODULE := -T $(srctree)/scripts/module-common.lds
--- 
-1.9.1
-

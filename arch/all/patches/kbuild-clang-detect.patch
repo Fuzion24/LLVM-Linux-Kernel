@@ -1,0 +1,29 @@
+--- linux.orig/Makefile
++++ linux/Makefile
+@@ -366,6 +366,12 @@
+ AFLAGS_KERNEL	=
+ CFLAGS_GCOV	= -fprofile-arcs -ftest-coverage
+ 
++ifeq ($(shell $(CC) -v 2>&1 | grep -c "clang version"), 1)
++COMPILER := clang
++else
++COMPILER := gcc
++endif
++export COMPILER
+ 
+ # Use USERINCLUDE when you must reference the UAPI directories only.
+ USERINCLUDE    := \
+@@ -661,13 +667,6 @@
+ endif
+ KBUILD_CFLAGS += $(stackp-flag)
+ 
+-ifeq ($(shell $(CC) -v 2>&1 | grep -c "clang version"), 1)
+-COMPILER := clang
+-else
+-COMPILER := gcc
+-endif
+-export COMPILER
+-
+ ifeq ($(COMPILER),clang)
+ KBUILD_CPPFLAGS += $(call cc-option,-Qunused-arguments,)
+ KBUILD_CPPFLAGS += $(call cc-option,-Wno-unknown-warning-option,)

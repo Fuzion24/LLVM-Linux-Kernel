@@ -1,0 +1,12 @@
+--- linux.orig/Makefile
++++ linux/Makefile
+@@ -1611,3 +1611,9 @@
+ # Declare the contents of the .PHONY variable as phony.  We keep that
+ # information in a variable so we can use it in if_changed and friends.
+ .PHONY: $(PHONY)
++
++print-%:
++	@echo '$*=$($*)'
++	@echo '  origin = $(origin $*)'
++	@echo '  flavor = $(flavor $*)'
++	@echo '  value  = $(value $*)'
