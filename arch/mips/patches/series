@@ -6,3 +6,4 @@ kbuild-mips-enable-ias.patch
 #mips-ias-remove-unused-macro-args.patch
 #mips-ias-add-vararg-specifier.patch
 #mips-ias-fix-noat-warnings.patch
+mips-revert-a6335fa.patch
