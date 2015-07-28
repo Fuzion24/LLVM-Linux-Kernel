@@ -1,7 +1,10 @@
-From f2f0025af031a3c11d968518862abc1a00d083f3 Mon Sep 17 00:00:00 2001
+From 5dd40b9e710ccc64656823d0651f9b95e094c87e Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 23 Sep 2014 22:43:17 -0700
 Subject: [PATCH] md, raid10, LLVMLinux: Remove VLAIS from raid10 driver
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
 Replaced the use of a Variable Length Array In Struct (VLAIS) with a C99
 compliant equivalent. This patch instead allocates the appropriate amount of
@@ -23,10 +26,10 @@ Cc: Arnd Bergmann <arnd@arndb.de>
  1 file changed, 6 insertions(+), 10 deletions(-)
 
 diff --git a/drivers/md/raid10.c b/drivers/md/raid10.c
-index 32e282f..b10a5c4 100644
+index 38c58e1..f3d0859 100644
 --- a/drivers/md/raid10.c
 +++ b/drivers/md/raid10.c
-@@ -712,11 +712,9 @@ static int raid10_mergeable_bvec(struct request_queue *q,
+@@ -711,11 +711,9 @@ static int raid10_mergeable_bvec(struct mddev *mddev,
  		max = biovec->bv_len;
  
  	if (mddev->merge_check_needed) {
@@ -41,7 +44,7 @@ index 32e282f..b10a5c4 100644
  		int s;
  		if (conf->reshape_progress != MaxSector) {
  			/* Cannot give any guidance during reshape */
-@@ -4576,11 +4574,9 @@ static int handle_reshape_read_error(struct mddev *mddev,
+@@ -4548,11 +4546,9 @@ static int handle_reshape_read_error(struct mddev *mddev,
  	/* Use sync reads to get the blocks from somewhere else */
  	int sectors = r10_bio->sectors;
  	struct r10conf *conf = mddev->private;
@@ -56,7 +59,6 @@ index 32e282f..b10a5c4 100644
  	int slot = 0;
  	int idx = 0;
  	struct bio_vec *bvec = r10_bio->master_bio->bi_io_vec;
- 
 -- 
 1.9.1
 

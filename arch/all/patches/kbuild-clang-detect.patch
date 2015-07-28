@@ -1,6 +1,17 @@
---- linux.orig/Makefile
-+++ linux/Makefile
-@@ -366,6 +366,12 @@
+From 2171ea13b7751a44f6e7d3278cf6252c5002bd43 Mon Sep 17 00:00:00 2001
+From: Behan Webster <behanw@converseincode.com>
+Date: Tue, 28 Jul 2015 00:42:55 -0400
+Subject: [PATCH] kbuild-clang-detect
+
+---
+ Makefile | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index afabc44..5fc1770 100644
+--- a/Makefile
++++ b/Makefile
+@@ -366,6 +366,12 @@ CFLAGS_KERNEL	=
  AFLAGS_KERNEL	=
  CFLAGS_GCOV	= -fprofile-arcs -ftest-coverage
  
@@ -13,7 +24,7 @@
  
  # Use USERINCLUDE when you must reference the UAPI directories only.
  USERINCLUDE    := \
-@@ -661,13 +667,6 @@
+@@ -661,13 +667,6 @@ endif
  endif
  KBUILD_CFLAGS += $(stackp-flag)
  
@@ -27,3 +38,6 @@
  ifeq ($(COMPILER),clang)
  KBUILD_CPPFLAGS += $(call cc-option,-Qunused-arguments,)
  KBUILD_CPPFLAGS += $(call cc-option,-Wno-unknown-warning-option,)
+-- 
+1.9.1
+

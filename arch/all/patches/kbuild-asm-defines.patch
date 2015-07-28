@@ -1,4 +1,4 @@
-From e0e0781fe30587650d5f5eece72ad931fbd5f9df Mon Sep 17 00:00:00 2001
+From 8fb70fe06013a88f84cd6fe693bd8a0939aeeb5b Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Sat, 20 Sep 2014 00:14:43 -0700
 Subject: [PATCH] kbuild, LLVMLinux: Fix asm-offset generation to work with
@@ -38,10 +38,10 @@ Cc: Arnd Bergmann <arnd@arndb.de>
  3 files changed, 11 insertions(+), 11 deletions(-)
 
 diff --git a/Kbuild b/Kbuild
-index b8b708a..2f509c9 100644
+index f55cefd..0bbb863 100644
 --- a/Kbuild
 +++ b/Kbuild
-@@ -52,10 +52,10 @@ targets += arch/$(SRCARCH)/kernel/asm-offsets.s
+@@ -8,10 +8,10 @@
  
  # Default sed regexp - multiline due to syntax constraints
  define sed-y
@@ -55,7 +55,7 @@ index b8b708a..2f509c9 100644
 +	s:@->::; p;}"
  endef
  
- quiet_cmd_offsets = GEN     $@
+ # Use filechk to avoid rebuilds when a header changes, but the resulting file
 diff --git a/include/linux/kbuild.h b/include/linux/kbuild.h
 index 22a7219..75fa2c3 100644
 --- a/include/linux/kbuild.h

@@ -1,4 +1,4 @@
-From c729c9b2a668cd7f7ccfbdb93adc23cc4e8cb328 Mon Sep 17 00:00:00 2001
+From 712be002dc9f890607218edfa34a8b202e7a417f Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Mon, 15 Sep 2014 17:10:34 -0700
 Subject: [PATCH] kbuild, LLVMLinux: Add more compiler options for clang
@@ -11,10 +11,10 @@ Signed-off-by: Behan Webster <behanw@converseincode.com>
  1 file changed, 8 insertions(+), 5 deletions(-)
 
 diff --git a/Makefile b/Makefile
-index 9078b24..800dfd0 100644
+index 4145b23..a5954f29 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -308,7 +308,7 @@ HOSTCXXFLAGS = -O2
+@@ -302,7 +302,7 @@ HOSTCXXFLAGS = -O2
  
  ifeq ($(shell $(HOSTCC) -v 2>&1 | grep -c "clang version"), 1)
  HOSTCFLAGS  += -Wno-unused-value -Wno-unused-parameter \
@@ -23,16 +23,16 @@ index 9078b24..800dfd0 100644
  endif
  
  # Decide whether to build built-in, modular, or both.
-@@ -627,8 +627,6 @@ all: vmlinux
+@@ -619,8 +619,6 @@ all: vmlinux
  
- include $(srctree)/arch/$(SRCARCH)/Makefile
+ include arch/$(SRCARCH)/Makefile
  
 -KBUILD_CFLAGS	+= $(call cc-option,-fno-delete-null-pointer-checks,)
 -
  ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
  KBUILD_CFLAGS	+= -Os $(call cc-disable-warning,maybe-uninitialized,)
  else
-@@ -691,19 +689,24 @@ KBUILD_CFLAGS += $(stackp-flag)
+@@ -683,19 +681,24 @@ KBUILD_CFLAGS += $(stackp-flag)
  
  ifeq ($(COMPILER),clang)
  KBUILD_CPPFLAGS += $(call cc-option,-Qunused-arguments,)

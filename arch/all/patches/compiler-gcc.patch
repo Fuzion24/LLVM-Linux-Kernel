@@ -1,4 +1,4 @@
-From 8399475c1c191ec60256aab05578082a1e89341b Mon Sep 17 00:00:00 2001
+From a492a65bfe8cbd139b1342bb0ae55c424b690e16 Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 23 Sep 2014 23:09:53 -0700
 Subject: [PATCH] Mark inline functions as __maybe_unused
@@ -11,11 +11,13 @@ Suggested-by: Arnd Bergmann <arnd@arndb.de>
 Cc: Arnd Bergmann <arnd@arndb.de>
 Cc: "Christopher Li" <sparse@chrisli.org>
 ---
- include/linux/compiler-gcc.h | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ include/linux/compiler-gcc.h | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
---- linux.orig/include/linux/compiler-gcc.h
-+++ linux/include/linux/compiler-gcc.h
+diff --git a/include/linux/compiler-gcc.h b/include/linux/compiler-gcc.h
+index dfaa7b3..929a3f0 100644
+--- a/include/linux/compiler-gcc.h
++++ b/include/linux/compiler-gcc.h
 @@ -70,14 +70,14 @@
   */
  #if !defined(CONFIG_ARCH_SUPPORTS_OPTIMIZED_INLINING) ||		\
@@ -36,3 +38,6 @@ Cc: "Christopher Li" <sparse@chrisli.org>
  #endif
  
  #define __always_inline	inline __attribute__((always_inline))
+-- 
+1.9.1
+

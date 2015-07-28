@@ -1,7 +1,10 @@
-From 40bfcc9aa87840698b6d344c44fab1d9eb7ae115 Mon Sep 17 00:00:00 2001
+From 2269befde1ba22d829b3715ae086435e18130abe Mon Sep 17 00:00:00 2001
 From: Behan Webster <behanw@converseincode.com>
 Date: Tue, 23 Sep 2014 22:43:16 -0700
 Subject: [PATCH] exofs, LLVMLinux: Remove VLAIS from exofs
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
 Replaced the use of a Variable Length Array In Struct (VLAIS) with a C99
 compliant equivalent. This patch instead makes a zero size array at the
@@ -15,9 +18,9 @@ Signed-off-by: Vinícius Tinti <viniciustinti@gmail.com>
 Suggested-by: Arnd Bergmann <arnd@arndb.de>
 Cc: Arnd Bergmann <arnd@arndb.de>
 ---
- fs/exofs/Kconfig  |  2 +-
- fs/exofs/super.c  | 21 +++++++++------------
- 3 files changed, 11 insertions(+), 14 deletions(-)
+ fs/exofs/Kconfig |  2 +-
+ fs/exofs/super.c | 22 ++++++++++------------
+ 2 files changed, 11 insertions(+), 13 deletions(-)
 
 diff --git a/fs/exofs/Kconfig b/fs/exofs/Kconfig
 index 86194b2..492746f 100644
@@ -32,7 +35,7 @@ index 86194b2..492746f 100644
  	  EXOFS is a file system that uses an OSD storage device,
  	  as its backing storage.
 diff --git a/fs/exofs/super.c b/fs/exofs/super.c
-index 9596550..18772e9 100644
+index b795c56..2357dc5 100644
 --- a/fs/exofs/super.c
 +++ b/fs/exofs/super.c
 @@ -546,27 +546,25 @@ static int exofs_devs_2_odi(struct exofs_dt_device_info *dt_dev,

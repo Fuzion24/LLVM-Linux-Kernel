@@ -1,4 +1,4 @@
-From 68495a840865fddd3f09b472d45f90675a90c3a9 Mon Sep 17 00:00:00 2001
+From 01a255770309e62c94eb55732da3d5252f6a4066 Mon Sep 17 00:00:00 2001
 From: Mark Charlebois <charlebm@gmail.com>
 Date: Mon, 22 Sep 2014 14:33:05 -0700
 Subject: [PATCH] kbuild, LLVMLinux: Add -Werror to cc-option to support clang
@@ -20,7 +20,7 @@ Reviewed-by: Jan-Simon Möller <dl9pf@gmx.de>
  1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/scripts/Kbuild.include b/scripts/Kbuild.include
-index 8a9a4e1..e37ca5c 100644
+index d3437b8..bd5a3e2 100644
 --- a/scripts/Kbuild.include
 +++ b/scripts/Kbuild.include
 @@ -111,12 +111,12 @@ as-instr = $(call try-run,\
@@ -46,7 +46,7 @@ index 8a9a4e1..e37ca5c 100644
 +	$(CC) -Werror $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) -W$(strip $(1)) -c -x c /dev/null -o "$$TMP",-Wno-$(strip $(1)))
  
  # cc-version
- # Usage gcc-ver := $(call cc-version)
+ cc-version = $(shell $(CONFIG_SHELL) $(srctree)/scripts/gcc-version.sh $(CC))
 -- 
 1.9.1
 
