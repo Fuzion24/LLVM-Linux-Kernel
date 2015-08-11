@@ -29,7 +29,7 @@ CROSS_ARM_TOOLCHAIN = linaro
 CLANG_TOOLCHAIN	= from-source
 
 KERNEL_CFG	= ${TARGETDIR}/config_rpi2
-KERNEL_BRANCH	= rpi-3.19.y
+KERNEL_BRANCH	= rpi-4.2.y
 KERNEL_GIT	= https://github.com/raspberrypi/linux.git
 KERNELDIR	= ${SRCDIR}/rpi2
 
