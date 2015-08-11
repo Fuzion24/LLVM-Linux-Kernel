@@ -19,7 +19,7 @@ Not-signed-off-by: Behan Webster <behanw@converseincode.com>
 
 --- /dev/null
 +++ rpi/arch/arm/lib/eabi.c
-@@ -0,0 +1,28 @@
+@@ -0,0 +1,59 @@
 +/*
 + * EABI routines
 + *
@@ -37,6 +37,18 @@ Not-signed-off-by: Behan Webster <behanw@converseincode.com>
 +}
 +EXPORT_SYMBOL(__aeabi_memcpy);
 +
++void __aeabi_memcpy4(void *dest, const void *src, size_t n)
++{
++	(void)memcpy(dest, src, n);
++}
++EXPORT_SYMBOL(__aeabi_memcpy4);
++
++void __aeabi_memcpy8(void *dest, const void *src, size_t n)
++{
++	(void)memcpy(dest, src, n);
++}
++EXPORT_SYMBOL(__aeabi_memcpy8);
++
 +void __aeabi_memmove(void *dest, const void *src, size_t n)
 +{
 +	(void)memmove(dest, src, n);
@@ -48,6 +60,25 @@ Not-signed-off-by: Behan Webster <behanw@converseincode.com>
 +	(void)memset(s, c, n);
 +}
 +EXPORT_SYMBOL(__aeabi_memset);
++
++void __aeabi_memclr(void *dest, size_t n)
++{
++	(void)memset(dest, 0, n);
++}
++EXPORT_SYMBOL(__aeabi_memclr);
++
++void __aeabi_memclr4(void *dest, size_t n)
++{
++	(void)memset(dest, 0, n);
++}
++EXPORT_SYMBOL(__aeabi_memclr4);
++
++void __aeabi_memclr8(void *dest, size_t n)
++{
++	(void)memset(dest, 0, n);
++}
++EXPORT_SYMBOL(__aeabi_memclr8);
++
 --- rpi.orig/arch/arm/lib/Makefile
 +++ rpi/arch/arm/lib/Makefile
 @@ -14,6 +14,10 @@
