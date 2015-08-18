@@ -55,8 +55,8 @@ KERNEL_PATCH_DIR += ${PATCHDIR}/${KERNEL_REPO_PATCHES}
 TARGETS+= clean mrproper test test2
 .PHONY: test test2 fetch-initrd prep clean mrproper
 
-prep: state/prep
-state/prep:
+prep: ${STATEDIR}/prep
+${STATEDIR}/prep:
 	$(MAKE) ${TMPDIR}
 	@mkdir -p ${LOGDIR}
 	$(call state,$@)
@@ -68,6 +68,6 @@ mrproper: clean kernel-mrproper kernel-gcc-mrproper tmp-mrproper
 	@rm -rf ${LOGDIR}/*
 	@$(call banner,Very Clean)
 
-test: ${QEMUSTATE}/qemu-build initramfs state/kernel-build
+test: ${QEMUSTATE}/qemu-build initramfs ${STATEDIR}/kernel-build
 	@$(call qemu,${BOARD},${KERNELDIR},768,/dev/ram0,init=/init,-initrd initramfs.img)
 

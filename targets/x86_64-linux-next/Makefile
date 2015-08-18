@@ -56,8 +56,8 @@ KERNEL_PATCH_DIR += ${PATCHDIR}/${KERNEL_REPO_PATCHES}
 TARGETS+= clean mrproper test test2
 .PHONY: test test2 fetch-initrd prep clean mrproper test
 
-prep: state/prep
-state/prep:
+prep: ${STATEDIR}/prep
+${STATEDIR}/prep:
 	$(MAKE) ${TMPDIR}
 	@mkdir -p ${LOGDIR}
 	$(call state,$@)
@@ -78,10 +78,10 @@ ${INITRAMFS}.clang: initramfs-unpacked
 	mv ${INITRAMFS} ${INITRAMFS}.clang
 
 # Create the generic initramfs, add in the kernel modules, then create the cpio
-test: state/prep ${QEMUSTATE}/qemu-build ${INITRAMFS}.clang
+test: ${STATEDIR}/prep ${QEMUSTATE}/qemu-build ${INITRAMFS}.clang
 	$(call qemu,${BOARD},${KERNEL_BUILD}/arch/x86/boot/bzImage,512,/dev/ram0,rw console=ttyS0 earlyprintk ,-initrd ${INITRAMFS}.clang -net none )
 
-test-gdb: state/prep ${QEMUSTATE}/qemu-build ${INITRAMFS}.clang
+test-gdb: ${STATEDIR}/prep ${QEMUSTATE}/qemu-build ${INITRAMFS}.clang
 	$(call qemu,${BOARD},${KERNEL_BUILD}/arch/x86/boot/bzImage,512,/dev/ram0,rw console=ttyS0 earlyprintk ,-initrd ${INITRAMFS}.clang -net none -s)
 
 test-qemu: ${INITRAMFS}.clang ${QEMUSTATE}/qemu-build
@@ -112,7 +112,7 @@ test-qemu-debug-parse: test-qemu-debug-kill
 test-qemu-smp:
 	$(call qemu,${BOARD},${KERNEL_BUILD}/arch/x86/boot/bzImage,2048,/dev/ram0,ramdisk_size=512000 rdinit=/init console=ttyS0 earlyprintk,-M q35 -cpu SandyBridge -smp 4 -initrd ${INITRAMFS}.clang)
 
-test-gcc:  state/prep ${QEMUSTATE}/qemu-build initramfs-unpacked
+test-gcc:  ${STATEDIR}/prep ${QEMUSTATE}/qemu-build initramfs-unpacked
 	@rm -rf ${INITBUILDFSDIR}/lib/modules
 	(cd ${KERNEL_BUILD} && make V=0 INSTALL_MOD_PATH=${INITBUILDFSDIR} modules_install 2>&1 > /dev/null)
 	mkdir -p ${INITBUILDFSDIR}/usr/lib
@@ -125,7 +125,7 @@ test-gcc-qemu:
 	$(call qemu,${BOARD},${KERNEL_BUILD}/arch/x86/boot/bzImage,2048,/dev/ram0,ramdisk_size=512000 rdinit=/init console=ttyS0 earlyprintk,-initrd ${INITRAMFS}.gcc)
 
 test-kill: test-boot-poweroff
-test-boot-poweroff: state/prep ${QEMUSTATE}/qemu-build initramfs-unpacked
+test-boot-poweroff: ${STATEDIR}/prep ${QEMUSTATE}/qemu-build initramfs-unpacked
 	@rm -rf ${INITBUILDFSDIR}/lib/modules
 	(cd ${KERNEL_BUILD} && make V=0 INSTALL_MOD_PATH=${INITBUILDFSDIR} modules_install 2>&1 > /dev/null)
 	mkdir -p ${INITBUILDFSDIR}/usr/lib

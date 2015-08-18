@@ -51,8 +51,8 @@ KERNEL_PATCH_DIR	+= ${TARGETDIR}/patches
 TARGETS+= check-dups kernel-autopatch clean mrproper
 .PHONY: kernel-copy clean mrproper
 
-prep: state/prep
-state/prep:
+prep: ${STATEDIR}/prep
+${STATEDIR}/prep:
 	$(MAKE) ${TMPDIR}
 	@mkdir -p ${LOGDIR} ${TARGETDIR}/patches
 	$(call state,$@)

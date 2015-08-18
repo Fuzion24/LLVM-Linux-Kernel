@@ -149,7 +149,7 @@ ignore_if_empty = perl -ne '{chomp; print "$$_\n" unless -z "${1}/$$_"}'
 
 ##############################################################################
 # Generate git log cache file
-${KERNEL_LOG_CACHE}: state/kernel-fetch ${KERNELDIR}/.git
+${KERNEL_LOG_CACHE}: ${STATEDIR}/kernel-fetch ${KERNELDIR}/.git
 	@mkdir -p $(dir $@)
 	@cd ${KERNELDIR} ; \
 	if [ -f $@ ] ; then \
@@ -271,9 +271,9 @@ ${KERNEL_PATCHES_TAR}: kernel-quilt-link-patches
 	@$(call banner,Created $@)
 
 ##############################################################################
-QUILT_STATE	= state/kernel-quilt
+QUILT_STATE	= ${STATEDIR}/kernel-quilt
 kernel-quilt: ${QUILT_STATE}
-${QUILT_STATE}: state/prep state/kernel-fetch 
+${QUILT_STATE}: ${STATEDIR}/prep ${STATEDIR}/kernel-fetch
 	@$(MAKE) ${QUILTRC} kernel-quilt-link-patches
 	@$(call banner,Quilted kernel...)
 	$(call state,$@,kernel-patch)

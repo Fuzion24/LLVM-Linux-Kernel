@@ -72,8 +72,8 @@ include ${CONFIG}
 
 #export CFLAGS_KERNEL += -mllvm -print-call-graph
 
-prep: state/prep
-state/prep:
+prep: ${STATEDIR}/prep
+${STATEDIR}/prep:
 	$(MAKE) ${TMPDIR}
 	@mkdir -p ${LOGDIR}
 	$(call state,$@)
@@ -102,13 +102,13 @@ aarch64-kernel.config:  ${KERNEL_CFG}
 ${KERNEL_CFG}: aarch64-kernel.config-proto ${AARCH64INITRD}
 	cat aarch64-kernel.config-proto | sed -e "s#PATH_TO_INITRD#${AARCH64INITRD}#" > $@
 
-kernel-test test:: state/prep ${QEMUSTATE}/qemu-build kernel-build
+kernel-test test:: ${STATEDIR}/prep ${QEMUSTATE}/qemu-build kernel-build
 	( ${TOPDIR}/test/qemu/install/bin/qemu-system-aarch64 -machine virt -cpu cortex-a57 -machine type=virt -nographic -smp 1 -m 2048 -kernel ${IMAGE} --append "rdinit=/sbin/init console=ttyAMA0" \
 		| tee ${TMPDIR}/qemu_log ) &
 	( sleep 60 && killall -s 9 qemu-system-aarch64 ) || exit 0
 	@grep -a "root@genericarmv8:" ${TMPDIR}/qemu_log && echo SUCCESS
 
-kernel-gcc-test test-gcc:: state/prep ${QEMUSTATE}/qemu-build kernel-gcc-build
+kernel-gcc-test test-gcc:: ${STATEDIR}/prep ${QEMUSTATE}/qemu-build kernel-gcc-build
 	( ${TOPDIR}/test/qemu/install/bin/qemu-system-aarch64 -machine virt -cpu cortex-a57 -machine type=virt -nographic -smp 1 -m 2048 -kernel ${GCCIMAGE} --append "rdinit=/sbin/init console=ttyAMA0" \
 		| tee ${TMPDIR}/qemu_gcc_log ) &
 	( sleep 60 && killall -s 9 qemu-system-aarch64 ) || exit 0

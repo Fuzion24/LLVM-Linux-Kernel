@@ -62,8 +62,8 @@ include ${CONFIG}
 TARGETS+= kernel-autopatch clean mrproper
 .PHONY: kernel-copy clean mrproper
 
-prep: state/prep
-state/prep:
+prep: ${STATEDIR}/prep
+${STATEDIR}/prep:
 	$(MAKE) ${TMPDIR}
 	@mkdir -p ${LOGDIR}
 	$(call state,$@)
@@ -75,7 +75,7 @@ mrproper: clean kernel-mrproper kernel-gcc-mrproper tmp-mrproper
 	@rm -rf ${LOGDIR}/*
 	@$(call banner,Very Clean)
 
-${KERNELDTB_IMG}: state/kernel-build 
+${KERNELDTB_IMG}: ${STATEDIR}/kernel-build 
 	cat ${TARGETDIR}/test/fixup.bin ${KERNEL_BUILD}/${ZIMAGE} ${KERNEL_BUILD}/${KERNEL_DTB} > $@
 
 # See http://mydragonboard.org/2013/forcing-ifc6410-into-fastboot/

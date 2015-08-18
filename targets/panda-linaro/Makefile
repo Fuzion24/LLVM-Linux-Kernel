@@ -52,8 +52,8 @@ KERNEL_PATCH_DIR+= ${TARGETDIR}/patches
 TARGETS+= check-dups kernel-autopatch clean mrproper
 .PHONY: kernel-copy clean mrproper
 
-prep: state/prep
-state/prep:
+prep: ${STATEDIR}/prep
+${STATEDIR}/prep:
 	$(MAKE) ${TMPDIR}
 	@mkdir -p ${LOGDIR} ${TARGETDIR}/patches
 	$(call state,$@)
@@ -89,10 +89,10 @@ ${INITRAMIMG}:
 
 KERNELDTB_IMG = ${TMPDIR}/kernel_dtb.img
 KERNELGCCDTB_IMG = ${TMPDIR}/kernelgcc_dtb.img
-${KERNELDTB_IMG}: state/kernel-build
+${KERNELDTB_IMG}: ${STATEDIR}/kernel-build
 	@$(call check-tmpfs,${KERNELDIR},${KERNEL_BUILD},kernel-mrproper $^)
 	cat ${KERNEL_BUILD}/${ZIMAGE} ${KERNEL_BUILD}/${KERNEL_DTB} > $@
-${KERNELGCCDTB_IMG}: state/kernel-gcc-build
+${KERNELGCCDTB_IMG}: ${STATEDIR}/kernel-gcc-build
 	@$(call check-tmpfs,${KERNELGCC},${KERNELGCC_BUILD},kernel-gcc-mrproper $^)
 	cat ${KERNELGCC_BUILD}/${ZIMAGE} ${KERNELGCC_BUILD}/${KERNEL_DTB} > $@
 

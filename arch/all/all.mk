@@ -314,8 +314,8 @@ kernel-raze::
 	@$(call leavestate,${STATEDIR},*)
 
 #############################################################################
-kernel-fetch: state/kernel-fetch
-state/kernel-fetch: ${SHARED_KERNEL} state/prep
+kernel-fetch: ${STATEDIR}/kernel-fetch
+${STATEDIR}/kernel-fetch: ${SHARED_KERNEL} ${STATEDIR}/prep
 	@$(call banner,Cloning kernel...)
 	@mkdir -p ${SRCDIR}
 	@[ -z "${KERNEL_BRANCH}" ] || $(call echo,Checking out kernel branch...)
@@ -331,8 +331,8 @@ state/kernel-fetch: ${SHARED_KERNEL} state/prep
 	$(call state,$@,kernel-patch)
 
 #############################################################################
-kernel-patch: state/kernel-patch
-state/kernel-patch: state/kernel-fetch state/kernel-quilt
+kernel-patch: ${STATEDIR}/kernel-patch
+${STATEDIR}/kernel-patch: ${STATEDIR}/kernel-fetch ${STATEDIR}/kernel-quilt
 	@$(call banner,Patching kernel...)
 	@echo ${PATCHDIR}
 	$(call patches_dir,${PATCHDIR},${KERNELDIR}/patches)
@@ -341,7 +341,7 @@ state/kernel-patch: state/kernel-fetch state/kernel-quilt
 	$(call state,$@,kernel-configure)
 
 #############################################################################
-kernel-unpatch: state/kernel-fetch state/kernel-quilt
+kernel-unpatch: ${STATEDIR}/kernel-fetch ${STATEDIR}/kernel-quilt
 	@$(call banner,Unpatching kernel...)
 	@$(call unpatch,${KERNELDIR})
 	@$(call optional_gitreset,${KERNELDIR})
@@ -368,8 +368,8 @@ kernel-patch-status-leftover:
 	@$(call patch_series_status_leftover,${PATCHDIR})
 
 #############################################################################
-kernel-configure: state/kernel-configure
-state/kernel-configure: state/kernel-patch ${TMPFS_MOUNT} ${KERNEL_CFG} ${STATE_CLANG_TOOLCHAIN} ${STATE_TOOLCHAIN}
+kernel-configure: ${STATEDIR}/kernel-configure
+${STATEDIR}/kernel-configure: ${STATEDIR}/kernel-patch ${TMPFS_MOUNT} ${KERNEL_CFG} ${STATE_CLANG_TOOLCHAIN} ${STATE_TOOLCHAIN}
 	@make -s build-dep-check
 	@$(call banner,Configuring kernel...)
 	@mkdir -p ${KERNEL_BUILD}
@@ -388,31 +388,31 @@ state/kernel-configure: state/kernel-patch ${TMPFS_MOUNT} ${KERNEL_CFG} ${STATE_
 	$(call state,$@,kernel-build)
 
 #############################################################################
-kernel-allyesconfig kernel-allmodconfig: kernel-%: state/kernel-configure
+kernel-allyesconfig kernel-allmodconfig: kernel-%: ${STATEDIR}/kernel-configure
 	(cd ${KERNELDIR} && echo "" | make ${KERNEL_ENV} ${MAKE_FLAGS} $*)
 
 #############################################################################
-kernel-menuconfig: state/kernel-configure
+kernel-menuconfig: ${STATEDIR}/kernel-configure
 	@make -C ${KERNELDIR} ${KERNEL_ENV} ${MAKE_FLAGS} menuconfig
 	@$(call leavestate,${STATEDIR},kernel-build)
 
-kernel-cmpconfig: state/kernel-configure
+kernel-cmpconfig: ${STATEDIR}/kernel-configure
 	diff -Nau ${KERNEL_CFG} ${KERNEL_BUILD}/.config
 
-kernel-cpconfig: state/kernel-configure
+kernel-cpconfig: ${STATEDIR}/kernel-configure
 	@cp -v ${KERNEL_BUILD}/.config ${KERNEL_CFG}
 
 #############################################################################
-kernel-cscope: state/kernel-configure
+kernel-cscope: ${STATEDIR}/kernel-configure
 	@make -C ${KERNELDIR} ${KERNEL_ENV} ${MAKE_FLAGS} cscope
 cscope:
 	@(cd ${KERNELDIR}; cscope)
-kernel-tags: state/kernel-configure
+kernel-tags: ${STATEDIR}/kernel-configure
 	make -C ${KERNELDIR} ${KERNEL_ENV} ${MAKE_FLAGS} tags
 
 #############################################################################
-kernel-gcc-configure: state/kernel-gcc-configure
-state/kernel-gcc-configure: state/kernel-patch ${TMPFS_MOUNT} ${KERNEL_CFG} ${STATE_TOOLCHAIN}
+kernel-gcc-configure: ${STATEDIR}/kernel-gcc-configure
+${STATEDIR}/kernel-gcc-configure: ${STATEDIR}/kernel-patch ${TMPFS_MOUNT} ${KERNEL_CFG} ${STATE_TOOLCHAIN}
 	@make -s build-dep-check
 	@$(call banner,Configuring gcc kernel...)
 	@mkdir -p ${KERNELGCC_BUILD}
@@ -421,12 +421,12 @@ state/kernel-gcc-configure: state/kernel-patch ${TMPFS_MOUNT} ${KERNEL_CFG} ${ST
 	$(call state,$@,kernel-gcc-build)
 
 #############################################################################
-kernel-gcc-allyesconfig: state/kernel-gcc-configure
+kernel-gcc-allyesconfig: ${STATEDIR}/kernel-gcc-configure
 	(cd ${KERNELDIR} && echo "" | ${KERNELGCC_ENV} make ${MAKE_FLAGS} allyesconfig)
 
 #############################################################################
-kernel-build:: state/kernel-build
-state/kernel-build: state/kernel-configure
+kernel-build:: ${STATEDIR}/kernel-build
+${STATEDIR}/kernel-build: ${STATEDIR}/kernel-configure
 	@[ -d ${KERNEL_BUILD} ] || ($(call leavestate,${STATEDIR},kernel-configure) && ${MAKE} kernel-configure)
 	@$(MAKE) kernel-quilt-link-patches
 	@$(call banner,Building kernel with clang...)
@@ -441,8 +441,8 @@ state/kernel-build: state/kernel-configure
 	$(call state,$@,done)
 
 #############################################################################
-kernel-gcc-build: state/kernel-gcc-build
-state/kernel-gcc-build: state/kernel-gcc-configure
+kernel-gcc-build: ${STATEDIR}/kernel-gcc-build
+${STATEDIR}/kernel-gcc-build: ${STATEDIR}/kernel-gcc-configure
 	@[ -d ${KERNELGCC_BUILD} ] || ($(call leavestate,${STATEDIR},kernel-gcc-configure) && ${MAKE} kernel-gcc-configure)
 	@$(MAKE) kernel-quilt-link-patches
 	@$(call banner,Building kernel with gcc...)
@@ -462,21 +462,21 @@ kernel-gcc-build-pristine:
 	@$(MAKE) kernel-unpatch NO_PATCH=1 series kernel-gcc-build
 
 #############################################################################
-kernel-scan-build: ${STATE_CLANG_TOOLCHAIN} ${STATE_TOOLCHAIN} state/kernel-configure
+kernel-scan-build: ${STATE_CLANG_TOOLCHAIN} ${STATE_TOOLCHAIN} ${STATEDIR}/kernel-configure
 	@$(call assert_found_in_path,ccc-analyzer,"(prebuilt and native clang doesn't always provide ccc-analyzer)")
 	@$(eval CHECKER := ${SCAN_BUILD} ${SCAN_BUILD_FLAGS})
 	@$(call banner,Enabling clang static analyzer: ${CHECKER})
 	${MAKE} CHECKER="${CHECKER}" CC=ccc-analyzer kernel-build
 
 #############################################################################
-kernel-check-build: ${STATE_CLANG_TOOLCHAIN} ${STATE_TOOLCHAIN} state/kernel-configure
+kernel-check-build: ${STATE_CLANG_TOOLCHAIN} ${STATE_TOOLCHAIN} ${STATEDIR}/kernel-configure
 	@$(eval CHECK_VARS := C=1 CHECK=${CLANG} CHECKFLAGS=--analyze)
 	@$(call banner,Enabling clang static analyzer as you go: ${CLANG} --analyze)
 	${MAKE} CHECK_VARS="${CHECK_VARS}" kernel-build
 
 #############################################################################
 kernel-build-force kernel-gcc-build-force: %-force:
-	@rm -f state/$*
+	@rm -f ${STATEDIR}/$*
 	${MAKE} $*
 
 ##############################################################################
@@ -516,7 +516,7 @@ kernel-shared-sync:
 	@$(call git,${SHARED_KERNEL},fetch origin +refs/heads/*:refs/heads/*)
 
 #############################################################################
-kernel-sync: state/kernel-fetch kernel-clean kernel-shared-sync
+kernel-sync: ${STATEDIR}/kernel-fetch kernel-clean kernel-shared-sync
 	@$(call banner,Syncing kernel...)
 	@$(call check_llvmlinux_commit,${CONFIG})
 	-@$(call gitabort,${KERNELDIR})

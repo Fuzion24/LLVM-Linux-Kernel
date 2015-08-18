@@ -100,8 +100,8 @@ ${KERNEL_CFG}: initramfs
 	sed -i -e 's/CONFIG_DEVTMPFS_MOUNT/#CONFIG_DEVTMPFS_MOUNT/' $@
 
 
-prep: state/prep
-state/prep:
+prep: ${STATEDIR}/prep
+${STATEDIR}/prep:
 	$(MAKE) ${TMPDIR}
 	@mkdir -p ${LOGDIR}
 	$(call state,$@)
@@ -116,7 +116,7 @@ parse-qemulog:
 
 # Create the generic initramfs, add in the kernel modules, then create the cpio
 # Allwinner config does not have module support enabled
-test2: state/prep ${QEMUSTATE}/qemu-build state/kernel-build initramfs-unpacked
+test2: ${STATEDIR}/prep ${QEMUSTATE}/qemu-build ${STATEDIR}/kernel-build initramfs-unpacked
 	@rm -rf ${INITBUILDFSDIR}/lib
 	mkdir -p ${INITBUILDFSDIR}/usr/lib
 	@rm -f ${INITRAMFS}
@@ -124,7 +124,7 @@ test2: state/prep ${QEMUSTATE}/qemu-build state/kernel-build initramfs-unpacked
 	../../test/qemu/install/bin/qemu-system-arm -M ${BOARD} -kernel ${KERNEL_BUILD}/${ZIMAGE} -serial stdio -append "console=ttyS0 rw root=/dev/ram0 rdinit=/init" -dtb ${KERNEL_BUILD}/${KERNEL_DTB} -display none
 
 # Allwinner config does not have module support enabled
-test2-gcc: state/prep ${QEMUSTATE}/qemu-build ${KERNELGCCDTB_IMG} initramfs-unpacked
+test2-gcc: ${STATEDIR}/prep ${QEMUSTATE}/qemu-build ${KERNELGCCDTB_IMG} initramfs-unpacked
 	@rm -rf ${INITBUILDFSDIR}/lib
 	mkdir -p ${INITBUILDFSDIR}/usr/lib
 	@rm -f ${INITRAMFS}

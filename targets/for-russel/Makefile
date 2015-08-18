@@ -48,8 +48,8 @@ TARGETS+= clean mrproper
 .PHONY: prep clean mrproper
 
 #############################################################################
-prep: state/prep
-state/prep:
+prep: ${STATEDIR}/prep
+${STATEDIR}/prep:
 	$(MAKE) ${TMPDIR}
 	@mkdir -p ${LOGDIR}
 	$(call state,$@)
@@ -85,7 +85,7 @@ kernel-patch-for-russel-series:
 
 #############################################################################
 # Create the generic initramfs, add in the kernel modules, then create the cpio
-test: state/prep ${QEMUSTATE}/qemu-build initramfs-unpacked
+test: ${STATEDIR}/prep ${QEMUSTATE}/qemu-build initramfs-unpacked
 	@rm -rf ${INITBUILDFSDIR}/lib/modules
 	(cd ${KERNEL_BUILD} && make V=0 INSTALL_MOD_PATH=${INITBUILDFSDIR} modules_install 2>&1 > /dev/null)
 	mkdir -p ${INITBUILDFSDIR}/usr/lib
