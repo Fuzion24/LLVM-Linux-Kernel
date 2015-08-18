@@ -41,4 +41,9 @@ ifeq (${CROSS_MIPS_TOOLCHAIN},codescape-sdk)
   include ${ARCH_MIPS_TOOLCHAIN}/codescape-sdk/codescape-sdk.mk
 endif
 
+ifeq (${CROSS_MIPS_TOOLCHAIN},codescape-sdk-img)
+  CROSS_COMPILE	= ${HOST}-
+  include ${ARCH_MIPS_TOOLCHAIN}/codescape-sdk-img/codescape-sdk-img.mk
+endif
+
 GCC_TOOLCHAIN	= ${COMPILER_PATH}

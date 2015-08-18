@@ -1,8 +1,5 @@
 ##############################################################################
-# Copyright (c) 2012 Mark Charlebois
-#               2012 Jan-Simon Möller
-#               2012 Behan Webster
-#               2015 Daniel Sanders
+# Copyright (c) 2015 Daniel Sanders
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to
@@ -23,15 +20,15 @@
 # IN THE SOFTWARE.
 ##############################################################################
 
-# This file is here to stop the buildbot breaking straight away and will be
-# removed shortly.
-
 # This is a template file with the kinds of settings and make targets filled in.
 TARGETDIR	= ${CURDIR}
-BASETARGETDIR	= ${CURDIR}
-TOPDIR		= $(realpath ${TARGETDIR}/../..)
+BASETARGETDIR	= ${CURDIR}/..
+TOPDIR		= $(realpath ${TARGETDIR}/../../..)
 
+ARCH	= mips
 MIPS_ENDIAN = big
-KERNEL_CFG = default-big-endian/config
+MIPS_NBITS = 64
+KERNEL_CFG = config
+QEMU_FLAGS = -cpu MIPS64R6-generic
 
-include ${TARGETDIR}/malta-common.mk
+include ${TARGETDIR}/../malta-common.mk
