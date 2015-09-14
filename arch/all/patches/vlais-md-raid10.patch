@@ -25,26 +25,9 @@ Cc: Arnd Bergmann <arnd@arndb.de>
  drivers/md/raid10.c | 16 ++++++----------
  1 file changed, 6 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/md/raid10.c b/drivers/md/raid10.c
-index 38c58e1..f3d0859 100644
---- a/drivers/md/raid10.c
-+++ b/drivers/md/raid10.c
-@@ -711,11 +711,9 @@ static int raid10_mergeable_bvec(struct mddev *mddev,
- 		max = biovec->bv_len;
- 
- 	if (mddev->merge_check_needed) {
--		struct {
--			struct r10bio r10_bio;
--			struct r10dev devs[conf->copies];
--		} on_stack;
--		struct r10bio *r10_bio = &on_stack.r10_bio;
-+		/* Allocate space for r10bio on stack */
-+		u8 r10bio_on_stack[sizeof(struct r10bio) + conf->copies * sizeof(struct r10dev)];
-+		struct r10bio *r10_bio = (struct r10bio*) r10bio_on_stack;
- 		int s;
- 		if (conf->reshape_progress != MaxSector) {
- 			/* Cannot give any guidance during reshape */
-@@ -4548,11 +4546,9 @@ static int handle_reshape_read_error(struct mddev *mddev,
+--- linux.orig/drivers/md/raid10.c
++++ linux/drivers/md/raid10.c
+@@ -4427,11 +4427,9 @@
  	/* Use sync reads to get the blocks from somewhere else */
  	int sectors = r10_bio->sectors;
  	struct r10conf *conf = mddev->private;
@@ -59,6 +42,3 @@ index 38c58e1..f3d0859 100644
  	int slot = 0;
  	int idx = 0;
  	struct bio_vec *bvec = r10_bio->master_bio->bi_io_vec;
--- 
-1.9.1
-
